@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		sendResponse({status: localStorage['pourcentageLum']});
 	}
 	else
-      sendResponse({}); // snub them.
+      sendResponse({});
 });
 (function(){
 	if(localStorage.getItem("pageShadowEnabled") == null) {
