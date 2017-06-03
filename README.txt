@@ -13,6 +13,8 @@ Une extension comprenant une série d'outils pour améliorer la lecture d'une pa
 
 Le code contenu dans cette archive ne nécessite pas trop de modifications pour être porté de Chrome/Chromium à Opera (versions basées sur Chromium) ou l'inverse.
 
+Cette extension utilise la police de caractère Source Sans Pro (version 2.020) sous licence SIL Open Font License version 1.1 : https://github.com/adobe-fonts/source-sans-pro/blob/master/LICENSE.txt
+
 Licence :
 =========
 
