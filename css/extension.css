@@ -28,11 +28,34 @@ body.popup {
 }
 .navbar-brand {
     padding: 15px;
+    color: white;
+    line-height: 0;
 }
 .navbar-brand > img {
     height: 100%;
     width: auto;
     display: inline-block;
+}
+.tooltip-inner {
+    max-width: 300px;
+    width: 300px; 
+}
+.slider .tooltip-inner {
+    white-space: nowrap;
+    max-width: none;
+    width: auto;
+}
+.helpIcon {
+    font-size: 24px;
+    cursor: pointer;
+    vertical-align: middle;
+    margin: 5px;
+}
+.helpIconMin {
+    font-size: 20px;
+    cursor: pointer;
+    vertical-align: middle;
+    margin: 5px;
 }
 .form {
     font-size: 12pt;
@@ -40,18 +63,15 @@ body.popup {
     padding-bottom: 10px;
     margin-bottom: 10px;
 }
-.ligne {
-    border-bottom: 1px solid lightgrey;
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
 .indice {
     font-size: 10pt;
 }
-.barreHorizontale {
-    border-bottom: 1px solid lightgrey;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
+label {
+    cursor: pointer;
+}
+hr {
+    margin-top: 38px;
+    margin-bottom: 8px;
 }
 div#pageShadowLuminositeDiv {
     position: fixed;

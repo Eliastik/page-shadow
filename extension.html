@@ -3,36 +3,40 @@
     <head>
         <title>Page Shadow</title>
         <script type="text/javascript" src="js/jquery.min.js"></script>
-        <script type="text/javascript" src="js/popup.js"></script>
         <link rel="stylesheet" href="css/content.css" type="text/css" />
         <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="css/font-awesome.min.css">
         <link rel="stylesheet" href="css/extension.css" type="text/css" />
+        <script type="text/javascript" src="js/tooltip.min.js"></script>
+        <link rel="stylesheet" href="css/bootstrap-slider.min.css" type="text/css" />
+        <script type="text/javascript" src="js/bootstrap-slider.min.js"></script>
+        <script type="text/javascript" src="js/popup.js"></script>
         <meta charset="UTF-8">
     </head>
     <body class="popup">
         <nav class="navbar navbar-inverse">
           <div class="container-fluid">
             <div class="navbar-header">
-              <a class="navbar-brand"><img src="img/icon.png" style="vertical-align: middle;"> Page Shadow</a>
+              <span class="navbar-brand"><img src="img/icon.png" style="vertical-align: middle;"> Page Shadow</span>
             </div>
         </nav>
         <div class="container">
             <p>Une série d'outils pour améliorer la lecture d'une page dans une pièce mal éclairée/autre :</p>
             <form class="form-horizontal">
-                <input type="checkbox" id="checkAssomPage" /> <label for="checkAssomPage">Augmenter le contraste de la page</label> <img src="img/help.png" id="helpAssom" width="24" height="24" style="cursor: pointer; vertical-align: middle;"></img><br />
-                <div class="indice well well-sm" id="assomInfos" style="display: none;">Ajuste automatiquement le thème graphique de la page afin d'obtenir le meilleur contraste possible. Peut mal fonctionner avec des thèmes graphiques complexes et/ou défigurer la page.</div>
-                <input type="checkbox" id="checkLuminositePage" /> <label for="checkLuminositePage">Baisser la luminosité de la page</label> <img src="img/help.png" id="helpLum" width="24" height="24" style="cursor: pointer; vertical-align: middle;"></img><br />
-                <div class="indice well well-sm" id="lumInfos" style="display: none;">Baisse la luminosité de la page. C'est vous qui choisissez le pourcentage de baisse de luminosité de la page.</div>
-                    <div id="sliderLuminositeDiv" style="display: none; margin-top: 10px;">
+                <input type="checkbox" id="checkAssomPage" /> <label for="checkAssomPage">Augmenter le contraste de la page</label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" title="Ajuste automatiquement le thème graphique de la page afin d'obtenir le meilleur contraste possible. Peut mal fonctionner avec des thèmes graphiques complexes et/ou défigurer la page."></i><br />
+                <input type="checkbox" id="checkLuminositePage" /> <label for="checkLuminositePage">Baisser la luminosité de la page</label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" title="Baisse la luminosité de la page. C'est vous qui choisissez le pourcentage de baisse de luminosité de la page."></i>
+                    <div class="well well-sm" id="sliderLuminositeDiv" style="display: none;">
                         <label for="sliderLuminosite">Pourcentage de baisse de luminosité :</label>
-                        <input type="range" id="sliderLuminosite" name="sliderLuminositeN" value="15" max="90" min="0">
-                        <output for="sliderLuminosite" id="sliderLumOutput">15</output> %
+                        <input id="sliderLuminosite" data-slider-id='sliderLuminosite' type="text" data-slider-min="0" data-slider-max="90" data-slider-step="1" data-slider-value="15" />
                     </div>
             </form>
-            <div class="barreHorizontale">
-                <span class="indice">Paramètres sauvegardés automatiquement. Ils prendront effet au prochain chargement d'une page web.</span>
-            </div>
-            <a href="options.html" target="_blank">Paramètres avancés</a> | <a href="pageTest.html" target="_blank">Tester l'extension</a>
+            <hr />
+            <footer>
+            <ul class="list-inline">
+                <li class="list-inline-item"><a href="options.html" target="_blank"><i class="fa fa-cog" aria-hidden="true"></i> Paramètres avancés</a></li>
+                <li class="list-inline-item"><a href="pageTest.html" target="_blank"><i class="fa fa-bars" aria-hidden="true"></i> Tester l'extension</a></li>
+            </ul>
+        </footer>
         </div>
     </body>
 </html>
