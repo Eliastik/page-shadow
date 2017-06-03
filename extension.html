@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Page Shadow</title>
+		<script type="text/javascript" src="jquery.min.js"></script>
+		<script type="text/javascript" src="popup.js"></script>
+		<meta charset="UTF-8">
+ 		<style type="text/css">
+		body
+		{
+			background-color: white;
+			width: 350px;
+			-webkit-user-select: none;
+			cursor: default;
+		}
+		#header {
+			border-bottom: 1px solid lightgrey;
+			padding-bottom: 10px;
+		}
+		#titreApp {
+			vertical-align: center;
+			font-size: 20pt;
+			font-weight: bold;
+		}
+		.form {
+			font-size: 12pt;
+			border-bottom: 1px solid lightgrey;
+			padding-bottom: 10px;
+			margin-bottom: 10px;
+		}
+		.indice {
+			font-size: 10pt;
+		}
+		.barreHorizontale {
+			border-bottom: 1px solid lightgrey;
+			padding-bottom: 10px;
+			margin-bottom: 10px;
+		}
+		a {
+			color: dodgerblue;
+		}
+		a:visited {
+			color: dodgerblue;
+		}
+		div#pageShadowLuminositeDiv {
+			position: fixed;
+			top: 0;
+			left: 0;
+			background-color: black;
+			min-height: 100%;
+			min-width: 100%;
+			height: auto;
+			z-index: 999999;
+			pointer-events: none;
+		}
+		</style>
+	</head>
+	<body>
+		<header id="header">
+			<img src="icone.png" style="vertical-align: middle; float: left; margin-right: 10px;"> <span id="titreApp">Page Shadow</span>
+		</header><br />
+		<p>Une série d'outils pour améliorer la lecture d'une page dans une pièce mal éclairée/autre :</p>
+		<div class="form">
+			<input type="checkbox" id="checkAssomPage" /> <label for="checkAssomPage">Augmenter le contraste de la page</label> <img src="help.png" id="helpAssom" width="24" height="24" style="cursor: pointer; vertical-align: middle;"></img><br />
+			<p class="indice" id="assomInfos" style="display: none;">Ajuste automatiquement le thème graphique de la page afin d'obtenir le meilleur contraste possible. Peut mal fonctionner avec des thèmes graphiques complexes et/ou défigurer la page.</p>
+		</div>
+		<div class="form">
+			<input type="checkbox" id="checkLuminositePage" /> <label for="checkLuminositePage">Baisser la luminosité de la page</label> <img src="help.png" id="helpLum" width="24" height="24" style="cursor: pointer; vertical-align: middle;"></img><br />
+			<p class="indice" id="lumInfos" style="display: none;">Baisse la luminosité de la page. C'est vous qui choisissez le pourcentage de baisse de luminosité de la page.</p>
+				<div id="sliderLuminositeDiv" style="display: none; margin-top: 10px;">
+					<label for="sliderLuminosite">Pourcentage de baisse de luminosité :</label>
+					<input type="range" id="sliderLuminosite" name="sliderLuminositeN" value="15" max="90" min="0" style="width: 100%;">
+					<output for="sliderLuminosite" id="sliderLumOutput">15</output> %
+				</div>
+		</div>
+		<div class="barreHorizontale">
+			<span class="indice">Paramètres sauvegardés automatiquement. Ils prendront effet au prochain chargement d'une page web.</span>
+		</div>
+		<a href="options.html" target="_blank">Paramètres avancés</a> | <a href="pageTest.html" target="_blank">Tester l'extension</a>
+	</body>
+</html>
