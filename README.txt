@@ -7,11 +7,9 @@ Version actuelle : 1.2.1 (20/07/2015)
 
 Obtenez les dernières mises à jour de l'extension sur http://eliastiksofts.com/page-shadow
 
-Ceci est le code source de la version Chrome, Chromium et Opera (versions basées sur Chromium) de l'extension Page Shadow.
+Ceci est le code source de l'extension Page Shadow, compatible avec Chrome/Chromium, Opera et Firefox (via WebExtensions).
 
 Une extension comprenant une série d'outils pour améliorer la lecture d'une page dans une pièce mal éclairée/autre. Elle vous permet d'augmenter le contraste de la page et/ou de baisser la luminosité de la page en un clic.
-
-Le code contenu dans cette archive ne nécessite pas trop de modifications pour être porté de Chrome/Chromium à Opera (versions basées sur Chromium) ou l'inverse.
 
 Cette extension utilise la police de caractère Source Sans Pro (version 2.020) sous licence SIL Open Font License version 1.1 : https://github.com/adobe-fonts/source-sans-pro/blob/master/LICENSE.txt
 

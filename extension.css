@@ -1,0 +1,59 @@
+@font-face {
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Source Sans Pro Light'), local('SourceSansPro-Light'), url(fonts/SourceSansPro-Light.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Source Sans Pro Regular'), local('SourceSansPro-Regular'), url(fonts/SourceSansPro-Regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Source Sans Pro Bold'), local('SourceSansPro-Bold'), url(fonts/SourceSansPro-Bold.ttf) format('truetype');
+}
+body {
+    background-color: white;
+    width: 350px;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: default;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+.navbar-brand {
+    padding: 15px;
+}
+.navbar-brand > img {
+    height: 100%;
+    width: auto;
+    display: inline-block;
+}
+.form {
+    font-size: 12pt;
+    border-bottom: 1px solid lightgrey;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+.indice {
+    font-size: 10pt;
+}
+.barreHorizontale {
+    border-bottom: 1px solid lightgrey;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+div#pageShadowLuminositeDiv {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: black;
+    min-height: 100%;
+    min-width: 100%;
+    height: auto;
+    z-index: 999999;
+    pointer-events: none;
+}
