@@ -33,7 +33,18 @@ div#pageShadowLuminositeDiv {
 	position: fixed;
 	top: 0;
 	left: 0;
-	background-color: black;
+	background-color: black !important;;
+	min-height: 100%;
+	min-width: 100%;
+	height: auto;
+	z-index: 999999;
+	pointer-events: none;
+}
+div#pageShadowLuminositeDivNightMode {
+	position: fixed;
+	top: 0;
+	left: 0;
+	background-color: rgb(255,137, 14) !important;
 	min-height: 100%;
 	min-width: 100%;
 	height: auto;

@@ -10,6 +10,10 @@ $(document).ready(function() {
 	if(localStorage.getItem("pourcentageLum") == null) {
 		localStorage.setItem("pourcentageLum", "15");
 	}
+    
+    if(localStorage.getItem("nightModeEnabled") == null) {
+		localStorage.setItem("nightModeEnabled", "false");
+	}
 	
 	if(localStorage.getItem("sitesInterditPageShadow") == null) {
 		localStorage.setItem("sitesInterditPageShadow", "");
@@ -39,9 +43,15 @@ $(document).ready(function() {
 	$( "#checkLuminositePage" ).change(function() {
 		if($(this).is(':checked') == true) {
 			localStorage.setItem("pageLumEnabled", "true");
+            localStorage.setItem("pourcentageLum", 15);
 			$("#sliderLuminositeDiv").show();
 			elLumB = document.createElement("div");
-			elLumB.setAttribute("id", "pageShadowLuminositeDiv");
+            if(localStorage.getItem("nightModeEnabled") == "true") {
+                $("#checkNighMode").attr("checked", "checked");
+                elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
+            } else {
+                elLumB.setAttribute("id", "pageShadowLuminositeDiv");
+            }
 			elLumB.style.opacity = localStorage.getItem("pourcentageLum") / 100;
 			document.body.appendChild(elLumB);
 			$("#sliderLuminositeDiv").fadeIn();
@@ -60,6 +70,17 @@ $(document).ready(function() {
 		}
 		localStorage.setItem("pourcentageLum", sliderLumValue);
 	});
+    
+    $( "#checkNighMode" ).change(function() {
+		if($(this).is(':checked') == true) {
+			localStorage.setItem("nightModeEnabled", "true");
+            elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
+		}
+		else {
+			localStorage.setItem("nightModeEnabled", "false");
+            elLumB.setAttribute("id", "pageShadowLuminositeDiv");
+		}
+	});
 	
 	if(localStorage.getItem("pageShadowEnabled") == "true") {
 		$("#checkAssomPage").attr("checked", "checked");
@@ -74,6 +95,13 @@ $(document).ready(function() {
 				elLumB.style.opacity = localStorage.getItem("pourcentageLum") / 100;
 				document.body.appendChild(elLumB);
 			}
+	}
+    
+    if(localStorage.getItem("nightModeEnabled") == "true") {
+		$("#checkNighMode").attr("checked", "checked");
+        if (elLumB !== null) {
+            elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
+        }
 	}
 	
 	if(localStorage.getItem("pourcentageLum") != null) {

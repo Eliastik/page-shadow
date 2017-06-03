@@ -7,6 +7,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	else if(request.method == "getStatusIfLum") {
 		sendResponse({status: localStorage['pageLumEnabled']});
 	}
+    else if(request.method == "getStatusNightMode") {
+		sendResponse({status: localStorage['nightModeEnabled']});
+	}
 	else if(request.method == "getStatusLum") {
 		sendResponse({status: localStorage['pourcentageLum']});
 	}
@@ -24,6 +27,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	
 	if(localStorage.getItem("pourcentageLum") == null) {
 		localStorage.setItem("pourcentageLum", "15");
+	}
+    
+    if(localStorage.getItem("nightModeEnabled") == null) {
+		localStorage.setItem("nightModeEnabled", "false");
 	}
 	
 	if(localStorage.getItem("sitesInterditPageShadow") == null) {
