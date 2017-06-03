@@ -1,41 +1,18 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Page Shadow</title>
-    <script type="text/javascript" src="jquery.min.js"></script>
-    <script type="text/javascript" src="options.js"></script>
-    <script type="text/javascript" src="content.js"></script>
-    <link rel="stylesheet" href="content.css" type="text/css" />
-    <link rel="stylesheet" href="extension.css" type="text/css" />
-    <link rel="stylesheet" href="bootstrap.min.css" type="text/css" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/options.js"></script>
+    <script type="text/javascript" src="js/content.js"></script>
+    <link rel="stylesheet" href="css/content.css" type="text/css" />
+    <link rel="stylesheet" href="css/extension.css" type="text/css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
     <meta charset="UTF-8">
-    <style type="text/css">
-        body {
-            background-color: white;
-            -webkit-user-select: none;
-            cursor: default;
-        }
-        #form {
-            font-size: 12pt;
-            border-bottom: 1px solid lightgrey;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-        }
-        .ligne {
-            border-bottom: 1px solid lightgrey;
-            margin-bottom: 10px;
-            margin-top: 10px;
-        }
-        .indice {
-            font-size: 10pt;
-        }
-    </style>
 </head>
-
 <body>
     <header id="header">
-        <img src="icone.png" style="vertical-align: middle; float: left; margin-right: 10px;"> <span id="titreApp">Page Shadow - Paramètres avancés</span>
+        <img src="img/icon.png" style="vertical-align: middle; float: left; margin-right: 10px;"> <span id="titreApp">Page Shadow - Paramètres avancés</span>
     </header>
     <br />
     <br />
@@ -44,7 +21,7 @@
         <div class="ligne"></div>
         <label>Version de Page Shadow :</label> <span>1.2.1</span>
         <div class="ligne"></div>
-        <div id="aboutImg" style="cursor: pointer; margin-top: 10px; margin-bottom: 10px;"><img src="help.png" width="24" height="24" style="vertical-align: middle;"></img> <span>A propos de Page Shadow &darr;</span></div>
+        <div id="aboutImg" style="cursor: pointer; margin-top: 10px; margin-bottom: 10px;"><img src="img/help.png" width="24" height="24" style="vertical-align: middle;"></img> <span>A propos de Page Shadow &darr;</span></div>
         <div class="indice" id="about" style="display: none;">
             <p>Page Shadow est disponible sur Opera, Chrome (pas encore distribué) et prochainement sur Firefox.
                 <p>
@@ -81,10 +58,9 @@
         <br />
         <textarea id="textareaAssomPage" style="width: 500px; height: 250px; margin-top: 5px;"></textarea>
         <br />
-        <div id="helpImg" style="cursor: pointer; margin-top: 10px; margin-bottom: 10px;"><img src="help.png" width="24" height="24" style="vertical-align: middle;"></img> <span>Aide &darr;</span></div>
+        <div id="helpImg" style="cursor: pointer; margin-top: 10px; margin-bottom: 10px;"><img src="img/help.png" width="24" height="24" style="vertical-align: middle;"></img> <span>Aide &darr;</span></div>
         <p class="indice" id="aide" style="display: none;">Exemple : si vous entrez http://www.example.com, Page Shadow ignorera tout le site. Si vous entrez http://www.example.com/repertoire1/, seul ce répertoire et les sous-répertoires seront ignorés. Si vous entrez http://www.example.com/repertoire1/index.php, seul cette page sera ignorée. Si vous entrez index, toutes les url contenant ce mot seront ignorées.</p>
         <input type="button" id="validerButton" value="Valider" style="color:#666666 !important;" />
     </div>
 </body>
-
 </html>

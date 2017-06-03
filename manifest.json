@@ -2,14 +2,14 @@
 	"name" :"Page Shadow",
 	"version" :"1.2.1",
 	"manifest_version": 2,
-	"icons": { "64": "icone.png", 
-			   "128": "icone_128.png",
-               "256": "icone_256.png",
-               "512": "icone_512.png" },
+	"icons": { "64": "img/icon.png", 
+			   "128": "img/icon_128.png",
+               "256": "img/icon_256.png",
+               "512": "img/icon_512.png" },
 	"description" :"Une série d'outils pour améliorer la lecture d'une page dans une pièce mal éclairée/autre.",
 	"browser_action" :
 	{
-		"default_icon": "icone.png",
+		"default_icon": "img/icon.png",
 		"default_popup": "extension.html"
 	},
 	"options_page": "options.html",
@@ -17,7 +17,7 @@
 		"webNavigation"
 	],
 	"background": {
-		"scripts": ["background.js"]
+		"scripts": ["js/background.js"]
 	},
     "applications": {
       "gecko": {
@@ -25,8 +25,8 @@
       }
     },
 	"content_scripts": [{
-		"js": [ "jquery.min.js", "content.js"],
-		"css": [ "content.css" ],
+		"js": [ "js/jquery.min.js", "js/content.js"],
+		"css": [ "css/content.css" ],
 		"matches": [ "http://*/*", "https://*/*"]
 	}]
 }

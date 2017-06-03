@@ -2,27 +2,29 @@
     font-family: 'Source Sans Pro';
     font-style: normal;
     font-weight: 300;
-    src: local('Source Sans Pro Light'), local('SourceSansPro-Light'), url(fonts/SourceSansPro-Light.ttf) format('truetype');
+    src: local('Source Sans Pro Light'), local('SourceSansPro-Light'), url(../fonts/SourceSansPro-Light.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Source Sans Pro';
   font-style: normal;
   font-weight: 400;
-  src: local('Source Sans Pro Regular'), local('SourceSansPro-Regular'), url(fonts/SourceSansPro-Regular.ttf) format('truetype');
+  src: local('Source Sans Pro Regular'), local('SourceSansPro-Regular'), url(../fonts/SourceSansPro-Regular.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Source Sans Pro';
   font-style: normal;
   font-weight: 700;
-  src: local('Source Sans Pro Bold'), local('SourceSansPro-Bold'), url(fonts/SourceSansPro-Bold.ttf) format('truetype');
+  src: local('Source Sans Pro Bold'), local('SourceSansPro-Bold'), url(../fonts/SourceSansPro-Bold.ttf) format('truetype');
 }
 body {
     background-color: white;
-    width: 350px;
     -webkit-user-select: none;
     user-select: none;
     cursor: default;
     font-family: 'Source Sans Pro', sans-serif;
+}
+body.popup {
+    width: 350px;
 }
 .navbar-brand {
     padding: 15px;
@@ -37,6 +39,11 @@ body {
     border-bottom: 1px solid lightgrey;
     padding-bottom: 10px;
     margin-bottom: 10px;
+}
+.ligne {
+    border-bottom: 1px solid lightgrey;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 .indice {
     font-size: 10pt;

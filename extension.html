@@ -2,79 +2,37 @@
 <html>
     <head>
         <title>Page Shadow</title>
-        <script type="text/javascript" src="jquery.min.js"></script>
-        <script type="text/javascript" src="popup.js"></script>
-        <link rel="stylesheet" href="content.css" type="text/css" />
-        <link rel="stylesheet" href="bootstrap.min.css" type="text/css" />
-        <link rel="stylesheet" href="extension.css" type="text/css" />
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/popup.js"></script>
+        <link rel="stylesheet" href="css/content.css" type="text/css" />
+        <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="css/extension.css" type="text/css" />
         <meta charset="UTF-8">
-        <style type="text/css">
-        body {
-            background-color: white;
-            width: 350px;
-            -webkit-user-select: none;
-            user-select: none;
-            cursor: default;
-        }
-        .navbar-brand {
-            padding: 15px;
-        }
-        .navbar-brand > img {
-            height: 100%;
-            width: auto;
-            display: inline-block;
-        }
-        .form {
-            font-size: 12pt;
-            border-bottom: 1px solid lightgrey;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-        }
-        .indice {
-            font-size: 10pt;
-        }
-        .barreHorizontale {
-            border-bottom: 1px solid lightgrey;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-        }
-        div#pageShadowLuminositeDiv {
-            position: fixed;
-            top: 0;
-            left: 0;
-            background-color: black;
-            min-height: 100%;
-            min-width: 100%;
-            height: auto;
-            z-index: 999999;
-            pointer-events: none;
-        }
-        </style>
     </head>
-    <body>
-        <nav class="navbar navbar-default">
+    <body class="popup">
+        <nav class="navbar navbar-inverse">
           <div class="container-fluid">
             <div class="navbar-header">
-              <a class="navbar-brand" href="#"><img src="icone.png" style="vertical-align: middle;"> Page Shadow</a>
+              <a class="navbar-brand"><img src="img/icon.png" style="vertical-align: middle;"> Page Shadow</a>
             </div>
         </nav>
-        <p>Une série d'outils pour améliorer la lecture d'une page dans une pièce mal éclairée/autre :</p>
-        <div class="form">
-            <input type="checkbox" id="checkAssomPage" /> <label for="checkAssomPage">Augmenter le contraste de la page</label> <img src="help.png" id="helpAssom" width="24" height="24" style="cursor: pointer; vertical-align: middle;"></img><br />
-            <p class="indice" id="assomInfos" style="display: none;">Ajuste automatiquement le thème graphique de la page afin d'obtenir le meilleur contraste possible. Peut mal fonctionner avec des thèmes graphiques complexes et/ou défigurer la page.</p>
+        <div class="container">
+            <p>Une série d'outils pour améliorer la lecture d'une page dans une pièce mal éclairée/autre :</p>
+            <form class="form-horizontal">
+                <input type="checkbox" id="checkAssomPage" /> <label for="checkAssomPage">Augmenter le contraste de la page</label> <img src="img/help.png" id="helpAssom" width="24" height="24" style="cursor: pointer; vertical-align: middle;"></img><br />
+                <div class="indice well well-sm" id="assomInfos" style="display: none;">Ajuste automatiquement le thème graphique de la page afin d'obtenir le meilleur contraste possible. Peut mal fonctionner avec des thèmes graphiques complexes et/ou défigurer la page.</div>
+                <input type="checkbox" id="checkLuminositePage" /> <label for="checkLuminositePage">Baisser la luminosité de la page</label> <img src="img/help.png" id="helpLum" width="24" height="24" style="cursor: pointer; vertical-align: middle;"></img><br />
+                <div class="indice well well-sm" id="lumInfos" style="display: none;">Baisse la luminosité de la page. C'est vous qui choisissez le pourcentage de baisse de luminosité de la page.</div>
+                    <div id="sliderLuminositeDiv" style="display: none; margin-top: 10px;">
+                        <label for="sliderLuminosite">Pourcentage de baisse de luminosité :</label>
+                        <input type="range" id="sliderLuminosite" name="sliderLuminositeN" value="15" max="90" min="0">
+                        <output for="sliderLuminosite" id="sliderLumOutput">15</output> %
+                    </div>
+            </form>
+            <div class="barreHorizontale">
+                <span class="indice">Paramètres sauvegardés automatiquement. Ils prendront effet au prochain chargement d'une page web.</span>
+            </div>
+            <a href="options.html" target="_blank">Paramètres avancés</a> | <a href="pageTest.html" target="_blank">Tester l'extension</a>
         </div>
-        <div class="form">
-            <input type="checkbox" id="checkLuminositePage" /> <label for="checkLuminositePage">Baisser la luminosité de la page</label> <img src="help.png" id="helpLum" width="24" height="24" style="cursor: pointer; vertical-align: middle;"></img><br />
-            <p class="indice" id="lumInfos" style="display: none;">Baisse la luminosité de la page. C'est vous qui choisissez le pourcentage de baisse de luminosité de la page.</p>
-                <div id="sliderLuminositeDiv" style="display: none; margin-top: 10px;">
-                    <label for="sliderLuminosite">Pourcentage de baisse de luminosité :</label>
-                    <input type="range" id="sliderLuminosite" name="sliderLuminositeN" value="15" max="90" min="0">
-                    <output for="sliderLuminosite" id="sliderLumOutput">15</output> %
-                </div>
-        </div>
-        <div class="barreHorizontale">
-            <span class="indice">Paramètres sauvegardés automatiquement. Ils prendront effet au prochain chargement d'une page web.</span>
-        </div>
-        <a href="options.html" target="_blank">Paramètres avancés</a> | <a href="pageTest.html" target="_blank">Tester l'extension</a>
     </body>
 </html>

@@ -26,14 +26,11 @@ $(document).ready(function() {
 	$( "#checkAssomPage" ).change(function() {
 		if($(this).is(':checked') == true) {
 			localStorage.setItem("pageShadowEnabled", "true");
-			$("body").css("background", "black");
-			$("body").css("color", "white");
-			$("a").css("color", "lighblue");
+			$("body").addClass("pageShadowContrastBlack");
 		}
 		else {
 			localStorage.setItem("pageShadowEnabled", "false");
-			$("body").css("background", "white");
-			$("body").css("color", "black");
+			$("body").removeClass("pageShadowContrastBlack");
 		}
 	});
 	
@@ -64,9 +61,7 @@ $(document).ready(function() {
 	
 	if(localStorage.getItem("pageShadowEnabled") == "true") {
 		$("#checkAssomPage").attr("checked", "checked");
-		$("body").css("background", "black");
-		$("body").css("color", "white");
-		$("a").css("color", "lighblue");
+		$("body").addClass("pageShadowContrastBlack");
 	}
 	
 	if(localStorage.getItem("pageLumEnabled") == "true") {
