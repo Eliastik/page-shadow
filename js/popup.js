@@ -43,7 +43,6 @@ $(document).ready(function() {
 	$( "#checkLuminositePage" ).change(function() {
 		if($(this).is(':checked') == true) {
 			localStorage.setItem("pageLumEnabled", "true");
-            localStorage.setItem("pourcentageLum", 15);
 			$("#sliderLuminositeDiv").show();
 			elLumB = document.createElement("div");
             if(localStorage.getItem("nightModeEnabled") == "true") {
