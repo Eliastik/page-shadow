@@ -1,6 +1,6 @@
 /* translation */
 i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
-    fallbackLng: 'en',
+    fallbackLng: ['en', 'fr'],
     ns: 'popup',
     defaultNS: 'popup',
         detection: {

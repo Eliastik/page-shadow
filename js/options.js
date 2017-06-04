@@ -15,12 +15,19 @@ i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend)
 }, function(err, t) {
     translateContent();
 });
+function listTranslations(languages) {
+    $("#languageSelect").text("");
+    $.each(languages, function(index, value) {
+        $("#languageSelect").append('<option data-i18n="container.language.'+ value +'" value="'+ value +'"></option>');
+    });
+    $("#languageSelect").val(i18next.language);
+}
 function translateContent() {
     jqueryI18next.init(i18next, $, {
       handleName: 'localize',
       selectorAttr: 'data-i18n'
     });
-    $("#languageSelect").val(i18next.language);
+    listTranslations(i18next.languages);
     $("nav").localize();
     $(".container").localize();
     $(".modal").localize();
