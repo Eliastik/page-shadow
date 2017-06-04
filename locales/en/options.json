@@ -1,0 +1,46 @@
+{
+    "nav": {
+        "toggleNavigation": "Toggle navigation",
+        "advancedSettings": "Advanced settings",
+        "testPage": "Test page",
+        "actual": "(current)"
+    },
+    "container": {
+        "description": "Here, you can define some advanced settings or consult informations about the extension. Don't forget to click on Validate to save your settings!",
+        "about": "About Page Shadow",
+        "update": "Search update",
+        "labelList": "List of web page/site to exclude (one element per line):",
+        "titleHelp": "Example: if you enter http://www.example.com, Page Shadow will ignore all the website. If you enter http://www.example.com/repertoire1/, only this folder and the sub-folders will be ignored. If you enter http://www.example.com/repertoire1/index.php, only this page will be ignored. If you enter index, all URLs containing this word will be ignored.",
+        "help": "Help",
+        "indiceList": "The websites addresses entered below will be ignored by Page Shadow.",
+        "textareaPlaceholder": "Example:\nhttps://www.google.fr\nwww.wikipedia.org",
+        "reset": "Reset",
+        "validate": "Validate"
+    },
+    "modal": {
+        "about": {
+            "title": "About Page Shadow",
+            "description": "Page Shadow is available for Firefox, Chrome and Opera. This extension have been realised by Eliastik",
+            "readme": "README file",
+            "webpage": "Page Shadow web page:",
+            "version": "Current version:",
+            "changelogTitle": "Changelog:",
+                "changelog": {
+                    "2": "<ul><li>Firefox support</li><li>New graphical theme based on Bootstrap</li><li>Adding night mode</li><li>Various fixes (bugs, texts)</li></ul>",
+                    "121": "<ul><li>Fixed bug in the advanced settings</li><li>Adding informations about the extension in the advanced settings</li></ul>",
+                    "12": "<ul><li>Optimisation of the popup layout</li><li>Improved function \"Increase page contrast\". The transparent images are now supported</li><li>Some adjustements</li></ul>",
+                    "11": "<ul><li>Improved function \"Increase page contrast\"</li></ul>",
+                    "1": "<ul><li>Initial version</li></ul>"
+                }
+        },
+        "readme": {
+            "title": "README file"
+        },
+        "saved": {
+            "title": "Information",
+            "message": "Settings saved!"
+        },
+        "close": "Close",
+        "ok": "OK"
+    }
+}

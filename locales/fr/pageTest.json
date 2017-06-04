@@ -1,0 +1,24 @@
+{
+    "nav": {
+        "toggleNavigation": "Baculer vers la navigation",
+        "advancedSettings": "Paramètres avancés",
+        "testPage": "Page de test",
+        "actual": "(actuel)"
+    },
+    "container": {
+        "description": "Cette page vous permet de tester l'extension. Il s'agit d'une page qui se comporte comme une page standard. Activez les fonctionnalités de l'extension et rechargez la page pour tester.",
+        "testTitle": "Un titre de test",
+        "fakeTestDescription": "Ceci est un faux texte :",
+        "title2": "Tableau avec plein de couleurs flashys",
+        "blabla": "Blabla",
+        "truc": "Truc",
+        "bidule": "Bidule",
+        "indice": "(remarquez que la bordure des éléments est conservée pour garder une certaine lisibilité, lorque le mode d'augmentation du contraste est activé)",
+        "title3": "Un bloc jaune",
+        "formTitle": "Un formulaire",
+        "inputValue": "Un champ de formulaire",
+        "option1": "Une option",
+        "option2": "Une autre option",
+        "link": "Un lien"
+    }
+}

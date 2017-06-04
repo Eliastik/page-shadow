@@ -10,35 +10,39 @@
         <link rel="stylesheet" href="css/extension.css" type="text/css" />
         <link rel="stylesheet" href="css/bootstrap-slider.min.css" type="text/css" />
         <script type="text/javascript" src="js/bootstrap-slider.min.js"></script>
-        <script type="text/javascript" src="js/popup.js"></script>
+        <script type="text/javascript" src="js/i18next.min.js"></script>
+        <script type="text/javascript" src="js/jquery-i18next.min.js"></script>
+        <script type="text/javascript" src="js/i18nextBrowserLanguageDetector.min.js"></script>
+        <script type="text/javascript" src="js/i18nextXHRBackend.min.js"></script>
         <meta charset="UTF-8">
     </head>
     <body class="popup">
         <nav class="navbar navbar-inverse">
           <div class="container-fluid">
             <div class="navbar-header">
-              <span class="navbar-brand"><img src="img/icon.png" style="vertical-align: middle;"> <span class="title-align">Page Shadow</span></span>
+              <span class="navbar-brand"><img src="img/icon_512.png" style="vertical-align: middle;"> <span class="title-align">Page Shadow</span></span>
             </div>
           </div>
         </nav>
         <div class="container">
-            <p>Une série d'outils pour améliorer la lecture d'une page dans une pièce mal éclairée/autre :</p>
+            <p id="test" data-i18n="container.description"></p>
             <form class="form-horizontal">
-                <input type="checkbox" id="checkAssomPage" /> <label for="checkAssomPage">Augmenter le contraste de la page</label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Ajuste automatiquement le thème graphique de la page afin d'obtenir le meilleur contraste possible. Peut mal fonctionner avec des thèmes graphiques complexes et/ou défigurer la page."></i><br />
-                <input type="checkbox" id="checkLuminositePage" /> <label for="checkLuminositePage">Baisser la luminosité de la page</label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" title="Baisse la luminosité de la page. C'est vous qui choisissez le pourcentage de baisse de luminosité de la page."></i>
+                <input type="checkbox" id="checkAssomPage" /> <label for="checkAssomPage" data-i18n="container.contrast"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-placement="top" data-i18n="[data-original-title]container.titleContrast"></i><br />
+                <input type="checkbox" id="checkLuminositePage" /> <label for="checkLuminositePage" data-i18n="container.brightness"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleBrightness"></i>
                     <div class="well well-sm" id="sliderLuminositeDiv" style="display: none;">
-                        <label for="sliderLuminosite">Pourcentage de baisse de luminosité :</label>
-                        <input id="sliderLuminosite" data-slider-id='sliderLuminosite' type="text" data-slider-min="0" data-slider-max="90" data-slider-step="1" data-slider-value="15" />
-                        <div><input type="checkbox" id="checkNighMode" /> <label for="checkNighMode">Mode nuit</label> <i class="fa fa-question-circle helpIconMin" aria-hidden="true" data-toggle="tooltip" title="Applique un filtre orangé sur la page afin de réduire la lumière bleue émise par l'écran."></i></div>
+                        <label for="sliderLuminosite" data-i18n="container.percentage"></label>
+                        <input id="sliderLuminosite" data-slider-id="sliderLuminosite" type="text" data-slider-min="0" data-slider-max="90" data-slider-step="1" data-slider-value="15" />
+                        <div><input type="checkbox" id="checkNighMode" /> <label for="checkNighMode"  data-i18n="container.nightMode"></label> <i class="fa fa-question-circle helpIconMin" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.tileNightMode"></i></div>
                     </div>
             </form>
             <hr />
             <footer>
-            <ul class="list-inline">
-                <li class="list-inline-item"><a href="options.html" target="_blank"><i class="fa fa-cog" aria-hidden="true"></i> Paramètres avancés</a></li>
-                <li class="list-inline-item"><a href="pageTest.html" target="_blank"><i class="fa fa-bars" aria-hidden="true"></i> Tester l'extension</a></li>
-            </ul>
-        </footer>
+                <ul class="list-inline">
+                    <li class="list-inline-item"><a href="options.html" target="_blank"><i class="fa fa-cog" aria-hidden="true"></i> <span data-i18n="footer.advancedSettings"></span></a></li>
+                    <li class="list-inline-item"><a href="pageTest.html" target="_blank"><i class="fa fa-bars" aria-hidden="true"></i> <span data-i18n="footer.testExtension"></span></a></li>
+                </ul>
+            </footer>
         </div>
     </body>
+    <script type="text/javascript" src="js/popup.js"></script>
 </html>

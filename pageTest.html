@@ -7,8 +7,11 @@
         <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/content.js"></script>
-        <link rel="stylesheet" href="css/font-awesome.min.css">
         <link rel="stylesheet" href="css/extension.css" type="text/css" />
+        <script type="text/javascript" src="js/i18next.min.js"></script>
+        <script type="text/javascript" src="js/i18nextBrowserLanguageDetector.min.js"></script>
+        <script type="text/javascript" src="js/i18nextXHRBackend.min.js"></script>
+        <script type="text/javascript" src="js/jquery-i18next.min.js"></script>
         <meta charset="UTF-8">
     </head>
     <body>
@@ -16,29 +19,29 @@
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
+                        <span class="sr-only" data-i18n="nav.toggleNavigation">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                       </button>
-                  <span class="navbar-brand"><img src="img/icon.png" style="vertical-align: middle;"> <span class="title-align">Page Shadow</span></span>
+                  <span class="navbar-brand"><img src="img/icon_512.png" style="vertical-align: middle;"> <span class="title-align">Page Shadow</span></span>
                 </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
               <ul class="nav navbar-nav">
-                <li><a href="options.html">Paramètres avancés</a></li>
-                <li class="active"><a href="pageTest.html">Page de test <span class="sr-only">(actuel)</span></a></li>
+                <li><a href="options.html"><span data-i18n="nav.advancedSettings"></span></a></li>
+                <li class="active"><a href="pageTest.html"><span data-i18n="nav.testPage"></span> <span class="sr-only" data-i18n="nav.actual"></span></a></li>
               </ul>
             </div>
             </div>
         </nav>
         <div class="container well">
-            <p>Cette page vous permet de tester l'extension. Il s'agit d'une page qui se comporte comme une page standard. Activez les fonctionnalités de l'extension et rechargez la page pour tester.</p>
-            <h2>Un titre de test</h2>
-            <p>Ceci est un faux texte :</p>
+            <p data-i18n="container.description"></p>
+            <h2 data-i18n="container.testTitle"></h2>
+            <p data-i18n="container.fakeTestDescription"></p>
             <p style="color: blue">Metuentes igitur idem latrones Lycaoniam magna parte campestrem cum se inpares nostris fore congressione stataria documentis frequentibus scirent, tramitibus deviis petivere Pamphyliam diu quidem intactam sed timore populationum et caedium, milite per omnia diffuso propinqua, magnis undique praesidiis conmunitam.
             Dein Syria per speciosam interpatet diffusa planitiem. hanc nobilitat Antiochia, mundo cognita civitas, cui non certaverit alia advecticiis ita adfluere copiis et internis, et Laodicia et Apamia itidemque Seleucia iam inde a primis auspiciis florentissimae.
             Quod si rectum statuerimus vel concedere amicis, quidquid velint, vel impetrare ab iis, quidquid velimus, perfecta quidem sapientia si simus, nihil habeat res vitii; sed loquimur de iis amicis qui ante oculos sunt, quos vidimus aut de quibus memoriam accepimus, quos novit vita communis. Ex hoc numero nobis exempla sumenda sunt, et eorum quidem maxime qui ad sapientiam proxime accedunt.</p>
-            <h2>Tableau avec plein de couleurs flashys</h2>
+            <h2 data-i18n="container.title2"></h2>
             <table>
                 <tr style="border: 1px solid purple;">
                     <td style="background-color: green; border: 1px solid purple;">Disiunctissimas nec magnitudine omnis bellorum</td>
@@ -46,25 +49,26 @@
                 </tr>
                 <tr>
                     <td style="background-color: purple; border: 1px solid purple;"><ul>
-                        <li>Blabla</li>
-                        <li>Truc</li>
-                        <li>Bidule</li></ul></td>
+                        <li data-i18n="container.blabla"></li>
+                        <li data-i18n="container.truc"></li>
+                        <li data-i18n="container.bidule"></li></ul></td>
                     <td style="background-color: orange; border: 1px solid purple;"><ol>
-                        <li>Blabla</li>
-                        <li>Truc</li>
-                        <li>Bidule</li></ol></td>
+                        <li data-i18n="container.blabla"></li>
+                        <li data-i18n="container.truc"></li>
+                        <li data-i18n="container.bidule"></li></ol></td>
                 </tr>
             </table>
-            <span clas="indice">(remarquez que la bordure des éléments est conservée pour garder une certaine lisibilité, lorque le mode d'augmentation du contraste est activé)</span>
-            <h3>Un bloc jaune</h3>
+            <span clas="indice" data-i18n="container.indice"></span>
+            <h3 data-i18n="container.title3"></h3>
             <div style="background-color: yellow; color: lightcoral; padding: 15px; border-radius: 15px; text-align: center; border: 4px solid lightcoral;"><span style="font-weight: bold; font-size: 20pt;">Page Shadow</span></div>
-            <h4>Un formulaire</h4>
-                <input type="text" value="Un champ de formulaire" style="background-color: grey;" /><br />
+            <h4 data-i18n="container.formTitle"></h4>
+                <input type="text" data-i18n="[value]container.inputValue" style="background-color: grey;" /><br />
                 <select style="background-color: blue; color: white;">
-                    <option>Une option</option>
-                    <option>Une autre option</option>
+                    <option data-i18n="container.option1"></option>
+                    <option data-i18n="container.option2"></option>
                 </select><br />
-            <a href="#">Un lien</a>
+            <a href="#" data-i18n="container.link"></a>
         </div>
     </body>
+<script type="text/javascript" src="js/pageTest.js"></script>
 </html>

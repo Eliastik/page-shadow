@@ -1,3 +1,34 @@
+/* translation */
+i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
+    fallbackLng: 'en',
+    ns: 'popup',
+    defaultNS: 'popup',
+        detection: {
+            order: ['querystring', 'localStorage', 'navigator', 'htmlTag'],
+            lookupQuerystring: 'lng',
+            lookupLocalStorage: 'i18nextLng',
+            caches: ['localStorage'],
+        },
+        backend: {
+            loadPath: '/locales/{{lng}}/{{ns}}.json',
+        },
+}, function(err, t) {
+    translateContent();
+});
+function translateContent() {
+    jqueryI18next.init(i18next, $, {
+      handleName: 'localize',
+      selectorAttr: 'data-i18n'
+    });
+    $(".container").localize();
+    $("footer").localize();
+}
+function changeLng(lng) {
+    i18next.changeLanguage(lng);
+}
+i18next.on('languageChanged', () => {
+    translateContent();
+});
 $(document).ready(function() {
     if(localStorage.getItem("pageShadowEnabled") == null) {
         localStorage.setItem("pageShadowEnabled", "false");
@@ -64,7 +95,7 @@ $(document).ready(function() {
 
     $("#sliderLuminosite").change(function() {
         var sliderLumValue = sliderLuminosite.slider('getValue');
-        if(elLumB != null) {
+        if(typeof elLumB !== "undefined") {
             elLumB.style.opacity = sliderLumValue / 100;
         }
         localStorage.setItem("pourcentageLum", sliderLumValue);
@@ -98,7 +129,7 @@ $(document).ready(function() {
 
     if(localStorage.getItem("nightModeEnabled") == "true") {
         $("#checkNighMode").attr("checked", "checked");
-        if (elLumB !== null) {
+        if (typeof elLumB !== "undefined") {
             elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
         }
     }

@@ -1,0 +1,16 @@
+{
+    "container": {
+        "description": "Une série d'outils pour améliorer la lecture de pages web dans une pièce mal éclairée/autre :",
+        "contrast": "Augmenter le contraste de la page",
+        "titleContrast": "Ajuste automatiquement le thème graphique de la page afin d'obtenir le meilleur contraste possible. Peut mal fonctionner avec des thèmes graphiques complexes et/ou défigurer la page.",
+        "brightness": "Baisser la luminosité de la page",
+        "titleBrightness": "Baisse la luminosité de la page. C'est vous qui choisissez le pourcentage de baisse de luminosité de la page.",
+        "percentage": "Pourcentage de baisse de luminosité :",
+        "nightMode": "Mode nuit",
+        "tileNightMode": "Applique un filtre orangé sur la page afin de réduire la lumière bleue émise par l'écran."
+    },
+    "footer": {
+        "advancedSettings": "Paramètres avancés",
+        "testExtension": "Tester l'extension"
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "container": {
+        "description": "A series of tools to improve the reading of web pages in badly lit room/other:",
+        "contrast": "Increase page contrast",
+        "titleContrast": "Automatically adjust the graphical theme of the page to get the better possible contrast. Can badly work with complex graphical themes and/or deform the page.",
+        "brightness": "Decrease page brightness",
+        "titleBrightness": "Decrease the page brightness. You can choose the percentage of brightness decrease.",
+        "percentage": "Percentage of brightness decrease :",
+        "nightMode": "Night mode",
+        "tileNightMode": "Applies a orange filter on the page to reduce the blue light emitted by the screen."
+    },
+    "footer": {
+        "advancedSettings": "Advanced settings",
+        "testExtension": "Test the extension"
+    }
+}

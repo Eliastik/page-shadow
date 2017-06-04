@@ -1,0 +1,5 @@
+- themes contraste
+- traduction en
+- grunt (makefile)
+- update xml (https://developer.chrome.com/extensions/autoupdate)
+- update php

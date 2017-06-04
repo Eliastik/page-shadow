@@ -1,0 +1,24 @@
+{
+    "nav": {
+        "toggleNavigation": "Toggle navigation",
+        "advancedSettings": "Advanced settings",
+        "testPage": "Test page",
+        "actual": "(current)"
+    },
+    "container": {
+        "description": "This page allow you to test the extension. This is a page that behaves like a standard page. Enable the extension's features and reload the page to test.",
+        "testTitle": "A test title",
+        "fakeTestDescription": "This is a fake text:",
+        "title2": "Table with a lots of flashy colors",
+        "blabla": "Text 1",
+        "truc": "Text 2",
+        "bidule": "Text 3",
+        "indice": "(note that the border of the elements is preserved to maintain a certain legibility, when the mode \"Increase page contrast\" is enabled)",
+        "title3": "A yellow block",
+        "formTitle": "A form",
+        "inputValue": "A form field",
+        "option1": "An option",
+        "option2": "Another option",
+        "link": "A link"
+    }
+}

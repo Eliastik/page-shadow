@@ -1,0 +1,46 @@
+{
+    "nav": {
+        "toggleNavigation": "Baculer vers la navigation",
+        "advancedSettings": "Paramètres avancés",
+        "testPage": "Page de test",
+        "actual": "(actuel)"
+    },
+    "container": {
+        "description": "Ici, vous pouvez définir certains paramètres avancés ou consulter les informations sur l'extension. N'oubliez pas de cliquer sur Valider pour sauvegarder vos paramètres !",
+        "about": "À propos de Page Shadow",
+        "update": "Rechercher une mise à jour",
+        "labelList": "Liste des sites/pages à exclure (un élément par ligne) :",
+        "titleHelp": "Exemple : si vous entrez http://www.example.com, Page Shadow ignorera tout le site. Si vous entrez http://www.example.com/repertoire1/, seul ce répertoire et les sous-répertoires seront ignorés. Si vous entrez http://www.example.com/repertoire1/index.php, seul cette page sera ignorée. Si vous entrez index, toutes les url contenant ce mot seront ignorées.",
+        "help": "Aide",
+        "indiceList": "Les adresses des sites entrées ci-dessous seront ignorées par Page Shadow.",
+        "textareaPlaceholder": "Exemple :\nhttps://www.google.fr\nwww.wikipedia.org",
+        "reset": "Réinitialiser",
+        "validate": "Valider"
+    },
+    "modal": {
+        "about": {
+            "title": "À propos de Page Shadow",
+            "description": "Page Shadow est disponible sur Firefox, Chrome et Opera. Cette extension a été réalisée par Eliastik",
+            "readme": "Lire le fichier Lisez-moi",
+            "webpage": "Page web de Page Shadow :",
+            "version": "Version actuelle :",
+            "changelogTitle": "Journal des changements :",
+                "changelog": {
+                    "2": "<ul><li>Compatibilité Firefox ;</li><li>Nouveau thème graphique basé sur Bootstrap ;</li><li>Ajout d'un mode nuit ;</li><li>Corrections diverses (bugs, texte).</li></ul>",
+                    "121": "<ul><li>Correction d'un bug dans les paramètres avancés ;</li><li>Ajout d'informations sur l'application dans les paramètres avancés.</li></ul>",
+                    "12": "<ul><li>Optimisation de la mise en page de la popup ;</li><li>Amélioration de l'outil \"Augmenter le contraste\". Les images transparentes sont désormais prises en charge ;</li><li>Quelques ajustements.</li></ul>",
+                    "11": "<ul><li>Amélioration de la fonction \"Augmenter le contraste\".</li></ul>",
+                    "1": "<ul><li>Version initiale.</li></ul>"
+                }
+        },
+        "readme": {
+            "title": "Fichier Lisez-moi"
+        },
+        "saved": {
+            "title": "Information",
+            "message": "Paramètres sauvegardés !"
+        },
+        "close": "Fermer",
+        "ok": "OK"
+    }
+}
