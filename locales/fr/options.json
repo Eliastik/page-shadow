@@ -9,6 +9,11 @@
         "description": "Ici, vous pouvez définir certains paramètres avancés ou consulter les informations sur l'extension. N'oubliez pas de cliquer sur Valider pour sauvegarder vos paramètres !",
         "about": "À propos de Page Shadow",
         "update": "Rechercher une mise à jour",
+        "labelLanguage": "Langue :",
+            "language": {
+                "fr": "Français",
+                "en": "English"
+            },
         "labelList": "Liste des sites/pages à exclure (un élément par ligne) :",
         "titleHelp": "Exemple : si vous entrez http://www.example.com, Page Shadow ignorera tout le site. Si vous entrez http://www.example.com/repertoire1/, seul ce répertoire et les sous-répertoires seront ignorés. Si vous entrez http://www.example.com/repertoire1/index.php, seul cette page sera ignorée. Si vous entrez index, toutes les url contenant ce mot seront ignorées.",
         "help": "Aide",

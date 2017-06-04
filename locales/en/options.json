@@ -9,6 +9,11 @@
         "description": "Here, you can define some advanced settings or consult informations about the extension. Don't forget to click on Validate to save your settings!",
         "about": "About Page Shadow",
         "update": "Search update",
+        "labelLanguage": "Language:",
+            "language": {
+                "fr": "Français",
+                "en": "English"
+            },
         "labelList": "List of web page/site to exclude (one element per line):",
         "titleHelp": "Example: if you enter http://www.example.com, Page Shadow will ignore all the website. If you enter http://www.example.com/repertoire1/, only this folder and the sub-folders will be ignored. If you enter http://www.example.com/repertoire1/index.php, only this page will be ignored. If you enter index, all URLs containing this word will be ignored.",
         "help": "Help",

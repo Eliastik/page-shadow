@@ -1,6 +1,6 @@
 /* translation */
 i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
-    fallbackLng: 'en',
+    fallbackLng: ['en', 'fr'],
     ns: 'options',
     defaultNS: 'options',
         detection: {
@@ -20,6 +20,7 @@ function translateContent() {
       handleName: 'localize',
       selectorAttr: 'data-i18n'
     });
+    $("#languageSelect").val(i18next.language);
     $("nav").localize();
     $(".container").localize();
     $(".modal").localize();
@@ -33,6 +34,7 @@ i18next.on('languageChanged', () => {
 $(document).ready(function() {
     $("#validerButton").click(function() {
         localStorage.setItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
+        changeLng($("#languageSelect").val());
         $('span[data-toggle="tooltip"]').tooltip("hide");
         $('#saved').modal("show");
     });
