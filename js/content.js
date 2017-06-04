@@ -1,4 +1,4 @@
-$(document).ready(function(){
+(function(){
     function assombrirPage() {
         $("body").addClass("pageShadowContrastBlack");
     }
@@ -40,7 +40,7 @@ $(document).ready(function(){
                 document.addEventListener('DOMNodeInserted', assombrirPage);
             }
         });
-        
+
         chrome.runtime.sendMessage({method: "getStatusIfLum"}, function(responseIfLum) {
             chrome.runtime.sendMessage({method: "getStatusLum"}, function(responseNbLum) {
                 chrome.runtime.sendMessage({method: "getStatusNightMode"}, function(responseNightMode) {
@@ -49,4 +49,4 @@ $(document).ready(function(){
             });
         });
     }
-});
+}());

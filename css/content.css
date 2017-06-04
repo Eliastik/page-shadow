@@ -1,53 +1,53 @@
 body.pageShadowContrastBlack {
-	background: black !important;
-	background-image: url();
+    background: black !important;
+    background-image: url();
 }
 body.pageShadowContrastBlack div, body.pageShadowContrastBlack header, body.pageShadowContrastBlack adress, body.pageShadowContrastBlack hgroup, body.pageShadowContrastBlack span, body.pageShadowContrastBlack strong, body.pageShadowContrastBlack em, body.pageShadowContrastBlack small, body.pageShadowContrastBlack s, body.pageShadowContrastBlack q, body.pageShadowContrastBlack dfn, body.pageShadowContrastBlack abbr, body.pageShadowContrastBlack sub, body.pageShadowContrastBlack sup, body.pageShadowContrastBlack b, body.pageShadowContrastBlack i, body.pageShadowContrastBlack u, body.pageShadowContrastBlack figure, body.pageShadowContrastBlack figcaption, body.pageShadowContrastBlack dd, body.pageShadowContrastBlack dl, body.pageShadowContrastBlack dt,  body.pageShadowContrastBlack font, body.pageShadowContrastBlack pre, body.pageShadowContrastBlack code, body.pageShadowContrastBlack main, body.pageShadowContrastBlack blockquote, body.pageShadowContrastBlack cite, body.pageShadowContrastBlack nav, body.pageShadowContrastBlack article, body.pageShadowContrastBlack aside, body.pageShadowContrastBlack section, body.pageShadowContrastBlack footer, body.pageShadowContrastBlack ul, body.pageShadowContrastBlack ul li, body.pageShadowContrastBlack li, body.pageShadowContrastBlack ol li, body.pageShadowContrastBlack p, body.pageShadowContrastBlack input, body.pageShadowContrastBlack input[type="button"], body.pageShadowContrastBlack input[type="submit"], body.pageShadowContrastBlack input[type="reset"], body.pageShadowContrastBlack textarea, body.pageShadowContrastBlack button, body.pageShadowContrastBlack h1, body.pageShadowContrastBlack h2, body.pageShadowContrastBlack h3, body.pageShadowContrastBlack h4, body.pageShadowContrastBlack h5, body.pageShadowContrastBlack h6, body.pageShadowContrastBlack table, body.pageShadowContrastBlack th, body.pageShadowContrastBlack td, body.pageShadowContrastBlack tr, body.pageShadowContrastBlack output, body.pageShadowContrastBlack legend, body.pageShadowContrastBlack label, body.pageShadowContrastBlack nav, body.pageShadowContrastBlack footer, body.pageShadowContrastBlack header {
-	background-color: black !important;
-	color: white !important;
+    background-color: black !important;
+    color: white !important;
 }
 body.pageShadowContrastBlack select {
-	background-color: grey !important;
-	color: white !important;
+    background-color: grey !important;
+    color: white !important;
 }
 body.pageShadowContrastBlack ins { // éléments d'insertion
-	background-color: black !important;
-	color: green !important;
+    background-color: black !important;
+    color: green !important;
 }
 body.pageShadowContrastBlack del { // éléments de suppression
-	background-color: black !important;
-	color: red !important;
+    background-color: black !important;
+    color: red !important;
 }
 body.pageShadowContrastBlack mark { // éléments surlignés (rarement utilisé)
-	background-color: orange !important;
-	color: white !important;
+    background-color: orange !important;
+    color: white !important;
 }
 body.pageShadowContrastBlack a {
-	background-color: black !important;
-	color: lightblue !important;
+    background-color: black !important;
+    color: lightblue !important;
 }
 body.pageShadowContrastBlack  img {
-	background-color: #BDBDBD !important;
+    background-color: #BDBDBD !important;
 }
 div#pageShadowLuminositeDiv {
-	position: fixed;
-	top: 0;
-	left: 0;
-	background-color: black !important;
-	min-height: 100%;
-	min-width: 100%;
-	height: auto;
-	z-index: 999999;
-	pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: black !important;
+    min-height: 100%;
+    min-width: 100%;
+    height: auto;
+    z-index: 999999;
+    pointer-events: none;
 }
 div#pageShadowLuminositeDivNightMode {
-	position: fixed;
-	top: 0;
-	left: 0;
-	background-color: rgb(255,137, 14) !important;
-	min-height: 100%;
-	min-width: 100%;
-	height: auto;
-	z-index: 999999;
-	pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgb(255,137, 14) !important;
+    min-height: 100%;
+    min-width: 100%;
+    height: auto;
+    z-index: 999999;
+    pointer-events: none;
 }

@@ -5,9 +5,9 @@
         <script type="text/javascript" src="js/jquery.min.js"></script>
         <link rel="stylesheet" href="css/content.css" type="text/css" />
         <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <link rel="stylesheet" href="css/extension.css" type="text/css" />
-        <script type="text/javascript" src="js/tooltip.min.js"></script>
         <link rel="stylesheet" href="css/bootstrap-slider.min.css" type="text/css" />
         <script type="text/javascript" src="js/bootstrap-slider.min.js"></script>
         <script type="text/javascript" src="js/popup.js"></script>
@@ -17,13 +17,14 @@
         <nav class="navbar navbar-inverse">
           <div class="container-fluid">
             <div class="navbar-header">
-              <span class="navbar-brand"><img src="img/icon.png" style="vertical-align: middle;"> Page Shadow</span>
+              <span class="navbar-brand"><img src="img/icon.png" style="vertical-align: middle;"> <span class="title-align">Page Shadow</span></span>
             </div>
+          </div>
         </nav>
         <div class="container">
             <p>Une série d'outils pour améliorer la lecture d'une page dans une pièce mal éclairée/autre :</p>
             <form class="form-horizontal">
-                <input type="checkbox" id="checkAssomPage" /> <label for="checkAssomPage">Augmenter le contraste de la page</label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" title="Ajuste automatiquement le thème graphique de la page afin d'obtenir le meilleur contraste possible. Peut mal fonctionner avec des thèmes graphiques complexes et/ou défigurer la page."></i><br />
+                <input type="checkbox" id="checkAssomPage" /> <label for="checkAssomPage">Augmenter le contraste de la page</label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Ajuste automatiquement le thème graphique de la page afin d'obtenir le meilleur contraste possible. Peut mal fonctionner avec des thèmes graphiques complexes et/ou défigurer la page."></i><br />
                 <input type="checkbox" id="checkLuminositePage" /> <label for="checkLuminositePage">Baisser la luminosité de la page</label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" title="Baisse la luminosité de la page. C'est vous qui choisissez le pourcentage de baisse de luminosité de la page."></i>
                     <div class="well well-sm" id="sliderLuminositeDiv" style="display: none;">
                         <label for="sliderLuminosite">Pourcentage de baisse de luminosité :</label>

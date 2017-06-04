@@ -28,7 +28,7 @@ body.popup {
 }
 .navbar-brand {
     padding: 15px;
-    color: white;
+    color: white !important;
     line-height: 0;
 }
 .navbar-brand > img {
@@ -38,7 +38,7 @@ body.popup {
 }
 .tooltip-inner {
     max-width: 300px;
-    width: 300px; 
+    width: 300px;
 }
 .slider .tooltip-inner {
     white-space: nowrap;
@@ -57,11 +57,19 @@ body.popup {
     vertical-align: middle;
     margin: 5px;
 }
-.form {
+.bold {
+    font-weight: bold;
+}
+.largeFontSize {
     font-size: 12pt;
-    border-bottom: 1px solid lightgrey;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
+}
+.title-align {
+    vertical-align: middle;
+}
+span[data-toggle] {
+    cursor: pointer;
+    vertical-align: middle;
+    margin: 0;
 }
 .indice {
     font-size: 10pt;
@@ -72,15 +80,4 @@ label {
 hr {
     margin-top: 38px;
     margin-bottom: 8px;
-}
-div#pageShadowLuminositeDiv {
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: black;
-    min-height: 100%;
-    min-width: 100%;
-    height: auto;
-    z-index: 999999;
-    pointer-events: none;
 }
