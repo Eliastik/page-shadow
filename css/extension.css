@@ -79,6 +79,9 @@ body.popup {
 .form-control {
     background-color: white;
 }
+#previsualisationDiv {
+    font-size: 10pt;
+}
 span[data-toggle] {
     cursor: pointer;
     vertical-align: middle;

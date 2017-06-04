@@ -4,6 +4,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     else if(request.method == "getSites") {
 		sendResponse({status: localStorage['sitesInterditPageShadow']});
 	}
+    else if(request.method == "getThemeStatus") {
+		sendResponse({status: localStorage['theme']});
+	}
+    else if(request.method == "getInvertColorStatus") {
+		sendResponse({status: localStorage['colorInvert']});
+	}
 	else if(request.method == "getStatusIfLum") {
 		sendResponse({status: localStorage['pageLumEnabled']});
 	}
@@ -21,6 +27,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		localStorage.setItem("pageShadowEnabled", "false");
 	}
 	
+    if(localStorage.getItem("theme") == null) {
+        localStorage.setItem("theme", "1");
+    }
+    
+    if(localStorage.getItem("colorInvert") == null) {
+        localStorage.setItem("theme", "false");
+    }
+    
 	if(localStorage.getItem("pageLumEnabled") == null) {
 		localStorage.setItem("pageLumEnabled", "false");
 	}

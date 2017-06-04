@@ -1,34 +1,76 @@
-body.pageShadowContrastBlack {
+/* theme 1 */
+.pageShadowContrastBlack {
     background: black !important;
     background-image: url();
 }
-body.pageShadowContrastBlack div, body.pageShadowContrastBlack header, body.pageShadowContrastBlack adress, body.pageShadowContrastBlack hgroup, body.pageShadowContrastBlack span, body.pageShadowContrastBlack strong, body.pageShadowContrastBlack em, body.pageShadowContrastBlack small, body.pageShadowContrastBlack s, body.pageShadowContrastBlack q, body.pageShadowContrastBlack dfn, body.pageShadowContrastBlack abbr, body.pageShadowContrastBlack sub, body.pageShadowContrastBlack sup, body.pageShadowContrastBlack b, body.pageShadowContrastBlack i, body.pageShadowContrastBlack u, body.pageShadowContrastBlack figure, body.pageShadowContrastBlack figcaption, body.pageShadowContrastBlack dd, body.pageShadowContrastBlack dl, body.pageShadowContrastBlack dt,  body.pageShadowContrastBlack font, body.pageShadowContrastBlack pre, body.pageShadowContrastBlack code, body.pageShadowContrastBlack main, body.pageShadowContrastBlack blockquote, body.pageShadowContrastBlack cite, body.pageShadowContrastBlack nav, body.pageShadowContrastBlack article, body.pageShadowContrastBlack aside, body.pageShadowContrastBlack section, body.pageShadowContrastBlack footer, body.pageShadowContrastBlack ul, body.pageShadowContrastBlack ul li, body.pageShadowContrastBlack li, body.pageShadowContrastBlack ol li, body.pageShadowContrastBlack p, body.pageShadowContrastBlack input, body.pageShadowContrastBlack input[type="button"], body.pageShadowContrastBlack input[type="submit"], body.pageShadowContrastBlack input[type="reset"], body.pageShadowContrastBlack textarea, body.pageShadowContrastBlack button, body.pageShadowContrastBlack h1, body.pageShadowContrastBlack h2, body.pageShadowContrastBlack h3, body.pageShadowContrastBlack h4, body.pageShadowContrastBlack h5, body.pageShadowContrastBlack h6, body.pageShadowContrastBlack table, body.pageShadowContrastBlack th, body.pageShadowContrastBlack td, body.pageShadowContrastBlack tr, body.pageShadowContrastBlack output, body.pageShadowContrastBlack legend, body.pageShadowContrastBlack label, body.pageShadowContrastBlack nav, body.pageShadowContrastBlack footer, body.pageShadowContrastBlack header {
+.pageShadowContrastBlack div, .pageShadowContrastBlack header, .pageShadowContrastBlack adress, .pageShadowContrastBlack hgroup, .pageShadowContrastBlack span, .pageShadowContrastBlack strong, .pageShadowContrastBlack em, .pageShadowContrastBlack small, .pageShadowContrastBlack s, .pageShadowContrastBlack q, .pageShadowContrastBlack dfn, .pageShadowContrastBlack abbr, .pageShadowContrastBlack sub, .pageShadowContrastBlack sup, .pageShadowContrastBlack b, .pageShadowContrastBlack i, .pageShadowContrastBlack u, .pageShadowContrastBlack figure, .pageShadowContrastBlack figcaption, .pageShadowContrastBlack dd, .pageShadowContrastBlack dl, .pageShadowContrastBlack dt,  .pageShadowContrastBlack font, .pageShadowContrastBlack pre, .pageShadowContrastBlack code, .pageShadowContrastBlack main, .pageShadowContrastBlack blockquote, .pageShadowContrastBlack cite, .pageShadowContrastBlack nav, .pageShadowContrastBlack article, .pageShadowContrastBlack aside, .pageShadowContrastBlack section, .pageShadowContrastBlack footer, .pageShadowContrastBlack ul, .pageShadowContrastBlack ul li, .pageShadowContrastBlack li, .pageShadowContrastBlack ol li, .pageShadowContrastBlack p, .pageShadowContrastBlack input, .pageShadowContrastBlack input[type="button"], .pageShadowContrastBlack input[type="submit"], .pageShadowContrastBlack input[type="reset"], .pageShadowContrastBlack textarea, .pageShadowContrastBlack button, .pageShadowContrastBlack h1, .pageShadowContrastBlack h2, .pageShadowContrastBlack h3, .pageShadowContrastBlack h4, .pageShadowContrastBlack h5, .pageShadowContrastBlack h6, .pageShadowContrastBlack table, .pageShadowContrastBlack th, .pageShadowContrastBlack td, .pageShadowContrastBlack tr, .pageShadowContrastBlack output, .pageShadowContrastBlack legend, .pageShadowContrastBlack label, .pageShadowContrastBlack footer, .pageShadowContrastBlack kbd {
     background-color: black !important;
     color: white !important;
 }
-body.pageShadowContrastBlack select {
+.pageShadowContrastBlack select {
     background-color: grey !important;
     color: white !important;
 }
-body.pageShadowContrastBlack ins { // éléments d'insertion
+.pageShadowContrastBlack ins { // éléments d'insertion
     background-color: black !important;
     color: green !important;
 }
-body.pageShadowContrastBlack del { // éléments de suppression
+.pageShadowContrastBlack del { // éléments de suppression
     background-color: black !important;
     color: red !important;
 }
-body.pageShadowContrastBlack mark { // éléments surlignés (rarement utilisé)
+.pageShadowContrastBlack mark { // éléments surlignés (rarement utilisé)
     background-color: orange !important;
     color: white !important;
 }
-body.pageShadowContrastBlack a {
+.pageShadowContrastBlack a {
     background-color: black !important;
     color: lightblue !important;
 }
-body.pageShadowContrastBlack  img {
+.pageShadowContrastBlack img {
     background-color: #BDBDBD !important;
 }
+/* theme 2 */
+.pageShadowContrastBlack2 {
+    background: #142634 !important;
+    background-image: url();
+}
+.pageShadowContrastBlack2 div, .pageShadowContrastBlack2 header, .pageShadowContrastBlack2 adress, .pageShadowContrastBlack2 hgroup, .pageShadowContrastBlack2 span, .pageShadowContrastBlack2 strong, .pageShadowContrastBlack2 em, .pageShadowContrastBlack2 small, .pageShadowContrastBlack2 s, .pageShadowContrastBlack2 q, .pageShadowContrastBlack2 dfn, .pageShadowContrastBlack2 abbr, .pageShadowContrastBlack2 sub, .pageShadowContrastBlack2 sup, .pageShadowContrastBlack2 b, .pageShadowContrastBlack2 i, .pageShadowContrastBlack2 u, .pageShadowContrastBlack2 figure, .pageShadowContrastBlack2 figcaption, .pageShadowContrastBlack2 dd, .pageShadowContrastBlack2 dl, .pageShadowContrastBlack2 dt,  .pageShadowContrastBlack2 font, .pageShadowContrastBlack2 pre, .pageShadowContrastBlack2 code, .pageShadowContrastBlack2 main, .pageShadowContrastBlack2 blockquote, .pageShadowContrastBlack2 cite, .pageShadowContrastBlack2 nav, .pageShadowContrastBlack2 article, .pageShadowContrastBlack2 aside, .pageShadowContrastBlack2 section, .pageShadowContrastBlack2 footer, .pageShadowContrastBlack2 ul, .pageShadowContrastBlack2 ul li, .pageShadowContrastBlack2 li, .pageShadowContrastBlack2 ol li, .pageShadowContrastBlack2 p, .pageShadowContrastBlack2 input, .pageShadowContrastBlack2 input[type="button"], .pageShadowContrastBlack2 input[type="submit"], .pageShadowContrastBlack2 input[type="reset"], .pageShadowContrastBlack2 textarea, .pageShadowContrastBlack2 button, .pageShadowContrastBlack2 h1, .pageShadowContrastBlack2 h2, .pageShadowContrastBlack2 h3, .pageShadowContrastBlack2 h4, .pageShadowContrastBlack2 h5, .pageShadowContrastBlack2 h6, .pageShadowContrastBlack2 table, .pageShadowContrastBlack2 th, .pageShadowContrastBlack2 td, .pageShadowContrastBlack2 tr, .pageShadowContrastBlack2 output, .pageShadowContrastBlack2 legend, .pageShadowContrastBlack2 label, .pageShadowContrastBlack2 footer, .pageShadowContrastBlack2 kbd {
+    background-color: #142634 !important;
+    color: #BDC7C1 !important;
+}
+.pageShadowContrastBlack2 select {
+    background-color: grey !important;
+    color: #BDC7C1 !important;
+}
+.pageShadowContrastBlack2 ins { // éléments d'insertion
+    background-color: #142634 !important;
+    color: green !important;
+}
+.pageShadowContrastBlack2 del { // éléments de suppression
+    background-color: #142634 !important;
+    color: red !important;
+}
+.pageShadowContrastBlack2 mark { // éléments surlignés (rarement utilisé)
+    background-color: orange !important;
+    color: #BDC7C1 !important;
+}
+.pageShadowContrastBlack2 a {
+    background-color: #142634 !important;
+    color: #7288D4 !important;
+}
+.pageShadowContrastBlack2 img {
+    background-color: #142634 !important;
+}
+/* color invert */
+body.pageShadowInvertImageColor img {
+    filter: invert(100%);
+    -moz-filter: invert(100%);
+    -o-filter: invert(100%);
+    -webkit-filter: invert(100%);
+    background-color: transparent;
+}
+/* brightness */
 div#pageShadowLuminositeDiv {
     position: fixed;
     top: 0;
@@ -44,7 +86,7 @@ div#pageShadowLuminositeDivNightMode {
     position: fixed;
     top: 0;
     left: 0;
-    background-color: rgb(255,137, 14) !important;
+    background-color: rgb(255,137,14) !important;
     min-height: 100%;
     min-width: 100%;
     height: auto;

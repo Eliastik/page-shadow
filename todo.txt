@@ -1,5 +1,6 @@
 - themes contraste
-- traduction en
+- meilleure performance (fait)
+- traduction en (fait)
 - grunt (makefile)
 - update xml (https://developer.chrome.com/extensions/autoupdate)
 - update php
