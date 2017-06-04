@@ -35,7 +35,14 @@
                     "121": "<ul><li>Fixed bug in the advanced settings</li><li>Adding informations about the extension in the advanced settings</li></ul>",
                     "12": "<ul><li>Optimisation of the popup layout</li><li>Improved function \"Increase page contrast\". The transparent images are now supported</li><li>Some adjustements</li></ul>",
                     "11": "<ul><li>Improved function \"Increase page contrast\"</li></ul>",
-                    "1": "<ul><li>Initial version</li></ul>"
+                    "1": "<ul><li>Initial version</li></ul>",
+                        "versionNames": {
+                            "2": "Version 2.0 (04/06/2017)",
+                            "121": "Version 1.2.1",
+                            "12": "Version 1.2",
+                            "11": "Version 1.1",
+                            "1": "Version 1.0"
+                        }
                 }
         },
         "readme": {

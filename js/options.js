@@ -45,7 +45,7 @@ $(document).ready(function() {
         $('span[data-toggle="tooltip"]').tooltip("hide");
         $('#saved').modal("show");
     });
-    
+
     $("#aboutDialogBtn").click(function() {
         $('span[data-toggle="tooltip"]').tooltip("hide");
     });
@@ -53,7 +53,7 @@ $(document).ready(function() {
     if(localStorage.getItem("sitesInterditPageShadow") != null) {
         $("#textareaAssomPage").val(localStorage.getItem("sitesInterditPageShadow"));
     }
-    
+
     $('span[data-toggle="tooltip"]').tooltip({
         animated: 'fade',
         placement: 'bottom',

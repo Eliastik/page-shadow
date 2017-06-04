@@ -35,7 +35,14 @@
                     "121": "<ul><li>Correction d'un bug dans les paramètres avancés ;</li><li>Ajout d'informations sur l'application dans les paramètres avancés.</li></ul>",
                     "12": "<ul><li>Optimisation de la mise en page de la popup ;</li><li>Amélioration de l'outil \"Augmenter le contraste\". Les images transparentes sont désormais prises en charge ;</li><li>Quelques ajustements.</li></ul>",
                     "11": "<ul><li>Amélioration de la fonction \"Augmenter le contraste\".</li></ul>",
-                    "1": "<ul><li>Version initiale.</li></ul>"
+                    "1": "<ul><li>Version initiale.</li></ul>",
+                        "versionNames": {
+                            "2": "Version 2.0 (04/06/2017)",
+                            "121": "Version 1.2.1",
+                            "12": "Version 1.2",
+                            "11": "Version 1.1",
+                            "1": "Version 1.0"
+                        }
                 }
         },
         "readme": {

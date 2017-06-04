@@ -11,9 +11,16 @@
                 elLum.setAttribute("id", "pageShadowLuminositeDiv");
             }
             elLum.style.opacity = pourcentage / 100;
-            document.body.appendChild(elLum);
+            
+            appendLum(elLum);
         }
     }
+    
+    function appendLum(element) {
+        if (document.body) return document.body.appendChild(elLum);
+        setTimeout(appendLum, 100);
+    }
+    
     function in_array(needle, haystack) {
         var key = '';
             for (key in haystack) {

@@ -30,6 +30,7 @@
 	"content_scripts": [{
 		"js": [ "js/jquery.min.js", "js/content.js"],
 		"css": [ "css/content.css" ],
-		"matches": [ "http://*/*", "https://*/*"]
+		"matches": [ "http://*/*", "https://*/*"],
+        "run_at": "document_start"
 	}]
 }
