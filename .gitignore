@@ -4,5 +4,4 @@
 *.pem
 todo.txt
 build
-key
 node_modules
