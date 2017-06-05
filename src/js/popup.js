@@ -33,13 +33,13 @@ $(document).ready(function() {
     if(localStorage.getItem("pageShadowEnabled") == null) {
         localStorage.setItem("pageShadowEnabled", "false");
     }
-    
+
     if(localStorage.getItem("theme") == null) {
         localStorage.setItem("theme", "1");
     }
-    
+
     if(localStorage.getItem("colorInvert") == null) {
-        localStorage.setItem("theme", "false");
+        localStorage.setItem("colorInvert", "false");
     }
 
     if(localStorage.getItem("pageLumEnabled") == null) {
@@ -69,7 +69,7 @@ $(document).ready(function() {
             return value;
         }
     });
-    
+
     function previewTheme(theme) {
         $("#previsualisationDiv").attr("class", "");
         if(theme != null) {
@@ -107,12 +107,12 @@ $(document).ready(function() {
             $("#themeDiv").fadeOut();
         }
     });
-    
+
     $("#themeSelect").change(function() {
         localStorage.setItem("theme", $(this).val());
         previewTheme($(this).val());
     });
-    
+
     $( "#checkColorInvert" ).change(function() {
         if($(this).is(':checked') == true) {
             localStorage.setItem("colorInvert", "true");
@@ -191,7 +191,7 @@ $(document).ready(function() {
             elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
         }
     }
-    
+
     if(localStorage.getItem("colorInvert") == "true") {
         $("#checkColorInvert").attr("checked", "checked");
     }

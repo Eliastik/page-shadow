@@ -38,7 +38,7 @@
             <p data-i18n="container.description"></p>
             <div class="form-group">
                 <div class="col-lg-8">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#about" id="aboutDialogBtn"><i class="fa fa-info-circle" aria-hidden="true"></i> <span data-i18n="container.about"></span></button> &nbsp; <a href="http://www.eliastiksofts.com/page-shadow/update.php?v=2.0" target="_blank" class="btn btn-standard" role="button"><i class="fa fa-search" aria-hidden="true"></i> <span data-i18n="container.update"></span></a>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#about" id="aboutDialogBtn"><i class="fa fa-info-circle" aria-hidden="true"></i> <span data-i18n="container.about"></span></button> &nbsp; <a href="" target="_blank" class="btn btn-standard" role="button" id="updateBtn"><i class="fa fa-search" aria-hidden="true"></i> <span data-i18n="container.update"></span></a>
                 </div>
             </div>
             <div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="about">
@@ -50,7 +50,8 @@
                   </div>
                   <div class="modal-body">
                     <p><span data-i18n="modal.about.description"></span> (<a href="http://www.eliastiksofts.com" target="_blank">www.eliastiksofts.com</a>). <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#readme" data-i18n="modal.about.readme"></a>. <span data-i18n="modal.about.webpage"></span> <a href="http://www.eliastiksofts.com/page-shadow/" target="_blank">www.eliastiksofts.com/page-shadow</a>.</p>
-                    <label data-i18n="modal.about.version"></label> <span class="badge">2.0</span>
+                    <label data-i18n="modal.about.version"></label> <span class="badge" id="versionExtension">2.0</span><br />
+                    <!--<label data-i18n="modal.about.browser"></label> <span class="badge" id="browserName"></span>-->
                     <h5 data-i18n="modal.about.changelogTitle"></h5>
                         <div class="panel-group" id="accordion">
                           <div class="panel panel-default">
@@ -142,7 +143,7 @@
             </div>
             <div class="form-group">
               <div class="col-lg-10 col-lg-offset-2">
-                <button type="reset" class="btn btn-default"><i class="fa fa-refresh" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button> &nbsp; <button type="button" class="btn btn-primary" id="validerButton"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.validate"></span></button>
+                <button type="button" class="btn btn-primary" id="validerButton"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.validate"></span></button> &nbsp; <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#resetConfirm" id="resetConfirmBtn"><i class="fa fa-refresh" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button>
               </div>
             </div>
             <div class="modal fade" id="saved" tabindex="-1" role="dialog" aria-labelledby="saved">
@@ -157,6 +158,38 @@
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="modal.ok"></span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+              <div class="modal fade" id="reset" tabindex="-1" role="dialog" aria-labelledby="reset">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="resetLabel" data-i18n="modal.reset.title"></h4>
+                  </div>
+                  <div class="modal-body">
+                    <p class="largeFontSize" data-i18n="modal.reset.message"></p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="modal.ok"></span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal fade" id="resetConfirm" tabindex="-1" role="dialog" aria-labelledby="resetConfirm">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="resetConfirmLabel" data-i18n="modal.resetConfirm.title"></h4>
+                  </div>
+                  <div class="modal-body">
+                    <p class="largeFontSize" data-i18n="modal.resetConfirm.message"></p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> <span data-i18n="modal.no"></span></button> &nbsp; <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmReset"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="modal.yes"></span></button>
                   </div>
                 </div>
               </div>

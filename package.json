@@ -1,0 +1,14 @@
+{
+  "name": "page-shadow",
+  "version": "2.0.0",
+  "description": "Une extension pour Chrome, Firefox et Opera comprenant une série d'outils pour améliorer la lecture d'une page dans une pièce mal éclairée/autre. Elle vous permet d'augmenter le contraste de la page, de baisser la luminosité de la page et bien d'autres choses en un clic.",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Eliastik",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}

@@ -32,7 +32,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
     
     if(localStorage.getItem("colorInvert") == null) {
-        localStorage.setItem("theme", "false");
+        localStorage.setItem("colorInvert", "false");
     }
     
 	if(localStorage.getItem("pageLumEnabled") == null) {

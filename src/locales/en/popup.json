@@ -9,7 +9,7 @@
         "previsualisationTheme": "Preview:",
         "previsualisationThemeText": "A text. <a href=\"#\">A link</a>.",
         "colorInvert": "Invert image colors",
-        "titleColorInvert": "Reverses the color of the images to better stand out on the dark theme.",
+        "titleColorInvert": "Invert the image colors to better stand out on the dark theme.",
         "brightness": "Decrease page brightness",
         "titleBrightness": "Decrease the page brightness. You can choose the percentage of brightness decrease.",
         "percentage": "Percentage of brightness decrease :",

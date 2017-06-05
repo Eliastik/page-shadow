@@ -1,3 +1,4 @@
+extensionVersion = "2.0";
 /* translation */
 i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
     fallbackLng: ['en', 'fr'],
@@ -38,6 +39,34 @@ function changeLng(lng) {
 i18next.on('languageChanged', () => {
     translateContent();
 });
+function getBrowserName() {
+    alert(navigator.userAgent);
+    if((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1 ) {
+        return "Opera";
+    }
+    else if(navigator.userAgent.indexOf("Chrome") != -1 ) {
+        return "Chrome";
+    }
+    else if(navigator.userAgent.indexOf("Firefox") != -1 ) {
+        return "Firefox";
+    } else {
+        return false;
+    }
+}
+function resetSettings() {
+    $('span[data-toggle="tooltip"]').tooltip("hide");
+    localStorage.clear();
+    localStorage.setItem("pageShadowEnabled", "false");
+    localStorage.setItem("theme", "1");
+    localStorage.setItem("colorInvert", "false");
+    localStorage.setItem("pageLumEnabled", "false");
+    localStorage.setItem("pourcentageLum", "15");
+    localStorage.setItem("nightModeEnabled", "false");
+    localStorage.setItem("sitesInterditPageShadow", "");
+    changeLng("fr");
+    $("#textareaAssomPage").val("")
+    $('#reset').modal("show");
+}
 $(document).ready(function() {
     $("#validerButton").click(function() {
         localStorage.setItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
@@ -53,6 +82,13 @@ $(document).ready(function() {
     if(localStorage.getItem("sitesInterditPageShadow") != null) {
         $("#textareaAssomPage").val(localStorage.getItem("sitesInterditPageShadow"));
     }
+    
+    /*var browserName = getBrowserName();
+    if(browserName != false) {
+        $("#browserName").text(browserName);
+    } else {
+        $("#browserName").text("???");
+    }*/
 
     $('span[data-toggle="tooltip"]').tooltip({
         animated: 'fade',
@@ -60,4 +96,16 @@ $(document).ready(function() {
         trigger: 'click',
         placement: 'top'
     });
+    
+    $("#resetConfirmBtn").click(function() {
+        $('span[data-toggle="tooltip"]').tooltip("hide");
+    });
+    
+    $("#confirmReset").click(function() {
+        resetSettings();
+    });
+    
+    $("#versionExtension").text(extensionVersion);
+    /*$("#updateBtn").attr("href", "http://www.eliastiksofts.com/page-shadow/update.php?v="+ extensionVersion +"&nav="+ browserName.toLowerCase());*/
+    $("#updateBtn").attr("href", "http://www.eliastiksofts.com/page-shadow/update.php?v="+ extensionVersion);
 });
