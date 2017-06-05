@@ -67,6 +67,11 @@ Les fichiers d'extension compilés seront créés dans le dossier "build".
 
 (Note : le répertoire key contient une clé nécessaire à la création d'une extension Chrome).
 
+Pour installer l'extension dans Firefox, vous devez modifier la valeur suivante dans about:config en "false" : xpinstall.signatures.required
+Puis lancez l'installation avec le fichier .xpi
+
+Pour Chrome, faites glisser le fichier .crx dans la fenêtre des extensions (chrome://extensions).
+
 Licence :
 =========
 
