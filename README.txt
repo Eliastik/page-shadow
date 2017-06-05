@@ -1,7 +1,7 @@
 A propos de Page Shadow :
 =========================
 
-Un programme by Eliastik (eliastiksofts.com)
+Un programme by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
 
 Version actuelle : 2.0 (05/06/2017)
 
@@ -41,6 +41,31 @@ Journal des changements :
     
 * Version 1.0 :
     - Version initiale.
+    
+Compilation :
+=============
+
+Vous pouvez compiler vous-même l'extension pour Chrome (crx) et Firefox (xpi) en une ligne de code. Pour cela, vous devez avoir installé npm et gulp.
+
+Pour installer npm, plus d'infos ici : https://docs.npmjs.com/getting-started/installing-node
+
+Pour installer gulp avec npm, lancez la commande suivante :
+
+npm i -g gulp
+
+La compilation nécessite les paquets npm suivants (qui seront créés dans le dossier de ce projet) : gulp (local), gulp-clean, gulp-crx-pack, gulp-rename et gulp-zip.
+
+Pour les installer, lancez la commande suivante :
+
+npm install gulp gulp-clean gulp-crx-pack gulp-rename gulp-zip --save-dev
+
+Puis pour compiler :
+
+gulp
+
+Les fichiers d'extension compilés seront créés dans le dossier "build".
+
+(Note : le répertoire key contient une clé nécessaire à la création d'une extension Chrome).
 
 Licence :
 =========

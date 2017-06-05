@@ -1,6 +1,8 @@
 *.xpi
 *.crx
 *.nex
+*.pem
 todo.txt
-build/*
-key/*
+build
+key
+node_modules
