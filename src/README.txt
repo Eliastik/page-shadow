@@ -3,21 +3,35 @@ A propos de Page Shadow :
 
 Un programme by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
 
-Version actuelle : 2.0 (05/06/2017)
+Version actuelle : 2.0.1 (08/06/2017)
 
 Extension available in english and in french
 Extension disponible en français et en anglais
 
 Obtenez les dernières mises à jour de l'extension sur http://eliastiksofts.com/page-shadow
 
-Ceci est le code source de l'extension Page Shadow, compatible avec Chrome/Chromium, Opera et Firefox (via WebExtensions).
+Ceci est le code source de l'extension Page Shadow, compatible avec Chrome/Chromium, Firefox (via WebExtensions), Opera et Microsoft Edge.
 
 Une extension comprenant une série d'outils pour améliorer la lecture d'une page dans une pièce mal éclairée/autre. Elle vous permet d'augmenter le contraste de la page, de baisser la luminosité de la page et bien d'autres choses en un clic.
+
+Installation :
+==============
+
+Page Shadow est disponible dans le centre d'extension officiel de Firefox et Opera :
+
+- Firefox : https://addons.mozilla.org/fr/firefox/addon/page-shadow/
+- Opera : https://addons.opera.com/fr/extensions/details/page-shadow/?display=fr
+
+Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le site officiel : http://eliastiksofts.com/page-shadow
+Soit la compiler vous-même (voir section "Compilation").
 
 Journal des changements :
 =========================
 
-* Version 2.0 (04/06/2017) :
+* Version 2.0.1 (08/06/2017) :
+    - Compatibilité Microsoft Edge.
+
+* Version 2.0 (05/06/2017) :
     - Compatibilité Firefox ;
     - Nouveau thème graphique basé sur Bootstrap ;
     - Moteur de traduction intégré et ajout d'une traduction en anglais ;

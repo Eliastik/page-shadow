@@ -69,6 +69,18 @@ $(document).ready(function() {
             return value;
         }
     });
+	
+	$("#linkAdvSettings").click(function() {
+        chrome.tabs.create({
+            url: "options.html"
+        });
+	});
+	
+	$("#linkTestExtension").click(function() {
+		chrome.tabs.create({
+            url: "pageTest.html"
+        });
+	});
 
     function previewTheme(theme) {
         $("#previsualisationDiv").attr("class", "");

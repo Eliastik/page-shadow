@@ -25,20 +25,22 @@
     "modal": {
         "about": {
             "title": "About Page Shadow",
-            "description": "Page Shadow is available for Firefox, Chrome and Opera. This extension have been realised by Eliastik",
+            "description": "Page Shadow is available for Firefox, Chrome, Opera and Microsoft Edge. This extension have been realised by Eliastik",
             "readme": "README file",
             "webpage": "Page Shadow web page:",
             "version": "Current version:",
             "browser": "Your web browser:",
             "changelogTitle": "Changelog:",
                 "changelog": {
+                    "201": "<ul><li>Microsoft Edge support</li></ul>",
                     "2": "<ul><li>Firefox support</li><li>New graphical theme based on Bootstrap</li><li>Integrated translation engine and added English translation</li><li>Added color themes for the \"Increase contrast\" tool</li><li>Added night mode</li><li>Added a mode to invert the color of the images</li><li>Performance improvements</li><li>Various fixes (bugs, texts)</li></ul>",
                     "121": "<ul><li>Fixed bug in the advanced settings</li><li>Adding informations about the extension in the advanced settings</li></ul>",
                     "12": "<ul><li>Optimisation of the popup layout</li><li>Improved function \"Increase page contrast\". The transparent images are now supported</li><li>Some adjustements</li></ul>",
                     "11": "<ul><li>Improved function \"Increase page contrast\"</li></ul>",
                     "1": "<ul><li>Initial version</li></ul>",
                         "versionNames": {
-                            "2": "Version 2.0 (04/06/2017)",
+                            "201": "Version 2.0.1 (08/06/2017)",
+                            "2": "Version 2.0 (05/06/2017)",
                             "121": "Version 1.2.1",
                             "12": "Version 1.2",
                             "11": "Version 1.1",

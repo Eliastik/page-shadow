@@ -25,21 +25,22 @@
     "modal": {
         "about": {
             "title": "À propos de Page Shadow",
-            "description": "Page Shadow est disponible sur Firefox, Chrome et Opera. Cette extension a été réalisée par Eliastik",
+            "description": "Page Shadow est disponible sur Firefox, Chrome, Opera et Microsoft Edge. Cette extension a été réalisée par Eliastik",
             "readme": "Lire le fichier Lisez-moi",
             "webpage": "Page web de Page Shadow :",
             "version": "Version actuelle :",
             "browser": "Votre navigateur web :",
             "changelogTitle": "Journal des changements :",
                 "changelog": {
+                    "201": "<ul><li>Compatibilité Microsoft Edge</li></ul>",
                     "2": "<ul><li>Compatibilité Firefox ;</li><li>Nouveau thème graphique basé sur Bootstrap ;</li><li>Moteur de traduction intégré et ajout d'une traduction en anglais ;</li><li>Ajout de thèmes de couleur pour l'outil \"Augmenter le contraste\" ;</li><li>Ajout d'un mode nuit ;</li><li>Ajout d'un mode permettant d'inverser la couleur des images ;</li><li>Amélioration des performances ;</li><li>Corrections diverses (bugs, textes).</li></ul>",
                     "121": "<ul><li>Correction d'un bug dans les paramètres avancés ;</li><li>Ajout d'informations sur l'application dans les paramètres avancés.</li></ul>",
                     "12": "<ul><li>Optimisation de la mise en page de la popup ;</li><li>Amélioration de l'outil \"Augmenter le contraste\". Les images transparentes sont désormais prises en charge ;</li><li>Quelques ajustements.</li></ul>",
                     "11": "<ul><li>Amélioration de la fonction \"Augmenter le contraste\".</li></ul>",
                     "1": "<ul><li>Version initiale.</li></ul>",
                         "versionNames": {
-                            "2": "Version 2.0 (04/06/2017)",
-                            "121": "Version 1.2.1",
+                            "201": "Version 2.0.1 (08/06/2017)",
+                            "2": "Version 2.0 (05/06/2017)",
                             "12": "Version 1.2",
                             "11": "Version 1.1",
                             "1": "Version 1.0"

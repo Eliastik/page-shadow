@@ -1,4 +1,4 @@
-extensionVersion = "2.0";
+extensionVersion = "2.0.1";
 /* translation */
 i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
     fallbackLng: ['en', 'fr'],
@@ -108,4 +108,5 @@ $(document).ready(function() {
     $("#versionExtension").text(extensionVersion);
     /*$("#updateBtn").attr("href", "http://www.eliastiksofts.com/page-shadow/update.php?v="+ extensionVersion +"&nav="+ browserName.toLowerCase());*/
     $("#updateBtn").attr("href", "http://www.eliastiksofts.com/page-shadow/update.php?v="+ extensionVersion);
+    $("#versionExtension").text(extensionVersion);
 });
