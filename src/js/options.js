@@ -41,7 +41,6 @@ i18next.on('languageChanged', () => {
     translateContent();
 });
 function getBrowserName() {
-    alert(navigator.userAgent);
     if((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1 ) {
         return "Opera";
     }
