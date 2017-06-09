@@ -22,7 +22,7 @@ function listTranslations(languages) {
     $.each(languages, function(index, value) {
         $("#languageSelect").append('<option data-i18n="container.language.'+ value +'" value="'+ value +'"></option>');
     });
-    $("#languageSelect").val(i18next.language);
+    $("#languageSelect").val(i18next.language.substr(0, 2));
 }
 function translateContent() {
     jqueryI18next.init(i18next, $, {
