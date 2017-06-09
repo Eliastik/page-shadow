@@ -335,7 +335,7 @@ div#pageShadowLuminositeDiv {
     min-height: 100%;
     min-width: 100%;
     height: auto;
-    z-index: 999999;
+    z-index: 2000000000;
     pointer-events: none;
 }
 div#pageShadowLuminositeDivNightMode {
@@ -346,6 +346,6 @@ div#pageShadowLuminositeDivNightMode {
     min-height: 100%;
     min-width: 100%;
     height: auto;
-    z-index: 999999;
+    z-index: 2000000000;
     pointer-events: none;
 }

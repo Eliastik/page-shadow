@@ -28,8 +28,13 @@ Soit la compiler vous-même (voir section "Compilation").
 Journal des changements :
 =========================
 
-* Version 2.0.1 (08/06/2017) :
-    - Compatibilité Microsoft Edge.
+* Version 2.0.1 (09/06/2017) :
+    - Compatibilité Microsoft Edge ;
+    - Amélioration des performances et corrections de bugs :
+        - Basculement de l'API localstorage vers l'API chrome.storage ;
+        - Suppression de Jquery en tant que Content Script ;
+        - Correction d'un bug avec la détection de la langue du navigateur : le champ dans les options avancées restait vide dans certains cas ;
+        - Autres petits ajustements.
 
 * Version 2.0 (05/06/2017) :
     - Compatibilité Firefox ;
