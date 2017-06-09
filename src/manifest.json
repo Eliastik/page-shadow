@@ -52,6 +52,7 @@
         }
     ],
     "-ms-preload": {
+        "backgroundScript": "backgroundScriptsAPIBridge.js",
         "contentScript": "contentScriptsAPIBridge.js"
     }
 }
