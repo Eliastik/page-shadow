@@ -30,9 +30,8 @@ function checkFirstLoad() {
     chrome.storage.local.get('defaultLoad', function (result) {
         if (result.defaultLoad == undefined) {
             chrome.storage.local.set({'defaultLoad': '0'}, function() {
-                console.log('1');
+                setFirstSettings();
             });
-            setFirstSettings();
         }
     });
 }

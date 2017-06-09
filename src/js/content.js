@@ -26,7 +26,7 @@
                     }
                 });
             });
-            mut.observe(document.querySelector("body"),{
+            mut.observe(document.body,{
               'attributes': true
             });
         }
@@ -49,7 +49,7 @@
                     }
                 });
             });
-            mut.observe(document.querySelector("body"),{
+            mut.observe(document.body,{
               'attributes': true
             });
         }

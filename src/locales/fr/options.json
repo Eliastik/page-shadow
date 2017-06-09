@@ -48,7 +48,8 @@
                 }
         },
         "readme": {
-            "title": "Fichier Lisez-moi"
+            "title": "Fichier Lisez-moi",
+            "src": "README_FR.txt"
         },
         "saved": {
             "title": "Information",

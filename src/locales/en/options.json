@@ -49,7 +49,8 @@
                 }
         },
         "readme": {
-            "title": "README file"
+            "title": "README file",
+            "src": "README_EN.txt"
         },
         "saved": {
             "title": "Information",
