@@ -3,7 +3,6 @@
 var gulp = require('gulp');
 var clean = require('gulp-clean');
 var zip = require('gulp-zip');
-var rename = require("gulp-rename");
 var crx = require('gulp-crx-pack');
 var fs = require('fs');
 
@@ -14,20 +13,20 @@ gulp.task('clean', function() {
 
 gulp.task('build', function() {
 	var manifest = require('./src/manifest'),
-		distFileName = manifest.name + ' v' + manifest.version + '.zip';
+		distFileName = manifest.name + ' v' + manifest.version;
     var codebase = manifest.codebase;
 	gulp.src('build/*', {read: false})
 		.pipe(clean());
     gulp.src('./src/**')
-        .pipe(zip(distFileName))
+        .pipe(zip(distFileName + '.zip'))
         .pipe(gulp.dest('./build'));
-    gulp.src("./build/"+ distFileName)
-        .pipe(rename(manifest.name + ' v' + manifest.version + '.xpi'))
-        .pipe(gulp.dest("./build"));
+    gulp.src("./src/**")
+        .pipe(zip(distFileName + '.xpi'))
+        .pipe(gulp.dest('./build'));
     return gulp.src('./src/')
         .pipe(crx({
           privateKey: fs.readFileSync('./key/key.pem', 'utf8'),
-          filename: manifest.name + '.crx',
+          filename: manifest.name + ' v' + manifest.version + '.crx',
           codebase: codebase,
         }))
         .pipe(gulp.dest('./build'));

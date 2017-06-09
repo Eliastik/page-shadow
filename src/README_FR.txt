@@ -63,11 +63,11 @@ Pour installer gulp avec npm, lancez la commande suivante :
 ````
 npm i -g gulp
 ````
-La compilation nécessite les paquets npm suivants (qui seront créés dans le dossier de ce projet) : gulp (local), gulp-clean, gulp-crx-pack, gulp-rename et gulp-zip.
+La compilation nécessite les paquets npm suivants (qui seront créés dans le dossier de ce projet) : gulp (local), gulp-clean, gulp-crx-pack et gulp-zip.
 
 Pour les installer, lancez la commande suivante :
 ````
-npm install gulp gulp-clean gulp-crx-pack gulp-rename gulp-zip --save-dev
+npm install gulp gulp-clean gulp-crx-pack gulp-zip --save-dev
 ````
 Puis pour compiler :
 ````
