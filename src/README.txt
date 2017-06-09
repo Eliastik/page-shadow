@@ -118,14 +118,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-Autres programmes et ressources utilisées :
-===========================================
+Credits :
+=========
 
-- Cette extension utilise la police de caractères Source Sans Pro (version 2.020) sous licence SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL ) : https://github.com/adobe-fonts/source-sans-pro/blob/master/LICENSE.txt
-- Cette extension utilise la police d'icônes Font Awesome, sous licence SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL ) ;
-- Cette extension utilise la librairie Jquery, sous licence MIT ( https://tldrlegal.com/license/mit-license ) ;
-- Cette extension utilise la librairie Bootstrap (CSS et Javascript), sous licence MIT ( https://github.com/twbs/bootstrap/blob/v4-dev/LICENSE ) ;
-    - Thème utilisé : Paper de Bootswatch (modifié) - https://bootswatch.com/paper/
-- Cette extension utilise la librairie i18next, sous licence MIT ( https://github.com/i18next/i18next/blob/master/LICENSE ) ;
-- Cette extension utilise la librairie Bootstrap Slider, sous licence MIT ( https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md ) ;
-- Cette extension utilise une photo venant d'ici : http://littlevisuals.co , sous licence Domaine public ( https://creativecommons.org/publicdomain/zero/1.0/ ).
+- Source Sans Pro (version 2.020), SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL ) : https://github.com/adobe-fonts/source-sans-pro/blob/master/LICENSE.txt
+- Font Awesome, SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL )
+- Jquery, MIT license ( https://tldrlegal.com/license/mit-license ) ;
+- Bootstrap (CSS and Javascript), MIT license ( https://github.com/twbs/bootstrap/blob/v4-dev/LICENSE ) ;
+    - Theme: Paper by Bootswatch (modified) - https://bootswatch.com/paper/
+- i18next, MIT license ( https://github.com/i18next/i18next/blob/master/LICENSE ) ;
+- Bootstrap Slider, MIT license ( https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md ) ;
+- This extension uses a picture from this site: http://littlevisuals.co , Public domain ( https://creativecommons.org/publicdomain/zero/1.0/ ).

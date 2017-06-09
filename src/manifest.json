@@ -39,7 +39,6 @@
     "content_scripts": [
         {
             "js": [
-                "js/jquery.min.js",
                 "js/content.js"
             ],
             "css": [

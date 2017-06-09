@@ -2,16 +2,16 @@
     function assombrirPage(themeContrast) {
         if(theme != null) {
             if(theme == "1") {
-                $("body").addClass("pageShadowContrastBlack");
+                document.body.classList.add("pageShadowContrastBlack");
             } else {
-                $("body").addClass("pageShadowContrastBlack" + themeContrast);
+                document.body.classList.add("pageShadowContrastBlack" + themeContrast);
             }
         } else {
-            $("body").addClass("pageShadowContrastBlack");
+            document.body.classList.add("pageShadowContrastBlack");
         }
 
         if(colorInvert != null && colorInvert == "true") {
-            $("body").addClass("pageShadowInvertImageColor");
+            document.body.classList.add("pageShadowInvertImageColor");
         }
         
         if(typeof timeOutAP !== "undefined") {
@@ -21,7 +21,7 @@
 
     function invertColor(enabled) {
         if(colorInvert != null && colorInvert == "true") {
-            $("body").addClass("pageShadowInvertImageColor");
+            document.body.classList.add("pageShadowInvertImageColor");
         }
         
         if(typeof timeOutIC !== "undefined") {
@@ -76,17 +76,6 @@
         return false;
     }
 
-    chrome.storage.local.get('sitesInterditPageShadow', function (result) {
-        if(result.sitesInterditPageShadow != "") {
-            var siteInterdits = result.sitesInterditPageShadow.split("\n");
-            main(siteInterdits);
-        }
-        else {
-            var siteInterdits = "";
-            main(siteInterdits);
-        }
-    });
-
     function main(siteInterdits) {
         chrome.storage.local.get(['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert'], function (result) {
             if(result.pageShadowEnabled == "true" && in_array(window.location.href, siteInterdits) == false) {
@@ -100,4 +89,15 @@
             luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits);
         });
     }
+
+    chrome.storage.local.get('sitesInterditPageShadow', function (result) {
+        if(result.sitesInterditPageShadow != "") {
+            var siteInterdits = result.sitesInterditPageShadow.split("\n");
+            main(siteInterdits);
+        }
+        else {
+            var siteInterdits = "";
+            main(siteInterdits);
+        }
+    });
 }());
