@@ -17,6 +17,19 @@
         if(typeof timeOutAP !== "undefined") {
             clearTimeout(timeOutAP)
         }
+    
+        window.onload = function() {
+            var mut = new MutationObserver(function(mutations, mut){
+                mutations.forEach(function(mutation) {
+                    if(mutation.attributeName == "class") {
+                        main("onlyContrast");
+                    }
+                });
+            });
+            mut.observe(document.querySelector("body"),{
+              'attributes': true
+            });
+        }
     }
 
     function invertColor(enabled) {
@@ -26,6 +39,19 @@
         
         if(typeof timeOutIC !== "undefined") {
             clearTimeout(timeOutIC)
+        }
+        
+        window.onload = function() {
+            var mut = new MutationObserver(function(mutations, mut){
+                mutations.forEach(function(mutation) {
+                    if(mutation.attributeName == "class") {
+                        main("onlyContrast");
+                    }
+                });
+            });
+            mut.observe(document.querySelector("body"),{
+              'attributes': true
+            });
         }
     }
 
@@ -76,8 +102,15 @@
         return false;
     }
 
-    function main(siteInterdits) {
-        chrome.storage.local.get(['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert'], function (result) {
+    function main(type) {
+        chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert'], function (result) {
+            if(result.sitesInterditPageShadow != "") {
+                var siteInterdits = result.sitesInterditPageShadow.split("\n");
+            }
+            else {
+                var siteInterdits = "";
+            }
+            
             if(result.pageShadowEnabled == "true" && in_array(window.location.href, siteInterdits) == false) {
                 theme = result.theme; // global
                 colorInvert = result.colorInvert; // global
@@ -86,18 +119,12 @@
                 colorInvert = result.colorInvert; // global
                 applyIC();
             }
-            luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits);
+            
+            if(type !== "onlyContrast") {
+                luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits);
+            }
         });
     }
 
-    chrome.storage.local.get('sitesInterditPageShadow', function (result) {
-        if(result.sitesInterditPageShadow != "") {
-            var siteInterdits = result.sitesInterditPageShadow.split("\n");
-            main(siteInterdits);
-        }
-        else {
-            var siteInterdits = "";
-            main(siteInterdits);
-        }
-    });
+    main();
 }());

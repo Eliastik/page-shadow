@@ -1,5 +1,7 @@
-A propos de Page Shadow :
-=========================
+# Page Shadow :
+## English :
+
+## Français :
 
 Un programme by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
 
@@ -14,8 +16,7 @@ Ceci est le code source de l'extension Page Shadow, compatible avec Chrome/Chrom
 
 Une extension comprenant une série d'outils pour améliorer la lecture d'une page dans une pièce mal éclairée/autre. Elle vous permet d'augmenter le contraste de la page, de baisser la luminosité de la page et bien d'autres choses en un clic.
 
-Installation :
-==============
+### Installation :
 
 Page Shadow est disponible dans le centre d'extension officiel de Firefox et Opera :
 
@@ -25,8 +26,7 @@ Page Shadow est disponible dans le centre d'extension officiel de Firefox et Ope
 Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le site officiel : http://eliastiksofts.com/page-shadow
 Soit la compiler vous-même (voir section "Compilation").
 
-Journal des changements :
-=========================
+### Journal des changements :
 
 * Version 2.0.1 (09/06/2017) :
     - Compatibilité Microsoft Edge ;
