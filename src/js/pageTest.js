@@ -2,6 +2,7 @@
 i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
     fallbackLng: ['en', 'fr'],
     ns: 'pageTest',
+    load: 'languageOnly',
     defaultNS: 'pageTest',
         detection: {
             order: ['querystring', 'localStorage', 'navigator', 'htmlTag'],

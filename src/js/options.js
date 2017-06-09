@@ -3,6 +3,7 @@ extensionVersion = "2.0.1";
 i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
     fallbackLng: ['en', 'fr'],
     ns: 'options',
+    load: 'languageOnly',
     defaultNS: 'options',
         detection: {
             order: ['querystring', 'localStorage', 'navigator', 'htmlTag'],
