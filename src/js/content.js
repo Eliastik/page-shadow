@@ -76,9 +76,9 @@
         return false;
     }
 
-    chrome.runtime.sendMessage({method: "getSites"}, function(responseSite) {
-        if(responseSite.status != "") {
-            var siteInterdits = responseSite.status.split("\n");
+    chrome.storage.local.get('sitesInterditPageShadow', function (result) {
+        if(result.sitesInterditPageShadow != "") {
+            var siteInterdits = result.sitesInterditPageShadow.split("\n");
             main(siteInterdits);
         }
         else {
@@ -88,27 +88,16 @@
     });
 
     function main(siteInterdits) {
-        chrome.runtime.sendMessage({method: "getStatus"}, function(response) {
-            chrome.runtime.sendMessage({method: "getThemeStatus"}, function(responseTheme) {
-                chrome.runtime.sendMessage({method: "getInvertColorStatus"}, function(responseColor) {
-                    if(response.status == "true" && in_array(window.location.href, siteInterdits) == false) {
-                        theme = responseTheme.status; // global
-                        colorInvert = responseColor.status; // global
-                        applyAP();
-                    } else if(in_array(window.location.href, siteInterdits) == false) {
-                        colorInvert = responseColor.status; // global
-                        applyIC();
-                    }
-                });
-            });
-        });
-
-        chrome.runtime.sendMessage({method: "getStatusIfLum"}, function(responseIfLum) {
-            chrome.runtime.sendMessage({method: "getStatusLum"}, function(responseNbLum) {
-                chrome.runtime.sendMessage({method: "getStatusNightMode"}, function(responseNightMode) {
-                    luminositePage(responseIfLum.status, responseNbLum.status, responseNightMode.status, siteInterdits);
-                });
-            });
+        chrome.storage.local.get(['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert'], function (result) {
+            if(result.pageShadowEnabled == "true" && in_array(window.location.href, siteInterdits) == false) {
+                theme = result.theme; // global
+                colorInvert = result.colorInvert; // global
+                applyAP();
+            } else if(in_array(window.location.href, siteInterdits) == false) {
+                colorInvert = result.colorInvert; // global
+                applyIC();
+            }
+            luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits);
         });
     }
 }());

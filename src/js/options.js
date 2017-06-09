@@ -55,21 +55,14 @@ function getBrowserName() {
 }
 function resetSettings() {
     $('span[data-toggle="tooltip"]').tooltip("hide");
-    localStorage.clear();
-    localStorage.setItem("pageShadowEnabled", "false");
-    localStorage.setItem("theme", "1");
-    localStorage.setItem("colorInvert", "false");
-    localStorage.setItem("pageLumEnabled", "false");
-    localStorage.setItem("pourcentageLum", "15");
-    localStorage.setItem("nightModeEnabled", "false");
-    localStorage.setItem("sitesInterditPageShadow", "");
+    chrome.storage.local.clear();
     changeLng("fr");
-    $("#textareaAssomPage").val("")
+    $("#textareaAssomPage").val("");
     $('#reset').modal("show");
 }
 $(document).ready(function() {
     $("#validerButton").click(function() {
-        localStorage.setItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
+        setSettingItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
         changeLng($("#languageSelect").val());
         $('span[data-toggle="tooltip"]').tooltip("hide");
         $('#saved').modal("show");
@@ -79,9 +72,11 @@ $(document).ready(function() {
         $('span[data-toggle="tooltip"]').tooltip("hide");
     });
 
-    if(localStorage.getItem("sitesInterditPageShadow") != null) {
-        $("#textareaAssomPage").val(localStorage.getItem("sitesInterditPageShadow"));
-    }
+    chrome.storage.local.get('sitesInterditPageShadow', function (result) {
+        if(typeof result.sitesInterditPageShadow !== "undefined" && typeof result.sitesInterditPageShadow !== null) {
+            $("#textareaAssomPage").val(result.sitesInterditPageShadow);
+        }
+    });
     
     /*var browserName = getBrowserName();
     if(browserName != false) {

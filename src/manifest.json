@@ -29,12 +29,8 @@
     },
     "options_page": "options.html",
     "permissions": [
-        "webNavigation"
+        "storage"
     ],
-    "background": {
-        "page": "background.html",
-        "persistent": true
-    },
     "applications": {
         "gecko": {
             "id": "page-shadow@eliastiksofts.com"

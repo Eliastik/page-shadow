@@ -30,34 +30,6 @@ i18next.on('languageChanged', () => {
     translateContent();
 });
 $(document).ready(function() {
-    if(localStorage.getItem("pageShadowEnabled") == null) {
-        localStorage.setItem("pageShadowEnabled", "false");
-    }
-
-    if(localStorage.getItem("theme") == null) {
-        localStorage.setItem("theme", "1");
-    }
-
-    if(localStorage.getItem("colorInvert") == null) {
-        localStorage.setItem("colorInvert", "false");
-    }
-
-    if(localStorage.getItem("pageLumEnabled") == null) {
-        localStorage.setItem("pageLumEnabled", "false");
-    }
-
-    if(localStorage.getItem("pourcentageLum") == null) {
-        localStorage.setItem("pourcentageLum", "15");
-    }
-
-    if(localStorage.getItem("nightModeEnabled") == null) {
-        localStorage.setItem("nightModeEnabled", "false");
-    }
-
-    if(localStorage.getItem("sitesInterditPageShadow") == null) {
-        localStorage.setItem("sitesInterditPageShadow", "");
-    }
-
     $('i[data-toggle="tooltip"]').tooltip({
         animated: 'fade',
         placement: 'bottom',
@@ -97,60 +69,66 @@ $(document).ready(function() {
 
     $( "#checkAssomPage" ).change(function() {
         if($(this).is(':checked') == true) {
-            localStorage.setItem("pageShadowEnabled", "true");
-            if(localStorage.getItem("theme") != null) {
-                $("#themeSelect").val(localStorage.getItem("theme"));
-                previewTheme(localStorage.getItem("theme"));
-            } else {
-                $("#themeSelect").val("1");
-                previewTheme("1");
-            }
-            $("#themeDiv").fadeIn();
+            setSettingItem("pageShadowEnabled", "true");
+            chrome.storage.local.get('theme', function (result) {
+                if(typeof result.theme !== "undefined" && typeof result.theme !== null) {
+                    $("#themeSelect").val(result.theme);
+                    previewTheme(result.theme);
+                } else {
+                    $("#themeSelect").val("1");
+                    previewTheme("1");
+                }
+                $("#themeDiv").stop().fadeIn();
+            });
         }
         else {
-            localStorage.setItem("pageShadowEnabled", "false");
-            if(localStorage.getItem("theme") != null) {
-                $("#themeSelect").val(localStorage.getItem("theme"));
-                previewTheme(localStorage.getItem("theme"));
-            } else {
-                $("#themeSelect").val("1");
-                previewTheme("1");
-            }
-            $("#themeDiv").fadeOut();
+            setSettingItem("pageShadowEnabled", "false");
+            chrome.storage.local.get('theme', function (result) {
+                if(typeof result.theme !== "undefined" && typeof result.theme !== null) {
+                    $("#themeSelect").val(result.theme);
+                    previewTheme(result.theme);
+                } else {
+                    $("#themeSelect").val("1");
+                    previewTheme("1");
+                }
+                $("#themeDiv").stop().fadeOut();
+            });
         }
     });
 
     $("#themeSelect").change(function() {
-        localStorage.setItem("theme", $(this).val());
+        setSettingItem("theme", $(this).val());
         previewTheme($(this).val());
     });
 
     $( "#checkColorInvert" ).change(function() {
         if($(this).is(':checked') == true) {
-            localStorage.setItem("colorInvert", "true");
+            setSettingItem("colorInvert", "true");
         }
         else {
-            localStorage.setItem("colorInvert", "false");
+            setSettingItem("colorInvert", "false");
         }
     });
 
     $( "#checkLuminositePage" ).change(function() {
         if($(this).is(':checked') == true) {
-            localStorage.setItem("pageLumEnabled", "true");
+            setSettingItem("pageLumEnabled", "true");
             elLumB = document.createElement("div");
-            if(localStorage.getItem("nightModeEnabled") == "true") {
-                $("#checkNighMode").attr("checked", "checked");
-                elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
-            } else {
-                elLumB.setAttribute("id", "pageShadowLuminositeDiv");
-            }
-            elLumB.style.opacity = localStorage.getItem("pourcentageLum") / 100;
-            document.body.appendChild(elLumB);
-            $("#sliderLuminositeDiv").fadeIn();
+            chrome.storage.local.get(['nightModeEnabled', 'pourcentageLum'], function (result) {
+                if(result.nightModeEnabled == "true") {
+                    $("#checkNighMode").attr("checked", "checked");
+                    elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
+                } else {
+                    elLumB.setAttribute("id", "pageShadowLuminositeDiv");
+                }
+                elLumB.style.opacity = result.pourcentageLum / 100;
+                document.body.appendChild(elLumB);
+                $("#sliderLuminositeDiv").stop().fadeIn();
+            });
         }
         else {
-            localStorage.setItem("pageLumEnabled", "false");
-            $("#sliderLuminositeDiv").fadeOut();
+            setSettingItem("pageLumEnabled", "false");
+            $("#sliderLuminositeDiv").stop().fadeOut();
             elLumB.style.display = "none";
         }
     });
@@ -160,55 +138,56 @@ $(document).ready(function() {
         if(typeof elLumB !== "undefined") {
             elLumB.style.opacity = sliderLumValue / 100;
         }
-        localStorage.setItem("pourcentageLum", sliderLumValue);
+        setSettingItem("pourcentageLum", sliderLumValue);
     });
 
     $( "#checkNighMode" ).change(function() {
         if($(this).is(':checked') == true) {
-            localStorage.setItem("nightModeEnabled", "true");
+            setSettingItem("nightModeEnabled", "true");
             elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
         }
         else {
-            localStorage.setItem("nightModeEnabled", "false");
+            setSettingItem("nightModeEnabled", "false");
             elLumB.setAttribute("id", "pageShadowLuminositeDiv");
         }
     });
-
-    if(localStorage.getItem("pageShadowEnabled") == "true") {
-        $("#checkAssomPage").attr("checked", "checked");
-        if(localStorage.getItem("theme") != null) {
-            $("#themeSelect").val(localStorage.getItem("theme"));
-            previewTheme(localStorage.getItem("theme"));
-        } else {
-            $("#themeSelect").val("1");
-            previewTheme("1");
-        }
-        $("#themeDiv").show();
-    }
-
-    if(localStorage.getItem("pageLumEnabled") == "true") {
-        $("#checkLuminositePage").attr("checked", "checked");
-        $("#sliderLuminositeDiv").show();
-            if(localStorage.getItem("pourcentageLum") != null) {
-                elLumB = document.createElement("div");
-                elLumB.setAttribute("id", "pageShadowLuminositeDiv");
-                elLumB.style.opacity = localStorage.getItem("pourcentageLum") / 100;
-                document.body.appendChild(elLumB);
+    chrome.storage.local.get(['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert'], function (result) {
+        if(result.pageShadowEnabled == "true") {
+            $("#checkAssomPage").attr("checked", "checked");
+            if(typeof result.theme !== "undefined" && typeof result.theme !== null) {
+                $("#themeSelect").val(result.theme);
+                previewTheme(result.theme);
+            } else {
+                $("#themeSelect").val("1");
+                previewTheme("1");
             }
-    }
-
-    if(localStorage.getItem("nightModeEnabled") == "true") {
-        $("#checkNighMode").attr("checked", "checked");
-        if (typeof elLumB !== "undefined") {
-            elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
+            $("#themeDiv").show();
         }
-    }
 
-    if(localStorage.getItem("colorInvert") == "true") {
-        $("#checkColorInvert").attr("checked", "checked");
-    }
+        if(result.pageLumEnabled == "true") {
+            $("#checkLuminositePage").attr("checked", "checked");
+            $("#sliderLuminositeDiv").show();
+                if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
+                    elLumB = document.createElement("div");
+                    elLumB.setAttribute("id", "pageShadowLuminositeDiv");
+                    elLumB.style.opacity = result.pourcentageLum / 100;
+                    document.body.appendChild(elLumB);
+                }
+        }
 
-    if(localStorage.getItem("pourcentageLum") != null) {
-        sliderLuminosite.slider('setValue', localStorage.getItem("pourcentageLum"))
-    }
+        if(result.nightModeEnabled == "true") {
+            $("#checkNighMode").attr("checked", "checked");
+            if (typeof elLumB !== "undefined") {
+                elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
+            }
+        }
+
+        if(result.colorInvert == "true") {
+            $("#checkColorInvert").attr("checked", "checked");
+        }
+
+        if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
+            sliderLuminosite.slider('setValue', result.pourcentageLum);
+        }
+    });
 });
