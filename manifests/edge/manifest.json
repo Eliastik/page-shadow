@@ -31,11 +31,6 @@
     "permissions": [
         "storage"
     ],
-    "applications": {
-        "gecko": {
-            "id": "page-shadow@eliastiksofts.com"
-        }
-    },
     "content_scripts": [
         {
             "js": [
