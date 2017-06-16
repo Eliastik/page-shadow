@@ -1,4 +1,10 @@
 {
+  "application_title": {
+    "message": "Page Shadow"
+  },
+  "application_description": {
+    "message": "Une série d'outils permettant d'améliorer la lecture de pages web dans une pièce mal éclairée/autre."
+  },
   "appName": {
     "message": "Page Shadow"
   },

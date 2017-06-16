@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var clean = require('gulp-clean');
 var zip = require('gulp-zip');
 var crx = require('gulp-crx-pack');
+var sequence = require('run-sequence');
 var fs = require('fs');
 
 gulp.task('clean', function() {
@@ -11,31 +12,37 @@ gulp.task('clean', function() {
 		.pipe(clean());
 });
 
-gulp.task('copy', function() {
-	gulp.src(['./src/**', './manifests/chrome/**'])
+gulp.task('copyChrome', function() {
+	return gulp.src(['./src/**', './manifests/chrome/**/*'])
         .pipe(gulp.dest('./build/chrome/'));
-    gulp.src(['./src/**', './manifests/edge/**'])
+});
+
+gulp.task('copyEdge', function() {
+    return gulp.src(['./src/**', './manifests/edge/*'])
         .pipe(gulp.dest('./build/edge/'));
+});
+
+gulp.task('copyFirefox', function() {
     return gulp.src(['./src/**', './manifests/firefox/manifest.json'])
         .pipe(gulp.dest('./build/firefox/'));
 });
 
-gulp.task('build', ['copy'], function() {
-	var manifestChrome = require('./manifests/chrome/manifest'),
-	    manifestEdge = require('./manifests/edge/manifest'),
-	    manifestFirefox = require('./manifests/firefox/manifest'),
+gulp.task('build', function() {
+	var manifestChrome = require('./manifests/chrome/manifest.json'),
+	    manifestEdge = require('./manifests/edge/manifest.json'),
+	    manifestFirefox = require('./manifests/firefox/manifest.json'),
 		distFileName = manifestChrome.name + ' v' + manifestChrome.version;
     var codebase = manifestChrome.codebase;
-    gulp.src("./build/firefox/**")
+    gulp.src("build/firefox/**/**/*")
         .pipe(zip(distFileName + '.xpi'))
         .pipe(gulp.dest('./build'));
-    gulp.src("./build/edge/**")
+    gulp.src("build/edge/**/**/*")
         .pipe(zip(distFileName + ' Edge' +'.zip'))
         .pipe(gulp.dest('./build'));
-    gulp.src("./build/chrome/**")
+    gulp.src("build/chrome/**/**/*")
         .pipe(zip(distFileName + ' Opera' +'.zip'))
         .pipe(gulp.dest('./build'));
-    return gulp.src('./build/chrome')
+    return gulp.src('./build/chrome/')
         .pipe(crx({
           privateKey: fs.readFileSync('./key/key.pem', 'utf8'),
           filename: manifestChrome.name + ' v' + manifestChrome.version + '.crx',
@@ -44,6 +51,6 @@ gulp.task('build', ['copy'], function() {
         .pipe(gulp.dest('./build'));
 });
 
-gulp.task('default', ['clean'], function() {
-    gulp.start('build');
+gulp.task('default', function() {
+    sequence('clean', 'copyChrome', 'copyEdge', 'copyFirefox', 'build');
 });
