@@ -42,7 +42,7 @@
                 "js/content.js"
             ],
             "css": [
-                "css/content.min.css"
+                "css/content.css"
             ],
             "matches": [
                 "http://*/*",
