@@ -12,7 +12,7 @@ gulp.task('clean', function() {
 });
 
 gulp.task('copy', function() {
-	gulp.src(['./src/**', './manifests/chrome/manifest.json'])
+	gulp.src(['./src/**', './manifests/chrome/**'])
         .pipe(gulp.dest('./build/chrome/'));
     gulp.src(['./src/**', './manifests/edge/**'])
         .pipe(gulp.dest('./build/edge/'));
