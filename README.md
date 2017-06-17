@@ -23,13 +23,22 @@ Or you can compile yourself (see Compilation section).
 
 ### Changelog:
 
+#### Version 2.0.2 (17/06/2017) :
+* The settings can now be applied in real time
+* Fixed Page Shadow icon (the shadow is better)
+* Bugs fixes :
+    - Bug fixed with the manifest.json file (one manifest.json different for each browser have been created)
+    - Bug fixed with the automatic reactivation of the tool Increase page contrast with some particular websites (such as Youtube)
+    - Bug fixed with the Gulpfile (which allows the compilation of the extension). The extension can now be compiled for Edge and Opera
+    - Other minor adjustements.
+
 #### Version 2.0.1 (09/06/2017) :
 * Microsoft Edge support
 * Performance improvements and bugs fixes :
     - Switched to chrome.storage API instead of localstorage
     - Removed Jquery dependency for Content Scripts
     - Fixed bug with browser language detection : the form field in the advanced settings remained blank in certains cases
-    - Fixed bug with the Increase page contrast tool with some websites (such as Youtube) ;
+    - Fixed bug with the Increase page contrast tool with some websites (such as Youtube)
     - Other minor adjustements.
 
 #### Version 2.0 (05/06/2017) :
@@ -108,7 +117,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 ### Credits :
 
 - Source Sans Pro (version 2.020), SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL ) : https://github.com/adobe-fonts/source-sans-pro/blob/master/LICENSE.txt
@@ -149,6 +157,7 @@ Soit la compiler vous-même (voir section "Compilation").
 * Corrections de bugs :
     - Corrections de bugs avec le manifest.json (un manifest.json différent pour chaque navigateur a été créé) ;
     - Correction d'un bug avec la réactivation automatique de l'outil "Augmenter le contraste" avec certains sites particuliers (comme Youtube) ;
+    - Corrections de bugs avec le fichier Gulp (qui permet la compilation de l'extension). L'extension peut désormais être compilée pour Edge et Opera ;
     - Autres petits ajustements.
     
 #### Version 2.0.1 (09/06/2017) :

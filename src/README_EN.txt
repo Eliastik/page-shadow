@@ -2,16 +2,18 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-Latest version: 2.0.1 (08/06/2017)
-Official website: http://eliastiksofts.com/page-shadow
+* Latest version: 2.0.2 (17/06/2017)
+* Official website: http://eliastiksofts.com/page-shadow
+* Github repository: https://github.com/Eliastik/page-shadow
 
-This is the source code for the extension Page Shadow, compatible with Chrome/Chromium, Firefox (via WebExtensions), Opera and Microsoft Edge.
+This is the source code for the extension Page Shadow, compatible with Chrome/Chromium, Firefox, Opera and Microsoft Edge. This extension uses the WebExtensions technology via the Chrome API (more infos : https://developer.mozilla.org/fr/Add-ons/WebExtensions )
 
 Page Shadow is an extension with a series of tools to improve the reading of web pages in badly lit room/other. It allows you to increase page contrast, decrease page brightness, invert image colors, or activate night mode (applies an orange filter on the page to reduce the blue light emitted by the screen).
 
 ### Installation:
-Page Shadow is avalaible at the following addresses:
+Page Shadow is avalaible to download and install at the following addresses:
 
+* Chrome : https://chrome.google.com/webstore/detail/eimaelgbclmdoeimifebaagealdkjmki/
 * Firefox : https://addons.mozilla.org/fr/firefox/addon/page-shadow/
 * Opera : https://addons.opera.com/fr/extensions/details/page-shadow/?display=fr
 
@@ -20,13 +22,22 @@ Or you can compile yourself (see Compilation section).
 
 ### Changelog:
 
+#### Version 2.0.2 (17/06/2017) :
+* The settings can now be applied in real time
+* Fixed Page Shadow icon (the shadow is better)
+* Bugs fixes :
+    - Bug fixed with the manifest.json file (one manifest.json different for each browser have been created)
+    - Bug fixed with the automatic reactivation of the tool Increase page contrast with some particular websites (such as Youtube)
+    - Bug fixed with the Gulpfile (which allows the compilation of the extension). The extension can now be compiled for Edge and Opera
+    - Other minor adjustements.
+
 #### Version 2.0.1 (09/06/2017) :
 * Microsoft Edge support
 * Performance improvements and bugs fixes :
     - Switched to chrome.storage API instead of localstorage
     - Removed Jquery dependency for Content Scripts
     - Fixed bug with browser language detection : the form field in the advanced settings remained blank in certains cases
-    - Fixed bug with the Increase page contrast tool with some websites (such as Youtube) ;
+    - Fixed bug with the Increase page contrast tool with some websites (such as Youtube)
     - Other minor adjustements.
 
 #### Version 2.0 (05/06/2017) :
@@ -56,19 +67,24 @@ Or you can compile yourself (see Compilation section).
     
 ### Compilation :
 
-You can compile yourself the extension for Chrome (crx) and Firefox (xpi) with only one line of code. To do this, you must have installed npm and gulp.
+You can compile yourself the extension with only one command line. To do this, you have to install npm and gulp.
 
-To install npm, read this page: https://docs.npmjs.com/getting-started/installing-node
+To install npm for your OS, read this page: https://docs.npmjs.com/getting-started/installing-node
 
 To install gulp with npm, run the following command:
 ````
 npm i -g gulp
 ````
-The compilation need the following npm packages (which will be created in the project directory): gulp (local), gulp-clean, gulp-crx-pack and gulp-zip.
+Git clone the repository and cd to the project directory (or download it directly from Github):
+````
+git clone https://github.com/Eliastik/page-shadow.git
+cd page-shadow
+````
+The compilation need the following npm packages (which will be created in the project directory): gulp (local), gulp-clean, gulp-crx-pack, gulp-zip and run-sequence.
 
 To install these packages, run the following command:
 ````
-npm install gulp gulp-clean gulp-crx-pack gulp-zip --save-dev
+npm install
 ````
 Then to compile:
 ````
@@ -99,7 +115,6 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 
 ### Credits :
 
