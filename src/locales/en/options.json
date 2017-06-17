@@ -32,6 +32,7 @@
             "browser": "Your web browser:",
             "changelogTitle": "Changelog:",
                 "changelog": {
+                    "202": "<ul><li>The settings can now be applied in real time</li><li>Fixed Page Shadow icon (the shadow is better)</li><li>Bugs fixes (see README file)</li></ul>",
                     "201": "<ul><li>Microsoft Edge support</li><li>Performance improvements and bugs fixes (see README file)</li></ul>",
                     "2": "<ul><li>Firefox support</li><li>New graphical theme based on Bootstrap</li><li>Integrated translation engine and added English translation</li><li>Added color themes for the \"Increase contrast\" tool</li><li>Added night mode</li><li>Added a mode to invert the color of the images</li><li>Performance improvements</li><li>Various fixes (bugs, texts)</li></ul>",
                     "121": "<ul><li>Fixed bug in the advanced settings</li><li>Adding informations about the extension in the advanced settings</li></ul>",
@@ -39,6 +40,7 @@
                     "11": "<ul><li>Improved function \"Increase page contrast\"</li></ul>",
                     "1": "<ul><li>Initial version</li></ul>",
                         "versionNames": {
+                            "202": "Version 2.0.2 (17/06/2017)",
                             "201": "Version 2.0.1 (09/06/2017)",
                             "2": "Version 2.0 (05/06/2017)",
                             "121": "Version 1.2.1",

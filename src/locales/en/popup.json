@@ -14,7 +14,9 @@
         "titleBrightness": "Decrease the page brightness. You can choose the percentage of brightness decrease.",
         "percentage": "Percentage of brightness decrease :",
         "nightMode": "Night mode",
-        "tileNightMode": "Applies a orange filter on the page to reduce the blue light emitted by the screen."
+        "tileNightMode": "Applies a orange filter on the page to reduce the blue light emitted by the screen.",
+        "liveSettings": "Apply settings in real time",
+        "titleLiveSettings": "Can reduce browser performance."
     },
     "footer": {
         "advancedSettings": "Advanced settings",

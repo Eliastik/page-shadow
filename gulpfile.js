@@ -23,7 +23,7 @@ gulp.task('copyEdge', function() {
 });
 
 gulp.task('copyFirefox', function() {
-    return gulp.src(['./src/**', './manifests/firefox/manifest.json'])
+    return gulp.src(['./src/**', './manifests/firefox/**/*'])
         .pipe(gulp.dest('./build/firefox/'));
 });
 

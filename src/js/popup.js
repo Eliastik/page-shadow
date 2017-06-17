@@ -110,6 +110,15 @@ $(document).ready(function() {
             setSettingItem("colorInvert", "false");
         }
     });
+    
+    $( "#liveSettings" ).change(function() {
+        if($(this).is(':checked') == true) {
+            setSettingItem("liveSettings", "true");
+        }
+        else {
+            setSettingItem("liveSettings", "false");
+        }
+    });
 
     $( "#checkLuminositePage" ).change(function() {
         if($(this).is(':checked') == true) {
@@ -152,7 +161,7 @@ $(document).ready(function() {
             elLumB.setAttribute("id", "pageShadowLuminositeDiv");
         }
     });
-    chrome.storage.local.get(['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert'], function (result) {
+    chrome.storage.local.get(['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'liveSettings'], function (result) {
         if(result.pageShadowEnabled == "true") {
             $("#checkAssomPage").attr("checked", "checked");
             if(typeof result.theme !== "undefined" && typeof result.theme !== null) {
@@ -186,7 +195,11 @@ $(document).ready(function() {
         if(result.colorInvert == "true") {
             $("#checkColorInvert").attr("checked", "checked");
         }
-
+        
+        if(result.liveSettings == "true" || result.liveSettings == null) {
+            $("#liveSettings").attr("checked", "checked");
+        }
+        
         if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
             sliderLuminosite.slider('setValue', result.pourcentageLum);
         }

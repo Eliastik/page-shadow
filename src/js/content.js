@@ -1,63 +1,91 @@
 (function(){
+    var nbThemes = 10; // nb of themes
+
     function assombrirPage(themeContrast) {
-        if(theme != null) {
-            if(theme == "1") {
-                document.body.classList.add("pageShadowContrastBlack");
+        if(pageShadowEnabled != null && pageShadowEnabled == "true") {
+            if(theme != null) {
+                if(theme == "1") {
+                    document.body.classList.add("pageShadowContrastBlack");
+                } else {
+                    document.body.classList.add("pageShadowContrastBlack" + themeContrast);
+                }
             } else {
-                document.body.classList.add("pageShadowContrastBlack" + themeContrast);
+                document.body.classList.add("pageShadowContrastBlack");
             }
-        } else {
-            document.body.classList.add("pageShadowContrastBlack");
         }
 
         if(colorInvert != null && colorInvert == "true") {
             document.body.classList.add("pageShadowInvertImageColor");
         }
-        
-        if(typeof timeOutAP !== "undefined") {
-            clearTimeout(timeOutAP)
-        }
-    
+
         window.onload = function() {
             var mut = new MutationObserver(function(mutations, mut){
                 mutations.forEach(function(mutation) {
-                    if(mutation.attributeName == "class") {
-                        main("onlyContrast");
+                    var classList = document.body.classList;
+                    var containsPageContrast = true;
+
+                    for(i=1; i<=nbThemes; i++) {
+                        if(i == "1" && !classList.contains("pageShadowContrastBlack")) {
+                            var containsPageContrast = false;
+                        } else if(!classList.contains("pageShadowContrastBlack" + i)) {
+                            var containsPageContrast = false;
+                        }
+                    }
+
+                    if(mutation.attributeName == "class" && containsPageContrast == false || mutation.attributeName == "class" && classList.contains("pageShadowInvertImageColor") == false) {
+                        main("onlycontrast");
                     }
                 });
             });
             mut.observe(document.body,{
               'attributes': true
             });
+        }
+
+        if(typeof timeOutAP !== "undefined") {
+            clearTimeout(timeOutAP)
         }
     }
 
     function invertColor(enabled) {
         if(colorInvert != null && colorInvert == "true") {
             document.body.classList.add("pageShadowInvertImageColor");
+
+            window.onload = function() {
+                var mut = new MutationObserver(function(mutations, mut){
+                    mutations.forEach(function(mutation) {
+                        var classList = document.body.classList;
+                        var containsPageContrast = true;
+
+                        for(i=1; i<=nbThemes; i++) {
+                            if(i == "1" && !classList.contains("pageShadowContrastBlack")) {
+                                var containsPageContrast = false;
+                            } else if(!classList.contains("pageShadowContrastBlack" + i)) {
+                                var containsPageContrast = false;
+                            }
+                        }
+
+                        if(mutation.attributeName == "class" && containsPageContrast == false || mutation.attributeName == "class" && classList.contains("pageShadowInvertImageColor") == false) {
+                            main("onlycontrast");
+                        }
+                    });
+                });
+                mut.observe(document.body,{
+                  'attributes': true
+                });
+            }
         }
-        
+
         if(typeof timeOutIC !== "undefined") {
             clearTimeout(timeOutIC)
-        }
-        
-        window.onload = function() {
-            var mut = new MutationObserver(function(mutations, mut){
-                mutations.forEach(function(mutation) {
-                    if(mutation.attributeName == "class") {
-                        main("onlyContrast");
-                    }
-                });
-            });
-            mut.observe(document.body,{
-              'attributes': true
-            });
         }
     }
 
     function luminositePage(enabled, pourcentage, nightmode, siteInterdits) {
+        elLum = document.createElement("div");
+
         if(enabled == "true" && in_array(window.location.href, siteInterdits) == false) {
-            elLum = document.createElement("div");
+            elLum.style.display = "block";
             if(nightmode == "true") {
                 elLum.setAttribute("id", "pageShadowLuminositeDivNightMode");
             } else {
@@ -68,10 +96,18 @@
             applyAL(elLum);
         }
     }
-    
+
     function appendLum() {
-        document.body.appendChild(elLum)
-        
+        if(document.getElementById("pageShadowLuminositeDiv") != null) {
+            document.body.removeChild(document.getElementById("pageShadowLuminositeDiv"));
+        }
+
+        if(document.getElementById("pageShadowLuminositeDivNightMode") != null) {
+            document.body.removeChild(document.getElementById("pageShadowLuminositeDivNightMode"));
+        }
+
+        document.body.appendChild(elLum);
+
         if(typeof timeOutLum !== "undefined") {
             clearTimeout(timeOutLum)
         }
@@ -104,22 +140,47 @@
 
     function main(type) {
         chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert'], function (result) {
+            if(type == "reset" || type == "onlyreset") {
+                document.body.classList.remove("pageShadowInvertImageColor");
+
+                for(i=1; i<=nbThemes; i++) {
+                    if(i == "1") {
+                        document.body.classList.remove("pageShadowContrastBlack");
+                    } else {
+                        document.body.classList.remove("pageShadowContrastBlack" + i);
+                    }
+                }
+
+                if(document.getElementById("pageShadowLuminositeDiv") != null) {
+                    document.body.removeChild(document.getElementById("pageShadowLuminositeDiv"));
+                }
+
+                if(document.getElementById("pageShadowLuminositeDivNightMode") != null) {
+                    document.body.removeChild(document.getElementById("pageShadowLuminositeDivNightMode"));
+                }
+
+                if(type == "onlyreset") {
+                    return;
+                }
+            }
+
             if(result.sitesInterditPageShadow != "") {
                 var siteInterdits = result.sitesInterditPageShadow.split("\n");
-            }
-            else {
+            } else {
                 var siteInterdits = "";
             }
-            
+
             if(result.pageShadowEnabled == "true" && in_array(window.location.href, siteInterdits) == false) {
+                pageShadowEnabled = result.pageShadowEnabled; // global
                 theme = result.theme; // global
                 colorInvert = result.colorInvert; // global
                 applyAP();
             } else if(in_array(window.location.href, siteInterdits) == false) {
+                pageShadowEnabled = result.pageShadowEnabled; // global
                 colorInvert = result.colorInvert; // global
                 applyIC();
             }
-            
+
             if(type !== "onlyContrast") {
                 luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits);
             }
@@ -127,4 +188,13 @@
     }
 
     main();
+
+    // Execute Page Shadow on the page when the settings have been changed:
+    chrome.storage.onChanged.addListener(function() {
+        chrome.storage.local.get('liveSettings', function (result) {
+            if(result.liveSettings == "true") {
+                main('reset');
+            }
+        });
+    });
 }());

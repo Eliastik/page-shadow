@@ -21,6 +21,9 @@ function setSettingItem(name, value) {
         case 'sitesInterditPageShadow':
             chrome.storage.local.set({'sitesInterditPageShadow': value});
             break;
+        case 'liveSettings':
+            chrome.storage.local.set({'liveSettings': value});
+            break;
         case 'defaultLoad':
             chrome.storage.local.set({'defaultLoad': value});
             break;
@@ -43,7 +46,8 @@ function setFirstSettings() {
         'pageLumEnabled': 'false',
         'pourcentageLum': '15',
         'nightModeEnabled': 'false',
-        'sitesInterditPageShadow': ''
+        'sitesInterditPageShadow': '',
+        'liveSettings': 'true'
     });
 }
 checkFirstLoad();

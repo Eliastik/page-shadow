@@ -1,6 +1,7 @@
 *.xpi
 *.crx
 *.nex
+*.log
 todo.txt
 build
 node_modules

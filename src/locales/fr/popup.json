@@ -14,7 +14,9 @@
         "titleBrightness": "Baisse la luminosité de la page. C'est vous qui choisissez le pourcentage de baisse de luminosité de la page.",
         "percentage": "Pourcentage de baisse de luminosité :",
         "nightMode": "Mode nuit",
-        "tileNightMode": "Applique un filtre orangé sur la page afin de réduire la lumière bleue émise par l'écran."
+        "tileNightMode": "Applique un filtre orangé sur la page afin de réduire la lumière bleue émise par l'écran.",
+        "liveSettings": "Appliquer les paramètres en temps réel",
+        "titleLiveSettings": "Peut réduire les performances du navigateur."
     },
     "footer": {
         "advancedSettings": "Paramètres avancés",

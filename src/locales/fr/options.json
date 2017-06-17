@@ -32,6 +32,7 @@
             "browser": "Votre navigateur web :",
             "changelogTitle": "Journal des changements :",
                 "changelog": {
+                    "202": "<ul><li>Les paramètres peuvent désormais être appliqués en temps réel ;</li><li>Correction de l'icône de Page Shadow (l'ombre est de meilleure qualité) ;</li><li>Corrections de bugs (voir le fichier Lisez-moi).</li></ul>",
                     "201": "<ul><li>Compatibilité Microsoft Edge ;</li><li>Amélioration des performances et corrections de bugs (voir le fichier Lisez-moi).</li></ul>",
                     "2": "<ul><li>Compatibilité Firefox ;</li><li>Nouveau thème graphique basé sur Bootstrap ;</li><li>Moteur de traduction intégré et ajout d'une traduction en anglais ;</li><li>Ajout de thèmes de couleur pour l'outil \"Augmenter le contraste\" ;</li><li>Ajout d'un mode nuit ;</li><li>Ajout d'un mode permettant d'inverser la couleur des images ;</li><li>Amélioration des performances ;</li><li>Corrections diverses (bugs, textes).</li></ul>",
                     "121": "<ul><li>Correction d'un bug dans les paramètres avancés ;</li><li>Ajout d'informations sur l'application dans les paramètres avancés.</li></ul>",
@@ -39,6 +40,7 @@
                     "11": "<ul><li>Amélioration de la fonction \"Augmenter le contraste\".</li></ul>",
                     "1": "<ul><li>Version initiale.</li></ul>",
                         "versionNames": {
+                            "202": "Version 2.0.2 (17/06/2017)",
                             "201": "Version 2.0.1 (09/06/2017)",
                             "2": "Version 2.0 (05/06/2017)",
                             "12": "Version 1.2",

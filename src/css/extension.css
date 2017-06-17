@@ -25,6 +25,7 @@ body {
 }
 body.popup {
     width: 350px;
+    overflow: hidden;
 }
 .navbar-brand {
     padding: 15px;
