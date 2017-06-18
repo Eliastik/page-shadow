@@ -11,7 +11,7 @@ i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend)
             caches: ['localStorage'],
         },
         backend: {
-            loadPath: '/locales/{{lng}}/{{ns}}.json',
+            loadPath: '/_locales/{{lng}}/{{ns}}.json',
         },
 }, function(err, t) {
     translateContent();
