@@ -31,6 +31,9 @@ i18next.on('languageChanged', () => {
     translateContent();
 });
 $(document).ready(function() {
+    var elLumB = document.createElement("div");
+    document.body.appendChild(elLumB);
+    
     $('i[data-toggle="tooltip"]').tooltip({
         animated: 'fade',
         placement: 'bottom',
@@ -123,7 +126,6 @@ $(document).ready(function() {
     $( "#checkLuminositePage" ).change(function() {
         if($(this).is(':checked') == true) {
             setSettingItem("pageLumEnabled", "true");
-            elLumB = document.createElement("div");
             chrome.storage.local.get(['nightModeEnabled', 'pourcentageLum'], function (result) {
                 if(result.nightModeEnabled == "true") {
                     $("#checkNighMode").attr("checked", "checked");
@@ -132,7 +134,7 @@ $(document).ready(function() {
                     elLumB.setAttribute("id", "pageShadowLuminositeDiv");
                 }
                 elLumB.style.opacity = result.pourcentageLum / 100;
-                document.body.appendChild(elLumB);
+                elLumB.style.display = "block";
                 $("#sliderLuminositeDiv").stop().fadeIn();
             });
         }
