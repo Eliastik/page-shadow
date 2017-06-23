@@ -32,6 +32,7 @@ i18next.on('languageChanged', () => {
 });
 $(document).ready(function() {
     var elLumB = document.createElement("div");
+    elLumB.style.display = "none";
     document.body.appendChild(elLumB);
 
     $('i[data-toggle="tooltip"]').tooltip({
