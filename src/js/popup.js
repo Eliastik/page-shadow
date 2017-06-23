@@ -33,7 +33,7 @@ i18next.on('languageChanged', () => {
 $(document).ready(function() {
     var elLumB = document.createElement("div");
     document.body.appendChild(elLumB);
-    
+
     $('i[data-toggle="tooltip"]').tooltip({
         animated: 'fade',
         placement: 'bottom',
@@ -45,18 +45,18 @@ $(document).ready(function() {
             return value;
         }
     });
-	
-	$("#linkAdvSettings").click(function() {
+
+    $("#linkAdvSettings").click(function() {
         chrome.tabs.create({
             url: "options.html"
         });
-	});
-	
-	$("#linkTestExtension").click(function() {
-		chrome.tabs.create({
+    });
+
+    $("#linkTestExtension").click(function() {
+        chrome.tabs.create({
             url: "pageTest.html"
         });
-	});
+    });
 
     function previewTheme(theme) {
         $("#previsualisationDiv").attr("class", "");
@@ -113,7 +113,7 @@ $(document).ready(function() {
             setSettingItem("colorInvert", "false");
         }
     });
-    
+
     $( "#liveSettings" ).change(function() {
         if($(this).is(':checked') == true) {
             setSettingItem("liveSettings", "true");
@@ -180,10 +180,9 @@ $(document).ready(function() {
             $("#checkLuminositePage").attr("checked", "checked");
             $("#sliderLuminositeDiv").show();
                 if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
-                    elLumB = document.createElement("div");
                     elLumB.setAttribute("id", "pageShadowLuminositeDiv");
                     elLumB.style.opacity = result.pourcentageLum / 100;
-                    document.body.appendChild(elLumB);
+                    elLumB.style.display = "block";
                 }
         }
 
@@ -197,11 +196,11 @@ $(document).ready(function() {
         if(result.colorInvert == "true") {
             $("#checkColorInvert").attr("checked", "checked");
         }
-        
+
         if(result.liveSettings == "true" || result.liveSettings == null) {
             $("#liveSettings").attr("checked", "checked");
         }
-        
+
         if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
             sliderLuminosite.slider('setValue', result.pourcentageLum);
         }
