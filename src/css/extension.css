@@ -66,6 +66,10 @@ body.popup {
 .largeFontSize {
     font-size: 12pt;
 }
+.img-resize {
+    max-width: 100%;
+    height: auto;
+}
 .title-align {
     vertical-align: middle;
 }
