@@ -326,6 +326,13 @@ body.pageShadowInvertImageColor img {
     -webkit-filter: invert(100%);
     background-color: transparent !important;
 }
+body.pageShadowInvertImageColor .helperInvert {
+    filter: invert(100%);
+    -moz-filter: invert(100%);
+    -o-filter: invert(100%);
+    -webkit-filter: invert(100%);
+    background-color: transparent !important;
+}
 /* brightness */
 div#pageShadowLuminositeDiv {
     position: fixed;
