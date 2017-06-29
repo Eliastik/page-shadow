@@ -1,223 +1,223 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Page Shadow</title>
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/extension.css" type="text/css" />
-    <script type="text/javascript" src="js/i18next.min.js"></script>
-    <script type="text/javascript" src="js/jquery-i18next.min.js"></script>
-    <script type="text/javascript" src="js/i18nextBrowserLanguageDetector.min.js"></script>
-    <script type="text/javascript" src="js/i18nextXHRBackend.min.js"></script>
-    <script type="text/javascript" src="js/storage.js"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no">
-</head>
-<body>
-    <nav class="navbar navbar-inverse">
-          <div class="container-fluid">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
-                    <span class="sr-only" data-i18n="nav.toggleNavigation">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-              <span class="navbar-brand"><img src="img/icon_512.png" style="vertical-align: middle;"> <span class="title-align">Page Shadow</span></span>
+    <head>
+        <title>Page Shadow</title>
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/extension.css" type="text/css" />
+        <script type="text/javascript" src="js/i18next.min.js"></script>
+        <script type="text/javascript" src="js/jquery-i18next.min.js"></script>
+        <script type="text/javascript" src="js/i18nextBrowserLanguageDetector.min.js"></script>
+        <script type="text/javascript" src="js/i18nextXHRBackend.min.js"></script>
+        <script type="text/javascript" src="js/storage.js"></script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse">
+              <div class="container-fluid">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+                        <span class="sr-only" data-i18n="nav.toggleNavigation">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                  <span class="navbar-brand"><img src="img/icon_512.png" style="vertical-align: middle;"> <span class="title-align">Page Shadow</span></span>
+                </div>
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="options.html"><span data-i18n="nav.advancedSettings"></span> <span class="sr-only" data-i18n="nav.actual"></span></a></li>
+                    <li><a href="pageTest.html"><span data-i18n="nav.testPage"></span></a></li>
+                </ul>
             </div>
-        <div class="collapse navbar-collapse" id="navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="options.html"><span data-i18n="nav.advancedSettings"></span> <span class="sr-only" data-i18n="nav.actual"></span></a></li>
-                <li><a href="pageTest.html"><span data-i18n="nav.testPage"></span></a></li>
-            </ul>
+            </div>
+        </nav>
+        <div class="container">
+            <form class="form-horizontal well">
+                <p data-i18n="container.description"></p>
+                <div class="form-group">
+                    <div class="col-lg-8">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#about" id="aboutDialogBtn"><i class="fa fa-info-circle" aria-hidden="true"></i> <span data-i18n="container.about"></span></button> &nbsp; <a href="" target="_blank" class="btn btn-standard" role="button" id="updateBtn"><i class="fa fa-search" aria-hidden="true"></i> <span data-i18n="container.update"></span></a>
+                    </div>
+                </div>
+                <div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="about">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="aboutLabel" data-i18n="modal.about.title"></h4>
+                      </div>
+                      <div class="modal-body">
+                        <p><span data-i18n="modal.about.description"></span> (<a href="http://www.eliastiksofts.com" target="_blank">www.eliastiksofts.com</a>). <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#readme" data-i18n="modal.about.readme"></a>. <span data-i18n="modal.about.webpage"></span> <a href="http://www.eliastiksofts.com/page-shadow/" target="_blank">www.eliastiksofts.com/page-shadow</a>.</p>
+                        <label data-i18n="modal.about.version"></label> <span class="badge" id="versionExtension"></span><br />
+                        <!--<label data-i18n="modal.about.browser"></label> <span class="badge" id="browserName"></span>-->
+                        <h5 data-i18n="modal.about.changelogTitle"></h5>
+                            <div class="panel-group" id="accordion">
+                              <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse202" data-i18n="modal.about.changelog.versionNames.202"></a>
+                                  </h4>
+                                </div>
+                                <div id="collapse202" class="panel-collapse collapse in">
+                                  <div class="panel-body" data-i18n="[html]modal.about.changelog.202"></div>
+                                </div>
+                              </div>
+                              <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse" data-i18n="modal.about.changelog.versionNames.201"></a>
+                                  </h4>
+                                </div>
+                                <div id="collapse" class="panel-collapse collapse">
+                                  <div class="panel-body" data-i18n="[html]modal.about.changelog.201"></div>
+                                </div>
+                              </div>
+                              <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" data-i18n="modal.about.changelog.versionNames.2"></a>
+                                  </h4>
+                                </div>
+                                <div id="collapse1" class="panel-collapse collapse in">
+                                  <div class="panel-body" data-i18n="[html]modal.about.changelog.2"></div>
+                                </div>
+                                </div>
+                              <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" data-i18n="modal.about.changelog.versionNames.121"></a>
+                                  </h4>
+                                </div>
+                                <div id="collapse2" class="panel-collapse collapse">
+                                  <div class="panel-body" data-i18n="[html]modal.about.changelog.121"></div>
+                                </div>
+                              </div>
+                              <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse3" data-i18n="modal.about.changelog.versionNames.12"></a>
+                                  </h4>
+                                </div>
+                                <div id="collapse3" class="panel-collapse collapse">
+                                  <div class="panel-body" data-i18n="[html]modal.about.changelog.12"></div>
+                                </div>
+                                </div>
+                                <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse4" data-i18n="modal.about.changelog.versionNames.11"></a>
+                                  </h4>
+                                </div>
+                                <div id="collapse4" class="panel-collapse collapse">
+                                  <div class="panel-body" data-i18n="[html]modal.about.changelog.11"></div>
+                                </div>
+                                </div>
+                                <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse5" data-i18n="modal.about.changelog.versionNames.1"></a>
+                                  </h4>
+                                </div>
+                                <div id="collapse5" class="panel-collapse collapse">
+                                  <div class="panel-body" data-i18n="[html]modal.about.changelog.1"></div>
+                                </div>
+                            </div>
+                            </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal fade" id="readme" tabindex="-1" role="dialog" aria-labelledby="readme">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="readmeLabel" data-i18n="modal.readme.title"></h4>
+                      </div>
+                      <div class="modal-body">
+                        <iframe src="" id="iframeReadme" data-i18n="[src]modal.readme.src"></iframe>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="languageSelect" class="col-lg-2 control-label bold" data-i18n="container.labelLanguage"></label>
+                  <div class="col-lg-10">
+                    <select id="languageSelect" class="form-control" rows="10"></select>
+                  </div>
+                </div>
+                 <div class="form-group">
+                  <label for="textareaAssomPage" class="col-lg-2 control-label bold" data-i18n="container.labelList"></label>
+                  <div class="col-lg-10">
+                    <p class="indice"><span data-i18n="container.indiceList"></span> <span data-toggle="tooltip" data-placement="top" data-i18n="[data-original-title]container.titleHelp"><i class="fa fa-question-circle helpIcon" aria-hidden="true"></i> <span class="vertical-align" data-i18n="container.help"></span></p>
+                    <textarea id="textareaAssomPage" class="form-control" rows="10" data-i18n="[placeholder]container.textareaPlaceholder"></textarea>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-10 col-lg-offset-2">
+                    <button type="button" class="btn btn-primary" id="validerButton"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.validate"></span></button> &nbsp; <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#resetConfirm" id="resetConfirmBtn"><i class="fa fa-refresh" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button>
+                  </div>
+                </div>
+                <div class="modal fade" id="saved" tabindex="-1" role="dialog" aria-labelledby="saved">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="savedLabel" data-i18n="modal.saved.title"></h4>
+                      </div>
+                      <div class="modal-body">
+                        <p class="largeFontSize" data-i18n="modal.saved.message"></p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="modal.ok"></span></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                  <div class="modal fade" id="reset" tabindex="-1" role="dialog" aria-labelledby="reset">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="resetLabel" data-i18n="modal.reset.title"></h4>
+                      </div>
+                      <div class="modal-body">
+                        <p class="largeFontSize" data-i18n="modal.reset.message"></p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="modal.ok"></span></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal fade" id="resetConfirm" tabindex="-1" role="dialog" aria-labelledby="resetConfirm">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="resetConfirmLabel" data-i18n="modal.resetConfirm.title"></h4>
+                      </div>
+                      <div class="modal-body">
+                        <p class="largeFontSize" data-i18n="modal.resetConfirm.message"></p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> <span data-i18n="modal.no"></span></button> &nbsp; <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmReset"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="modal.yes"></span></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </form>
         </div>
-        </div>
-    </nav>
-    <div class="container">
-        <form class="form-horizontal well">
-            <p data-i18n="container.description"></p>
-            <div class="form-group">
-                <div class="col-lg-8">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#about" id="aboutDialogBtn"><i class="fa fa-info-circle" aria-hidden="true"></i> <span data-i18n="container.about"></span></button> &nbsp; <a href="" target="_blank" class="btn btn-standard" role="button" id="updateBtn"><i class="fa fa-search" aria-hidden="true"></i> <span data-i18n="container.update"></span></a>
-                </div>
-            </div>
-            <div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="about">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="aboutLabel" data-i18n="modal.about.title"></h4>
-                  </div>
-                  <div class="modal-body">
-                    <p><span data-i18n="modal.about.description"></span> (<a href="http://www.eliastiksofts.com" target="_blank">www.eliastiksofts.com</a>). <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#readme" data-i18n="modal.about.readme"></a>. <span data-i18n="modal.about.webpage"></span> <a href="http://www.eliastiksofts.com/page-shadow/" target="_blank">www.eliastiksofts.com/page-shadow</a>.</p>
-                    <label data-i18n="modal.about.version"></label> <span class="badge" id="versionExtension"></span><br />
-                    <!--<label data-i18n="modal.about.browser"></label> <span class="badge" id="browserName"></span>-->
-                    <h5 data-i18n="modal.about.changelogTitle"></h5>
-                        <div class="panel-group" id="accordion">
-                          <div class="panel panel-default">
-                            <div class="panel-heading">
-                              <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse202" data-i18n="modal.about.changelog.versionNames.202"></a>
-                              </h4>
-                            </div>
-                            <div id="collapse202" class="panel-collapse collapse in">
-                              <div class="panel-body" data-i18n="[html]modal.about.changelog.202"></div>
-                            </div>
-                          </div>
-                          <div class="panel panel-default">
-                            <div class="panel-heading">
-                              <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse" data-i18n="modal.about.changelog.versionNames.201"></a>
-                              </h4>
-                            </div>
-                            <div id="collapse" class="panel-collapse collapse">
-                              <div class="panel-body" data-i18n="[html]modal.about.changelog.201"></div>
-                            </div>
-                          </div>
-                          <div class="panel panel-default">
-                            <div class="panel-heading">
-                              <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" data-i18n="modal.about.changelog.versionNames.2"></a>
-                              </h4>
-                            </div>
-                            <div id="collapse1" class="panel-collapse collapse in">
-                              <div class="panel-body" data-i18n="[html]modal.about.changelog.2"></div>
-                            </div>
-                            </div>
-                          <div class="panel panel-default">
-                            <div class="panel-heading">
-                              <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" data-i18n="modal.about.changelog.versionNames.121"></a>
-                              </h4>
-                            </div>
-                            <div id="collapse2" class="panel-collapse collapse">
-                              <div class="panel-body" data-i18n="[html]modal.about.changelog.121"></div>
-                            </div>
-                          </div>
-                          <div class="panel panel-default">
-                            <div class="panel-heading">
-                              <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse3" data-i18n="modal.about.changelog.versionNames.12"></a>
-                              </h4>
-                            </div>
-                            <div id="collapse3" class="panel-collapse collapse">
-                              <div class="panel-body" data-i18n="[html]modal.about.changelog.12"></div>
-                            </div>
-                            </div>
-                            <div class="panel panel-default">
-                            <div class="panel-heading">
-                              <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse4" data-i18n="modal.about.changelog.versionNames.11"></a>
-                              </h4>
-                            </div>
-                            <div id="collapse4" class="panel-collapse collapse">
-                              <div class="panel-body" data-i18n="[html]modal.about.changelog.11"></div>
-                            </div>
-                            </div>
-                            <div class="panel panel-default">
-                            <div class="panel-heading">
-                              <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse5" data-i18n="modal.about.changelog.versionNames.1"></a>
-                              </h4>
-                            </div>
-                            <div id="collapse5" class="panel-collapse collapse">
-                              <div class="panel-body" data-i18n="[html]modal.about.changelog.1"></div>
-                            </div>
-                        </div>
-                        </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="modal fade" id="readme" tabindex="-1" role="dialog" aria-labelledby="readme">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="readmeLabel" data-i18n="modal.readme.title"></h4>
-                  </div>
-                  <div class="modal-body">
-                    <iframe src="" id="iframeReadme" data-i18n="[src]modal.readme.src"></iframe>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="languageSelect" class="col-lg-2 control-label bold" data-i18n="container.labelLanguage"></label>
-              <div class="col-lg-10">
-                <select id="languageSelect" class="form-control" rows="10"></select>
-              </div>
-            </div>
-             <div class="form-group">
-              <label for="textareaAssomPage" class="col-lg-2 control-label bold" data-i18n="container.labelList"></label>
-              <div class="col-lg-10">
-                <p class="indice"><span data-i18n="container.indiceList"></span> <span data-toggle="tooltip" data-placement="top" data-i18n="[data-original-title]container.titleHelp"><i class="fa fa-question-circle helpIcon" aria-hidden="true"></i> <span class="vertical-align" data-i18n="container.help"></span></p>
-                <textarea id="textareaAssomPage" class="form-control" rows="10" data-i18n="[placeholder]container.textareaPlaceholder"></textarea>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="col-lg-10 col-lg-offset-2">
-                <button type="button" class="btn btn-primary" id="validerButton"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.validate"></span></button> &nbsp; <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#resetConfirm" id="resetConfirmBtn"><i class="fa fa-refresh" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button>
-              </div>
-            </div>
-            <div class="modal fade" id="saved" tabindex="-1" role="dialog" aria-labelledby="saved">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="savedLabel" data-i18n="modal.saved.title"></h4>
-                  </div>
-                  <div class="modal-body">
-                    <p class="largeFontSize" data-i18n="modal.saved.message"></p>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="modal.ok"></span></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-              <div class="modal fade" id="reset" tabindex="-1" role="dialog" aria-labelledby="reset">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="resetLabel" data-i18n="modal.reset.title"></h4>
-                  </div>
-                  <div class="modal-body">
-                    <p class="largeFontSize" data-i18n="modal.reset.message"></p>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="modal.ok"></span></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="modal fade" id="resetConfirm" tabindex="-1" role="dialog" aria-labelledby="resetConfirm">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="resetConfirmLabel" data-i18n="modal.resetConfirm.title"></h4>
-                  </div>
-                  <div class="modal-body">
-                    <p class="largeFontSize" data-i18n="modal.resetConfirm.message"></p>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> <span data-i18n="modal.no"></span></button> &nbsp; <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmReset"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="modal.yes"></span></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-        </form>
-    </div>
-</body>
-<script type="text/javascript" src="js/options.js"></script>
+    <script type="text/javascript" src="js/options.js"></script>
+    </body>
 </html>
