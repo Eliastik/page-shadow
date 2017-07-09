@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.0.2 (17/06/2017)
+* Latest version: 2.0.3 (09/07/2017)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -21,6 +21,16 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile yourself (see Compilation section).
 
 ### Changelog:
+
+#### Version 2.0.3 (09/07/2017) :
+* It is now possible to disable Page Shadow for a particular website or page via the right-click or via the extension menu
+* Bug fixes and minor adjustments :
+    - Themes 2 and 3 now have a gray background for transparent images
+    - Added support for HTML form and caption elements by the Increase page contrast tool (improves rendering of the tool)
+    - Fixed a bug with tool setting Decrease page brightness
+    - The image on the test page of the extension now correctly resizes when the browser window is resized
+    - Basic support for future versions of Firefox for Android (not tested)
+    - Small adjustments of the code
 
 #### Version 2.0.2 (17/06/2017) :
 * The settings can now be applied in real time
@@ -49,22 +59,22 @@ Or you can compile yourself (see Compilation section).
 * Added a mode to invert the color of the images
 * Performance improvements
 * Various fixes (bugs, texts)
-    
+
 #### Version 1.2.1 :
 * Fixed bug in the advanced settings
 * Adding informations about the extension in the advanced settings
-    
+
 #### Version 1.2 :
 * Optimisation of the popup layout
 * Improved function "Increase page contrast". The transparent images are now supported
 * Some adjustements
-    
+
 #### Version 1.1 :
 * Improved function "Increase page contrast"
-    
+
 #### Version 1.0 :
 * Initial version
-    
+
 ### Compilation :
 
 You can compile yourself the extension with only one command line. To do this, you have to install npm and gulp.

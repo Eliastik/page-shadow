@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.0.2 (17/06/2017)
+* Version actuelle : 2.0.3 (09/07/2017)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -22,6 +22,16 @@ Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
 
+#### Version 2.0.3 (09/07/2017) :
+* Il est désormais possible de désactiver Page Shadow pour un site ou une page particulière via le clic-droit ou via le menu de l'extension ;
+* Corrections de bugs et ajustements mineurs :
+    - Les thèmes 2 et 3 ont désormais un fond gris pour les images transparentes ;
+    - Ajout de la prise en charge des éléments HTML form et caption par l'outil Augmenter le contraste (améliore le rendu de l'outil) ;
+    - Correction d'un bug avec le réglage de l'outil Baisser la luminosité de la page ;
+    - L'image de la page d'exemple de l'extension se redimensionne désormais correctement lorsque la fenêre du navigateur est redimensionnée ;
+    - Prise en charge basique des versions futures de Firefox pour Android (non testé) ;
+    - Petits ajustements du code.
+
 #### Version 2.0.2 (17/06/2017) :
 * Les paramètres peuvent désormais être appliqués en temps réel ;
 * Correction de l'icône de Page Shadow (l'ombre est de meilleure qualité) ;
@@ -30,7 +40,7 @@ Soit la compiler vous-même (voir section "Compilation").
     - Correction d'un bug avec la réactivation automatique de l'outil "Augmenter le contraste" avec certains sites particuliers (comme Youtube) ;
     - Corrections de bugs avec le fichier Gulp (qui permet la compilation de l'extension). L'extension peut désormais être compilée pour Edge et Opera ;
     - Autres petits ajustements.
-    
+
 #### Version 2.0.1 (09/06/2017) :
 * Compatibilité Microsoft Edge ;
 * Amélioration des performances et corrections de bugs :
@@ -49,22 +59,22 @@ Soit la compiler vous-même (voir section "Compilation").
 * Ajout d'un mode permettant d'inverser la couleur des images ;
 * Amélioration des performances ;
 * Corrections diverses (bugs, textes).
-    
+
 #### Version 1.2.1 :
 * Correction d'un bug dans les paramètres avancés ;
 * Ajout d'informations sur l'application dans les paramètres avancés.
-    
+
 #### Version 1.2 :
 * Optimisation de la mise en page de la popup ;
 * Amélioration de l'outil "Augmenter le contraste". Les images transparentes sont désormais prises en charge ;
 * Quelques ajustements.
-    
+
 #### Version 1.1 :
 * Amélioration de la fonction "Augmenter le contraste".
-    
+
 #### Version 1.0 :
 * Version initiale.
-    
+
 ### Compilation :
 
 Vous pouvez compiler vous-même l'extension en une ligne de commande. Pour cela, vous devez avoir installé npm et gulp.
@@ -109,7 +119,7 @@ publiée par la Free Software Foundation ; soit la version 3 de la
 licence, soit (à votre gré) toute version ultérieure.
 
 Ce programme est distribué dans l'espoir qu'il sera utile,
-mais SANS AUCUNE GARANTIE ; sans même la garantie tacite de 
+mais SANS AUCUNE GARANTIE ; sans même la garantie tacite de
 QUALITÉ MARCHANDE ou d'ADÉQUATION à UN BUT PARTICULIER.
 Consultez la GNU General Public License pour plus de détails.
 
