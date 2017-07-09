@@ -1,7 +1,7 @@
 {
     "name": "Page Shadow",
-    "version": "2.0.2",
-    "default_locale": "fr",
+    "version": "2.0.3",
+    "default_locale": "en",
     "manifest_version": 2,
     "icons": {
         "32": "img/icon_32.png",
@@ -13,7 +13,7 @@
         "256": "img/icon_256.png",
         "512": "img/icon_512.png"
     },
-    "description": "Une série d'outils permettant d'améliorer la lecture de pages web dans une pièce mal éclairée/autre.",
+    "description": "__MSG_extensionDescription__",
     "author": "Eliastik",
     "developer": {
         "name": "Eliastik",
@@ -42,7 +42,7 @@
         }
     },
     "permissions": [
-        "storage"
+        "storage", "contextMenus", "tabs"
     ],
     "content_scripts": [
         {
@@ -60,6 +60,6 @@
         }
     ],
     "background": {
-        "scripts": ["background.js"]
+        "scripts": ["js/storage.js", "js/background.js"]
     }
 }

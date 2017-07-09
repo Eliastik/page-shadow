@@ -1,4 +1,4 @@
-extensionVersion = "2.0.2";
+extensionVersion = "2.0.3";
 /* translation */
 i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
     fallbackLng: ['en', 'fr'],
@@ -40,25 +40,19 @@ function changeLng(lng) {
 i18next.on('languageChanged', () => {
     translateContent();
 });
-function getBrowserName() {
-    if((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1 ) {
-        return "Opera";
-    }
-    else if(navigator.userAgent.indexOf("Chrome") != -1 ) {
-        return "Chrome";
-    }
-    else if(navigator.userAgent.indexOf("Firefox") != -1 ) {
-        return "Firefox";
-    } else {
-        return false;
-    }
-}
 function resetSettings() {
     $('span[data-toggle="tooltip"]').tooltip("hide");
     chrome.storage.local.clear();
     changeLng("fr");
     $("#textareaAssomPage").val("");
     $('#reset').modal("show");
+}
+function displaySettings() {
+    chrome.storage.local.get('sitesInterditPageShadow', function (result) {
+        if(typeof result.sitesInterditPageShadow !== "undefined" && typeof result.sitesInterditPageShadow !== null) {
+            $("#textareaAssomPage").val(result.sitesInterditPageShadow);
+        }
+    });
 }
 $(document).ready(function() {
     $("#validerButton").click(function() {
@@ -72,18 +66,9 @@ $(document).ready(function() {
         $('span[data-toggle="tooltip"]').tooltip("hide");
     });
 
-    chrome.storage.local.get('sitesInterditPageShadow', function (result) {
-        if(typeof result.sitesInterditPageShadow !== "undefined" && typeof result.sitesInterditPageShadow !== null) {
-            $("#textareaAssomPage").val(result.sitesInterditPageShadow);
-        }
+    $("#resetConfirmBtn").click(function() {
+        $('span[data-toggle="tooltip"]').tooltip("hide");
     });
-    
-    /*var browserName = getBrowserName();
-    if(browserName != false) {
-        $("#browserName").text(browserName);
-    } else {
-        $("#browserName").text("???");
-    }*/
 
     $('span[data-toggle="tooltip"]').tooltip({
         animated: 'fade',
@@ -91,17 +76,17 @@ $(document).ready(function() {
         trigger: 'click',
         placement: 'top'
     });
-    
-    $("#resetConfirmBtn").click(function() {
-        $('span[data-toggle="tooltip"]').tooltip("hide");
-    });
-    
+
     $("#confirmReset").click(function() {
         resetSettings();
     });
-    
+
     $("#versionExtension").text(extensionVersion);
-    /*$("#updateBtn").attr("href", "http://www.eliastiksofts.com/page-shadow/update.php?v="+ extensionVersion +"&nav="+ browserName.toLowerCase());*/
     $("#updateBtn").attr("href", "http://www.eliastiksofts.com/page-shadow/update.php?v="+ extensionVersion);
-    $("#versionExtension").text(extensionVersion);
+
+    displaySettings();
+
+    chrome.storage.onChanged.addListener(function() {
+        displaySettings();
+    });
 });

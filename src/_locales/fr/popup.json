@@ -20,6 +20,10 @@
     },
     "footer": {
         "advancedSettings": "Paramètres avancés",
-        "testExtension": "Tester l'extension"
+        "testExtension": "Tester l'extension",
+        "disableWebsite": "Désactiver pour ce site",
+        "enableWebsite": "Désactiver pour ce site",
+        "disableWebpage": "Désactiver pour cette page",
+        "enableWebpage": "Désactiver pour cette page"
     }
 }

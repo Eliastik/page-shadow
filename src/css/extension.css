@@ -27,6 +27,9 @@ body.popup {
     width: 350px;
     overflow: hidden;
 }
+.container.popup {
+    width: 100%;
+}
 .navbar-brand {
     padding: 15px;
     color: white !important;
@@ -101,4 +104,7 @@ label {
 hr {
     margin-top: 38px;
     margin-bottom: 8px;
+}
+.m0 {
+    margin-bottom: 0;
 }

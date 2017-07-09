@@ -20,6 +20,10 @@
     },
     "footer": {
         "advancedSettings": "Advanced settings",
-        "testExtension": "Test the extension"
+        "testExtension": "Test the extension",
+        "disableWebsite": "Disable for this website",
+        "enableWebsite": "Disable for this website",
+        "disableWebpage": "Disable for this page",
+        "enableWebpage": "Disable for this page"
     }
 }

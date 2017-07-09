@@ -15,10 +15,10 @@
                 "en": "English"
             },
         "labelList": "List of web page/site to exclude (one element per line):",
-        "titleHelp": "Example: if you enter http://www.example.com, Page Shadow will ignore all the website. If you enter http://www.example.com/repertoire1/, only this folder and the sub-folders will be ignored. If you enter http://www.example.com/repertoire1/index.php, only this page will be ignored. If you enter index, all URLs containing this word will be ignored.",
+        "titleHelp": "It is only possible to block domains (eg www.google.com) or specific URLs (eg https://en.wikipedia.org/wiki/Google). Note that you can exclude a website or a page by right-clicking and choosing what to block in the Page Shadow submenu.",
         "help": "Help",
         "indiceList": "The websites addresses entered below will be ignored by Page Shadow.",
-        "textareaPlaceholder": "Example:\nhttps://www.google.fr\nwww.wikipedia.org",
+        "textareaPlaceholder": "Example:\nwww.google.com\nhttps://en.wikipedia.org/wiki/Google",
         "reset": "Reset settings",
         "validate": "Validate"
     },
@@ -32,6 +32,7 @@
             "browser": "Your web browser:",
             "changelogTitle": "Changelog:",
                 "changelog": {
+                    "203": "<ul><li>It is now possible to disable Page Shadow for a particular website or page via the right-click or via the extension menu</li><li>Bug fixes and minor adjustments (see Readme file)</ul>",
                     "202": "<ul><li>The settings can now be applied in real time</li><li>Fixed Page Shadow icon (the shadow is better)</li><li>Bugs fixes (see README file)</li></ul>",
                     "201": "<ul><li>Microsoft Edge support</li><li>Performance improvements and bugs fixes (see README file)</li></ul>",
                     "2": "<ul><li>Firefox support</li><li>New graphical theme based on Bootstrap</li><li>Integrated translation engine and added English translation</li><li>Added color themes for the \"Increase contrast\" tool</li><li>Added night mode</li><li>Added a mode to invert the color of the images</li><li>Performance improvements</li><li>Various fixes (bugs, texts)</li></ul>",
@@ -40,6 +41,7 @@
                     "11": "<ul><li>Improved function \"Increase page contrast\"</li></ul>",
                     "1": "<ul><li>Initial version</li></ul>",
                         "versionNames": {
+                            "203": "Version 2.0.3 (09/07/2017)",
                             "202": "Version 2.0.2 (17/06/2017)",
                             "201": "Version 2.0.1 (09/06/2017)",
                             "2": "Version 2.0 (05/06/2017)",

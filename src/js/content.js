@@ -84,7 +84,7 @@
     function luminositePage(enabled, pourcentage, nightmode, siteInterdits) {
         elLum = document.createElement("div");
 
-        if(enabled == "true" && in_array(window.location.href, siteInterdits) == false) {
+        if(enabled == "true") {
             elLum.style.display = "block";
             if(nightmode == "true") {
                 elLum.setAttribute("id", "pageShadowLuminositeDivNightMode");
@@ -138,6 +138,17 @@
         return false;
     }
 
+    function strict_in_array(needle, haystack) {
+        var key = '';
+            for (key in haystack) {
+                if (needle == haystack[key]) {
+                    return true;
+                }
+            }
+
+        return false;
+    }
+
     function main(type) {
         chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert'], function (result) {
             if(type == "reset" || type == "onlyreset") {
@@ -164,25 +175,31 @@
                 }
             }
 
-            if(result.sitesInterditPageShadow != "") {
-                var siteInterdits = result.sitesInterditPageShadow.split("\n");
+            if(result.sitesInterditPageShadow !== "") {
+                var siteInterdits = result.sitesInterditPageShadow.trim().split("\n");
             } else {
                 var siteInterdits = "";
             }
 
-            if(result.pageShadowEnabled == "true" && in_array(window.location.href, siteInterdits) == false) {
-                pageShadowEnabled = result.pageShadowEnabled; // global
-                theme = result.theme; // global
-                colorInvert = result.colorInvert; // global
-                applyAP();
-            } else if(in_array(window.location.href, siteInterdits) == false) {
-                pageShadowEnabled = result.pageShadowEnabled; // global
-                colorInvert = result.colorInvert; // global
-                applyIC();
-            }
+            var websiteUrl = window.location.href;
+            var websuteUrl_tmp = new URL(websiteUrl);
+            var domain = websuteUrl_tmp.hostname;
 
-            if(type !== "onlyContrast") {
-                luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits);
+            if(strict_in_array(domain, siteInterdits) !== true && strict_in_array(websiteUrl, siteInterdits) !== true) {
+                if(result.pageShadowEnabled == "true") {
+                    pageShadowEnabled = result.pageShadowEnabled; // global
+                    theme = result.theme; // global
+                    colorInvert = result.colorInvert; // global
+                    applyAP();
+                } else {
+                    pageShadowEnabled = result.pageShadowEnabled; // global
+                    colorInvert = result.colorInvert; // global
+                    applyIC();
+                }
+
+                if(type !== "onlyContrast") {
+                    luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits);
+                }
             }
         });
     }

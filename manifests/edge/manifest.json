@@ -1,6 +1,7 @@
 {
     "name": "Page Shadow",
-    "version": "2.0.2",
+    "version": "2.0.3",
+    "default_locale": "en",
     "manifest_version": 2,
     "icons": {
         "32": "img/icon_32.png",
@@ -12,7 +13,7 @@
         "256": "img/icon_256.png",
         "512": "img/icon_512.png"
     },
-    "description": "Une série d'outils permettant d'améliorer la lecture de pages web dans une pièce mal éclairée/autre.",
+    "description": "__MSG_extensionDescription__",
     "author": "Eliastik",
     "homepage_url": "http://www.eliastiksofts.com/page-shadow/",
     "browser_action": {
@@ -31,7 +32,7 @@
     },
     "options_page": "options.html",
     "permissions": [
-        "storage"
+        "storage", "contextMenus", "tabs"
     ],
     "content_scripts": [
         {
@@ -48,6 +49,9 @@
             "run_at": "document_start"
         }
     ],
+    "background": {
+        "scripts": ["js/storage.js", "js/background.js"]
+    },
     "-ms-preload": {
         "backgroundScript": "backgroundScriptsAPIBridge.js",
         "contentScript": "contentScriptsAPIBridge.js"

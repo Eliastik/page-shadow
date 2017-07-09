@@ -15,10 +15,10 @@
                 "en": "English"
             },
         "labelList": "Liste des sites/pages à exclure (un élément par ligne) :",
-        "titleHelp": "Exemple : si vous entrez http://www.example.com, Page Shadow ignorera tout le site. Si vous entrez http://www.example.com/repertoire1/, seul ce répertoire et les sous-répertoires seront ignorés. Si vous entrez http://www.example.com/repertoire1/index.php, seul cette page sera ignorée. Si vous entrez index, toutes les url contenant ce mot seront ignorées.",
+        "titleHelp": "Il est seulement possible de bloquer des domaines (par ex. www.google.fr) ou des URL particulières (par ex. https://fr.wikipedia.org/wiki/Google). Notez que vous pouvez exclure un site ou une page à l'aide du clic-droit et en choissant quoi bloquer dans le sous-menu Page Shadow.",
         "help": "Aide",
         "indiceList": "Les adresses des sites entrées ci-dessous seront ignorées par Page Shadow.",
-        "textareaPlaceholder": "Exemple :\nhttps://www.google.fr\nwww.wikipedia.org",
+        "textareaPlaceholder": "Exemple :\nwww.google.fr\nhttps://fr.wikipedia.org/wiki/Google",
         "reset": "Réinitialiser les paramètres",
         "validate": "Valider"
     },
@@ -32,6 +32,7 @@
             "browser": "Votre navigateur web :",
             "changelogTitle": "Journal des changements :",
                 "changelog": {
+                    "203": "<ul><li>Il est désormais possible de désactiver Page Shadow pour un site ou une page particulière via le clic-droit ou via le menu de l'extension ;</li><li>Corrections de bugs et ajustements mineurs (voir le fichier Lisez-moi).</ul>",
                     "202": "<ul><li>Les paramètres peuvent désormais être appliqués en temps réel ;</li><li>Correction de l'icône de Page Shadow (l'ombre est de meilleure qualité) ;</li><li>Corrections de bugs (voir le fichier Lisez-moi).</li></ul>",
                     "201": "<ul><li>Compatibilité Microsoft Edge ;</li><li>Amélioration des performances et corrections de bugs (voir le fichier Lisez-moi).</li></ul>",
                     "2": "<ul><li>Compatibilité Firefox ;</li><li>Nouveau thème graphique basé sur Bootstrap ;</li><li>Moteur de traduction intégré et ajout d'une traduction en anglais ;</li><li>Ajout de thèmes de couleur pour l'outil \"Augmenter le contraste\" ;</li><li>Ajout d'un mode nuit ;</li><li>Ajout d'un mode permettant d'inverser la couleur des images ;</li><li>Amélioration des performances ;</li><li>Corrections diverses (bugs, textes).</li></ul>",
@@ -40,6 +41,7 @@
                     "11": "<ul><li>Amélioration de la fonction \"Augmenter le contraste\".</li></ul>",
                     "1": "<ul><li>Version initiale.</li></ul>",
                         "versionNames": {
+                            "203": "Version 2.0.3 (09/07/2017)",
                             "202": "Version 2.0.2 (17/06/2017)",
                             "201": "Version 2.0.1 (09/06/2017)",
                             "2": "Version 2.0 (05/06/2017)",

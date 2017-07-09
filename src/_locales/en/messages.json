@@ -1,0 +1,26 @@
+{
+    "extensionName": {
+        "message": "Page Shadow"
+    },
+    "extensionDescription": {
+        "message": "A series of tools to improve the reading of web pages in badly lit room/other."
+    },
+    "application_title": {
+        "message": "Page Shadow"
+    },
+    "application_description": {
+        "message": "A series of tools to improve the reading of web pages in badly lit room/other."
+    },
+    "appName": {
+        "message": "Page Shadow"
+    },
+    "appDesc": {
+        "message": "A series of tools to improve the reading of web pages in badly lit room/other."
+    },
+    "disableWebsite": {
+        "message": "Disable for this website"
+    },
+    "disableWebpage": {
+        "message": "Disable for this page"
+    }
+}

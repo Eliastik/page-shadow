@@ -71,6 +71,139 @@ $(document).ready(function() {
             $("#previsualisationDiv").addClass("pageShadowContrastBlack");
         }
     }
+    
+    function in_array(needle, haystack) {
+        var key = '';
+            for (key in haystack) {
+                if (needle.indexOf(haystack[key]) != -1) {
+                    return true;
+                }
+            }
+
+        return false;
+    }
+
+    function strict_in_array(needle, haystack) {
+        var key = '';
+            for (key in haystack) {
+                if (needle == haystack[key]) {
+                    return true;
+                }
+            }
+
+        return false;
+    }
+
+    function removeA(arr) {
+        var what, a = arguments, L = a.length, ax;
+        while (L > 1 && arr.length) {
+            what = a[--L];
+            while ((ax= arr.indexOf(what)) !== -1) {
+                arr.splice(ax, 1);
+            }
+        }
+        return arr;
+    }
+    
+    function checkEnable() {
+        chrome.storage.local.get('sitesInterditPageShadow', function (result) {
+            if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined' || result.sitesInterditPageShadow.trim() == '') {
+                var siteInterdits = "";
+            } else {
+                var siteInterdits = result.sitesInterditPageShadow.split("\n");
+            }
+
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                var tabUrl = tabs[0].url;
+
+                var url = new URL(tabUrl);
+                var domain = url.hostname;
+
+                if(strict_in_array(domain, siteInterdits)) {
+                    $("#disableWebsite-li").show();
+                    $("#enableWebsite-li").hide();
+                } else {
+                    $("#disableWebsite-li").hide();
+                    $("#enableWebsite-li").show();
+                }
+
+                if(strict_in_array(tabUrl, siteInterdits)) {
+                    $("#disableWebpage-li").show();
+                    $("#enableWebpage-li").hide();
+                } else {
+                    $("#disableWebpage-li").hide();
+                    $("#enableWebpage-li").show();
+                }
+            });
+        });
+    }
+    
+    function disablePageShadow(type, checked) {
+        chrome.storage.local.get('sitesInterditPageShadow', function (result) {
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                var disabledWebsites = '';
+                var disabledWebsitesEmpty = false;
+                var url = new URL(tabs[0].url);
+                var domain = url.hostname;
+
+                if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined') {
+                    var disabledWebsitesEmpty = true;
+                    var disabledWebsitesArray = [];
+                } else {
+                    var disabledWebsites = result.sitesInterditPageShadow;
+                    var disabledWebsitesArray = disabledWebsites.split("\n");
+                    var disabledWebsitesEmpty = false;
+                }
+
+                switch (type) {
+                    case "disable-website":
+                        if(checked == true) {
+                            disabledWebsitesArray.push(domain);
+                            var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
+
+                            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
+                        } else {
+                            var disabledWebsitesNew = removeA(disabledWebsitesArray, domain);
+                            var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
+                            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
+                        }
+                        break;
+                    case "disable-webpage":
+                        if(checked == true) {
+                            disabledWebsitesArray.push(tabs[0].url);
+                            var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
+
+                            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
+                        } else {
+                            var disabledWebsitesNew = removeA(disabledWebsitesArray, tabs[0].url);
+                            var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
+                            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
+                        }
+                        break;
+                }
+                
+                checkEnable();
+            });
+        });
+    }
+    
+    checkEnable();
+    
+    $("#disableWebsite").click(function() {
+        disablePageShadow("disable-website", false);
+    });
+    
+    $("#enableWebsite").click(function() {
+        disablePageShadow("disable-website", true);
+    });
+    
+    $("#disableWebpage").click(function() {
+        disablePageShadow("disable-webpage", false);
+    });
+    
+    $("#enableWebpage").click(function() {
+        disablePageShadow("disable-webpage", true);
+    });
 
     $( "#checkAssomPage" ).change(function() {
         if($(this).is(':checked') == true) {
