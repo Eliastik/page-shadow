@@ -4,10 +4,8 @@ function setPopup() {
             popup: "../extension.html"
         });
     } else if(typeof(chrome.browserAction.onClicked) !== 'undefined') {
-        setSettingItem("pageShadowEnabled", "Oui");
         // For Firefox for Android
         chrome.browserAction.onClicked.addListener(function() {
-            setSettingItem("theme", "2");
             chrome.tabs.create({
                 url: "../extension.html"
             });
