@@ -1,45 +1,14 @@
-function in_array(needle, haystack) {
-    var key = '';
-        for (key in haystack) {
-            if (needle.indexOf(haystack[key]) != -1) {
-                return true;
-            }
-        }
-
-    return false;
-}
-
-function strict_in_array(needle, haystack) {
-    var key = '';
-        for (key in haystack) {
-            if (needle == haystack[key]) {
-                return true;
-            }
-        }
-
-    return false;
-}
-
-function removeA(arr) {
-    var what, a = arguments, L = a.length, ax;
-    while (L > 1 && arr.length) {
-        what = a[--L];
-        while ((ax= arr.indexOf(what)) !== -1) {
-            arr.splice(ax, 1);
-        }
-    }
-    return arr;
-}
-
 function setPopup() {
     if(typeof(chrome.browserAction.setPopup) !== 'undefined') {
         chrome.browserAction.setPopup({
             popup: "../extension.html"
         });
     } else if(typeof(chrome.browserAction.onClicked) !== 'undefined') {
+        setSettingItem("pageShadowEnabled", "Oui");
         // For Firefox for Android
-        chrome.browserAction.onClicked.addListener((tab) => {
-            var creating = chrome.tabs.create({
+        chrome.browserAction.onClicked.addListener(function() {
+            setSettingItem("theme", "2");
+            chrome.tabs.create({
                 url: "../extension.html"
             });
         });
@@ -69,12 +38,8 @@ function updateContextMenu(id, type, title, contexts, checked) {
     }
 }
 
-function getUImessage(id) {
-    return chrome.i18n.getMessage(id);
-}
-
 function menu() {
-    chrome.contextMenus.removeAll();
+    if(typeof(chrome.contextMenus.removeAll) !== 'undefined') chrome.contextMenus.removeAll();
 
     createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
     createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);

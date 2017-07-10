@@ -40,6 +40,7 @@
     "content_scripts": [
         {
             "js": [
+                "js/util.js", 
                 "js/content.js"
             ],
             "css": [
@@ -53,6 +54,6 @@
         }
     ],
     "background": {
-        "scripts": ["js/storage.js", "js/background.js"]
+        "scripts": ["js/util.js", "js/storage.js", "js/background.js"]
     }
 }

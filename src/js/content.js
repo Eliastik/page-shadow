@@ -128,27 +128,6 @@
         timeOutIC = setTimeout(applyIC, 50);
     }
 
-    function in_array(needle, haystack) {
-        var key = '';
-            for (key in haystack) {
-                if (needle.indexOf(haystack[key]) != -1) {
-                    return true;
-                }
-            }
-        return false;
-    }
-
-    function strict_in_array(needle, haystack) {
-        var key = '';
-            for (key in haystack) {
-                if (needle == haystack[key]) {
-                    return true;
-                }
-            }
-
-        return false;
-    }
-
     function main(type) {
         chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert'], function (result) {
             if(type == "reset" || type == "onlyreset") {
