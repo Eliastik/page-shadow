@@ -20,7 +20,40 @@
 
         window.onload = function() {
             var mut = new MutationObserver(function(mutations, mut){
-                mutations.forEach(function(mutation) {
+                var classList = document.body.classList;
+                var containsPageContrast = true;
+
+                for(i=1; i<=nbThemes; i++) {
+                    if(i == "1" && !classList.contains("pageShadowContrastBlack")) {
+                        var containsPageContrast = false;
+                    } else if(!classList.contains("pageShadowContrastBlack" + i)) {
+                        var containsPageContrast = false;
+                    }
+                }
+
+                if(mutation.attributeName == "class" && containsPageContrast == false || mutation.attributeName == "class" && classList.contains("pageShadowInvertImageColor") == false) {
+                    main("onlycontrast");
+                }
+            });
+            mut.observe(document.body,{
+              'attributes': true,
+              'subtree': false,
+              'childList': false,
+              'attributeFilter': ["class"]
+            });
+        }
+
+        if(typeof timeOutAP !== "undefined") {
+            clearTimeout(timeOutAP)
+        }
+    }
+
+    function invertColor(enabled) {
+        if(colorInvert != null && colorInvert == "true") {
+            document.body.classList.add("pageShadowInvertImageColor");
+
+            window.onload = function() {
+                var mut = new MutationObserver(function(mutations, mut){
                     var classList = document.body.classList;
                     var containsPageContrast = true;
 
@@ -36,42 +69,11 @@
                         main("onlycontrast");
                     }
                 });
-            });
-            mut.observe(document.body,{
-              'attributes': true
-            });
-        }
-
-        if(typeof timeOutAP !== "undefined") {
-            clearTimeout(timeOutAP)
-        }
-    }
-
-    function invertColor(enabled) {
-        if(colorInvert != null && colorInvert == "true") {
-            document.body.classList.add("pageShadowInvertImageColor");
-
-            window.onload = function() {
-                var mut = new MutationObserver(function(mutations, mut){
-                    mutations.forEach(function(mutation) {
-                        var classList = document.body.classList;
-                        var containsPageContrast = true;
-
-                        for(i=1; i<=nbThemes; i++) {
-                            if(i == "1" && !classList.contains("pageShadowContrastBlack")) {
-                                var containsPageContrast = false;
-                            } else if(!classList.contains("pageShadowContrastBlack" + i)) {
-                                var containsPageContrast = false;
-                            }
-                        }
-
-                        if(mutation.attributeName == "class" && containsPageContrast == false || mutation.attributeName == "class" && classList.contains("pageShadowInvertImageColor") == false) {
-                            main("onlycontrast");
-                        }
-                    });
-                });
                 mut.observe(document.body,{
-                  'attributes': true
+                  'attributes': true,
+                  'subtree': false,
+                  'childList': false,
+                  'attributeFilter': ["class"]
                 });
             }
         }
@@ -130,6 +132,10 @@
 
     function main(type) {
         chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert'], function (result) {
+            if(typeof timeOutLum !== "undefined") clearTimeout(timeOutLum);
+            if(typeof timeOutAP !== "undefined") clearTimeout(timeOutAP);
+            if(typeof timeOutIC !== "undefined") clearTimeout(timeOutIC);
+            
             if(type == "reset" || type == "onlyreset") {
                 document.body.classList.remove("pageShadowInvertImageColor");
 
