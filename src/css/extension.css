@@ -116,3 +116,9 @@ hr {
 hr.nmt {
     margin-top: 2px;
 }
+.mb {
+    margin-bottom: 1em;
+}
+.mt {
+    margin-top: 1em;
+}
