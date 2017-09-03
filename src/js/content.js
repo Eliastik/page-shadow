@@ -18,7 +18,7 @@
             document.body.classList.add("pageShadowInvertImageColor");
         }
 
-        if(document.readyState == "complete") {
+        if(document.readyState == "complete" || document.readyState == "interactive") {
             mutationObserve("contrast");
         } else {
             window.onload = function() {
@@ -35,7 +35,7 @@
         if(enabled !== null && enabled == "true") {
             document.body.classList.add("pageShadowInvertImageColor");
 
-            if(document.readyState == "complete") {
+            if(document.readyState == "complete" || document.readyState == "interactive") {
                 mutationObserve("invert");
             } else {
                 window.onload = function() {
