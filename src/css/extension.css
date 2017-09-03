@@ -21,7 +21,6 @@ body {
     -webkit-user-select: none;
     user-select: none;
     cursor: default;
-    font-family: 'Source Sans Pro', sans-serif;
 }
 body.popup {
     width: 350px;
