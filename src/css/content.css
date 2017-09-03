@@ -11,15 +11,15 @@
     background-color: grey !important;
     color: #aaa !important;
 }
-.pageShadowContrastBlack ins { // éléments d'insertion
+.pageShadowContrastBlack ins {
     background-color: black !important;
     color: green !important;
 }
-.pageShadowContrastBlack del { // éléments de suppression
+.pageShadowContrastBlack del {
     background-color: black !important;
     color: red !important;
 }
-.pageShadowContrastBlack mark { // éléments surlignés (rarement utilisé)
+.pageShadowContrastBlack mark {
     background-color: orange !important;
     color: #aaa !important;
 }
@@ -43,15 +43,15 @@
     background-color: grey !important;
     color: #BDC7C1 !important;
 }
-.pageShadowContrastBlack2 ins { // éléments d'insertion
+.pageShadowContrastBlack2 ins {
     background-color: #142634 !important;
     color: green !important;
 }
-.pageShadowContrastBlack2 del { // éléments de suppression
+.pageShadowContrastBlack2 del {
     background-color: #142634 !important;
     color: red !important;
 }
-.pageShadowContrastBlack2 mark { // éléments surlignés (rarement utilisé)
+.pageShadowContrastBlack2 mark {
     background-color: orange !important;
     color: #BDC7C1 !important;
 }
@@ -75,15 +75,15 @@
     background-color: grey !important;
     color: #aaa !important;
 }
-.pageShadowContrastBlack3 ins { // éléments d'insertion
+.pageShadowContrastBlack3 ins {
     background-color: #222 !important;
     color: green !important;
 }
-.pageShadowContrastBlack3 del { // éléments de suppression
+.pageShadowContrastBlack3 del {
     background-color: #222 !important;
     color: red !important;
 }
-.pageShadowContrastBlack3 mark { // éléments surlignés (rarement utilisé)
+.pageShadowContrastBlack3 mark {
     background-color: orange !important;
     color: #aaa !important;
 }
@@ -107,15 +107,15 @@
     background-color: grey !important;
     color: #c3cee3 !important;
 }
-.pageShadowContrastBlack4 ins { // éléments d'insertion
+.pageShadowContrastBlack4 ins {
     background-color: #263238 !important;
     color: green !important;
 }
-.pageShadowContrastBlack4 del { // éléments de suppression
+.pageShadowContrastBlack4 del {
     background-color: #263238 !important;
     color: red !important;
 }
-.pageShadowContrastBlack4 mark { // éléments surlignés (rarement utilisé)
+.pageShadowContrastBlack4 mark {
     background-color: orange !important;
     color: #c3cee3 !important;
 }
@@ -139,15 +139,15 @@
     background-color: grey !important;
     color: #dfcbd3 !important;
 }
-.pageShadowContrastBlack5 ins { // éléments d'insertion
+.pageShadowContrastBlack5 ins {
     background-color: #333a49 !important;
     color: green !important;
 }
-.pageShadowContrastBlack5 del { // éléments de suppression
+.pageShadowContrastBlack5 del {
     background-color: #333a49 !important;
     color: red !important;
 }
-.pageShadowContrastBlack5 mark { // éléments surlignés (rarement utilisé)
+.pageShadowContrastBlack5 mark {
     background-color: orange !important;
     color: #dfcbd3 !important;
 }
@@ -171,15 +171,15 @@
     background-color: grey !important;
     color: #b9cace !important;
 }
-.pageShadowContrastBlack6 ins { // éléments d'insertion
+.pageShadowContrastBlack6 ins {
     background-color: #020315 !important;
     color: green !important;
 }
-.pageShadowContrastBlack6 del { // éléments de suppression
+.pageShadowContrastBlack6 del {
     background-color: #020315 !important;
     color: red !important;
 }
-.pageShadowContrastBlack6 mark { // éléments surlignés (rarement utilisé)
+.pageShadowContrastBlack6 mark {
     background-color: orange !important;
     color: #b9cace !important;
 }
@@ -203,15 +203,15 @@
     background-color: grey !important;
     color: #6f9bb0 !important;
 }
-.pageShadowContrastBlack7 ins { // éléments d'insertion
+.pageShadowContrastBlack7 ins {
     background-color: #192338 !important;
     color: green !important;
 }
-.pageShadowContrastBlack7 del { // éléments de suppression
+.pageShadowContrastBlack7 del {
     background-color: #192338 !important;
     color: red !important;
 }
-.pageShadowContrastBlack7 mark { // éléments surlignés (rarement utilisé)
+.pageShadowContrastBlack7 mark {
     background-color: orange !important;
     color: #6f9bb0 !important;
 }
@@ -235,15 +235,15 @@
     background-color: grey !important;
     color: #FFFFB3 !important;
 }
-.pageShadowContrastBlack8 ins { // éléments d'insertion
+.pageShadowContrastBlack8 ins {
     background-color: #1A1A1A !important;
     color: green !important;
 }
-.pageShadowContrastBlack8 del { // éléments de suppression
+.pageShadowContrastBlack8 del {
     background-color: #1A1A1A !important;
     color: red !important;
 }
-.pageShadowContrastBlack8 mark { // éléments surlignés (rarement utilisé)
+.pageShadowContrastBlack8 mark {
     background-color: orange !important;
     color: #FFFFB3 !important;
 }
@@ -267,15 +267,15 @@
     background-color: grey !important;
     color: #BED6FF !important;
 }
-.pageShadowContrastBlack9 ins { // éléments d'insertion
+.pageShadowContrastBlack9 ins {
     background-color: #1d4e6d !important;
     color: green !important;
 }
-.pageShadowContrastBlack9 del { // éléments de suppression
+.pageShadowContrastBlack9 del {
     background-color: #1d4e6d !important;
     color: red !important;
 }
-.pageShadowContrastBlack9 mark { // éléments surlignés (rarement utilisé)
+.pageShadowContrastBlack9 mark {
     background-color: orange !important;
     color: #BED6FF !important;
 }
@@ -299,15 +299,15 @@
     background-color: grey !important;
     color: #39B7FF !important;
 }
-.pageShadowContrastBlack10 ins { // éléments d'insertion
+.pageShadowContrastBlack10 ins {
     background-color: #272822 !important;
     color: green !important;
 }
-.pageShadowContrastBlack10 del { // éléments de suppression
+.pageShadowContrastBlack10 del {
     background-color: #272822 !important;
     color: red !important;
 }
-.pageShadowContrastBlack10 mark { // éléments surlignés (rarement utilisé)
+.pageShadowContrastBlack10 mark {
     background-color: orange !important;
     color: #39B7FF !important;
 }
