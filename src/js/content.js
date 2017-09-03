@@ -208,7 +208,7 @@
     // Execute Page Shadow on the page when the settings have been changed:
     chrome.storage.onChanged.addListener(function() {
         chrome.storage.local.get('liveSettings', function (result) {
-            if(result.liveSettings == "true") {
+            if(result.liveSettings !== "false") {
                 main('reset');
             }
         });
