@@ -319,7 +319,7 @@
     background-color: #BDBDBD !important;
 }
 /* color invert */
-body.pageShadowInvertImageColor img {
+body.pageShadowInvertImageColor img, body.pageShadowInvertImageColor svg {
     filter: invert(100%);
     -moz-filter: invert(100%);
     -o-filter: invert(100%);
