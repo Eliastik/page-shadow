@@ -107,3 +107,12 @@ hr {
 .m0 {
     margin-bottom: 0;
 }
+.div-inline {
+    display: inline-block;
+}
+.large-text {
+    font-size: 15px;
+}
+hr.nmt {
+    margin-top: 2px;
+}

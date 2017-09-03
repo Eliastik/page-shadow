@@ -26,7 +26,13 @@
         "about": {
             "title": "À propos de Page Shadow",
             "description": "Page Shadow est disponible sur Firefox, Chrome, Opera et Microsoft Edge. Cette extension a été réalisée par Eliastik",
-            "readme": "Lire le fichier Lisez-moi",
+            "readme": "Fichier Lisez-moi",
+            "homepage": "Page officielle",
+            "contact": {
+                "title": "Contacter le développeur",
+                "email": "Par e-mail",
+                "github": "Via Github (issues)"
+            },
             "webpage": "Page web de Page Shadow :",
             "version": "Version actuelle :",
             "browser": "Votre navigateur web :",

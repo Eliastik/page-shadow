@@ -6,7 +6,7 @@
         "actual": "(current)"
     },
     "container": {
-        "description": "Here, you can define some advanced settings or consult informations about the extension. Don't forget to click on Validate to save your settings!",
+        "description": "Here, you can define some advanced settings or consult informations about the extension. Don't forget to click on Confirm to save your settings!",
         "about": "About Page Shadow",
         "update": "Search update",
         "labelLanguage": "Language:",
@@ -20,14 +20,20 @@
         "indiceList": "The websites addresses entered below will be ignored by Page Shadow.",
         "textareaPlaceholder": "Example:\nwww.google.com\nhttps://en.wikipedia.org/wiki/Google",
         "reset": "Reset settings",
-        "validate": "Validate"
+        "validate": "Confirm"
     },
     "modal": {
         "about": {
             "title": "About Page Shadow",
-            "description": "Page Shadow is available for Firefox, Chrome, Opera and Microsoft Edge. This extension have been realised by Eliastik",
+            "description": "Page Shadow is available for Firefox, Chrome, Opera and Microsoft Edge. This extension has been realised by Eliastik",
             "readme": "README file",
+            "homepage": "Official page",
             "webpage": "Page Shadow web page:",
+            "contact": {
+                "title": "Contact the developer",
+                "email": "By email",
+                "github": "Via Github (issues)"
+            },
             "version": "Current version:",
             "browser": "Your web browser:",
             "changelogTitle": "Changelog:",
