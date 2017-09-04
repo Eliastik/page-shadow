@@ -42,35 +42,68 @@ i18next.on('languageChanged', () => {
 });
 function resetSettings() {
     $('span[data-toggle="tooltip"]').tooltip("hide");
+    $('i[data-toggle="tooltip"]').tooltip("hide");
     chrome.storage.local.clear();
     changeLng("fr");
     $("#textareaAssomPage").val("");
     $('#reset').modal("show");
 }
 function displaySettings() {
-    chrome.storage.local.get('sitesInterditPageShadow', function (result) {
+    chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
         if(typeof result.sitesInterditPageShadow !== "undefined" && typeof result.sitesInterditPageShadow !== null) {
             $("#textareaAssomPage").val(result.sitesInterditPageShadow);
+        }
+        
+        if(result.whiteList == "true") {
+            $("#checkWhiteList").attr("checked", "checked");
+        } else {
+            $("#checkWhiteList").attr("checked", false);
         }
     });
 }
 $(document).ready(function() {
     $("#validerButton").click(function() {
         setSettingItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
+        chrome.storage.local.get('whiteList', function (result) {
+            if($("#checkWhiteList").is(':checked') == true) {
+                if(result.whiteList !== "true") {
+                    setSettingItem("sitesInterditPageShadow", "");
+                }
+                
+                setSettingItem("whiteList", "true");
+            } else {
+                if(result.whiteList == "true") {
+                    setSettingItem("sitesInterditPageShadow", "");
+                }
+                
+                setSettingItem("whiteList", "false");
+            }
+        });
         changeLng($("#languageSelect").val());
         $('span[data-toggle="tooltip"]').tooltip("hide");
+        $('i[data-toggle="tooltip"]').tooltip("hide");
         $('#saved').modal("show");
+        displaySettings();
     });
 
     $("#aboutDialogBtn").click(function() {
         $('span[data-toggle="tooltip"]').tooltip("hide");
+        $('i[data-toggle="tooltip"]').tooltip("hide");
     });
 
     $("#resetConfirmBtn").click(function() {
         $('span[data-toggle="tooltip"]').tooltip("hide");
+        $('i[data-toggle="tooltip"]').tooltip("hide");
     });
 
     $('span[data-toggle="tooltip"]').tooltip({
+        animated: 'fade',
+        placement: 'bottom',
+        trigger: 'click',
+        placement: 'top'
+    });
+    
+    $('i[data-toggle="tooltip"]').tooltip({
         animated: 'fade',
         placement: 'bottom',
         trigger: 'click',

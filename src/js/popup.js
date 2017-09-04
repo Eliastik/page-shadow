@@ -73,7 +73,7 @@ $(document).ready(function() {
     }
     
     function checkEnable() {
-        chrome.storage.local.get('sitesInterditPageShadow', function (result) {
+        chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
             if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined' || result.sitesInterditPageShadow.trim() == '') {
                 var siteInterdits = "";
             } else {
@@ -86,27 +86,41 @@ $(document).ready(function() {
                 var url = new URL(tabUrl);
                 var domain = url.hostname;
 
-                if(strict_in_array(domain, siteInterdits)) {
-                    $("#disableWebsite-li").show();
-                    $("#enableWebsite-li").hide();
-                } else {
-                    $("#disableWebsite-li").hide();
-                    $("#enableWebsite-li").show();
-                }
+                if(result.whiteList == "true") {
+                    if(strict_in_array(domain, siteInterdits)) {
+                        $("#disableWebsite-li").hide();
+                        $("#enableWebsite-li").show();
+                    } else {
+                        $("#disableWebsite-li").show();
+                        $("#enableWebsite-li").hide();
+                    }
 
-                if(strict_in_array(tabUrl, siteInterdits)) {
-                    $("#disableWebpage-li").show();
-                    $("#enableWebpage-li").hide();
-                } else {
                     $("#disableWebpage-li").hide();
-                    $("#enableWebpage-li").show();
+                    $("#enableWebpage-li").hide();
+                    
+                } else {
+                    if(strict_in_array(domain, siteInterdits)) {
+                        $("#disableWebsite-li").show();
+                        $("#enableWebsite-li").hide();
+                    } else {
+                        $("#disableWebsite-li").hide();
+                        $("#enableWebsite-li").show();
+                    }
+
+                    if(strict_in_array(tabUrl, siteInterdits)) {
+                        $("#disableWebpage-li").show();
+                        $("#enableWebpage-li").hide();
+                    } else {
+                        $("#disableWebpage-li").hide();
+                        $("#enableWebpage-li").show();
+                    }
                 }
             });
         });
     }
     
     function disablePageShadow(type, checked) {
-        chrome.storage.local.get('sitesInterditPageShadow', function (result) {
+        chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
             chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
                 var disabledWebsites = '';
                 var disabledWebsitesEmpty = false;
@@ -124,15 +138,28 @@ $(document).ready(function() {
 
                 switch (type) {
                     case "disable-website":
-                        if(checked == true) {
-                            disabledWebsitesArray.push(domain);
-                            var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
+                        if(result.whiteList == "true") {
+                            if(checked == true) {
+                                var disabledWebsitesNew = removeA(disabledWebsitesArray, domain);
+                                var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
+                                setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
+                            } else {
+                                disabledWebsitesArray.push(domain);
+                                var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
 
-                            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
+                                setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
+                            }
                         } else {
-                            var disabledWebsitesNew = removeA(disabledWebsitesArray, domain);
-                            var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
-                            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
+                            if(checked == true) {
+                                disabledWebsitesArray.push(domain);
+                                var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
+
+                                setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
+                            } else {
+                                var disabledWebsitesNew = removeA(disabledWebsitesArray, domain);
+                                var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
+                                setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
+                            }
                         }
                         break;
                     case "disable-webpage":
@@ -155,6 +182,18 @@ $(document).ready(function() {
     }
     
     checkEnable();
+
+    if(typeof(chrome.tabs.onActivated) !== 'undefined') {
+        chrome.tabs.onActivated.addListener(function() {
+            checkEnable();
+        });
+    }
+
+    if(typeof(chrome.tabs.onUpdated) !== 'undefined') {
+        chrome.tabs.onUpdated.addListener(function() {
+            checkEnable();
+        });
+    }
     
     $("#disableWebsite").click(function() {
         disablePageShadow("disable-website", false);

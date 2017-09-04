@@ -49,7 +49,7 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="aboutLabel" data-i18n="modal.about.title"></h4>
+                        <h4 class="modal-title" id="aboutLabel"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modal.about.title"></span></h4>
                       </div>
                       <div class="modal-body">
                         <p class="large-text"><span data-i18n="modal.about.description"></span> (<a href="http://www.eliastiksofts.com" target="_blank">www.eliastiksofts.com</a>).</p>
@@ -61,7 +61,7 @@
                                 <li><a href="https://github.com/Eliastik/page-shadow/issues" target="_blank"><i class="fa fa-github fa-fw" aria-hidden="true"></i> <span data-i18n="modal.about.contact.github"></span></a></li>
                             </ul>
                         </div></div>
-                        <h5 data-i18n="modal.about.changelogTitle"></h5>
+                        <h5><i class="fa fa-newspaper-o fa-fw" aria-hidden="true"></i> <span data-i18n="modal.about.changelogTitle"></span></h5>
                         <hr class="nmt" />
                             <div class="panel-group" id="accordion">
                                 <div class="panel panel-default">
@@ -147,7 +147,7 @@
                             </div>
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
                       </div>
                     </div>
                   </div>
@@ -157,13 +157,13 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="readmeLabel" data-i18n="modal.readme.title"></h4>
+                        <h4 class="modal-title" id="readmeLabel"><i class="fa fa-file-text fa-fw" aria-hidden="true"></i> <span data-i18n="modal.readme.title"></span></h4>
                       </div>
                       <div class="modal-body">
                         <iframe src="" id="iframeReadme" data-i18n="[src]modal.readme.src"></iframe>
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
                       </div>
                     </div>
                   </div>
@@ -178,6 +178,7 @@
                   <label for="textareaAssomPage" class="col-lg-2 control-label bold" data-i18n="container.labelList"></label>
                   <div class="col-lg-10">
                     <p class="indice"><span data-i18n="container.indiceList"></span> <span data-toggle="tooltip" data-placement="top" data-i18n="[data-original-title]container.titleHelp"><i class="fa fa-question-circle helpIcon" aria-hidden="true"></i> <span class="vertical-align" data-i18n="container.help"></span></p>
+                    <p><input type="checkbox" id="checkWhiteList" /> <label for="checkWhiteList"  data-i18n="container.whiteList"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleWhiteList"></i></p>
                     <textarea id="textareaAssomPage" class="form-control" rows="10" data-i18n="[placeholder]container.textareaPlaceholder"></textarea>
                   </div>
                 </div>
@@ -191,13 +192,13 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="savedLabel" data-i18n="modal.saved.title"></h4>
+                        <h4 class="modal-title" id="savedLabel"><i class="fa fa-check-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modal.saved.title"></span></h4>
                       </div>
                       <div class="modal-body">
                         <p class="largeFontSize" data-i18n="modal.saved.message"></p>
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="modal.ok"></span></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modal.ok"></span></button>
                       </div>
                     </div>
                   </div>
@@ -207,13 +208,13 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="resetLabel" data-i18n="modal.reset.title"></h4>
+                        <h4 class="modal-title" id="resetLabel"><i class="fa fa-check-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modal.reset.title"></span></h4>
                       </div>
                       <div class="modal-body">
                         <p class="largeFontSize" data-i18n="modal.reset.message"></p>
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="modal.ok"></span></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modal.ok"></span></button>
                       </div>
                     </div>
                   </div>
@@ -223,13 +224,13 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="resetConfirmLabel" data-i18n="modal.resetConfirm.title"></h4>
+                        <h4 class="modal-title" id="resetConfirmLabel"><i class="fa fa-question-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modal.resetConfirm.title"></span></h4>
                       </div>
                       <div class="modal-body">
                         <p class="largeFontSize" data-i18n="modal.resetConfirm.message"></p>
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> <span data-i18n="modal.no"></span></button> &nbsp; <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmReset"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="modal.yes"></span></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.no"></span></button> &nbsp; <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmReset"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modal.yes"></span></button>
                       </div>
                     </div>
                   </div>

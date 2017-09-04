@@ -15,9 +15,11 @@
                 "en": "English"
             },
         "labelList": "Liste des sites/pages à exclure (un élément par ligne) :",
-        "titleHelp": "Il est seulement possible de bloquer des domaines (par ex. www.google.fr) ou des URL particulières (par ex. https://fr.wikipedia.org/wiki/Google). Notez que vous pouvez exclure un site ou une page à l'aide du clic-droit et en choissant quoi bloquer dans le sous-menu Page Shadow.",
+        "titleHelp": "Il est seulement possible de bloquer des domaines (par ex. www.google.fr) ou des URLs particulières (par ex. https://fr.wikipedia.org/wiki/Google). Notez que vous pouvez exclure un site ou une page à l'aide du clic-droit et en choissant quoi bloquer dans le sous-menu Page Shadow, ou à l'aide du menu de l'extension (tout en bas).",
         "help": "Aide",
         "indiceList": "Les adresses des sites entrées ci-dessous seront ignorées par Page Shadow.",
+        "whiteList": "Liste blanche (ignorer par défaut tous les sites)",
+        "titleWhiteList": "Cochez cette case si vous souhaitez basculer cette liste en liste blanche. Tous les sites seront par défaut exclus, et vous devrez les débloquer à l'aide du clic-droit, à l'aide du menu de l'extension ou en entrant leurs adresses ci-dessous (par ex. www.google.fr). Le bloquage/débloquage d'URLs particulières n'est pas possible dans ce mode.",
         "textareaPlaceholder": "Exemple :\nwww.google.fr\nhttps://fr.wikipedia.org/wiki/Google",
         "reset": "Réinitialiser les paramètres",
         "validate": "Valider"

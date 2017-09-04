@@ -24,6 +24,9 @@ function setSettingItem(name, value) {
         case 'liveSettings':
             chrome.storage.local.set({'liveSettings': value});
             break;
+        case 'whiteList':
+            chrome.storage.local.set({'whiteList': value});
+            break;
         case 'defaultLoad':
             chrome.storage.local.set({'defaultLoad': value});
             break;
@@ -47,7 +50,8 @@ function setFirstSettings() {
         'pourcentageLum': '15',
         'nightModeEnabled': 'false',
         'sitesInterditPageShadow': '',
-        'liveSettings': 'true'
+        'liveSettings': 'true',
+        'whiteList': 'false'
     });
 }
 checkFirstLoad();
