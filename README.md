@@ -3,7 +3,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.0.3 (09/07/2017)
+* Latest version: 2.1 (04/09/2017)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -23,6 +23,19 @@ Or you can compile yourself (see Compilation section).
 
 ### Changelog:
 
+#### Version 2.1 (04/09/2017) :
+* Improved performance by fixing a bug: the processor could be occupied more than 50% in some special cases ;
+* Added the possibility to toggle the list of websites ignored to a whitelist: all the websites are in this case ignored, and need to be unlocked manually ;
+* Added the possibility to choose the color temperature used by the Night mode ;
+* Bugs fixed and minor adjustments:
+    - Corrections for the new Youtube interface (utilisation of non-standard HTML elements) ;
+    - The SVG images are now supported by the tool Invert images colors ;
+    - Improved layout of the window About and added icons in the Advanced settings ;
+    - Corrections of some texts ;
+    - Updated some libraries ;
+    - Optimised code ;
+    - Others minor adjustments and minor bugs fixed.
+
 #### Version 2.0.3 (09/07/2017) :
 * It is now possible to disable Page Shadow for a particular website or page via the right-click or via the extension menu
 * Bug fixes and minor adjustments :
@@ -32,7 +45,7 @@ Or you can compile yourself (see Compilation section).
     - The image on the test page of the extension now correctly resizes when the browser window is resized
     - Basic support for future versions of Firefox for Android (not tested)
     - Small adjustments of the code
-    
+
 #### Version 2.0.2 (17/06/2017) :
 * The settings can now be applied in real time
 * Fixed Page Shadow icon (the shadow is better)
@@ -60,22 +73,22 @@ Or you can compile yourself (see Compilation section).
 * Added a mode to invert the color of the images
 * Performance improvements
 * Various fixes (bugs, texts)
-    
+
 #### Version 1.2.1 :
 * Fixed bug in the advanced settings
 * Adding informations about the extension in the advanced settings
-    
+
 #### Version 1.2 :
 * Optimisation of the popup layout
 * Improved function "Increase page contrast". The transparent images are now supported
 * Some adjustements
-    
+
 #### Version 1.1 :
 * Improved function "Increase page contrast"
-    
+
 #### Version 1.0 :
 * Initial version
-    
+
 ### Compilation :
 
 You can compile yourself the extension with only one command line. To do this, you have to install npm and gulp.
@@ -141,7 +154,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.0.3 (09/07/2017)
+* Version actuelle : 2.1 (04/09/2017)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -160,6 +173,19 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+#### Version 2.1 (04/09/2017) :
+* Amélioration des performances par la correction d'un bug : le processeur pouvait être occupé à plus de 50% dans certains cas particuliers ;
+* Ajout de la possibilité de basculer la liste des sites à ignorer en liste blanche : tous les sites sont dans ce cas ignorés, et il faut les débloquer manuellement ;
+* Ajout de la possibilité de choisir la température de couleur utilisée par le Mode nuit ;
+* Corrections de bugs et ajustements mineurs :
+    - Corrections pour la nouvelle interface de Youtube (utilisation d'éléments HTML non standards) ;
+    - Les images SVG sont désormais prises en charge par l'outil Inverser les couleurs des images ;
+    - Mise en page de la fenêtre A propos améliorée et ajout d'icônes dans les Paramètres avancés ;
+    - Corrections de certains textes ;
+    - Mise à jour de certaines bibliothèques logicielles ;
+    - Code optimisé ;
+    - Autres petits ajustements et corrections de bugs mineurs.
 
 #### Version 2.0.3 (09/07/2017) :
 * Il est désormais possible de désactiver Page Shadow pour un site ou une page particulière via le clic-droit ou via le menu de l'extension ;

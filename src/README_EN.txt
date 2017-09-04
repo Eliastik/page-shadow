@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.0.3 (09/07/2017)
+* Latest version: 2.1 (04/09/2017)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -21,6 +21,19 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile yourself (see Compilation section).
 
 ### Changelog:
+
+#### Version 2.1 (04/09/2017) :
+* Improved performance by fixing a bug: the processor could be occupied more than 50% in some special cases ;
+* Added the possibility to toggle the list of websites ignored to a whitelist: all the websites are in this case ignored, and need to be unlocked manually ;
+* Added the possibility to choose the color temperature used by the Night mode ;
+* Bugs fixed and minor adjustments:
+    - Corrections for the new Youtube interface (utilisation of non-standard HTML elements) ;
+    - The SVG images are now supported by the tool Invert images colors ;
+    - Improved layout of the window About and added icons in the Advanced settings ;
+    - Corrections of some texts ;
+    - Updated some libraries ;
+    - Optimised code ;
+    - Others minor adjustments and minor bugs fixed.
 
 #### Version 2.0.3 (09/07/2017) :
 * It is now possible to disable Page Shadow for a particular website or page via the right-click or via the extension menu

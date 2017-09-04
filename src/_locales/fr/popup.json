@@ -18,7 +18,7 @@
         "liveSettings": "Appliquer les paramètres en temps réel",
         "titleLiveSettings": "Peut réduire les performances du navigateur.",
         "tempSelect": "Temp. :",
-        "titleTemp": "Sélectionnez la température de couleur du filtre orangé. Plus la température est faible, plus la couleur orangée du filtre sera intense."
+        "titleTemp": "Sélectionnez la température de couleur du filtre orangé. Plus la température est faible, plus la couleur orangée du filtre sera intense. La température est en Kelvin."
     },
     "footer": {
         "advancedSettings": "Paramètres avancés",

@@ -8,8 +8,8 @@
         "tileTheme": "Select a color theme used by this function. A theme includes a background color, a text color and a link color unified for each web page.",
         "previsualisationTheme": "Preview:",
         "previsualisationThemeText": "A text. <a href=\"#\">A link</a>.",
-        "colorInvert": "Invert image colors",
-        "titleColorInvert": "Invert the image colors to better stand out on the dark theme.",
+        "colorInvert": "Invert images colors",
+        "titleColorInvert": "Invert the images colors to better stand out on the dark theme.",
         "brightness": "Decrease page brightness",
         "titleBrightness": "Decrease the page brightness. You can choose the percentage of brightness decrease.",
         "percentage": "Percentage of brightness decrease:",
@@ -18,7 +18,7 @@
         "liveSettings": "Apply settings in real time",
         "titleLiveSettings": "Can reduce browser performance.",
         "tempSelect": "Temp.:",
-        "titleTemp": "Select the color temperature of the orange filter. The lower is the temperature, the more intense is the orange color of the filter."
+        "titleTemp": "Select the color temperature of the orange filter. The lower is the temperature, the more intense is the orange color of the filter. The temperature is in Kelvin."
     },
     "footer": {
         "advancedSettings": "Advanced settings",
