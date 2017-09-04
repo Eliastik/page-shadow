@@ -46,7 +46,7 @@ function resetSettings() {
     chrome.storage.local.clear();
     changeLng("fr");
     $("#textareaAssomPage").val("");
-    $("#checkWhiteList").attr("checked", false);
+    $("#checkWhiteList").prop("checked", false)
     $('#reset').modal("show");
 }
 function displaySettings() {
@@ -57,8 +57,9 @@ function displaySettings() {
         
         if(result.whiteList == "true") {
             $("#checkWhiteList").attr("checked", "checked");
+            $("#checkWhiteList").prop("checked", "checked");
         } else {
-            $("#checkWhiteList").attr("checked", false);
+            $("#checkWhiteList").prop("checked", false);
         }
     });
 }
