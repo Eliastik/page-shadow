@@ -58,4 +58,5 @@ function setFirstSettings() {
         'colorTemp': '5'
     });
 }
+
 checkFirstLoad();

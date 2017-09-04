@@ -1,4 +1,4 @@
-extensionVersion = "2.0.4 dev";
+extensionVersion = "2.1";
 /* translation */
 i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
     fallbackLng: ['en', 'fr'],
