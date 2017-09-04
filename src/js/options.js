@@ -46,6 +46,7 @@ function resetSettings() {
     chrome.storage.local.clear();
     changeLng("fr");
     $("#textareaAssomPage").val("");
+    $("#checkWhiteList").attr("checked", false);
     $('#reset').modal("show");
 }
 function displaySettings() {

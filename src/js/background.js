@@ -100,6 +100,7 @@ updateMenu();
 
 if(typeof(chrome.storage.onChanged) !== 'undefined') {
     chrome.storage.onChanged.addListener(function() {
+        menu();
         updateMenu();
     });
 }
