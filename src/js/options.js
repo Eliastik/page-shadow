@@ -46,7 +46,7 @@ function resetSettings() {
     chrome.storage.local.clear();
     changeLng("fr");
     $("#textareaAssomPage").val("");
-    $("#checkWhiteList").prop("checked", false)
+    $("#checkWhiteList").prop("checked", false);
     $('#reset').modal("show");
 }
 function displaySettings() {
@@ -56,8 +56,7 @@ function displaySettings() {
         }
         
         if(result.whiteList == "true") {
-            $("#checkWhiteList").attr("checked", "checked");
-            $("#checkWhiteList").prop("checked", "checked");
+            $("#checkWhiteList").prop("checked", true);
         } else {
             $("#checkWhiteList").prop("checked", false);
         }
@@ -67,7 +66,7 @@ $(document).ready(function() {
     $("#validerButton").click(function() {
         setSettingItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
         chrome.storage.local.get('whiteList', function (result) {
-            if($("#checkWhiteList").is(':checked') == true) {
+            if($("#checkWhiteList").prop("checked") == true) {
                 if(result.whiteList !== "true") {
                     setSettingItem("sitesInterditPageShadow", "");
                 }
