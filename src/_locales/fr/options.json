@@ -19,7 +19,7 @@
         "help": "Aide",
         "indiceList": "Les adresses des sites entrées ci-dessous seront ignorées par Page Shadow.",
         "whiteList": "Liste blanche (ignorer par défaut tous les sites)",
-        "titleWhiteList": "Cochez cette case si vous souhaitez basculer cette liste en liste blanche. Tous les sites seront par défaut exclus, et vous devrez les débloquer à l'aide du clic-droit, à l'aide du menu de l'extension ou en entrant leurs adresses ci-dessous (par ex. www.google.fr). Le bloquage/débloquage d'URLs particulières n'est pas possible dans ce mode.",
+        "titleWhiteList": "Cochez cette case si vous souhaitez basculer cette liste en liste blanche. Tous les sites seront par défaut exclus, et vous devrez les débloquer à l'aide du clic-droit, à l'aide du menu de l'extension ou en entrant leurs adresses ci-dessous (par ex. www.google.fr). Le bloquage/débloquage d'URLs particulières n'est pas possible dans ce mode. Activer ou désactiver ce paramètre réinitialisera la liste.",
         "textareaPlaceholder": "Exemple :\nwww.google.fr\nhttps://fr.wikipedia.org/wiki/Google",
         "reset": "Réinitialiser les paramètres",
         "validate": "Valider"
