@@ -1,6 +1,6 @@
 {
     "container": {
-        "description": "Une série d'outils permettant d'améliorer la lecture de pages web dans une pièce mal éclairée/autre :",
+        "description": "Une série d'outils conçus pour améliorer la lecture de pages web dans une pièce mal éclairée/autre :",
         "contrast": "Augmenter le contraste de la page",
         "titleContrast": "Ajuste automatiquement le thème graphique de la page afin d'obtenir le meilleur contraste possible. Peut mal fonctionner avec des thèmes graphiques complexes et/ou défigurer la page.",
         "themeSelect": "Thème de couleur :",
