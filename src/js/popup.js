@@ -61,7 +61,8 @@ $(document).ready(function() {
 
     function previewTheme(theme) {
         $("#previsualisationDiv").attr("class", "");
-        if(theme != null) {
+        
+        if(theme !== null) {
             if(theme == "1") {
                 $("#previsualisationDiv").addClass("pageShadowContrastBlack");
             } else {
@@ -69,6 +70,53 @@ $(document).ready(function() {
             }
         } else {
             $("#previsualisationDiv").addClass("pageShadowContrastBlack");
+        }
+    }
+    
+    function previewTemp(temp) {
+        $("#pageShadowLuminositeDivNightMode").attr("class", "");
+        var tempColor = "2000";
+        
+        if(temp !== null) {
+            switch(temp) {
+                case "1":
+                    var tempColor = "1000";
+                    break;
+                case "2":
+                    var tempColor = "1200";
+                    break;
+                case "3":
+                    var tempColor = "1500";
+                    break;
+                case "4":
+                    var tempColor = "1800";
+                    break;
+                case "5":
+                    var tempColor = "2000";
+                    break;
+                case "6":
+                    var tempColor = "2200";
+                    break;
+                case "7":
+                    var tempColor = "2600";
+                    break;
+                case "8":
+                    var tempColor = "2900";
+                    break;
+                case "9":
+                    var tempColor = "3100";
+                    break;
+                case "10":
+                    var tempColor = "3600";
+                    break;
+                default:
+                    var tempColor = "2000";
+                    break;
+            }
+            
+            $("#pageShadowLuminositeDivNightMode").addClass("k" + tempColor);
+        } else {
+            $("#pageShadowLuminositeDivNightMode").addClass("k2000");
         }
     }
     
@@ -245,7 +293,7 @@ $(document).ready(function() {
         previewTheme($(this).val());
     });
 
-    $( "#checkColorInvert" ).change(function() {
+    $("#checkColorInvert").change(function() {
         if($(this).is(':checked') == true) {
             setSettingItem("colorInvert", "true");
         }
@@ -254,7 +302,7 @@ $(document).ready(function() {
         }
     });
 
-    $( "#liveSettings" ).change(function() {
+    $("#liveSettings").change(function() {
         if($(this).is(':checked') == true) {
             setSettingItem("liveSettings", "true");
         }
@@ -296,14 +344,40 @@ $(document).ready(function() {
     $( "#checkNighMode" ).change(function() {
         if($(this).is(':checked') == true) {
             setSettingItem("nightModeEnabled", "true");
+            chrome.storage.local.get('colorTemp', function (result) {
+                if(typeof result.colorTemp !== "undefined" && typeof result.colorTemp !== null) {
+                    $("#tempSelect").val(result.colorTemp);
+                    previewTemp(result.colorTemp);
+                } else {
+                    $("#tempSelect").val("5");
+                    previewTemp("5");
+                }
+                $("#tempSelectDiv").stop().fadeIn();
+            });
             elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
         }
         else {
             setSettingItem("nightModeEnabled", "false");
+            chrome.storage.local.get('colorTemp', function (result) {
+                if(typeof result.colorTemp !== "undefined" && typeof result.colorTemp !== null) {
+                    $("#tempSelect").val(result.colorTemp);
+                    previewTemp(result.colorTemp);
+                } else {
+                    $("#tempSelect").val("5");
+                    previewTemp("5");
+                }
+                $("#tempSelectDiv").stop().fadeOut();
+            });
             elLumB.setAttribute("id", "pageShadowLuminositeDiv");
         }
     });
-    chrome.storage.local.get(['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'liveSettings'], function (result) {
+    
+    $("#tempSelect").change(function() {
+        setSettingItem("colorTemp", $(this).val());
+        previewTemp($(this).val());
+    });
+    
+    chrome.storage.local.get(['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'liveSettings', 'colorTemp'], function (result) {
         if(result.pageShadowEnabled == "true") {
             $("#checkAssomPage").attr("checked", "checked");
             if(typeof result.theme !== "undefined" && typeof result.theme !== null) {
@@ -319,11 +393,11 @@ $(document).ready(function() {
         if(result.pageLumEnabled == "true") {
             $("#checkLuminositePage").attr("checked", "checked");
             $("#sliderLuminositeDiv").show();
-                if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
-                    elLumB.setAttribute("id", "pageShadowLuminositeDiv");
-                    elLumB.style.opacity = result.pourcentageLum / 100;
-                    elLumB.style.display = "block";
-                }
+            if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
+                elLumB.setAttribute("id", "pageShadowLuminositeDiv");
+                elLumB.style.opacity = result.pourcentageLum / 100;
+                elLumB.style.display = "block";
+            }
         }
 
         if(result.nightModeEnabled == "true") {
@@ -331,6 +405,16 @@ $(document).ready(function() {
             if (typeof elLumB !== "undefined") {
                 elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
             }
+            
+            if(typeof result.colorTemp !== "undefined" && typeof result.colorTemp !== null) {
+                $("#tempSelect").val(result.colorTemp);
+                previewTemp(result.colorTemp);
+            } else {
+                $("#tempSelect").val("5");
+                previewTemp("5");
+            }
+            
+            $("#tempSelectDiv").show();
         }
 
         if(result.colorInvert == "true") {

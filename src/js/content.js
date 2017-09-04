@@ -1,7 +1,7 @@
 (function(){
     var nbThemes = 10; // nb of themes
 
-    function assombrirPage(pageShadowEnabled, theme, colorInvert) {
+    function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp) {
         if(pageShadowEnabled !== null && pageShadowEnabled == "true") {
             if(theme !== null) {
                 if(theme == "1") {
@@ -49,13 +49,59 @@
         }
     }
 
-    function luminositePage(enabled, pourcentage, nightmode, siteInterdits) {
+    function luminositePage(enabled, pourcentage, nightmode, siteInterdits, colorTemp) {
         var elLum = document.createElement("div");
+        elLum.setAttribute("class", "");
 
         if(enabled == "true") {
             elLum.style.display = "block";
             if(nightmode == "true") {
                 elLum.setAttribute("id", "pageShadowLuminositeDivNightMode");
+                elLum.setAttribute("class", "");
+                
+                var tempColor = "2000";
+                
+                if(colorTemp !== null) {
+                    switch(colorTemp) {
+                        case "1":
+                            var tempColor = "1000";
+                            break;
+                        case "2":
+                            var tempColor = "1200";
+                            break;
+                        case "3":
+                            var tempColor = "1500";
+                            break;
+                        case "4":
+                            var tempColor = "1800";
+                            break;
+                        case "5":
+                            var tempColor = "2000";
+                            break;
+                        case "6":
+                            var tempColor = "2200";
+                            break;
+                        case "7":
+                            var tempColor = "2600";
+                            break;
+                        case "8":
+                            var tempColor = "2900";
+                            break;
+                        case "9":
+                            var tempColor = "3100";
+                            break;
+                        case "10":
+                            var tempColor = "3600";
+                            break;
+                        default:
+                            var tempColor = "2000";
+                            break;
+                    }
+                    
+                    elLum.setAttribute("class", "k" + tempColor);
+                } else {
+                    elLum.setAttribute("class", "k2000");
+                }
             } else {
                 elLum.setAttribute("id", "pageShadowLuminositeDiv");
             }
@@ -86,9 +132,9 @@
         timeOutLum = setTimeout(function() { applyAL(element) }, 50);
     }
 
-    function applyAP(pageShadowEnabled, theme, colorInvert) {
-        if (document.body) return assombrirPage(pageShadowEnabled, theme, colorInvert);
-        timeOutAP = setTimeout(function() { applyAP(pageShadowEnabled, theme, colorInvert) }, 50);
+    function applyAP(pageShadowEnabled, theme, colorInvert, colorTemp) {
+        if (document.body) return assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp);
+        timeOutAP = setTimeout(function() { applyAP(pageShadowEnabled, theme, colorInvert, colorTemp) }, 50);
     }
 
     function applyIC(colorInvert) {
@@ -140,7 +186,7 @@
     }
 
     function main(type) {
-        chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'whiteList'], function (result) {
+        chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'whiteList', 'colorTemp'], function (result) {
             if(typeof timeOutLum !== "undefined") clearTimeout(timeOutLum);
             if(typeof timeOutAP !== "undefined") clearTimeout(timeOutAP);
             if(typeof timeOutIC !== "undefined") clearTimeout(timeOutIC);
@@ -185,19 +231,20 @@
                 var pageShadowEnabled = result.pageShadowEnabled;
                 var theme = result.theme;
                 var colorInvert = result.colorInvert;
+                var colorTemp = result.colorTemp;
 
                 if(type == "onlyContrast") {
-                    assombrirPage(pageShadowEnabled, theme, colorInvert);
+                    assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp);
                 } else if(type == "onlyInvert") {
                     invertColor(colorInvert);
                 } else if(pageShadowEnabled == "true") {
-                    applyAP(pageShadowEnabled, theme, colorInvert);
+                    applyAP(pageShadowEnabled, theme, colorInvert, colorTemp);
                 } else {
                     applyIC(colorInvert);
                 }
 
                 if(type !== "onlyContrast" && type !== "onlyInvert") {
-                    luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits);
+                    luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits, colorTemp);
                 }
             }
         });

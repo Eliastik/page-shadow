@@ -349,10 +349,40 @@ div#pageShadowLuminositeDivNightMode {
     position: fixed;
     top: 0;
     left: 0;
-    background-color: rgb(255,137,14) !important;
     min-height: 100%;
     min-width: 100%;
     height: auto;
     z-index: 2000000000;
     pointer-events: none;
+}
+/* source : https://www.3d-diablotine.com/viewtopic.php?f=142&t=10927 et http://www.vendian.org/mncharity/dir3/blackbody/UnstableURLs/bbr_color.html */
+div#pageShadowLuminositeDivNightMode.k1000 {
+    background-color: rgb(255,51,0) !important;
+}
+div#pageShadowLuminositeDivNightMode.k1200 {
+    background-color: rgb(255,82,0) !important;
+}
+div#pageShadowLuminositeDivNightMode.k1500 {
+    background-color: rgb(255,111,0) !important;
+}
+div#pageShadowLuminositeDivNightMode.k1800 {
+    background-color: rgb(255,126,0) !important;
+}
+div#pageShadowLuminositeDivNightMode.k2000 {
+    background-color: rgb(255,137,18) !important;
+}
+div#pageShadowLuminositeDivNightMode.k2200 {
+    background-color: rgb(255,147,44) !important;
+}
+div#pageShadowLuminositeDivNightMode.k2600 {
+    background-color: rgb(255,165,79) !important;
+}
+div#pageShadowLuminositeDivNightMode.k2900 {
+    background-color: rgb(255,177,101) !important;
+}
+div#pageShadowLuminositeDivNightMode.k3100 {
+    background-color: rgb(255,184,114) !important;
+}
+div#pageShadowLuminositeDivNightMode.k3600 {
+    background-color: rgb(255,199,143) !important;
 }

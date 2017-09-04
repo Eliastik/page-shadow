@@ -25,6 +25,7 @@ body {
 body.popup {
     width: 350px;
     overflow: hidden;
+    max-height: 1000px;
 }
 .container.popup {
     width: 100%;
@@ -101,7 +102,7 @@ label {
     cursor: pointer;
 }
 hr {
-    margin-top: 38px;
+    margin-top: 16px;
     margin-bottom: 8px;
 }
 .m0 {
@@ -121,4 +122,7 @@ hr.nmt {
 }
 .mt {
     margin-top: 1em;
+}
+#tempSelectDiv {
+    display: inline-block;
 }
