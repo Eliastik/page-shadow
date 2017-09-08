@@ -40,7 +40,8 @@
     "content_scripts": [
         {
             "js": [
-                "js/util.js", 
+                "js/util.js",
+                "js/storage.js",
                 "js/content.js"
             ],
             "css": [
