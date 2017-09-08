@@ -50,7 +50,8 @@
         }
     ],
     "background": {
-        "scripts": ["js/util.js", "js/storage.js", "js/background.js"]
+        "scripts": ["js/util.js", "js/storage.js", "js/background.js"],
+        "persistent": true
     },
     "-ms-preload": {
         "backgroundScript": "backgroundScriptsAPIBridge.js",
