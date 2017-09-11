@@ -3,13 +3,13 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.1 (04/09/2017)
+* Latest version: 2.1 REV1 (09/09/2017)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
-This is the source code for the extension Page Shadow, compatible with Chrome/Chromium, Firefox, Opera and Microsoft Edge. This extension uses the WebExtensions technology via the Chrome API (more infos : https://developer.mozilla.org/fr/Add-ons/WebExtensions )
+This is the source code for the extension Page Shadow, compatible with Chrome/Chromium, Firefox, Opera and Microsoft Edge. This extension uses the WebExtensions technology via the Chrome API (more infos : https://developer.mozilla.org/fr/Add-ons/WebExtensions ).
 
-Page Shadow is an extension with a series of tools to improve the reading of web pages in badly lit room/other. It allows you to increase page contrast, decrease page brightness, invert image colors, or activate night mode (applies an orange filter on the page to reduce the blue light emitted by the screen).
+Page Shadow is an extension designed to render a web page more readable in a dark environment. It allows you to increase page contrast, decrease page brightness, invert images colors, or activate a night mode (apply an orange filter on the page to reduce the blue light emitted by the screen).
 
 ### Installation:
 Page Shadow is avalaible to download and install at the following addresses:
@@ -35,6 +35,10 @@ Or you can compile yourself (see Compilation section).
     - Updated some libraries ;
     - Optimised code ;
     - Others minor adjustments and minor bugs fixed.
+* Bugs fixed with the revision 1 :
+    - XML parsing error in Firefox (bug in i18nextXHRBackend) ;
+    - The settings are now initialised directly after the installation of the extension ;
+    - Bug fixed with the manifest file for Microsoft Edge (persistent key in background key).
 
 #### Version 2.0.3 (09/07/2017) :
 * It is now possible to disable Page Shadow for a particular website or page via the right-click or via the extension menu
@@ -154,11 +158,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.1 (04/09/2017)
+* Version actuelle : 2.1 REV1 (09/09/2017)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
-Ceci est le code source de l'extension Page Shadow, compatible avec Chrome/Chromium, Firefox, Opera et Microsoft Edge. Cette extension utilise la technologie WebExtensions via l'API Chrome (plus d'infos : https://developer.mozilla.org/fr/Add-ons/WebExtensions )
+Ceci est le code source de l'extension Page Shadow, compatible avec Chrome/Chromium, Firefox, Opera et Microsoft Edge. Cette extension utilise la technologie WebExtensions via l'API Chrome (plus d'infos : https://developer.mozilla.org/fr/Add-ons/WebExtensions ).
 
 Page Shadow est une extension comprenant une série d'outils pour améliorer la lecture de pages web dans une pièce mal éclairée/autre. Elle vous permet d'augmenter le contraste de la page, de baisser la luminosité de la page, d'inverser les couleurs des images ou d'activer un mode nuit (applique un filtre orangé sur la page pour réduire la lumière bleue émise par l'écran).
 
@@ -186,6 +190,10 @@ Soit la compiler vous-même (voir section "Compilation").
     - Mise à jour de certaines bibliothèques logicielles ;
     - Code optimisé ;
     - Autres petits ajustements et corrections de bugs mineurs.
+* Bugs corrigés avec la révision 1 :
+    - Erreur de parsing XML avec Firefox corrigé (bug avec i18nextXHRBackend) ;
+    - Les paramètres sont désormais initialisés dès l'installation de l'extension ;
+    - Bug corrigé avec le fichier manifeste pour Microsoft Edge (clé persistent dans la clé background).
 
 #### Version 2.0.3 (09/07/2017) :
 * Il est désormais possible de désactiver Page Shadow pour un site ou une page particulière via le clic-droit ou via le menu de l'extension ;
