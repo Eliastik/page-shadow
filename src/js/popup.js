@@ -377,56 +377,60 @@ $(document).ready(function() {
         previewTemp($(this).val());
     });
     
-    chrome.storage.local.get(['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'liveSettings', 'colorTemp'], function (result) {
-        if(result.pageShadowEnabled == "true") {
-            $("#checkAssomPage").attr("checked", "checked");
-            if(typeof result.theme !== "undefined" && typeof result.theme !== null) {
-                $("#themeSelect").val(result.theme);
-                previewTheme(result.theme);
-            } else {
-                $("#themeSelect").val("1");
-                previewTheme("1");
+    function loadSettings() {
+        chrome.storage.local.get(['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'liveSettings', 'colorTemp'], function (result) {
+            if(result.pageShadowEnabled == "true") {
+                $("#checkAssomPage").attr("checked", "checked");
+                if(typeof result.theme !== "undefined" && typeof result.theme !== null) {
+                    $("#themeSelect").val(result.theme);
+                    previewTheme(result.theme);
+                } else {
+                    $("#themeSelect").val("1");
+                    previewTheme("1");
+                }
+                $("#themeDiv").show();
             }
-            $("#themeDiv").show();
-        }
 
-        if(result.pageLumEnabled == "true") {
-            $("#checkLuminositePage").attr("checked", "checked");
-            $("#sliderLuminositeDiv").show();
+            if(result.pageLumEnabled == "true") {
+                $("#checkLuminositePage").attr("checked", "checked");
+                $("#sliderLuminositeDiv").show();
+                if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
+                    elLumB.setAttribute("id", "pageShadowLuminositeDiv");
+                    elLumB.style.opacity = result.pourcentageLum / 100;
+                    elLumB.style.display = "block";
+                }
+            }
+
+            if(result.nightModeEnabled == "true") {
+                $("#checkNighMode").attr("checked", "checked");
+                if (typeof elLumB !== "undefined") {
+                    elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
+                }
+                
+                if(typeof result.colorTemp !== "undefined" && typeof result.colorTemp !== null) {
+                    $("#tempSelect").val(result.colorTemp);
+                    previewTemp(result.colorTemp);
+                } else {
+                    $("#tempSelect").val("5");
+                    previewTemp("5");
+                }
+                
+                $("#tempSelectDiv").show();
+            }
+
+            if(result.colorInvert == "true") {
+                $("#checkColorInvert").attr("checked", "checked");
+            }
+
+            if(result.liveSettings == "true" || result.liveSettings == null) {
+                $("#liveSettings").attr("checked", "checked");
+            }
+
             if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
-                elLumB.setAttribute("id", "pageShadowLuminositeDiv");
-                elLumB.style.opacity = result.pourcentageLum / 100;
-                elLumB.style.display = "block";
+                sliderLuminosite.slider('setValue', result.pourcentageLum);
             }
-        }
-
-        if(result.nightModeEnabled == "true") {
-            $("#checkNighMode").attr("checked", "checked");
-            if (typeof elLumB !== "undefined") {
-                elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
-            }
-            
-            if(typeof result.colorTemp !== "undefined" && typeof result.colorTemp !== null) {
-                $("#tempSelect").val(result.colorTemp);
-                previewTemp(result.colorTemp);
-            } else {
-                $("#tempSelect").val("5");
-                previewTemp("5");
-            }
-            
-            $("#tempSelectDiv").show();
-        }
-
-        if(result.colorInvert == "true") {
-            $("#checkColorInvert").attr("checked", "checked");
-        }
-
-        if(result.liveSettings == "true" || result.liveSettings == null) {
-            $("#liveSettings").attr("checked", "checked");
-        }
-
-        if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
-            sliderLuminosite.slider('setValue', result.pourcentageLum);
-        }
-    });
+        });
+    }
+    
+    loadSettings();
 });
