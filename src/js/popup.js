@@ -173,13 +173,17 @@ $(document).ready(function() {
         if(matches && matches.length === 2) {
             var tabId = parseInt(matches[1]);
             chrome.tabs.get(tabId, function(tabinfos) {
-                var url = new URL(tabinfos.url);
-                check(url);
+                if(!chrome.runtime.lastError) {
+                    var url = new URL(tabinfos.url);
+                    check(url);
+                }
             });
         } else {
             chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                var url = new URL(tabs[0].url);
-                check(url);
+                if(!chrome.runtime.lastError) {
+                    var url = new URL(tabs[0].url);
+                    check(url);
+                }
             });
         }
     }
@@ -250,13 +254,17 @@ $(document).ready(function() {
         if(matches && matches.length === 2) {
             var tabId = parseInt(matches[1]);
             chrome.tabs.get(tabId, function(tabinfos) {
-                var url = new URL(tabinfos.url);
-                disable(url);
+                if(!chrome.runtime.lastError) {
+                    var url = new URL(tabinfos.url);
+                    disable(url);
+                }
             });
         } else {
             chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                var url = new URL(tabs[0].url);
-                disable(url);
+                if(!chrome.runtime.lastError) {
+                    var url = new URL(tabs[0].url);
+                    disable(url);
+                }
             });
         }
     }
