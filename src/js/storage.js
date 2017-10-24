@@ -60,3 +60,9 @@ function setFirstSettings() {
 }
 
 checkFirstLoad();
+
+if(typeof(chrome.storage.onChanged) !== 'undefined') {
+    chrome.storage.onChanged.addListener(function() {
+        checkFirstLoad();
+    });
+}

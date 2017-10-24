@@ -5,8 +5,7 @@ i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend)
     load: 'languageOnly',
     defaultNS: 'popup',
         detection: {
-            order: ['querystring', 'localStorage', 'navigator', 'htmlTag'],
-            lookupQuerystring: 'lng',
+            order: ['localStorage', 'navigator'],
             lookupLocalStorage: 'i18nextLng',
             caches: ['localStorage'],
         },
@@ -258,40 +257,53 @@ $(document).ready(function() {
     $("#enableWebpage").click(function() {
         disablePageShadow("disable-webpage", true);
     });
+    
+    function checkContrastMode() {
+        chrome.storage.local.get(["theme", "pageShadowEnabled"], function (result) {
+            if(typeof result.theme !== "undefined" && typeof result.theme !== null) {
+                $("#themeSelect").val(result.theme);
+                previewTheme(result.theme);
+            } else {
+                $("#themeSelect").val("1");
+                previewTheme("1");
+            }
+            
+            if(result.pageShadowEnabled == "true") {
+                $("#themeDiv").stop().fadeIn();
+                if($("#checkAssomPage").is(':checked') == false) {
+                    $("#checkAssomPage").prop("checked", true);
+                }
+            } else {
+                $("#themeDiv").stop().fadeOut();
+                if($("#checkAssomPage").is(':checked') == true) {
+                    $("#checkAssomPage").prop("checked", false);
+                }
+            }
+        });
+    }
 
-    $( "#checkAssomPage" ).change(function() {
+    $("#checkAssomPage").change(function() {
         if($(this).is(':checked') == true) {
             setSettingItem("pageShadowEnabled", "true");
-            chrome.storage.local.get('theme', function (result) {
-                if(typeof result.theme !== "undefined" && typeof result.theme !== null) {
-                    $("#themeSelect").val(result.theme);
-                    previewTheme(result.theme);
-                } else {
-                    $("#themeSelect").val("1");
-                    previewTheme("1");
-                }
-                $("#themeDiv").stop().fadeIn();
-            });
         }
         else {
             setSettingItem("pageShadowEnabled", "false");
-            chrome.storage.local.get('theme', function (result) {
-                if(typeof result.theme !== "undefined" && typeof result.theme !== null) {
-                    $("#themeSelect").val(result.theme);
-                    previewTheme(result.theme);
-                } else {
-                    $("#themeSelect").val("1");
-                    previewTheme("1");
-                }
-                $("#themeDiv").stop().fadeOut();
-            });
         }
     });
 
     $("#themeSelect").change(function() {
         setSettingItem("theme", $(this).val());
-        previewTheme($(this).val());
     });
+    
+    function checkColorInvert() {
+        chrome.storage.local.get("colorInvert", function (result) {
+            if(result.colorInvert == "true" && $("#checkColorInvert").is(':checked') == false) {
+                $("#checkColorInvert").prop("checked", true);
+            } else if(result.colorInvert !== "true" && $("#checkColorInvert").is(':checked') == true) {
+                $("#checkColorInvert").prop("checked", false);
+            }
+        });
+    }
 
     $("#checkColorInvert").change(function() {
         if($(this).is(':checked') == true) {
@@ -301,6 +313,16 @@ $(document).ready(function() {
             setSettingItem("colorInvert", "false");
         }
     });
+    
+    function checkLiveSettings() {
+        chrome.storage.local.get("liveSettings", function (result) {
+            if(result.liveSettings == "true" && $("#liveSettings").is(':checked') == false) {
+                $("#liveSettings").prop("checked", true);
+            } else if(result.liveSettings !== "true" && $("#liveSettings").is(':checked') == true) {
+                $("#liveSettings").prop("checked", false);
+            }
+        });
+    }
 
     $("#liveSettings").change(function() {
         if($(this).is(':checked') == true) {
@@ -310,11 +332,10 @@ $(document).ready(function() {
             setSettingItem("liveSettings", "false");
         }
     });
-
-    $( "#checkLuminositePage" ).change(function() {
-        if($(this).is(':checked') == true) {
-            setSettingItem("pageLumEnabled", "true");
-            chrome.storage.local.get(['nightModeEnabled', 'pourcentageLum'], function (result) {
+    
+    function checkBrightness() {
+        chrome.storage.local.get(['pageLumEnabled', 'nightModeEnabled', 'pourcentageLum'], function (result) {
+            if(result.pageLumEnabled == "true") {
                 if(result.nightModeEnabled == "true") {
                     $("#checkNighMode").attr("checked", "checked");
                     elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
@@ -328,12 +349,25 @@ $(document).ready(function() {
                 }
                 elLumB.style.display = "block";
                 $("#sliderLuminositeDiv").stop().fadeIn();
-            });
+                if($("#checkLuminositePage").is(':checked') == false) {
+                    $("#checkLuminositePage").prop("checked", true);
+                }
+            } else {
+                $("#sliderLuminositeDiv").stop().fadeOut();
+                elLumB.style.display = "none";
+                if($("#checkLuminositePage").is(':checked') == true) {
+                    $("#checkLuminositePage").prop("checked", false);
+                }
+            }
+        });
+    }
+
+    $("#checkLuminositePage").change(function() {
+        if($(this).is(':checked') == true) {
+            setSettingItem("pageLumEnabled", "true");
         }
         else {
             setSettingItem("pageLumEnabled", "false");
-            $("#sliderLuminositeDiv").stop().fadeOut();
-            elLumB.style.display = "none";
         }
     });
 
@@ -350,11 +384,10 @@ $(document).ready(function() {
         
         setSettingItem("pourcentageLum", sliderLumValue);
     });
-
-    $( "#checkNighMode" ).change(function() {
-        if($(this).is(':checked') == true) {
-            setSettingItem("nightModeEnabled", "true");
-            chrome.storage.local.get('colorTemp', function (result) {
+    
+    function checkNightMode() {
+        chrome.storage.local.get(['nightModeEnabled', 'colorTemp'], function (result) {
+            if(result.nightModeEnabled == "true") {
                 if(typeof result.colorTemp !== "undefined" && typeof result.colorTemp !== null) {
                     $("#tempSelect").val(result.colorTemp);
                     previewTemp(result.colorTemp);
@@ -363,94 +396,56 @@ $(document).ready(function() {
                     previewTemp("5");
                 }
                 $("#tempSelectDiv").stop().fadeIn();
-            });
-            elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
+                elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
+                if($("#checkNighMode").is(':checked') == false) {
+                    $("#checkNighMode").prop("checked", true);
+                }
+            } else {
+                $("#tempSelectDiv").stop().fadeOut();
+                elLumB.setAttribute("id", "pageShadowLuminositeDiv");
+                if($("#checkNighMode").is(':checked') == true) {
+                    $("#checkNighMode").prop("checked", false);
+                }
+            }
+        });
+    }
+
+    $( "#checkNighMode" ).change(function() {
+        if($(this).is(':checked') == true) {
+            setSettingItem("nightModeEnabled", "true");
         }
         else {
             setSettingItem("nightModeEnabled", "false");
-            chrome.storage.local.get('colorTemp', function (result) {
-                if(typeof result.colorTemp !== "undefined" && typeof result.colorTemp !== null) {
-                    $("#tempSelect").val(result.colorTemp);
-                    previewTemp(result.colorTemp);
-                } else {
-                    $("#tempSelect").val("5");
-                    previewTemp("5");
-                }
-                $("#tempSelectDiv").stop().fadeOut();
-            });
-            elLumB.setAttribute("id", "pageShadowLuminositeDiv");
         }
     });
     
     $("#tempSelect").change(function() {
         setSettingItem("colorTemp", $(this).val());
-        previewTemp($(this).val());
     });
     
-    function loadSettings() {
-        chrome.storage.local.get(['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'liveSettings', 'colorTemp'], function (result) {
-            if(result.pageShadowEnabled == "true") {
-                $("#checkAssomPage").attr("checked", "checked");
-                if(typeof result.theme !== "undefined" && typeof result.theme !== null) {
-                    $("#themeSelect").val(result.theme);
-                    previewTheme(result.theme);
-                } else {
-                    $("#themeSelect").val("1");
-                    previewTheme("1");
-                }
-                $("#themeDiv").show();
-            }
-
-            if(result.pageLumEnabled == "true") {
-                $("#checkLuminositePage").attr("checked", "checked");
-                $("#sliderLuminositeDiv").show();
-                if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
-                    elLumB.setAttribute("id", "pageShadowLuminositeDiv");
-                    if(result.pourcentageLum / 100 > 1) {
-                        elLumB.style.opacity = 0.15;
-                    } else {
-                        elLumB.style.opacity = result.pourcentageLum / 100;
-                    }
-                    elLumB.style.display = "block";
-                }
-            }
-
-            if(result.nightModeEnabled == "true") {
-                $("#checkNighMode").attr("checked", "checked");
-                if (typeof elLumB !== "undefined") {
-                    elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
-                }
-                
-                if(typeof result.colorTemp !== "undefined" && typeof result.colorTemp !== null) {
-                    $("#tempSelect").val(result.colorTemp);
-                    previewTemp(result.colorTemp);
-                } else {
-                    $("#tempSelect").val("5");
-                    previewTemp("5");
-                }
-                
-                $("#tempSelectDiv").show();
-            }
-
-            if(result.colorInvert == "true") {
-                $("#checkColorInvert").attr("checked", "checked");
-            }
-
-            if(result.liveSettings == "true" || result.liveSettings == null) {
-                $("#liveSettings").attr("checked", "checked");
-            }
-
+    function displaySettings() {
+        chrome.storage.local.get(['theme', 'colorTemp', 'pourcentageLum'], function (result) {
+            checkContrastMode();
+            checkColorInvert();
+            checkLiveSettings();
+            checkBrightness();
+            checkNightMode();
+            previewTheme(result.theme);
+            previewTemp(result.colorTemp);
+            
             if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
                 sliderLuminosite.slider('setValue', result.pourcentageLum);
+            } else {
+                sliderLuminosite.slider('setValue', 15);
             }
         });
     }
     
-    loadSettings();
+    displaySettings();
     
     if(typeof(chrome.storage.onChanged) !== 'undefined') {
         chrome.storage.onChanged.addListener(function() {
-            loadSettings();
+            displaySettings();
         });
     }
 });

@@ -126,6 +126,6 @@ hr.nmt {
 #tempSelectDiv {
     display: inline-block;
 }
-.btn {
-    margin-bottom: 8px;
+.btn, button {
+    margin-bottom: 8px !important;
 }

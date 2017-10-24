@@ -1,22 +1,26 @@
 var extensionVersion = "2.1";
 /* translation */
-i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
-    fallbackLng: ['en', 'fr'],
-    ns: 'options',
-    load: 'languageOnly',
-    defaultNS: 'options',
-        detection: {
-            order: ['querystring', 'localStorage', 'navigator', 'htmlTag'],
-            lookupQuerystring: 'lng',
-            lookupLocalStorage: 'i18nextLng',
-            caches: ['localStorage'],
-        },
-        backend: {
-            loadPath: '/_locales/{{lng}}/{{ns}}.json',
-        },
-}, function(err, t) {
-    translateContent();
-});
+function init_i18next() {
+    i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
+        fallbackLng: ['en', 'fr'],
+        ns: 'options',
+        load: 'languageOnly',
+        defaultNS: 'options',
+            detection: {
+                order: ['localStorage', 'navigator'],
+                lookupLocalStorage: 'i18nextLng',
+                caches: ['localStorage'],
+            },
+            backend: {
+                loadPath: '/_locales/{{lng}}/{{ns}}.json',
+            },
+    }, function(err, t) {
+        translateContent();
+    });
+}
+
+init_i18next();
+
 function listTranslations(languages) {
     $("#languageSelect").text("");
     $.each(languages, function(index, value) {
@@ -44,9 +48,10 @@ function resetSettings() {
     $('span[data-toggle="tooltip"]').tooltip("hide");
     $('i[data-toggle="tooltip"]').tooltip("hide");
     chrome.storage.local.clear();
-    changeLng("fr");
+    localStorage.clear();
     $("#textareaAssomPage").val("");
     $("#checkWhiteList").prop("checked", false);
+    init_i18next();
     $('#reset').modal("show");
 }
 function displaySettings() {
@@ -55,9 +60,9 @@ function displaySettings() {
             $("#textareaAssomPage").val(result.sitesInterditPageShadow);
         }
         
-        if(result.whiteList == "true") {
+        if(result.whiteList == "true" && $("#checkWhiteList").is(':checked') == false) {
             $("#checkWhiteList").prop("checked", true);
-        } else {
+        } else if(result.whiteList !== "true" && $("#checkWhiteList").is(':checked') == true) {
             $("#checkWhiteList").prop("checked", false);
         }
     });

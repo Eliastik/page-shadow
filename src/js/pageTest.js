@@ -5,8 +5,7 @@ i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend)
     load: 'languageOnly',
     defaultNS: 'pageTest',
         detection: {
-            order: ['querystring', 'localStorage', 'navigator', 'htmlTag'],
-            lookupQuerystring: 'lng',
+            order: ['localStorage', 'navigator'],
             lookupLocalStorage: 'i18nextLng',
             caches: ['localStorage'],
         },
