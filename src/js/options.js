@@ -120,7 +120,9 @@ $(document).ready(function() {
 
     displaySettings();
 
-    chrome.storage.onChanged.addListener(function() {
-        displaySettings();
-    });
+    if(typeof(chrome.storage.onChanged) !== 'undefined') {
+        chrome.storage.onChanged.addListener(function() {
+            displaySettings();
+        });
+    }
 });

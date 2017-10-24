@@ -321,7 +321,11 @@ $(document).ready(function() {
                 } else {
                     elLumB.setAttribute("id", "pageShadowLuminositeDiv");
                 }
-                elLumB.style.opacity = result.pourcentageLum / 100;
+                if(result.pourcentageLum / 100 > 1) {
+                    elLumB.style.opacity = 0.15;
+                } else {
+                    elLumB.style.opacity = result.pourcentageLum / 100;
+                }
                 elLumB.style.display = "block";
                 $("#sliderLuminositeDiv").stop().fadeIn();
             });
@@ -335,9 +339,15 @@ $(document).ready(function() {
 
     $("#sliderLuminosite").change(function() {
         var sliderLumValue = sliderLuminosite.slider('getValue');
+        
         if(typeof elLumB !== "undefined") {
-            elLumB.style.opacity = sliderLumValue / 100;
+            if(sliderLumValue / 100 > 1) {
+                elLumB.style.opacity = 0.15;
+            } else {
+                elLumB.style.opacity = sliderLumValue / 100;
+            }
         }
+        
         setSettingItem("pourcentageLum", sliderLumValue);
     });
 
@@ -396,7 +406,11 @@ $(document).ready(function() {
                 $("#sliderLuminositeDiv").show();
                 if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
                     elLumB.setAttribute("id", "pageShadowLuminositeDiv");
-                    elLumB.style.opacity = result.pourcentageLum / 100;
+                    if(result.pourcentageLum / 100 > 1) {
+                        elLumB.style.opacity = 0.15;
+                    } else {
+                        elLumB.style.opacity = result.pourcentageLum / 100;
+                    }
                     elLumB.style.display = "block";
                 }
             }
@@ -433,4 +447,10 @@ $(document).ready(function() {
     }
     
     loadSettings();
+    
+    if(typeof(chrome.storage.onChanged) !== 'undefined') {
+        chrome.storage.onChanged.addListener(function() {
+            loadSettings();
+        });
+    }
 });
