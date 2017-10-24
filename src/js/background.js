@@ -54,15 +54,40 @@ function deleteContextMenu(id) {
 
 function menu() {
     function createMenu() {
-        chrome.storage.local.get('whiteList', function (result) {
-            createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
-            
-            if(result.whiteList == "true") {
-                createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
-                deleteContextMenu("disable-webpage");
+        chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
+            if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined' || result.sitesInterditPageShadow.trim() == '') {
+                var siteInterdits = "";
             } else {
-                createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
+                var siteInterdits = result.sitesInterditPageShadow.split("\n");
             }
+
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                var tabUrl = tabs[0].url;
+
+                var url = new URL(tabUrl);
+                var domain = url.hostname;
+                var href = url.href;
+
+                if(result.whiteList == "true") {
+                    if(strict_in_array(domain, siteInterdits)) {
+                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
+                    } else {
+                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
+                    }
+                } else {
+                    if(strict_in_array(domain, siteInterdits)) {
+                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
+                    } else {
+                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
+                    }
+
+                    if(strict_in_array(href, siteInterdits)) {
+                        createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
+                    } else {
+                        createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
+                    }
+                }
+            });
         });
     }
     
@@ -76,64 +101,28 @@ function menu() {
 }
 
 function updateMenu() {
-    chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
-        if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined' || result.sitesInterditPageShadow.trim() == '') {
-            var siteInterdits = "";
-        } else {
-            var siteInterdits = result.sitesInterditPageShadow.split("\n");
-        }
-
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            var tabUrl = tabs[0].url;
-
-            var url = new URL(tabUrl);
-            var domain = url.hostname;
-            var href = url.href;
-
-            if(result.whiteList == "true") {
-                if(strict_in_array(domain, siteInterdits)) {
-                    updateContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
-                } else {
-                    updateContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
-                }
-            } else {
-                if(strict_in_array(domain, siteInterdits)) {
-                    updateContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
-                } else {
-                    updateContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
-                }
-
-                if(strict_in_array(href, siteInterdits)) {
-                    updateContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
-                } else {
-                    updateContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
-                }
-            }
-        });
-    });
+    menu();
 }
 
 setPopup();
 menu();
-updateMenu();
 
 if(typeof(chrome.storage.onChanged) !== 'undefined') {
     chrome.storage.onChanged.addListener(function() {
         menu();
-        updateMenu();
     });
 }
 
 if(typeof(chrome.tabs.onActivated) !== 'undefined') {
     chrome.tabs.onActivated.addListener(function(infos) {
         updatePopupLink(infos.tabId);
-        updateMenu();
+        menu();
     });
 }
 
 if(typeof(chrome.tabs.onUpdated) !== 'undefined') {
     chrome.tabs.onUpdated.addListener(function() {
-        updateMenu();
+        menu();
     });
 }
 
@@ -193,8 +182,8 @@ if(typeof(chrome.contextMenus.onClicked) !== 'undefined') {
                     }
                     break;
             }
-
-            updateMenu();
+            
+            menu();
         });
     });
 }
