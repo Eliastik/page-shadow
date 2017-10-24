@@ -12,16 +12,16 @@
     color: #aaa !important;
 }
 .pageShadowContrastBlack ins {
-    background-color: black !important;
-    color: green !important;
+    background-color: green !important;
+    color: white !important;
 }
 .pageShadowContrastBlack del {
-    background-color: black !important;
-    color: red !important;
+    background-color: red !important;
+    color: white !important;
 }
 .pageShadowContrastBlack mark {
     background-color: orange !important;
-    color: #aaa !important;
+    color: black !important;
 }
 .pageShadowContrastBlack a {
     background-color: black !important;
@@ -44,16 +44,16 @@
     color: #BDC7C1 !important;
 }
 .pageShadowContrastBlack2 ins {
-    background-color: #142634 !important;
-    color: green !important;
+    background-color: green !important;
+    color: white !important;
 }
 .pageShadowContrastBlack2 del {
-    background-color: #142634 !important;
-    color: red !important;
+    background-color: red !important;
+    color: white !important;
 }
 .pageShadowContrastBlack2 mark {
     background-color: orange !important;
-    color: #BDC7C1 !important;
+    color: black !important;
 }
 .pageShadowContrastBlack2 a {
     background-color: #142634 !important;
@@ -76,16 +76,16 @@
     color: #aaa !important;
 }
 .pageShadowContrastBlack3 ins {
-    background-color: #222 !important;
-    color: green !important;
+    background-color: green !important;
+    color: white !important;
 }
 .pageShadowContrastBlack3 del {
-    background-color: #222 !important;
-    color: red !important;
+    background-color: red !important;
+    color: white !important;
 }
 .pageShadowContrastBlack3 mark {
     background-color: orange !important;
-    color: #aaa !important;
+    color: black !important;
 }
 .pageShadowContrastBlack3 a {
     background-color: #222 !important;
@@ -108,16 +108,16 @@
     color: #c3cee3 !important;
 }
 .pageShadowContrastBlack4 ins {
-    background-color: #263238 !important;
-    color: green !important;
+    background-color: green !important;
+    color: white !important;
 }
 .pageShadowContrastBlack4 del {
-    background-color: #263238 !important;
-    color: red !important;
+    background-color: red !important;
+    color: white !important;
 }
 .pageShadowContrastBlack4 mark {
     background-color: orange !important;
-    color: #c3cee3 !important;
+    color: black !important;
 }
 .pageShadowContrastBlack4 a {
     background-color: #263238 !important;
@@ -140,16 +140,16 @@
     color: #dfcbd3 !important;
 }
 .pageShadowContrastBlack5 ins {
-    background-color: #333a49 !important;
-    color: green !important;
+    background-color: green !important;
+    color: white !important;
 }
 .pageShadowContrastBlack5 del {
-    background-color: #333a49 !important;
-    color: red !important;
+    background-color: red !important;
+    color: white !important;
 }
 .pageShadowContrastBlack5 mark {
     background-color: orange !important;
-    color: #dfcbd3 !important;
+    color: black !important;
 }
 .pageShadowContrastBlack5 a {
     background-color: #333a49 !important;
@@ -172,16 +172,16 @@
     color: #b9cace !important;
 }
 .pageShadowContrastBlack6 ins {
-    background-color: #020315 !important;
-    color: green !important;
+    background-color: green !important;
+    color: white !important;
 }
 .pageShadowContrastBlack6 del {
-    background-color: #020315 !important;
-    color: red !important;
+    background-color: red !important;
+    color: white !important;
 }
 .pageShadowContrastBlack6 mark {
     background-color: orange !important;
-    color: #b9cace !important;
+    color: black !important;
 }
 .pageShadowContrastBlack6 a {
     background-color: #020315 !important;
@@ -204,16 +204,16 @@
     color: #6f9bb0 !important;
 }
 .pageShadowContrastBlack7 ins {
-    background-color: #192338 !important;
-    color: green !important;
+    background-color: green !important;
+    color: white !important;
 }
 .pageShadowContrastBlack7 del {
-    background-color: #192338 !important;
-    color: red !important;
+    background-color: red !important;
+    color: white !important;
 }
 .pageShadowContrastBlack7 mark {
     background-color: orange !important;
-    color: #6f9bb0 !important;
+    color: black !important;
 }
 .pageShadowContrastBlack7 a {
     background-color: #192338 !important;
@@ -236,16 +236,16 @@
     color: #FFFFB3 !important;
 }
 .pageShadowContrastBlack8 ins {
-    background-color: #1A1A1A !important;
-    color: green !important;
+    background-color: green !important;
+    color: white !important;
 }
 .pageShadowContrastBlack8 del {
-    background-color: #1A1A1A !important;
-    color: red !important;
+    background-color: red !important;
+    color: white !important;
 }
 .pageShadowContrastBlack8 mark {
     background-color: orange !important;
-    color: #FFFFB3 !important;
+    color: black !important;
 }
 .pageShadowContrastBlack8 a {
     background-color: #1A1A1A !important;
@@ -268,16 +268,16 @@
     color: #BED6FF !important;
 }
 .pageShadowContrastBlack9 ins {
-    background-color: #1d4e6d !important;
-    color: green !important;
+    background-color: green !important;
+    color: white !important;
 }
 .pageShadowContrastBlack9 del {
-    background-color: #1d4e6d !important;
-    color: red !important;
+    background-color: red !important;
+    color: white !important;
 }
 .pageShadowContrastBlack9 mark {
     background-color: orange !important;
-    color: #BED6FF !important;
+    color: black !important;
 }
 .pageShadowContrastBlack9 a {
     background-color: #1d4e6d !important;
@@ -300,16 +300,16 @@
     color: #39B7FF !important;
 }
 .pageShadowContrastBlack10 ins {
-    background-color: #272822 !important;
-    color: green !important;
+    background-color: green !important;
+    color: white !important;
 }
 .pageShadowContrastBlack10 del {
-    background-color: #272822 !important;
-    color: red !important;
+    background-color: red !important;
+    color: white !important;
 }
 .pageShadowContrastBlack10 mark {
     background-color: orange !important;
-    color: #39B7FF !important;
+    color: black !important;
 }
 .pageShadowContrastBlack10 a {
     background-color: #272822 !important;
@@ -317,6 +317,38 @@
 }
 .pageShadowContrastBlack10 img {
     background-color: #BDBDBD !important;
+}
+/* theme 11 */
+.pageShadowContrastBlack11 {
+    background: white !important;
+    background-image: url();
+}
+.pageShadowContrastBlack11 div, .pageShadowContrastBlack11 header, .pageShadowContrastBlack11 adress, .pageShadowContrastBlack11 hgroup, .pageShadowContrastBlack11 span, .pageShadowContrastBlack11 strong, .pageShadowContrastBlack11 em, .pageShadowContrastBlack11 small, .pageShadowContrastBlack11 s, .pageShadowContrastBlack11 q, .pageShadowContrastBlack11 dfn, .pageShadowContrastBlack11 abbr, .pageShadowContrastBlack11 sub, .pageShadowContrastBlack11 sup, .pageShadowContrastBlack11 b, .pageShadowContrastBlack11 i, .pageShadowContrastBlack11 u, .pageShadowContrastBlack11 figure, .pageShadowContrastBlack11 figcaption, .pageShadowContrastBlack11 dd, .pageShadowContrastBlack11 dl, .pageShadowContrastBlack11 dt,  .pageShadowContrastBlack11 font, .pageShadowContrastBlack11 pre, .pageShadowContrastBlack11 code, .pageShadowContrastBlack11 main, .pageShadowContrastBlack11 blockquote, .pageShadowContrastBlack11 cite, .pageShadowContrastBlack11 nav, .pageShadowContrastBlack11 article, .pageShadowContrastBlack11 aside, .pageShadowContrastBlack11 section, .pageShadowContrastBlack11 footer, .pageShadowContrastBlack11 ul, .pageShadowContrastBlack11 ul li, .pageShadowContrastBlack11 li, .pageShadowContrastBlack11 ol li, .pageShadowContrastBlack11 p, .pageShadowContrastBlack11 input, .pageShadowContrastBlack11 input[type="button"], .pageShadowContrastBlack11 input[type="submit"], .pageShadowContrastBlack11 input[type="reset"], .pageShadowContrastBlack11 textarea, .pageShadowContrastBlack11 button, .pageShadowContrastBlack11 h1, .pageShadowContrastBlack11 h2, .pageShadowContrastBlack11 h3, .pageShadowContrastBlack11 h4, .pageShadowContrastBlack11 h5, .pageShadowContrastBlack11 h6, .pageShadowContrastBlack11 table, .pageShadowContrastBlack11 th, .pageShadowContrastBlack11 td, .pageShadowContrastBlack11 tr, .pageShadowContrastBlack11 output, .pageShadowContrastBlack11 legend, .pageShadowContrastBlack11 label, .pageShadowContrastBlack11 footer, .pageShadowContrastBlack11 kbd, .pageShadowContrastBlack11 form, .pageShadowContrastBlack11 caption, .pageShadowContrastBlack11 yt-formatted-string, .pageShadowContrastBlack11 ytd-app, .pageShadowContrastBlack11 paper-button, .pageShadowContrastBlack11 paper-item, .pageShadowContrastBlack11 ytd-simple-menu-header-renderer, .pageShadowContrastBlack11 yt-icon, .pageShadowContrastBlack11 ytd-watch, .pageShadowContrastBlack11 ytd-browse {
+    background-color: white !important;
+    color: black !important;
+}
+.pageShadowContrastBlack11 select {
+    background-color: #424242 !important;
+    color: black !important;
+}
+.pageShadowContrastBlack11 ins {
+    background-color: #FF7FFF !important;
+    color: black !important;
+}
+.pageShadowContrastBlack11 del {
+    background-color: #00FFFF !important;
+    color: black !important;
+}
+.pageShadowContrastBlack11 mark {
+    background-color: #005AFF !important;
+    color: white !important;
+}
+.pageShadowContrastBlack11 a {
+    background-color: white !important;
+    color: #CC4A00 !important;
+}
+.pageShadowContrastBlack11 img {
+    background-color: #424242 !important;
 }
 /* color invert */
 body.pageShadowInvertImageColor img, body.pageShadowInvertImageColor svg {

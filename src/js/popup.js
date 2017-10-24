@@ -33,6 +33,11 @@ $(document).ready(function() {
     var elLumB = document.createElement("div");
     elLumB.style.display = "none";
     document.body.appendChild(elLumB);
+    
+    $("#themeSelect").text("");
+    for(i=1; i <= nbThemes; i++) {
+        $("#themeSelect").append('<option value="'+ i +'" data-i18n="[prepend]container.theme">'+ i +'</option>');
+    }
 
     $('i[data-toggle="tooltip"]').tooltip({
         animated: 'fade',
@@ -60,7 +65,7 @@ $(document).ready(function() {
 
     function previewTheme(theme) {
         $("#previsualisationDiv").attr("class", "");
-        
+
         if(theme !== null) {
             if(theme == "1") {
                 $("#previsualisationDiv").addClass("pageShadowContrastBlack");
@@ -71,11 +76,11 @@ $(document).ready(function() {
             $("#previsualisationDiv").addClass("pageShadowContrastBlack");
         }
     }
-    
+
     function previewTemp(temp) {
         $("#pageShadowLuminositeDivNightMode").attr("class", "");
         var tempColor = "2000";
-        
+
         if(temp !== null) {
             switch(temp) {
                 case "1":
@@ -112,13 +117,13 @@ $(document).ready(function() {
                     var tempColor = "2000";
                     break;
             }
-            
+
             $("#pageShadowLuminositeDivNightMode").addClass("k" + tempColor);
         } else {
             $("#pageShadowLuminositeDivNightMode").addClass("k2000");
         }
     }
-    
+
     function checkEnable() {
         chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
             if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined' || result.sitesInterditPageShadow.trim() == '') {
@@ -144,7 +149,7 @@ $(document).ready(function() {
 
                     $("#disableWebpage-li").hide();
                     $("#enableWebpage-li").hide();
-                    
+
                 } else {
                     if(strict_in_array(domain, siteInterdits)) {
                         $("#disableWebsite-li").show();
@@ -165,7 +170,7 @@ $(document).ready(function() {
             });
         });
     }
-    
+
     function disablePageShadow(type, checked) {
         chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
             chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -222,12 +227,12 @@ $(document).ready(function() {
                         }
                         break;
                 }
-                
+
                 checkEnable();
             });
         });
     }
-    
+
     checkEnable();
 
     if(typeof(chrome.tabs.onActivated) !== 'undefined') {
@@ -241,23 +246,23 @@ $(document).ready(function() {
             checkEnable();
         });
     }
-    
+
     $("#disableWebsite").click(function() {
         disablePageShadow("disable-website", false);
     });
-    
+
     $("#enableWebsite").click(function() {
         disablePageShadow("disable-website", true);
     });
-    
+
     $("#disableWebpage").click(function() {
         disablePageShadow("disable-webpage", false);
     });
-    
+
     $("#enableWebpage").click(function() {
         disablePageShadow("disable-webpage", true);
     });
-    
+
     function checkContrastMode() {
         chrome.storage.local.get(["theme", "pageShadowEnabled"], function (result) {
             if(typeof result.theme !== "undefined" && typeof result.theme !== null) {
@@ -267,7 +272,7 @@ $(document).ready(function() {
                 $("#themeSelect").val("1");
                 previewTheme("1");
             }
-            
+
             if(result.pageShadowEnabled == "true") {
                 $("#themeDiv").stop().fadeIn();
                 if($("#checkAssomPage").is(':checked') == false) {
@@ -294,7 +299,7 @@ $(document).ready(function() {
     $("#themeSelect").change(function() {
         setSettingItem("theme", $(this).val());
     });
-    
+
     function checkColorInvert() {
         chrome.storage.local.get("colorInvert", function (result) {
             if(result.colorInvert == "true" && $("#checkColorInvert").is(':checked') == false) {
@@ -313,7 +318,7 @@ $(document).ready(function() {
             setSettingItem("colorInvert", "false");
         }
     });
-    
+
     function checkLiveSettings() {
         chrome.storage.local.get("liveSettings", function (result) {
             if(result.liveSettings == "true" && $("#liveSettings").is(':checked') == false) {
@@ -332,7 +337,7 @@ $(document).ready(function() {
             setSettingItem("liveSettings", "false");
         }
     });
-    
+
     function checkBrightness() {
         chrome.storage.local.get(['pageLumEnabled', 'nightModeEnabled', 'pourcentageLum'], function (result) {
             if(result.pageLumEnabled == "true") {
@@ -373,7 +378,7 @@ $(document).ready(function() {
 
     $("#sliderLuminosite").change(function() {
         var sliderLumValue = sliderLuminosite.slider('getValue');
-        
+
         if(typeof elLumB !== "undefined") {
             if(sliderLumValue / 100 > 1) {
                 elLumB.style.opacity = 0.15;
@@ -381,10 +386,10 @@ $(document).ready(function() {
                 elLumB.style.opacity = sliderLumValue / 100;
             }
         }
-        
+
         setSettingItem("pourcentageLum", sliderLumValue);
     });
-    
+
     function checkNightMode() {
         chrome.storage.local.get(['nightModeEnabled', 'colorTemp'], function (result) {
             if(result.nightModeEnabled == "true") {
@@ -418,11 +423,11 @@ $(document).ready(function() {
             setSettingItem("nightModeEnabled", "false");
         }
     });
-    
+
     $("#tempSelect").change(function() {
         setSettingItem("colorTemp", $(this).val());
     });
-    
+
     function displaySettings() {
         chrome.storage.local.get(['theme', 'colorTemp', 'pourcentageLum'], function (result) {
             checkContrastMode();
@@ -432,7 +437,7 @@ $(document).ready(function() {
             checkNightMode();
             previewTheme(result.theme);
             previewTemp(result.colorTemp);
-            
+
             if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
                 sliderLuminosite.slider('setValue', result.pourcentageLum);
             } else {
@@ -440,9 +445,9 @@ $(document).ready(function() {
             }
         });
     }
-    
+
     displaySettings();
-    
+
     if(typeof(chrome.storage.onChanged) !== 'undefined') {
         chrome.storage.onChanged.addListener(function() {
             displaySettings();

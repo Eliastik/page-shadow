@@ -1,6 +1,4 @@
 (function(){
-    var nbThemes = 10; // nb of themes
-
     function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp) {
         if(pageShadowEnabled !== null && pageShadowEnabled == "true") {
             if(theme !== null) {

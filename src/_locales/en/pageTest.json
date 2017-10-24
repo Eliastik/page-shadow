@@ -20,6 +20,10 @@
         "inputValue": "A form field",
         "option1": "An option",
         "option2": "Another option",
-        "link": "A link"
+        "link": "A link",
+        "othersTitle": "Others elements",
+        "del": "Deletion element",
+        "ins": "Insertion element",
+        "mark": "Mark element"
     }
 }

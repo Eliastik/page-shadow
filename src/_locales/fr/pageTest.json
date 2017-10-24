@@ -20,6 +20,10 @@
         "inputValue": "Un champ de formulaire",
         "option1": "Une option",
         "option2": "Une autre option",
-        "link": "Un lien"
+        "link": "Un lien",
+        "othersTitle": "Autres éléments",
+        "del": "Élément de suppression",
+        "ins": "Élément d'insertion",
+        "mark": "Élément de marquage"
     }
 }

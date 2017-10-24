@@ -59,7 +59,7 @@ function displaySettings() {
         if(typeof result.sitesInterditPageShadow !== "undefined" && typeof result.sitesInterditPageShadow !== null) {
             $("#textareaAssomPage").val(result.sitesInterditPageShadow);
         }
-        
+
         if(result.whiteList == "true" && $("#checkWhiteList").is(':checked') == false) {
             $("#checkWhiteList").prop("checked", true);
         } else if(result.whiteList !== "true" && $("#checkWhiteList").is(':checked') == true) {
@@ -75,13 +75,13 @@ $(document).ready(function() {
                 if(result.whiteList !== "true") {
                     setSettingItem("sitesInterditPageShadow", "");
                 }
-                
+
                 setSettingItem("whiteList", "true");
             } else {
                 if(result.whiteList == "true") {
                     setSettingItem("sitesInterditPageShadow", "");
                 }
-                
+
                 setSettingItem("whiteList", "false");
             }
         });
@@ -108,7 +108,7 @@ $(document).ready(function() {
         trigger: 'click',
         placement: 'top'
     });
-    
+
     $('i[data-toggle="tooltip"]').tooltip({
         animated: 'fade',
         placement: 'bottom',

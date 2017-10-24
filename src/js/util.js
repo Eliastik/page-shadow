@@ -1,3 +1,5 @@
+var nbThemes = 11; // nb of themes for the function Increase the contrast (used globally in the extension)
+
 function in_array(needle, haystack) {
     var key = '';
     
