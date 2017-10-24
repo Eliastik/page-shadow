@@ -53,18 +53,26 @@ function deleteContextMenu(id) {
 }
 
 function menu() {
-    if(typeof(chrome.contextMenus.removeAll) !== 'undefined') chrome.contextMenus.removeAll();
+    function createMenu() {
+        chrome.storage.local.get('whiteList', function (result) {
+            createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
+            
+            if(result.whiteList == "true") {
+                createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
+                deleteContextMenu("disable-webpage");
+            } else {
+                createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
+            }
+        });
+    }
     
-    chrome.storage.local.get('whiteList', function (result) {
-        createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
-        
-        if(result.whiteList == "true") {
-            createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
-            deleteContextMenu("disable-webpage");
-        } else {
-            createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
-        }
-    });
+    if(typeof(chrome.contextMenus.removeAll) !== 'undefined') {
+        chrome.contextMenus.removeAll(function() {
+            createMenu();
+        });
+    } else {
+        createMenu();
+    }
 }
 
 function updateMenu() {
