@@ -125,18 +125,16 @@ $(document).ready(function() {
     }
 
     function checkEnable() {
-        chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
-            if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined' || result.sitesInterditPageShadow.trim() == '') {
-                var siteInterdits = "";
-            } else {
-                var siteInterdits = result.sitesInterditPageShadow.split("\n");
-            }
-
-            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                var tabUrl = tabs[0].url;
-
-                var url = new URL(tabUrl);
+        function check(url) {
+            chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
+                if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined' || result.sitesInterditPageShadow.trim() == '') {
+                    var siteInterdits = "";
+                } else {
+                    var siteInterdits = result.sitesInterditPageShadow.split("\n");
+                }
+                
                 var domain = url.hostname;
+                var href = url.href;
 
                 if(result.whiteList == "true") {
                     if(strict_in_array(domain, siteInterdits)) {
@@ -159,7 +157,7 @@ $(document).ready(function() {
                         $("#enableWebsite-li").show();
                     }
 
-                    if(strict_in_array(tabUrl, siteInterdits)) {
+                    if(strict_in_array(href, siteInterdits)) {
                         $("#disableWebpage-li").show();
                         $("#enableWebpage-li").hide();
                     } else {
@@ -168,16 +166,31 @@ $(document).ready(function() {
                     }
                 }
             });
-        });
+        }
+        
+        var matches = window.location.search.match(/[\?&]tabId=([^&]+)/);
+        
+        if(matches && matches.length === 2) {
+            var tabId = parseInt(matches[1]);
+            chrome.tabs.get(tabId, function(tabinfos) {
+                var url = new URL(tabinfos.url);
+                check(url);
+            });
+        } else {
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                var url = new URL(tabs[0].url);
+                check(url);
+            });
+        }
     }
 
     function disablePageShadow(type, checked) {
-        chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
-            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        function disable(url) {
+            chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
                 var disabledWebsites = '';
                 var disabledWebsitesEmpty = false;
-                var url = new URL(tabs[0].url);
                 var domain = url.hostname;
+                var href = url.href;
 
                 if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined') {
                     var disabledWebsitesEmpty = true;
@@ -216,12 +229,12 @@ $(document).ready(function() {
                         break;
                     case "disable-webpage":
                         if(checked == true) {
-                            disabledWebsitesArray.push(tabs[0].url);
+                            disabledWebsitesArray.push(href);
                             var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
 
                             setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
                         } else {
-                            var disabledWebsitesNew = removeA(disabledWebsitesArray, tabs[0].url);
+                            var disabledWebsitesNew = removeA(disabledWebsitesArray, href);
                             var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
                             setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
                         }
@@ -230,7 +243,22 @@ $(document).ready(function() {
 
                 checkEnable();
             });
-        });
+        }
+        
+        var matches = window.location.search.match(/[\?&]tabId=([^&]+)/);
+        
+        if(matches && matches.length === 2) {
+            var tabId = parseInt(matches[1]);
+            chrome.tabs.get(tabId, function(tabinfos) {
+                var url = new URL(tabinfos.url);
+                disable(url);
+            });
+        } else {
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                var url = new URL(tabs[0].url);
+                disable(url);
+            });
+        }
     }
 
     checkEnable();

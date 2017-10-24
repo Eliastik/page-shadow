@@ -13,6 +13,16 @@ function setPopup() {
     }
 }
 
+function updatePopupLink(tabId) {
+    if(typeof(chrome.browserAction.setPopup) === 'undefined' && typeof(chrome.browserAction.onClicked) !== 'undefined') {
+        chrome.browserAction.onClicked.addListener(function() {
+            chrome.tabs.create({
+                url: "../extension.html?tabId="+ tabId
+            });
+        });
+    }
+}
+
 function createContextMenu(id, type, title, contexts, checked) {
     if(typeof(chrome.contextMenus.create) !== 'undefined') {
         chrome.contextMenus.create({
@@ -106,7 +116,8 @@ if(typeof(chrome.storage.onChanged) !== 'undefined') {
 }
 
 if(typeof(chrome.tabs.onActivated) !== 'undefined') {
-    chrome.tabs.onActivated.addListener(function() {
+    chrome.tabs.onActivated.addListener(function(infos) {
+        updatePopupLink(infos.tabId);
         updateMenu();
     });
 }
