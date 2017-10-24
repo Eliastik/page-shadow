@@ -80,6 +80,7 @@ function updateMenu() {
 
             var url = new URL(tabUrl);
             var domain = url.hostname;
+            var href = url.href;
 
             if(result.whiteList == "true") {
                 if(strict_in_array(domain, siteInterdits)) {
@@ -94,7 +95,7 @@ function updateMenu() {
                     updateContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
                 }
 
-                if(strict_in_array(tabUrl, siteInterdits)) {
+                if(strict_in_array(href, siteInterdits)) {
                     updateContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
                 } else {
                     updateContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
