@@ -1,6 +1,6 @@
 {
     "name": "Page Shadow",
-    "version": "2.1",
+    "version": "2.1.2",
     "default_locale": "en",
     "manifest_version": 2,
     "icons": {
@@ -33,7 +33,10 @@
             "512": "img/icon_512.png"
         }
     },
-    "options_page": "options.html",
+    "options_ui": {
+        "open_in_tab": true,
+        "page": "options.html"
+    },
     "applications": {
         "gecko": {
             "id": "page-shadow@eliastiksofts.com",
