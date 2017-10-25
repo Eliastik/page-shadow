@@ -1,4 +1,5 @@
-var extensionVersion = "2.1.2";
+/* Check if the configuration variables are set, if not set some default values (the variables are set globally, so we use window[variableName]) */
+if(typeof(window["extensionVersion"]) == "undefined") extensionVersion = "???";
 /* translation */
 function init_i18next() {
     i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({

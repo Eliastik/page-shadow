@@ -1,4 +1,11 @@
 (function(){
+    /* Check if the configuration variables are set, if not set some default values (the variables are set globally, so we use window[variableName]) */
+    if(typeof(window["nbThemes"]) == "undefined") nbThemes = 15;
+    if(typeof(window["colorTemperaturesAvailable"]) == "undefined") colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"];
+    if(typeof(window["minBrightnessPercentage"]) == "undefined") minBrightnessPercentage = 0;
+    if(typeof(window["maxBrightnessPercentage"]) == "undefined") maxBrightnessPercentage = 0.9;
+    if(typeof(window["brightnessDefaultValue"]) == "undefined") brightnessDefaultValue = 0.15;
+    
     function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp) {
         if(pageShadowEnabled !== null && pageShadowEnabled == "true") {
             if(theme !== null) {
@@ -60,41 +67,8 @@
                 var tempColor = "2000";
                 
                 if(colorTemp !== null) {
-                    switch(colorTemp) {
-                        case "1":
-                            var tempColor = "1000";
-                            break;
-                        case "2":
-                            var tempColor = "1200";
-                            break;
-                        case "3":
-                            var tempColor = "1500";
-                            break;
-                        case "4":
-                            var tempColor = "1800";
-                            break;
-                        case "5":
-                            var tempColor = "2000";
-                            break;
-                        case "6":
-                            var tempColor = "2200";
-                            break;
-                        case "7":
-                            var tempColor = "2600";
-                            break;
-                        case "8":
-                            var tempColor = "2900";
-                            break;
-                        case "9":
-                            var tempColor = "3100";
-                            break;
-                        case "10":
-                            var tempColor = "3600";
-                            break;
-                        default:
-                            var tempColor = "2000";
-                            break;
-                    }
+                    var tempIndex = parseInt(colorTemp);
+                    var tempColor = colorTemperaturesAvailable[tempIndex - 1];
                     
                     elLum.setAttribute("class", "k" + tempColor);
                 } else {
@@ -103,7 +77,12 @@
             } else {
                 elLum.setAttribute("id", "pageShadowLuminositeDiv");
             }
-            elLum.style.opacity = pourcentage / 100;
+            
+            if(pourcentage / 100 > maxBrightnessPercentage || pourcentage / 100 < minBrightnessPercentage || typeof pourcentage === "undefined" || typeof pourcentage == null) {
+                elLum.style.opacity = brightnessDefaultValue;
+            } else {
+                elLum.style.opacity = pourcentage / 100;
+            }
 
             applyAL(elLum);
         }

@@ -20,6 +20,7 @@ function translateContent() {
       handleName: 'localize',
       selectorAttr: 'data-i18n'
     });
+    themeTranslation = i18next.t("container.theme");
     $(".container").localize();
     $("footer").localize();
 }
@@ -33,11 +34,32 @@ $(document).ready(function() {
     var elLumB = document.createElement("div");
     elLumB.style.display = "none";
     document.body.appendChild(elLumB);
+    var brightnessChangedFromThisPage = false;
+    if(typeof(themeTranslation) === "undefined") themeTranslation = "Theme";
+    /* Check if the configuration variables are set, if not set some default values (the variables are set globally, so we use window[variableName]) */
+    if(typeof(window["nbThemes"]) == "undefined") nbThemes = 15;
+    if(typeof(window["colorTemperaturesAvailable"]) == "undefined") colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"];
+    if(typeof(window["minBrightnessPercentage"]) == "undefined") minBrightnessPercentage = 0;
+    if(typeof(window["maxBrightnessPercentage"]) == "undefined") maxBrightnessPercentage = 0.9;
+    if(typeof(window["brightnessDefaultValue"]) == "undefined") brightnessDefaultValue = 0.15;
     
+    // append the list of themes in the select
     $("#themeSelect").text("");
     for(i=1; i <= nbThemes; i++) {
-        $("#themeSelect").append('<option value="'+ i +'" data-i18n="[prepend]container.theme">'+ i +'</option>');
+        $("#themeSelect").append('<option value="'+ i +'">'+ themeTranslation +' '+ i +'</option>');
     }
+    
+    // append the list of the color temperatures in the select
+    $("#tempSelect").text("");
+    for(i=0; i < colorTemperaturesAvailable.length; i++) {
+        var colorTempIndex = i + 1;
+        $("#tempSelect").append('<option value="'+ colorTempIndex +'">'+ colorTemperaturesAvailable[i] +' K</option>');
+    }
+    
+    // set the min and max percentage of brightness
+    $("#sliderLuminosite").attr("data-slider-min", minBrightnessPercentage * 100);
+    $("#sliderLuminosite").attr("data-slider-max", maxBrightnessPercentage * 100);
+    $("#sliderLuminosite").attr("data-slider-value", brightnessDefaultValue * 100);
 
     $('i[data-toggle="tooltip"]').tooltip({
         animated: 'fade',
@@ -82,41 +104,8 @@ $(document).ready(function() {
         var tempColor = "2000";
 
         if(temp !== null) {
-            switch(temp) {
-                case "1":
-                    var tempColor = "1000";
-                    break;
-                case "2":
-                    var tempColor = "1200";
-                    break;
-                case "3":
-                    var tempColor = "1500";
-                    break;
-                case "4":
-                    var tempColor = "1800";
-                    break;
-                case "5":
-                    var tempColor = "2000";
-                    break;
-                case "6":
-                    var tempColor = "2200";
-                    break;
-                case "7":
-                    var tempColor = "2600";
-                    break;
-                case "8":
-                    var tempColor = "2900";
-                    break;
-                case "9":
-                    var tempColor = "3100";
-                    break;
-                case "10":
-                    var tempColor = "3600";
-                    break;
-                default:
-                    var tempColor = "2000";
-                    break;
-            }
+            var tempIndex = parseInt(temp);
+            var tempColor = colorTemperaturesAvailable[tempIndex - 1];
 
             $("#pageShadowLuminositeDivNightMode").addClass("k" + tempColor);
         } else {
@@ -383,11 +372,14 @@ $(document).ready(function() {
                 } else {
                     elLumB.setAttribute("id", "pageShadowLuminositeDiv");
                 }
-                if(result.pourcentageLum / 100 > 1) {
-                    elLumB.style.opacity = 0.15;
+                
+                if(result.pourcentageLum / 100 > maxBrightnessPercentage || result.pourcentageLum / 100 < minBrightnessPercentage || typeof result.pourcentageLum === "undefined" || typeof result.pourcentageLum == null) {
+                    elLumB.style.opacity = brightnessDefaultValue;
+                    sliderLuminosite.slider('setValue', brightnessDefaultValue * 100);
                 } else {
                     elLumB.style.opacity = result.pourcentageLum / 100;
                 }
+                
                 elLumB.style.display = "block";
                 $("#sliderLuminositeDiv").stop().fadeIn();
                 if($("#checkLuminositePage").is(':checked') == false) {
@@ -414,15 +406,7 @@ $(document).ready(function() {
 
     $("#sliderLuminosite").change(function() {
         var sliderLumValue = sliderLuminosite.slider('getValue');
-
-        if(typeof elLumB !== "undefined") {
-            if(sliderLumValue / 100 > 1) {
-                elLumB.style.opacity = 0.15;
-            } else {
-                elLumB.style.opacity = sliderLumValue / 100;
-            }
-        }
-
+        brightnessChangedFromThisPage = true;
         setSettingItem("pourcentageLum", sliderLumValue);
     });
 
@@ -436,6 +420,7 @@ $(document).ready(function() {
                     $("#tempSelect").val("5");
                     previewTemp("5");
                 }
+                
                 $("#tempSelectDiv").stop().fadeIn();
                 elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
                 if($("#checkNighMode").is(':checked') == false) {
@@ -471,13 +456,14 @@ $(document).ready(function() {
             checkLiveSettings();
             checkBrightness();
             checkNightMode();
-            previewTheme(result.theme);
-            previewTemp(result.colorTemp);
+            checkEnable();
 
-            if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null) {
+            if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null && result.pourcentageLum / 100 <= maxBrightnessPercentage && result.pourcentageLum / 100 >= minBrightnessPercentage && brightnessChangedFromThisPage == false) {
                 sliderLuminosite.slider('setValue', result.pourcentageLum);
-            } else {
-                sliderLuminosite.slider('setValue', 15);
+                brightnessChangedFromThisPage = false;
+            } else if(brightnessChangedFromThisPage == false) {
+                sliderLuminosite.slider('setValue', brightnessDefaultValue * 100);
+                brightnessChangedFromThisPage = false;
             }
         });
     }
