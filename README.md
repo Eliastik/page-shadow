@@ -3,7 +3,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.1 REV1 (09/09/2017)
+* Latest version: 2.1.2 (25/10/2017)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -19,9 +19,33 @@ Page Shadow is avalaible to download and install at the following addresses:
 * Opera : https://addons.opera.com/fr/extensions/details/page-shadow/?display=fr
 
 For the other compatibles browser, you can install this extension from the official website: http://eliastiksofts.com/page-shadow
-Or you can compile yourself (see Compilation section).
+Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.1.2 (25/10/2017) :
+* Added 5 new themes (10 to 15);
+* Bug fixes, major changes in the extension structure and minor adjustments:
+    - Optimizations and important changes in the code of the management of the parameters (dynamic detection of the changes in real time);
+    - Bug fixes for Firefox Android: disabling the extension for a site or page now works, the main settings panel now scrolls correctly;
+    - Fixed a bug in the tool Decrease page brightness: in some cases, the percentage of brightness decrease could be incorrect, that made the settings panel completely dark;
+    - When resetting the settings, the language is now reseted correctly (re-detection of the browser language instead of setting the default language to French);
+    - Fixed some error messages (appearing in the Javascript console);
+    - Better detection of the URLs of the web pages visited;
+    - Correction and optimization of the management code of the right-click menu;
+    - Added global configuration variables of the extension in the file "util.js";
+    - Correction of the code managing the translations of the extension;
+    - Updated some software libraries (i18next and Bootstrap Slider);
+    - Added extension license informations to the source files;
+    - Added a link to the options page in the Firefox Extensions Manager;
+    - Aesthetic corrections, text corrections and other minor adjustments;
+    - The JS and CSS source files are now compressed in the production version of the extension (added new compilation commands). This reduces the weight of the extension.
+
+### Version 2.1.1, or 2.1 REV1 (09/09/2017) :
+* Revision for the version 2.1:
+    - XML parsing error in Firefox fixed (bug in i18nextXHRBackend) ;
+    - The settings are now initialised directly after the installation of the extension ;
+    - Bug fixed with the manifest file for Microsoft Edge (persistent key in background key).
 
 #### Version 2.1 (04/09/2017) :
 * Improved performance by fixing a bug: the processor could be occupied more than 50% in some special cases ;
@@ -35,10 +59,6 @@ Or you can compile yourself (see Compilation section).
     - Updated some libraries ;
     - Optimised code ;
     - Others minor adjustments and minor bugs fixed.
-* Bugs fixed with the revision 1 :
-    - XML parsing error in Firefox (bug in i18nextXHRBackend) ;
-    - The settings are now initialised directly after the installation of the extension ;
-    - Bug fixed with the manifest file for Microsoft Edge (persistent key in background key).
 
 #### Version 2.0.3 (09/07/2017) :
 * It is now possible to disable Page Shadow for a particular website or page via the right-click or via the extension menu
@@ -108,16 +128,17 @@ Git clone the repository and cd to the project directory (or download it directl
 git clone https://github.com/Eliastik/page-shadow.git
 cd page-shadow
 ````
-The compilation need the following npm packages (which will be created in the project directory): gulp (local), gulp-clean, gulp-crx-pack, gulp-zip and run-sequence.
+The compilation need the following npm packages (which will be created in the project directory): gulp (local), fs, gulp-clean, gulp-clean-css, gulp-crx-pack, gulp-minify, gulp-zip and run-sequence
 
 To install these packages, run the following command:
 ````
 npm install
 ````
 Then to compile:
-````
-gulp
-````
+
+* Dev mode (no compression): `gulp` or `gulp build-dev`
+* Prod mode (compression): `gulp build-prod` or `gulp build-prod-no-js-compress` (only compress css files) or `build-prod-no-css-compress` (only compress js files)
+
 The extension files compiled will be created in the sub-directory "build".
 
 (Note: The key directory contains a key needed to compile the Chrome extension).
@@ -126,6 +147,8 @@ To install the extension in Firefox, you need to modify the following value in a
 Then launch the installation with the .xpi file.
 
 For Chrome, slide the .crx file in the extension window (chrome://extensions).
+
+Then if you want to clean the build directory, run the command `gulp clean-build`
 
 ### Licence :
 
@@ -158,7 +181,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.1 REV1 (09/09/2017)
+* Version actuelle : 2.1.2 (25/10/2017)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -178,6 +201,30 @@ Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
 
+### Version 2.1.2 (25/10/2017) :
+* Ajout de 5 nouveaux thèmes (10 à 15) ;
+* Corrections de bugs, changements importants dans la structure de l'extension et ajustements mineurs :
+    - Optimisations et changements importants dans le code de la gestion des paramètres (détection dynamique des changements en temps réel) ;
+    - Corrections de bugs pour Firefox pour Android : la désactivation  de l'extension pour un site ou une page fonctionne désormais, le panneau des paramètres principal défile désormais correctement ;
+    - Correction d'un bug de l'outil Baisser la luminosité de la page : dans certains cas, le pourcentage de baisse de la luminosité pouvait être incorrect, ce rendait le panneau des paramètres entièrement sombre ;
+    - Lors de la réinitialisation des paramètres, la langue est désormais réinitialisée correctement (re-détection de la langue du navigateur au lieu de mettre la langue en français par défaut) ;
+    - Correction de certains messages d'erreur (apparaissant dans la console Javascript) ;
+    - Meilleure détection de l'URL des pages web visitées ;
+    - Correction et optimisation du code de la gestion du menu clic-droit ;
+    - Ajout des variables de configuration globale de l'extension dans le fichier "util.js" ;
+    - Correction du code gérant les traductions de l'extension ;
+    - Mise à jour de certaines bibliothèques logicielles (i18next et Bootstrap Slider) ;
+    - Ajout des avis de licence de l'extension dans les fichiers sources ;
+    - Ajout d'un lien vers la page d'options dans le gestionnaire d'extensions de Firefox ;
+    - Corrections esthétiques, corrections des textes et autres ajustements mineurs ;
+    - Les fichiers sources JS et CSS sont désormais compressés dans la version de production de l'extension (ajout de nouvelles commandes de compilation). Cela réduit le poids de l'extension.
+
+### Version 2.1.1, ou 2.1 REV1 (09/09/2017) :
+* Révision pour la version 2.1 :
+    - Erreur de parsing XML avec Firefox corrigé (bug avec i18nextXHRBackend) ;
+    - Les paramètres sont désormais initialisés dès l'installation de l'extension ;
+    - Bug corrigé avec le fichier manifeste pour Microsoft Edge (clé persistent dans la clé background).
+
 #### Version 2.1 (04/09/2017) :
 * Amélioration des performances par la correction d'un bug : le processeur pouvait être occupé à plus de 50% dans certains cas particuliers ;
 * Ajout de la possibilité de basculer la liste des sites à ignorer en liste blanche : tous les sites sont dans ce cas ignorés, et il faut les débloquer manuellement ;
@@ -190,10 +237,6 @@ Soit la compiler vous-même (voir section "Compilation").
     - Mise à jour de certaines bibliothèques logicielles ;
     - Code optimisé ;
     - Autres petits ajustements et corrections de bugs mineurs.
-* Bugs corrigés avec la révision 1 :
-    - Erreur de parsing XML avec Firefox corrigé (bug avec i18nextXHRBackend) ;
-    - Les paramètres sont désormais initialisés dès l'installation de l'extension ;
-    - Bug corrigé avec le fichier manifeste pour Microsoft Edge (clé persistent dans la clé background).
 
 #### Version 2.0.3 (09/07/2017) :
 * Il est désormais possible de désactiver Page Shadow pour un site ou une page particulière via le clic-droit ou via le menu de l'extension ;
@@ -263,16 +306,17 @@ Faites un Git clone du dépôt et faites un cd vers le dossier du projet (ou bie
 git clone https://github.com/Eliastik/page-shadow.git
 cd page-shadow
 ````
-La compilation nécessite les paquets npm suivants (qui seront créés dans le dossier de ce projet) : gulp (local), gulp-clean, gulp-crx-pack, gulp-zip et run-sequence.
+La compilation nécessite les paquets npm suivants (qui seront créés dans le dossier de ce projet) : gulp (local), fs, gulp-clean, gulp-clean-css, gulp-crx-pack, gulp-minify, gulp-zip et run-sequence
 
 Pour les installer, lancez la commande suivante :
 ````
 npm install
 ````
 Puis pour compiler :
-````
-gulp
-````
+
+* Mode dev (pas de compression): `gulp` ou `gulp build-dev`
+* Mode prod (compression): `gulp build-prod` ou `gulp build-prod-no-js-compress` (compresse uniquement les fichiers css) or `build-prod-no-css-compress` (compresse uniquement les fichiers js)
+
 Les fichiers d'extension compilés seront créés dans le dossier "build".
 
 (Note : le répertoire key contient une clé nécessaire à la création d'une extension Chrome).
@@ -281,6 +325,8 @@ Pour installer l'extension dans Firefox, vous devez modifier la valeur suivante 
 Puis lancez l'installation avec le fichier .xpi
 
 Pour Chrome, faites glisser le fichier .crx dans la fenêtre des extensions (chrome://extensions).
+
+Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `gulp clean-build`
 
 ### Licence :
 
