@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.1.2 (25/10/2017)
+* Latest version: 2.2 (25/10/2017)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -22,7 +22,7 @@ Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
 
-### Version 2.1.2 (25/10/2017) :
+### Version 2.2 (25/10/2017) :
 * Added 5 new themes (10 to 15);
 * Bug fixes, major changes in the extension structure and minor adjustments:
     - Optimizations and important changes in the code of the management of the parameters (dynamic detection of the changes in real time);

@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.1.2 (25/10/2017)
+* Version actuelle : 2.2 (25/10/2017)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -22,7 +22,7 @@ Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
 
-### Version 2.1.2 (25/10/2017) :
+### Version 2.2 (25/10/2017) :
 * Ajout de 5 nouveaux thèmes (10 à 15) ;
 * Corrections de bugs, changements importants dans la structure de l'extension et ajustements mineurs :
     - Optimisations et changements importants dans le code de la gestion des paramètres (détection dynamique des changements en temps réel) ;
