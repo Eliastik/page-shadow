@@ -31,6 +31,8 @@ function createContextMenu(id, type, title, contexts, checked) {
             title: title,
             contexts: contexts,
             checked: checked
+        }, function() {
+            if(chrome.runtime.lastError) return;
         });
     }
 }
@@ -42,6 +44,8 @@ function updateContextMenu(id, type, title, contexts, checked) {
             title: title,
             contexts: contexts,
             checked: checked
+        }, function() {
+            if(chrome.runtime.lastError) return;
         });
     }
 }
@@ -182,8 +186,6 @@ if(typeof(chrome.contextMenus.onClicked) !== 'undefined') {
                     }
                     break;
             }
-            
-            menu();
         });
     });
 }
