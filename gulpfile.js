@@ -2,28 +2,64 @@
 
 var gulp = require('gulp');
 var clean = require('gulp-clean');
+var cleanCss = require('gulp-clean-css');
+var minify = require('gulp-minify');
 var zip = require('gulp-zip');
 var crx = require('gulp-crx-pack');
 var sequence = require('run-sequence');
 var fs = require('fs');
 
 gulp.task('clean', function() {
-	return gulp.src('build/*', {read: false})
+	return gulp.src('./build/*', {read: false})
 		.pipe(clean());
 });
 
+gulp.task('clean-directories', function() {
+	gulp.src('./build/chrome/*', {read: false})
+		.pipe(clean());
+    gulp.src('./build/edge/*', {read: false})
+		.pipe(clean());
+    gulp.src('./build/firefox/*', {read: false})
+		.pipe(clean());
+    return gulp.src('./build/global/*', {read: false})
+		.pipe(clean());
+});
+
+gulp.task('copy-global', function() {
+	return gulp.src(['./src/**', '!./src/img/src/**', '!./src/img/icon_old.png'])
+        .pipe(gulp.dest('./build/global/'));
+});
+
+gulp.task('compress-css', function () {
+    return gulp.src('./build/global/css/*.css')
+        .pipe(cleanCss())
+        .pipe(gulp.dest('./build/global/css/'));
+});
+
+gulp.task('compress-js', function () {
+    return gulp.src('./build/global/js/*.js')
+        .pipe(minify({
+            ext:{
+                min:'.js'
+            },
+            noSource: true,
+            ignoreFiles: ['.min.js', '-min.js']
+        }))
+        .pipe(gulp.dest('./build/global/js/'));
+});
+
 gulp.task('copyChrome', function() {
-	return gulp.src(['./src/**', './manifests/chrome/**/*'])
+	return gulp.src(['./build/global/**', './manifests/chrome/**/*'])
         .pipe(gulp.dest('./build/chrome/'));
 });
 
 gulp.task('copyEdge', function() {
-    return gulp.src(['./src/**', './manifests/edge/*'])
+    return gulp.src(['./build/global/**', './manifests/edge/*'])
         .pipe(gulp.dest('./build/edge/'));
 });
 
 gulp.task('copyFirefox', function() {
-    return gulp.src(['./src/**', './manifests/firefox/**/*'])
+    return gulp.src(['./build/global/**', './manifests/firefox/**/*'])
         .pipe(gulp.dest('./build/firefox/'));
 });
 
@@ -52,5 +88,23 @@ gulp.task('build', function() {
 });
 
 gulp.task('default', function() {
-    sequence('clean', 'copyChrome', 'copyEdge', 'copyFirefox', 'build');
+    sequence('clean', 'copy-global', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
 });
+
+gulp.task('build-dev', function() {
+    sequence('clean', 'copy-global', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
+});
+
+gulp.task('build-prod', function() {
+    sequence('clean', 'copy-global', 'compress-css', 'compress-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
+});
+
+gulp.task('build-prod-no-js-compress', function() {
+    sequence('clean', 'copy-global', 'compress-css', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
+});
+
+gulp.task('build-prod-no-css-compress', function() {
+    sequence('clean', 'copy-global', 'compress-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
+});
+
+gulp.task('clean-build', ['clean']);
