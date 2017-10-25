@@ -43,7 +43,7 @@ gulp.task('compress-js', function () {
                 min:'.js'
             },
             noSource: true,
-            ignoreFiles: ['.min.js', '-min.js']
+            ignoreFiles: ['*.min.js', '*-min.js']
         }))
         .pipe(gulp.dest('./build/global/js/'));
 });
@@ -87,13 +87,11 @@ gulp.task('build', function() {
         .pipe(gulp.dest('./build'));
 });
 
-gulp.task('default', function() {
-    sequence('clean', 'copy-global', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
-});
-
 gulp.task('build-dev', function() {
     sequence('clean', 'copy-global', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
 });
+
+gulp.task('default', ['build-dev']);
 
 gulp.task('build-prod', function() {
     sequence('clean', 'copy-global', 'compress-css', 'compress-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
