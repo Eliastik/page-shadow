@@ -1,4 +1,4 @@
-var extensionVersion = "2.1";
+var extensionVersion = "2.1.2";
 /* translation */
 function init_i18next() {
     i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
@@ -89,7 +89,6 @@ $(document).ready(function() {
         $('span[data-toggle="tooltip"]').tooltip("hide");
         $('i[data-toggle="tooltip"]').tooltip("hide");
         $('#saved').modal("show");
-        displaySettings();
     });
 
     $("#aboutDialogBtn").click(function() {
