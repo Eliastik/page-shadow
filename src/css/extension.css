@@ -24,8 +24,9 @@ body {
 }
 body.popup {
     width: 350px;
-    overflow: hidden;
-    max-height: 1000px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 1025px;
 }
 .container.popup {
     width: 100%;

@@ -5,20 +5,16 @@ function setPopup() {
         });
     } else if(typeof(chrome.browserAction.onClicked) !== 'undefined') {
         // For Firefox for Android
-        chrome.browserAction.onClicked.addListener(function() {
-            chrome.tabs.create({
-                url: "../extension.html"
-            });
-        });
-    }
-}
-
-function updatePopupLink(tabId) {
-    if(typeof(chrome.browserAction.setPopup) === 'undefined' && typeof(chrome.browserAction.onClicked) !== 'undefined') {
-        chrome.browserAction.onClicked.addListener(function() {
-            chrome.tabs.create({
-                url: "../extension.html?tabId="+ tabId
-            });
+        chrome.browserAction.onClicked.addListener(function(tab) {
+            if(typeof(tab.id) !== "undefined") {
+                chrome.tabs.create({
+                    url: "../extension.html?tabId="+ tab.id
+                });
+            } else {
+                chrome.tabs.create({
+                    url: "../extension.html"
+                });
+            }
         });
     }
 }
@@ -32,7 +28,7 @@ function createContextMenu(id, type, title, contexts, checked) {
             contexts: contexts,
             checked: checked
         }, function() {
-            if(chrome.runtime.lastError) return;
+            if(chrome.runtime.lastError) return; // ignore the error messages
         });
     }
 }
@@ -45,7 +41,7 @@ function updateContextMenu(id, type, title, contexts, checked) {
             contexts: contexts,
             checked: checked
         }, function() {
-            if(chrome.runtime.lastError) return;
+            if(chrome.runtime.lastError) return; // ignore the error messages
         });
     }
 }
@@ -94,7 +90,7 @@ function menu() {
             });
         });
     }
-    
+
     if(typeof(chrome.contextMenus.removeAll) !== 'undefined') {
         chrome.contextMenus.removeAll(function() {
             createMenu();
@@ -118,8 +114,7 @@ if(typeof(chrome.storage.onChanged) !== 'undefined') {
 }
 
 if(typeof(chrome.tabs.onActivated) !== 'undefined') {
-    chrome.tabs.onActivated.addListener(function(infos) {
-        updatePopupLink(infos.tabId);
+    chrome.tabs.onActivated.addListener(function() {
         menu();
     });
 }
