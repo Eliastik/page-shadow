@@ -521,6 +521,8 @@ div#pageShadowLuminositeDiv {
     min-width: 100%;
     height: auto;
     z-index: 2000000000;
+    margin: 0 !important;
+    padding: 0 !important;
     pointer-events: none;
 }
 div#pageShadowLuminositeDivNightMode {
@@ -531,6 +533,8 @@ div#pageShadowLuminositeDivNightMode {
     min-width: 100%;
     height: auto;
     z-index: 2000000000;
+    margin: 0 !important;
+    padding: 0 !important;
     pointer-events: none;
 }
 /* source : https://www.3d-diablotine.com/viewtopic.php?f=142&t=10927 et http://www.vendian.org/mncharity/dir3/blackbody/UnstableURLs/bbr_color.html */
