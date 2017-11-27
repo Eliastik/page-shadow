@@ -58,7 +58,9 @@
             ],
             "matches": [
                 "http://*/*",
-                "https://*/*"
+                "https://*/*",
+                "ftp://*/*",
+                "file:///*/*"
             ],
             "run_at": "document_start"
         }
