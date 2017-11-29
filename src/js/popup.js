@@ -362,7 +362,7 @@ $(document).ready(function() {
             style.sheet.insertRule(".pageShadowContrastBlackCustom { background: #"+ result.customThemeBg +" !important; background-image: url(); }", 0);
             style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) { background-color: #"+ result.customThemeBg +" !important; color: "+ result.customThemeTexts +" !important; }", 0);
             style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg { color: #"+ result.customThemeTexts +"; }", 0);
-            style.sheet.insertRule(".pageShadowContrastBlackCustom a { background-color: #"+ result.customThemeBg +" !important; color: #"+ result.customThemeTexts +"; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom a { background-color: #"+ result.customThemeBg +" !important; color: #"+ result.customThemeLinks +"; }", 0);
         });
     }
 
