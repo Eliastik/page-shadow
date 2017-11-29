@@ -16,6 +16,7 @@
         "indice": "(remarquez que la bordure des éléments est conservée pour garder une certaine lisibilité, lorque le mode d'augmentation du contraste est activé)",
         "titleImg": "Une photo",
         "title3": "Un bloc jaune",
+        "title4": "Une image d'arrière-plan (via CSS)",
         "formTitle": "Un formulaire",
         "inputValue": "Un champ de formulaire",
         "option1": "Une option",

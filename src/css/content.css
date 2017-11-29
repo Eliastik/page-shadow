@@ -21,11 +21,11 @@
     background: black !important;
     background-image: url();
 }
-body.pageShadowContrastBlack *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: black !important;
     color: #aaa !important;
 }
-body.pageShadowContrastBlack :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack :not(.pageShadowInvertImageColor) svg {
     color: #aaa !important;
 }
 .pageShadowContrastBlack select {
@@ -56,11 +56,11 @@ body.pageShadowContrastBlack :not(.pageShadowInvertImageColor) svg {
     background: #142634 !important;
     background-image: url();
 }
-body.pageShadowContrastBlack2 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack2 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #142634 !important;
     color: #BDC7C1 !important;
 }
-body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: #BDC7C1 !important;
 }
 .pageShadowContrastBlack2 select {
@@ -94,11 +94,11 @@ body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     background: #222 !important;
     background-image: url();
 }
-body.pageShadowContrastBlack3 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack3 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #222 !important;
     color: #aaa !important;
 }
-body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack3 :not(.pageShadowInvertImageColor) svg {
     color: #aaa !important;
 }
 .pageShadowContrastBlack3 select {
@@ -132,11 +132,11 @@ body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     background: #263238 !important;
     background-image: url();
 }
-body.pageShadowContrastBlack4 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack4 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #263238 !important;
     color: #c3cee3 !important;
 }
-body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack4 :not(.pageShadowInvertImageColor) svg {
     color: #c3cee3 !important;
 }
 .pageShadowContrastBlack4 select {
@@ -170,11 +170,11 @@ body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     background: #333a49 !important;
     background-image: url();
 }
-body.pageShadowContrastBlack5 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack5 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #333a49 !important;
     color: #dfcbd3 !important;
 }
-body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack5 :not(.pageShadowInvertImageColor) svg {
     color: #dfcbd3 !important;
 }
 .pageShadowContrastBlack5 select {
@@ -208,11 +208,11 @@ body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     background: #020315 !important;
     background-image: url();
 }
-body.pageShadowContrastBlack6 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack6 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #020315 !important;
     color: #b9cace !important;
 }
-body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack6 :not(.pageShadowInvertImageColor) svg {
     color: #b9cace !important;
 }
 .pageShadowContrastBlack6 select {
@@ -246,11 +246,11 @@ body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     background: #192338 !important;
     background-image: url();
 }
-body.pageShadowContrastBlack7 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack7 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #192338 !important;
     color: #6f9bb0 !important;
 }
-body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack7 :not(.pageShadowInvertImageColor) svg {
     color: #6f9bb0 !important;
 }
 .pageShadowContrastBlack7 select {
@@ -284,11 +284,11 @@ body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     background: #1A1A1A !important;
     background-image: url();
 }
-body.pageShadowContrastBlack8 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack8 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #1A1A1A !important;
     color: #FFFFB3 !important;
 }
-body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack8 :not(.pageShadowInvertImageColor) svg {
     color: #FFFFB3 !important;
 }
 .pageShadowContrastBlack8 select {
@@ -322,11 +322,11 @@ body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     background: #1d4e6d !important;
     background-image: url();
 }
-body.pageShadowContrastBlack9 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack9 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #1d4e6d !important;
     color: #BED6FF !important;
 }
-body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack9 :not(.pageShadowInvertImageColor) svg {
     color: #BED6FF !important;
 }
 .pageShadowContrastBlack9 select {
@@ -360,11 +360,11 @@ body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     background: #272822 !important;
     background-image: url();
 }
-body.pageShadowContrastBlack10 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack10 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #272822 !important;
     color: #39B7FF !important;
 }
-body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack10 :not(.pageShadowInvertImageColor) svg {
     color: #39B7FF !important;
 }
 .pageShadowContrastBlack10 select {
@@ -398,11 +398,11 @@ body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     background: white !important;
     background-image: url();
 }
-body.pageShadowContrastBlack11 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack11 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: white !important;
     color: black !important;
 }
-body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack11 :not(.pageShadowInvertImageColor) svg {
     color: black !important;
 }
 .pageShadowContrastBlack11 select {
@@ -436,11 +436,11 @@ body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     background: #002b36 !important;
     background-image: url();
 }
-body.pageShadowContrastBlack12 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack12 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #002b36 !important;
     color: #b58901 !important;
 }
-body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack12 :not(.pageShadowInvertImageColor) svg {
     color: #b58901 !important;
 }
 .pageShadowContrastBlack12 select {
@@ -474,11 +474,11 @@ body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     background: #000500 !important;
     background-image: url();
 }
-body.pageShadowContrastBlack13 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack13 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #000500 !important;
     color: #00ca00 !important;
 }
-body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack13 :not(.pageShadowInvertImageColor) svg {
     color: #00ca00 !important;
 }
 .pageShadowContrastBlack13 select {
@@ -512,11 +512,11 @@ body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     background: #272822 !important;
     background-image: url();
 }
-body.pageShadowContrastBlack14 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack14 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #272822 !important;
     color: #91e22d !important;
 }
-body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack14 :not(.pageShadowInvertImageColor) svg {
     color: #91e22d !important;
 }
 .pageShadowContrastBlack14 select {
@@ -550,11 +550,11 @@ body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     background: #2e3436 !important;
     background-image: url();
 }
-body.pageShadowContrastBlack15 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+.pageShadowContrastBlack15 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #2e3436 !important;
     color: #d2dde3 !important;
 }
-body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
+.pageShadowContrastBlack15 :not(.pageShadowInvertImageColor) svg {
     color: #d2dde3 !important;
 }
 .pageShadowContrastBlack15 select {

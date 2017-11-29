@@ -16,6 +16,7 @@
         "indice": "(note that the border of the elements is preserved to maintain a certain legibility, when the mode \"Increase page contrast\" is enabled)",
         "titleImg": "A picture",
         "title3": "A yellow block",
+        "title4": "A background image (via CSS)",
         "formTitle": "A form",
         "inputValue": "A form field",
         "option1": "An option",
