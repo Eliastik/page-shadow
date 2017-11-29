@@ -21,8 +21,11 @@
     background: black !important;
     background-image: url();
 }
-.pageShadowContrastBlack div, .pageShadowContrastBlack header, .pageShadowContrastBlack adress, .pageShadowContrastBlack hgroup, .pageShadowContrastBlack span, .pageShadowContrastBlack strong, .pageShadowContrastBlack em, .pageShadowContrastBlack small, .pageShadowContrastBlack s, .pageShadowContrastBlack q, .pageShadowContrastBlack dfn, .pageShadowContrastBlack abbr, .pageShadowContrastBlack sub, .pageShadowContrastBlack sup, .pageShadowContrastBlack b, .pageShadowContrastBlack i, .pageShadowContrastBlack u, .pageShadowContrastBlack figure, .pageShadowContrastBlack figcaption, .pageShadowContrastBlack dd, .pageShadowContrastBlack dl, .pageShadowContrastBlack dt,  .pageShadowContrastBlack font, .pageShadowContrastBlack pre, .pageShadowContrastBlack code, .pageShadowContrastBlack main, .pageShadowContrastBlack blockquote, .pageShadowContrastBlack cite, .pageShadowContrastBlack nav, .pageShadowContrastBlack article, .pageShadowContrastBlack aside, .pageShadowContrastBlack section, .pageShadowContrastBlack footer, .pageShadowContrastBlack ul, .pageShadowContrastBlack ul li, .pageShadowContrastBlack li, .pageShadowContrastBlack ol li, .pageShadowContrastBlack p, .pageShadowContrastBlack input, .pageShadowContrastBlack input[type="button"], .pageShadowContrastBlack input[type="submit"], .pageShadowContrastBlack input[type="reset"], .pageShadowContrastBlack textarea, .pageShadowContrastBlack button, .pageShadowContrastBlack h1, .pageShadowContrastBlack h2, .pageShadowContrastBlack h3, .pageShadowContrastBlack h4, .pageShadowContrastBlack h5, .pageShadowContrastBlack h6, .pageShadowContrastBlack table, .pageShadowContrastBlack th, .pageShadowContrastBlack td, .pageShadowContrastBlack tr, .pageShadowContrastBlack output, .pageShadowContrastBlack legend, .pageShadowContrastBlack label, .pageShadowContrastBlack footer, .pageShadowContrastBlack kbd, .pageShadowContrastBlack form, .pageShadowContrastBlack caption, .pageShadowContrastBlack yt-formatted-string, .pageShadowContrastBlack ytd-app, .pageShadowContrastBlack paper-button, .pageShadowContrastBlack paper-item, .pageShadowContrastBlack ytd-simple-menu-header-renderer, .pageShadowContrastBlack yt-icon, .pageShadowContrastBlack ytd-watch, .pageShadowContrastBlack ytd-browse {
+body.pageShadowContrastBlack *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: black !important;
+    color: #aaa !important;
+}
+body.pageShadowContrastBlack :not(.pageShadowInvertImageColor) svg {
     color: #aaa !important;
 }
 .pageShadowContrastBlack select {
@@ -53,8 +56,11 @@
     background: #142634 !important;
     background-image: url();
 }
-.pageShadowContrastBlack2 div, .pageShadowContrastBlack2 header, .pageShadowContrastBlack2 adress, .pageShadowContrastBlack2 hgroup, .pageShadowContrastBlack2 span, .pageShadowContrastBlack2 strong, .pageShadowContrastBlack2 em, .pageShadowContrastBlack2 small, .pageShadowContrastBlack2 s, .pageShadowContrastBlack2 q, .pageShadowContrastBlack2 dfn, .pageShadowContrastBlack2 abbr, .pageShadowContrastBlack2 sub, .pageShadowContrastBlack2 sup, .pageShadowContrastBlack2 b, .pageShadowContrastBlack2 i, .pageShadowContrastBlack2 u, .pageShadowContrastBlack2 figure, .pageShadowContrastBlack2 figcaption, .pageShadowContrastBlack2 dd, .pageShadowContrastBlack2 dl, .pageShadowContrastBlack2 dt,  .pageShadowContrastBlack2 font, .pageShadowContrastBlack2 pre, .pageShadowContrastBlack2 code, .pageShadowContrastBlack2 main, .pageShadowContrastBlack2 blockquote, .pageShadowContrastBlack2 cite, .pageShadowContrastBlack2 nav, .pageShadowContrastBlack2 article, .pageShadowContrastBlack2 aside, .pageShadowContrastBlack2 section, .pageShadowContrastBlack2 footer, .pageShadowContrastBlack2 ul, .pageShadowContrastBlack2 ul li, .pageShadowContrastBlack2 li, .pageShadowContrastBlack2 ol li, .pageShadowContrastBlack2 p, .pageShadowContrastBlack2 input, .pageShadowContrastBlack2 input[type="button"], .pageShadowContrastBlack2 input[type="submit"], .pageShadowContrastBlack2 input[type="reset"], .pageShadowContrastBlack2 textarea, .pageShadowContrastBlack2 button, .pageShadowContrastBlack2 h1, .pageShadowContrastBlack2 h2, .pageShadowContrastBlack2 h3, .pageShadowContrastBlack2 h4, .pageShadowContrastBlack2 h5, .pageShadowContrastBlack2 h6, .pageShadowContrastBlack2 table, .pageShadowContrastBlack2 th, .pageShadowContrastBlack2 td, .pageShadowContrastBlack2 tr, .pageShadowContrastBlack2 output, .pageShadowContrastBlack2 legend, .pageShadowContrastBlack2 label, .pageShadowContrastBlack2 footer, .pageShadowContrastBlack2 kbd, .pageShadowContrastBlack2 form, .pageShadowContrastBlack2 caption, .pageShadowContrastBlack2 yt-formatted-string, .pageShadowContrastBlack2 ytd-app, .pageShadowContrastBlack2 paper-button, .pageShadowContrastBlack2 paper-item, .pageShadowContrastBlack2 ytd-simple-menu-header-renderer, .pageShadowContrastBlack2 yt-icon, .pageShadowContrastBlack2 ytd-watch, .pageShadowContrastBlack2 ytd-browse {
+body.pageShadowContrastBlack2 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #142634 !important;
+    color: #BDC7C1 !important;
+}
+body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: #BDC7C1 !important;
 }
 .pageShadowContrastBlack2 select {
@@ -80,13 +86,19 @@
 .pageShadowContrastBlack2 img {
     background-color: #BDBDBD !important;
 }
+.pageShadowContrastBlack2 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* theme 3 */
 .pageShadowContrastBlack3 {
     background: #222 !important;
     background-image: url();
 }
-.pageShadowContrastBlack3 div, .pageShadowContrastBlack3 header, .pageShadowContrastBlack3 adress, .pageShadowContrastBlack3 hgroup, .pageShadowContrastBlack3 span, .pageShadowContrastBlack3 strong, .pageShadowContrastBlack3 em, .pageShadowContrastBlack3 small, .pageShadowContrastBlack3 s, .pageShadowContrastBlack3 q, .pageShadowContrastBlack3 dfn, .pageShadowContrastBlack3 abbr, .pageShadowContrastBlack3 sub, .pageShadowContrastBlack3 sup, .pageShadowContrastBlack3 b, .pageShadowContrastBlack3 i, .pageShadowContrastBlack3 u, .pageShadowContrastBlack3 figure, .pageShadowContrastBlack3 figcaption, .pageShadowContrastBlack3 dd, .pageShadowContrastBlack3 dl, .pageShadowContrastBlack3 dt,  .pageShadowContrastBlack3 font, .pageShadowContrastBlack3 pre, .pageShadowContrastBlack3 code, .pageShadowContrastBlack3 main, .pageShadowContrastBlack3 blockquote, .pageShadowContrastBlack3 cite, .pageShadowContrastBlack3 nav, .pageShadowContrastBlack3 article, .pageShadowContrastBlack3 aside, .pageShadowContrastBlack3 section, .pageShadowContrastBlack3 footer, .pageShadowContrastBlack3 ul, .pageShadowContrastBlack3 ul li, .pageShadowContrastBlack3 li, .pageShadowContrastBlack3 ol li, .pageShadowContrastBlack3 p, .pageShadowContrastBlack3 input, .pageShadowContrastBlack3 input[type="button"], .pageShadowContrastBlack3 input[type="submit"], .pageShadowContrastBlack3 input[type="reset"], .pageShadowContrastBlack3 textarea, .pageShadowContrastBlack3 button, .pageShadowContrastBlack3 h1, .pageShadowContrastBlack3 h2, .pageShadowContrastBlack3 h3, .pageShadowContrastBlack3 h4, .pageShadowContrastBlack3 h5, .pageShadowContrastBlack3 h6, .pageShadowContrastBlack3 table, .pageShadowContrastBlack3 th, .pageShadowContrastBlack3 td, .pageShadowContrastBlack3 tr, .pageShadowContrastBlack3 output, .pageShadowContrastBlack3 legend, .pageShadowContrastBlack3 label, .pageShadowContrastBlack3 footer, .pageShadowContrastBlack3 kbd, .pageShadowContrastBlack3 form, .pageShadowContrastBlack3 caption, .pageShadowContrastBlack3 yt-formatted-string, .pageShadowContrastBlack3 ytd-app, .pageShadowContrastBlack3 paper-button, .pageShadowContrastBlack3 paper-item, .pageShadowContrastBlack3 ytd-simple-menu-header-renderer, .pageShadowContrastBlack3 yt-icon, .pageShadowContrastBlack3 ytd-watch, .pageShadowContrastBlack3 ytd-browse {
+body.pageShadowContrastBlack3 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #222 !important;
+    color: #aaa !important;
+}
+body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: #aaa !important;
 }
 .pageShadowContrastBlack3 select {
@@ -112,13 +124,19 @@
 .pageShadowContrastBlack3 img {
     background-color: #BDBDBD !important;
 }
+.pageShadowContrastBlack3 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* theme 4 */
 .pageShadowContrastBlack4 {
     background: #263238 !important;
     background-image: url();
 }
-.pageShadowContrastBlack4 div, .pageShadowContrastBlack4 header, .pageShadowContrastBlack4 adress, .pageShadowContrastBlack4 hgroup, .pageShadowContrastBlack4 span, .pageShadowContrastBlack4 strong, .pageShadowContrastBlack4 em, .pageShadowContrastBlack4 small, .pageShadowContrastBlack4 s, .pageShadowContrastBlack4 q, .pageShadowContrastBlack4 dfn, .pageShadowContrastBlack4 abbr, .pageShadowContrastBlack4 sub, .pageShadowContrastBlack4 sup, .pageShadowContrastBlack4 b, .pageShadowContrastBlack4 i, .pageShadowContrastBlack4 u, .pageShadowContrastBlack4 figure, .pageShadowContrastBlack4 figcaption, .pageShadowContrastBlack4 dd, .pageShadowContrastBlack4 dl, .pageShadowContrastBlack4 dt,  .pageShadowContrastBlack4 font, .pageShadowContrastBlack4 pre, .pageShadowContrastBlack4 code, .pageShadowContrastBlack4 main, .pageShadowContrastBlack4 blockquote, .pageShadowContrastBlack4 cite, .pageShadowContrastBlack4 nav, .pageShadowContrastBlack4 article, .pageShadowContrastBlack4 aside, .pageShadowContrastBlack4 section, .pageShadowContrastBlack4 footer, .pageShadowContrastBlack4 ul, .pageShadowContrastBlack4 ul li, .pageShadowContrastBlack4 li, .pageShadowContrastBlack4 ol li, .pageShadowContrastBlack4 p, .pageShadowContrastBlack4 input, .pageShadowContrastBlack4 input[type="button"], .pageShadowContrastBlack4 input[type="submit"], .pageShadowContrastBlack4 input[type="reset"], .pageShadowContrastBlack4 textarea, .pageShadowContrastBlack4 button, .pageShadowContrastBlack4 h1, .pageShadowContrastBlack4 h2, .pageShadowContrastBlack4 h3, .pageShadowContrastBlack4 h4, .pageShadowContrastBlack4 h5, .pageShadowContrastBlack4 h6, .pageShadowContrastBlack4 table, .pageShadowContrastBlack4 th, .pageShadowContrastBlack4 td, .pageShadowContrastBlack4 tr, .pageShadowContrastBlack4 output, .pageShadowContrastBlack4 legend, .pageShadowContrastBlack4 label, .pageShadowContrastBlack4 footer, .pageShadowContrastBlack4 kbd, .pageShadowContrastBlack4 form, .pageShadowContrastBlack4 caption, .pageShadowContrastBlack4 yt-formatted-string, .pageShadowContrastBlack4 ytd-app, .pageShadowContrastBlack4 paper-button, .pageShadowContrastBlack4 paper-item, .pageShadowContrastBlack4 ytd-simple-menu-header-renderer, .pageShadowContrastBlack4 yt-icon, .pageShadowContrastBlack4 ytd-watch, .pageShadowContrastBlack4 ytd-browse {
+body.pageShadowContrastBlack4 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #263238 !important;
+    color: #c3cee3 !important;
+}
+body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: #c3cee3 !important;
 }
 .pageShadowContrastBlack4 select {
@@ -144,13 +162,19 @@
 .pageShadowContrastBlack4 img {
     background-color: #BDBDBD !important;
 }
+.pageShadowContrastBlack4 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* theme 5 */
 .pageShadowContrastBlack5 {
     background: #333a49 !important;
     background-image: url();
 }
-.pageShadowContrastBlack5 div, .pageShadowContrastBlack5 header, .pageShadowContrastBlack5 adress, .pageShadowContrastBlack5 hgroup, .pageShadowContrastBlack5 span, .pageShadowContrastBlack5 strong, .pageShadowContrastBlack5 em, .pageShadowContrastBlack5 small, .pageShadowContrastBlack5 s, .pageShadowContrastBlack5 q, .pageShadowContrastBlack5 dfn, .pageShadowContrastBlack5 abbr, .pageShadowContrastBlack5 sub, .pageShadowContrastBlack5 sup, .pageShadowContrastBlack5 b, .pageShadowContrastBlack5 i, .pageShadowContrastBlack5 u, .pageShadowContrastBlack5 figure, .pageShadowContrastBlack5 figcaption, .pageShadowContrastBlack5 dd, .pageShadowContrastBlack5 dl, .pageShadowContrastBlack5 dt,  .pageShadowContrastBlack5 font, .pageShadowContrastBlack5 pre, .pageShadowContrastBlack5 code, .pageShadowContrastBlack5 main, .pageShadowContrastBlack5 blockquote, .pageShadowContrastBlack5 cite, .pageShadowContrastBlack5 nav, .pageShadowContrastBlack5 article, .pageShadowContrastBlack5 aside, .pageShadowContrastBlack5 section, .pageShadowContrastBlack5 footer, .pageShadowContrastBlack5 ul, .pageShadowContrastBlack5 ul li, .pageShadowContrastBlack5 li, .pageShadowContrastBlack5 ol li, .pageShadowContrastBlack5 p, .pageShadowContrastBlack5 input, .pageShadowContrastBlack5 input[type="button"], .pageShadowContrastBlack5 input[type="submit"], .pageShadowContrastBlack5 input[type="reset"], .pageShadowContrastBlack5 textarea, .pageShadowContrastBlack5 button, .pageShadowContrastBlack5 h1, .pageShadowContrastBlack5 h2, .pageShadowContrastBlack5 h3, .pageShadowContrastBlack5 h4, .pageShadowContrastBlack5 h5, .pageShadowContrastBlack5 h6, .pageShadowContrastBlack5 table, .pageShadowContrastBlack5 th, .pageShadowContrastBlack5 td, .pageShadowContrastBlack5 tr, .pageShadowContrastBlack5 output, .pageShadowContrastBlack5 legend, .pageShadowContrastBlack5 label, .pageShadowContrastBlack5 footer, .pageShadowContrastBlack5 kbd, .pageShadowContrastBlack5 form, .pageShadowContrastBlack5 caption, .pageShadowContrastBlack5 yt-formatted-string, .pageShadowContrastBlack5 ytd-app, .pageShadowContrastBlack5 paper-button, .pageShadowContrastBlack5 paper-item, .pageShadowContrastBlack5 ytd-simple-menu-header-renderer, .pageShadowContrastBlack5 yt-icon, .pageShadowContrastBlack5 ytd-watch, .pageShadowContrastBlack5 ytd-browse {
+body.pageShadowContrastBlack5 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #333a49 !important;
+    color: #dfcbd3 !important;
+}
+body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: #dfcbd3 !important;
 }
 .pageShadowContrastBlack5 select {
@@ -176,13 +200,19 @@
 .pageShadowContrastBlack5 img {
     background-color: #BDBDBD !important;
 }
+.pageShadowContrastBlack5 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* theme 6 */
 .pageShadowContrastBlack6 {
     background: #020315 !important;
     background-image: url();
 }
-.pageShadowContrastBlack6 div, .pageShadowContrastBlack6 header, .pageShadowContrastBlack6 adress, .pageShadowContrastBlack6 hgroup, .pageShadowContrastBlack6 span, .pageShadowContrastBlack6 strong, .pageShadowContrastBlack6 em, .pageShadowContrastBlack6 small, .pageShadowContrastBlack6 s, .pageShadowContrastBlack6 q, .pageShadowContrastBlack6 dfn, .pageShadowContrastBlack6 abbr, .pageShadowContrastBlack6 sub, .pageShadowContrastBlack6 sup, .pageShadowContrastBlack6 b, .pageShadowContrastBlack6 i, .pageShadowContrastBlack6 u, .pageShadowContrastBlack6 figure, .pageShadowContrastBlack6 figcaption, .pageShadowContrastBlack6 dd, .pageShadowContrastBlack6 dl, .pageShadowContrastBlack6 dt,  .pageShadowContrastBlack6 font, .pageShadowContrastBlack6 pre, .pageShadowContrastBlack6 code, .pageShadowContrastBlack6 main, .pageShadowContrastBlack6 blockquote, .pageShadowContrastBlack6 cite, .pageShadowContrastBlack6 nav, .pageShadowContrastBlack6 article, .pageShadowContrastBlack6 aside, .pageShadowContrastBlack6 section, .pageShadowContrastBlack6 footer, .pageShadowContrastBlack6 ul, .pageShadowContrastBlack6 ul li, .pageShadowContrastBlack6 li, .pageShadowContrastBlack6 ol li, .pageShadowContrastBlack6 p, .pageShadowContrastBlack6 input, .pageShadowContrastBlack6 input[type="button"], .pageShadowContrastBlack6 input[type="submit"], .pageShadowContrastBlack6 input[type="reset"], .pageShadowContrastBlack6 textarea, .pageShadowContrastBlack6 button, .pageShadowContrastBlack6 h1, .pageShadowContrastBlack6 h2, .pageShadowContrastBlack6 h3, .pageShadowContrastBlack6 h4, .pageShadowContrastBlack6 h5, .pageShadowContrastBlack6 h6, .pageShadowContrastBlack6 table, .pageShadowContrastBlack6 th, .pageShadowContrastBlack6 td, .pageShadowContrastBlack6 tr, .pageShadowContrastBlack6 output, .pageShadowContrastBlack6 legend, .pageShadowContrastBlack6 label, .pageShadowContrastBlack6 footer, .pageShadowContrastBlack6 kbd, .pageShadowContrastBlack6 form, .pageShadowContrastBlack6 caption, .pageShadowContrastBlack6 yt-formatted-string, .pageShadowContrastBlack6 ytd-app, .pageShadowContrastBlack6 paper-button, .pageShadowContrastBlack6 paper-item, .pageShadowContrastBlack6 ytd-simple-menu-header-renderer, .pageShadowContrastBlack6 yt-icon, .pageShadowContrastBlack6 ytd-watch, .pageShadowContrastBlack6 ytd-browse {
+body.pageShadowContrastBlack6 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #020315 !important;
+    color: #b9cace !important;
+}
+body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: #b9cace !important;
 }
 .pageShadowContrastBlack6 select {
@@ -208,13 +238,19 @@
 .pageShadowContrastBlack6 img {
     background-color: #BDBDBD !important;
 }
+.pageShadowContrastBlack6 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* theme 7 */
 .pageShadowContrastBlack7 {
     background: #192338 !important;
     background-image: url();
 }
-.pageShadowContrastBlack7 div, .pageShadowContrastBlack7 header, .pageShadowContrastBlack7 adress, .pageShadowContrastBlack7 hgroup, .pageShadowContrastBlack7 span, .pageShadowContrastBlack7 strong, .pageShadowContrastBlack7 em, .pageShadowContrastBlack7 small, .pageShadowContrastBlack7 s, .pageShadowContrastBlack7 q, .pageShadowContrastBlack7 dfn, .pageShadowContrastBlack7 abbr, .pageShadowContrastBlack7 sub, .pageShadowContrastBlack7 sup, .pageShadowContrastBlack7 b, .pageShadowContrastBlack7 i, .pageShadowContrastBlack7 u, .pageShadowContrastBlack7 figure, .pageShadowContrastBlack7 figcaption, .pageShadowContrastBlack7 dd, .pageShadowContrastBlack7 dl, .pageShadowContrastBlack7 dt,  .pageShadowContrastBlack7 font, .pageShadowContrastBlack7 pre, .pageShadowContrastBlack7 code, .pageShadowContrastBlack7 main, .pageShadowContrastBlack7 blockquote, .pageShadowContrastBlack7 cite, .pageShadowContrastBlack7 nav, .pageShadowContrastBlack7 article, .pageShadowContrastBlack7 aside, .pageShadowContrastBlack7 section, .pageShadowContrastBlack7 footer, .pageShadowContrastBlack7 ul, .pageShadowContrastBlack7 ul li, .pageShadowContrastBlack7 li, .pageShadowContrastBlack7 ol li, .pageShadowContrastBlack7 p, .pageShadowContrastBlack7 input, .pageShadowContrastBlack7 input[type="button"], .pageShadowContrastBlack7 input[type="submit"], .pageShadowContrastBlack7 input[type="reset"], .pageShadowContrastBlack7 textarea, .pageShadowContrastBlack7 button, .pageShadowContrastBlack7 h1, .pageShadowContrastBlack7 h2, .pageShadowContrastBlack7 h3, .pageShadowContrastBlack7 h4, .pageShadowContrastBlack7 h5, .pageShadowContrastBlack7 h6, .pageShadowContrastBlack7 table, .pageShadowContrastBlack7 th, .pageShadowContrastBlack7 td, .pageShadowContrastBlack7 tr, .pageShadowContrastBlack7 output, .pageShadowContrastBlack7 legend, .pageShadowContrastBlack7 label, .pageShadowContrastBlack7 footer, .pageShadowContrastBlack7 kbd, .pageShadowContrastBlack7 form, .pageShadowContrastBlack7 caption, .pageShadowContrastBlack7 yt-formatted-string, .pageShadowContrastBlack7 ytd-app, .pageShadowContrastBlack7 paper-button, .pageShadowContrastBlack7 paper-item, .pageShadowContrastBlack7 ytd-simple-menu-header-renderer, .pageShadowContrastBlack7 yt-icon, .pageShadowContrastBlack7 ytd-watch, .pageShadowContrastBlack7 ytd-browse {
+body.pageShadowContrastBlack7 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #192338 !important;
+    color: #6f9bb0 !important;
+}
+body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: #6f9bb0 !important;
 }
 .pageShadowContrastBlack7 select {
@@ -240,13 +276,19 @@
 .pageShadowContrastBlack7 img {
     background-color: #BDBDBD !important;
 }
+.pageShadowContrastBlack7 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* theme 8 */
 .pageShadowContrastBlack8 {
     background: #1A1A1A !important;
     background-image: url();
 }
-.pageShadowContrastBlack8 div, .pageShadowContrastBlack8 header, .pageShadowContrastBlack8 adress, .pageShadowContrastBlack8 hgroup, .pageShadowContrastBlack8 span, .pageShadowContrastBlack8 strong, .pageShadowContrastBlack8 em, .pageShadowContrastBlack8 small, .pageShadowContrastBlack8 s, .pageShadowContrastBlack8 q, .pageShadowContrastBlack8 dfn, .pageShadowContrastBlack8 abbr, .pageShadowContrastBlack8 sub, .pageShadowContrastBlack8 sup, .pageShadowContrastBlack8 b, .pageShadowContrastBlack8 i, .pageShadowContrastBlack8 u, .pageShadowContrastBlack8 figure, .pageShadowContrastBlack8 figcaption, .pageShadowContrastBlack8 dd, .pageShadowContrastBlack8 dl, .pageShadowContrastBlack8 dt,  .pageShadowContrastBlack8 font, .pageShadowContrastBlack8 pre, .pageShadowContrastBlack8 code, .pageShadowContrastBlack8 main, .pageShadowContrastBlack8 blockquote, .pageShadowContrastBlack8 cite, .pageShadowContrastBlack8 nav, .pageShadowContrastBlack8 article, .pageShadowContrastBlack8 aside, .pageShadowContrastBlack8 section, .pageShadowContrastBlack8 footer, .pageShadowContrastBlack8 ul, .pageShadowContrastBlack8 ul li, .pageShadowContrastBlack8 li, .pageShadowContrastBlack8 ol li, .pageShadowContrastBlack8 p, .pageShadowContrastBlack8 input, .pageShadowContrastBlack8 input[type="button"], .pageShadowContrastBlack8 input[type="submit"], .pageShadowContrastBlack8 input[type="reset"], .pageShadowContrastBlack8 textarea, .pageShadowContrastBlack8 button, .pageShadowContrastBlack8 h1, .pageShadowContrastBlack8 h2, .pageShadowContrastBlack8 h3, .pageShadowContrastBlack8 h4, .pageShadowContrastBlack8 h5, .pageShadowContrastBlack8 h6, .pageShadowContrastBlack8 table, .pageShadowContrastBlack8 th, .pageShadowContrastBlack8 td, .pageShadowContrastBlack8 tr, .pageShadowContrastBlack8 output, .pageShadowContrastBlack8 legend, .pageShadowContrastBlack8 label, .pageShadowContrastBlack8 footer, .pageShadowContrastBlack8 kbd, .pageShadowContrastBlack8 form, .pageShadowContrastBlack8 caption, .pageShadowContrastBlack8 yt-formatted-string, .pageShadowContrastBlack8 ytd-app, .pageShadowContrastBlack8 paper-button, .pageShadowContrastBlack8 paper-item, .pageShadowContrastBlack8 ytd-simple-menu-header-renderer, .pageShadowContrastBlack8 yt-icon, .pageShadowContrastBlack8 ytd-watch, .pageShadowContrastBlack8 ytd-browse {
+body.pageShadowContrastBlack8 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #1A1A1A !important;
+    color: #FFFFB3 !important;
+}
+body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: #FFFFB3 !important;
 }
 .pageShadowContrastBlack8 select {
@@ -272,13 +314,19 @@
 .pageShadowContrastBlack8 img {
     background-color: #BDBDBD !important;
 }
+.pageShadowContrastBlack8 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* theme 9 */
 .pageShadowContrastBlack9 {
     background: #1d4e6d !important;
     background-image: url();
 }
-.pageShadowContrastBlack9 div, .pageShadowContrastBlack9 header, .pageShadowContrastBlack9 adress, .pageShadowContrastBlack9 hgroup, .pageShadowContrastBlack9 span, .pageShadowContrastBlack9 strong, .pageShadowContrastBlack9 em, .pageShadowContrastBlack9 small, .pageShadowContrastBlack9 s, .pageShadowContrastBlack9 q, .pageShadowContrastBlack9 dfn, .pageShadowContrastBlack9 abbr, .pageShadowContrastBlack9 sub, .pageShadowContrastBlack9 sup, .pageShadowContrastBlack9 b, .pageShadowContrastBlack9 i, .pageShadowContrastBlack9 u, .pageShadowContrastBlack9 figure, .pageShadowContrastBlack9 figcaption, .pageShadowContrastBlack9 dd, .pageShadowContrastBlack9 dl, .pageShadowContrastBlack9 dt,  .pageShadowContrastBlack9 font, .pageShadowContrastBlack9 pre, .pageShadowContrastBlack9 code, .pageShadowContrastBlack9 main, .pageShadowContrastBlack9 blockquote, .pageShadowContrastBlack9 cite, .pageShadowContrastBlack9 nav, .pageShadowContrastBlack9 article, .pageShadowContrastBlack9 aside, .pageShadowContrastBlack9 section, .pageShadowContrastBlack9 footer, .pageShadowContrastBlack9 ul, .pageShadowContrastBlack9 ul li, .pageShadowContrastBlack9 li, .pageShadowContrastBlack9 ol li, .pageShadowContrastBlack9 p, .pageShadowContrastBlack9 input, .pageShadowContrastBlack9 input[type="button"], .pageShadowContrastBlack9 input[type="submit"], .pageShadowContrastBlack9 input[type="reset"], .pageShadowContrastBlack9 textarea, .pageShadowContrastBlack9 button, .pageShadowContrastBlack9 h1, .pageShadowContrastBlack9 h2, .pageShadowContrastBlack9 h3, .pageShadowContrastBlack9 h4, .pageShadowContrastBlack9 h5, .pageShadowContrastBlack9 h6, .pageShadowContrastBlack9 table, .pageShadowContrastBlack9 th, .pageShadowContrastBlack9 td, .pageShadowContrastBlack9 tr, .pageShadowContrastBlack9 output, .pageShadowContrastBlack9 legend, .pageShadowContrastBlack9 label, .pageShadowContrastBlack9 footer, .pageShadowContrastBlack9 kbd, .pageShadowContrastBlack9 form, .pageShadowContrastBlack9 caption, .pageShadowContrastBlack9 yt-formatted-string, .pageShadowContrastBlack9 ytd-app, .pageShadowContrastBlack9 paper-button, .pageShadowContrastBlack9 paper-item, .pageShadowContrastBlack9 ytd-simple-menu-header-renderer, .pageShadowContrastBlack9 yt-icon, .pageShadowContrastBlack9 ytd-watch, .pageShadowContrastBlack9 ytd-browse {
+body.pageShadowContrastBlack9 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #1d4e6d !important;
+    color: #BED6FF !important;
+}
+body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: #BED6FF !important;
 }
 .pageShadowContrastBlack9 select {
@@ -304,13 +352,19 @@
 .pageShadowContrastBlack9 img {
     background-color: #BDBDBD !important;
 }
+.pageShadowContrastBlack9 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* theme 10 */
 .pageShadowContrastBlack10 {
     background: #272822 !important;
     background-image: url();
 }
-.pageShadowContrastBlack10 div, .pageShadowContrastBlack10 header, .pageShadowContrastBlack10 adress, .pageShadowContrastBlack10 hgroup, .pageShadowContrastBlack10 span, .pageShadowContrastBlack10 strong, .pageShadowContrastBlack10 em, .pageShadowContrastBlack10 small, .pageShadowContrastBlack10 s, .pageShadowContrastBlack10 q, .pageShadowContrastBlack10 dfn, .pageShadowContrastBlack10 abbr, .pageShadowContrastBlack10 sub, .pageShadowContrastBlack10 sup, .pageShadowContrastBlack10 b, .pageShadowContrastBlack10 i, .pageShadowContrastBlack10 u, .pageShadowContrastBlack10 figure, .pageShadowContrastBlack10 figcaption, .pageShadowContrastBlack10 dd, .pageShadowContrastBlack10 dl, .pageShadowContrastBlack10 dt,  .pageShadowContrastBlack10 font, .pageShadowContrastBlack10 pre, .pageShadowContrastBlack10 code, .pageShadowContrastBlack10 main, .pageShadowContrastBlack10 blockquote, .pageShadowContrastBlack10 cite, .pageShadowContrastBlack10 nav, .pageShadowContrastBlack10 article, .pageShadowContrastBlack10 aside, .pageShadowContrastBlack10 section, .pageShadowContrastBlack10 footer, .pageShadowContrastBlack10 ul, .pageShadowContrastBlack10 ul li, .pageShadowContrastBlack10 li, .pageShadowContrastBlack10 ol li, .pageShadowContrastBlack10 p, .pageShadowContrastBlack10 input, .pageShadowContrastBlack10 input[type="button"], .pageShadowContrastBlack10 input[type="submit"], .pageShadowContrastBlack10 input[type="reset"], .pageShadowContrastBlack10 textarea, .pageShadowContrastBlack10 button, .pageShadowContrastBlack10 h1, .pageShadowContrastBlack10 h2, .pageShadowContrastBlack10 h3, .pageShadowContrastBlack10 h4, .pageShadowContrastBlack10 h5, .pageShadowContrastBlack10 h6, .pageShadowContrastBlack10 table, .pageShadowContrastBlack10 th, .pageShadowContrastBlack10 td, .pageShadowContrastBlack10 tr, .pageShadowContrastBlack10 output, .pageShadowContrastBlack10 legend, .pageShadowContrastBlack10 label, .pageShadowContrastBlack10 footer, .pageShadowContrastBlack10 kbd, .pageShadowContrastBlack10 form, .pageShadowContrastBlack10 caption, .pageShadowContrastBlack10 yt-formatted-string, .pageShadowContrastBlack10 ytd-app, .pageShadowContrastBlack10 paper-button, .pageShadowContrastBlack10 paper-item, .pageShadowContrastBlack10 ytd-simple-menu-header-renderer, .pageShadowContrastBlack10 yt-icon, .pageShadowContrastBlack10 ytd-watch, .pageShadowContrastBlack10 ytd-browse {
+body.pageShadowContrastBlack10 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #272822 !important;
+    color: #39B7FF !important;
+}
+body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: #39B7FF !important;
 }
 .pageShadowContrastBlack10 select {
@@ -336,13 +390,19 @@
 .pageShadowContrastBlack10 img {
     background-color: #BDBDBD !important;
 }
+.pageShadowContrastBlack10 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* theme 11 */
 .pageShadowContrastBlack11 {
     background: white !important;
     background-image: url();
 }
-.pageShadowContrastBlack11 div, .pageShadowContrastBlack11 header, .pageShadowContrastBlack11 adress, .pageShadowContrastBlack11 hgroup, .pageShadowContrastBlack11 span, .pageShadowContrastBlack11 strong, .pageShadowContrastBlack11 em, .pageShadowContrastBlack11 small, .pageShadowContrastBlack11 s, .pageShadowContrastBlack11 q, .pageShadowContrastBlack11 dfn, .pageShadowContrastBlack11 abbr, .pageShadowContrastBlack11 sub, .pageShadowContrastBlack11 sup, .pageShadowContrastBlack11 b, .pageShadowContrastBlack11 i, .pageShadowContrastBlack11 u, .pageShadowContrastBlack11 figure, .pageShadowContrastBlack11 figcaption, .pageShadowContrastBlack11 dd, .pageShadowContrastBlack11 dl, .pageShadowContrastBlack11 dt,  .pageShadowContrastBlack11 font, .pageShadowContrastBlack11 pre, .pageShadowContrastBlack11 code, .pageShadowContrastBlack11 main, .pageShadowContrastBlack11 blockquote, .pageShadowContrastBlack11 cite, .pageShadowContrastBlack11 nav, .pageShadowContrastBlack11 article, .pageShadowContrastBlack11 aside, .pageShadowContrastBlack11 section, .pageShadowContrastBlack11 footer, .pageShadowContrastBlack11 ul, .pageShadowContrastBlack11 ul li, .pageShadowContrastBlack11 li, .pageShadowContrastBlack11 ol li, .pageShadowContrastBlack11 p, .pageShadowContrastBlack11 input, .pageShadowContrastBlack11 input[type="button"], .pageShadowContrastBlack11 input[type="submit"], .pageShadowContrastBlack11 input[type="reset"], .pageShadowContrastBlack11 textarea, .pageShadowContrastBlack11 button, .pageShadowContrastBlack11 h1, .pageShadowContrastBlack11 h2, .pageShadowContrastBlack11 h3, .pageShadowContrastBlack11 h4, .pageShadowContrastBlack11 h5, .pageShadowContrastBlack11 h6, .pageShadowContrastBlack11 table, .pageShadowContrastBlack11 th, .pageShadowContrastBlack11 td, .pageShadowContrastBlack11 tr, .pageShadowContrastBlack11 output, .pageShadowContrastBlack11 legend, .pageShadowContrastBlack11 label, .pageShadowContrastBlack11 footer, .pageShadowContrastBlack11 kbd, .pageShadowContrastBlack11 form, .pageShadowContrastBlack11 caption, .pageShadowContrastBlack11 yt-formatted-string, .pageShadowContrastBlack11 ytd-app, .pageShadowContrastBlack11 paper-button, .pageShadowContrastBlack11 paper-item, .pageShadowContrastBlack11 ytd-simple-menu-header-renderer, .pageShadowContrastBlack11 yt-icon, .pageShadowContrastBlack11 ytd-watch, .pageShadowContrastBlack11 ytd-browse {
+body.pageShadowContrastBlack11 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: white !important;
+    color: black !important;
+}
+body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: black !important;
 }
 .pageShadowContrastBlack11 select {
@@ -368,13 +428,19 @@
 .pageShadowContrastBlack11 img {
     background-color: #424242 !important;
 }
+.pageShadowContrastBlack11 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* theme 12 */
 .pageShadowContrastBlack12 {
     background: #002b36 !important;
     background-image: url();
 }
-.pageShadowContrastBlack12 div, .pageShadowContrastBlack12 header, .pageShadowContrastBlack12 adress, .pageShadowContrastBlack12 hgroup, .pageShadowContrastBlack12 span, .pageShadowContrastBlack12 strong, .pageShadowContrastBlack12 em, .pageShadowContrastBlack12 small, .pageShadowContrastBlack12 s, .pageShadowContrastBlack12 q, .pageShadowContrastBlack12 dfn, .pageShadowContrastBlack12 abbr, .pageShadowContrastBlack12 sub, .pageShadowContrastBlack12 sup, .pageShadowContrastBlack12 b, .pageShadowContrastBlack12 i, .pageShadowContrastBlack12 u, .pageShadowContrastBlack12 figure, .pageShadowContrastBlack12 figcaption, .pageShadowContrastBlack12 dd, .pageShadowContrastBlack12 dl, .pageShadowContrastBlack12 dt,  .pageShadowContrastBlack12 font, .pageShadowContrastBlack12 pre, .pageShadowContrastBlack12 code, .pageShadowContrastBlack12 main, .pageShadowContrastBlack12 blockquote, .pageShadowContrastBlack12 cite, .pageShadowContrastBlack12 nav, .pageShadowContrastBlack12 article, .pageShadowContrastBlack12 aside, .pageShadowContrastBlack12 section, .pageShadowContrastBlack12 footer, .pageShadowContrastBlack12 ul, .pageShadowContrastBlack12 ul li, .pageShadowContrastBlack12 li, .pageShadowContrastBlack12 ol li, .pageShadowContrastBlack12 p, .pageShadowContrastBlack12 input, .pageShadowContrastBlack12 input[type="button"], .pageShadowContrastBlack12 input[type="submit"], .pageShadowContrastBlack12 input[type="reset"], .pageShadowContrastBlack12 textarea, .pageShadowContrastBlack12 button, .pageShadowContrastBlack12 h1, .pageShadowContrastBlack12 h2, .pageShadowContrastBlack12 h3, .pageShadowContrastBlack12 h4, .pageShadowContrastBlack12 h5, .pageShadowContrastBlack12 h6, .pageShadowContrastBlack12 table, .pageShadowContrastBlack12 th, .pageShadowContrastBlack12 td, .pageShadowContrastBlack12 tr, .pageShadowContrastBlack12 output, .pageShadowContrastBlack12 legend, .pageShadowContrastBlack12 label, .pageShadowContrastBlack12 footer, .pageShadowContrastBlack12 kbd, .pageShadowContrastBlack12 form, .pageShadowContrastBlack12 caption, .pageShadowContrastBlack12 yt-formatted-string, .pageShadowContrastBlack12 ytd-app, .pageShadowContrastBlack12 paper-button, .pageShadowContrastBlack12 paper-item, .pageShadowContrastBlack12 ytd-simple-menu-header-renderer, .pageShadowContrastBlack12 yt-icon, .pageShadowContrastBlack12 ytd-watch, .pageShadowContrastBlack12 ytd-browse {
+body.pageShadowContrastBlack12 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #002b36 !important;
+    color: #b58901 !important;
+}
+body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: #b58901 !important;
 }
 .pageShadowContrastBlack12 select {
@@ -400,13 +466,19 @@
 .pageShadowContrastBlack12 img {
     background-color: #BDBDBD !important;
 }
+.pageShadowContrastBlack12 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* theme 13 */
 .pageShadowContrastBlack13 {
     background: #000500 !important;
     background-image: url();
 }
-.pageShadowContrastBlack13 div, .pageShadowContrastBlack13 header, .pageShadowContrastBlack13 adress, .pageShadowContrastBlack13 hgroup, .pageShadowContrastBlack13 span, .pageShadowContrastBlack13 strong, .pageShadowContrastBlack13 em, .pageShadowContrastBlack13 small, .pageShadowContrastBlack13 s, .pageShadowContrastBlack13 q, .pageShadowContrastBlack13 dfn, .pageShadowContrastBlack13 abbr, .pageShadowContrastBlack13 sub, .pageShadowContrastBlack13 sup, .pageShadowContrastBlack13 b, .pageShadowContrastBlack13 i, .pageShadowContrastBlack13 u, .pageShadowContrastBlack13 figure, .pageShadowContrastBlack13 figcaption, .pageShadowContrastBlack13 dd, .pageShadowContrastBlack13 dl, .pageShadowContrastBlack13 dt,  .pageShadowContrastBlack13 font, .pageShadowContrastBlack13 pre, .pageShadowContrastBlack13 code, .pageShadowContrastBlack13 main, .pageShadowContrastBlack13 blockquote, .pageShadowContrastBlack13 cite, .pageShadowContrastBlack13 nav, .pageShadowContrastBlack13 article, .pageShadowContrastBlack13 aside, .pageShadowContrastBlack13 section, .pageShadowContrastBlack13 footer, .pageShadowContrastBlack13 ul, .pageShadowContrastBlack13 ul li, .pageShadowContrastBlack13 li, .pageShadowContrastBlack13 ol li, .pageShadowContrastBlack13 p, .pageShadowContrastBlack13 input, .pageShadowContrastBlack13 input[type="button"], .pageShadowContrastBlack13 input[type="submit"], .pageShadowContrastBlack13 input[type="reset"], .pageShadowContrastBlack13 textarea, .pageShadowContrastBlack13 button, .pageShadowContrastBlack13 h1, .pageShadowContrastBlack13 h2, .pageShadowContrastBlack13 h3, .pageShadowContrastBlack13 h4, .pageShadowContrastBlack13 h5, .pageShadowContrastBlack13 h6, .pageShadowContrastBlack13 table, .pageShadowContrastBlack13 th, .pageShadowContrastBlack13 td, .pageShadowContrastBlack13 tr, .pageShadowContrastBlack13 output, .pageShadowContrastBlack13 legend, .pageShadowContrastBlack13 label, .pageShadowContrastBlack13 footer, .pageShadowContrastBlack13 kbd, .pageShadowContrastBlack13 form, .pageShadowContrastBlack13 caption, .pageShadowContrastBlack13 yt-formatted-string, .pageShadowContrastBlack13 ytd-app, .pageShadowContrastBlack13 paper-button, .pageShadowContrastBlack13 paper-item, .pageShadowContrastBlack13 ytd-simple-menu-header-renderer, .pageShadowContrastBlack13 yt-icon, .pageShadowContrastBlack13 ytd-watch, .pageShadowContrastBlack13 ytd-browse {
+body.pageShadowContrastBlack13 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #000500 !important;
+    color: #00ca00 !important;
+}
+body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: #00ca00 !important;
 }
 .pageShadowContrastBlack13 select {
@@ -432,13 +504,19 @@
 .pageShadowContrastBlack13 img {
     background-color: #BDBDBD !important;
 }
+.pageShadowContrastBlack13 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* theme 14 */
 .pageShadowContrastBlack14 {
     background: #272822 !important;
     background-image: url();
 }
-.pageShadowContrastBlack14 div, .pageShadowContrastBlack14 header, .pageShadowContrastBlack14 adress, .pageShadowContrastBlack14 hgroup, .pageShadowContrastBlack14 span, .pageShadowContrastBlack14 strong, .pageShadowContrastBlack14 em, .pageShadowContrastBlack14 small, .pageShadowContrastBlack14 s, .pageShadowContrastBlack14 q, .pageShadowContrastBlack14 dfn, .pageShadowContrastBlack14 abbr, .pageShadowContrastBlack14 sub, .pageShadowContrastBlack14 sup, .pageShadowContrastBlack14 b, .pageShadowContrastBlack14 i, .pageShadowContrastBlack14 u, .pageShadowContrastBlack14 figure, .pageShadowContrastBlack14 figcaption, .pageShadowContrastBlack14 dd, .pageShadowContrastBlack14 dl, .pageShadowContrastBlack14 dt,  .pageShadowContrastBlack14 font, .pageShadowContrastBlack14 pre, .pageShadowContrastBlack14 code, .pageShadowContrastBlack14 main, .pageShadowContrastBlack14 blockquote, .pageShadowContrastBlack14 cite, .pageShadowContrastBlack14 nav, .pageShadowContrastBlack14 article, .pageShadowContrastBlack14 aside, .pageShadowContrastBlack14 section, .pageShadowContrastBlack14 footer, .pageShadowContrastBlack14 ul, .pageShadowContrastBlack14 ul li, .pageShadowContrastBlack14 li, .pageShadowContrastBlack14 ol li, .pageShadowContrastBlack14 p, .pageShadowContrastBlack14 input, .pageShadowContrastBlack14 input[type="button"], .pageShadowContrastBlack14 input[type="submit"], .pageShadowContrastBlack14 input[type="reset"], .pageShadowContrastBlack14 textarea, .pageShadowContrastBlack14 button, .pageShadowContrastBlack14 h1, .pageShadowContrastBlack14 h2, .pageShadowContrastBlack14 h3, .pageShadowContrastBlack14 h4, .pageShadowContrastBlack14 h5, .pageShadowContrastBlack14 h6, .pageShadowContrastBlack14 table, .pageShadowContrastBlack14 th, .pageShadowContrastBlack14 td, .pageShadowContrastBlack14 tr, .pageShadowContrastBlack14 output, .pageShadowContrastBlack14 legend, .pageShadowContrastBlack14 label, .pageShadowContrastBlack14 footer, .pageShadowContrastBlack14 kbd, .pageShadowContrastBlack14 form, .pageShadowContrastBlack14 caption, .pageShadowContrastBlack14 yt-formatted-string, .pageShadowContrastBlack14 ytd-app, .pageShadowContrastBlack14 paper-button, .pageShadowContrastBlack14 paper-item, .pageShadowContrastBlack14 ytd-simple-menu-header-renderer, .pageShadowContrastBlack14 yt-icon, .pageShadowContrastBlack14 ytd-watch, .pageShadowContrastBlack14 ytd-browse {
+body.pageShadowContrastBlack14 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #272822 !important;
+    color: #91e22d !important;
+}
+body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: #91e22d !important;
 }
 .pageShadowContrastBlack14 select {
@@ -464,13 +542,19 @@
 .pageShadowContrastBlack14 img {
     background-color: #BDBDBD !important;
 }
+.pageShadowContrastBlack14 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* theme 15 */
 .pageShadowContrastBlack15 {
     background: #2e3436 !important;
     background-image: url();
 }
-.pageShadowContrastBlack15 div, .pageShadowContrastBlack15 header, .pageShadowContrastBlack15 adress, .pageShadowContrastBlack15 hgroup, .pageShadowContrastBlack15 span, .pageShadowContrastBlack15 strong, .pageShadowContrastBlack15 em, .pageShadowContrastBlack15 small, .pageShadowContrastBlack15 s, .pageShadowContrastBlack15 q, .pageShadowContrastBlack15 dfn, .pageShadowContrastBlack15 abbr, .pageShadowContrastBlack15 sub, .pageShadowContrastBlack15 sup, .pageShadowContrastBlack15 b, .pageShadowContrastBlack15 i, .pageShadowContrastBlack15 u, .pageShadowContrastBlack15 figure, .pageShadowContrastBlack15 figcaption, .pageShadowContrastBlack15 dd, .pageShadowContrastBlack15 dl, .pageShadowContrastBlack15 dt,  .pageShadowContrastBlack15 font, .pageShadowContrastBlack15 pre, .pageShadowContrastBlack15 code, .pageShadowContrastBlack15 main, .pageShadowContrastBlack15 blockquote, .pageShadowContrastBlack15 cite, .pageShadowContrastBlack15 nav, .pageShadowContrastBlack15 article, .pageShadowContrastBlack15 aside, .pageShadowContrastBlack15 section, .pageShadowContrastBlack15 footer, .pageShadowContrastBlack15 ul, .pageShadowContrastBlack15 ul li, .pageShadowContrastBlack15 li, .pageShadowContrastBlack15 ol li, .pageShadowContrastBlack15 p, .pageShadowContrastBlack15 input, .pageShadowContrastBlack15 input[type="button"], .pageShadowContrastBlack15 input[type="submit"], .pageShadowContrastBlack15 input[type="reset"], .pageShadowContrastBlack15 textarea, .pageShadowContrastBlack15 button, .pageShadowContrastBlack15 h1, .pageShadowContrastBlack15 h2, .pageShadowContrastBlack15 h3, .pageShadowContrastBlack15 h4, .pageShadowContrastBlack15 h5, .pageShadowContrastBlack15 h6, .pageShadowContrastBlack15 table, .pageShadowContrastBlack15 th, .pageShadowContrastBlack15 td, .pageShadowContrastBlack15 tr, .pageShadowContrastBlack15 output, .pageShadowContrastBlack15 legend, .pageShadowContrastBlack15 label, .pageShadowContrastBlack15 footer, .pageShadowContrastBlack15 kbd, .pageShadowContrastBlack15 form, .pageShadowContrastBlack15 caption, .pageShadowContrastBlack15 yt-formatted-string, .pageShadowContrastBlack15 ytd-app, .pageShadowContrastBlack15 paper-button, .pageShadowContrastBlack15 paper-item, .pageShadowContrastBlack15 ytd-simple-menu-header-renderer, .pageShadowContrastBlack15 yt-icon, .pageShadowContrastBlack15 ytd-watch, .pageShadowContrastBlack15 ytd-browse {
+body.pageShadowContrastBlack15 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
     background-color: #2e3436 !important;
+    color: #d2dde3 !important;
+}
+body.pageShadowContrastBlack2 :not(.pageShadowInvertImageColor) svg {
     color: #d2dde3 !important;
 }
 .pageShadowContrastBlack15 select {
@@ -496,15 +580,25 @@
 .pageShadowContrastBlack15 img {
     background-color: #BDBDBD !important;
 }
+.pageShadowContrastBlack15 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* color invert */
-body.pageShadowInvertImageColor img, body.pageShadowInvertImageColor svg {
+body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg) img, body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg) svg {
     filter: invert(100%);
     -moz-filter: invert(100%);
     -o-filter: invert(100%);
     -webkit-filter: invert(100%);
     background-color: transparent !important;
 }
-body.pageShadowInvertImageColor .helperInvert {
+body.pageShadowInvertImageColor .pageShadowHasBackgroundImg {
+    filter: invert(100%);
+    -moz-filter: invert(100%);
+    -o-filter: invert(100%);
+    -webkit-filter: invert(100%);
+    background-color: transparent !important;
+}
+body.pageShadowInvertImageColor .pageShadowHasBackgroundImg > * {
     filter: invert(100%);
     -moz-filter: invert(100%);
     -o-filter: invert(100%);

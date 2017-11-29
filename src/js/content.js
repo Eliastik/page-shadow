@@ -1,19 +1,19 @@
 /* Page Shadow
- * 
+ *
  * Copyright (C) 2015-2017 Eliastik (eliastiksofts.com)
- * 
+ *
  * This file is part of Page Shadow.
- * 
+ *
  * Page Shadow is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Page Shadow is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 (function(){
@@ -23,7 +23,7 @@
     if(typeof(window["minBrightnessPercentage"]) == "undefined") minBrightnessPercentage = 0;
     if(typeof(window["maxBrightnessPercentage"]) == "undefined") maxBrightnessPercentage = 0.9;
     if(typeof(window["brightnessDefaultValue"]) == "undefined") brightnessDefaultValue = 0.15;
-    
+
     function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp) {
         if(pageShadowEnabled !== null && pageShadowEnabled == "true") {
             if(theme !== null) {
@@ -72,6 +72,20 @@
         }
     }
 
+    function detectBackgroundImages(tagName) {
+        var elements = document.body.getElementsByTagName(tagName);
+        var computedStyle = null;
+
+        for (var i = 0; i < elements.length; i++) {
+            var computedStyle = window.getComputedStyle(elements[i], null);
+            var hasBackground = computedStyle.getPropertyValue("background").substr(0, 4) == "url(" || computedStyle.getPropertyValue("background-image").substr(0, 4) == "url(";
+
+            if(hasBackground) {
+                elements[i].classList.add("pageShadowHasBackgroundImg");
+            }
+        }
+    }
+
     function luminositePage(enabled, pourcentage, nightmode, siteInterdits, colorTemp) {
         var elLum = document.createElement("div");
         elLum.setAttribute("class", "");
@@ -81,13 +95,13 @@
             if(nightmode == "true") {
                 elLum.setAttribute("id", "pageShadowLuminositeDivNightMode");
                 elLum.setAttribute("class", "");
-                
+
                 var tempColor = "2000";
-                
+
                 if(colorTemp !== null) {
                     var tempIndex = parseInt(colorTemp);
                     var tempColor = colorTemperaturesAvailable[tempIndex - 1];
-                    
+
                     elLum.setAttribute("class", "k" + tempColor);
                 } else {
                     elLum.setAttribute("class", "k2000");
@@ -95,7 +109,7 @@
             } else {
                 elLum.setAttribute("id", "pageShadowLuminositeDiv");
             }
-            
+
             if(pourcentage / 100 > maxBrightnessPercentage || pourcentage / 100 < minBrightnessPercentage || typeof pourcentage === "undefined" || typeof pourcentage == null) {
                 elLum.style.opacity = brightnessDefaultValue;
             } else {
@@ -135,6 +149,11 @@
     function applyIC(colorInvert) {
         if (document.body) return invertColor(colorInvert);
         timeOutIC = setTimeout(function() { applyIC(colorInvert) }, 50);
+    }
+
+    function applyBI(tagName) {
+        if (document.body) return detectBackgroundImages(tagName);
+        timeOutIC = setTimeout(function() { applyBI(tagName) }, 50);
     }
 
     function mutationObserve(type) {
@@ -242,10 +261,18 @@
                     luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits, colorTemp);
                 }
             }
+
+            if(type == "start") {
+                document.onreadystatechange = function() {
+                    if (document.readyState === 'interactive') {
+                        applyBI("*"); // detect for all the elements of the page
+                    }
+                };
+            }
         });
     }
 
-    main();
+    main("start");
 
     // Execute Page Shadow on the page when the settings have been changed:
     chrome.storage.onChanged.addListener(function() {
