@@ -62,7 +62,6 @@ $(document).ready(function() {
     if(typeof(window["brightnessDefaultValue"]) == "undefined") brightnessDefaultValue = 0.15;
     
     // append the list of themes in the select
-    $("#themeSelect").text("");
     for(i=1; i <= nbThemes; i++) {
         $("#themeSelect").append('<option value="'+ i +'">'+ themeTranslation +' '+ i +'</option>');
     }
@@ -96,6 +95,12 @@ $(document).ready(function() {
             url: "options.html"
         });
     });
+    
+    $("#linkAdvSettings2").click(function() {
+        chrome.tabs.create({
+            url: "options.html"
+        });
+    });
 
     $("#linkTestExtension").click(function() {
         chrome.tabs.create({
@@ -109,6 +114,8 @@ $(document).ready(function() {
         if(theme !== null) {
             if(theme == "1") {
                 $("#previsualisationDiv").addClass("pageShadowContrastBlack");
+            } else if(theme == "custom") {
+                $("#previsualisationDiv").addClass("pageShadowContrastBlackCustom");
             } else {
                 $("#previsualisationDiv").addClass("pageShadowContrastBlack" + theme);
             }
@@ -341,7 +348,23 @@ $(document).ready(function() {
 
     $("#themeSelect").change(function() {
         setSettingItem("theme", $(this).val());
+        
+        if($(this).val() == "custom") {
+            $('#customThemeInfos').modal('show');
+        }
     });
+    
+    function checkCustomTheme() {
+        chrome.storage.local.get(['customThemeBg', 'customThemeTexts', 'customThemeLinks'], function (result) {
+            var style = document.createElement('style');
+            style.type = 'text/css';
+            document.getElementsByTagName('head')[0].appendChild(style);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom { background: #"+ result.customThemeBg +" !important; background-image: url(); }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) { background-color: #"+ result.customThemeBg +" !important; color: "+ result.customThemeTexts +" !important; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg { color: #"+ result.customThemeTexts +"; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom a { background-color: #"+ result.customThemeBg +" !important; color: #"+ result.customThemeTexts +"; }", 0);
+        });
+    }
 
     function checkColorInvert() {
         chrome.storage.local.get("colorInvert", function (result) {
@@ -475,6 +498,7 @@ $(document).ready(function() {
             checkBrightness();
             checkNightMode();
             checkEnable();
+            checkCustomTheme();
 
             if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null && result.pourcentageLum / 100 <= maxBrightnessPercentage && result.pourcentageLum / 100 >= minBrightnessPercentage && brightnessChangedFromThisPage == false) {
                 sliderLuminosite.slider('setValue', result.pourcentageLum);

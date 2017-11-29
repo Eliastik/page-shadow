@@ -17,6 +17,7 @@
         "labelList": "List of web page/site to exclude (one element per line):",
         "titleHelp": "It is only possible to block domains (eg www.google.com) or specific URLs (eg https://en.wikipedia.org/wiki/Google). Note that you can exclude a website or a page by right-clicking and choosing what to block in the Page Shadow submenu, or with the extension menu (at the bottom).",
         "help": "Help",
+        "customThemeButton": "Set your custom theme…",
         "indiceList": "The websites addresses entered below will be ignored by Page Shadow.",
         "whiteList": "Whitelist (ignore all the websites by default)",
         "titleWhiteList": "Check this checkbox if you want to toggle this list to a whitelist. All the websites will be ignored by default, and you will have to deblock them with the right-click, with the extension menu or by entering their addresses below (eg www.google.com). The blocking/deblocking of specific URLs isn't available with this mode. Enable or disable this setting will reset the list.",
@@ -70,6 +71,15 @@
             "title": "README file",
             "src": "README_EN.txt"
         },
+        "customTheme": {
+            "title": "Custom theme settings",
+            "background": "Background color:",
+            "texts": "Texts color:",
+            "links": "Links color:",
+            "preview": "Preview",
+            "previewText": "A text.",
+            "previewLink": "A link."
+        },
         "saved": {
             "title": "Information",
             "message": "Settings saved!"
@@ -85,6 +95,7 @@
         "close": "Close",
         "ok": "OK",
         "yes": "Yes",
-        "no": "No"
+        "no": "No",
+        "confirm": "Confirm"
     }
 }

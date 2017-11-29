@@ -23,12 +23,18 @@
     if(typeof(window["minBrightnessPercentage"]) == "undefined") minBrightnessPercentage = 0;
     if(typeof(window["maxBrightnessPercentage"]) == "undefined") maxBrightnessPercentage = 0.9;
     if(typeof(window["brightnessDefaultValue"]) == "undefined") brightnessDefaultValue = 0.15;
+    
+    var style = document.createElement('style');
+    style.type = 'text/css';
 
     function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp) {
         if(pageShadowEnabled !== null && pageShadowEnabled == "true") {
             if(theme !== null) {
                 if(theme == "1") {
                     document.body.classList.add("pageShadowContrastBlack");
+                } else if(theme == "custom") {
+                    customThemeApply();
+                    document.body.classList.add("pageShadowContrastBlackCustom");
                 } else {
                     document.body.classList.add("pageShadowContrastBlack" + theme);
                 }
@@ -52,6 +58,16 @@
         if(typeof timeOutAP !== "undefined") {
             clearTimeout(timeOutAP)
         }
+    }
+    
+    function customThemeApply() {
+        chrome.storage.local.get(['customThemeBg', 'customThemeTexts', 'customThemeLinks'], function (result) {
+            document.getElementsByTagName('head')[0].appendChild(style);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom { background: #"+ result.customThemeBg +" !important; background-image: url(); }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) { background-color: #"+ result.customThemeBg +" !important; color: "+ result.customThemeTexts +" !important; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg { color: #"+ result.customThemeTexts +"; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom a { background-color: #"+ result.customThemeBg +" !important; color: #"+ result.customThemeTexts +"; }", 0);
+        });
     }
 
     function invertColor(enabled) {
@@ -209,6 +225,7 @@
 
             if(type == "reset" || type == "onlyreset") {
                 document.body.classList.remove("pageShadowInvertImageColor");
+                document.body.classList.remove("pageShadowContrastBlackCustom");
 
                 for(i=1; i<=nbThemes; i++) {
                     if(i == "1") {
@@ -265,7 +282,7 @@
             if(type == "start") {
                 document.onreadystatechange = function() {
                     if (document.readyState === 'interactive') {
-                        applyBI("*"); // detect for all the elements of the page
+                        setTimeout(function() { applyBI("*"); }, 10); // detect for all the elements of the page
                     }
                 };
             }

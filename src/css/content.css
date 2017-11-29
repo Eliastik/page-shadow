@@ -471,11 +471,11 @@
 }
 /* theme 13 */
 .pageShadowContrastBlack13 {
-    background: #000500 !important;
+    background: #000D00 !important;
     background-image: url();
 }
 .pageShadowContrastBlack13 *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
-    background-color: #000500 !important;
+    background-color: #000D00 !important;
     color: #00ca00 !important;
 }
 .pageShadowContrastBlack13 :not(.pageShadowInvertImageColor) svg {
@@ -498,7 +498,7 @@
     color: dark !important;
 }
 .pageShadowContrastBlack13 a {
-    background-color: #000500 !important;
+    background-color: #000D00 !important;
     color: #1e90ff !important;
 }
 .pageShadowContrastBlack13 img {
@@ -581,6 +581,29 @@
     background-color: #BDBDBD !important;
 }
 .pageShadowContrastBlack15 .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
+/* custom text */
+.pageShadowContrastBlackCustom select {
+    background-color: grey !important;
+    color: black !important;
+}
+.pageShadowContrastBlackCustom ins {
+    background-color: green !important;
+    color: white !important;
+}
+.pageShadowContrastBlackCustom del {
+    background-color: red !important;
+    color: white !important;
+}
+.pageShadowContrastBlackCustom mark {
+    background-color: orange !important;
+    color: dark !important;
+}
+.pageShadowContrastBlackCustom img {
+    background-color: #BDBDBD !important;
+}
+.pageShadowContrastBlackCustom .pageShadowHasBackgroundImg {
     background-color: transparent !important;
 }
 /* color invert */

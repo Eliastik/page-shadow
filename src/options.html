@@ -25,12 +25,14 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <link rel="stylesheet" href="css/extension.css" type="text/css" />
+        <link rel="stylesheet" href="css/colpick.css" type="text/css" />
         <script type="text/javascript" src="js/i18next.min.js"></script>
         <script type="text/javascript" src="js/jquery-i18next.min.js"></script>
         <script type="text/javascript" src="js/i18nextBrowserLanguageDetector.min.js"></script>
         <script type="text/javascript" src="js/i18nextXHRBackend.min.js"></script>
         <script type="text/javascript" src="js/util.js"></script>
         <script type="text/javascript" src="js/storage.js"></script>
+        <script type="text/javascript" src="js/colpick.js"></script>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
@@ -220,6 +222,51 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                   <label for="languageSelect" class="col-lg-2 control-label bold" data-i18n="container.labelLanguage"></label>
                   <div class="col-lg-10">
                     <select id="languageSelect" class="form-control" rows="10"></select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-lg-2">&nbsp;</label>
+                  <div class="col-lg-10">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#customTheme"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span data-i18n="container.customThemeButton"></span></button>
+                  </div>
+                </div>
+                <div class="modal fade" id="customTheme" tabindex="-1" role="dialog" aria-labelledby="customTheme">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span data-i18n="modal.customTheme.title"></span></h4>
+                      </div>
+                      <div class="modal-body">
+                        <div class="form-group">
+                            <label for="textareaAssomPage" class="col-lg-3 control-label bold" data-i18n="modal.customTheme.preview"></label>
+                            <div class="col-lg-4">
+                                <div id="previsualisationDiv"><span id="textPreview" data-i18n="modal.customTheme.previewText"></span> <a href="#" id="linkPreview" data-i18n="modal.customTheme.previewLink"></a></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="textareaAssomPage" class="col-lg-3 control-label bold" data-i18n="modal.customTheme.background"></label>
+                            <div class="col-lg-4">
+                                <a href="#" class="colorpicker" id="colorpicker1" style="background-color: #000000;" value="000000"></a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="textareaAssomPage" class="col-lg-3 control-label bold" data-i18n="modal.customTheme.texts"></label>
+                            <div class="col-lg-4">
+                                <a href="#" class="colorpicker" id="colorpicker2" style="background-color: #ffffff;" value="ffffff"></a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="textareaAssomPage" class="col-lg-3 control-label bold" data-i18n="modal.customTheme.links"></label>
+                            <div class="col-lg-4">
+                                <a href="#" class="colorpicker" id="colorpicker3" style="background-color: #1E90FF;" value="1E90FF"></a>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modal.ok"></span></button>
+                      </div>
+                    </div>
                   </div>
                 </div>
                  <div class="form-group">

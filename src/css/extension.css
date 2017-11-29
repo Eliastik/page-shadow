@@ -148,3 +148,17 @@ hr.nmt {
 .btn, button {
     margin-bottom: 8px !important;
 }
+.colorpicker {
+    background-image: url(../img/points.png);
+    margin: 0 0 0px 0;
+    margin-top: 8px;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    text-indent: -4000px;
+    overflow: hidden;
+    border-radius: 50%;
+    border: 2px solid black;
+    vertical-align: middle;
+}

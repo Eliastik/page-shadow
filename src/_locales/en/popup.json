@@ -5,6 +5,7 @@
         "titleContrast": "Automatically adjust the graphical theme of the page to get the better possible contrast. Can badly work with complex graphical themes and/or deform the page.",
         "themeSelect": "Color theme:",
         "theme": "Theme ",
+        "customTheme": "Custom…",
         "tileTheme": "Select a color theme used by this function. A theme includes a background color, a text color and a link color unified for each web page.",
         "previsualisationTheme": "Preview:",
         "previsualisationThemeText": "A text. <a href=\"#\">A link</a>.",
@@ -19,6 +20,12 @@
         "titleLiveSettings": "Can reduce browser performance.",
         "tempSelect": "Temp.:",
         "titleTemp": "Select the color temperature of the orange filter. The lower is the temperature, the more intense is the orange color of the filter. The temperature is in Kelvin."
+    },
+    "modal": {
+        "customThemeTitle": "Information",
+        "customThemeInfos": "To set your custom theme, you have to go to the Advanced settings of Page Shadow.",
+        "close": "Close",
+        "AdvSettings": "Advanced settings"
     },
     "footer": {
         "advancedSettings": "Advanced settings",

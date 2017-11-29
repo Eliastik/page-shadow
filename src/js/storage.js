@@ -48,6 +48,15 @@ function setSettingItem(name, value) {
         case 'colorTemp':
             chrome.storage.local.set({'colorTemp': value});
             break;
+        case 'customThemeBg':
+            chrome.storage.local.set({'customThemeBg': value});
+            break;
+        case 'customThemeTexts':
+            chrome.storage.local.set({'customThemeTexts': value});
+            break;
+        case 'customThemeLinks':
+            chrome.storage.local.set({'customThemeLinks': value});
+            break;
         case 'defaultLoad':
             chrome.storage.local.set({'defaultLoad': value});
             break;
@@ -73,7 +82,10 @@ function setFirstSettings() {
         'sitesInterditPageShadow': '',
         'liveSettings': 'true',
         'whiteList': 'false',
-        'colorTemp': '5'
+        'colorTemp': '5',
+        'customThemeBg': '000000',
+        'customThemeTexts': 'FFFFFF',
+        'customThemeLinks': '1E90FF'
     });
 }
 

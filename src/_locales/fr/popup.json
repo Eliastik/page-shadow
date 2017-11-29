@@ -5,6 +5,7 @@
         "titleContrast": "Ajuste automatiquement le thème graphique de la page afin d'obtenir le meilleur contraste possible. Peut mal fonctionner avec des thèmes graphiques complexes et/ou défigurer la page.",
         "themeSelect": "Thème de couleur :",
         "theme": "Thème ",
+        "customTheme": "Personnalisé…",
         "tileTheme": "Sélectionnez le thème de couleur utilisé par cette fonction. Un thème comprend une couleur de fond, une couleur de texte et une couleur de lien unifiée pour chaque page.",
         "previsualisationTheme": "Prévisualisation :",
         "previsualisationThemeText": "Un texte. <a href=\"#\">Un lien</a>.",
@@ -19,6 +20,12 @@
         "titleLiveSettings": "Peut réduire les performances du navigateur.",
         "tempSelect": "Temp. :",
         "titleTemp": "Sélectionnez la température de couleur du filtre orangé. Plus la température est faible, plus la couleur orangée du filtre sera intense. La température est en Kelvin."
+    },
+    "modal": {
+        "customThemeTitle": "Information",
+        "customThemeInfos": "Pour paramétrer votre thème personnalisé, vous devez vous rendre dans les Paramètres avancés de Page Shadow.",
+        "close": "Fermer",
+        "AdvSettings": "Paramètres avancés"
     },
     "footer": {
         "advancedSettings": "Paramètres avancés",
