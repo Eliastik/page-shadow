@@ -73,10 +73,11 @@
         },
         "customTheme": {
             "title": "Custom theme settings",
+            "description": "Here, you can set your custom theme. To change the colors of the theme, click on the colored circles and choose a color. To confirm your settings, close this window and click on the button \"Confirm\" present at the bottom of this page.",
             "background": "Background color:",
             "texts": "Texts color:",
             "links": "Links color:",
-            "preview": "Preview",
+            "preview": "Preview:",
             "previewText": "A text.",
             "previewLink": "A link."
         },

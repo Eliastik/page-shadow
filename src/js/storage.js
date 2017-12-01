@@ -72,6 +72,10 @@ function checkFirstLoad() {
     });
 }
 function setFirstSettings() {
+    if(typeof(window["defaultBGColorCustomTheme"]) == "undefined") defaultBGColorCustomTheme = "000000";
+    if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsColorCustomTheme = "FFFFFF";
+    if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
+    
     chrome.storage.local.set({
         'pageShadowEnabled': 'false',
         'theme': '1',
@@ -83,9 +87,9 @@ function setFirstSettings() {
         'liveSettings': 'true',
         'whiteList': 'false',
         'colorTemp': '5',
-        'customThemeBg': '000000',
-        'customThemeTexts': 'FFFFFF',
-        'customThemeLinks': '1E90FF'
+        'customThemeBg': defaultBGColorCustomTheme,
+        'customThemeTexts': defaultTextsColorCustomTheme,
+        'customThemeLinks': defaultLinksColorCustomTheme
     });
 }
 

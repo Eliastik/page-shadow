@@ -23,7 +23,10 @@
     if(typeof(window["minBrightnessPercentage"]) == "undefined") minBrightnessPercentage = 0;
     if(typeof(window["maxBrightnessPercentage"]) == "undefined") maxBrightnessPercentage = 0.9;
     if(typeof(window["brightnessDefaultValue"]) == "undefined") brightnessDefaultValue = 0.15;
-    
+    if(typeof(window["defaultBGColorCustomTheme"]) == "undefined") defaultBGColorCustomTheme = "000000";
+    if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsColorCustomTheme = "FFFFFF";
+    if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
+
     var style = document.createElement('style');
     style.type = 'text/css';
 
@@ -59,14 +62,32 @@
             clearTimeout(timeOutAP)
         }
     }
-    
+
     function customThemeApply() {
         chrome.storage.local.get(['customThemeBg', 'customThemeTexts', 'customThemeLinks'], function (result) {
+            if(typeof result.customThemeBg !== "undefined" && typeof result.customThemeBg !== null) {
+                var backgroundTheme = result.customThemeBg;
+            } else {
+                var backgroundTheme = defaultBGColorCustomTheme;
+            }
+
+            if(typeof result.customThemeTexts !== "undefined" && typeof result.customThemeTexts !== null) {
+                var textsColorTheme = result.customThemeTexts;
+            } else {
+                var textsColorTheme = defaultTextsColorCustomTheme;
+            }
+
+            if(typeof result.customThemeLinks !== "undefined" && typeof result.customThemeLinks !== null) {
+                var linksColorTheme = result.customThemeLinks;
+            } else {
+                var linksColorTheme = defaultLinksColorCustomTheme;
+            }
+
             document.getElementsByTagName('head')[0].appendChild(style);
-            style.sheet.insertRule(".pageShadowContrastBlackCustom { background: #"+ result.customThemeBg +" !important; background-image: url(); }", 0);
-            style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) { background-color: #"+ result.customThemeBg +" !important; color: "+ result.customThemeTexts +" !important; }", 0);
-            style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg { color: #"+ result.customThemeTexts +"; }", 0);
-            style.sheet.insertRule(".pageShadowContrastBlackCustom a { background-color: #"+ result.customThemeBg +" !important; color: #"+ result.customThemeLinks +"; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom { background: #"+ backgroundTheme +" !important; background-image: url(); }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) { background-color: #"+ backgroundTheme +" !important; color: #"+ textsColorTheme +" !important; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg { color: #"+ textsColorTheme +" !important; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom a { background-color: #"+ backgroundTheme +" !important; color: #"+ linksColorTheme +" !important; }", 0);
         });
     }
 

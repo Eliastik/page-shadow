@@ -1,19 +1,19 @@
 /* Page Shadow
- * 
+ *
  * Copyright (C) 2015-2017 Eliastik (eliastiksofts.com)
- * 
+ *
  * This file is part of Page Shadow.
- * 
+ *
  * Page Shadow is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Page Shadow is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 // Global configuration of the extension
@@ -23,6 +23,9 @@ var colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200"
 var minBrightnessPercentage = 0; // the minimum percentage of brightness
 var maxBrightnessPercentage = 0.9; // the maximum percentage of brightness
 var brightnessDefaultValue = 0.15; // the default percentage value of brightness
+var defaultBGColorCustomTheme = "000000";
+var defaultTextsColorCustomTheme = "FFFFFF";
+var defaultLinksColorCustomTheme = "1E90FF";
 // End of the global configuration of the extension
 
 function in_array(needle, haystack) {

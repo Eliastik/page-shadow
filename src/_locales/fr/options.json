@@ -72,10 +72,11 @@
         },
         "customTheme": {
             "title": "Paramètres du thème personnalisé",
+            "description": "Ici, vous pouvez paramétrer votre thème personnalisé. Pour modifier les couleurs du thème, cliquez sur les cercles colorés et choisissez une couleur. Pour valider vos paramètres, fermez cette fenêtre et cliquez sur le bouton « Valider » présent en bas de cette page.",
             "background": "Couleur de fond :",
             "texts": "Couleur des textes :",
             "links": "Couleur des liens :",
-            "preview": "Prévisualisation",
+            "preview": "Prévisualisation :",
             "previewText": "Un texte.",
             "previewLink": "Un lien."
         },

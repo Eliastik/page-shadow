@@ -1,23 +1,28 @@
 /* Page Shadow
- * 
+ *
  * Copyright (C) 2015-2017 Eliastik (eliastiksofts.com)
- * 
+ *
  * This file is part of Page Shadow.
- * 
+ *
  * Page Shadow is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Page Shadow is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+
 /* Check if the configuration variables are set, if not set some default values (the variables are set globally, so we use window[variableName]) */
 if(typeof(window["extensionVersion"]) == "undefined") extensionVersion = "???";
+if(typeof(window["defaultBGColorCustomTheme"]) == "undefined") defaultBGColorCustomTheme = "000000";
+if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsColorCustomTheme = "FFFFFF";
+if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
+
 /* translation */
 function init_i18next() {
     i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
@@ -84,41 +89,41 @@ function displaySettings() {
         } else if(result.whiteList !== "true" && $("#checkWhiteList").is(':checked') == true) {
             $("#checkWhiteList").prop("checked", false);
         }
-        
+
         if(typeof result.customThemeBg !== "undefined" && typeof result.customThemeBg !== null) {
-            $("#colorpicker1").css("background-color", "#"+ result.customThemeBg);
+            $("#colorpicker1").css("background-color", "#" + result.customThemeBg);
             $("#colorpicker1").attr("value", result.customThemeBg);
             $("#colorpicker1").colpickSetColor(result.customThemeBg);
             $("#previsualisationDiv").css("background-color", "#"+ result.customThemeBg);
         } else {
-            $("#colorpicker1").css("background-color", "#000000");
-            $("#colorpicker1").attr("value", "000000");
-            $("#previsualisationDiv").css("background-color", "#000000");
-            $("#colorpicker1").colpickSetColor("000000");
+            $("#colorpicker1").css("background-color", "#" + defaultBGColorCustomTheme);
+            $("#colorpicker1").attr("value", defaultBGColorCustomTheme);
+            $("#colorpicker1").colpickSetColor(defaultBGColorCustomTheme);
+            $("#previsualisationDiv").css("background-color", "#" + defaultBGColorCustomTheme);
         }
-        
+
         if(typeof result.customThemeTexts !== "undefined" && typeof result.customThemeTexts !== null) {
-            $("#colorpicker2").css("background-color", "#"+ result.customThemeTexts);
+            $("#colorpicker2").css("background-color", "#" + result.customThemeTexts);
             $("#colorpicker2").attr("value", result.customThemeTexts);
             $("#colorpicker2").colpickSetColor(result.customThemeTexts);
             $("#textPreview").css("color", "#"+ result.customThemeTexts);
         } else {
-            $("#colorpicker2").css("background-color", "#FFFFFF");
-            $("#colorpicker2").attr("value", "FFFFFF");
-            $("#colorpicker2").colpickSetColor("FFFFFF");
-            $("#textPreview").css("color", "#FFFFFF");
+            $("#colorpicker2").css("background-color", "#" + defaultTextsColorCustomTheme);
+            $("#colorpicker2").attr("value", defaultTextsColorCustomTheme);
+            $("#colorpicker2").colpickSetColor(defaultTextsColorCustomTheme);
+            $("#textPreview").css("color", "#" + defaultTextsColorCustomTheme);
         }
-        
+
         if(typeof result.customThemeLinks !== "undefined" && typeof result.customThemeLinks !== null) {
-            $("#colorpicker3").css("background-color", "#"+ result.customThemeLinks);
+            $("#colorpicker3").css("background-color", "#" + result.customThemeLinks);
             $("#colorpicker3").attr("value", result.customThemeLinks);
             $("#colorpicker3").colpickSetColor(result.customThemeLinks);
             $("#linkPreview").css("color", "#"+ result.customThemeLinks);
         } else {
-            $("#colorpicker3").css("background-color", "#1E90FF");
-            $("#colorpicker3").attr("value", "1E90FF");
-            $("#colorpicker3").colpickSetColor("1E90FF");
-            $("#linkPreview").css("color", "#1E90FF");
+            $("#colorpicker3").css("background-color", "#" + defaultLinksColorCustomTheme);
+            $("#colorpicker3").attr("value", defaultLinksColorCustomTheme);
+            $("#colorpicker3").colpickSetColor(defaultLinksColorCustomTheme);
+            $("#linkPreview").css("color", "#" + defaultLinksColorCustomTheme);
         }
     });
 }
@@ -128,7 +133,7 @@ $(document).ready(function() {
         setSettingItem("customThemeBg", $("#colorpicker1").attr("value"));
         setSettingItem("customThemeTexts", $("#colorpicker2").attr("value"));
         setSettingItem("customThemeLinks", $("#colorpicker3").attr("value"));
-        
+
         chrome.storage.local.get('whiteList', function (result) {
             if($("#checkWhiteList").prop("checked") == true) {
                 if(result.whiteList !== "true") {
@@ -188,7 +193,7 @@ $(document).ready(function() {
             displaySettings();
         });
     }
-    
+
     $('#colorpicker1').colpick({
         layout:'hex',
         submit:0,
@@ -199,7 +204,7 @@ $(document).ready(function() {
             $("#colorpicker1").attr("value", hex);
         }
     });
-    
+
     $('#colorpicker2').colpick({
         layout:'hex',
         submit:0,
@@ -210,7 +215,7 @@ $(document).ready(function() {
             $("#colorpicker2").attr("value", hex);
         }
     });
-    
+
     $('#colorpicker3').colpick({
         layout:'hex',
         submit:0,

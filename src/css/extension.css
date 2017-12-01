@@ -150,6 +150,7 @@ hr.nmt {
 }
 .colorpicker {
     background-image: url(../img/points.png);
+    background-position: center center;
     margin: 0 0 0px 0;
     margin-top: 8px;
     display: inline-block;

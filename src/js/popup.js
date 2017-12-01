@@ -1,19 +1,19 @@
 /* Page Shadow
- * 
+ *
  * Copyright (C) 2015-2017 Eliastik (eliastiksofts.com)
- * 
+ *
  * This file is part of Page Shadow.
- * 
+ *
  * Page Shadow is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Page Shadow is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 /* translation */
@@ -52,27 +52,33 @@ $(document).ready(function() {
     var elLumB = document.createElement("div");
     elLumB.style.display = "none";
     document.body.appendChild(elLumB);
+    var style = document.createElement('style');
+    style.type = 'text/css';
     var brightnessChangedFromThisPage = false;
     if(typeof(themeTranslation) === "undefined") themeTranslation = "Theme";
+    
     /* Check if the configuration variables are set, if not set some default values (the variables are set globally, so we use window[variableName]) */
     if(typeof(window["nbThemes"]) == "undefined") nbThemes = 15;
     if(typeof(window["colorTemperaturesAvailable"]) == "undefined") colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"];
     if(typeof(window["minBrightnessPercentage"]) == "undefined") minBrightnessPercentage = 0;
     if(typeof(window["maxBrightnessPercentage"]) == "undefined") maxBrightnessPercentage = 0.9;
     if(typeof(window["brightnessDefaultValue"]) == "undefined") brightnessDefaultValue = 0.15;
-    
+    if(typeof(window["defaultBGColorCustomTheme"]) == "undefined") defaultBGColorCustomTheme = "000000";
+    if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsColorCustomTheme = "FFFFFF";
+    if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
+
     // append the list of themes in the select
     for(i=1; i <= nbThemes; i++) {
         $("#themeSelect").append('<option value="'+ i +'">'+ themeTranslation +' '+ i +'</option>');
     }
-    
+
     // append the list of the color temperatures in the select
     $("#tempSelect").text("");
     for(i=0; i < colorTemperaturesAvailable.length; i++) {
         var colorTempIndex = i + 1;
         $("#tempSelect").append('<option value="'+ colorTempIndex +'">'+ colorTemperaturesAvailable[i] +' K</option>');
     }
-    
+
     // set the min and max percentage of brightness
     $("#sliderLuminosite").attr("data-slider-min", minBrightnessPercentage * 100);
     $("#sliderLuminosite").attr("data-slider-max", maxBrightnessPercentage * 100);
@@ -95,7 +101,7 @@ $(document).ready(function() {
             url: "options.html"
         });
     });
-    
+
     $("#linkAdvSettings2").click(function() {
         chrome.tabs.create({
             url: "options.html"
@@ -146,7 +152,7 @@ $(document).ready(function() {
                 } else {
                     var siteInterdits = result.sitesInterditPageShadow.split("\n");
                 }
-                
+
                 var domain = url.hostname;
                 var href = url.href;
 
@@ -181,9 +187,9 @@ $(document).ready(function() {
                 }
             });
         }
-        
+
         var matches = window.location.search.match(/[\?&]tabId=([^&]+)/);
-        
+
         if(matches && matches.length === 2) {
             var tabId = parseInt(matches[1]);
             chrome.tabs.get(tabId, function(tabinfos) {
@@ -262,9 +268,9 @@ $(document).ready(function() {
                 checkEnable();
             });
         }
-        
+
         var matches = window.location.search.match(/[\?&]tabId=([^&]+)/);
-        
+
         if(matches && matches.length === 2) {
             var tabId = parseInt(matches[1]);
             chrome.tabs.get(tabId, function(tabinfos) {
@@ -348,21 +354,37 @@ $(document).ready(function() {
 
     $("#themeSelect").change(function() {
         setSettingItem("theme", $(this).val());
-        
+
         if($(this).val() == "custom") {
             $('#customThemeInfos').modal('show');
         }
     });
-    
+
     function checkCustomTheme() {
         chrome.storage.local.get(['customThemeBg', 'customThemeTexts', 'customThemeLinks'], function (result) {
-            var style = document.createElement('style');
-            style.type = 'text/css';
+            if(typeof result.customThemeBg !== "undefined" && typeof result.customThemeBg !== null) {
+                var backgroundTheme = result.customThemeBg;
+            } else {
+                var backgroundTheme = defaultBGColorCustomTheme;
+            }
+
+            if(typeof result.customThemeTexts !== "undefined" && typeof result.customThemeTexts !== null) {
+                var textsColorTheme = result.customThemeTexts;
+            } else {
+                var textsColorTheme = defaultTextsColorCustomTheme;
+            }
+
+            if(typeof result.customThemeLinks !== "undefined" && typeof result.customThemeLinks !== null) {
+                var linksColorTheme = result.customThemeLinks;
+            } else {
+                var linksColorTheme = defaultLinksColorCustomTheme;
+            }
+
             document.getElementsByTagName('head')[0].appendChild(style);
-            style.sheet.insertRule(".pageShadowContrastBlackCustom { background: #"+ result.customThemeBg +" !important; background-image: url(); }", 0);
-            style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) { background-color: #"+ result.customThemeBg +" !important; color: "+ result.customThemeTexts +" !important; }", 0);
-            style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg { color: #"+ result.customThemeTexts +"; }", 0);
-            style.sheet.insertRule(".pageShadowContrastBlackCustom a { background-color: #"+ result.customThemeBg +" !important; color: #"+ result.customThemeLinks +"; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom { background: #"+ backgroundTheme +" !important; background-image: url(); }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) { background-color: #"+ backgroundTheme +" !important; color: #"+ textsColorTheme +" !important; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg { color: #"+ textsColorTheme +" !important; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom a { background-color: #"+ backgroundTheme +" !important; color: #"+ linksColorTheme +" !important; }", 0);
         });
     }
 
@@ -413,14 +435,14 @@ $(document).ready(function() {
                 } else {
                     elLumB.setAttribute("id", "pageShadowLuminositeDiv");
                 }
-                
+
                 if(result.pourcentageLum / 100 > maxBrightnessPercentage || result.pourcentageLum / 100 < minBrightnessPercentage || typeof result.pourcentageLum === "undefined" || typeof result.pourcentageLum == null) {
                     elLumB.style.opacity = brightnessDefaultValue;
                     sliderLuminosite.slider('setValue', brightnessDefaultValue * 100);
                 } else {
                     elLumB.style.opacity = result.pourcentageLum / 100;
                 }
-                
+
                 elLumB.style.display = "block";
                 $("#sliderLuminositeDiv").stop().fadeIn();
                 if($("#checkLuminositePage").is(':checked') == false) {
@@ -461,7 +483,7 @@ $(document).ready(function() {
                     $("#tempSelect").val("5");
                     previewTemp("5");
                 }
-                
+
                 $("#tempSelectDiv").stop().fadeIn();
                 elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
                 if($("#checkNighMode").is(':checked') == false) {

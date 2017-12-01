@@ -583,7 +583,7 @@
 .pageShadowContrastBlack15 .pageShadowHasBackgroundImg {
     background-color: transparent !important;
 }
-/* custom text */
+/* custom theme */
 .pageShadowContrastBlackCustom select {
     background-color: grey !important;
     color: black !important;
