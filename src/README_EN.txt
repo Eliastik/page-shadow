@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.2 (25/10/2017)
+* Latest version: 2.3 (1/12/2017)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -21,6 +21,17 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.3 (1/12/2017) :
+* Added the possibility to create a custom theme;
+* Improved the Invert images colors tool: background images are now detected, which greatly improves the rendering of the tool;
+* Bug fixes and adjustments:
+    - Simplified and improved CSS code, which improves the compatibility with some websites (the tool Increase page contrast now target all HTML elements except some exceptions);
+    - The extension now works for local web pages (URLs file://) and for the ftp protocol;
+    - Fixed a bug with the tool Decrease page brightness with some websites;
+    - Updated some software libraries;
+    - Fixed the HTML code of the Advanced settings page;
+    - Others minor adjustments and minor bug fixes.
 
 ### Version 2.2 (25/10/2017) :
 * Added 5 new themes (10 to 15);
@@ -175,4 +186,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     - Theme: Paper by Bootswatch (modified) - https://bootswatch.com/paper/
 - i18next, MIT license ( https://github.com/i18next/i18next/blob/master/LICENSE ) ;
 - Bootstrap Slider, MIT license ( https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md ) ;
+- Colpick, MIT license/GPL 2.0 ( https://github.com/mrgrain/colpick/blob/master/LICENSE ) ;
 - This extension uses a picture from this site: http://littlevisuals.co , Public domain ( https://creativecommons.org/publicdomain/zero/1.0/ ).

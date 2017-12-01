@@ -56,7 +56,7 @@ $(document).ready(function() {
     style.type = 'text/css';
     var brightnessChangedFromThisPage = false;
     if(typeof(themeTranslation) === "undefined") themeTranslation = "Theme";
-    
+
     /* Check if the configuration variables are set, if not set some default values (the variables are set globally, so we use window[variableName]) */
     if(typeof(window["nbThemes"]) == "undefined") nbThemes = 15;
     if(typeof(window["colorTemperaturesAvailable"]) == "undefined") colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"];
