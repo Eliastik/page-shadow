@@ -302,7 +302,7 @@
 
             if(type == "start") {
                 document.onreadystatechange = function() {
-                    if (document.readyState === 'interactive') {
+                    if (document.readyState === 'complete') {
                         setTimeout(function() { applyBI("*"); }, 10); // detect for all the elements of the page
                     }
                 };
