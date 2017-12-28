@@ -51,6 +51,9 @@
 .pageShadowContrastBlack img {
     background-color: #BDBDBD !important;
 }
+.pageShadowContrastBlack .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
 /* theme 2 */
 .pageShadowContrastBlack2 {
     background: #142634 !important;
@@ -637,7 +640,7 @@ div#pageShadowLuminositeDiv {
     min-height: 100%;
     min-width: 100%;
     height: auto;
-    z-index: 2000000000;
+    z-index: 2147483647;
     margin: 0 !important;
     padding: 0 !important;
     pointer-events: none;
@@ -649,7 +652,7 @@ div#pageShadowLuminositeDivNightMode {
     min-height: 100%;
     min-width: 100%;
     height: auto;
-    z-index: 2000000000;
+    z-index: 2147483647;
     margin: 0 !important;
     padding: 0 !important;
     pointer-events: none;
