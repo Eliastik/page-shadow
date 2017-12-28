@@ -92,10 +92,12 @@
     function invertColor(enabled, invertEntirePage) {
         document.body.classList.remove("pageShadowInvertImageColor");
         document.body.classList.remove("pageShadowInvertEntirePage");
+        document.getElementsByTagName('html')[0].classList.remove("pageShadowBackground");
         
         if(enabled !== null && enabled == "true") {
             if(invertEntirePage !== null && invertEntirePage == "true") {
                 document.body.classList.add("pageShadowInvertEntirePage");
+                document.getElementsByTagName('html')[0].classList.add("pageShadowBackground");
             } else {
                 document.body.classList.add("pageShadowInvertImageColor");
             }
@@ -252,6 +254,7 @@
             if(type == "reset" || type == "onlyreset") {
                 document.body.classList.remove("pageShadowInvertImageColor");
                 document.body.classList.remove("pageShadowInvertEntirePage");
+                document.getElementsByTagName('html')[0].classList.remove("pageShadowBackground");
                 document.body.classList.remove("pageShadowContrastBlackCustom");
 
                 for(i=1; i<=nbThemes; i++) {

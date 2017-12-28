@@ -610,12 +610,15 @@
     background-color: transparent !important;
 }
 /* color invert */
+html.pageShadowBackground {
+    background: black !important;
+}
 body.pageShadowInvertEntirePage {
     filter: invert(100%) !important;
     -moz-filter: invert(100%) !important;
     -o-filter: invert(100%) !important;
     -webkit-filter: invert(100%) !important;
-    background-color: black;
+    background-color: transparent !important;
 }
 body.pageShadowInvertEntirePage div#pageShadowLuminositeDiv, body.pageShadowInvertEntirePage div#pageShadowLuminositeDivNightMode {
     filter: invert(100%) !important;
