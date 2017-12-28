@@ -46,6 +46,9 @@ body.popup {
     overflow-y: auto;
     max-height: 1025px;
 }
+body.popup > .navbar {
+    margin-bottom: 10px;
+}
 .container.popup {
     width: 100%;
 }
@@ -141,6 +144,9 @@ hr.nmt {
 }
 .mt {
     margin-top: 1em;
+}
+.well-nmb {
+    margin-bottom: 9px;
 }
 #tempSelectDiv {
     display: inline-block;

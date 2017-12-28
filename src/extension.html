@@ -50,7 +50,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
             <form class="form-horizontal">
                 <div>
                     <input type="checkbox" id="checkAssomPage" /> <label for="checkAssomPage" data-i18n="container.contrast"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-placement="top" data-i18n="[data-original-title]container.titleContrast"></i>
-                    <div class="well well-sm" id="themeDiv" style="display: none;">
+                    <div class="well well-sm well-nmb" id="themeDiv" style="display: none;">
                         <label for="themeSelect" data-i18n="container.themeSelect"></label>
                         <select id="themeSelect" style="min-width: 80px;">
                             <option value="custom" data-i18n="container.customTheme"></option>
@@ -64,10 +64,13 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                 </div>
                 <div>
                     <input type="checkbox" id="checkColorInvert" /> <label for="checkColorInvert"  data-i18n="container.colorInvert"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleColorInvert"></i>
+                    <div class="well well-sm well-nmb" id="entirePageInvertDiv" style="display: none;">
+                        <input type="checkbox" id="checkEntirePageInvert" /> <label for="checkEntirePageInvert"  data-i18n="container.entirePageInvert"></label> <i class="fa fa-question-circle helpIconMin" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.tileEntirePageInvert"></i>
+                    </div>
                 </div>
                 <div>
                     <input type="checkbox" id="checkLuminositePage" /> <label for="checkLuminositePage" data-i18n="container.brightness"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleBrightness"></i>
-                    <div class="well well-sm" id="sliderLuminositeDiv" style="display: none;">
+                    <div class="well well-sm well-nmb" id="sliderLuminositeDiv" style="display: none;">
                         <label for="sliderLuminosite" data-i18n="container.percentage"></label>
                         <input id="sliderLuminosite" data-slider-id="sliderLuminosite" type="text" data-slider-step="1" />
                         <div><input type="checkbox" id="checkNighMode" /> <label for="checkNighMode"  data-i18n="container.nightMode"></label> <i class="fa fa-question-circle helpIconMin" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.tileNightMode"></i>

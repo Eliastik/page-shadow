@@ -389,11 +389,23 @@ $(document).ready(function() {
     }
 
     function checkColorInvert() {
-        chrome.storage.local.get("colorInvert", function (result) {
-            if(result.colorInvert == "true" && $("#checkColorInvert").is(':checked') == false) {
-                $("#checkColorInvert").prop("checked", true);
-            } else if(result.colorInvert !== "true" && $("#checkColorInvert").is(':checked') == true) {
-                $("#checkColorInvert").prop("checked", false);
+        chrome.storage.local.get(["colorInvert", "invertEntirePage"], function (result) {
+            if(result.colorInvert == "true") {
+                $("#entirePageInvertDiv").stop().fadeIn();
+                if($("#checkColorInvert").is(':checked') == false) {
+                    $("#checkColorInvert").prop("checked", true);
+                }
+            } else {
+                $("#entirePageInvertDiv").stop().fadeOut();
+                if($("#checkColorInvert").is(':checked') == true) {
+                    $("#checkColorInvert").prop("checked", false);
+                }
+            }
+            
+            if(result.invertEntirePage == "true" && $("#checkEntirePageInvert").is(':checked') == false) {
+                $("#checkEntirePageInvert").prop("checked", true);
+            } else if(result.invertEntirePage !== "true" && $("#checkEntirePageInvert").is(':checked') == true) {
+                $("#checkEntirePageInvert").prop("checked", false);
             }
         });
     }
@@ -404,6 +416,15 @@ $(document).ready(function() {
         }
         else {
             setSettingItem("colorInvert", "false");
+        }
+    });
+    
+    $("#checkEntirePageInvert").change(function() {
+        if($(this).is(':checked') == true) {
+            setSettingItem("invertEntirePage", "true");
+        }
+        else {
+            setSettingItem("invertEntirePage", "false");
         }
     });
 

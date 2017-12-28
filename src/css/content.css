@@ -610,6 +610,19 @@
     background-color: transparent !important;
 }
 /* color invert */
+body.pageShadowInvertEntirePage {
+    filter: invert(100%) !important;
+    -moz-filter: invert(100%) !important;
+    -o-filter: invert(100%) !important;
+    -webkit-filter: invert(100%) !important;
+    background-color: black;
+}
+body.pageShadowInvertEntirePage div#pageShadowLuminositeDiv, body.pageShadowInvertEntirePage div#pageShadowLuminositeDivNightMode {
+    filter: invert(100%) !important;
+    -moz-filter: invert(100%) !important;
+    -o-filter: invert(100%) !important;
+    -webkit-filter: invert(100%) !important;
+}
 body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg) img, body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg) svg {
     filter: invert(100%);
     -moz-filter: invert(100%);

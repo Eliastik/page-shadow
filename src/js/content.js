@@ -30,7 +30,7 @@
     var style = document.createElement('style');
     style.type = 'text/css';
 
-    function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp) {
+    function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage) {
         if(pageShadowEnabled !== null && pageShadowEnabled == "true") {
             if(theme !== null) {
                 if(theme == "1") {
@@ -46,9 +46,7 @@
             }
         }
 
-        if(colorInvert !== null && colorInvert == "true") {
-            document.body.classList.add("pageShadowInvertImageColor");
-        }
+        invertColor(colorInvert, invertEntirePage);
 
         if(document.readyState == "complete" || document.readyState == "interactive") {
             mutationObserve("contrast");
@@ -91,9 +89,16 @@
         });
     }
 
-    function invertColor(enabled) {
+    function invertColor(enabled, invertEntirePage) {
+        document.body.classList.remove("pageShadowInvertImageColor");
+        document.body.classList.remove("pageShadowInvertEntirePage");
+        
         if(enabled !== null && enabled == "true") {
-            document.body.classList.add("pageShadowInvertImageColor");
+            if(invertEntirePage !== null && invertEntirePage == "true") {
+                document.body.classList.add("pageShadowInvertEntirePage");
+            } else {
+                document.body.classList.add("pageShadowInvertImageColor");
+            }
 
             if(document.readyState == "complete" || document.readyState == "interactive") {
                 mutationObserve("invert");
@@ -178,14 +183,14 @@
         timeOutLum = setTimeout(function() { applyAL(element) }, 50);
     }
 
-    function applyAP(pageShadowEnabled, theme, colorInvert, colorTemp) {
-        if (document.body) return assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp);
-        timeOutAP = setTimeout(function() { applyAP(pageShadowEnabled, theme, colorInvert, colorTemp) }, 50);
+    function applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage) {
+        if (document.body) return assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage);
+        timeOutAP = setTimeout(function() { applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage) }, 50);
     }
 
-    function applyIC(colorInvert) {
-        if (document.body) return invertColor(colorInvert);
-        timeOutIC = setTimeout(function() { applyIC(colorInvert) }, 50);
+    function applyIC(colorInvert, invertEntirePage) {
+        if (document.body) return invertColor(colorInvert, invertEntirePage);
+        timeOutIC = setTimeout(function() { applyIC(colorInvert, invertEntirePage) }, 50);
     }
 
     function applyBI(tagName) {
@@ -195,7 +200,7 @@
 
     function mutationObserve(type) {
         if(type == "contrast") {
-            mut_contrast = new MutationObserver(function(mutations, mut){
+            mut_contrast = new MutationObserver(function(mutations, mut) {
                 mut_contrast.disconnect();
                 var classList = document.body.classList;
                 var containsPageContrast = true;
@@ -219,11 +224,11 @@
                 'attributeFilter': ["class"]
             });
         } else if(type == "invert") {
-            mut_invert = new MutationObserver(function(mutations, mut){
+            mut_invert = new MutationObserver(function(mutations, mut) {
                 mut_invert.disconnect();
                 var classList = document.body.classList;
 
-                if(classList.contains("pageShadowInvertImageColor") == false) {
+                if(classList.contains("pageShadowInvertImageColor") == false || classList.contains("pageShadowInvertImageColor") == false ) {
                     setTimeout(main("onlyInvert"), 1);
                 }
             });
@@ -237,7 +242,7 @@
     }
 
     function main(type) {
-        chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'whiteList', 'colorTemp'], function (result) {
+        chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'invertEntirePage', 'whiteList', 'colorTemp'], function (result) {
             if(typeof timeOutLum !== "undefined") clearTimeout(timeOutLum);
             if(typeof timeOutAP !== "undefined") clearTimeout(timeOutAP);
             if(typeof timeOutIC !== "undefined") clearTimeout(timeOutIC);
@@ -246,6 +251,7 @@
 
             if(type == "reset" || type == "onlyreset") {
                 document.body.classList.remove("pageShadowInvertImageColor");
+                document.body.classList.remove("pageShadowInvertEntirePage");
                 document.body.classList.remove("pageShadowContrastBlackCustom");
 
                 for(i=1; i<=nbThemes; i++) {
@@ -284,15 +290,16 @@
                 var theme = result.theme;
                 var colorInvert = result.colorInvert;
                 var colorTemp = result.colorTemp;
+                var invertEntirePage = result.invertEntirePage;
 
                 if(type == "onlyContrast") {
-                    assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp);
+                    assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage);
                 } else if(type == "onlyInvert") {
-                    invertColor(colorInvert);
+                    invertColor(colorInvert, invertEntirePage);
                 } else if(pageShadowEnabled == "true") {
-                    applyAP(pageShadowEnabled, theme, colorInvert, colorTemp);
+                    applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage);
                 } else {
-                    applyIC(colorInvert);
+                    applyIC(colorInvert, invertEntirePage);
                 }
 
                 if(type !== "onlyContrast" && type !== "onlyInvert") {
@@ -303,7 +310,7 @@
             if(type == "start") {
                 document.onreadystatechange = function() {
                     if (document.readyState === 'complete') {
-                        setTimeout(function() { applyBI("*"); }, 10); // detect for all the elements of the page
+                        setTimeout(function() { applyBI("*"); }, 1); // detect for all the elements of the page
                     }
                 };
             }

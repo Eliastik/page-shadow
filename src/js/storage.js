@@ -57,6 +57,9 @@ function setSettingItem(name, value) {
         case 'customThemeLinks':
             chrome.storage.local.set({'customThemeLinks': value});
             break;
+        case 'invertEntirePage':
+            chrome.storage.local.set({'invertEntirePage': value});
+            break;
         case 'defaultLoad':
             chrome.storage.local.set({'defaultLoad': value});
             break;
@@ -76,6 +79,7 @@ function setFirstSettings() {
     if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsColorCustomTheme = "FFFFFF";
     if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
     
+    // Set default settings values
     chrome.storage.local.set({
         'pageShadowEnabled': 'false',
         'theme': '1',
@@ -89,7 +93,8 @@ function setFirstSettings() {
         'colorTemp': '5',
         'customThemeBg': defaultBGColorCustomTheme,
         'customThemeTexts': defaultTextsColorCustomTheme,
-        'customThemeLinks': defaultLinksColorCustomTheme
+        'customThemeLinks': defaultLinksColorCustomTheme,
+        'invertEntirePage': 'false'
     });
 }
 
