@@ -12,7 +12,7 @@
         "colorInvert": "Invert images colors",
         "titleColorInvert": "Invert the images colors to better stand out on the dark theme.",
         "entirePageInvert": "Invert the entire page only",
-        "tileEntirePageInvert": "Invert the colors of the entire page. Works badly with the contrast increase tool and some websites.",
+        "tileEntirePageInvert": "Invert the colors of the entire page. Works badly with the contrast increase tool.",
         "brightness": "Decrease page brightness",
         "titleBrightness": "Decrease the page brightness. You can choose the percentage of brightness decrease.",
         "percentage": "Percentage of brightness decrease:",

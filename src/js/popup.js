@@ -362,7 +362,7 @@ $(document).ready(function() {
             });
         }
     });
-    
+
     $("#customThemeInfoDisable").change(function() {
         if($(this).is(':checked') == true) {
             setSettingItem("customThemeInfoDisable", "true");
@@ -412,7 +412,7 @@ $(document).ready(function() {
                     $("#checkColorInvert").prop("checked", false);
                 }
             }
-            
+
             if(result.invertEntirePage == "true" && $("#checkEntirePageInvert").is(':checked') == false) {
                 $("#checkEntirePageInvert").prop("checked", true);
             } else if(result.invertEntirePage !== "true" && $("#checkEntirePageInvert").is(':checked') == true) {
@@ -428,7 +428,7 @@ $(document).ready(function() {
             setSettingItem("colorInvert", "false");
         }
     });
-    
+
     $("#checkEntirePageInvert").change(function() {
         if($(this).is(':checked') == true) {
             setSettingItem("invertEntirePage", "true");

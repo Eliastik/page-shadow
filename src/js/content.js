@@ -94,7 +94,7 @@
         document.body.classList.remove("pageShadowInvertImageColor");
         document.body.classList.remove("pageShadowInvertEntirePage");
         document.getElementsByTagName('html')[0].classList.remove("pageShadowBackground");
-        
+
         if(enabled !== null && enabled == "true") {
             if(invertEntirePage !== null && invertEntirePage == "true") {
                 document.body.classList.add("pageShadowInvertEntirePage");
@@ -130,10 +130,10 @@
                 elements[i].classList.add("pageShadowHasBackgroundImg");
             }
         }
-        
+
         backgroundImagesDetected++;
     }
-    
+
     function applyDetectBackgroundImages(type) {
         if(backgroundImagesDetected < 2) {
             if(type == "loading") {
@@ -189,6 +189,14 @@
             }
 
             applyAL(elLum);
+
+            if(document.readyState == "complete" || document.readyState == "interactive") {
+                mutationObserve("brightness");
+            } else {
+                window.onload = function() {
+                    mutationObserve("brightness");
+                }
+            }
         }
     }
 
@@ -243,14 +251,24 @@
                     }
                 }
 
-                if(containsPageContrast == false || classList.contains("pageShadowInvertImageColor") == false) {
+                if(!containsPageContrast) {
                     setTimeout(main("onlycontrast"), 1);
+                } else {
+                    if(document.readyState == "complete" || document.readyState == "interactive") {
+                        mutationObserve("contrast");
+                    } else {
+                        window.onload = function() {
+                            mutationObserve("contrast");
+                        }
+                    }
                 }
             });
+
             mut_contrast.observe(document.body, {
                 'attributes': true,
                 'subtree': false,
                 'childList': false,
+                'characterData': false,
                 'attributeFilter': ["class"]
             });
         } else if(type == "invert") {
@@ -258,15 +276,50 @@
                 mut_invert.disconnect();
                 var classList = document.body.classList;
 
-                if(classList.contains("pageShadowInvertImageColor") == false || classList.contains("pageShadowInvertImageColor") == false ) {
+                if(!classList.contains("pageShadowInvertImageColor") && !classList.contains("pageShadowInvertEntirePage")) {
                     setTimeout(main("onlyInvert"), 1);
+                } else {
+                    if(document.readyState == "complete" || document.readyState == "interactive") {
+                        mutationObserve("invert");
+                    } else {
+                        window.onload = function() {
+                            mutationObserve("invert");
+                        }
+                    }
                 }
             });
+
             mut_invert.observe(document.body, {
                 'attributes': true,
                 'subtree': false,
                 'childList': false,
+                'characterData': false,
                 'attributeFilter': ["class"]
+            });
+        } else if(type == "brightness") {
+            mut_brightness = new MutationObserver(function(mutations, mut) {
+                mut_brightness.disconnect();
+                var brightness = document.getElementById("pageShadowLuminositeDiv");
+                var nightmode = document.getElementById("pageShadowLuminositeDivNightMode");
+
+                if (!document.body.contains(brightness) && !document.body.contains(nightmode)) {
+                    setTimeout(main("onlyBrightness"), 1);
+                } else {
+                    if(document.readyState == "complete" || document.readyState == "interactive") {
+                        mutationObserve("brightness");
+                    } else {
+                        window.onload = function() {
+                            mutationObserve("brightness");
+                        }
+                    }
+                }
+            });
+
+            mut_brightness.observe(document.body, {
+                'attributes': false,
+                'subtree': false,
+                'childList': true,
+                'characterData': false
             });
         }
     }
@@ -278,6 +331,7 @@
             if(typeof timeOutIC !== "undefined") clearTimeout(timeOutIC);
             if(typeof mut_contrast !== 'undefined') mut_contrast.disconnect();
             if(typeof mut_invert !== 'undefined') mut_invert.disconnect();
+            if(typeof mut_brightness !== 'undefined') mut_brightness.disconnect();
 
             if(type == "reset" || type == "onlyreset") {
                 document.body.classList.remove("pageShadowInvertImageColor");
@@ -327,17 +381,19 @@
                     assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage);
                 } else if(type == "onlyInvert") {
                     invertColor(colorInvert, invertEntirePage);
+                } else if(type == "onlyBrightness") {
+                    luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits, colorTemp);
                 } else if(pageShadowEnabled == "true") {
                     applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage);
                 } else {
                     applyIC(colorInvert, invertEntirePage);
                 }
 
-                if(type !== "onlyContrast" && type !== "onlyInvert") {
+                if(type !== "onlyContrast" && type !== "onlyInvert" && type !== "onlyBrightness") {
                     luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits, colorTemp);
                 }
-                
-                
+
+
                 if(colorInvert == "true") {
                     if(type == "start") {
                         applyDetectBackgroundImages("loading");
