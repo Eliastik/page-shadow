@@ -60,6 +60,9 @@ function setSettingItem(name, value) {
         case 'invertEntirePage':
             chrome.storage.local.set({'invertEntirePage': value});
             break;
+        case 'customThemeInfoDisable':
+            chrome.storage.local.set({'customThemeInfoDisable': value});
+            break;
         case 'defaultLoad':
             chrome.storage.local.set({'defaultLoad': value});
             break;
@@ -94,7 +97,8 @@ function setFirstSettings() {
         'customThemeBg': defaultBGColorCustomTheme,
         'customThemeTexts': defaultTextsColorCustomTheme,
         'customThemeLinks': defaultLinksColorCustomTheme,
-        'invertEntirePage': 'false'
+        'invertEntirePage': 'false',
+        'customThemeInfoDisable': 'false'
     });
 }
 

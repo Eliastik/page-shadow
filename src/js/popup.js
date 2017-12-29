@@ -346,8 +346,7 @@ $(document).ready(function() {
     $("#checkAssomPage").change(function() {
         if($(this).is(':checked') == true) {
             setSettingItem("pageShadowEnabled", "true");
-        }
-        else {
+        } else {
             setSettingItem("pageShadowEnabled", "false");
         }
     });
@@ -356,7 +355,19 @@ $(document).ready(function() {
         setSettingItem("theme", $(this).val());
 
         if($(this).val() == "custom") {
-            $('#customThemeInfos').modal('show');
+            chrome.storage.local.get(['customThemeInfoDisable'], function (result) {
+                if(typeof result.customThemeInfoDisable == "undefined" || typeof result.customThemeInfoDisable === null || result.customThemeInfoDisable !== "true") {
+                    $('#customThemeInfos').modal('show');
+                }
+            });
+        }
+    });
+    
+    $("#customThemeInfoDisable").change(function() {
+        if($(this).is(':checked') == true) {
+            setSettingItem("customThemeInfoDisable", "true");
+        } else {
+            setSettingItem("customThemeInfoDisable", "false");
         }
     });
 
@@ -413,8 +424,7 @@ $(document).ready(function() {
     $("#checkColorInvert").change(function() {
         if($(this).is(':checked') == true) {
             setSettingItem("colorInvert", "true");
-        }
-        else {
+        } else {
             setSettingItem("colorInvert", "false");
         }
     });
@@ -441,8 +451,7 @@ $(document).ready(function() {
     $("#liveSettings").change(function() {
         if($(this).is(':checked') == true) {
             setSettingItem("liveSettings", "true");
-        }
-        else {
+        } else {
             setSettingItem("liveSettings", "false");
         }
     });
@@ -482,8 +491,7 @@ $(document).ready(function() {
     $("#checkLuminositePage").change(function() {
         if($(this).is(':checked') == true) {
             setSettingItem("pageLumEnabled", "true");
-        }
-        else {
+        } else {
             setSettingItem("pageLumEnabled", "false");
         }
     });
@@ -523,8 +531,7 @@ $(document).ready(function() {
     $( "#checkNighMode" ).change(function() {
         if($(this).is(':checked') == true) {
             setSettingItem("nightModeEnabled", "true");
-        }
-        else {
+        } else {
             setSettingItem("nightModeEnabled", "false");
         }
     });

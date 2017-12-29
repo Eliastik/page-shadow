@@ -26,6 +26,7 @@
     "modal": {
         "customThemeTitle": "Information",
         "customThemeInfos": "Pour paramétrer votre thème personnalisé, vous devez vous rendre dans les Paramètres avancés de Page Shadow.",
+        "customThemeInfoDisable": "Ne plus afficher",
         "close": "Fermer",
         "AdvSettings": "Paramètres avancés"
     },

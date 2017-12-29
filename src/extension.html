@@ -103,7 +103,12 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="customThemeInfos"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modal.customThemeTitle"></span></h4>
                         </div>
-                        <div class="modal-body" data-i18n="modal.customThemeInfos"></div>
+                        <div class="modal-body">
+                            <p data-i18n="modal.customThemeInfos"></p>
+                            <div>
+                                <input type="checkbox" id="customThemeInfoDisable" /> <label for="customThemeInfoDisable" data-i18n="modal.customThemeInfoDisable"></label>
+                            </div>
+                        </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
                             <button type="button" class="btn btn-primary" id="linkAdvSettings2"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span data-i18n="modal.AdvSettings"></span></button>

@@ -26,6 +26,7 @@
     "modal": {
         "customThemeTitle": "Information",
         "customThemeInfos": "To set your custom theme, you have to go to the Advanced settings of Page Shadow.",
+        "customThemeInfoDisable": "Do not display anymore",
         "close": "Close",
         "AdvSettings": "Advanced settings"
     },
