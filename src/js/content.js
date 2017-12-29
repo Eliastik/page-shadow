@@ -29,6 +29,7 @@
 
     var style = document.createElement('style');
     style.type = 'text/css';
+    var backgroundImagesDetected = 0;
 
     function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage) {
         if(pageShadowEnabled !== null && pageShadowEnabled == "true") {
@@ -123,9 +124,36 @@
         for (var i = 0; i < elements.length; i++) {
             var computedStyle = window.getComputedStyle(elements[i], null);
             var hasBackground = computedStyle.getPropertyValue("background").substr(0, 4) == "url(" || computedStyle.getPropertyValue("background-image").substr(0, 4) == "url(";
+            var hasClass = elements[i].classList.contains("pageShadowHasBackgroundImg");
 
-            if(hasBackground) {
+            if(hasBackground && !hasClass) {
                 elements[i].classList.add("pageShadowHasBackgroundImg");
+            }
+        }
+        
+        backgroundImagesDetected++;
+    }
+    
+    function applyDetectBackgroundImages(type) {
+        if(backgroundImagesDetected < 2) {
+            if(type == "loading") {
+                document.onreadystatechange = function() {
+                    // when DOM loaded
+                    if (document.readyState === 'interactive') {
+                        setTimeout(function() { applyBI("*"); }, 1); // detect for all the elements of the page
+                    }
+                    // after loading complete
+                    if (document.readyState === 'complete') {
+                        setTimeout(function() { applyBI("*"); }, 1); // detect for all the elements of the page
+                    }
+                };
+            } else {
+                if (document.readyState === 'complete') {
+                    setTimeout(function() { applyBI("*"); }, 1); // detect for all the elements of the page
+                    backgroundImagesDetected = 2;
+                } else {
+                    applyDetectBackgroundImages("loading");
+                }
             }
         }
     }
@@ -308,14 +336,15 @@
                 if(type !== "onlyContrast" && type !== "onlyInvert") {
                     luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits, colorTemp);
                 }
-            }
-
-            if(type == "start") {
-                document.onreadystatechange = function() {
-                    if (document.readyState === 'complete') {
-                        setTimeout(function() { applyBI("*"); }, 1); // detect for all the elements of the page
+                
+                
+                if(colorInvert == "true") {
+                    if(type == "start") {
+                        applyDetectBackgroundImages("loading");
+                    } else {
+                        applyDetectBackgroundImages();
                     }
-                };
+                }
             }
         });
     }
