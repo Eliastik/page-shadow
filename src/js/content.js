@@ -85,7 +85,7 @@
             if(document.getElementsByTagName('head')[0].contains(style)) { // remove style element
                 document.getElementsByTagName('head')[0].removeChild(style);
             }
-            
+
             // append style element
             document.getElementsByTagName('head')[0].appendChild(style);
 

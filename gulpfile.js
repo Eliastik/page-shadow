@@ -26,7 +26,7 @@ gulp.task('clean-directories', function() {
 });
 
 gulp.task('copy-global', function() {
-	return gulp.src(['./src/**', '!./src/img/src/**', '!./src/img/icon_old.png'])
+	return gulp.src(['./src/**', '!./src/img/src/**', '!./src/img/icon_old.png', '!./src/css/src/**'])
         .pipe(gulp.dest('./build/global/'));
 });
 
