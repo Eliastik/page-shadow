@@ -30,6 +30,7 @@
     var style = document.createElement('style');
     style.type = 'text/css';
     var backgroundImagesDetected = 0;
+    var timeOutLum, timeOutAP, timeOutIC, timeOutBI;
 
     function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage) {
         if(pageShadowEnabled !== null && pageShadowEnabled == "true") {
@@ -230,23 +231,23 @@
     }
 
     function applyAL(element) {
-        if (document.body) return appendLum(element);
+        if(document.body) return appendLum(element);
         timeOutLum = setTimeout(function() { applyAL(element) }, 50);
     }
 
     function applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage) {
-        if (document.body) return assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage);
+        if(document.body) return assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage);
         timeOutAP = setTimeout(function() { applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage) }, 50);
     }
 
     function applyIC(colorInvert, invertEntirePage) {
-        if (document.body) return invertColor(colorInvert, invertEntirePage);
+        if(document.body) return invertColor(colorInvert, invertEntirePage);
         timeOutIC = setTimeout(function() { applyIC(colorInvert, invertEntirePage) }, 50);
     }
 
     function applyBI(tagName) {
-        if (document.body) return detectBackgroundImages(tagName);
-        timeOutIC = setTimeout(function() { applyBI(tagName) }, 50);
+        if(document.body) return detectBackgroundImages(tagName);
+        timeOutBI = setTimeout(function() { applyBI(tagName) }, 50);
     }
 
     function mutationObserve(type) {
@@ -342,6 +343,7 @@
             if(typeof timeOutLum !== "undefined") clearTimeout(timeOutLum);
             if(typeof timeOutAP !== "undefined") clearTimeout(timeOutAP);
             if(typeof timeOutIC !== "undefined") clearTimeout(timeOutIC);
+            if(typeof timeOutBI !== "undefined") clearTimeout(timeOutBI);
             if(typeof mut_contrast !== 'undefined') mut_contrast.disconnect();
             if(typeof mut_invert !== 'undefined') mut_invert.disconnect();
             if(typeof mut_brightness !== 'undefined') mut_brightness.disconnect();
