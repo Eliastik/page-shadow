@@ -82,7 +82,20 @@
                 var linksColorTheme = defaultLinksColorCustomTheme;
             }
 
+            if(document.getElementsByTagName('head')[0].contains(style)) { // remove style element
+                document.getElementsByTagName('head')[0].removeChild(style);
+            }
+            
+            // append style element
             document.getElementsByTagName('head')[0].appendChild(style);
+
+            if(style.cssRules) { // remove all rules
+                for(var i=0; i < style.cssRules.length; i++) {
+                    style.sheet.deleteRule(i);
+                }
+            }
+
+            // create rules
             style.sheet.insertRule(".pageShadowContrastBlackCustom { background: #"+ backgroundTheme +" !important; background-image: url(); }", 0);
             style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) { background-color: #"+ backgroundTheme +" !important; color: #"+ textsColorTheme +" !important; }", 0);
             style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg { color: #"+ textsColorTheme +" !important; }", 0);
