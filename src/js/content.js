@@ -33,6 +33,7 @@
     style.type = 'text/css';
     var backgroundImagesDetected = 0;
     var timeOutLum, timeOutAP, timeOutIC, timeOutBI;
+    var elLum = document.createElement("div");
 
     function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertEntirePage) {
         if(pageShadowEnabled !== null && pageShadowEnabled == "true") {
@@ -189,7 +190,6 @@
     }
 
     function luminositePage(enabled, pourcentage, nightmode, siteInterdits, colorTemp) {
-        var elLum = document.createElement("div");
         elLum.setAttribute("class", "");
 
         if(enabled == "true") {
