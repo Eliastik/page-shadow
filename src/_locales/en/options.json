@@ -82,7 +82,7 @@
             "linksVisited": "Visited links color:",
             "font": "Font:",
             "placeholderFont": "Font name…",
-            "fontHelp": "Enter the name of a font installed on your computer, it will replace the default font of the web pages. Entering an empty value has no effect and is equivalent to disabling this option.",
+            "fontHelp": "Enter the name of a font installed on your device, it will replace the default font of the web pages. Entering an empty value has no effect and is equivalent to disable this option.",
             "preview": "Preview:",
             "previewText": "A text.",
             "previewLink": "A link.",

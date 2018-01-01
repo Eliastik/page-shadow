@@ -48,7 +48,7 @@
     background-color: black !important;
     color: #1E90FF !important;
 }
-.pageShadowContrastBlack a:visited:not(#linkNotVisited), .pageShadowContrastBlack #linkVisited {
+.pageShadowContrastBlack a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack #pageShadowLinkVisited {
     background-color: black !important;
     color: #ff00ff !important;
 }
@@ -90,7 +90,7 @@
     background-color: #142634 !important;
     color: #7288D4 !important;
 }
-.pageShadowContrastBlack2 a:visited:not(#linkNotVisited), .pageShadowContrastBlack2 #linkVisited {
+.pageShadowContrastBlack2 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack2 #pageShadowLinkVisited {
     background-color: #142634 !important;
     color: #BC72D4 !important;
 }
@@ -132,7 +132,7 @@
     background-color: #222 !important;
     color: #21c7ac !important;
 }
-.pageShadowContrastBlack3 a:visited:not(#linkNotVisited), .pageShadowContrastBlack3 #linkVisited {
+.pageShadowContrastBlack3 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack3 #pageShadowLinkVisited {
     background-color: #222 !important;
     color: #5821C7 !important;
 }
@@ -174,7 +174,7 @@
     background-color: #263238 !important;
     color: #c792ea !important;
 }
-.pageShadowContrastBlack4 a:visited:not(#linkNotVisited), .pageShadowContrastBlack4 #linkVisited {
+.pageShadowContrastBlack4 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack4 #pageShadowLinkVisited {
     background-color: #263238 !important;
     color: #92BEEA !important;
 }
@@ -216,7 +216,7 @@
     background-color: #333a49 !important;
     color: #B34B76 !important;
 }
-.pageShadowContrastBlack5 a:visited:not(#linkNotVisited), .pageShadowContrastBlack5 #linkVisited {
+.pageShadowContrastBlack5 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack5 #pageShadowLinkVisited {
     background-color: #333a49 !important;
     color: #764BB3 !important;
 }
@@ -258,7 +258,7 @@
     background-color: #020315 !important;
     color: #d0a00c !important;
 }
-.pageShadowContrastBlack6 a:visited:not(#linkNotVisited), .pageShadowContrastBlack6 #linkVisited {
+.pageShadowContrastBlack6 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack6 #pageShadowLinkVisited {
     background-color: #020315 !important;
     color: #9FD00C !important;
 }
@@ -300,7 +300,7 @@
     background-color: #192338 !important;
     color: #978FCC !important;
 }
-.pageShadowContrastBlack7 a:visited:not(#linkNotVisited), .pageShadowContrastBlack7 #linkVisited {
+.pageShadowContrastBlack7 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack7 #pageShadowLinkVisited {
     background-color: #192338 !important;
     color: #8FCCAE !important;
 }
@@ -342,7 +342,7 @@
     background-color: #1A1A1A !important;
     color: #A6A6FF !important;
 }
-.pageShadowContrastBlack8 a:visited:not(#linkNotVisited), .pageShadowContrastBlack8 #linkVisited {
+.pageShadowContrastBlack8 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack8 #pageShadowLinkVisited {
     background-color: #1A1A1A !important;
     color: #E9A6FF !important;
 }
@@ -384,7 +384,7 @@
     background-color: #1d4e6d !important;
     color: #F7A92C !important;
 }
-.pageShadowContrastBlack9 a:visited:not(#linkNotVisited), .pageShadowContrastBlack9 #linkVisited {
+.pageShadowContrastBlack9 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack9 #pageShadowLinkVisited {
     background-color: #1d4e6d !important;
     color: #B3F72C !important;
 }
@@ -426,7 +426,7 @@
     background-color: #272822 !important;
     color: #52D252 !important;
 }
-.pageShadowContrastBlack10 a:visited:not(#linkNotVisited), .pageShadowContrastBlack10 #linkVisited {
+.pageShadowContrastBlack10 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack10 #pageShadowLinkVisited {
     background-color: #272822 !important;
     color: #D2D252 !important;
 }
@@ -468,7 +468,7 @@
     background-color: white !important;
     color: #CC4A00 !important;
 }
-.pageShadowContrastBlack11 a:visited:not(#linkNotVisited), .pageShadowContrastBlack11 #linkVisited {
+.pageShadowContrastBlack11 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack11 #pageShadowLinkVisited {
     background-color: white !important;
     color: #6CD96C !important;
 }
@@ -510,7 +510,7 @@
     background-color: #002b36 !important;
     color: #1783d2 !important;
 }
-.pageShadowContrastBlack12 a:visited:not(#linkNotVisited), .pageShadowContrastBlack12 #linkVisited {
+.pageShadowContrastBlack12 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack12 #pageShadowLinkVisited {
     background-color: #002b36 !important;
     color: #5517D2 !important;
 }
@@ -552,7 +552,7 @@
     background-color: #000D00 !important;
     color: #1e90ff !important;
 }
-.pageShadowContrastBlack13 a:visited:not(#linkNotVisited), .pageShadowContrastBlack13 #linkVisited {
+.pageShadowContrastBlack13 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack13 #pageShadowLinkVisited {
     background-color: #000D00 !important;
     color: #7C1EFF !important;
 }
@@ -594,7 +594,7 @@
     background-color: #272822 !important;
     color: #65d9ef !important;
 }
-.pageShadowContrastBlack14 a:visited:not(#linkNotVisited), .pageShadowContrastBlack14 #linkVisited {
+.pageShadowContrastBlack14 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack14 #pageShadowLinkVisited {
     background-color: #272822 !important;
     color: #7165EF !important;
 }
@@ -636,7 +636,7 @@
     background-color: #2e3436 !important;
     color: #6792bf !important;
 }
-.pageShadowContrastBlack15 a:visited:not(#linkNotVisited), .pageShadowContrastBlack15 #linkVisited {
+.pageShadowContrastBlack15 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack15 #pageShadowLinkVisited {
     background-color: #2e3436 !important;
     color: #7667BF !important;
 }
