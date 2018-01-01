@@ -111,7 +111,6 @@ body.popup > .navbar {
 }
 #previsualisationDiv {
     font-size: 10pt;
-    width: 200px;
 }
 span[data-toggle] {
     cursor: pointer;

@@ -46,11 +46,11 @@
 }
 .pageShadowContrastBlack a {
     background-color: black !important;
-    color: lightblue !important;
+    color: #1E90FF !important;
 }
 .pageShadowContrastBlack a:visited:not(#linkNotVisited), .pageShadowContrastBlack #linkVisited {
     background-color: black !important;
-    color: purple !important;
+    color: #ff00ff !important;
 }
 .pageShadowContrastBlack img {
     background-color: #BDBDBD !important;
@@ -176,7 +176,7 @@
 }
 .pageShadowContrastBlack4 a:visited:not(#linkNotVisited), .pageShadowContrastBlack4 #linkVisited {
     background-color: #263238 !important;
-    color: #92A8EA !important;
+    color: #92BEEA !important;
 }
 .pageShadowContrastBlack4 img {
     background-color: #BDBDBD !important;

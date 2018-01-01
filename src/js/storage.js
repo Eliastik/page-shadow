@@ -87,8 +87,8 @@ function setFirstSettings() {
     if(typeof(window["defaultBGColorCustomTheme"]) == "undefined") defaultBGColorCustomTheme = "000000";
     if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsColorCustomTheme = "FFFFFF";
     if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
-    if(typeof(window["defaultVisitedLinksColorCustomTheme"]) == "undefined") defaultVisitedLinksColorCustomTheme = "800080";
-    if(typeof(window["defaultFontCustomTheme"]) == "undefined") defaultFontCustomTheme = "initial";
+    if(typeof(window["defaultVisitedLinksColorCustomTheme"]) == "undefined") defaultVisitedLinksColorCustomTheme = "ff00ff";
+    if(typeof(window["defaultFontCustomTheme"]) == "undefined") defaultFontCustomTheme = "";
 
     // Set default settings values
     chrome.storage.local.set({

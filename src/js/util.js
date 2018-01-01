@@ -26,7 +26,7 @@ var brightnessDefaultValue = 0.15; // the default percentage value of brightness
 var defaultBGColorCustomTheme = "000000";
 var defaultTextsColorCustomTheme = "FFFFFF";
 var defaultLinksColorCustomTheme = "1E90FF";
-var defaultVisitedLinksColorCustomTheme = "800080";
+var defaultVisitedLinksColorCustomTheme = "ff00ff";
 var defaultFontCustomTheme = "";
 // End of the global configuration of the extension
 
