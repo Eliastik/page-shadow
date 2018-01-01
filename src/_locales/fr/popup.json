@@ -8,7 +8,7 @@
         "customTheme": "Personnalisé…",
         "tileTheme": "Sélectionnez le thème de couleur utilisé par cette fonction. Un thème comprend une couleur de fond, une couleur de texte et une couleur de lien unifiée pour chaque page.",
         "previsualisationTheme": "Prévisualisation :",
-        "previsualisationThemeText": "Un texte. <a href=\"#\">Un lien</a>.",
+        "previsualisationThemeText": "Un texte. <a href=\"#\" id=\"linkNotVisited\">Un lien</a>. <a href=\"#\" id=\"linkVisited\">Un lien visité</a>.",
         "colorInvert": "Inverser les couleurs des images",
         "titleColorInvert": "Inverse les couleurs des images afin de mieux ressortir sur le thème sombre.",
         "entirePageInvert": "Inverser la page entière uniquement",

@@ -8,7 +8,7 @@
         "customTheme": "Custom…",
         "tileTheme": "Select a color theme used by this function. A theme includes a background color, a text color and a link color unified for each web page.",
         "previsualisationTheme": "Preview:",
-        "previsualisationThemeText": "A text. <a href=\"#\">A link</a>.",
+        "previsualisationThemeText": "A text. <a href=\"#\" id=\"linkNotVisited\">A link</a>. <a href=\"#\" id=\"linkVisited\">A visited link</a>.",
         "colorInvert": "Invert images colors",
         "titleColorInvert": "Invert the images colors to better stand out on the dark theme.",
         "entirePageInvert": "Invert the entire page only",

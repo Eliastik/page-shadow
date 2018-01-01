@@ -63,6 +63,12 @@ function setSettingItem(name, value) {
         case 'customThemeInfoDisable':
             chrome.storage.local.set({'customThemeInfoDisable': value});
             break;
+        case 'customThemeLinksVisited':
+            chrome.storage.local.set({'customThemeLinksVisited': value});
+            break;
+        case 'customThemeFont':
+            chrome.storage.local.set({'customThemeFont': value});
+            break;
         case 'defaultLoad':
             chrome.storage.local.set({'defaultLoad': value});
             break;
@@ -81,6 +87,8 @@ function setFirstSettings() {
     if(typeof(window["defaultBGColorCustomTheme"]) == "undefined") defaultBGColorCustomTheme = "000000";
     if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsColorCustomTheme = "FFFFFF";
     if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
+    if(typeof(window["defaultVisitedLinksColorCustomTheme"]) == "undefined") defaultVisitedLinksColorCustomTheme = "800080";
+    if(typeof(window["defaultFontCustomTheme"]) == "undefined") defaultFontCustomTheme = "initial";
 
     // Set default settings values
     chrome.storage.local.set({
@@ -97,6 +105,8 @@ function setFirstSettings() {
         'customThemeBg': defaultBGColorCustomTheme,
         'customThemeTexts': defaultTextsColorCustomTheme,
         'customThemeLinks': defaultLinksColorCustomTheme,
+        'customThemeLinksVisited': defaultVisitedLinksColorCustomTheme,
+        'customThemeFont': defaultFontCustomTheme,
         'invertEntirePage': 'false',
         'customThemeInfoDisable': 'false'
     });

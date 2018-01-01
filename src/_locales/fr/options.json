@@ -78,9 +78,14 @@
             "background": "Couleur de fond :",
             "texts": "Couleur des textes :",
             "links": "Couleur des liens :",
+            "linksVisited": "Couleur des liens visités :",
+            "font": "Police de caractères :",
+            "placeholderFont": "Nom d'une police…",
+            "fontHelp": "Entrez le nom d'une police de caractères installée sur votre ordinateur, elle remplacera la police de caractères par défaut des pages web. Entrer une valeur vide n'a aucun effet et équivaut à désactiver cette option.",
             "preview": "Prévisualisation :",
             "previewText": "Un texte.",
-            "previewLink": "Un lien."
+            "previewLink": "Un lien.",
+            "previewLinkVisited": "Un lien visité."
         },
         "saved": {
             "title": "Information",

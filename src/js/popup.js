@@ -66,6 +66,8 @@ $(document).ready(function() {
     if(typeof(window["defaultBGColorCustomTheme"]) == "undefined") defaultBGColorCustomTheme = "000000";
     if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsColorCustomTheme = "FFFFFF";
     if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
+    if(typeof(window["defaultVisitedLinksColorCustomTheme"]) == "undefined") defaultVisitedLinksColorCustomTheme = "800080";
+    if(typeof(window["defaultFontCustomTheme"]) == "undefined") defaultFontCustomTheme = "";
 
     // append the list of themes in the select
     for(i=1; i <= nbThemes; i++) {
@@ -372,7 +374,7 @@ $(document).ready(function() {
     });
 
     function checkCustomTheme() {
-        chrome.storage.local.get(['customThemeBg', 'customThemeTexts', 'customThemeLinks'], function (result) {
+        chrome.storage.local.get(['customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont'], function (result) {
             if(typeof result.customThemeBg !== "undefined" && typeof result.customThemeBg !== null) {
                 var backgroundTheme = result.customThemeBg;
             } else {
@@ -389,6 +391,18 @@ $(document).ready(function() {
                 var linksColorTheme = result.customThemeLinks;
             } else {
                 var linksColorTheme = defaultLinksColorCustomTheme;
+            }
+            
+            if(typeof result.customThemeLinksVisited !== "undefined" && typeof result.customThemeLinksVisited !== null) {
+                var linksVisitedColorTheme = result.customThemeLinksVisited;
+            } else {
+                var linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
+            }
+            
+            if(typeof result.customThemeFont !== "undefined" && typeof result.customThemeFont !== null && result.customThemeFont.trim() !== "") {
+                var fontTheme = '"' + result.customThemeFont + '"';
+            } else {
+                var fontTheme = defaultFontCustomTheme;
             }
 
             if(document.getElementsByTagName('head')[0].contains(style)) { // remove style element
@@ -407,8 +421,10 @@ $(document).ready(function() {
             // create rules
             style.sheet.insertRule(".pageShadowContrastBlackCustom { background: #"+ backgroundTheme +" !important; background-image: url(); }", 0);
             style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) { background-color: #"+ backgroundTheme +" !important; color: #"+ textsColorTheme +" !important; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom * {  font-family: " + fontTheme + " !important; }", 0);
             style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg { color: #"+ textsColorTheme +" !important; }", 0);
             style.sheet.insertRule(".pageShadowContrastBlackCustom a { background-color: #"+ backgroundTheme +" !important; color: #"+ linksColorTheme +" !important; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom a:visited:not(#linkNotVisited), .pageShadowContrastBlackCustom #linkVisited { background-color: #"+ backgroundTheme +" !important; color: #"+ linksVisitedColorTheme +" !important; }", 0);
         });
     }
 

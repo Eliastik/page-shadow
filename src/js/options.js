@@ -22,6 +22,8 @@ if(typeof(window["extensionVersion"]) == "undefined") extensionVersion = "???";
 if(typeof(window["defaultBGColorCustomTheme"]) == "undefined") defaultBGColorCustomTheme = "000000";
 if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsColorCustomTheme = "FFFFFF";
 if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
+if(typeof(window["defaultVisitedLinksColorCustomTheme"]) == "undefined") defaultVisitedLinksColorCustomTheme = "800080";
+if(typeof(window["defaultFontCustomTheme"]) == "undefined") defaultFontCustomTheme = "";
 
 /* translation */
 function init_i18next() {
@@ -79,7 +81,7 @@ function resetSettings() {
     $('#reset').modal("show");
 }
 function displaySettings() {
-    chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'customThemeBg', 'customThemeTexts', 'customThemeLinks'], function (result) {
+    chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont'], function (result) {
         if(typeof result.sitesInterditPageShadow !== "undefined" && typeof result.sitesInterditPageShadow !== null) {
             $("#textareaAssomPage").val(result.sitesInterditPageShadow);
         }
@@ -125,6 +127,38 @@ function displaySettings() {
             $("#colorpicker3").colpickSetColor(defaultLinksColorCustomTheme);
             $("#linkPreview").css("color", "#" + defaultLinksColorCustomTheme);
         }
+        
+        if(typeof result.customThemeLinks !== "undefined" && typeof result.customThemeLinks !== null) {
+            $("#colorpicker3").css("background-color", "#" + result.customThemeLinks);
+            $("#colorpicker3").attr("value", result.customThemeLinks);
+            $("#colorpicker3").colpickSetColor(result.customThemeLinks);
+            $("#linkPreview").css("color", "#"+ result.customThemeLinks);
+        } else {
+            $("#colorpicker3").css("background-color", "#" + defaultLinksColorCustomTheme);
+            $("#colorpicker3").attr("value", defaultLinksColorCustomTheme);
+            $("#colorpicker3").colpickSetColor(defaultLinksColorCustomTheme);
+            $("#linkPreview").css("color", "#" + defaultLinksColorCustomTheme);
+        }
+        
+        if(typeof result.customThemeLinksVisited !== "undefined" && typeof result.customThemeLinksVisited !== null) {
+            $("#colorpicker4").css("background-color", "#" + result.customThemeLinksVisited);
+            $("#colorpicker4").attr("value", result.customThemeLinksVisited);
+            $("#colorpicker4").colpickSetColor(result.customThemeLinksVisited);
+            $("#linkVisitedPreview").css("color", "#"+ result.customThemeLinksVisited);
+        } else {
+            $("#colorpicker4").css("background-color", "#" + defaultVisitedLinksColorCustomTheme);
+            $("#colorpicker4").attr("value", defaultVisitedLinksColorCustomTheme);
+            $("#colorpicker4").colpickSetColor(defaultVisitedLinksColorCustomTheme);
+            $("#linkVisitedPreview").css("color", "#" + defaultVisitedLinksColorCustomTheme);
+        }
+        
+        if(typeof result.customThemeFont !== "undefined" && typeof result.customThemeFont !== null && result.customThemeFont.trim() !== "") {
+            $("#customThemeFont").val(result.customThemeFont);
+            $("#previsualisationDiv").css("font-family", '"' + result.customThemeFont + '"');
+        } else {
+            $("#customThemeFont").val(defaultFontCustomTheme);
+            $("#previsualisationDiv").css("font-family", defaultFontCustomTheme);
+        }
     });
 }
 $(document).ready(function() {
@@ -133,6 +167,9 @@ $(document).ready(function() {
         setSettingItem("customThemeBg", $("#colorpicker1").attr("value"));
         setSettingItem("customThemeTexts", $("#colorpicker2").attr("value"));
         setSettingItem("customThemeLinks", $("#colorpicker3").attr("value"));
+        setSettingItem("customThemeLinksVisited", $("#colorpicker4").attr("value"));
+        setSettingItem("customThemeFont", $("#customThemeFont").val());
+        console.log($("#customThemeFont").val());
 
         chrome.storage.local.get('whiteList', function (result) {
             if($("#checkWhiteList").prop("checked") == true) {
@@ -149,6 +186,7 @@ $(document).ready(function() {
                 setSettingItem("whiteList", "false");
             }
         });
+        
         changeLng($("#languageSelect").val());
         $('span[data-toggle="tooltip"]').tooltip("hide");
         $('i[data-toggle="tooltip"]').tooltip("hide");
@@ -224,6 +262,25 @@ $(document).ready(function() {
             $("#colorpicker3").css("background-color", "#"+hex);
             $("#linkPreview").css("color", "#"+hex);
             $("#colorpicker3").attr("value", hex);
+        }
+    });
+    
+    $('#colorpicker4').colpick({
+        layout:'hex',
+        submit:0,
+        color: '800080',
+        onChange:function(hsb,hex,rgb,el,bySetColor) {
+            $("#colorpicker4").css("background-color", "#"+hex);
+            $("#linkVisitedPreview").css("color", "#"+hex);
+            $("#colorpicker4").attr("value", hex);
+        }
+    });
+    
+    $("#customThemeFont").change(function() {
+        if($("#customThemeFont").val().trim() !== "") {
+            $("#previsualisationDiv").css("font-family", '"' + $("#customThemeFont").val() + '"');
+        } else {
+            $("#previsualisationDiv").css("font-family", '');
         }
     });
 });
