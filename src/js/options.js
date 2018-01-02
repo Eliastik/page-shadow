@@ -127,7 +127,7 @@ function displaySettings() {
             $("#colorpicker3").colpickSetColor(defaultLinksColorCustomTheme);
             $("#linkPreview").css("color", "#" + defaultLinksColorCustomTheme);
         }
-        
+
         if(typeof result.customThemeLinks !== "undefined" && typeof result.customThemeLinks !== null) {
             $("#colorpicker3").css("background-color", "#" + result.customThemeLinks);
             $("#colorpicker3").attr("value", result.customThemeLinks);
@@ -139,7 +139,7 @@ function displaySettings() {
             $("#colorpicker3").colpickSetColor(defaultLinksColorCustomTheme);
             $("#linkPreview").css("color", "#" + defaultLinksColorCustomTheme);
         }
-        
+
         if(typeof result.customThemeLinksVisited !== "undefined" && typeof result.customThemeLinksVisited !== null) {
             $("#colorpicker4").css("background-color", "#" + result.customThemeLinksVisited);
             $("#colorpicker4").attr("value", result.customThemeLinksVisited);
@@ -151,7 +151,7 @@ function displaySettings() {
             $("#colorpicker4").colpickSetColor(defaultVisitedLinksColorCustomTheme);
             $("#linkVisitedPreview").css("color", "#" + defaultVisitedLinksColorCustomTheme);
         }
-        
+
         if(typeof result.customThemeFont !== "undefined" && typeof result.customThemeFont !== null && result.customThemeFont.trim() !== "") {
             $("#customThemeFont").val(result.customThemeFont);
             $("#previsualisationDiv").css("font-family", '"' + result.customThemeFont + '"');
@@ -186,7 +186,7 @@ $(document).ready(function() {
                 setSettingItem("whiteList", "false");
             }
         });
-        
+
         changeLng($("#languageSelect").val());
         $('span[data-toggle="tooltip"]').tooltip("hide");
         $('i[data-toggle="tooltip"]').tooltip("hide");
@@ -264,7 +264,7 @@ $(document).ready(function() {
             $("#colorpicker3").attr("value", hex);
         }
     });
-    
+
     $('#colorpicker4').colpick({
         layout:'hex',
         submit:0,
@@ -275,7 +275,7 @@ $(document).ready(function() {
             $("#colorpicker4").attr("value", hex);
         }
     });
-    
+
     $("#customThemeFont").change(function() {
         if($("#customThemeFont").val().trim() !== "") {
             $("#previsualisationDiv").css("font-family", '"' + $("#customThemeFont").val() + '"');

@@ -85,13 +85,13 @@
             } else {
                 var linksColorTheme = defaultLinksColorCustomTheme;
             }
-            
+
             if(typeof result.customThemeLinksVisited !== "undefined" && typeof result.customThemeLinksVisited !== null) {
                 var linksVisitedColorTheme = result.customThemeLinksVisited;
             } else {
                 var linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
             }
-            
+
             if(typeof result.customThemeFont !== "undefined" && typeof result.customThemeFont !== null && result.customThemeFont.trim() !== "") {
                 var fontTheme = '"' + result.customThemeFont + '"';
             } else {
