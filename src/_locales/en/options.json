@@ -41,6 +41,7 @@
             "browser": "Your web browser:",
             "changelogTitle": "Changelog:",
                 "changelog": {
+                    "24": "<ul><li>Added the ability to inverse the colors of web pages entirely, not just the images;</li><li>Added new options for custom themes: color of visited links and font;</li><li>The themes now have a color for visited links;</li><li>Added the ability to disable the display of the message after selecting the custom theme for the tool Increase page contrast;</li><li>Bug fixes, performance improvements and adjustments (see the Readme file).</li></ul>",
                     "23": "<ul><li>Added the possibility to create a custom theme;</li><li>Improved the Invert images colors tool: background images are now detected, which greatly improves the rendering of the tool;</li><li>Bug fixes and adjustments (see the Readme file).</li></ul>",
                     "22": "<ul><li>Added 5 new themes (10 to 15);</li><li>Bug fixes, major changes in the extension structure and minor adjustments, especially: <ul><li>Optimizations and important changes in the code of the management of the parameters (dynamic detection of the changes in real time);</li><li>Bug fixes for Firefox Android: disabling the extension for a site or page now works, the main settings panel now scrolls correctly;</li><li>Fixed a bug in the tool Decrease page brightness: in some cases, the percentage of brightness decrease could be incorrect, that made the settings panel completely dark;</li></ul></li><li>For the rest of the changes, see the Readme file.</li></ul>",
                     "211": "<ul><li>XML parsing error in Firefox fixed (bug in i18nextXHRBackend) ;</li><li>The settings are now initialised directly after the installation of the extension ;</li><li>Bug fixed with the manifest file for Microsoft Edge (persistent key in background key).</li></ul>",
@@ -54,6 +55,7 @@
                     "11": "<ul><li>Improved function \"Increase page contrast\"</li></ul>",
                     "1": "<ul><li>Initial version</li></ul>",
                         "versionNames": {
+                            "24": "Version 2.4 (02/01/2018)",
                             "23": "Version 2.3 (1/12/2017)",
                             "22": "Version 2.2 (25/10/2017)",
                             "211": "Version 2.1.1 (09/09/2017)",
