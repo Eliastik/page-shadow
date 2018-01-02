@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.3 (1/12/2017)
+* Version actuelle : 2.4 (02/01/2018)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -21,6 +21,20 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.4 (02/01/2018) :
+* Ajout de la possibilité d'inverser les couleurs des pages web entièrement, et non pas seulement les images ;
+* Ajout de nouvelles options pour les thèmes personnalisés : couleur des liens visités et police de caractères ;
+* Les thèmes ont désormais une couleur pour les liens visités ;
+* Ajout de la possibilité de désactiver l'affichage du message après avoir selectionné le thème personnalisé pour l'outil Augmenter le contraste de la page ;
+* Corrections de bugs, amélioration des performances et ajustements :
+    * Amélioration des performances (optimisations) et réduction de la consommation de mémoire vive ;
+    * Correction de l'affichage des cases à cocher avec Firefox ;
+    * Bug corrigé avec l'outil Inverser la couleur des images pour certains sites web (certaines images pouvaient ne pas être inversées) ;
+    * Bug corrigé avec l'outil Baisser la luminosité de la page ;
+    * Optimisation de la mise en page du menu de l'extension (réduction de la place prise par certains éléments) ;
+    * Ajustement de certains thèmes ;
+    * Autres corrections et ajustements mineurs.
 
 ### Version 2.3 (1/12/2017) :
 * Ajout de la possibilité de créer un thème personnalisé ;
@@ -162,7 +176,7 @@ Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `gul
 
 ### Licence :
 
-Copyright (C) 2015-2017 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2018 Eliastik (eliastiksofts.com)
 
 Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le
 modifier suivant les termes de la GNU General Public License telle que

@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.3 (1/12/2017)
+* Latest version: 2.4 (02/01/2018)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -21,6 +21,20 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.4 (02/01/2018) :
+* Added the ability to inverse the colors of web pages entirely, not just the images;
+* Added new options for custom themes: color of visited links and font;
+* The themes now have a color for visited links;
+* Added the ability to disable the display of the message after selecting the custom theme for the tool Increase page contrast;
+* Bug fixes, performance improvements and adjustments:
+    * Improved performance (optimizations) and reduced RAM consumption;
+    * Fixed the display of checkboxes with Firefox;
+    * Bug corrected with the tool Invert images colors for some websites (some images couldn't be reversed);
+    * Bug corrected with the tool Decrease page brightness;
+    * Optimization of the layout of the extension menu (reduction of the space taken by some elements);
+    * Adjusted some themes;
+    * Other minor corrections and adjustments.
 
 ### Version 2.3 (1/12/2017) :
 * Added the possibility to create a custom theme;
@@ -162,7 +176,7 @@ Then if you want to clean the build directory, run the command `gulp clean-build
 
 ### Licence :
 
-Copyright (C) 2015-2017 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2018 Eliastik (eliastiksofts.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
