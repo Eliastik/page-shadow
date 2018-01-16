@@ -69,6 +69,9 @@ function setSettingItem(name, value) {
         case 'customThemeFont':
             chrome.storage.local.set({'customThemeFont': value});
             break;
+        case 'globallyEnable':
+            chrome.storage.local.set({'globallyEnable': value});
+            break;
         case 'defaultLoad':
             chrome.storage.local.set({'defaultLoad': value});
             break;
@@ -108,6 +111,7 @@ function setFirstSettings() {
         'customThemeLinksVisited': defaultVisitedLinksColorCustomTheme,
         'customThemeFont': defaultFontCustomTheme,
         'invertEntirePage': 'false',
+        'globallyEnable': 'true',
         'customThemeInfoDisable': 'false'
     });
 }

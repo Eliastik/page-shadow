@@ -1,4 +1,7 @@
 {
+    "navbar": {
+        "globalSwitch": "Disable/enable globally Page Shadow"
+    },
     "container": {
         "description": "A series of tools designed to improve the reading of web pages in a dark environment/other:",
         "contrast": "Increase page contrast",

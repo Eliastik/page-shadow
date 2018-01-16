@@ -22,5 +22,8 @@
     },
     "disableWebpage": {
         "message": "Disable for this page"
+    },
+    "disableGlobally": {
+        "message": "Disable globally the extension"
     }
 }

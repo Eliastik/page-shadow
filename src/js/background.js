@@ -72,7 +72,7 @@ function deleteContextMenu(id) {
 
 function menu() {
     function createMenu() {
-        chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
+        chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'globallyEnable'], function (result) {
             if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined' || result.sitesInterditPageShadow.trim() == '') {
                 var siteInterdits = "";
             } else {
@@ -106,6 +106,12 @@ function menu() {
                     }
                 }
             });
+            
+            if(result.globallyEnable == "false") {
+                createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], true);
+            } else {
+                createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], false);
+            }
         });
     }
 
@@ -196,6 +202,13 @@ if(typeof(chrome.contextMenus.onClicked) !== 'undefined') {
                         var disabledWebsitesNew = removeA(disabledWebsitesArray, tab.url);
                         var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
                         setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
+                    }
+                    break;
+                case "disable-globally":
+                    if(info.checked == true && info.wasChecked == false) {
+                        setSettingItem("globallyEnable", "false");
+                    } else {
+                        setSettingItem("globallyEnable", "true");
                     }
                     break;
             }

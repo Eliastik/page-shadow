@@ -39,6 +39,7 @@ function translateContent() {
       selectorAttr: 'data-i18n'
     });
     themeTranslation = i18next.t("container.theme");
+    $(".navbar").localize();
     $(".container").localize();
     $("footer").localize();
 }
@@ -90,6 +91,10 @@ $(document).ready(function() {
         animated: 'fade',
         placement: 'bottom',
         trigger: 'click'
+    });
+
+    $('div[data-toggle="tooltip"]').tooltip({
+        trigger: 'hover'
     });
 
     var sliderLuminosite = $('#sliderLuminosite').slider({
@@ -569,6 +574,24 @@ $(document).ready(function() {
         setSettingItem("colorTemp", $(this).val());
     });
 
+    function checkGlobalEnable() {
+        chrome.storage.local.get("globallyEnable", function (result) {
+            if(result.globallyEnable == "false") {
+                $("#pageShadowGlobalSwitch").prop("checked", false);
+            } else {
+                $("#pageShadowGlobalSwitch").prop("checked", true);
+            }
+        });
+    }
+
+    $("#pageShadowGlobalSwitch").change(function() {
+        if($(this).is(':checked') == true) {
+            setSettingItem("globallyEnable", "true");
+        } else {
+            setSettingItem("globallyEnable", "false");
+        }
+    });
+
     function displaySettings() {
         chrome.storage.local.get(['theme', 'colorTemp', 'pourcentageLum'], function (result) {
             checkContrastMode();
@@ -578,6 +601,7 @@ $(document).ready(function() {
             checkNightMode();
             checkEnable();
             checkCustomTheme();
+            checkGlobalEnable();
 
             if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null && result.pourcentageLum / 100 <= maxBrightnessPercentage && result.pourcentageLum / 100 >= minBrightnessPercentage && brightnessChangedFromThisPage == false) {
                 sliderLuminosite.slider('setValue', result.pourcentageLum);

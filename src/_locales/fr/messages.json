@@ -22,5 +22,8 @@
     },
     "disableWebpage": {
         "message": "Désactiver pour cette page"
+    },
+    "disableGlobally": {
+        "message": "Désactiver globalement l'extension"
     }
 }

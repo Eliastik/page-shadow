@@ -1,4 +1,7 @@
 {
+    "navbar": {
+        "globalSwitch": "Désactiver/activer globalement Page Shadow"
+    },
     "container": {
         "description": "Une série d'outils conçus pour améliorer la lecture de pages web dans une pièce mal éclairée/autre :",
         "contrast": "Augmenter le contraste de la page",
