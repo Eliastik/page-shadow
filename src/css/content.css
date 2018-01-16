@@ -32,6 +32,9 @@
     background-color: grey !important;
     color: black !important;
 }
+.pageShadowContrastBlack input {
+    border: 1px solid #aaa !important;
+}
 .pageShadowContrastBlack ins {
     background-color: green !important;
     color: white !important;
@@ -73,6 +76,9 @@
 .pageShadowContrastBlack2 select {
     background-color: grey !important;
     color: black !important;
+}
+.pageShadowContrastBlack2 input {
+    border: 1px solid #BDC7C1 !important;
 }
 .pageShadowContrastBlack2 ins {
     background-color: green !important;
@@ -116,6 +122,9 @@
     background-color: grey !important;
     color: black !important;
 }
+.pageShadowContrastBlack3 input {
+    border: 1px solid #aaa !important;
+}
 .pageShadowContrastBlack3 ins {
     background-color: green !important;
     color: white !important;
@@ -157,6 +166,9 @@
 .pageShadowContrastBlack4 select {
     background-color: grey !important;
     color: black !important;
+}
+.pageShadowContrastBlack4 input {
+    border: 1px solid #c3cee3 !important;
 }
 .pageShadowContrastBlack4 ins {
     background-color: green !important;
@@ -200,6 +212,9 @@
     background-color: grey !important;
     color: black !important;
 }
+.pageShadowContrastBlack5 input {
+    border: 1px solid #dfcbd3 !important;
+}
 .pageShadowContrastBlack5 ins {
     background-color: green !important;
     color: white !important;
@@ -241,6 +256,9 @@
 .pageShadowContrastBlack6 select {
     background-color: grey !important;
     color: black !important;
+}
+.pageShadowContrastBlack6 input {
+    border: 1px solid #b9cace !important;
 }
 .pageShadowContrastBlack6 ins {
     background-color: green !important;
@@ -284,6 +302,9 @@
     background-color: grey !important;
     color: black !important;
 }
+.pageShadowContrastBlack7 input {
+    border: 1px solid #6f9bb0 !important;
+}
 .pageShadowContrastBlack7 ins {
     background-color: green !important;
     color: white !important;
@@ -325,6 +346,9 @@
 .pageShadowContrastBlack8 select {
     background-color: grey !important;
     color: black !important;
+}
+.pageShadowContrastBlack8 input {
+    border: 1px solid #FFFFB3 !important;
 }
 .pageShadowContrastBlack8 ins {
     background-color: green !important;
@@ -368,6 +392,9 @@
     background-color: grey !important;
     color: black !important;
 }
+.pageShadowContrastBlack9 input {
+    border: 1px solid #BED6FF !important;
+}
 .pageShadowContrastBlack9 ins {
     background-color: green !important;
     color: white !important;
@@ -409,6 +436,9 @@
 .pageShadowContrastBlack10 select {
     background-color: grey !important;
     color: black !important;
+}
+.pageShadowContrastBlack10 input {
+    border: 1px solid #39B7FF !important;
 }
 .pageShadowContrastBlack10 ins {
     background-color: green !important;
@@ -452,6 +482,9 @@
     background-color: #424242 !important;
     color: black !important;
 }
+.pageShadowContrastBlack11 input {
+    border: 1px solid black !important;
+}
 .pageShadowContrastBlack11 ins {
     background-color: #FF7FFF !important;
     color: black !important;
@@ -493,6 +526,9 @@
 .pageShadowContrastBlack12 select {
     background-color: grey !important;
     color: black !important;
+}
+.pageShadowContrastBlack12 input {
+    border: 1px solid #b58901 !important;
 }
 .pageShadowContrastBlack12 ins {
     background-color: green !important;
@@ -536,6 +572,9 @@
     background-color: grey !important;
     color: black !important;
 }
+.pageShadowContrastBlack13 input {
+    border: 1px solid #00ca00 !important;
+}
 .pageShadowContrastBlack13 ins {
     background-color: green !important;
     color: white !important;
@@ -578,6 +617,9 @@
     background-color: grey !important;
     color: black !important;
 }
+.pageShadowContrastBlack14 input {
+    border: 1px solid #91e22d !important;
+}
 .pageShadowContrastBlack14 ins {
     background-color: green !important;
     color: white !important;
@@ -619,6 +661,9 @@
 .pageShadowContrastBlack15 select {
     background-color: grey !important;
     color: black !important;
+}
+.pageShadowContrastBlack15 input {
+    border: 1px solid #d2dde3 !important;
 }
 .pageShadowContrastBlack15 ins {
     background-color: green !important;
