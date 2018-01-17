@@ -31,7 +31,7 @@
 
     var style = document.createElement('style');
     style.type = 'text/css';
-    var backgroundImagesDetected = 0;
+    var backgroundDetected = 0;
     var timeOutLum, timeOutAP, timeOutIC, timeOutBI;
     var elLum = document.createElement("div");
 
@@ -117,8 +117,9 @@
             style.sheet.insertRule(".pageShadowContrastBlackCustom input { border: 1px solid #"+ textsColorTheme +" !important; }", 0);
             style.sheet.insertRule(".pageShadowContrastBlackCustom * {  font-family: " + fontTheme + " !important; }", 0);
             style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg { color: #"+ textsColorTheme +" !important; }", 0);
-            style.sheet.insertRule(".pageShadowContrastBlackCustom a { background-color: #"+ backgroundTheme +" !important; color: #"+ linksColorTheme +" !important; }", 0);
-            style.sheet.insertRule(".pageShadowContrastBlackCustom a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlackCustom #pageShadowLinkVisited { background-color: #"+ backgroundTheme +" !important; color: #"+ linksVisitedColorTheme +" !important; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom a { color: #"+ linksColorTheme +" !important; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) { background: #"+ backgroundTheme +" !important; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlackCustom #pageShadowLinkVisited { color: #"+ linksVisitedColorTheme +" !important; }", 0);
         });
     }
 
@@ -149,43 +150,54 @@
         }
     }
 
-    function detectBackgroundImages(tagName) {
+    function detectBackground(tagName, add) {
         var elements = document.body.getElementsByTagName(tagName);
         var computedStyle = null;
 
-        for (var i = 0; i < elements.length; i++) {
+        for(var i = 0; i < elements.length; i++) {
             var computedStyle = window.getComputedStyle(elements[i], null);
-            var hasBackground = computedStyle.getPropertyValue("background").substr(0, 4) == "url(" || computedStyle.getPropertyValue("background-image").substr(0, 4) == "url(";
-            var hasClass = elements[i].classList.contains("pageShadowHasBackgroundImg");
 
-            if(hasBackground && !hasClass) {
+            var hasBackgroundImg = computedStyle.getPropertyValue("background").substr(0, 4) == "url(" || computedStyle.getPropertyValue("background-image").substr(0, 4) == "url(";
+            var hasClassImg = elements[i].classList.contains("pageShadowHasBackgroundImg");
+
+            if(hasBackgroundImg && !hasClassImg) {
                 elements[i].classList.add("pageShadowHasBackgroundImg");
+            }
+            
+            var hasBackgroundColor = computedStyle.getPropertyValue("background-image").substr(0, 4) !== "url(" && computedStyle.getPropertyValue("background-color") !== "" && computedStyle.getPropertyValue("background-color").substr(0, 4) !== "none";
+            var hasClassColor = elements[i].classList.contains("pageShadowHasBackgroundColor");
+
+            if(hasBackgroundColor && !hasClassColor) {
+                elements[i].classList.add("pageShadowHasBackgroundColor");
             }
         }
 
-        backgroundImagesDetected++;
+        if(typeof add !== "undefined") {
+            backgroundDetected += add;
+        }
     }
 
-    function applyDetectBackgroundImages(type) {
-        if(backgroundImagesDetected < 2) {
-            if(type == "loading") {
-                document.onreadystatechange = function() {
-                    // when DOM loaded
-                    if (document.readyState === 'interactive') {
-                        setTimeout(function() { applyBI("*"); }, 1); // detect for all the elements of the page
-                    }
-                    // after loading complete
-                    if (document.readyState === 'complete') {
-                        setTimeout(function() { applyBI("*"); }, 1); // detect for all the elements of the page
-                    }
-                };
-            } else {
-                if (document.readyState === 'complete') {
-                    setTimeout(function() { applyBI("*"); }, 1); // detect for all the elements of the page
-                    backgroundImagesDetected = 2;
-                } else {
-                    applyDetectBackgroundImages("loading");
+    function applyDetectBackground(type, element, add) {
+        if(backgroundDetected > 2) {
+            return false;
+        }
+
+        if(type == "loading") {
+            document.onreadystatechange = function() {
+                // when the DOM is ready
+                if(document.readyState === 'interactive') {
+                    setTimeout(function() { applyBI(element, add); }, 1); // detect for all the elements of the page
                 }
+                // when the page is entirely loaded
+                if(document.readyState === 'complete') {
+                    setTimeout(function() { applyBI(element, add); }, 1); // detect for all the elements of the page
+                }
+            };
+        } else {
+            if(document.readyState === 'complete') {
+                setTimeout(function() { applyBI(element, add); }, 1); // detect for all the elements of the page
+            } else {
+                applyDetectBackground("loading", element, add);
             }
         }
     }
@@ -262,9 +274,9 @@
         timeOutIC = setTimeout(function() { applyIC(colorInvert, invertEntirePage) }, 50);
     }
 
-    function applyBI(tagName) {
-        if(document.body) return detectBackgroundImages(tagName);
-        timeOutBI = setTimeout(function() { applyBI(tagName) }, 50);
+    function applyBI(tagName, add) {
+        if(document.body) return detectBackground(tagName, add,);
+        timeOutBI = setTimeout(function() { applyBI(tagName, add) }, 50);
     }
 
     function mutationObserve(type) {
@@ -426,13 +438,10 @@
                         luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits, colorTemp);
                     }
 
-
-                    if(colorInvert == "true") {
-                        if(type == "start") {
-                            applyDetectBackgroundImages("loading");
-                        } else {
-                            applyDetectBackgroundImages();
-                        }
+                    if(type == "start") {
+                        applyDetectBackground("loading", "*", 1);
+                    } else {
+                        applyDetectBackground(null, "*", 2);
                     }
                 }
             }

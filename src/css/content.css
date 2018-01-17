@@ -48,11 +48,12 @@
     color: black !important;
 }
 .pageShadowContrastBlack a {
-    background-color: black !important;
     color: #1E90FF !important;
 }
+.pageShadowContrastBlack .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: black !important;
+}
 .pageShadowContrastBlack a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack #pageShadowLinkVisited {
-    background-color: black !important;
     color: #ff00ff !important;
 }
 .pageShadowContrastBlack img {
@@ -93,11 +94,12 @@
     color: black !important;
 }
 .pageShadowContrastBlack2 a {
-    background-color: #142634 !important;
     color: #7288D4 !important;
 }
+.pageShadowContrastBlack2 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: #142634 !important;
+}
 .pageShadowContrastBlack2 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack2 #pageShadowLinkVisited {
-    background-color: #142634 !important;
     color: #BC72D4 !important;
 }
 .pageShadowContrastBlack2 img {
@@ -138,11 +140,12 @@
     color: black !important;
 }
 .pageShadowContrastBlack3 a {
-    background-color: #222 !important;
     color: #21c7ac !important;
 }
+.pageShadowContrastBlack3 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: #222 !important;
+}
 .pageShadowContrastBlack3 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack3 #pageShadowLinkVisited {
-    background-color: #222 !important;
     color: #5821C7 !important;
 }
 .pageShadowContrastBlack3 img {
@@ -183,11 +186,12 @@
     color: black !important;
 }
 .pageShadowContrastBlack4 a {
-    background-color: #263238 !important;
     color: #c792ea !important;
 }
+.pageShadowContrastBlack4 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: #263238 !important;
+}
 .pageShadowContrastBlack4 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack4 #pageShadowLinkVisited {
-    background-color: #263238 !important;
     color: #92BEEA !important;
 }
 .pageShadowContrastBlack4 img {
@@ -228,11 +232,12 @@
     color: black !important;
 }
 .pageShadowContrastBlack5 a {
-    background-color: #333a49 !important;
     color: #B34B76 !important;
 }
+.pageShadowContrastBlack5 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: #333a49 !important;
+}
 .pageShadowContrastBlack5 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack5 #pageShadowLinkVisited {
-    background-color: #333a49 !important;
     color: #764BB3 !important;
 }
 .pageShadowContrastBlack5 img {
@@ -273,11 +278,12 @@
     color: black !important;
 }
 .pageShadowContrastBlack6 a {
-    background-color: #020315 !important;
     color: #d0a00c !important;
 }
+.pageShadowContrastBlack6 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: #020315 !important;
+}
 .pageShadowContrastBlack6 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack6 #pageShadowLinkVisited {
-    background-color: #020315 !important;
     color: #9FD00C !important;
 }
 .pageShadowContrastBlack6 img {
@@ -318,11 +324,12 @@
     color: black !important;
 }
 .pageShadowContrastBlack7 a {
-    background-color: #192338 !important;
     color: #978FCC !important;
 }
+.pageShadowContrastBlack7 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: #192338 !important;
+}
 .pageShadowContrastBlack7 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack7 #pageShadowLinkVisited {
-    background-color: #192338 !important;
     color: #8FCCAE !important;
 }
 .pageShadowContrastBlack7 img {
@@ -363,11 +370,12 @@
     color: black !important;
 }
 .pageShadowContrastBlack8 a {
-    background-color: #1A1A1A !important;
     color: #A6A6FF !important;
 }
+.pageShadowContrastBlack8 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: #1A1A1A !important;
+}
 .pageShadowContrastBlack8 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack8 #pageShadowLinkVisited {
-    background-color: #1A1A1A !important;
     color: #E9A6FF !important;
 }
 .pageShadowContrastBlack8 img {
@@ -408,11 +416,12 @@
     color: black !important;
 }
 .pageShadowContrastBlack9 a {
-    background-color: #1d4e6d !important;
     color: #F7A92C !important;
 }
+.pageShadowContrastBlack9 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: #1d4e6d !important;
+}
 .pageShadowContrastBlack9 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack9 #pageShadowLinkVisited {
-    background-color: #1d4e6d !important;
     color: #B3F72C !important;
 }
 .pageShadowContrastBlack9 img {
@@ -453,11 +462,12 @@
     color: black !important;
 }
 .pageShadowContrastBlack10 a {
-    background-color: #272822 !important;
     color: #52D252 !important;
 }
+.pageShadowContrastBlack10 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: #272822 !important;
+}
 .pageShadowContrastBlack10 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack10 #pageShadowLinkVisited {
-    background-color: #272822 !important;
     color: #D2D252 !important;
 }
 .pageShadowContrastBlack10 img {
@@ -498,11 +508,12 @@
     color: white !important;
 }
 .pageShadowContrastBlack11 a {
-    background-color: white !important;
     color: #CC4A00 !important;
 }
+.pageShadowContrastBlack11 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: white !important;
+}
 .pageShadowContrastBlack11 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack11 #pageShadowLinkVisited {
-    background-color: white !important;
     color: #6CD96C !important;
 }
 .pageShadowContrastBlack11 img {
@@ -543,11 +554,12 @@
     color: dark !important;
 }
 .pageShadowContrastBlack12 a {
-    background-color: #002b36 !important;
     color: #1783d2 !important;
 }
+.pageShadowContrastBlack12 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: #002b36 !important;
+}
 .pageShadowContrastBlack12 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack12 #pageShadowLinkVisited {
-    background-color: #002b36 !important;
     color: #5517D2 !important;
 }
 .pageShadowContrastBlack12 img {
@@ -588,11 +600,12 @@
     color: dark !important;
 }
 .pageShadowContrastBlack13 a {
-    background-color: #000D00 !important;
     color: #1e90ff !important;
 }
+.pageShadowContrastBlack13 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: #000D00 !important;
+}
 .pageShadowContrastBlack13 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack13 #pageShadowLinkVisited {
-    background-color: #000D00 !important;
     color: #7C1EFF !important;
 }
 .pageShadowContrastBlack13 img {
@@ -633,11 +646,12 @@
     color: dark !important;
 }
 .pageShadowContrastBlack14 a {
-    background-color: #272822 !important;
     color: #65d9ef !important;
 }
+.pageShadowContrastBlack14 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: #272822 !important;
+}
 .pageShadowContrastBlack14 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack14 #pageShadowLinkVisited {
-    background-color: #272822 !important;
     color: #7165EF !important;
 }
 .pageShadowContrastBlack14 img {
@@ -678,11 +692,12 @@
     color: dark !important;
 }
 .pageShadowContrastBlack15 a {
-    background-color: #2e3436 !important;
     color: #6792bf !important;
 }
+.pageShadowContrastBlack15 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
+    background: #2e3436 !important;
+}
 .pageShadowContrastBlack15 a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack15 #pageShadowLinkVisited {
-    background-color: #2e3436 !important;
     color: #7667BF !important;
 }
 .pageShadowContrastBlack15 img {

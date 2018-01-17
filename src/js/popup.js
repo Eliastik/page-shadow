@@ -429,8 +429,9 @@ $(document).ready(function() {
             style.sheet.insertRule(".pageShadowContrastBlackCustom input { border: 1px solid #"+ textsColorTheme +" !important; }", 0);
             style.sheet.insertRule(".pageShadowContrastBlackCustom * {  font-family: " + fontTheme + " !important; }", 0);
             style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg { color: #"+ textsColorTheme +" !important; }", 0);
-            style.sheet.insertRule(".pageShadowContrastBlackCustom a { background-color: #"+ backgroundTheme +" !important; color: #"+ linksColorTheme +" !important; }", 0);
-            style.sheet.insertRule(".pageShadowContrastBlackCustom a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlackCustom #pageShadowLinkVisited { background-color: #"+ backgroundTheme +" !important; color: #"+ linksVisitedColorTheme +" !important; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom a { color: #"+ linksColorTheme +" !important; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) { background: #"+ backgroundTheme +" !important; }", 0);
+            style.sheet.insertRule(".pageShadowContrastBlackCustom a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlackCustom #pageShadowLinkVisited { color: #"+ linksVisitedColorTheme +" !important; }", 0);
         });
     }
 
