@@ -49,6 +49,7 @@
 }
 .pageShadowContrastBlack a {
     color: #1E90FF !important;
+    background-color: black !important;
 }
 .pageShadowContrastBlack .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: black !important;
@@ -95,6 +96,7 @@
 }
 .pageShadowContrastBlack2 a {
     color: #7288D4 !important;
+    background-color: #142634 !important;
 }
 .pageShadowContrastBlack2 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: #142634 !important;
@@ -141,6 +143,7 @@
 }
 .pageShadowContrastBlack3 a {
     color: #21c7ac !important;
+    background-color: #222 !important;
 }
 .pageShadowContrastBlack3 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: #222 !important;
@@ -187,6 +190,7 @@
 }
 .pageShadowContrastBlack4 a {
     color: #c792ea !important;
+    background-color: #263238 !important;
 }
 .pageShadowContrastBlack4 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: #263238 !important;
@@ -233,6 +237,7 @@
 }
 .pageShadowContrastBlack5 a {
     color: #B34B76 !important;
+    background-color: #333a49 !important;
 }
 .pageShadowContrastBlack5 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: #333a49 !important;
@@ -279,6 +284,7 @@
 }
 .pageShadowContrastBlack6 a {
     color: #d0a00c !important;
+    background-color: #020315 !important;
 }
 .pageShadowContrastBlack6 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: #020315 !important;
@@ -325,6 +331,7 @@
 }
 .pageShadowContrastBlack7 a {
     color: #978FCC !important;
+    background-color: #192338 !important;
 }
 .pageShadowContrastBlack7 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: #192338 !important;
@@ -371,6 +378,7 @@
 }
 .pageShadowContrastBlack8 a {
     color: #A6A6FF !important;
+    background-color: #1A1A1A !important;
 }
 .pageShadowContrastBlack8 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: #1A1A1A !important;
@@ -417,6 +425,7 @@
 }
 .pageShadowContrastBlack9 a {
     color: #F7A92C !important;
+    background-color: #1d4e6d !important;
 }
 .pageShadowContrastBlack9 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: #1d4e6d !important;
@@ -463,6 +472,7 @@
 }
 .pageShadowContrastBlack10 a {
     color: #52D252 !important;
+    background-color: #272822 !important;
 }
 .pageShadowContrastBlack10 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: #272822 !important;
@@ -509,6 +519,7 @@
 }
 .pageShadowContrastBlack11 a {
     color: #CC4A00 !important;
+    background-color: white !important;
 }
 .pageShadowContrastBlack11 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: white !important;
@@ -555,6 +566,7 @@
 }
 .pageShadowContrastBlack12 a {
     color: #1783d2 !important;
+    background-color: #002b36 !important;
 }
 .pageShadowContrastBlack12 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: #002b36 !important;
@@ -601,6 +613,7 @@
 }
 .pageShadowContrastBlack13 a {
     color: #1e90ff !important;
+    background-color: #000D00 !important;
 }
 .pageShadowContrastBlack13 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: #000D00 !important;
@@ -647,6 +660,7 @@
 }
 .pageShadowContrastBlack14 a {
     color: #65d9ef !important;
+    background-color: #272822 !important;
 }
 .pageShadowContrastBlack14 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: #272822 !important;
@@ -693,6 +707,7 @@
 }
 .pageShadowContrastBlack15 a {
     color: #6792bf !important;
+    background-color: #2e3436 !important;
 }
 .pageShadowContrastBlack15 .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) {
     background: #2e3436 !important;

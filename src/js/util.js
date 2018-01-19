@@ -70,3 +70,60 @@ function removeA(arr) {
 function getUImessage(id) {
     return chrome.i18n.getMessage(id);
 }
+
+function customTheme(style) {
+    chrome.storage.local.get(['customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont'], function (result) {
+        if(typeof result.customThemeBg !== "undefined" && typeof result.customThemeBg !== null) {
+            var backgroundTheme = result.customThemeBg;
+        } else {
+            var backgroundTheme = defaultBGColorCustomTheme;
+        }
+
+        if(typeof result.customThemeTexts !== "undefined" && typeof result.customThemeTexts !== null) {
+            var textsColorTheme = result.customThemeTexts;
+        } else {
+            var textsColorTheme = defaultTextsColorCustomTheme;
+        }
+
+        if(typeof result.customThemeLinks !== "undefined" && typeof result.customThemeLinks !== null) {
+            var linksColorTheme = result.customThemeLinks;
+        } else {
+            var linksColorTheme = defaultLinksColorCustomTheme;
+        }
+
+        if(typeof result.customThemeLinksVisited !== "undefined" && typeof result.customThemeLinksVisited !== null) {
+            var linksVisitedColorTheme = result.customThemeLinksVisited;
+        } else {
+            var linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
+        }
+
+        if(typeof result.customThemeFont !== "undefined" && typeof result.customThemeFont !== null && result.customThemeFont.trim() !== "") {
+            var fontTheme = '"' + result.customThemeFont + '"';
+        } else {
+            var fontTheme = defaultFontCustomTheme;
+        }
+
+        if(document.getElementsByTagName('head')[0].contains(style)) { // remove style element
+            document.getElementsByTagName('head')[0].removeChild(style);
+        }
+
+        // append style element
+        document.getElementsByTagName('head')[0].appendChild(style);
+
+        if(style.cssRules) { // remove all rules
+            for(var i=0; i < style.cssRules.length; i++) {
+                style.sheet.deleteRule(i);
+            }
+        }
+
+        // create rules
+        style.sheet.insertRule(".pageShadowContrastBlackCustom { background: #"+ backgroundTheme +" !important; background-image: url(); }", 0);
+        style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) { background-color: #"+ backgroundTheme +" !important; color: #"+ textsColorTheme +" !important; }", 0);
+        style.sheet.insertRule(".pageShadowContrastBlackCustom input { border: 1px solid #"+ textsColorTheme +" !important; }", 0);
+        style.sheet.insertRule(".pageShadowContrastBlackCustom * {  font-family: " + fontTheme + " !important; }", 0);
+        style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg { color: #"+ textsColorTheme +" !important; }", 0);
+        style.sheet.insertRule(".pageShadowContrastBlackCustom a { color: #"+ linksColorTheme +" !important; background-color: #"+ backgroundTheme +" !important; }", 0);
+        style.sheet.insertRule(".pageShadowContrastBlackCustom .pageShadowHasBackgroundColor:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg) { background: #"+ backgroundTheme +" !important; }", 0);
+        style.sheet.insertRule(".pageShadowContrastBlackCustom a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlackCustom #pageShadowLinkVisited { color: #"+ linksVisitedColorTheme +" !important; }", 0);
+    });
+}
