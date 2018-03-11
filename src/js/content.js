@@ -101,7 +101,12 @@
         var elements = document.body.getElementsByTagName(tagName);
         var computedStyle = null;
 
+        if(backgroundDetected <= 0) {
+            document.body.classList.add("pageShadowBackgroundDetected");
+        }
+
         for(var i = 0; i < elements.length; i++) {
+            elements[i].classList.add("pageShadowDisableStyling");
             var computedStyle = window.getComputedStyle(elements[i], null);
 
             if(type == 1 || type == 3 || type == "image" || typeof type === "undefined") {
@@ -121,14 +126,16 @@
                     elements[i].classList.add("pageShadowHasBackgroundColor");
                 }
             }
+
+            elements[i].classList.remove("pageShadowDisableStyling");
+        }
+
+        if(backgroundDetected <= 0) {
+            mutationObserve("backgrounds");
         }
 
         if(typeof add !== "undefined") {
             backgroundDetected += add;
-        }
-
-        if(backgroundDetected >= 2) {
-            document.body.classList.add("pageShadowBackgroundDetected");
         }
     }
 
@@ -319,7 +326,44 @@
                 'childList': true,
                 'characterData': false
             });
+        } else if(type == "backgrounds") {
+            mut_backgrounds = new MutationObserver(function(mutations, mut) {
+                mutations.forEach(function(mutation) {
+                    if(mutation.type == "childList") {
+                        for(var i = 0; i < mutation.addedNodes.length; i++) {
+                            mutationElementsBackgrounds(mutation.addedNodes[i]);
+                        }
+                    } else if(mutation.type == "attributes") {
+                        mutationElementsBackgrounds(mutation.target);
+                    }
+                });
+            });
+
+            mut_backgrounds.observe(document.body, {
+                'attributes': false,
+                'subtree': true,
+                'childList': true,
+                'characterData': false
+            });
         }
+    }
+
+    function mutationElementsBackgrounds(element) {
+        if(typeof(element.classList) === "undefined" || element.classList == null) {
+            return false;
+        }
+
+        element.classList.add("pageShadowDisableStyling");
+
+        var computedStyle = window.getComputedStyle(element, null);
+        var hasBackgroundImg = computedStyle.getPropertyValue("background").substr(0, 4) == "url(" || computedStyle.getPropertyValue("background-image").substr(0, 4) == "url(";
+        var hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
+
+        if(hasBackgroundImg && !hasClassImg) {
+            element.classList.add("pageShadowHasBackgroundImg");
+        }
+
+        element.classList.remove("pageShadowDisableStyling");
     }
 
     function main(type) {
@@ -395,9 +439,9 @@
 
                     if(pageShadowEnabled == "true" || colorInvert == "true") {
                         if(type == "start") {
-                            applyDetectBackground("loading", "*", 1, 3);
+                            applyDetectBackground("loading", "*", 1, 1);
                         } else {
-                            applyDetectBackground(null, "*", 2, 3);
+                            applyDetectBackground(null, "*", 2, 1);
                         }
                     }
                 }
