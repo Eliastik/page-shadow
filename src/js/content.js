@@ -333,16 +333,16 @@
                 mutations.forEach(function(mutation) {
                     if(mutation.type == "childList") {
                         for(var i = 0; i < mutation.addedNodes.length; i++) {
-                            mutationElementsBackgrounds(mutation.addedNodes[i]);
+                            mutationElementsBackgrounds(mutation.addedNodes[i], null);
                         }
                     } else if(mutation.type == "attributes") {
-                        mutationElementsBackgrounds(mutation.target);
+                        mutationElementsBackgrounds(mutation.target, mutation.attributeName);
                     }
                 });
             });
 
             mut_backgrounds.observe(document.body, {
-                'attributes': false,
+                'attributes': true,
                 'subtree': true,
                 'childList': true,
                 'characterData': false
@@ -350,8 +350,8 @@
         }
     }
 
-    function mutationElementsBackgrounds(element) {
-        if(typeof(element.classList) === "undefined" || element.classList == null) {
+    function mutationElementsBackgrounds(element, attribute) {
+        if(typeof(element.classList) === "undefined" || element.classList == null || attribute == "class") {
             return false;
         }
 
