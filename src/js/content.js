@@ -404,7 +404,7 @@
                     return;
                 }
             }
-
+            
             if(result.globallyEnable !== "false") {
                 if(result.sitesInterditPageShadow !== "") {
                     var siteInterdits = result.sitesInterditPageShadow.trim().split("\n");

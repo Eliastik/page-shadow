@@ -127,3 +127,30 @@ function customTheme(style) {
         style.sheet.insertRule(".pageShadowContrastBlackCustom a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlackCustom #pageShadowLinkVisited { color: #"+ linksVisitedColorTheme +" !important; }", 0);
     });
 }
+
+// Callback function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not
+function pageShadowAllowed(func) {
+    chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'globallyEnable'], function (result) {
+        if(result.globallyEnable !== "false") {
+            if(result.sitesInterditPageShadow !== "") {
+                var siteInterdits = result.sitesInterditPageShadow.trim().split("\n");
+            } else {
+                var siteInterdits = "";
+            }
+
+            var websiteUrl = window.location.href;
+            var websuteUrl_tmp = new URL(websiteUrl);
+            var domain = websuteUrl_tmp.hostname;
+
+            if(result.whiteList == "true" && strict_in_array(domain, siteInterdits) == true || result.whiteList !== "true" && strict_in_array(domain, siteInterdits) !== true && strict_in_array(websiteUrl, siteInterdits) !== true) {
+                return func(true);
+            } else {
+                return func(false);
+            }
+        } else {
+            return func(false);
+        }
+
+        return func(false);
+    });
+}
