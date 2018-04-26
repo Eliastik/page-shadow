@@ -124,7 +124,7 @@ label {
     cursor: pointer;
 }
 hr {
-    margin-top: 16px;
+    margin-top: 8px;
     margin-bottom: 8px;
 }
 .m0 {
@@ -146,7 +146,7 @@ hr.nmt {
     margin-top: 1em;
 }
 .well-nmb {
-    margin-bottom: 9px;
+    margin-bottom: 2px;
 }
 #tempSelectDiv {
     display: inline-block;

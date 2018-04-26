@@ -72,6 +72,12 @@ function setSettingItem(name, value) {
         case 'globallyEnable':
             chrome.storage.local.set({'globallyEnable': value});
             break;
+        case 'invertPageColors':
+            chrome.storage.local.set({'invertPageColors': value});
+            break;
+        case 'invertImageColors':
+            chrome.storage.local.set({'invertImageColors': value});
+            break;
         case 'defaultLoad':
             chrome.storage.local.set({'defaultLoad': value});
             break;
@@ -97,7 +103,6 @@ function setFirstSettings() {
     chrome.storage.local.set({
         'pageShadowEnabled': 'false',
         'theme': '1',
-        'colorInvert': 'false',
         'pageLumEnabled': 'false',
         'pourcentageLum': '15',
         'nightModeEnabled': 'false',
@@ -110,6 +115,9 @@ function setFirstSettings() {
         'customThemeLinks': defaultLinksColorCustomTheme,
         'customThemeLinksVisited': defaultVisitedLinksColorCustomTheme,
         'customThemeFont': defaultFontCustomTheme,
+        'colorInvert': 'false',
+        'invertPageColors': 'false',
+        'invertImageColors': 'true',
         'invertEntirePage': 'false',
         'globallyEnable': 'true',
         'customThemeInfoDisable': 'false'

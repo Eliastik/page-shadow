@@ -132,7 +132,7 @@ function customTheme(style) {
 function pageShadowAllowed(func) {
     chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'globallyEnable'], function (result) {
         if(result.globallyEnable !== "false") {
-            if(result.sitesInterditPageShadow !== "") {
+            if(result.sitesInterditPageShadow !== null && typeof(result.sitesInterditPageShadow) !== "undefined" && result.sitesInterditPageShadow !== "") {
                 var siteInterdits = result.sitesInterditPageShadow.trim().split("\n");
             } else {
                 var siteInterdits = "";

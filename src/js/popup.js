@@ -383,16 +383,36 @@ $(document).ready(function() {
     }
 
     function checkColorInvert() {
-        chrome.storage.local.get(["colorInvert", "invertEntirePage"], function (result) {
+        chrome.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage"], function (result) {
             if(result.colorInvert == "true") {
-                $("#entirePageInvertDiv").stop().fadeIn();
+                // Convert old settings to new settings
+                setSettingItem("colorInvert", "false");
+                setSettingItem("invertPageColors", "true");
+                setSettingItem("invertImageColors", "true");
+                checkColorInvert();
+            } else if(result.invertPageColors == "true") {
+                $("#invertPageColorsDiv").stop().fadeIn();
+
                 if($("#checkColorInvert").is(':checked') == false) {
                     $("#checkColorInvert").prop("checked", true);
                 }
+
+                if(result.invertImageColors == "true") {
+                    if($("#checkImageInvert").is(':checked') == false) {
+                        $("#checkImageInvert").prop("checked", true);
+                    }
+                }
             } else {
-                $("#entirePageInvertDiv").stop().fadeOut();
+                $("#invertPageColorsDiv").stop().fadeOut();
+
                 if($("#checkColorInvert").is(':checked') == true) {
                     $("#checkColorInvert").prop("checked", false);
+                }
+
+                if(result.invertImageColors !== "true") {
+                    if($("#checkImageInvert").is(':checked') == true) {
+                        $("#checkImageInvert").prop("checked", false);
+                    }
                 }
             }
 
@@ -406,9 +426,9 @@ $(document).ready(function() {
 
     $("#checkColorInvert").change(function() {
         if($(this).is(':checked') == true) {
-            setSettingItem("colorInvert", "true");
+            setSettingItem("invertPageColors", "true");
         } else {
-            setSettingItem("colorInvert", "false");
+            setSettingItem("invertPageColors", "false");
         }
     });
 
@@ -418,6 +438,15 @@ $(document).ready(function() {
         }
         else {
             setSettingItem("invertEntirePage", "false");
+        }
+    });
+
+    $("#checkImageInvert").change(function() {
+        if($(this).is(':checked') == true) {
+            setSettingItem("invertImageColors", "true");
+        }
+        else {
+            setSettingItem("invertImageColors", "false");
         }
     });
 
