@@ -202,6 +202,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - i18next, MIT license ( https://github.com/i18next/i18next/blob/master/LICENSE ) ;
 - Bootstrap Slider, MIT license ( https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md ) ;
 - Colpick, MIT license/GPL 2.0 ( https://github.com/mrgrain/colpick/blob/master/LICENSE ) ;
+- CodeMirror, MIT license ( https://github.com/codemirror/CodeMirror/blob/master/LICENSE ) ;
 - This extension uses a picture from this site: http://littlevisuals.co , Public domain ( https://creativecommons.org/publicdomain/zero/1.0/ ).
 
 ## Français :
@@ -406,4 +407,5 @@ que ce programme ; si ce n'est pas le cas, consultez <http://www.gnu.org/license
 - i18next, MIT license ( https://github.com/i18next/i18next/blob/master/LICENSE ) ;
 - Bootstrap Slider, MIT license ( https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md ) ;
 - Colpick, MIT license/GPL 2.0 ( https://github.com/mrgrain/colpick/blob/master/LICENSE ) ;
+- CodeMirror, MIT license ( https://github.com/codemirror/CodeMirror/blob/master/LICENSE ) ;
 - Cette extension utilise une photo venant de ce site : http://littlevisuals.co , domaine public ( https://creativecommons.org/publicdomain/zero/1.0/ ).

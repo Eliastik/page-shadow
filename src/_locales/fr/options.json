@@ -87,7 +87,10 @@
             "preview": "Prévisualisation :",
             "previewText": "Un texte.",
             "previewLink": "Un lien.",
-            "previewLinkVisited": "Un lien visité."
+            "previewLinkVisited": "Un lien visité.",
+            "collapseCustomCSS": "Code CSS personnalisé…",
+            "customCSSHelp": "Vous pouvez entrer ci-dessous un code CSS personnalisé qui sera chargé en même temps que le thème personnalisé.",
+            "customCSSHelpExpUsers": "Pour les utilisateurs expérimentés uniquement."
         },
         "saved": {
             "title": "Information",

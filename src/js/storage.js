@@ -78,6 +78,9 @@ function setSettingItem(name, value) {
         case 'invertImageColors':
             chrome.storage.local.set({'invertImageColors': value});
             break;
+        case 'customCSSCode':
+            chrome.storage.local.set({'customCSSCode': value});
+            break;
         case 'defaultLoad':
             chrome.storage.local.set({'defaultLoad': value});
             break;
@@ -120,7 +123,8 @@ function setFirstSettings() {
         'invertImageColors': 'true',
         'invertEntirePage': 'false',
         'globallyEnable': 'true',
-        'customThemeInfoDisable': 'false'
+        'customThemeInfoDisable': 'false',
+        'customCSSCode': ''
     });
 }
 

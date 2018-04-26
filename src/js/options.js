@@ -81,7 +81,7 @@ function resetSettings() {
     $('#reset').modal("show");
 }
 function displaySettings() {
-    chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont'], function (result) {
+    chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'customCSSCode'], function (result) {
         if(typeof result.sitesInterditPageShadow !== "undefined" && typeof result.sitesInterditPageShadow !== null) {
             $("#textareaAssomPage").val(result.sitesInterditPageShadow);
         }
@@ -159,6 +159,12 @@ function displaySettings() {
             $("#customThemeFont").val(defaultFontCustomTheme);
             $("#previsualisationDiv").css("font-family", defaultFontCustomTheme);
         }
+
+        if(typeof result.customCSSCode !== "undefined" && typeof result.customCSSCode !== null && result.customCSSCode.trim() !== "") {
+            codeMirrorUserCSS.getDoc().setValue(result.customCSSCode);
+        } else {
+            codeMirrorUserCSS.getDoc().setValue('/* Example - Add a blue border around the page:\nbody {\n\tborder: 2px solid blue;\n} */');
+        }
     });
 }
 $(document).ready(function() {
@@ -169,7 +175,9 @@ $(document).ready(function() {
         setSettingItem("customThemeLinks", $("#colorpicker3").attr("value"));
         setSettingItem("customThemeLinksVisited", $("#colorpicker4").attr("value"));
         setSettingItem("customThemeFont", $("#customThemeFont").val());
-        console.log($("#customThemeFont").val());
+
+        codeMirrorUserCSS.save();
+        setSettingItem("customCSSCode", $("#codeMirrorUserCSSTextarea").val());
 
         chrome.storage.local.get('whiteList', function (result) {
             if($("#checkWhiteList").prop("checked") == true) {
@@ -224,8 +232,6 @@ $(document).ready(function() {
     $("#versionExtension").text(extensionVersion);
     $("#updateBtn").attr("href", "http://www.eliastiksofts.com/page-shadow/update.php?v="+ extensionVersion);
 
-    displaySettings();
-
     if(typeof(chrome.storage.onChanged) !== 'undefined') {
         chrome.storage.onChanged.addListener(function() {
             displaySettings();
@@ -276,11 +282,20 @@ $(document).ready(function() {
         }
     });
 
-    $("#customThemeFont").change(function() {
+    $("#customThemeFont").on("input", function() {
         if($("#customThemeFont").val().trim() !== "") {
             $("#previsualisationDiv").css("font-family", '"' + $("#customThemeFont").val() + '"');
         } else {
             $("#previsualisationDiv").css("font-family", '');
         }
     });
+
+    codeMirrorUserCSS = CodeMirror.fromTextArea(document.getElementById("codeMirrorUserCSSTextarea"), {
+        lineNumbers: true,
+        mode: "css",
+        theme: "material",
+        autoRefresh: true
+    });
+
+    displaySettings();
 });

@@ -145,6 +145,10 @@ hr.nmt {
 .mt {
     margin-top: 1em;
 }
+.pnm {
+    padding: 8px;
+    margin: 0 !important;
+}
 .well-nmb {
     margin-bottom: 2px;
 }

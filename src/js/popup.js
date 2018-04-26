@@ -55,6 +55,7 @@ $(document).ready(function() {
     document.body.appendChild(elLumB);
     var style = document.createElement('style');
     style.type = 'text/css';
+    var lnkCustomTheme = document.createElement('link');
     var brightnessChangedFromThisPage = false;
     if(typeof(themeTranslation) === "undefined") themeTranslation = "Theme";
 
@@ -379,7 +380,7 @@ $(document).ready(function() {
     });
 
     function checkCustomTheme() {
-        customTheme(style);
+        customTheme(style, true, lnkCustomTheme);
     }
 
     function checkColorInvert() {

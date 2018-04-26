@@ -106,7 +106,7 @@ function menu() {
                     }
                 }
             });
-            
+
             if(result.globallyEnable == "false") {
                 createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], true);
             } else {

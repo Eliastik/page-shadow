@@ -71,8 +71,10 @@ function getUImessage(id) {
     return chrome.i18n.getMessage(id);
 }
 
-function customTheme(style) {
-    chrome.storage.local.get(['customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont'], function (result) {
+function customTheme(style, disableCustomCSS, lnkCssElement) {
+    var disableCustomCSS = disableCustomCSS || false;
+
+    chrome.storage.local.get(['customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'customCSSCode'], function (result) {
         if(typeof result.customThemeBg !== "undefined" && typeof result.customThemeBg !== null) {
             var backgroundTheme = result.customThemeBg;
         } else {
@@ -107,16 +109,16 @@ function customTheme(style) {
             document.getElementsByTagName('head')[0].removeChild(style);
         }
 
-        // append style element
+        // Append style element
         document.getElementsByTagName('head')[0].appendChild(style);
 
-        if(style.cssRules) { // remove all rules
+        if(style.cssRules) { // Remove all rules
             for(var i=0; i < style.cssRules.length; i++) {
                 style.sheet.deleteRule(i);
             }
         }
 
-        // create rules
+        // Create rules
         style.sheet.insertRule(".pageShadowContrastBlackCustom { background: #"+ backgroundTheme +" !important; background-image: url(); }", 0);
         style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) { background-color: #"+ backgroundTheme +" !important; color: #"+ textsColorTheme +" !important; }", 0);
         style.sheet.insertRule(".pageShadowContrastBlackCustom input { border: 1px solid #"+ textsColorTheme +" !important; }", 0);
@@ -125,6 +127,16 @@ function customTheme(style) {
         style.sheet.insertRule(".pageShadowContrastBlackCustom a { color: #"+ linksColorTheme +" !important; background-color: #"+ backgroundTheme +" !important; }", 0);
         style.sheet.insertRule(".pageShadowContrastBlackCustom.pageShadowBackgroundDetected *:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling) { background: #"+ backgroundTheme +" !important; }", 0);
         style.sheet.insertRule(".pageShadowContrastBlackCustom a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlackCustom #pageShadowLinkVisited { color: #"+ linksVisitedColorTheme +" !important; }", 0);
+
+        // Custom CSS
+        if(disableCustomCSS !== true && typeof result.customCSSCode !== "undefined" && typeof result.customCSSCode !== null && result.customCSSCode.trim() !== "") {
+            lnkCssElement.setAttribute('rel', 'stylesheet');
+            lnkCssElement.setAttribute('type', 'text/css');
+            lnkCssElement.setAttribute('id', 'pageShadowCustomCSS');
+            lnkCssElement.setAttribute('name', 'pageShadowCustomCSS');
+            lnkCssElement.setAttribute('href', 'data:text/css;charset=UTF-8,' + encodeURIComponent(result.customCSSCode));
+            document.getElementsByTagName('head')[0].appendChild(lnkCssElement);
+        }
     });
 }
 

@@ -11,23 +11,23 @@ var sequence = require('run-sequence');
 var fs = require('fs');
 
 gulp.task('clean', function() {
-	return gulp.src('./build/*', {read: false})
-		.pipe(clean());
+    return gulp.src('./build/*', {read: false})
+        .pipe(clean());
 });
 
 gulp.task('clean-directories', function() {
-	gulp.src('./build/chrome/*', {read: false})
-		.pipe(clean());
+    gulp.src('./build/chrome/*', {read: false})
+        .pipe(clean());
     gulp.src('./build/edge/*', {read: false})
-		.pipe(clean());
+        .pipe(clean());
     gulp.src('./build/firefox/*', {read: false})
-		.pipe(clean());
+        .pipe(clean());
     return gulp.src('./build/global/*', {read: false})
-		.pipe(clean());
+        .pipe(clean());
 });
 
 gulp.task('copy-global', function() {
-	return gulp.src(['./src/**', '!./src/img/src/**', '!./src/img/icon_old.png', '!./src/css/src/**', '!./src/css/*.less', '!./src/css/content_old.css'])
+    return gulp.src(['./src/**', '!./src/img/src/**', '!./src/img/icon_old.png', '!./src/css/src/**', '!./src/css/*.less', '!./src/css/content_old.css'])
         .pipe(gulp.dest('./build/global/'));
 });
 
@@ -56,7 +56,7 @@ gulp.task('compress-js', function () {
 });
 
 gulp.task('copyChrome', function() {
-	return gulp.src(['./build/global/**', './manifests/chrome/**/*'])
+    return gulp.src(['./build/global/**', './manifests/chrome/**/*'])
         .pipe(gulp.dest('./build/chrome/'));
 });
 
@@ -71,10 +71,10 @@ gulp.task('copyFirefox', function() {
 });
 
 gulp.task('build', function() {
-	var manifestChrome = require('./manifests/chrome/manifest.json'),
-	    manifestEdge = require('./manifests/edge/manifest.json'),
-	    manifestFirefox = require('./manifests/firefox/manifest.json'),
-		distFileName = manifestChrome.name + ' v' + manifestChrome.version;
+    var manifestChrome = require('./manifests/chrome/manifest.json'),
+        manifestEdge = require('./manifests/edge/manifest.json'),
+        manifestFirefox = require('./manifests/firefox/manifest.json'),
+        distFileName = manifestChrome.name + ' v' + manifestChrome.version;
     var codebase = manifestChrome.codebase;
     gulp.src("build/firefox/**/**/*")
         .pipe(zip(distFileName + '.xpi'))

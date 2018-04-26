@@ -30,6 +30,11 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
         <script type="text/javascript" src="js/jquery-i18next.min.js"></script>
         <script type="text/javascript" src="js/i18nextBrowserLanguageDetector.min.js"></script>
         <script type="text/javascript" src="js/i18nextXHRBackend.min.js"></script>
+        <script type="text/javascript" src="js/codemirror/codemirror.js"></script>
+        <script type="text/javascript" src="js/codemirror/autorefresh.js"></script>
+        <link rel="stylesheet" href="css/codemirror/codemirror.css" type="text/css" />
+        <link rel="stylesheet" href="css/codemirror/material.css" type="text/css" />
+        <script type="text/javascript" src="js/codemirror/css.js"></script>
         <script type="text/javascript" src="js/util.js"></script>
         <script type="text/javascript" src="js/storage.js"></script>
         <script type="text/javascript" src="js/colpick.js"></script>
@@ -317,6 +322,19 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 <label for="customThemeFont" class="col-lg-4 control-label bold" data-i18n="modal.customTheme.font"></label>
                                 <div class="col-lg-6">
                                     <input type="text" id="customThemeFont" name="customThemeFont" data-i18n="[placeholder]modal.customTheme.placeholderFont"></input> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]modal.customTheme.fontHelp"></i>
+                                </div>
+                            </div>
+                            <div class="panel-group" id="accordionCustomCSS">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordionCustomCSS" href="#collapseCustomCSS"><i class="fa fa-fw fa-code" aria-hidden="true"></i> <span data-i18n="modal.customTheme.collapseCustomCSS"></span> </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseCustomCSS" class="panel-collapse collapse">
+                                        <p class="pnm"><span data-i18n="modal.customTheme.customCSSHelp"></span> <strong data-i18n="modal.customTheme.customCSSHelpExpUsers"></strong></p>
+                                        <textarea id="codeMirrorUserCSSTextarea" style="width: 100%; height: 300px;"></textarea>
+                                    </div>
                                 </div>
                             </div>
                         </form>

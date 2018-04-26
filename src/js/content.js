@@ -31,6 +31,7 @@
 
     var style = document.createElement('style');
     style.type = 'text/css';
+    var lnkCustomTheme = document.createElement('link');
     var backgroundDetected = 0;
     var timeOutLum, timeOutAP, timeOutIC, timeOutBI;
     var elLum = document.createElement("div");
@@ -67,7 +68,7 @@
     }
 
     function customThemeApply() {
-        customTheme(style);
+        customTheme(style, false, lnkCustomTheme);
     }
 
     function invertColor(enabled, invertImageColors, invertEntirePage) {
@@ -398,6 +399,7 @@
             if(typeof mut_contrast !== 'undefined') mut_contrast.disconnect();
             if(typeof mut_invert !== 'undefined') mut_invert.disconnect();
             if(typeof mut_brightness !== 'undefined') mut_brightness.disconnect();
+            if(typeof lnkCustomTheme !== 'undefined') lnkCustomTheme.setAttribute('href', '');
 
             if(type == "reset" || type == "onlyreset") {
                 document.body.classList.remove("pageShadowInvertImageColor");
