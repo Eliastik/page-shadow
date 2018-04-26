@@ -3,6 +3,7 @@
 var gulp = require('gulp');
 var clean = require('gulp-clean');
 var cleanCss = require('gulp-clean-css');
+var less = require('gulp-less');
 var minify = require('gulp-minify');
 var zip = require('gulp-zip');
 var crx = require('gulp-crx-pack');
@@ -26,8 +27,14 @@ gulp.task('clean-directories', function() {
 });
 
 gulp.task('copy-global', function() {
-	return gulp.src(['./src/**', '!./src/img/src/**', '!./src/img/icon_old.png', '!./src/css/src/**'])
+	return gulp.src(['./src/**', '!./src/img/src/**', '!./src/img/icon_old.png', '!./src/css/src/**', '!./src/css/*.less', '!./src/css/content_old.css'])
         .pipe(gulp.dest('./build/global/'));
+});
+
+gulp.task('compile-less', function () {
+    return gulp.src('./src/css/*.less')
+        .pipe(less())
+        .pipe(gulp.dest('./build/global/css/'));
 });
 
 gulp.task('compress-css', function () {
@@ -88,21 +95,21 @@ gulp.task('build', function() {
 });
 
 gulp.task('build-dev', function() {
-    sequence('clean', 'copy-global', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
+    sequence('clean', 'copy-global', 'compile-less', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
 });
 
 gulp.task('default', ['build-dev']);
 
 gulp.task('build-prod', function() {
-    sequence('clean', 'copy-global', 'compress-css', 'compress-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
+    sequence('clean', 'copy-global', 'compile-less', 'compress-css', 'compress-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
 });
 
 gulp.task('build-prod-no-js-compress', function() {
-    sequence('clean', 'copy-global', 'compress-css', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
+    sequence('clean', 'copy-global', 'compile-less', 'compress-css', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
 });
 
 gulp.task('build-prod-no-css-compress', function() {
-    sequence('clean', 'copy-global', 'compress-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
+    sequence('clean', 'copy-global', 'compile-less', 'compress-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories');
 });
 
 gulp.task('clean-build', ['clean']);

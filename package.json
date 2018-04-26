@@ -14,8 +14,12 @@
     "gulp-clean": "^0.3.2",
     "gulp-clean-css": "^3.9.0",
     "gulp-crx-pack": "^1.0.1",
+    "gulp-less": "^4.0.0",
     "gulp-minify": "^1.0.0",
     "gulp-zip": "^4.0.0",
     "run-sequence": "^1.2.2"
+  },
+  "dependencies": {
+    "npm": "^5.8.0"
   }
 }

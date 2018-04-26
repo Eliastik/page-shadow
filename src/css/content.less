@@ -1,0 +1,226 @@
+/* Page Shadow
+ *
+ * Copyright (C) 2015-2018 Eliastik (eliastiksofts.com)
+ *
+ * This file is part of Page Shadow.
+ *
+ * Page Shadow is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Page Shadow is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+
+@bgcolors: black, #142634, #222, #263238, #333a49, #020315, #192338, #1A1A1A, #1d4e6d, #272822, white, #002b36, #000D00, #272822, #2e3436; // Colors of the backgrounds
+@txtcolors: #AAA, #BDC7C1, #AAA, #C3CEE3, #dfcbd3, #b9cace, #6f9bb0, #FFFFB3, #BED6FF, #39B7FF, black, #b58901, #00ca00, #91e22d, #d2dde3; // Colors of the texts
+@lnkcolors: #1E90FF, #7288D4, #21C7AC, #C792EA, #FB77A6, #d0a00c, #978FCC, #A6A6FF, #F7A92C, #52D252, #CC4A00, #1783d2, #1e90ff, #65d9ef, #6792bf; // Colors of the links
+@visitedlnkcolors: #FF00FF, #BC72D4, #996DF2, #92BEEA, #BD8EF0, #9FD00C, #8FCCAE, #E9A6FF, #B3F72C, #D2D252, #6CD96C, #A471F8, #9F4AF4, #7165EF, #7667BF; // Colors of the visited links
+@selectbgcolors: grey, grey, grey, grey, grey, grey, grey, grey, grey, grey, #424242, grey, grey, grey, grey; // Colors of the background of the select elements
+@selectxtcolors: black, black, black, black, black, black, black, black, black, black, black, black, black, black, black; // Colors of the text of the select elements
+@insbgcolors: green, green, green, green, green, green, green, green, green, green, #FF7FFF, green, green, green, green; // Colors of the background of the ins elements
+@instxtcolors: white, white, white, white, white, white, white, white, white, white, black, white, white, white, white; // Colors of the texts of the ins elements
+@delbgcolors: red, red, red, red, red, red, red, red, red, red, #00FFFF, red, red, red, red; // Colors of the background of the del elements
+@deltxtcolors: white, white,  white,  white,  white,  white,  white,  white,  white, white, black, white, white, white, white; // Colors of the texts of the del elements
+@markbgcolors: orange, orange, orange, orange, orange, orange, orange, orange, orange, orange, #005AFF, orange, orange, orange, orange; // Colors of the background of the mark elements
+@marktxtcolors: black, black, black, black, black, black, black, black, black, black, white, black, black, black, black; // Colors of the texts of the mark elements
+@imgbgcolors: #BDBDBD, #BDBDBD, #BDBDBD, #BDBDBD, #BDBDBD, #BDBDBD, #BDBDBD, #BDBDBD, #BDBDBD, #BDBDBD, #424242, #BDBDBD, #BDBDBD, #BDBDBD, #BDBDBD; // Colors of the background of the images
+@nbthemes: 15; // NB of themes
+@colortempsnames: 1000, 1200, 1500, 1800, 2000, 2200, 2600, 2900, 3100, 3600; // Name of the color temperatures (in Kelvin)
+@colortemps: rgb(255,51,0), rgb(255,82,0), rgb(255,111,0), rgb(255,126,0), rgb(255,137,18), rgb(255,147,44), rgb(255,165,79), rgb(255,177,101), rgb(255,184,114), rgb(255,199,143); // Color temperatures in RGB
+@nbcolortemps: 10; // NB of color temperatures
+
+/* Colors themes */
+.loopThemes(@i) when (@i =< @nbthemes) {
+    @bgcolor: extract(@bgcolors, @i);
+    @txtcolor: extract(@txtcolors, @i);
+    @lnkcolor: extract(@lnkcolors, @i);
+    @visitedlnkcolor: extract(@visitedlnkcolors, @i);
+    @selectbgcolor: extract(@selectbgcolors, @i);
+    @selectxtcolor: extract(@selectxtcolors, @i);
+    @insbgcolor: extract(@insbgcolors, @i);
+    @instxtcolor: extract(@instxtcolors, @i);
+    @delbgcolor: extract(@delbgcolors, @i);
+    @deltxtcolor: extract(@deltxtcolors, @i);
+    @markbgcolor: extract(@markbgcolors, @i);
+    @marktxtcolor: extract(@marktxtcolors, @i);
+    @imgbgcolor: extract(@imgbgcolors, @i);
+
+    .if(@i) when (@i = 1) {
+        @name: ~"";
+        .themes(@i, @name, @bgcolor, @txtcolor, @lnkcolor, @visitedlnkcolor, @selectbgcolor, @selectxtcolor, @insbgcolor, @instxtcolor, @delbgcolor, @deltxtcolor, @markbgcolor, @marktxtcolor, @imgbgcolor);
+    }
+
+    .if(@i) when (@i > 1) {
+        @name: @i;
+        .themes(@i, @name, @bgcolor, @txtcolor, @lnkcolor, @visitedlnkcolor, @selectbgcolor, @selectxtcolor, @insbgcolor, @instxtcolor, @delbgcolor, @deltxtcolor, @markbgcolor, @marktxtcolor, @imgbgcolor);
+    }
+
+    .if(@i);
+
+    .loopThemes(@i + 1);
+}
+
+.loopThemes(1);
+
+.themes(@i, @name, @bgcolor, @txtcolor, @lnkcolor, @visitedlnkcolor, @selectbgcolor, @selectxtcolor, @insbgcolor, @instxtcolor, @delbgcolor, @deltxtcolor, @markbgcolor, @marktxtcolor, @imgbgcolor) {
+    .pageShadowContrastBlack@{name} {
+        background: @bgcolor !important;
+        background-image: url();
+    }
+    .pageShadowContrastBlack@{name} *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+        background-color: @bgcolor !important;
+        color: @txtcolor !important;
+    }
+    .pageShadowContrastBlack@{name} :not(.pageShadowInvertImageColor) svg {
+        color: @txtcolor !important;
+    }
+    .pageShadowContrastBlack@{name} select {
+        background-color: @selectbgcolor !important;
+        color: @selectxtcolor !important;
+    }
+    .pageShadowContrastBlack@{name} input {
+        border: 1px solid @txtcolor !important;
+    }
+    .pageShadowContrastBlack@{name} ins {
+        background-color: @insbgcolor !important;
+        color: @instxtcolor !important;
+    }
+    .pageShadowContrastBlack@{name} del {
+        background-color: @delbgcolor !important;
+        color: @deltxtcolor !important;
+    }
+    .pageShadowContrastBlack@{name} mark {
+        background-color: @markbgcolor !important;
+        color: @marktxtcolor !important;
+    }
+    .pageShadowContrastBlack@{name} a {
+        color: @lnkcolor !important;
+        background-color: @bgcolor !important;
+    }
+    .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected *:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling) {
+        background: @bgcolor !important;
+    }
+    .pageShadowContrastBlack@{name} a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack@{name} #pageShadowLinkVisited {
+        color: @visitedlnkcolor !important;
+    }
+    .pageShadowContrastBlack@{name} img {
+        background-color: @imgbgcolor !important;
+    }
+    .pageShadowContrastBlack@{name} .pageShadowHasBackgroundImg {
+        background-color: transparent !important;
+    }
+}
+
+/* Color temperatures */
+.loopColorTemps(@i) when (@i =< @nbcolortemps) {
+    @colortempname: extract(@colortempsnames, @i);
+    @colortemp: extract(@colortemps, @i);
+
+    .colorTemps(@colortempname, @colortemp);
+
+    .loopColorTemps(@i + 1);
+}
+
+.loopColorTemps(1);
+
+.colorTemps(@colortempname, @colortemp) {
+    div#pageShadowLuminositeDivNightMode.k@{colortempname} {
+        background-color: @colortemp !important;
+    }
+}
+
+/* Custom theme */
+.pageShadowContrastBlackCustom select {
+    background-color: grey !important;
+    color: black !important;
+}
+.pageShadowContrastBlackCustom ins {
+    background-color: green !important;
+    color: white !important;
+}
+.pageShadowContrastBlackCustom del {
+    background-color: red !important;
+    color: white !important;
+}
+.pageShadowContrastBlackCustom mark {
+    background-color: orange !important;
+    color: dark !important;
+}
+.pageShadowContrastBlackCustom img {
+    background-color: #BDBDBD !important;
+}
+.pageShadowContrastBlackCustom .pageShadowHasBackgroundImg {
+    background-color: transparent !important;
+}
+
+/* Color invert */
+html.pageShadowBackground {
+    background: black !important;
+}
+body.pageShadowInvertEntirePage {
+    filter: invert(100%) !important;
+    -moz-filter: invert(100%) !important;
+    -o-filter: invert(100%) !important;
+    -webkit-filter: invert(100%) !important;
+    background-color: transparent !important;
+}
+body.pageShadowInvertEntirePage div#pageShadowLuminositeDiv, body.pageShadowInvertEntirePage div#pageShadowLuminositeDivNightMode {
+    filter: invert(100%) !important;
+    -moz-filter: invert(100%) !important;
+    -o-filter: invert(100%) !important;
+    -webkit-filter: invert(100%) !important;
+}
+body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg) img, body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg) svg {
+    filter: invert(100%);
+    -moz-filter: invert(100%);
+    -o-filter: invert(100%);
+    -webkit-filter: invert(100%);
+    background-color: transparent !important;
+}
+body.pageShadowInvertImageColor .pageShadowHasBackgroundImg {
+    filter: invert(100%);
+    -moz-filter: invert(100%);
+    -o-filter: invert(100%);
+    -webkit-filter: invert(100%);
+    background-color: transparent !important;
+}
+body.pageShadowInvertImageColor .pageShadowHasBackgroundImg > * {
+    filter: invert(100%);
+    -moz-filter: invert(100%);
+    -o-filter: invert(100%);
+    -webkit-filter: invert(100%);
+    background-color: transparent !important;
+}
+
+/* Brightness */
+div#pageShadowLuminositeDiv {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: black !important;
+    min-height: 100%;
+    min-width: 100%;
+    height: auto;
+    z-index: 2147483647;
+    margin: 0 !important;
+    padding: 0 !important;
+    pointer-events: none;
+}
+div#pageShadowLuminositeDivNightMode {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-height: 100%;
+    min-width: 100%;
+    height: auto;
+    z-index: 2147483647;
+    margin: 0 !important;
+    padding: 0 !important;
+    pointer-events: none;
+}
