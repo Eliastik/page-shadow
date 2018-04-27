@@ -22,6 +22,8 @@
         "percentage": "Pourcentage de baisse de luminosité :",
         "nightMode": "Mode nuit",
         "tileNightMode": "Applique un filtre orangé sur la page afin de réduire la lumière bleue émise par l'écran.",
+        "autoEnable": "Activer/désactiver automatiquement",
+        "titleAutoEnable": "Activer ou désactiver globalement Page Shadow de manière automatique en fonction de l'heure. Sélectionnez l'icône roue dentée afin de régler cette fonction.",
         "liveSettings": "Appliquer les paramètres en temps réel",
         "titleLiveSettings": "Peut réduire les performances du navigateur.",
         "tempSelect": "Temp. :",
@@ -33,6 +35,23 @@
         "customThemeInfoDisable": "Ne plus afficher",
         "close": "Fermer",
         "AdvSettings": "Paramètres avancés"
+    },
+    "modalAutoEnable": {
+        "autoEnableSettingsTitle": "Paramètres",
+        "description": "Ici vous pouvez paramétrer les horaires de l'activation et la désactivation automatique de Page Shadow.",
+        "saveInfo": "N'oubliez pas de cliquer sur Valider pour enregistrer vos paramètres !",
+        "formatHour": "Format de l'heure :",
+        "12hours": "12 heures",
+        "24hours": "24 heures",
+        "hourEnable": "Heure d'activation :",
+        "hourDisable": "Heure de désactivation :",
+        "infoTimeEnabled": "D'après les paramètres saisis, Page Shadow devrait actuellement être activé.",
+        "infoTimeDisabled": "D'après les paramètres saisis, Page Shadow devrait actuellement être désactivé.",
+        "validate": "Valider",
+        "cancel": "Annuler",
+        "savedTitle": "Information",
+        "savedMessage": "Paramètres sauvegardés !",
+        "ok": "OK"
     },
     "footer": {
         "advancedSettings": "Paramètres avancés",

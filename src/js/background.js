@@ -16,6 +16,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+if(typeof(window["defaultHourEnable"]) == "undefined") defaultHourEnable = "20";
+if(typeof(window["defaultMinuteEnable"]) == "undefined") defaultMinuteEnable = "0";
+if(typeof(window["defaultHourDisable"]) == "undefined") defaultHourDisable = "7";
+if(typeof(window["defaultMinuteDisable"]) == "undefined") defaultMinuteDisable = "0";
+var autoEnableActivated = false;
+var lastAutoEnableDetected = false;
+
 function setPopup() {
     if(typeof(chrome.browserAction.setPopup) !== 'undefined') {
         chrome.browserAction.setPopup({
@@ -128,24 +135,89 @@ function updateMenu() {
     menu();
 }
 
+function updateBadge() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        pageShadowAllowed(tabs[0].url, function(enabled) {
+            if(typeof(chrome.browserAction.setBadgeText) !== 'undefined') {
+                chrome.browserAction.setBadgeText({
+                    text: " "
+                });
+            }
+
+
+            if(typeof(chrome.browserAction.setBadgeBackgroundColor) !== 'undefined') {
+                if(enabled) {
+                    chrome.browserAction.setBadgeBackgroundColor({
+                        color: "#2ecc71"
+                    });
+                } else {
+                    chrome.browserAction.setBadgeBackgroundColor({
+                        color: "#e74c3c"
+                    });
+                }
+            }
+        });
+    });
+}
+
+function checkAutoEnable() {
+    if(autoEnableActivated) {
+        getAutoEnableSavedData(function(data) {
+            var enabled = checkAutoEnableStartup(data[6], data[4], data[7], data[5]);
+            
+            if(enabled && !lastAutoEnableDetected) {
+                setSettingItem("globallyEnable", "true");
+                var lastAutoEnableDetected = true;
+            } else if(!enabled && lastAutoEnableDetected) {
+                setSettingItem("globallyEnable", "false");
+                var lastAutoEnableDetected = false;
+            }
+        });
+    }
+}
+
+function autoEnable() {
+    chrome.storage.local.get("autoEnable", function (result) {
+        if(result.autoEnable == "true") {
+            autoEnableActivated = true;
+            checkAutoEnable();
+        } else {
+            autoEnableActivated = false;
+            checkAutoEnable();
+        }
+    });
+}
+
 setPopup();
 menu();
+updateBadge();
+autoEnable();
+var intervalCheckAutoEnable = setInterval(function() { checkAutoEnable(); }, 1000);
 
 if(typeof(chrome.storage.onChanged) !== 'undefined') {
     chrome.storage.onChanged.addListener(function() {
         menu();
+        updateBadge();
     });
 }
 
 if(typeof(chrome.tabs.onActivated) !== 'undefined') {
     chrome.tabs.onActivated.addListener(function() {
         menu();
+        updateBadge();
     });
 }
 
 if(typeof(chrome.tabs.onUpdated) !== 'undefined') {
     chrome.tabs.onUpdated.addListener(function() {
         menu();
+        updateBadge();
+    });
+}
+
+if(typeof(chrome.storage.onChanged) !== 'undefined') {
+    chrome.storage.onChanged.addListener(function() {
+        autoEnable();
     });
 }
 

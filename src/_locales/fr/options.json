@@ -6,7 +6,8 @@
         "actual": "(actuel)"
     },
     "container": {
-        "description": "Ici, vous pouvez définir certains paramètres avancés ou consulter les informations sur l'extension. N'oubliez pas de cliquer sur Valider pour sauvegarder vos paramètres !",
+        "description": "Ici, vous pouvez définir certains paramètres avancés ou consulter les informations sur l'extension.",
+        "saveInfo": "N'oubliez pas de cliquer sur Valider pour sauvegarder vos paramètres !",
         "about": "À propos de Page Shadow",
         "update": "Rechercher une mise à jour",
         "labelLanguage": "Langue :",
@@ -76,7 +77,8 @@
         },
         "customTheme": {
             "title": "Paramètres du thème personnalisé",
-            "description": "Ici, vous pouvez paramétrer votre thème personnalisé. Pour modifier les couleurs du thème, cliquez sur les cercles colorés et choisissez une couleur. Pour valider vos paramètres, fermez cette fenêtre et cliquez sur le bouton « Valider » présent en bas de cette page.",
+            "description": "Ici, vous pouvez paramétrer votre thème personnalisé. Pour modifier les couleurs du thème, cliquez sur les cercles colorés et choisissez une couleur.",
+            "saveInfo": "Pour sauvegarder vos paramètres, fermez cette fenêtre et cliquez sur le bouton « Valider » présent en bas de cette page.",
             "background": "Couleur de fond :",
             "texts": "Couleur des textes :",
             "links": "Couleur des liens :",

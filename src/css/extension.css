@@ -71,7 +71,7 @@ body.popup > .navbar {
     max-width: none;
     width: auto;
 }
-.helpIcon {
+.helpIcon, .settingIcon {
     font-size: 24px;
     cursor: pointer;
     vertical-align: middle;
@@ -130,6 +130,9 @@ hr {
 .m0 {
     margin-bottom: 0;
 }
+.m6 {
+    margin-bottom: 6px;
+}
 .div-inline {
     display: inline-block;
 }
@@ -150,7 +153,7 @@ hr.nmt {
     margin: 0 !important;
 }
 .well-nmb {
-    margin-bottom: 2px;
+    margin-bottom: 0;
 }
 #tempSelectDiv {
     display: inline-block;
@@ -174,6 +177,9 @@ hr.nmt {
     vertical-align: middle;
 }
 /* Switchs (source : https://bootsnipp.com/snippets/ZlQ32 ) */
+.checkbox-switch {
+    display: inline-block;
+}
 .checkbox-switch > input[type="checkbox"] {
     display: none;
 }
@@ -226,4 +232,25 @@ hr.nmt {
 div.navbar-right {
     float: right;
     padding-right: 15px;
+}
+.link-auto-enable {
+    margin: 0 !important;
+    margin-left: 8px !important;
+    color: white;
+    font-size: 14pt;
+}
+.timeInput {
+    width: 45px;
+}
+.red {
+    color: red;
+}
+.green {
+    color: green;
+}
+.hourFormat {
+    width: 100%;
+}
+.hourFormatAMPM {
+    width: 32px;
 }

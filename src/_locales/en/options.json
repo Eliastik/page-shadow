@@ -6,7 +6,8 @@
         "actual": "(current)"
     },
     "container": {
-        "description": "Here, you can define some advanced settings or consult informations about the extension. Don't forget to click on Confirm to save your settings!",
+        "description": "Here, you can define some advanced settings or consult informations about the extension.",
+        "saveInfo": "Don't forget to click on Confirm to save your settings!",
         "about": "About Page Shadow",
         "update": "Search update",
         "labelLanguage": "Language:",
@@ -77,7 +78,8 @@
         },
         "customTheme": {
             "title": "Custom theme settings",
-            "description": "Here, you can set your custom theme. To change the colors of the theme, click on the colored circles and choose a color. To confirm your settings, close this window and click on the button \"Confirm\" present at the bottom of this page.",
+            "description": "Here, you can set your custom theme. To change the colors of the theme, click on the colored circles and choose a color.",
+            "saveInfo": "To save your settings, close this window and click on the button \"Confirm\" present at the bottom of this page.",
             "background": "Background color:",
             "texts": "Texts color:",
             "links": "Links color:",

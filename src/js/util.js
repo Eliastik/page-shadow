@@ -28,6 +28,13 @@ var defaultTextsColorCustomTheme = "FFFFFF";
 var defaultLinksColorCustomTheme = "1E90FF";
 var defaultVisitedLinksColorCustomTheme = "ff00ff";
 var defaultFontCustomTheme = "";
+var defaultAutoEnableHourFormat = "24";
+var defaultHourEnable = "20";
+var defaultMinuteEnable = "0";
+var defaultHourEnableFormat = "PM";
+var defaultHourDisable = "7";
+var defaultMinuteDisable = "0";
+var defaultHourDisableFormat = "AM";
 // End of the global configuration of the extension
 
 function in_array(needle, haystack) {
@@ -141,7 +148,7 @@ function customTheme(style, disableCustomCSS, lnkCssElement) {
 }
 
 // Callback function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not
-function pageShadowAllowed(func) {
+function pageShadowAllowed(url, func) {
     chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'globallyEnable'], function (result) {
         if(result.globallyEnable !== "false") {
             if(result.sitesInterditPageShadow !== null && typeof(result.sitesInterditPageShadow) !== "undefined" && result.sitesInterditPageShadow !== "") {
@@ -150,11 +157,10 @@ function pageShadowAllowed(func) {
                 var siteInterdits = "";
             }
 
-            var websiteUrl = window.location.href;
-            var websuteUrl_tmp = new URL(websiteUrl);
+            var websuteUrl_tmp = new URL(url);
             var domain = websuteUrl_tmp.hostname;
 
-            if(result.whiteList == "true" && strict_in_array(domain, siteInterdits) == true || result.whiteList !== "true" && strict_in_array(domain, siteInterdits) !== true && strict_in_array(websiteUrl, siteInterdits) !== true) {
+            if(result.whiteList == "true" && strict_in_array(domain, siteInterdits) == true || result.whiteList !== "true" && strict_in_array(domain, siteInterdits) !== true && strict_in_array(url, siteInterdits) !== true) {
                 return func(true);
             } else {
                 return func(false);
@@ -165,4 +171,128 @@ function pageShadowAllowed(func) {
 
         return func(false);
     });
+}
+
+function hourToPeriodFormat(value, convertTo, format) {
+    if(typeof(value) === "string") var value = parseInt(value);
+
+    if(convertTo == 12) {
+        var ampm = value >= 12 ? 'PM' : 'AM';
+        var hours = value % 12;
+        var hours = hours ? hours : 12;
+
+        return [ampm, hours.toString()];
+    } else if(convertTo == 24) {
+        if(format == "PM") {
+            if(value < 12) var value = 12 + value;
+
+            return value.toString();
+        } else if(format == "AM") {
+            if(value == 12) var value = 0;
+
+            return value.toString();
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+function checkNumber(number, min, max) {
+    if(typeof(number) === "undefined" || number == null || number == "" || number.trim == "") return false;
+    if(isNaN(number)) return false;
+    if(number > max || number < min) return false;
+
+    return true;
+}
+
+function getAutoEnableSavedData(func) {
+    chrome.storage.local.get(['autoEnable', 'autoEnableHourFormat', 'hourEnable', 'minuteEnable', 'hourEnableFormat', 'hourDisable', 'minuteDisable', 'hourDisableFormat'], function (result) {
+        var autoEnable = result.autoEnable || "false";
+        var format = result.autoEnableHourFormat || defaultAutoEnableHourFormat;
+        var hourEnable = result.hourEnable || defaultHourEnable;
+        var minuteEnable = result.minuteEnable || defaultMinuteEnable;
+        var hourEnableFormat = result.hourEnableFormat || defaultHourEnableFormat;
+        var hourDisable = result.hourDisable || defaultHourDisable;
+        var minuteDisable = result.minuteDisable || defaultMinuteDisable;
+        var hourDisableFormat = result.hourDisableFormat || defaultHourDisableFormat;
+
+        // Verifications
+        var autoEnable = autoEnable == "true" || autoEnable == "false" ? autoEnable : "false";
+        var format = format == "24" || format == "12" ? format : defaultAutoEnableHourFormat;
+        var hourEnableFormat = hourEnableFormat == "PM" || hourEnableFormat == "AM" ? hourEnableFormat : defaultHourEnableFormat;
+        var hourDisableFormat = hourDisableFormat == "PM" || hourDisableFormat == "AM" ? hourDisableFormat : defaultHourDisableFormat;
+        var minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
+        var minuteDisable = checkNumber(minuteEnable, 0, 59) ? minuteDisable : defaultMinuteDisable;
+        var hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
+        var hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
+            
+        return func([autoEnable, format, hourEnableFormat, hourDisableFormat, minuteEnable, minuteDisable, hourEnable, hourDisable]);
+    });
+}
+
+function getAutoEnableFormData() {
+    var format = $("#autoEnableHourFormat").val();
+    var format = format == "24" || format == "12" ? format : defaultAutoEnableHourFormat;
+    var hourEnableFormat = $("#hourEnableFormat").val();
+    var hourEnableFormat = hourEnableFormat == "PM" || hourEnableFormat == "AM" ? hourEnableFormat : defaultHourEnableFormat;
+    var hourDisableFormat = $("#hourDisableFormat").val();
+    var hourDisableFormat = hourDisableFormat == "PM" || hourDisableFormat == "AM" ? hourDisableFormat : defaultHourDisableFormat;
+    var minuteEnable = $("#minuteEnable").val();
+    var minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
+    var minuteDisable = $("#minuteDisable").val();
+    var minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : minuteDisable;
+    var hourEnable = $("#hourEnable").val();
+    var hourDisable = $("#hourDisable").val();
+
+    if(format == "12") {
+        var hourEnable = checkNumber(hourEnable, 0, 12) ? hourEnable : hourToPeriodFormat(defaultHourEnable, 12, null)[1];
+        var hourEnable = hourToPeriodFormat(hourEnable, 24, hourEnableFormat);
+        var hourDisable = checkNumber(hourDisable, 0, 12) ? hourDisable : hourToPeriodFormat(defaultHourDisable, 12, null)[1];
+        var hourDisable = hourToPeriodFormat(hourDisable, 24, hourDisableFormat);
+    } else {
+        var hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
+        var hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
+    }
+
+    return [format, hourEnable, minuteEnable, hourEnableFormat, hourDisable, minuteDisable, hourDisableFormat];
+}
+
+function checkAutoEnableStartup(hourEnable, minuteEnable, hourDisable, minuteDisable) {
+    var date = new Date();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+
+    var timeNow = ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2) + ":00";
+
+    var hourEnable = hourEnable || defaultHourEnable;
+    var minuteEnable = minuteEnable || defaultMinuteEnable;
+    var hourDisable = hourDisable || defaultHourDisable;
+    var minuteDisable = minuteDisable || defaultMinuteDisable;
+
+    var timeEnable = ("0" + hourEnable).slice(-2) + ":" + ("0" + minuteEnable).slice(-2) + ":00";
+    var timeDisable = ("0" + hourDisable).slice(-2) + ":" + ("0" + minuteDisable).slice(-2) + ":00";
+
+    if(timeEnable > timeDisable) {
+        if(timeNow >= timeEnable) {
+            return true;
+        } else {
+            return false;
+        }
+    } else if(timeEnable < timeDisable) {
+        if(timeNow < timeDisable) {
+            return true;
+        } else {
+            return false;
+        }
+    } else if(timeEnable == timeDisable) {
+        if(timeNow >= timeDisable) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    return false;
 }

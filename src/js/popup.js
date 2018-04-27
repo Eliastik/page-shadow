@@ -41,6 +41,7 @@ function translateContent() {
     themeTranslation = i18next.t("container.theme");
     $(".navbar").localize();
     $(".container").localize();
+    $(".modal").localize();
     $("footer").localize();
 }
 function changeLng(lng) {
@@ -70,6 +71,13 @@ $(document).ready(function() {
     if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
     if(typeof(window["defaultVisitedLinksColorCustomTheme"]) == "undefined") defaultVisitedLinksColorCustomTheme = "ff00ff";
     if(typeof(window["defaultFontCustomTheme"]) == "undefined") defaultFontCustomTheme = "";
+    if(typeof(window["defaultAutoEnableHourFormat"]) == "undefined") defaultAutoEnableHourFormat = "24";
+    if(typeof(window["defaultHourEnable"]) == "undefined") defaultHourEnable = "20";
+    if(typeof(window["defaultMinuteEnable"]) == "undefined") defaultMinuteEnable = "0";
+    if(typeof(window["defaultHourEnableFormat"]) == "undefined") defaultHourEnableFormat = "PM";
+    if(typeof(window["defaultHourDisable"]) == "undefined") defaultHourDisable = "7";
+    if(typeof(window["defaultMinuteDisable"]) == "undefined") defaultMinuteDisable = "0";
+    if(typeof(window["defaultHourDisableFormat"]) == "undefined") defaultHourDisableFormat = "AM";
 
     // append the list of themes in the select
     for(i=1; i <= nbThemes; i++) {
@@ -89,9 +97,7 @@ $(document).ready(function() {
     $("#sliderLuminosite").attr("data-slider-value", brightnessDefaultValue * 100);
 
     $('i[data-toggle="tooltip"]').tooltip({
-        animated: 'fade',
-        placement: 'bottom',
-        trigger: 'click'
+        trigger: 'hover'
     });
 
     $('div[data-toggle="tooltip"]').tooltip({
@@ -451,6 +457,162 @@ $(document).ready(function() {
         }
     });
 
+    function checkAutoEnable() {
+        chrome.storage.local.get("autoEnable", function (result) {
+            if(result.autoEnable == "true" && $("#autoEnable").is(':checked') == false) {
+                $("#autoEnable").prop("checked", true);
+            } else if(result.autoEnable !== "true" && $("#autoEnable").is(':checked') == true) {
+                $("#autoEnable").prop("checked", false);
+            }
+        });
+    }
+
+    $("#autoEnable").change(function() {
+        if($(this).is(':checked') == true) {
+            setSettingItem("autoEnable", "true");
+            $('#autoEnableSettings').modal('show');
+        } else {
+            setSettingItem("autoEnable", "false");
+        }
+    });
+
+    function checkSettingsAutoEnable() {
+        $("#hourEnableFormat").hide();
+        $("#hourDisableFormat").hide();
+        
+        getAutoEnableSavedData(function(data) {
+            var autoEnable = data[0];
+            var format = data[1];
+            var hourEnableFormat = data[2];
+            var hourDisableFormat = data[3];
+            var minuteEnable = data[4];
+            var minuteDisable =  data[5];
+            var hourEnable = data[6];
+            var hourDisable = data[7];
+
+            if(format == "12") {
+                $("#autoEnableHourFormat").val("12");
+                $("#hourEnableFormat").show();
+                $("#hourDisableFormat").show();
+                $("#hourEnable").val(hourToPeriodFormat(hourEnable, 12, null)[1]);
+                $("#hourEnable").attr("max", 12);
+                $("#minuteEnable").val(minuteEnable);
+                $("#hourDisable").val(hourToPeriodFormat(hourDisable, 12, null)[1]);
+                $("#hourDisable").attr("max", 12);
+                $("#minuteDisable").val(minuteDisable);
+            } else if(format == "24") {
+                $("#autoEnableHourFormat").val("24");
+                $("#hourEnable").val(hourEnable);
+                $("#hourEnable").attr("max", 23);
+                $("#minuteEnable").val(minuteEnable);
+                $("#hourDisable").val(hourDisable);
+                $("#hourDisable").attr("max", 23);
+                $("#minuteDisable").val(minuteDisable);
+            }
+
+            $("#hourEnableFormat").val(hourEnableFormat);
+            $("#hourDisableFormat").val(hourDisableFormat);
+
+            infoAutoEnable();
+        });
+    }
+
+    function changeFormat() {
+        $("#hourEnableFormat").hide();
+        $("#hourDisableFormat").hide();
+
+        var data = getAutoEnableFormData();
+
+        var type = data[0];
+        var hourEnableFormat = data[3];
+        var hourDisableFormat = data[6];
+        var hourEnable = $("#hourEnable").val();
+        var hourDisable = $("#hourDisable").val();
+
+        if(type == "24") {
+            var hourEnable = checkNumber(hourEnable, 0, 12) ? hourEnable : hourToPeriodFormat(defaultHourEnable, 12, null)[1];
+            var hourEnable = hourToPeriodFormat(hourEnable, 24, hourEnableFormat);
+            $("#hourEnable").val(hourEnable);
+            var hourDisable = checkNumber(hourDisable, 0, 12) ? hourDisable : hourToPeriodFormat(defaultHourDisable, 12, null)[1];
+            var hourDisable = hourToPeriodFormat(hourDisable, 24, hourDisableFormat);
+            $("#hourDisable").val(hourDisable);
+            $("#hourEnable").attr("max", 23);
+            $("#hourDisable").attr("max", 23);
+        } else if(type == "12") {
+            $("#hourEnableFormat").show();
+            $("#hourDisableFormat").show();
+            var hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
+            var hourEnable = hourToPeriodFormat(hourEnable, 12, null);
+            $("#hourEnable").val(hourEnable[1]);
+            $("#hourEnableFormat").val(hourEnable[0]);
+            var hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
+            var hourDisable = hourToPeriodFormat(hourDisable, 12, null);
+            $("#hourDisable").val(hourDisable[1]);
+            $("#hourDisableFormat").val(hourDisable[0]);
+            $("#hourEnable").attr("max", 12);
+            $("#hourDisable").attr("max", 12);
+        }
+
+        infoAutoEnable();
+    }
+
+    function saveSettingsAutoEnable() {
+        var data = getAutoEnableFormData();
+
+        chrome.storage.local.set({
+            'autoEnableHourFormat': data[0],
+            'hourEnable': data[1],
+            'minuteEnable': data[2],
+            'hourEnableFormat': data[3],
+            'hourDisable': data[4],
+            'minuteDisable': data[5],
+            'hourDisableFormat': data[6]
+        });
+
+        checkSettingsAutoEnable();
+        checkAutoEnableStartup();
+        $('#saved').modal("show");
+    }
+
+    function infoAutoEnable() {
+        $("#infoTimeEnabled").hide();
+        $("#infoTimeDisabled").hide();
+
+        var data = getAutoEnableFormData();
+
+        if(checkAutoEnableStartup(data[1], data[2], data[4], data[5])) {
+            $("#infoTimeEnabled").show();
+        } else {
+            $("#infoTimeDisabled").show();
+        }
+    }
+
+    $("#saveSettingsAutoEnable").click(function() {
+        saveSettingsAutoEnable();
+    });
+
+    $("#cancelSettingsAutoEnable").click(function() {
+        checkSettingsAutoEnable();
+    });
+
+    $('#autoEnableSettings').on('hidden.bs.modal', function () {
+        checkSettingsAutoEnable();
+    });
+
+    $("#autoEnableHourFormat").change(function() {
+        changeFormat();
+    });
+
+    $("#formAutoEnable input").on("input", function() {
+        infoAutoEnable();
+    });
+    
+    $("#hourEnableFormat, #hourDisableFormat").change(function() {
+        infoAutoEnable();
+    });
+    
+    var intervalCheckAutoEnable = setInterval(function() { infoAutoEnable(); }, 1000);
+
     function checkLiveSettings() {
         chrome.storage.local.get("liveSettings", function (result) {
             if(result.liveSettings == "true" && $("#liveSettings").is(':checked') == false) {
@@ -580,6 +742,7 @@ $(document).ready(function() {
             checkNightMode();
             checkEnable();
             checkCustomTheme();
+            checkAutoEnable();
             checkGlobalEnable();
 
             if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null && result.pourcentageLum / 100 <= maxBrightnessPercentage && result.pourcentageLum / 100 >= minBrightnessPercentage && brightnessChangedFromThisPage == false) {
@@ -588,6 +751,10 @@ $(document).ready(function() {
             } else if(brightnessChangedFromThisPage == false) {
                 sliderLuminosite.slider('setValue', brightnessDefaultValue * 100);
                 brightnessChangedFromThisPage = false;
+            }
+
+            if(($("#autoEnableSettings").data('bs.modal') || {}).isShown !== true) {
+                checkSettingsAutoEnable();
             }
         });
     }

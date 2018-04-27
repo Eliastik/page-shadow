@@ -22,6 +22,8 @@
         "percentage": "Percentage of brightness decrease:",
         "nightMode": "Night mode",
         "tileNightMode": "Apply an orange filter on the page to reduce the blue light emitted by the screen.",
+        "autoEnable": "Enable/disable automatically",
+        "titleAutoEnable": "Enable or disable globally Page Shadow automatically according to the time. Select the cog wheel icon to setup this function.",
         "liveSettings": "Apply the settings in real time",
         "titleLiveSettings": "Can reduce browser performance.",
         "tempSelect": "Temp.:",
@@ -33,6 +35,23 @@
         "customThemeInfoDisable": "Don't show anymore",
         "close": "Close",
         "AdvSettings": "Advanced settings"
+    },
+    "modalAutoEnable": {
+        "autoEnableSettingsTitle": "Settings",
+        "description": "Here you can set the hours of the automatic activation or deactivation of Page Shadow.",
+        "saveInfo": "Do not forget to click on Confirm to save your settings!",
+        "formatHour": "Hour format:",
+        "12hours": "12 hours",
+        "24hours": "24 hours",
+        "hourEnable": "Activation hour:",
+        "hourDisable": "Deactivation hour:",
+        "infoTimeEnabled": "According to the settings entered, Page Shadow should currently be activated.",
+        "infoTimeDisabled": "According to the settings entered, Page Shadow should currently be deactivated.",
+        "validate": "Confirm",
+        "cancel": "Cancel",
+        "savedTitle": "Information",
+        "savedMessage": "Settings saved!",
+        "ok": "OK"
     },
     "footer": {
         "advancedSettings": "Advanced settings",

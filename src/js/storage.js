@@ -81,6 +81,30 @@ function setSettingItem(name, value) {
         case 'customCSSCode':
             chrome.storage.local.set({'customCSSCode': value});
             break;
+        case 'autoEnable':
+            chrome.storage.local.set({'autoEnable': value});
+            break;
+        case 'autoEnableHourFormat':
+            chrome.storage.local.set({'autoEnableHourFormat': value});
+            break;
+        case 'hourEnable':
+            chrome.storage.local.set({'hourEnable': value});
+            break;
+        case 'minuteEnable':
+            chrome.storage.local.set({'minuteEnable': value});
+            break;
+        case 'hourEnableFormat':
+            chrome.storage.local.set({'hourEnableFormat': value});
+            break;
+        case 'hourDisable':
+            chrome.storage.local.set({'hourDisable': value});
+            break;
+        case 'minuteDisable':
+            chrome.storage.local.set({'minuteDisable': value});
+            break;
+        case 'hourDisableFormat':
+            chrome.storage.local.set({'hourDisableFormat': value});
+            break;
         case 'defaultLoad':
             chrome.storage.local.set({'defaultLoad': value});
             break;
@@ -101,13 +125,21 @@ function setFirstSettings() {
     if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
     if(typeof(window["defaultVisitedLinksColorCustomTheme"]) == "undefined") defaultVisitedLinksColorCustomTheme = "ff00ff";
     if(typeof(window["defaultFontCustomTheme"]) == "undefined") defaultFontCustomTheme = "";
+    if(typeof(window["brightnessDefaultValue"]) == "undefined") brightnessDefaultValue = 0.15;
+    if(typeof(window["defaultAutoEnableHourFormat"]) == "undefined") defaultAutoEnableHourFormat = "24";
+    if(typeof(window["defaultHourEnable"]) == "undefined") defaultHourEnable = "20";
+    if(typeof(window["defaultMinuteEnable"]) == "undefined") defaultMinuteEnable = "0";
+    if(typeof(window["defaultHourEnableFormat"]) == "undefined") defaultHourEnableFormat = "PM";
+    if(typeof(window["defaultHourDisable"]) == "undefined") defaultHourDisable = "7";
+    if(typeof(window["defaultMinuteDisable"]) == "undefined") defaultMinuteDisable = "0";
+    if(typeof(window["defaultHourDisableFormat"]) == "undefined") defaultHourDisableFormat = "AM";
 
     // Set default settings values
     chrome.storage.local.set({
         'pageShadowEnabled': 'false',
         'theme': '1',
         'pageLumEnabled': 'false',
-        'pourcentageLum': '15',
+        'pourcentageLum': (brightnessDefaultValue * 100).toString(),
         'nightModeEnabled': 'false',
         'sitesInterditPageShadow': '',
         'liveSettings': 'true',
@@ -124,7 +156,15 @@ function setFirstSettings() {
         'invertEntirePage': 'false',
         'globallyEnable': 'true',
         'customThemeInfoDisable': 'false',
-        'customCSSCode': ''
+        'customCSSCode': '',
+        'autoEnable': 'false',
+        'autoEnableHourFormat': defaultAutoEnableHourFormat,
+        'hourEnable': defaultHourEnable,
+        'minuteEnable': defaultMinuteEnable,
+        'hourEnableFormat': defaultHourEnableFormat,
+        'hourDisable': defaultHourDisable,
+        'minuteDisable': defaultMinuteDisable,
+        'hourDisableFormat': defaultHourDisableFormat
     });
 }
 
