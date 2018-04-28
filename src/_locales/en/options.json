@@ -19,6 +19,7 @@
         "titleHelp": "It is only possible to block domains (eg www.google.com) or specific URLs (eg https://en.wikipedia.org/wiki/Google). Note that you can exclude a website or a page by right-clicking and choosing what to block in the Page Shadow submenu, or with the extension menu (at the bottom).",
         "help": "Help",
         "customThemeButton": "Setup your custom theme…",
+        "backup": "Backup and restore settings…",
         "indiceList": "The websites addresses entered below will be ignored by Page Shadow.",
         "whiteList": "Whitelist (ignore all the websites by default)",
         "titleWhiteList": "Check this checkbox if you want to toggle this list to a whitelist. All the websites will be ignored by default, and you will have to deblock them with the right-click, with the extension menu or by entering their addresses below (eg www.google.com). The blocking/deblocking of specific URLs isn't available with this mode. Enable or disable this setting will reset the list.",
@@ -94,6 +95,24 @@
             "collapseCustomCSS": "Custom CSS code…",
             "customCSSHelp": "You can enter a custom CSS code below that will be loaded along with the custom theme.",
             "customCSSHelpExpUsers": "For experienced users only."
+        },
+        "archive": {
+            "title": "Backup and restore settings",
+            "archive": "Backup",
+            "restore": "Restore",
+            "descriptionArchive": "You can archive your settings by saving an archive file to your device by clicking the button below. So you can restore it later. The archive files are in JSON format.",
+            "buttonArchive": "Archive the settings…",
+            "archiveError": "An error has occurred. Try again.",
+            "firefoxHelp": "On Firefox, because of a problem, the name of the archive file proposed for download may be invalid (extension in .bin). Just rename the file by changing the extension to .json so that it can be restored later.",
+            "helpArchive": "If the archive file could not be saved, copy and paste the following text into a text editor by saving it in JSON format (extension in .json):",
+            "descriptionRestore": "You can restore an archive of your settings by clicking the button below, then choosing the archive file on your device (in JSON format).",
+            "warningRestore": "Warning, the restoration of the archive will erase all your current settings!",
+            "buttonRestore": "Restore the settings…",
+            "restoreError": "An error occurred while restoring the data. Make sure the chosen file is an archive file of Page Shadow settings in JSON format, and try again.",
+            "restoreErrorFilesize": "Archive file too big. The maximum supported size of an archive file is 2 Mo.",
+            "restoreErrorExtension": "Invalid file. The file must be a JSON file.",
+            "restoreErrorArchive": "This file is not an archive of Page Shadow settings. Make sure you have selected the correct file.",
+            "restoreSuccess": "Data restoration completed successfully."
         },
         "saved": {
             "title": "Information",

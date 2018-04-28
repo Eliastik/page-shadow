@@ -224,7 +224,7 @@ function getAutoEnableSavedData(func) {
         var hourEnableFormat = hourEnableFormat == "PM" || hourEnableFormat == "AM" ? hourEnableFormat : defaultHourEnableFormat;
         var hourDisableFormat = hourDisableFormat == "PM" || hourDisableFormat == "AM" ? hourDisableFormat : defaultHourDisableFormat;
         var minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
-        var minuteDisable = checkNumber(minuteEnable, 0, 59) ? minuteDisable : defaultMinuteDisable;
+        var minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : defaultMinuteDisable;
         var hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
         var hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
 
@@ -242,7 +242,7 @@ function getAutoEnableFormData() {
     var minuteEnable = $("#minuteEnable").val();
     var minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
     var minuteDisable = $("#minuteDisable").val();
-    var minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : minuteDisable;
+    var minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : defaultMinuteDisable;
     var hourEnable = $("#hourEnable").val();
     var hourDisable = $("#hourDisable").val();
 
@@ -270,6 +270,11 @@ function checkAutoEnableStartup(hourEnable, minuteEnable, hourDisable, minuteDis
     var minuteEnable = minuteEnable || defaultMinuteEnable;
     var hourDisable = hourDisable || defaultHourDisable;
     var minuteDisable = minuteDisable || defaultMinuteDisable;
+
+    var hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
+    var hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
+    var minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
+    var minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : defaultMinuteDisable;
 
     var timeEnable = ("0" + hourEnable).slice(-2) + ":" + ("0" + minuteEnable).slice(-2) + ":00";
     var timeDisable = ("0" + hourDisable).slice(-2) + ":" + ("0" + minuteDisable).slice(-2) + ":00";
@@ -305,4 +310,39 @@ function checkChangedStorageData(key, object) {
     }
 
     return false;
+}
+
+function getBrowser() {
+    if(typeof chrome !== "undefined") {
+        if(typeof browser !== "undefined") {
+            return "Firefox";
+        } else {
+            return "Chrome";
+        }
+    }
+}
+
+function downloadData(data, name, dataType) {
+    window.URL = window.URL || window.webkitURL;
+
+    if(getBrowser() == "Firefox") {
+        var blob = new Blob([data], {type: "application/octet-stream"});
+    } else {
+        var blob = new Blob([data], {type: dataType});
+    }
+
+    if(getBrowser() == "Firefox") {
+        var downloadElement = document.createElement('iframe');
+        downloadElement.style.display = "none";
+        downloadElement.src = window.URL.createObjectURL(blob);
+        document.body.appendChild(downloadElement);
+    } else {
+        var downloadElement = document.createElement('a');
+        downloadElement.style.display = "none";
+        downloadElement.download = name;
+        downloadElement.href = window.URL.createObjectURL(blob);
+        document.body.appendChild(downloadElement);
+        downloadElement.click();
+        document.body.removeChild(downloadElement);
+    }
 }

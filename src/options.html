@@ -92,7 +92,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                 </div>
                 <div class="form-group">
                     <div class="col-lg-10 col-lg-offset-2">
-                        <button type="button" class="btn btn-primary" id="validerButton"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.validate"></span></button> &nbsp; <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#resetConfirm" id="resetConfirmBtn"><i class="fa fa-refresh" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button>
+                        <button type="button" class="btn btn-primary" id="validerButton"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.validate"></span></button> &nbsp; <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#resetConfirm" id="resetConfirmBtn"><i class="fa fa-refresh" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button> &nbsp; <button type="button" class="btn btn-success" data-toggle="modal" data-target="#archive"><i class="fa fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="container.backup"></span></button>
                     </div>
                 </div>
             </form>
@@ -392,6 +392,50 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.no"></span></button> &nbsp; <button type="button" class="btn btn-danger" data-dismiss="modal" id="confirmReset"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modal.yes"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- archive -->
+        <div class="modal fade" id="archive" tabindex="-1" role="dialog" aria-labelledby="archive">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="archiveLabel"><i class="fa fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.title"></span></h4>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#archiveTab" aria-controls="archiveTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-archive" aria-hidden="true"></i> <span data-i18n="modal.archive.archive"></span></a></li>
+                            <li role="presentation"><a href="#restoreTab" aria-controls="restoreTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-repeat" aria-hidden="true"></i> <span data-i18n="modal.archive.restore"></span></a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="archiveTab">
+                                <p data-i18n="modal.archive.descriptionArchive"></p>
+                                <center><a class="btn btn-primary" id="archiveDataButton"><i class="fa fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.buttonArchive"></span></a></center>
+                                <p id="archiveError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveError"></span></p>
+                                <p id="firefoxHelpArchive" class="orange" style="display: none;"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <strong data-i18n="modal.archive.firefoxHelp"></strong></p>
+                                <div id="helpArchive" style="display: none;">
+                                    <p data-i18n="modal.archive.helpArchive"></p>
+                                    <textarea id="codeMirrorJSONArchiveTextarea" style="width: 100%; height: 75px;" readonly="readonly"></textarea>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="restoreTab">
+                                <p><span data-i18n="modal.archive.descriptionRestore"></span> <strong data-i18n="modal.archive.warningRestore"></strong></p>
+                                <center><a class="btn btn-primary" id="restoreDataButton"><i class="fa fa-repeat fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.buttonRestore"></span></a></center>
+                                <div id="infoRestore">
+                                    <p id="restoreError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreError"></span></p>
+                                    <p id="restoreErrorFilesize" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreErrorFilesize"></span></p>
+                                    <p id="restoreErrorExtension" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreErrorExtension"></span></p>
+                                    <p id="restoreErrorArchive" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreErrorArchive"></span></p>
+                                    <p id="restoreSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreSuccess"></span></p>
+                                </div>
+                                <input id="inputFileJSON" type="file" name="inputFileJSON" accept=".json" style="display: none;" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
                     </div>
                 </div>
             </div>

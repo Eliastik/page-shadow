@@ -248,9 +248,18 @@ div.navbar-right {
 .green {
     color: green;
 }
+.orange {
+    color: orange;
+}
 .hourFormat {
     width: 100%;
 }
 .hourFormatAMPM {
     width: 32px;
+}
+.nav-tabs {
+    border-bottom: 1px solid #ddd !important;
+}
+.tab-content {
+    padding: 15px !important;
 }

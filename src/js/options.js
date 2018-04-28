@@ -167,6 +167,100 @@ function displaySettings() {
         }
     });
 }
+function archiveSettings() {
+    $("#archiveError").hide();
+
+    chrome.storage.local.get(null, function (data) {
+        try {
+            data["ispageshadowarchive"] = "true";
+            var date = new Date();
+            var dateString = date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1).toString() + "-" + date.getDate() + "-" + date.getHours() + "_" + date.getMinutes() + "_" + date.getSeconds();
+            var dataStr = JSON.stringify(data);
+            var filename = "page-shadow-backupdata-" + dateString + ".json";
+
+            codeMirrorJSONArchive.getDoc().setValue(JSON.stringify(data));
+            $("#helpArchive").show();
+
+            downloadData(dataStr, filename, "application/json");
+        } catch(e) {
+            $("#archiveError").show();
+        }
+    });
+}
+function restoreSettings(event) {
+    $("#restoreError").hide();
+    $("#restoreSuccess").hide();
+    $("#restoreErrorFilesize").hide();
+    $("#restoreErrorExtension").hide();
+    $("#restoreErrorArchive").hide();
+
+    if (typeof FileReader !== "undefined") {
+        var reader = new FileReader();
+        reader.onload = onReaderLoad;
+
+        reader.onerror = function() {
+            $("#restoreError").show();
+        };
+
+        var fileExtension = event.target.files[0].name.split('.').pop().toLowerCase();
+
+        if(fileExtension == "json") {
+            var filesize = event.target.files[0].size;
+
+            if(filesize <= 2000000) { // max size of 2 Mo
+                reader.readAsText(event.target.files[0]);
+            } else {
+                $("#restoreErrorFilesize").show();
+                return false;
+            }
+        } else {
+            $("#restoreErrorExtension").show();
+            return false;
+        }
+
+        function onReaderLoad(event){
+            try {
+                var obj = JSON.parse(event.target.result);
+            } catch(e) {
+                $("#restoreError").show();
+                return false;
+            }
+
+            // Check if it's a Page Shadow archive file
+            var ispageshadowarchive = false;
+
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    if(key === "ispageshadowarchive" && obj[key] === "true") {
+                        var ispageshadowarchive = true;
+                    }
+                }
+            }
+
+            if(ispageshadowarchive == false) {
+                $("#restoreErrorArchive").show();
+                return false;
+            }
+
+            // Reset data
+            chrome.storage.local.clear();
+            $("#textareaAssomPage").val("");
+            $("#checkWhiteList").prop("checked", false);
+
+            for (var key in obj) {
+                if(typeof(key) === "string" && typeof(obj[key]) === "string") {
+                    if (obj.hasOwnProperty(key)) {
+                        setSettingItem(key, obj[key]); // invalid data are ignored by the function
+                    }
+                }
+            }
+
+            $("#restoreSuccess").show();
+        }
+    } else {
+        $("#restoreError").hide();
+    }
+}
 $(document).ready(function() {
     $("#validerButton").click(function() {
         setSettingItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
@@ -282,6 +376,19 @@ $(document).ready(function() {
         }
     });
 
+    $("#archiveDataButton").click(function() {
+        archiveSettings();
+    });
+
+    $("#restoreDataButton").click(function() {
+        $("#inputFileJSON").trigger('click');
+    });
+
+    $("#inputFileJSON").change(function(event) {
+        restoreSettings(event);
+        $(this).val("");
+    });
+
     $("#customThemeFont").on("input", function() {
         if($("#customThemeFont").val().trim() !== "") {
             $("#previsualisationDiv").css("font-family", '"' + $("#customThemeFont").val() + '"');
@@ -297,5 +404,18 @@ $(document).ready(function() {
         autoRefresh: true
     });
 
+    codeMirrorJSONArchive = CodeMirror.fromTextArea(document.getElementById("codeMirrorJSONArchiveTextarea"), {
+        lineNumbers: true,
+        theme: "material",
+        autoRefresh: true,
+        readOnly: true
+    });
+
+    codeMirrorJSONArchive.setSize(null, 50);
+
     displaySettings();
+
+    if(getBrowser() == "Firefox") {
+        $("#firefoxHelpArchive").show();
+    }
 });
