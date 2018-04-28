@@ -479,7 +479,7 @@ $(document).ready(function() {
     function checkSettingsAutoEnable() {
         $("#hourEnableFormat").hide();
         $("#hourDisableFormat").hide();
-        
+
         getAutoEnableSavedData(function(data) {
             var autoEnable = data[0];
             var format = data[1];
@@ -606,11 +606,11 @@ $(document).ready(function() {
     $("#formAutoEnable input").on("input", function() {
         infoAutoEnable();
     });
-    
+
     $("#hourEnableFormat, #hourDisableFormat").change(function() {
         infoAutoEnable();
     });
-    
+
     var intervalCheckAutoEnable = setInterval(function() { infoAutoEnable(); }, 1000);
 
     function checkLiveSettings() {

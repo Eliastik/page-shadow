@@ -21,7 +21,7 @@ if(typeof(window["defaultMinuteEnable"]) == "undefined") defaultMinuteEnable = "
 if(typeof(window["defaultHourDisable"]) == "undefined") defaultHourDisable = "7";
 if(typeof(window["defaultMinuteDisable"]) == "undefined") defaultMinuteDisable = "0";
 var autoEnableActivated = false;
-var lastAutoEnableDetected = false;
+var lastAutoEnableDetected = null;
 
 function setPopup() {
     if(typeof(chrome.browserAction.setPopup) !== 'undefined') {
@@ -164,25 +164,28 @@ function checkAutoEnable() {
     if(autoEnableActivated) {
         getAutoEnableSavedData(function(data) {
             var enabled = checkAutoEnableStartup(data[6], data[4], data[7], data[5]);
-            
-            if(enabled && !lastAutoEnableDetected) {
+
+            if(enabled && !lastAutoEnableDetected || enabled && lastAutoEnableDetected == null) {
                 setSettingItem("globallyEnable", "true");
-                var lastAutoEnableDetected = true;
-            } else if(!enabled && lastAutoEnableDetected) {
+                lastAutoEnableDetected = true;
+            } else if(!enabled && lastAutoEnableDetected || !enabled && lastAutoEnableDetected == null) {
                 setSettingItem("globallyEnable", "false");
-                var lastAutoEnableDetected = false;
+                lastAutoEnableDetected = false;
             }
         });
     }
 }
 
-function autoEnable() {
+function autoEnable(changed) {
     chrome.storage.local.get("autoEnable", function (result) {
         if(result.autoEnable == "true") {
             autoEnableActivated = true;
-            checkAutoEnable();
         } else {
             autoEnableActivated = false;
+        }
+
+        if(typeof(changed) === "undefined" || changed == null || checkChangedStorageData(["hourEnable", 'minuteEnable', 'hourDisable', 'minuteDisable'], changed)) {
+            lastAutoEnableDetected = null;
             checkAutoEnable();
         }
     });
@@ -216,8 +219,8 @@ if(typeof(chrome.tabs.onUpdated) !== 'undefined') {
 }
 
 if(typeof(chrome.storage.onChanged) !== 'undefined') {
-    chrome.storage.onChanged.addListener(function() {
-        autoEnable();
+    chrome.storage.onChanged.addListener(function(changes) {
+        autoEnable(changes);
     });
 }
 

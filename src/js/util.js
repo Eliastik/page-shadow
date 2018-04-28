@@ -227,7 +227,7 @@ function getAutoEnableSavedData(func) {
         var minuteDisable = checkNumber(minuteEnable, 0, 59) ? minuteDisable : defaultMinuteDisable;
         var hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
         var hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
-            
+
         return func([autoEnable, format, hourEnableFormat, hourDisableFormat, minuteEnable, minuteDisable, hourEnable, hourDisable]);
     });
 }
@@ -275,22 +275,32 @@ function checkAutoEnableStartup(hourEnable, minuteEnable, hourDisable, minuteDis
     var timeDisable = ("0" + hourDisable).slice(-2) + ":" + ("0" + minuteDisable).slice(-2) + ":00";
 
     if(timeEnable > timeDisable) {
-        if(timeNow >= timeEnable) {
+        if(timeNow >= timeEnable || timeNow < timeDisable) {
             return true;
         } else {
             return false;
         }
     } else if(timeEnable < timeDisable) {
-        if(timeNow < timeDisable) {
-            return true;
-        } else {
+        if(timeNow >= timeDisable || timeNow < timeEnable) {
             return false;
+        } else {
+            return true;
         }
     } else if(timeEnable == timeDisable) {
-        if(timeNow >= timeDisable) {
-            return false;
-        } else {
-            return true;
+        return true;
+    }
+
+    return false;
+}
+
+function checkChangedStorageData(key, object) {
+    if(typeof(key) === "string") {
+        return object.hasOwnProperty(key);
+    } else if(Array.isArray(key)) {
+        for(var i = 0; i < key.length; i++) {
+            if(object.hasOwnProperty(key[i])) {
+                return true;
+            }
         }
     }
 
