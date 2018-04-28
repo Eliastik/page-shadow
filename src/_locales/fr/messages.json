@@ -25,5 +25,8 @@
     },
     "disableGlobally": {
         "message": "Désactiver globalement l'extension"
+    },
+    "pageShadowDisabled": {
+        "message": "désactivé"
     }
 }

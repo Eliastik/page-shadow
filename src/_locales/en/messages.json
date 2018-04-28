@@ -25,5 +25,8 @@
     },
     "disableGlobally": {
         "message": "Disable globally the extension"
+    },
+    "pageShadowDisabled": {
+        "message": "disabled"
     }
 }

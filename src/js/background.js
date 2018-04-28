@@ -156,6 +156,18 @@ function updateBadge() {
                     });
                 }
             }
+
+            if(typeof(chrome.browserAction.setTitle) !== 'undefined') {
+                if(!enabled) {
+                    chrome.browserAction.setTitle({
+                        title: "Page Shadow (" + getUImessage("pageShadowDisabled") + ")"
+                    });
+                } else {
+                    chrome.browserAction.setTitle({
+                        title: "Page Shadow"
+                    });
+                }
+            }
         });
     });
 }
