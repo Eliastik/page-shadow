@@ -263,3 +263,16 @@ div.navbar-right {
 .tab-content {
     padding: 15px !important;
 }
+@media (min-width: 768px) {
+    body.popup .navbar-right {
+        float: right !important;
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+        padding-right: 15px !important;
+    }
+
+    body.popup .container-fluid > .navbar-header {
+        float: none !important;
+        margin-right: -15px !important;
+    }
+}

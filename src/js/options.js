@@ -306,17 +306,15 @@ $(document).ready(function() {
     });
 
     $('span[data-toggle="tooltip"]').tooltip({
-        animated: 'fade',
-        placement: 'bottom',
-        trigger: 'click',
-        placement: 'top'
+        trigger: 'hover',
+        container: 'body',
+        placement: 'auto top'
     });
 
     $('i[data-toggle="tooltip"]').tooltip({
-        animated: 'fade',
-        placement: 'bottom',
-        trigger: 'click',
-        placement: 'top'
+        trigger: 'hover',
+        container: 'body',
+        placement: 'auto top'
     });
 
     $("#confirmReset").click(function() {

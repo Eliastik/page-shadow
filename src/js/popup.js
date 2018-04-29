@@ -97,11 +97,15 @@ $(document).ready(function() {
     $("#sliderLuminosite").attr("data-slider-value", brightnessDefaultValue * 100);
 
     $('i[data-toggle="tooltip"]').tooltip({
-        trigger: 'hover'
+        trigger: 'hover',
+        container: 'body',
+        placement: 'auto top'
     });
 
     $('div[data-toggle="tooltip"]').tooltip({
-        trigger: 'hover'
+        trigger: 'hover',
+        container: 'body',
+        placement: 'auto top'
     });
 
     var sliderLuminosite = $('#sliderLuminosite').slider({
