@@ -178,7 +178,9 @@ function archiveSettings() {
             var dataStr = JSON.stringify(data);
             var filename = "page-shadow-backupdata-" + dateString + ".json";
 
+
             codeMirrorJSONArchive.getDoc().setValue(JSON.stringify(data));
+            $("#archiveSuggestedName").val(filename);
             $("#helpArchive").show();
 
             downloadData(dataStr, filename, "application/json");
@@ -393,6 +395,11 @@ $(document).ready(function() {
         } else {
             $("#previsualisationDiv").css("font-family", '');
         }
+    });
+
+    $("#archiveSuggestedName").click(function() {
+        this.focus();
+        this.select();
     });
 
     codeMirrorUserCSS = CodeMirror.fromTextArea(document.getElementById("codeMirrorUserCSSTextarea"), {

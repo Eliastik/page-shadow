@@ -104,6 +104,7 @@
             "archiveError": "Une erreur est survenue. Veuillez réessayer.",
             "firefoxHelp": "Sur Firefox, à cause d'un problème, le nom du fichier archive proposé au téléchargement peut être invalide (extension en .bin). Il suffit de renommer le fichier en changeant l'extension en .json pour qu'il puisse être restauré plus tard.",
             "helpArchive": "Si le fichier archive n'a pas pu être enregistré, copiez-collez le texte suivant dans un éditeur de texte en l'enregistrant au format JSON (extension en .json) :",
+            "suggestedName": "Nom de fichier suggeré :",
             "descriptionRestore": "Vous pouvez restaurer une archive de vos paramètres en cliquant sur le bouton ci-dessous, puis en choisissant le fichier de l'archive sur votre appareil (au format JSON).",
             "warningRestore": "Attention, la restauration de l'archive effacera tous vos paramètres actuels !",
             "buttonRestore": "Restaurer les paramètres…",

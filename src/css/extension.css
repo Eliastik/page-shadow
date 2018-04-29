@@ -263,6 +263,12 @@ div.navbar-right {
 .tab-content {
     padding: 15px !important;
 }
+#archiveSuggestedName {
+    width: 350px;
+}
+.modal-body > .tab-content {
+    overflow: hidden !important;
+}
 @media (min-width: 768px) {
     body.popup .navbar-right {
         float: right !important;
