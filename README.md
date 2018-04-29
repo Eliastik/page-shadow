@@ -23,6 +23,21 @@ Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
 
+### Version 2.5 (29/04/2018) :
+* Better rendering of the tool Increase page contrast + color contrast of the themes corrected;
+* Added the ability to enable or disable the extension with one click;
+* Added the Enable/disable automatically tool which allows you to automatically enable and/or disable Page Shadow according to the time;
+* Added the ability to write a custom CSS for the custom theme;
+* Added a function for archiving/restoring the settings of Page Shadow;
+* The Invert images colors tool has been renamed to Invert the colors because it now allows you to invert the colors of the images and/or of the entire page indifferently;
+* Improved image detection for the Invert the colors tool;
+* The icon of the extension changes according to its activation state for the current page (red/green);
+* Other minor changes, bug fixes, and performance improvements:
+    * Using Less for some CSS files;
+    * CSS code fixes;
+    * Bug fixes for Firefox Mobile;
+    * Other minor fixes and improvements.
+
 ### Version 2.4 (02/01/2018) :
 * Added the ability to inverse the colors of web pages entirely, not just the images;
 * Added new options for custom themes: color of visited links and font;
@@ -208,7 +223,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.4 (02/01/2018)
+* Version actuelle : 2.5 (29/04/2018)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -227,6 +242,22 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.5 (29/04/2018) :
+* Meilleur rendu de l'outil Augmenter le contraste de la page + contraste de couleurs des thèmes corrigé ;
+* Ajout de la possibilité d'activer ou de désactiver l'extension en un clic ;
+* Ajout de l'outil Activer/désactiver automatiquement qui permet d'activer et/ou de désactiver automatiquement Page Shadow selon l'heure de la journée ;
+* Ajout de la possibilité d'écrire une feuille de style CSS personnalisé pour le thème personnalisé ;
+* Ajout d'une fonction d'archivage/restauration des paramètres de Page Shadow ;
+* L'outil Inverser les couleurs des images a été renommé en Inverser les couleurs car il permet désormais d'inverser les couleurs des images et/ou de la page entière indiféremment ;
+* Amélioration de la détection des images pour l'outil Inverser les couleurs ;
+* L'icône de l'extension change en fonction de son état d'activation sur la page actuelle (rouge/vert) ;
+* Autres changements mineurs, corrections de bugs et améliorations des performances :
+    * Utilisation de Less pour certaines feuilles de style CSS ;
+    * Corrections du code CSS ;
+    * Correction de bugs pour Firefox Mobile ;
+    * Autres corrections et améliorations mineures.
+
 
 ### Version 2.4 (02/01/2018) :
 * Ajout de la possibilité d'inverser les couleurs des pages web entièrement, et non pas seulement les images ;

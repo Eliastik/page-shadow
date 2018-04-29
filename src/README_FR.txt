@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.4 (02/01/2018)
+* Version actuelle : 2.5 (29/04/2018)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -21,6 +21,22 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.5 (29/04/2018) :
+* Meilleur rendu de l'outil Augmenter le contraste de la page + contraste de couleurs des thèmes corrigé ;
+* Ajout de la possibilité d'activer ou de désactiver l'extension en un clic ;
+* Ajout de l'outil Activer/désactiver automatiquement qui permet d'activer et/ou de désactiver automatiquement Page Shadow selon l'heure de la journée ;
+* Ajout de la possibilité d'écrire une feuille de style CSS personnalisé pour le thème personnalisé ;
+* Ajout d'une fonction d'archivage/restauration des paramètres de Page Shadow ;
+* L'outil Inverser les couleurs des images a été renommé en Inverser les couleurs car il permet désormais d'inverser les couleurs des images et/ou de la page entière indiféremment ;
+* Amélioration de la détection des images pour l'outil Inverser les couleurs ;
+* L'icône de l'extension change en fonction de son état d'activation sur la page actuelle (rouge/vert) ;
+* Autres changements mineurs, corrections de bugs et améliorations des performances :
+    * Utilisation de Less pour certaines feuilles de style CSS ;
+    * Corrections du code CSS ;
+    * Correction de bugs pour Firefox Mobile ;
+    * Autres corrections et améliorations mineures.
+
 
 ### Version 2.4 (02/01/2018) :
 * Ajout de la possibilité d'inverser les couleurs des pages web entièrement, et non pas seulement les images ;
@@ -152,7 +168,7 @@ Faites un Git clone du dépôt et faites un cd vers le dossier du projet (ou bie
 git clone https://github.com/Eliastik/page-shadow.git
 cd page-shadow
 ````
-La compilation nécessite les paquets npm suivants (qui seront créés dans le dossier de ce projet) : gulp (local), fs, gulp-clean, gulp-clean-css, gulp-crx-pack, gulp-minify, gulp-zip et run-sequence
+La compilation nécessite les paquets npm suivants (qui seront créés dans le dossier de ce projet) : gulp (local), fs, gulp-clean, gulp-clean-css, gulp-crx-pack, gulp-minify, gulp-zip, gulp-less et run-sequence
 
 Pour les installer, lancez la commande suivante :
 ````
@@ -201,4 +217,5 @@ que ce programme ; si ce n'est pas le cas, consultez <http://www.gnu.org/license
 - i18next, MIT license ( https://github.com/i18next/i18next/blob/master/LICENSE ) ;
 - Bootstrap Slider, MIT license ( https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md ) ;
 - Colpick, MIT license/GPL 2.0 ( https://github.com/mrgrain/colpick/blob/master/LICENSE ) ;
+- CodeMirror, MIT license ( https://github.com/codemirror/CodeMirror/blob/master/LICENSE ) ;
 - Cette extension utilise une photo venant de ce site : http://littlevisuals.co , domaine public ( https://creativecommons.org/publicdomain/zero/1.0/ ).

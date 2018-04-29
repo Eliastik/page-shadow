@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.4 (02/01/2018)
+* Latest version: 2.5 (29/04/2018)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -21,6 +21,21 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.5 (29/04/2018) :
+* Better rendering of the tool Increase page contrast + color contrast of the themes corrected;
+* Added the ability to enable or disable the extension with one click;
+* Added the Enable/disable automatically tool which allows you to automatically enable and/or disable Page Shadow according to the time;
+* Added the ability to write a custom CSS for the custom theme;
+* Added a function for archiving/restoring the settings of Page Shadow;
+* The Invert images colors tool has been renamed to Invert the colors because it now allows you to invert the colors of the images and/or of the entire page indifferently;
+* Improved image detection for the Invert the colors tool;
+* The icon of the extension changes according to its activation state for the current page (red/green);
+* Other minor changes, bug fixes, and performance improvements:
+    * Using Less for some CSS files;
+    * CSS code fixes;
+    * Bug fixes for Firefox Mobile;
+    * Other minor fixes and improvements.
 
 ### Version 2.4 (02/01/2018) :
 * Added the ability to inverse the colors of web pages entirely, not just the images;
@@ -152,7 +167,7 @@ Git clone the repository and cd to the project directory (or download it directl
 git clone https://github.com/Eliastik/page-shadow.git
 cd page-shadow
 ````
-The compilation need the following npm packages (which will be created in the project directory): gulp (local), fs, gulp-clean, gulp-clean-css, gulp-crx-pack, gulp-minify, gulp-zip and run-sequence
+The compilation need the following npm packages (which will be created in the project directory): gulp (local), fs, gulp-clean, gulp-clean-css, gulp-crx-pack, gulp-minify, gulp-zip, gulp-less and run-sequence
 
 To install these packages, run the following command:
 ````
@@ -201,4 +216,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - i18next, MIT license ( https://github.com/i18next/i18next/blob/master/LICENSE ) ;
 - Bootstrap Slider, MIT license ( https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md ) ;
 - Colpick, MIT license/GPL 2.0 ( https://github.com/mrgrain/colpick/blob/master/LICENSE ) ;
+- CodeMirror, MIT license ( https://github.com/codemirror/CodeMirror/blob/master/LICENSE ) ;
 - This extension uses a picture from this site: http://littlevisuals.co , Public domain ( https://creativecommons.org/publicdomain/zero/1.0/ ).
