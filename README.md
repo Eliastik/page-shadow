@@ -1,6 +1,7 @@
 # Page Shadow :
-![Screenshot](screen.png)
 ## English :
+
+![Screenshot](screen.png)
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
 * Latest version: 2.5 (29/04/2018)
@@ -221,6 +222,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - This extension uses a picture from this site: http://littlevisuals.co , Public domain ( https://creativecommons.org/publicdomain/zero/1.0/ ).
 
 ## Français :
+
+![Screenshot](screen_fr.png)
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
 * Version actuelle : 2.5 (29/04/2018)
