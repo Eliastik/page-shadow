@@ -103,7 +103,7 @@
             "descriptionArchive": "You can archive your settings by saving an archive file to your device by clicking the button below. So you can restore it later. The archive files are in JSON format.",
             "buttonArchive": "Archive the settings…",
             "archiveError": "An error has occurred. Try again.",
-            "firefoxHelp": "On Firefox, because of a problem, the name of the archive file proposed for download may be invalid (extension in .bin). Just rename the file by changing the extension to .json so that it can be restored later.",
+            "firefoxHelp": "On Firefox, because of a problem, the name of the archive file proposed for download may be invalid. Just rename the file by changing the extension to .json so that it can be restored later.",
             "helpArchive": "If the archive file could not be saved, copy and paste the following text into a text editor by saving it in JSON format (extension in .json):",
             "suggestedName": "Suggested filename:",
             "descriptionRestore": "You can restore an archive of your settings by clicking the button below, then choosing the archive file on your device (in JSON format).",

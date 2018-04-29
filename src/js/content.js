@@ -355,10 +355,10 @@
                 mutations.forEach(function(mutation) {
                     if(mutation.type == "childList") {
                         for(var i = 0; i < mutation.addedNodes.length; i++) {
-                            mutationElementsBackgrounds(mutation.addedNodes[i], null);
+                            mutationElementsBackgrounds(mutation.addedNodes[i], null, null);
                         }
                     } else if(mutation.type == "attributes") {
-                        mutationElementsBackgrounds(mutation.target, mutation.attributeName);
+                        mutationElementsBackgrounds(mutation.target, mutation.attributeName, mutation.oldValue);
                     }
                 });
             });
@@ -367,13 +367,22 @@
                 'attributes': true,
                 'subtree': true,
                 'childList': true,
-                'characterData': false
+                'characterData': false,
+                'attributeOldValue': true
             });
         }
     }
 
-    function mutationElementsBackgrounds(element, attribute) {
+    function mutationElementsBackgrounds(element, attribute, attributeOldValue) {
         if(typeof(element.classList) === "undefined" || element.classList == null || attribute == "class") {
+            return false;
+        }
+
+        if(element.classList.contains("pageShadowHasBackgroundImg") || element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected")) {
+            return false;
+        }
+
+        if(attributeOldValue !== null && attributeOldValue.indexOf("pageShadowDisableStyling") !== -1) {
             return false;
         }
 
