@@ -24,11 +24,11 @@ var autoEnableActivated = false;
 var lastAutoEnableDetected = null;
 
 function setPopup() {
-    if(typeof(chrome.browserAction.setPopup) !== 'undefined') {
+    if(typeof(chrome.browserAction) !== 'undefined' && typeof(chrome.browserAction.setPopup) !== 'undefined') {
         chrome.browserAction.setPopup({
             popup: "../extension.html"
         });
-    } else if(typeof(chrome.browserAction.onClicked) !== 'undefined') {
+    } else if(typeof(chrome.browserAction) !== 'undefined' && typeof(chrome.browserAction.onClicked) !== 'undefined' && typeof(chrome.tabs) !== 'undefined' && typeof(chrome.tabs.create) !== 'undefined') {
         // For Firefox for Android
         chrome.browserAction.onClicked.addListener(function(tab) {
             if(typeof(tab.id) !== "undefined") {
@@ -45,7 +45,7 @@ function setPopup() {
 }
 
 function createContextMenu(id, type, title, contexts, checked) {
-    if(typeof(chrome.contextMenus.create) !== 'undefined') {
+    if(typeof(chrome.contextMenus) !== 'undefined' && typeof(chrome.contextMenus.create) !== 'undefined') {
         chrome.contextMenus.create({
             id: id,
             type: type,
@@ -59,7 +59,7 @@ function createContextMenu(id, type, title, contexts, checked) {
 }
 
 function updateContextMenu(id, type, title, contexts, checked) {
-    if(typeof(chrome.contextMenus.update) !== 'undefined') {
+    if(typeof(chrome.contextMenus) !== 'undefined' && typeof(chrome.contextMenus.update) !== 'undefined') {
         chrome.contextMenus.update(id, {
             type: type,
             title: title,
@@ -72,57 +72,61 @@ function updateContextMenu(id, type, title, contexts, checked) {
 }
 
 function deleteContextMenu(id) {
-    if(typeof(chrome.contextMenus.remove) !== 'undefined') {
+    if(typeof(chrome.contextMenus) !== 'undefined' && typeof(chrome.contextMenus.remove) !== 'undefined') {
         chrome.contextMenus.remove(id);
     }
 }
 
 function menu() {
     function createMenu() {
-        chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'globallyEnable'], function (result) {
-            if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined' || result.sitesInterditPageShadow.trim() == '') {
-                var siteInterdits = "";
-            } else {
-                var siteInterdits = result.sitesInterditPageShadow.split("\n");
-            }
-
-            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                var tabUrl = tabs[0].url;
-
-                var url = new URL(tabUrl);
-                var domain = url.hostname;
-                var href = url.href;
-
-                if(result.whiteList == "true") {
-                    if(strict_in_array(domain, siteInterdits)) {
-                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
-                    } else {
-                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
-                    }
+        if(typeof(chrome.storage) !== 'undefined' && typeof(chrome.storage.local) !== 'undefined') {
+            chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'globallyEnable'], function (result) {
+                if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined' || result.sitesInterditPageShadow.trim() == '') {
+                    var siteInterdits = "";
                 } else {
-                    if(strict_in_array(domain, siteInterdits)) {
-                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
-                    } else {
-                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
-                    }
+                    var siteInterdits = result.sitesInterditPageShadow.split("\n");
+                }
 
-                    if(strict_in_array(href, siteInterdits)) {
-                        createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
-                    } else {
-                        createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
-                    }
+                if(typeof(chrome.tabs) !== 'undefined' && typeof(chrome.tabs.query) !== 'undefined') {
+                    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                        var tabUrl = tabs[0].url;
+
+                        var url = new URL(tabUrl);
+                        var domain = url.hostname;
+                        var href = url.href;
+
+                        if(result.whiteList == "true") {
+                            if(strict_in_array(domain, siteInterdits)) {
+                                createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
+                            } else {
+                                createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
+                            }
+                        } else {
+                            if(strict_in_array(domain, siteInterdits)) {
+                                createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
+                            } else {
+                                createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
+                            }
+
+                            if(strict_in_array(href, siteInterdits)) {
+                                createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
+                            } else {
+                                createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
+                            }
+                        }
+                    });
+                }
+
+                if(result.globallyEnable == "false") {
+                    createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], true);
+                } else {
+                    createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], false);
                 }
             });
-
-            if(result.globallyEnable == "false") {
-                createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], true);
-            } else {
-                createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], false);
-            }
-        });
+        }
     }
 
-    if(typeof(chrome.contextMenus.removeAll) !== 'undefined') {
+    if(typeof(chrome.contextMenus) !== 'undefined' && typeof(chrome.contextMenus.removeAll) !== 'undefined') {
         chrome.contextMenus.removeAll(function() {
             createMenu();
         });
@@ -136,40 +140,42 @@ function updateMenu() {
 }
 
 function updateBadge() {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        pageShadowAllowed(tabs[0].url, function(enabled) {
-            if(typeof(chrome.browserAction.setBadgeText) !== 'undefined') {
-                chrome.browserAction.setBadgeText({
-                    text: " "
-                });
-            }
-
-
-            if(typeof(chrome.browserAction.setBadgeBackgroundColor) !== 'undefined') {
-                if(enabled) {
-                    chrome.browserAction.setBadgeBackgroundColor({
-                        color: "#2ecc71"
-                    });
-                } else {
-                    chrome.browserAction.setBadgeBackgroundColor({
-                        color: "#e74c3c"
+    if(typeof(chrome.tabs) !== 'undefined' && typeof(chrome.tabs.query) !== 'undefined') {
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            pageShadowAllowed(tabs[0].url, function(enabled) {
+                if(typeof(chrome.browserAction) !== 'undefined' && typeof(chrome.browserAction.setBadgeText) !== 'undefined') {
+                    chrome.browserAction.setBadgeText({
+                        text: " "
                     });
                 }
-            }
 
-            if(typeof(chrome.browserAction.setTitle) !== 'undefined') {
-                if(!enabled) {
-                    chrome.browserAction.setTitle({
-                        title: "Page Shadow (" + getUImessage("pageShadowDisabled") + ")"
-                    });
-                } else {
-                    chrome.browserAction.setTitle({
-                        title: "Page Shadow"
-                    });
+
+                if(typeof(chrome.browserAction) !== 'undefined' && typeof(chrome.browserAction.setBadgeBackgroundColor) !== 'undefined') {
+                    if(enabled) {
+                        chrome.browserAction.setBadgeBackgroundColor({
+                            color: "#2ecc71"
+                        });
+                    } else {
+                        chrome.browserAction.setBadgeBackgroundColor({
+                            color: "#e74c3c"
+                        });
+                    }
                 }
-            }
+
+                if(typeof(chrome.browserAction) !== 'undefined' && typeof(chrome.browserAction.setTitle) !== 'undefined') {
+                    if(!enabled) {
+                        chrome.browserAction.setTitle({
+                            title: "Page Shadow (" + getUImessage("pageShadowDisabled") + ")"
+                        });
+                    } else {
+                        chrome.browserAction.setTitle({
+                            title: "Page Shadow"
+                        });
+                    }
+                }
+            });
         });
-    });
+    }
 }
 
 function checkAutoEnable() {
@@ -189,18 +195,20 @@ function checkAutoEnable() {
 }
 
 function autoEnable(changed) {
-    chrome.storage.local.get("autoEnable", function (result) {
-        if(result.autoEnable == "true") {
-            autoEnableActivated = true;
-        } else {
-            autoEnableActivated = false;
-        }
+    if(typeof(chrome.storage) !== 'undefined' && typeof(chrome.storage.local) !== 'undefined') {
+        chrome.storage.local.get("autoEnable", function (result) {
+            if(result.autoEnable == "true") {
+                autoEnableActivated = true;
+            } else {
+                autoEnableActivated = false;
+            }
 
-        if(typeof(changed) === "undefined" || changed == null || checkChangedStorageData(["hourEnable", 'minuteEnable', 'hourDisable', 'minuteDisable'], changed)) {
-            lastAutoEnableDetected = null;
-            checkAutoEnable();
-        }
-    });
+            if(typeof(changed) === "undefined" || changed == null || checkChangedStorageData(["hourEnable", 'minuteEnable', 'hourDisable', 'minuteDisable'], changed)) {
+                lastAutoEnableDetected = null;
+                checkAutoEnable();
+            }
+        });
+    }
 }
 
 setPopup();
@@ -209,34 +217,34 @@ updateBadge();
 autoEnable();
 var intervalCheckAutoEnable = setInterval(function() { checkAutoEnable(); }, 1000);
 
-if(typeof(chrome.storage.onChanged) !== 'undefined') {
+if(typeof(chrome.storage) !== 'undefined' && typeof(chrome.storage.onChanged) !== 'undefined') {
     chrome.storage.onChanged.addListener(function() {
         menu();
         updateBadge();
     });
 }
 
-if(typeof(chrome.tabs.onActivated) !== 'undefined') {
+if(typeof(chrome.tabs) !== 'undefined' && typeof(chrome.tabs.onActivated) !== 'undefined') {
     chrome.tabs.onActivated.addListener(function() {
         menu();
         updateBadge();
     });
 }
 
-if(typeof(chrome.tabs.onUpdated) !== 'undefined') {
+if(typeof(chrome.tabs) !== 'undefined' && typeof(chrome.tabs.onUpdated) !== 'undefined') {
     chrome.tabs.onUpdated.addListener(function() {
         menu();
         updateBadge();
     });
 }
 
-if(typeof(chrome.storage.onChanged) !== 'undefined') {
+if(typeof(chrome.storage) !== 'undefined' && typeof(chrome.storage.onChanged) !== 'undefined') {
     chrome.storage.onChanged.addListener(function(changes) {
         autoEnable(changes);
     });
 }
 
-if(typeof(chrome.contextMenus.onClicked) !== 'undefined') {
+if(typeof(chrome.contextMenus) !== 'undefined' && typeof(chrome.contextMenus.onClicked) !== 'undefined') {
     chrome.contextMenus.onClicked.addListener((info, tab) => {
         chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
             var disabledWebsites = '';
