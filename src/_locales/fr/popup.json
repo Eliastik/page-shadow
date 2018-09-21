@@ -12,6 +12,7 @@
         "tileTheme": "Sélectionnez le thème de couleur utilisé par cette fonction. Un thème comprend une couleur de fond, une couleur de texte et une couleur de lien unifiée pour chaque page.",
         "previsualisationTheme": "Prévisualisation :",
         "previsualisationThemeText": "Un texte. <a href=\"#\" id=\"pageShadowLinkNotVisited\">Un lien</a>. <a href=\"#\" id=\"pageShadowLinkVisited\">Un lien visité</a>.",
+        "disableImgBgColor": "Colorer l'arrière-plan des images",
         "colorInvert": "Inverser les couleurs",
         "titleColorInvert": "Inverse les couleurs des images, des vidéos et/ou de la page entière afin de mieux ressortir sur le thème sombre.",
         "entirePageInvert": "Page entière",

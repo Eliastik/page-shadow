@@ -109,7 +109,7 @@
     .pageShadowContrastBlack@{name} a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack@{name} #pageShadowLinkVisited {
         color: @visitedlnkcolor !important;
     }
-    .pageShadowContrastBlack@{name} img {
+    .pageShadowContrastBlack@{name}:not(.pageShadowDisableImgBgColor) img {
         background-color: @imgbgcolor !important;
     }
     .pageShadowContrastBlack@{name} .pageShadowHasBackgroundImg {
@@ -152,7 +152,7 @@
     background-color: orange !important;
     color: dark !important;
 }
-.pageShadowContrastBlackCustom img {
+.pageShadowContrastBlackCustom:not(.pageShadowDisableImgBgColor) img {
     background-color: #BDBDBD !important;
 }
 .pageShadowContrastBlackCustom .pageShadowHasBackgroundImg {

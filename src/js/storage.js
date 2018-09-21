@@ -111,6 +111,9 @@ function setSettingItem(name, value) {
         case 'invertVideoColors':
             chrome.storage.local.set({'invertVideoColors': value});
             break;
+        case 'disableImgBgColor':
+            chrome.storage.local.set({'disableImgBgColor': value});
+            break;
     }
 }
 function checkFirstLoad() {
@@ -168,7 +171,8 @@ function setFirstSettings() {
         'hourEnableFormat': defaultHourEnableFormat,
         'hourDisable': defaultHourDisable,
         'minuteDisable': defaultMinuteDisable,
-        'hourDisableFormat': defaultHourDisableFormat
+        'hourDisableFormat': defaultHourDisableFormat,
+        'disableImgBgColor': 'false'
     });
 }
 

@@ -44,13 +44,23 @@ body.popup {
     width: 350px;
     overflow-x: hidden;
     overflow-y: auto;
-    max-height: 1025px;
+    max-height: 1035px;
 }
 body.popup > .navbar {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 .container.popup {
     width: 100%;
+}
+body.popup .well-sm {
+    padding: 6px !important;
+}
+body.popup #previsualisationDiv {
+    display: inline-block;
+    padding: 0 8px;
+}
+#introPopup {
+    margin: 0 0 4px 0 !important;
 }
 .navbar-brand {
     padding: 15px;
@@ -112,6 +122,9 @@ body.popup > .navbar {
 #previsualisationDiv {
     font-size: 10pt;
 }
+#previsualisationDiv a {
+    transition: all 0s;
+}
 span[data-toggle] {
     cursor: pointer;
     vertical-align: middle;
@@ -124,14 +137,17 @@ label {
     cursor: pointer;
 }
 hr {
-    margin-top: 8px;
-    margin-bottom: 8px;
+    margin-top: 4px;
+    margin-bottom: 4px;
 }
 .m0 {
     margin-bottom: 0;
 }
 .m6 {
     margin-bottom: 6px;
+}
+.mb4 {
+    margin-bottom: 4px;
 }
 .div-inline {
     display: inline-block;

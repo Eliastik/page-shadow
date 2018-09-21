@@ -338,7 +338,7 @@ $(document).ready(function() {
     });
 
     function checkContrastMode() {
-        chrome.storage.local.get(["theme", "pageShadowEnabled"], function (result) {
+        chrome.storage.local.get(["theme", "pageShadowEnabled", "disableImgBgColor"], function (result) {
             if(typeof result.theme !== "undefined" && typeof result.theme !== null) {
                 $("#themeSelect").val(result.theme);
                 previewTheme(result.theme);
@@ -358,6 +358,12 @@ $(document).ready(function() {
                     $("#checkAssomPage").prop("checked", false);
                 }
             }
+
+            if(result.disableImgBgColor == "true" && $("#checkDisableImgBgColor").is(':checked') == true) {
+                $("#checkDisableImgBgColor").prop("checked", false);
+            } else if(result.disableImgBgColor !== "true" && $("#checkDisableImgBgColor").is(':checked') == false) {
+                $("#checkDisableImgBgColor").prop("checked", true);
+            }
         });
     }
 
@@ -366,6 +372,14 @@ $(document).ready(function() {
             setSettingItem("pageShadowEnabled", "true");
         } else {
             setSettingItem("pageShadowEnabled", "false");
+        }
+    });
+
+    $("#checkDisableImgBgColor").change(function() {
+        if($(this).is(':checked') == true) {
+            setSettingItem("disableImgBgColor", "false");
+        } else {
+            setSettingItem("disableImgBgColor", "true");
         }
     });
 
