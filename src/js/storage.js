@@ -114,6 +114,9 @@ function setSettingItem(name, value) {
         case 'disableImgBgColor':
             chrome.storage.local.set({'disableImgBgColor': value});
             break;
+        case 'invertBgColor':
+            chrome.storage.local.set({'invertBgColor': value});
+            break;
     }
 }
 function checkFirstLoad() {
@@ -161,6 +164,7 @@ function setFirstSettings() {
         'invertImageColors': 'true',
         'invertEntirePage': 'false',
         'invertVideoColors': 'false',
+        'invertBgColor': 'true',
         'globallyEnable': 'true',
         'customThemeInfoDisable': 'false',
         'customCSSCode': '',

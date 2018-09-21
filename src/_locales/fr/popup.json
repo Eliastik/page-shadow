@@ -17,6 +17,7 @@
         "titleColorInvert": "Inverse les couleurs des images, des vidéos et/ou de la page entière afin de mieux ressortir sur le thème sombre.",
         "entirePageInvert": "Page entière",
         "imageInvert": "Images",
+        "bgColorInvert": "Arr.-plans",
         "videoInvert": "Vidéos",
         "tileEntirePageInvert": "Inverse les couleurs de la page entière. Fonctionne mal avec la fonction d'augmentation du contraste.",
         "brightness": "Baisser la luminosité de la page",

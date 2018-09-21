@@ -408,13 +408,14 @@ $(document).ready(function() {
     }
 
     function checkColorInvert() {
-        chrome.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors"], function (result) {
+        chrome.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor"], function (result) {
             if(result.colorInvert == "true") {
                 // Convert old settings to new settings
                 setSettingItem("colorInvert", "false");
                 setSettingItem("invertPageColors", "true");
                 setSettingItem("invertImageColors", "true");
                 setSettingItem("invertVideoColors", "true");
+                setSettingItem("invertBgColor", "true");
                 checkColorInvert();
             } else if(result.invertPageColors == "true") {
                 $("#invertPageColorsDiv").stop().fadeIn();
@@ -427,6 +428,12 @@ $(document).ready(function() {
                     $("#checkImageInvert").prop("checked", true);
                 } else if(result.invertImageColors == "false" && $("#checkImageInvert").is(':checked') == true) {
                     $("#checkImageInvert").prop("checked", false);
+                }
+                
+                if(result.invertBgColor == "false" && $("#checkBgColorInvert").is(':checked') == true) {
+                    $("#checkBgColorInvert").prop("checked", false);
+                } else if(result.invertBgColor !== "false" && $("#checkBgColorInvert").is(':checked') == false) {
+                    $("#checkBgColorInvert").prop("checked", true);
                 }
 
                 if(result.invertVideoColors == "true" && $("#checkVideoInvert").is(':checked') == false) {
@@ -444,6 +451,12 @@ $(document).ready(function() {
                 if(result.invertImageColors !== "true") {
                     if($("#checkImageInvert").is(':checked') == true) {
                         $("#checkImageInvert").prop("checked", false);
+                    }
+                }
+                
+                if(result.invertBgColor == "false") {
+                    if($("#checkBgColorInvert").is(':checked') == true) {
+                        $("#checkBgColorInvert").prop("checked", false);
                     }
                 }
 
@@ -485,6 +498,15 @@ $(document).ready(function() {
         }
         else {
             setSettingItem("invertImageColors", "false");
+        }
+    });
+    
+    $("#checkBgColorInvert").change(function() {
+        if($(this).is(':checked') == true) {
+            setSettingItem("invertBgColor", "true");
+        }
+        else {
+            setSettingItem("invertBgColor", "false");
         }
     });
 

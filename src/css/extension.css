@@ -149,6 +149,9 @@ hr {
 .mb4 {
     margin-bottom: 4px;
 }
+.checkbox-group {
+    display: inline-block;
+}
 .div-inline {
     display: inline-block;
 }
