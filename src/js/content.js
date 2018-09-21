@@ -393,11 +393,11 @@
             });
 
             mut_backgrounds.observe(document.body, {
-                'attributes': true,
+                'attributes': false,
                 'subtree': true,
                 'childList': true,
                 'characterData': false,
-                'attributeOldValue': true
+                // 'attributeOldValue': true
             });
         }
     }
