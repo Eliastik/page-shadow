@@ -131,8 +131,8 @@ function customTheme(style, disableCustomCSS, lnkCssElement) {
         style.sheet.insertRule(".pageShadowContrastBlackCustom input { border: 1px solid #"+ textsColorTheme +" !important; }", 0);
         style.sheet.insertRule(".pageShadowContrastBlackCustom * {  font-family: " + fontTheme + " !important; }", 0);
         style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg { color: #"+ textsColorTheme +" !important; }", 0);
-        style.sheet.insertRule(".pageShadowContrastBlackCustom a { color: #"+ linksColorTheme +" !important; background-color: #"+ backgroundTheme +" !important; }", 0);
-        style.sheet.insertRule(".pageShadowContrastBlackCustom.pageShadowBackgroundDetected *:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling) { background: #"+ backgroundTheme +" !important; }", 0);
+        style.sheet.insertRule(".pageShadowContrastBlackCustom a { color: #"+ linksColorTheme +" !important; background: transparent !important; }", 0);
+        style.sheet.insertRule(".pageShadowContrastBlackCustom.pageShadowBackgroundDetected *:not(img):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling) { background: #"+ backgroundTheme +" !important; }", 0);
         style.sheet.insertRule(".pageShadowContrastBlackCustom a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlackCustom #pageShadowLinkVisited { color: #"+ linksVisitedColorTheme +" !important; }", 0);
 
         // Custom CSS

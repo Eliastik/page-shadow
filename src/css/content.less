@@ -101,9 +101,9 @@
     }
     .pageShadowContrastBlack@{name} a {
         color: @lnkcolor !important;
-        background-color: @bgcolor !important;
+        background: transparent !important;
     }
-    .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected *:not(img):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling) {
+    .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected *:not(img):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling) {
         background: @bgcolor !important;
     }
     .pageShadowContrastBlack@{name} a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack@{name} #pageShadowLinkVisited {
