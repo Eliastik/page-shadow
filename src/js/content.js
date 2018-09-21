@@ -52,7 +52,7 @@
             }
         }
 
-        invertColor(colorInvert, invertImageColors, invertEntirePage);
+        invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors);
 
         if(document.readyState == "complete" || document.readyState == "interactive") {
             mutationObserve("contrast");
@@ -71,9 +71,10 @@
         customTheme(style, false, lnkCustomTheme);
     }
 
-    function invertColor(enabled, invertImageColors, invertEntirePage) {
+    function invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors) {
         document.body.classList.remove("pageShadowInvertImageColor");
         document.body.classList.remove("pageShadowInvertEntirePage");
+        document.body.classList.remove("pageShadowInvertVideoColor");
         document.getElementsByTagName('html')[0].classList.remove("pageShadowBackground");
 
         if(enabled !== null && enabled == "true") {
@@ -86,8 +87,20 @@
                 } else {
                     document.body.classList.add("pageShadowInvertImageColor");
                 }
-            } else if(invertImageColors !== null && invertImageColors == "true") {
-                document.body.classList.add("pageShadowInvertImageColor");
+
+                if(invertVideoColors !== null && invertVideoColors == "true") {
+                    document.body.classList.remove("pageShadowInvertVideoColor");
+                } else {
+                    document.body.classList.add("pageShadowInvertVideoColor");
+                }
+            } else {
+                if(invertImageColors !== null && invertImageColors == "true") {
+                    document.body.classList.add("pageShadowInvertImageColor");
+                }
+
+                if(invertVideoColors !== null && invertVideoColors == "true") {
+                    document.body.classList.add("pageShadowInvertVideoColor");
+                }
             }
 
             if(document.readyState == "complete" || document.readyState == "interactive") {
@@ -240,9 +253,9 @@
         timeOutAP = setTimeout(function() { applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage) }, 50);
     }
 
-    function applyIC(colorInvert, invertImageColors, invertEntirePage) {
-        if(document.body) return invertColor(colorInvert, invertImageColors, invertEntirePage);
-        timeOutIC = setTimeout(function() { applyIC(colorInvert, invertImageColors, invertEntirePage) }, 50);
+    function applyIC(colorInvert, invertImageColors, invertEntirePage, invertVideoColors) {
+        if(document.body) return invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors);
+        timeOutIC = setTimeout(function() { applyIC(colorInvert, invertImageColors, invertEntirePage, invertVideoColors) }, 50);
     }
 
     function applyBI(tagName, add, type) {
@@ -305,6 +318,8 @@
                         var classListHTML = document.getElementsByTagName('html')[0].classList;
 
                         if(mutation.oldValue.indexOf("pageShadowInvertImageColor") !== -1 && !classList.contains("pageShadowInvertImageColor")) {
+                            setTimeout(main("onlyInvert"), 1);
+                        } else if(mutation.oldValue.indexOf("pageShadowInvertVideoColor") !== -1 && !classList.contains("pageShadowInvertVideoColor")) {
                             setTimeout(main("onlyInvert"), 1);
                         } else if(mutation.oldValue.indexOf("pageShadowInvertEntirePage") !== -1 && !classList.contains("pageShadowInvertEntirePage")) {
                             setTimeout(main("onlyInvert"), 1);
@@ -400,7 +415,7 @@
     }
 
     function main(type) {
-        chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertEntirePage', 'whiteList', 'colorTemp', 'globallyEnable'], function (result) {
+        chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertEntirePage', 'whiteList', 'colorTemp', 'globallyEnable', 'invertVideoColors'], function (result) {
             if(typeof timeOutLum !== "undefined") clearTimeout(timeOutLum);
             if(typeof timeOutAP !== "undefined") clearTimeout(timeOutAP);
             if(typeof timeOutIC !== "undefined") clearTimeout(timeOutIC);
@@ -413,6 +428,7 @@
             if(type == "reset" || type == "onlyreset") {
                 document.body.classList.remove("pageShadowInvertImageColor");
                 document.body.classList.remove("pageShadowInvertEntirePage");
+                document.body.classList.remove("pageShadowInvertVideoColor");
                 document.getElementsByTagName('html')[0].classList.remove("pageShadowBackground");
                 document.body.classList.remove("pageShadowContrastBlackCustom");
 
@@ -454,6 +470,7 @@
                     var colorTemp = result.colorTemp;
                     var invertEntirePage = result.invertEntirePage;
                     var invertImageColors = result.invertImageColors;
+                    var invertVideoColors = result.invertVideoColors;
 
                     if(result.colorInvert == "true") {
                         var colorInvert = "true";
@@ -467,13 +484,13 @@
                     if(type == "onlyContrast") {
                         assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage);
                     } else if(type == "onlyInvert") {
-                        invertColor(colorInvert, invertImageColors, invertEntirePage);
+                        invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors);
                     } else if(type == "onlyBrightness") {
                         luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits, colorTemp);
                     } else if(pageShadowEnabled == "true") {
                         applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage);
                     } else {
-                        applyIC(colorInvert, invertImageColors, invertEntirePage);
+                        applyIC(colorInvert, invertImageColors, invertEntirePage, invertVideoColors);
                     }
 
                     if(type !== "onlyContrast" && type !== "onlyInvert" && type !== "onlyBrightness") {

@@ -108,6 +108,9 @@ function setSettingItem(name, value) {
         case 'defaultLoad':
             chrome.storage.local.set({'defaultLoad': value});
             break;
+        case 'invertVideoColors':
+            chrome.storage.local.set({'invertVideoColors': value});
+            break;
     }
 }
 function checkFirstLoad() {
@@ -154,6 +157,7 @@ function setFirstSettings() {
         'invertPageColors': 'false',
         'invertImageColors': 'true',
         'invertEntirePage': 'false',
+        'invertVideoColors': 'false',
         'globallyEnable': 'true',
         'customThemeInfoDisable': 'false',
         'customCSSCode': '',

@@ -394,12 +394,13 @@ $(document).ready(function() {
     }
 
     function checkColorInvert() {
-        chrome.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage"], function (result) {
+        chrome.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors"], function (result) {
             if(result.colorInvert == "true") {
                 // Convert old settings to new settings
                 setSettingItem("colorInvert", "false");
                 setSettingItem("invertPageColors", "true");
                 setSettingItem("invertImageColors", "true");
+                setSettingItem("invertVideoColors", "true");
                 checkColorInvert();
             } else if(result.invertPageColors == "true") {
                 $("#invertPageColorsDiv").stop().fadeIn();
@@ -408,10 +409,16 @@ $(document).ready(function() {
                     $("#checkColorInvert").prop("checked", true);
                 }
 
-                if(result.invertImageColors == "true") {
-                    if($("#checkImageInvert").is(':checked') == false) {
-                        $("#checkImageInvert").prop("checked", true);
-                    }
+                if(result.invertImageColors == "true" && $("#checkImageInvert").is(':checked') == false) {
+                    $("#checkImageInvert").prop("checked", true);
+                } else if(result.invertImageColors == "false" && $("#checkImageInvert").is(':checked') == true) {
+                    $("#checkImageInvert").prop("checked", false);
+                }
+
+                if(result.invertVideoColors == "true" && $("#checkVideoInvert").is(':checked') == false) {
+                    $("#checkVideoInvert").prop("checked", true);
+                } else if(result.invertVideoColors == "false" && $("#checkVideoInvert").is(':checked') == true) {
+                    $("#checkVideoInvert").prop("checked", false);
                 }
             } else {
                 $("#invertPageColorsDiv").stop().fadeOut();
@@ -423,6 +430,12 @@ $(document).ready(function() {
                 if(result.invertImageColors !== "true") {
                     if($("#checkImageInvert").is(':checked') == true) {
                         $("#checkImageInvert").prop("checked", false);
+                    }
+                }
+
+                if(result.invertVideoColors !== "true") {
+                    if($("#checkVideoInvert").is(':checked') == true) {
+                        $("#checkVideoInvert").prop("checked", false);
                     }
                 }
             }
@@ -458,6 +471,15 @@ $(document).ready(function() {
         }
         else {
             setSettingItem("invertImageColors", "false");
+        }
+    });
+
+    $("#checkVideoInvert").change(function() {
+        if($(this).is(':checked') == true) {
+            setSettingItem("invertVideoColors", "true");
+        }
+        else {
+            setSettingItem("invertVideoColors", "false");
         }
     });
 
