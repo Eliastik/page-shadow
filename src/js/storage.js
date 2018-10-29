@@ -17,106 +17,15 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 function setSettingItem(name, value) {
-    switch(name) {
-        case 'pageShadowEnabled':
-            chrome.storage.local.set({'pageShadowEnabled': value});
-            break;
-        case 'theme':
-            chrome.storage.local.set({'theme': value});
-            break;
-        case 'colorInvert':
-            chrome.storage.local.set({'colorInvert': value});
-            break;
-        case 'pageLumEnabled':
-            chrome.storage.local.set({'pageLumEnabled': value});
-            break;
-        case 'pourcentageLum':
-            chrome.storage.local.set({'pourcentageLum': value});
-            break;
-        case 'nightModeEnabled':
-            chrome.storage.local.set({'nightModeEnabled': value});
-            break;
-        case 'sitesInterditPageShadow':
-            chrome.storage.local.set({'sitesInterditPageShadow': value});
-            break;
-        case 'liveSettings':
-            chrome.storage.local.set({'liveSettings': value});
-            break;
-        case 'whiteList':
-            chrome.storage.local.set({'whiteList': value});
-            break;
-        case 'colorTemp':
-            chrome.storage.local.set({'colorTemp': value});
-            break;
-        case 'customThemeBg':
-            chrome.storage.local.set({'customThemeBg': value});
-            break;
-        case 'customThemeTexts':
-            chrome.storage.local.set({'customThemeTexts': value});
-            break;
-        case 'customThemeLinks':
-            chrome.storage.local.set({'customThemeLinks': value});
-            break;
-        case 'invertEntirePage':
-            chrome.storage.local.set({'invertEntirePage': value});
-            break;
-        case 'customThemeInfoDisable':
-            chrome.storage.local.set({'customThemeInfoDisable': value});
-            break;
-        case 'customThemeLinksVisited':
-            chrome.storage.local.set({'customThemeLinksVisited': value});
-            break;
-        case 'customThemeFont':
-            chrome.storage.local.set({'customThemeFont': value});
-            break;
-        case 'globallyEnable':
-            chrome.storage.local.set({'globallyEnable': value});
-            break;
-        case 'invertPageColors':
-            chrome.storage.local.set({'invertPageColors': value});
-            break;
-        case 'invertImageColors':
-            chrome.storage.local.set({'invertImageColors': value});
-            break;
-        case 'customCSSCode':
-            chrome.storage.local.set({'customCSSCode': value});
-            break;
-        case 'autoEnable':
-            chrome.storage.local.set({'autoEnable': value});
-            break;
-        case 'autoEnableHourFormat':
-            chrome.storage.local.set({'autoEnableHourFormat': value});
-            break;
-        case 'hourEnable':
-            chrome.storage.local.set({'hourEnable': value});
-            break;
-        case 'minuteEnable':
-            chrome.storage.local.set({'minuteEnable': value});
-            break;
-        case 'hourEnableFormat':
-            chrome.storage.local.set({'hourEnableFormat': value});
-            break;
-        case 'hourDisable':
-            chrome.storage.local.set({'hourDisable': value});
-            break;
-        case 'minuteDisable':
-            chrome.storage.local.set({'minuteDisable': value});
-            break;
-        case 'hourDisableFormat':
-            chrome.storage.local.set({'hourDisableFormat': value});
-            break;
-        case 'defaultLoad':
-            chrome.storage.local.set({'defaultLoad': value});
-            break;
-        case 'invertVideoColors':
-            chrome.storage.local.set({'invertVideoColors': value});
-            break;
-        case 'disableImgBgColor':
-            chrome.storage.local.set({'disableImgBgColor': value});
-            break;
-        case 'invertBgColor':
-            chrome.storage.local.set({'invertBgColor': value});
-            break;
+    if(typeof(window["settingNames"]) == "undefined") settingNames = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'sitesInterditPageShadow', 'liveSettings', 'whiteList', 'colorTemp', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'globallyEnable', 'customThemeInfoDisable', 'customCSSCode', 'autoEnable', 'autoEnableHourFormat', 'hourEnable', 'minuteEnable', 'hourEnableFormat', 'hourDisable', 'minuteDisable', 'hourDisableFormat', 'disableImgBgColor', 'defaultLoad'];
+    
+    if(settingNames.indexOf(name) !== -1) {
+        var newSetting = {};
+        newSetting[name] = value;
+        
+        return chrome.storage.local.set(newSetting);
+    } else {
+        return false;
     }
 }
 function checkFirstLoad() {
