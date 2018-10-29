@@ -110,7 +110,7 @@
             "descriptionRestore": "Vous pouvez restaurer une archive de vos paramètres en cliquant sur le bouton ci-dessous, puis en choisissant le fichier de l'archive sur votre appareil (au format JSON).",
             "warningRestore": "Attention, la restauration de l'archive effacera tous vos paramètres actuels !",
             "buttonRestore": "Restaurer les paramètres…",
-            "restoreError": "Une erreur est survenue lors de la restauration des données. Assurez-vous que le fichier choisi est bien un fichier archive de paramètres Page Shadow au format JSON, puis réessayez.",
+            "restoreError": "Une erreur est survenue lors de la restauration des données. Assurez-vous que le fichier choisi soit bien un fichier archive de paramètres Page Shadow au format JSON, puis réessayez.",
             "restoreErrorFilesize": "Fichier archive trop lourd. La taille maximale supportée d'un fichier archive est de 2 Mo.",
             "restoreErrorExtension": "Fichier invalide. Le fichier doit être un fichier au format JSON.",
             "restoreErrorArchive": "Ce fichier n'est pas une archive de paramètres Page Shadow. Assurez-vous d'avoir sélectionné le bon fichier.",

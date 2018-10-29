@@ -178,14 +178,13 @@ function archiveSettings() {
             var dataStr = JSON.stringify(data);
             var filename = "page-shadow-backupdata-" + dateString + ".json";
 
-
             codeMirrorJSONArchive.getDoc().setValue(JSON.stringify(data));
             $("#archiveSuggestedName").val(filename);
             $("#helpArchive").show();
 
             downloadData(dataStr, filename, "application/json");
         } catch(e) {
-            $("#archiveError").show();
+            $("#archiveError").fadeIn(500);
         }
     });
 }
@@ -201,7 +200,7 @@ function restoreSettings(event) {
         reader.onload = onReaderLoad;
 
         reader.onerror = function() {
-            $("#restoreError").show();
+            $("#restoreError").fadeIn(500);
         };
 
         var fileExtension = event.target.files[0].name.split('.').pop().toLowerCase();
@@ -212,11 +211,11 @@ function restoreSettings(event) {
             if(filesize <= 2000000) { // max size of 2 Mo
                 reader.readAsText(event.target.files[0]);
             } else {
-                $("#restoreErrorFilesize").show();
+                $("#restoreErrorFilesize").fadeIn(500);
                 return false;
             }
         } else {
-            $("#restoreErrorExtension").show();
+            $("#restoreErrorExtension").fadeIn(500);
             return false;
         }
 
@@ -224,7 +223,7 @@ function restoreSettings(event) {
             try {
                 var obj = JSON.parse(event.target.result);
             } catch(e) {
-                $("#restoreError").show();
+                $("#restoreError").fadeIn(500);
                 return false;
             }
 
@@ -240,7 +239,7 @@ function restoreSettings(event) {
             }
 
             if(ispageshadowarchive == false) {
-                $("#restoreErrorArchive").show();
+                $("#restoreErrorArchive").fadeIn(500);
                 return false;
             }
 
@@ -257,7 +256,7 @@ function restoreSettings(event) {
                 }
             }
 
-            $("#restoreSuccess").show();
+            $("#restoreSuccess").fadeIn(500);
         }
     } else {
         $("#restoreError").hide();

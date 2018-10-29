@@ -288,6 +288,9 @@ div.navbar-right {
 .modal-body > .tab-content {
     overflow: hidden !important;
 }
+#infoRestore {
+    margin-top: 8px;
+}
 @media (min-width: 768px) {
     body.popup .navbar-right {
         float: right !important;
