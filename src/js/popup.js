@@ -429,7 +429,7 @@ $(document).ready(function() {
                 } else if(result.invertImageColors == "false" && $("#checkImageInvert").is(':checked') == true) {
                     $("#checkImageInvert").prop("checked", false);
                 }
-                
+
                 if(result.invertBgColor == "false" && $("#checkBgColorInvert").is(':checked') == true) {
                     $("#checkBgColorInvert").prop("checked", false);
                 } else if(result.invertBgColor !== "false" && $("#checkBgColorInvert").is(':checked') == false) {
@@ -453,7 +453,7 @@ $(document).ready(function() {
                         $("#checkImageInvert").prop("checked", false);
                     }
                 }
-                
+
                 if(result.invertBgColor == "false") {
                     if($("#checkBgColorInvert").is(':checked') == true) {
                         $("#checkBgColorInvert").prop("checked", false);
@@ -500,7 +500,7 @@ $(document).ready(function() {
             setSettingItem("invertImageColors", "false");
         }
     });
-    
+
     $("#checkBgColorInvert").change(function() {
         if($(this).is(':checked') == true) {
             setSettingItem("invertBgColor", "true");

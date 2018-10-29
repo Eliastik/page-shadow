@@ -73,7 +73,7 @@
         background: @bgcolor !important;
         background-image: url();
     }
-    .pageShadowContrastBlack@{name} *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(svg):not(yt-icon) {
+    .pageShadowContrastBlack@{name} *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(svg):not(yt-icon) {
         background-color: @bgcolor !important;
         color: @txtcolor !important;
     }
@@ -101,9 +101,12 @@
     }
     .pageShadowContrastBlack@{name} a {
         color: @lnkcolor !important;
-        background: transparent !important;
+        background-color: transparent !important;
     }
-    .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected *:not(img):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling) {
+    .pageShadowContrastBlack@{name} img, .pageShadowContrastBlack@{name} video {
+        filter: invert(0%) !important;
+    }
+    .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected *:not(img):not(video):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling) {
         background: @bgcolor !important;
     }
     .pageShadowContrastBlack@{name} a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack@{name} #pageShadowLinkVisited {
@@ -177,31 +180,31 @@ body.pageShadowInvertEntirePage div#pageShadowLuminositeDiv, body.pageShadowInve
     -webkit-filter: invert(100%) !important;
 }
 body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg) img, body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg) svg {
-    filter: invert(100%);
-    -moz-filter: invert(100%);
-    -o-filter: invert(100%);
-    -webkit-filter: invert(100%);
+    filter: invert(100%) !important;
+    -moz-filter: invert(100%) !important;
+    -o-filter: invert(100%) !important;
+    -webkit-filter: invert(100%) !important;
     background-color: transparent !important;
 }
 body.pageShadowInvertBgColor .pageShadowHasBackgroundImg {
-    filter: invert(100%);
-    -moz-filter: invert(100%);
-    -o-filter: invert(100%);
-    -webkit-filter: invert(100%);
+    filter: invert(100%) !important;
+    -moz-filter: invert(100%) !important;
+    -o-filter: invert(100%) !important;
+    -webkit-filter: invert(100%) !important;
     background-color: transparent !important;
 }
 body.pageShadowInvertBgColor .pageShadowHasBackgroundImg > * {
-    filter: invert(100%);
-    -moz-filter: invert(100%);
-    -o-filter: invert(100%);
-    -webkit-filter: invert(100%);
+    filter: invert(100%) !important;
+    -moz-filter: invert(100%) !important;
+    -o-filter: invert(100%) !important;
+    -webkit-filter: invert(100%) !important;
     background-color: transparent !important;
 }
 body.pageShadowInvertVideoColor video {
-    filter: invert(100%);
-    -moz-filter: invert(100%);
-    -o-filter: invert(100%);
-    -webkit-filter: invert(100%);
+    filter: invert(100%) !important;
+    -moz-filter: invert(100%) !important;
+    -o-filter: invert(100%) !important;
+    -webkit-filter: invert(100%) !important;
     background-color: transparent !important;
 }
 

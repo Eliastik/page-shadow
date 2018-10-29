@@ -34,6 +34,7 @@
     var lnkCustomTheme = document.createElement('link');
     var backgroundDetected = 0;
     var timeOutLum, timeOutAP, timeOutIC, timeOutBI;
+    var elLumWrapper = document.createElement("div");
     var elLum = document.createElement("div");
 
     function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) {
@@ -229,7 +230,7 @@
                 elLum.style.opacity = pourcentage / 100;
             }
 
-            applyAL(elLum);
+            applyAL(elLum, elLumWrapper);
 
             if(document.readyState == "complete" || document.readyState == "interactive") {
                 mutationObserve("brightness");
@@ -241,25 +242,26 @@
         }
     }
 
-    function appendLum(elLum) {
-        if(document.getElementById("pageShadowLuminositeDiv") !== null) {
-            document.body.removeChild(document.getElementById("pageShadowLuminositeDiv"));
+    function appendLum(elLum, elLumWrapper) {
+        if(document.getElementById("pageShadowLuminositeDiv") !== null && document.body.contains(elLumWrapper)) {
+            elLumWrapper.removeChild(document.getElementById("pageShadowLuminositeDiv"));
         }
 
-        if(document.getElementById("pageShadowLuminositeDivNightMode") !== null) {
-            document.body.removeChild(document.getElementById("pageShadowLuminositeDivNightMode"));
+        if(document.getElementById("pageShadowLuminositeDivNightMode") !== null && document.body.contains(elLumWrapper)) {
+            elLumWrapper.removeChild(document.getElementById("pageShadowLuminositeDivNightMode"));
         }
 
-        document.body.appendChild(elLum);
+        document.body.appendChild(elLumWrapper);
+        elLumWrapper.appendChild(elLum);
 
         if(typeof timeOutLum !== "undefined") {
             clearTimeout(timeOutLum);
         }
     }
 
-    function applyAL(element) {
-        if(document.body) return appendLum(element);
-        timeOutLum = setTimeout(function() { applyAL(element) }, 50);
+    function applyAL(element, wrapper) {
+        if(document.body) return appendLum(element, wrapper);
+        timeOutLum = setTimeout(function() { applyAL(element, wrapper) }, 50);
     }
 
     function applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) {
@@ -279,6 +281,8 @@
 
     function mutationObserve(type) {
         if(type == "contrast") {
+            if(typeof mut_contrast !== 'undefined') mut_contrast.disconnect();
+
             mut_contrast = new MutationObserver(function(mutations, mut) {
                 mut_contrast.disconnect();
                 var classList = document.body.classList;
@@ -303,7 +307,7 @@
                 });
 
                 if(!containsPageContrast) {
-                    setTimeout(main("onlycontrast"), 1);
+                    setTimeout(function() { main("onlycontrast", "contrast"); }, 1);
                 } else {
                     if(document.readyState == "complete" || document.readyState == "interactive") {
                         mutationObserve("contrast");
@@ -324,6 +328,8 @@
                 'attributeFilter': ["class"]
             });
         } else if(type == "invert") {
+            if(typeof mut_invert !== 'undefined') mut_invert.disconnect();
+
             mut_invert = new MutationObserver(function(mutations, mut) {
                 mut_invert.disconnect();
 
@@ -343,13 +349,13 @@
                         var classListHTML = document.getElementsByTagName('html')[0].classList;
 
                         if(mutation.oldValue.indexOf("pageShadowInvertImageColor") !== -1 && !classList.contains("pageShadowInvertImageColor")) {
-                            setTimeout(main("onlyInvert"), 1);
+                            setTimeout(function() { main("onlyInvert", "invert"); }, 1);
                         } else if(mutation.oldValue.indexOf("pageShadowInvertVideoColor") !== -1 && !classList.contains("pageShadowInvertVideoColor")) {
-                            setTimeout(main("onlyInvert"), 1);
+                            setTimeout(function() { main("onlyInvert", "invert"); }, 1);
                         } else if(mutation.oldValue.indexOf("pageShadowInvertBgColor") !== -1 && !classList.contains("pageShadowInvertBgColor")) {
-                            setTimeout(main("onlyInvert"), 1);
+                            setTimeout(function() { main("onlyInvert", "invert"); }, 1);
                         } else if(mutation.oldValue.indexOf("pageShadowInvertEntirePage") !== -1 && !classList.contains("pageShadowInvertEntirePage")) {
-                            setTimeout(main("onlyInvert"), 1);
+                            setTimeout(function() { main("onlyInvert", "invert"); }, 1);
                         } else {
                             reMutObserveInvert();
                         }
@@ -368,27 +374,31 @@
                 'attributeFilter': ["class"]
             });
         } else if(type == "brightness") {
+            if(typeof mut_brightness !== 'undefined') mut_brightness.disconnect();
+
             mut_brightness = new MutationObserver(function(mutations, mut) {
                 mut_brightness.disconnect();
                 var brightness = document.getElementById("pageShadowLuminositeDiv");
                 var nightmode = document.getElementById("pageShadowLuminositeDivNightMode");
 
-                if (!document.body.contains(brightness) && !document.body.contains(nightmode)) {
-                    setTimeout(main("onlyBrightness"), 1);
-                } else {
-                    if(document.readyState == "complete" || document.readyState == "interactive") {
-                        mutationObserve("brightness");
+                mutations.forEach(function(mutation) {
+                    if((!document.body.contains(brightness) && !document.body.contains(nightmode)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
+                        setTimeout(function() { main("onlyBrightness", "brightness"); }, 1);
                     } else {
-                        window.onload = function() {
+                        if(document.readyState == "complete" || document.readyState == "interactive") {
                             mutationObserve("brightness");
+                        } else {
+                            window.onload = function() {
+                                mutationObserve("brightness");
+                            }
                         }
                     }
-                }
+                });
             });
 
-            mut_brightness.observe(document.body, {
-                'attributes': false,
-                'subtree': false,
+            mut_brightness.observe(elLumWrapper, {
+                'attributes': true,
+                'subtree': true,
                 'childList': true,
                 'characterData': false
             });
@@ -441,15 +451,21 @@
         element.classList.remove("pageShadowDisableStyling");
     }
 
-    function main(type) {
+    function main(type, mutation) {
         chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertEntirePage', 'whiteList', 'colorTemp', 'globallyEnable', 'invertVideoColors', 'disableImgBgColor', 'invertBgColor'], function (result) {
+            if(type == "reset" || type == "onlyreset") {
+                var mutation = "all";
+            }
+
+            if(mutation == null) var mutation = "none";
+
             if(typeof timeOutLum !== "undefined") clearTimeout(timeOutLum);
             if(typeof timeOutAP !== "undefined") clearTimeout(timeOutAP);
             if(typeof timeOutIC !== "undefined") clearTimeout(timeOutIC);
             if(typeof timeOutBI !== "undefined") clearTimeout(timeOutBI);
-            if(typeof mut_contrast !== 'undefined') mut_contrast.disconnect();
-            if(typeof mut_invert !== 'undefined') mut_invert.disconnect();
-            if(typeof mut_brightness !== 'undefined') mut_brightness.disconnect();
+            if(typeof mut_contrast !== 'undefined' && (mutation == "contrast" || mutation == "all")) mut_contrast.disconnect();
+            if(typeof mut_invert !== 'undefined' && (mutation == "invert" || mutation == "all")) mut_invert.disconnect();
+            if(typeof mut_brightness !== 'undefined' && (mutation == "brightness" || mutation == "all")) mut_brightness.disconnect();
             if(typeof lnkCustomTheme !== 'undefined') lnkCustomTheme.setAttribute('href', '');
 
             if(type == "reset" || type == "onlyreset") {
@@ -469,12 +485,12 @@
                     }
                 }
 
-                if(document.getElementById("pageShadowLuminositeDiv") != null) {
-                    document.body.removeChild(document.getElementById("pageShadowLuminositeDiv"));
+                if(document.getElementById("pageShadowLuminositeDiv") != null && document.body.contains(elLumWrapper)) {
+                    elLumWrapper.removeChild(document.getElementById("pageShadowLuminositeDiv"));
                 }
 
-                if(document.getElementById("pageShadowLuminositeDivNightMode") != null) {
-                    document.body.removeChild(document.getElementById("pageShadowLuminositeDivNightMode"));
+                if(document.getElementById("pageShadowLuminositeDivNightMode") != null && document.body.contains(elLumWrapper)) {
+                    elLumWrapper.removeChild(document.getElementById("pageShadowLuminositeDivNightMode"));
                 }
 
                 if(type == "onlyreset") {
@@ -545,7 +561,7 @@
     chrome.storage.onChanged.addListener(function() {
         chrome.storage.local.get('liveSettings', function (result) {
             if(result.liveSettings !== "false") {
-                main('reset');
+                main("reset", "all");
             }
         });
     });

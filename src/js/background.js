@@ -149,7 +149,6 @@ function updateBadge() {
                     });
                 }
 
-
                 if(typeof(chrome.browserAction) !== 'undefined' && typeof(chrome.browserAction.setBadgeBackgroundColor) !== 'undefined') {
                     if(enabled) {
                         chrome.browserAction.setBadgeBackgroundColor({
