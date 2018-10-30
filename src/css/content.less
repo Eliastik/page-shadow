@@ -69,6 +69,9 @@
 .loopThemes(1);
 
 .themes(@i, @name, @bgcolor, @txtcolor, @lnkcolor, @visitedlnkcolor, @selectbgcolor, @selectxtcolor, @insbgcolor, @instxtcolor, @delbgcolor, @deltxtcolor, @markbgcolor, @marktxtcolor, @imgbgcolor) {
+    html.pageShadowBackgroundContrast@{name} {
+        background: @bgcolor !important;
+    }
     .pageShadowContrastBlack@{name} {
         background: @bgcolor !important;
         background-image: url();
@@ -106,7 +109,7 @@
     .pageShadowContrastBlack@{name} img, .pageShadowContrastBlack@{name} video, .pageShadowContrastBlack@{name} canvas {
         filter: invert(0%) !important;
     }
-    .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling) {
+    .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling):not(.pageShadowHasHiddenElement) {
         background: @bgcolor !important;
     }
     .pageShadowContrastBlack@{name} a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack@{name} #pageShadowLinkVisited {
@@ -117,6 +120,9 @@
     }
     .pageShadowContrastBlack@{name} .pageShadowHasBackgroundImg {
         background-color: transparent !important;
+    }
+    .pageShadowContrastBlack@{name} .pageShadowHasHiddenElement {
+        background: transparent !important;
     }
 }
 
@@ -160,6 +166,9 @@
 }
 .pageShadowContrastBlackCustom .pageShadowHasBackgroundImg {
     background-color: transparent !important;
+}
+.pageShadowContrastBlackCustom .pageShadowHasHiddenElement {
+    background: transparent !important;
 }
 
 /* Color invert */

@@ -42,14 +42,18 @@
             if(theme !== null) {
                 if(theme == "1") {
                     document.body.classList.add("pageShadowContrastBlack");
+                    document.getElementsByTagName('html')[0].classList.add("pageShadowBackgroundContrast");
                 } else if(theme == "custom") {
                     customThemeApply();
                     document.body.classList.add("pageShadowContrastBlackCustom");
+                    document.getElementsByTagName('html')[0].classList.add("pageShadowBackgroundCustom");
                 } else {
                     document.body.classList.add("pageShadowContrastBlack" + theme);
+                    document.getElementsByTagName('html')[0].classList.add("pageShadowBackgroundContrast" + theme);
                 }
             } else {
                 document.body.classList.add("pageShadowContrastBlack");
+                document.getElementsByTagName('html')[0].classList.add("pageShadowBackgroundContrast");
             }
 
             if(disableImgBgColor !== null && disableImgBgColor == "true") {
@@ -148,9 +152,14 @@
             if(type == 1 || type == 3 || type == "image" || typeof type === "undefined") {
                 var hasBackgroundImg = computedStyle.getPropertyValue("background").substr(0, 4) == "url(" || computedStyle.getPropertyValue("background-image").substr(0, 4) == "url(";
                 var hasClassImg = elements[i].classList.contains("pageShadowHasBackgroundImg");
+                var hasElementHidden = elements[i].contains(elements[i].querySelector("canvas")) || elements[i].contains(elements[i].querySelector("video"));
 
                 if(hasBackgroundImg && !hasClassImg) {
                     elements[i].classList.add("pageShadowHasBackgroundImg");
+                }
+
+                if(hasElementHidden) {
+                    elements[i].classList.add("pageShadowHasHiddenElement");
                 }
             }
 
@@ -418,8 +427,7 @@
                 'attributes': false,
                 'subtree': true,
                 'childList': true,
-                'characterData': false,
-                // 'attributeOldValue': true
+                'characterData': false
             });
         }
     }
@@ -442,9 +450,14 @@
         var computedStyle = window.getComputedStyle(element, null);
         var hasBackgroundImg = computedStyle.getPropertyValue("background").substr(0, 4) == "url(" || computedStyle.getPropertyValue("background-image").substr(0, 4) == "url(";
         var hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
+        var hasElementHidden = element.contains(element.querySelector("canvas")) || element.contains(element.querySelector("video"));
 
         if(hasBackgroundImg && !hasClassImg) {
             element.classList.add("pageShadowHasBackgroundImg");
+        }
+
+        if(hasElementHidden) {
+            element.classList.add("pageShadowHasHiddenElement");
         }
 
         element.classList.remove("pageShadowDisableStyling");
@@ -472,6 +485,7 @@
                 document.body.classList.remove("pageShadowInvertEntirePage");
                 document.body.classList.remove("pageShadowInvertVideoColor");
                 document.getElementsByTagName('html')[0].classList.remove("pageShadowBackground");
+                document.getElementsByTagName('html')[0].classList.remove("pageShadowBackgroundCustom");
                 document.body.classList.remove("pageShadowContrastBlackCustom");
                 document.body.classList.remove("pageShadowDisableImgBgColor");
                 document.body.classList.remove("pageShadowInvertBgColor");
@@ -479,8 +493,10 @@
                 for(i=1; i<=nbThemes; i++) {
                     if(i == "1") {
                         document.body.classList.remove("pageShadowContrastBlack");
+                        document.getElementsByTagName('html')[0].classList.remove("pageShadowBackgroundContrast");
                     } else {
                         document.body.classList.remove("pageShadowContrastBlack" + i);
+                        document.getElementsByTagName('html')[0].classList.remove("pageShadowBackgroundContrast" + i);
                     }
                 }
 
