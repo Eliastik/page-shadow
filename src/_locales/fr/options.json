@@ -120,6 +120,7 @@
             "warningPreset": "Attention, avant de charger un pré-réglage, sauvegardez vos réglages actuels dans un autre slot car ils seront écrasés !",
             "loadPreset": "Charger un pré-réglage",
             "savePreset": "Créer un pré-réglage",
+            "deletePreset": "Supprimer un pré-réglage",
             "loadPresetLabel": "Choisissez un pré-réglage :",
             "presetTitle": "Pré-régl. ",
             "presetEmpty": "Vide",
@@ -129,7 +130,8 @@
             "restorePresetSuccess": "Chargement effectué avec succès",
             "savePresetSelect": "Choisissez un slot :",
             "savePresetTitle": "Nom du pré-réglage (50 carac. max) :",
-            "savePresetSuccess": "Pré-réglage créé avec succès"
+            "savePresetSuccess": "Pré-réglage créé avec succès",
+            "deletePresetSuccess": "Pré-réglage supprimé avec succès"
         },
         "saved": {
             "title": "Information",
@@ -147,6 +149,7 @@
         "ok": "OK",
         "yes": "Oui",
         "no": "Non",
-        "confirm": "Valider"
+        "confirm": "Valider",
+        "delete": "Supprimer"
     }
 }

@@ -63,6 +63,7 @@ function translateContent() {
     listTranslations(i18next.languages);
     loadPresetSelect("loadPresetSelect");
     loadPresetSelect("savePresetSelect");
+    loadPresetSelect("deletePresetSelect");
     $("nav").localize();
     $(".container").localize();
     $(".modal").localize();
@@ -85,6 +86,7 @@ function resetSettings() {
             $('#reset').modal("show");
             loadPresetSelect("loadPresetSelect");
             loadPresetSelect("savePresetSelect");
+            loadPresetSelect("deletePresetSelect");
             localStorage.clear();
         });
     });
@@ -269,6 +271,7 @@ function restoreSettings(event) {
                     $("#restoreSuccess").fadeIn(500);
                     loadPresetSelect("loadPresetSelect");
                     loadPresetSelect("savePresetSelect");
+                    loadPresetSelect("deletePresetSelect");
                 });
             });
         }
@@ -323,11 +326,19 @@ $(document).ready(function() {
     $("#loadPresetBtn").click(function() {
         $("#loadPreset").show();
         $("#savePreset").hide();
+        $("#deletePreset").hide();
     });
 
     $("#savePresetBtn").click(function() {
         $("#loadPreset").hide();
         $("#savePreset").show();
+        $("#deletePreset").hide();
+    });
+    
+    $("#deletePresetBtn").click(function() {
+        $("#loadPreset").hide();
+        $("#savePreset").hide();
+        $("#deletePreset").show();
     });
 
     $('span[data-toggle="tooltip"]').tooltip({
@@ -445,6 +456,7 @@ $(document).ready(function() {
 
     loadPresetSelect("loadPresetSelect");
     loadPresetSelect("savePresetSelect");
+    loadPresetSelect("deletePresetSelect");
 
     if(getBrowser() == "Firefox") {
         $("#firefoxHelpArchive").show();
@@ -492,6 +504,24 @@ $(document).ready(function() {
 
             loadPresetSelect("loadPresetSelect");
             loadPresetSelect("savePresetSelect");
+            loadPresetSelect("deletePresetSelect");
+        });
+    });
+    
+    $("#deletePresetValid").click(function() {
+        $("#deletePresetError").hide();
+        $("#deletePresetSuccess").hide();
+
+        deletePreset(parseInt($("#deletePresetSelect").val()), function(result) {
+            if(result == "success") {
+                $("#deletePresetSuccess").fadeIn(500);
+            } else {
+                $("#deletePresetError").fadeIn(500);
+            }
+
+            loadPresetSelect("loadPresetSelect");
+            loadPresetSelect("savePresetSelect");
+            loadPresetSelect("deletePresetSelect");
         });
     });
 });

@@ -121,6 +121,7 @@
             "warningPreset": "Warning, before loading a preset, save your current settings in another slot because they will be overwritten!",
             "loadPreset": "Load a preset",
             "savePreset": "Create a preset",
+            "deletePreset": "Delete a preset",
             "loadPresetLabel": "Choose a preset:",
             "presetTitle": "Preset ",
             "presetEmpty": "Empty",
@@ -130,7 +131,8 @@
             "restorePresetSuccess": "Loading done successfully",
             "savePresetSelect": "Choose a slot:",
             "savePresetTitle": "Preset name (50 characters max):",
-            "savePresetSuccess": "Preset created successfully"
+            "savePresetSuccess": "Preset created successfully",
+            "deletePresetSuccess": "Preset deleted successfully"
         },
         "saved": {
             "title": "Information",
@@ -148,6 +150,7 @@
         "ok": "OK",
         "yes": "Yes",
         "no": "No",
-        "confirm": "Confirm"
+        "confirm": "Confirm",
+        "delete": "Delete"
     }
 }

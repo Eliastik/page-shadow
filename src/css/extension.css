@@ -288,7 +288,7 @@ div.navbar-right {
 .modal-body > .tab-content {
     overflow: hidden !important;
 }
-#infoRestore, #loadPreset, #savePreset {
+#infoRestore, #loadPreset, #savePreset, #deletePreset {
     margin-top: 8px;
 }
 .btn {

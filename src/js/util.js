@@ -468,3 +468,27 @@ function savePreset(nb, name, func) {
         });
     });
 }
+function deletePreset(nb, func) {
+    if(nb < 1 || nb > nbPresets) {
+        return func("error");
+    }
+    
+    chrome.storage.local.get('presets', function (dataPreset) {
+        try {
+            if(dataPreset.presets == null || typeof(dataPreset.presets) == 'undefined') {
+                var presets = defaultPresets;
+            } else {
+                var presets = dataPreset.presets;
+            }
+
+            var preset = presets;
+            preset[nb] = {};
+
+            setSettingItem("presets", preset);
+
+            return func("success");
+        } catch(e) {
+            return func("error");
+        }
+    });
+}
