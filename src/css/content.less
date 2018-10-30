@@ -73,7 +73,7 @@
         background: @bgcolor !important;
         background-image: url();
     }
-    .pageShadowContrastBlack@{name} *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(svg):not(yt-icon) {
+    .pageShadowContrastBlack@{name} *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon) {
         background-color: @bgcolor !important;
         color: @txtcolor !important;
     }
@@ -103,10 +103,10 @@
         color: @lnkcolor !important;
         background-color: transparent !important;
     }
-    .pageShadowContrastBlack@{name} img, .pageShadowContrastBlack@{name} video {
+    .pageShadowContrastBlack@{name} img, .pageShadowContrastBlack@{name} video, .pageShadowContrastBlack@{name} canvas {
         filter: invert(0%) !important;
     }
-    .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected *:not(img):not(video):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling) {
+    .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling) {
         background: @bgcolor !important;
     }
     .pageShadowContrastBlack@{name} a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlack@{name} #pageShadowLinkVisited {
@@ -200,7 +200,7 @@ body.pageShadowInvertBgColor .pageShadowHasBackgroundImg > * {
     -webkit-filter: invert(100%) !important;
     background-color: transparent !important;
 }
-body.pageShadowInvertVideoColor video {
+body.pageShadowInvertVideoColor video, body.pageShadowInvertVideoColor canvas {
     filter: invert(100%) !important;
     -moz-filter: invert(100%) !important;
     -o-filter: invert(100%) !important;
