@@ -38,6 +38,7 @@ var defaultHourDisableFormat = "AM";
 var settingNames = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'sitesInterditPageShadow', 'liveSettings', 'whiteList', 'colorTemp', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'globallyEnable', 'customThemeInfoDisable', 'customCSSCode', 'autoEnable', 'autoEnableHourFormat', 'hourEnable', 'minuteEnable', 'hourEnableFormat', 'hourDisable', 'minuteDisable', 'hourDisableFormat', 'disableImgBgColor', 'defaultLoad', 'presets'];
 var defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
 var settingsToSavePresets = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'liveSettings', 'colorTemp', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'autoEnable', 'disableImgBgColor'];
+var nbPresets = 5;
 // End of the global configuration of the extension
 
 function in_array(needle, haystack) {
@@ -356,7 +357,7 @@ function loadPresetSelect(selectId) {
 
     chrome.storage.local.get('presets', function (data) {
         try {
-            if(data == null || typeof(data) == 'undefined') {
+            if(data.presets == null || typeof(data.presets) == 'undefined') {
                 setSettingItem("presets", defaultPresets);
                 var presets = defaultPresets;
             } else {
@@ -390,9 +391,13 @@ function loadPresetSelect(selectId) {
 }
 
 function loadPreset(nb, func) {
+    if(nb < 1 || nb > nbPresets) {
+        return func("error");
+    }
+    
     chrome.storage.local.get('presets', function (data) {
         try {
-            if(data == null || typeof(data) == 'undefined') {
+            if(data.presets == null || typeof(data.presets) == 'undefined') {
                 setSettingItem("presets", defaultPresets);
                 return func("empty");
             } else {
@@ -423,10 +428,14 @@ function loadPreset(nb, func) {
     });
 }
 function savePreset(nb, name, func) {
+    if(nb < 1 || nb > nbPresets) {
+        return func("error");
+    }
+    
     chrome.storage.local.get('presets', function (dataPreset) {
         chrome.storage.local.get(settingsToSavePresets, function (data) {
             try {
-                if(dataPreset == null || typeof(dataPreset) == 'undefined') {
+                if(dataPreset.presets == null || typeof(dataPreset.presets) == 'undefined') {
                     var presets = defaultPresets;
                 } else {
                     var presets = dataPreset.presets;

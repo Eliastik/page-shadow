@@ -24,7 +24,7 @@ if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsCo
 if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
 if(typeof(window["defaultVisitedLinksColorCustomTheme"]) == "undefined") defaultVisitedLinksColorCustomTheme = "ff00ff";
 if(typeof(window["defaultFontCustomTheme"]) == "undefined") defaultFontCustomTheme = "";
-if(typeof(window["defaultPresets"]) == "undefined") defaultPresets = {"preset1": {}, "preset2": {}, "preset3": {}, "preset4": {}, "preset5": {}};
+if(typeof(window["defaultPresets"]) == "undefined") defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
 
 /* translation */
 function init_i18next() {
@@ -62,6 +62,7 @@ function translateContent() {
     });
     listTranslations(i18next.languages);
     loadPresetSelect("loadPresetSelect");
+    loadPresetSelect("savePresetSelect");
     $("nav").localize();
     $(".container").localize();
     $(".modal").localize();
@@ -75,12 +76,18 @@ i18next.on('languageChanged', () => {
 function resetSettings() {
     $('span[data-toggle="tooltip"]').tooltip("hide");
     $('i[data-toggle="tooltip"]').tooltip("hide");
-    chrome.storage.local.clear();
-    localStorage.clear();
-    $("#textareaAssomPage").val("");
-    $("#checkWhiteList").prop("checked", false);
-    init_i18next();
-    $('#reset').modal("show");
+    
+    chrome.storage.local.clear(function() {
+        setFirstSettings(function() {
+            $("#textareaAssomPage").val("");
+            $("#checkWhiteList").prop("checked", false);
+            init_i18next();
+            $('#reset').modal("show");
+            loadPresetSelect("loadPresetSelect");
+            loadPresetSelect("savePresetSelect");
+            localStorage.clear();
+        });
+    });
 }
 function displaySettings() {
     chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'customCSSCode'], function (result) {
@@ -246,19 +253,24 @@ function restoreSettings(event) {
             }
 
             // Reset data
-            chrome.storage.local.clear();
-            $("#textareaAssomPage").val("");
-            $("#checkWhiteList").prop("checked", false);
+            chrome.storage.local.clear(function() {
+                setFirstSettings(function() {
+                    $("#textareaAssomPage").val("");
+                    $("#checkWhiteList").prop("checked", false);
 
-            for (var key in obj) {
-                if(typeof(key) === "string" && typeof(obj[key]) === "string") {
-                    if (obj.hasOwnProperty(key)) {
-                        setSettingItem(key, obj[key]); // invalid data are ignored by the function
+                    for (var key in obj) {
+                        if(typeof(key) === "string") {
+                            if (obj.hasOwnProperty(key)) {
+                                setSettingItem(key, obj[key]); // invalid data are ignored by the function
+                            }
+                        }
                     }
-                }
-            }
 
-            $("#restoreSuccess").fadeIn(500);
+                    $("#restoreSuccess").fadeIn(500);
+                    loadPresetSelect("loadPresetSelect");
+                    loadPresetSelect("savePresetSelect");
+                });
+            });
         }
     } else {
         $("#restoreError").hide();
@@ -307,12 +319,12 @@ $(document).ready(function() {
         $('span[data-toggle="tooltip"]').tooltip("hide");
         $('i[data-toggle="tooltip"]').tooltip("hide");
     });
-    
+
     $("#loadPresetBtn").click(function() {
         $("#loadPreset").show();
         $("#savePreset").hide();
     });
-    
+
     $("#savePresetBtn").click(function() {
         $("#loadPreset").hide();
         $("#savePreset").show();
@@ -431,6 +443,9 @@ $(document).ready(function() {
 
     displaySettings();
 
+    loadPresetSelect("loadPresetSelect");
+    loadPresetSelect("savePresetSelect");
+
     if(getBrowser() == "Firefox") {
         $("#firefoxHelpArchive").show();
     }
@@ -447,15 +462,12 @@ $(document).ready(function() {
             $("#presetTab").addClass("active");
         }
     }
-    
-    loadPresetSelect("loadPresetSelect");
-    loadPresetSelect("savePresetSelect");
-    
+
     $("#loadPresetValid").click(function() {
         $("#restorePresetSuccess").hide();
         $("#restorePresetEmpty").hide();
         $("#restorePresetError").hide();
-                
+
         loadPreset(parseInt($("#loadPresetSelect").val()), function(result) {
             if(result == "success") {
                 $("#restorePresetSuccess").fadeIn(500);
@@ -466,18 +478,18 @@ $(document).ready(function() {
             }
         });
     });
-    
+
     $("#savePresetValid").click(function() {
         $("#savePresetError").hide();
         $("#savePresetSuccess").hide();
-                
+
         savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val(), function(result) {
             if(result == "success") {
                 $("#savePresetSuccess").fadeIn(500);
             } else {
                 $("#savePresetError").fadeIn(500);
             }
-            
+
             loadPresetSelect("loadPresetSelect");
             loadPresetSelect("savePresetSelect");
         });

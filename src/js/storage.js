@@ -32,12 +32,12 @@ function checkFirstLoad() {
     chrome.storage.local.get('defaultLoad', function (result) {
         if (result.defaultLoad == undefined) {
             chrome.storage.local.set({'defaultLoad': '0'}, function() {
-                setFirstSettings();
+                setFirstSettings(function(){});
             });
         }
     });
 }
-function setFirstSettings() {
+function setFirstSettings(func) {
     if(typeof(window["defaultBGColorCustomTheme"]) == "undefined") defaultBGColorCustomTheme = "000000";
     if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsColorCustomTheme = "FFFFFF";
     if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
@@ -51,7 +51,7 @@ function setFirstSettings() {
     if(typeof(window["defaultHourDisable"]) == "undefined") defaultHourDisable = "7";
     if(typeof(window["defaultMinuteDisable"]) == "undefined") defaultMinuteDisable = "0";
     if(typeof(window["defaultHourDisableFormat"]) == "undefined") defaultHourDisableFormat = "AM";
-    if(typeof(window["defaultPresets"]) == "undefined") defaultPresets = {"preset1": {}, "preset2": {}, "preset3": {}, "preset4": {}, "preset5": {}};
+    if(typeof(window["defaultPresets"]) == "undefined") defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
 
     // Set default settings values
     chrome.storage.local.set({
@@ -87,14 +87,13 @@ function setFirstSettings() {
         'minuteDisable': defaultMinuteDisable,
         'hourDisableFormat': defaultHourDisableFormat,
         'disableImgBgColor': 'false',
-        'presets': defaultPresets
+        'presets': defaultPresets,
+        'defaultLoad': '0'
+    }, function() {
+        if(typeof(func) !== 'undefined') {
+            return func();
+        }
     });
 }
 
 checkFirstLoad();
-
-if(typeof(chrome.storage.onChanged) !== 'undefined') {
-    chrome.storage.onChanged.addListener(function() {
-        checkFirstLoad();
-    });
-}

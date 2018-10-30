@@ -122,7 +122,7 @@
             "loadPreset": "Load a preset",
             "savePreset": "Create a preset",
             "loadPresetLabel": "Choose a preset:",
-            "presetTitle": "Preset n°",
+            "presetTitle": "Preset ",
             "presetEmpty": "Empty",
             "presetTitleEmpty": "Untitled",
             "restorePresetError": "An error has occurred",
