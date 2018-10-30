@@ -3,7 +3,9 @@
         "globalSwitch": "Désactiver/activer globalement Page Shadow"
     },
     "container": {
-        "description": "Une série d'outils conçus pour améliorer la lecture de pages web dans une pièce mal éclairée/autre :",
+        "description": "Une série d'outils conçus pour améliorer la lecture de pages web dans une pièce mal éclairée/autre.",
+        "loadPreset": "Charger le pré-réglage sélectionné",
+        "settingsPresets": "Paramètres des pré-réglages",
         "contrast": "Augmenter le contraste de la page",
         "titleContrast": "Ajuste automatiquement le thème graphique de la page afin d'obtenir le meilleur contraste possible. Peut mal fonctionner avec des thèmes graphiques complexes et/ou défigurer la page.",
         "themeSelect": "Thème de couleur :",
@@ -37,7 +39,15 @@
         "customThemeInfos": "Pour paramétrer votre thème personnalisé, vous devez vous rendre dans les Paramètres avancés de Page Shadow.",
         "customThemeInfoDisable": "Ne plus afficher",
         "close": "Fermer",
-        "AdvSettings": "Paramètres avancés"
+        "AdvSettings": "Paramètres avancés",
+        "archive": {
+            "presetTitle": "Pré-régl. ",
+            "presetEmpty": "Vide",
+            "presetTitleEmpty": "Sans titre",
+            "restorePresetError": "Une erreur est survenue",
+            "restorePresetEmpty": "Impossible de charger ce pré-réglage car il est vide",
+            "restorePresetSuccess": "Chargement effectué avec succès"
+        }
     },
     "modalAutoEnable": {
         "autoEnableSettingsTitle": "Paramètres",

@@ -354,6 +354,11 @@ function downloadData(data, name, dataType) {
 
 function loadPresetSelect(selectId) {
     $("#" + selectId).html("");
+    var presetSelected = $("#" + selectId).val();
+    
+    if(presetSelected == null) {
+        var presetSelected = 1;
+    }
 
     chrome.storage.local.get('presets', function (data) {
         try {
@@ -384,6 +389,7 @@ function loadPresetSelect(selectId) {
             }
 
             $("#" + selectId).html(optionTitle);
+            $("#" + selectId).val(presetSelected).change();
         } catch(e) {
             return false;
         }

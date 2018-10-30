@@ -38,11 +38,11 @@ function translateContent() {
       handleName: 'localize',
       selectorAttr: 'data-i18n'
     });
-    themeTranslation = i18next.t("container.theme");
     $(".navbar").localize();
     $(".container").localize();
     $(".modal").localize();
     $("footer").localize();
+    themeTranslation = i18next.t("container.theme");
 }
 function changeLng(lng) {
     i18next.changeLanguage(lng);
@@ -59,6 +59,7 @@ $(document).ready(function() {
     var lnkCustomTheme = document.createElement('link');
     var brightnessChangedFromThisPage = false;
     if(typeof(themeTranslation) === "undefined") themeTranslation = "Theme";
+    var timeoutInfoPreset = 0;
 
     /* Check if the configuration variables are set, if not set some default values (the variables are set globally, so we use window[variableName]) */
     if(typeof(window["nbThemes"]) == "undefined") nbThemes = 15;
@@ -96,13 +97,7 @@ $(document).ready(function() {
     $("#sliderLuminosite").attr("data-slider-max", maxBrightnessPercentage * 100);
     $("#sliderLuminosite").attr("data-slider-value", brightnessDefaultValue * 100);
 
-    $('i[data-toggle="tooltip"]').tooltip({
-        trigger: 'hover',
-        container: 'body',
-        placement: 'auto top'
-    });
-
-    $('div[data-toggle="tooltip"]').tooltip({
+    $('[data-toggle="tooltip"]').tooltip({
         trigger: 'hover',
         container: 'body',
         placement: 'auto top'
@@ -129,6 +124,12 @@ $(document).ready(function() {
     $("#linkTestExtension").click(function() {
         chrome.tabs.create({
             url: "pageTest.html"
+        });
+    });
+    
+    $("#settingsPresets").click(function() {
+        chrome.tabs.create({
+            url: "options.html#presets"
         });
     });
 
@@ -794,6 +795,24 @@ $(document).ready(function() {
             setSettingItem("globallyEnable", "false");
         }
     });
+    
+    $("#loadPresetValid").click(function() {
+        clearTimeout(timeoutInfoPreset);
+        $("#infoPreset").removeClass("show");
+        
+        loadPreset(parseInt($("#loadPresetSelect").val()), function(result) {
+            if(result == "success") {
+                $("#infoPreset").text(i18next.t("modal.archive.restorePresetSuccess"));
+            } else if(result == "empty") {
+                $("#infoPreset").text(i18next.t("modal.archive.restorePresetEmpty"));
+            } else {
+                $("#infoPreset").text(i18next.t("modal.archive.restorePresetError"));
+            }
+            
+            $("#infoPreset").addClass("show");
+            timeoutInfoPreset = setTimeout(function(){ $("#infoPreset").removeClass("show"); }, 3000);
+        });
+    });
 
     function displaySettings() {
         chrome.storage.local.get(['theme', 'colorTemp', 'pourcentageLum'], function (result) {
@@ -818,6 +837,8 @@ $(document).ready(function() {
             if(($("#autoEnableSettings").data('bs.modal') || {}).isShown !== true) {
                 checkSettingsAutoEnable();
             }
+            
+            loadPresetSelect("loadPresetSelect");
         });
     }
 

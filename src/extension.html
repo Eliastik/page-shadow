@@ -42,7 +42,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <span class="navbar-brand"><img src="img/icon_512.png" style="vertical-align: middle;"> <span class="title-align">Page Shadow</span></span>
+                    <span class="navbar-brand" data-toggle="tooltip" data-i18n="[data-original-title]container.description"><img src="img/icon_512.png" style="vertical-align: middle;"> <span class="title-align">Page Shadow</span></span>
                     <div class="navbar-text navbar-right">
                         <div class="checkbox-switch" data-toggle="tooltip" data-placement="bottom" data-i18n="[data-original-title]navbar.globalSwitch">
                             <input id="pageShadowGlobalSwitch" name="pageShadowGlobalSwitch" type="checkbox" />
@@ -53,8 +53,15 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
             </div>
         </nav>
         <div class="container popup">
-            <p id="introPopup" data-i18n="container.description"></p>
             <form class="form-horizontal">
+                <div class="col">
+                    <div class="input-group">
+                        <select id="loadPresetSelect" style="width: 100%;"></select>
+                        <span class="input-group-btn">
+                            <button class="btn btn-xs btn-preset btn-success" id="loadPresetValid" type="button" data-toggle="tooltip" data-i18n="[data-original-title]container.loadPreset"><i class="fa fa-fw fa-upload"></i></button><button class="btn btn-xs btn-preset btn-primary" id="settingsPresets" type="button" data-toggle="tooltip" data-i18n="[data-original-title]container.settingsPresets"><i class="fa fa-fw fa-cog"></i></button>
+                        </span>
+                    </div>
+                </div>
                 <div>
                     <input type="checkbox" id="checkAssomPage" /> <label for="checkAssomPage" data-i18n="container.contrast"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-placement="top" data-i18n="[data-original-title]container.titleContrast"></i>
                     <div class="well well-sm well-nmb" id="themeDiv" style="display: none;">
@@ -106,6 +113,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     <li class="list-inline-item" id="enableWebpage-li" style="display: none;"><a href="#" id="enableWebpage"><i class="fa fa-square-o" aria-hidden="true"></i> <span data-i18n="footer.enableWebpage"></span></a></li>
                 </ul>
             </footer>
+            <div class="snackbar" id="infoPreset"></div>
         </div>
         <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="customThemeInfos" id="customThemeInfos">
             <div class="modal-dialog" role="document">

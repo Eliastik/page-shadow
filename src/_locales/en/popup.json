@@ -3,7 +3,9 @@
         "globalSwitch": "Disable/enable globally Page Shadow"
     },
     "container": {
-        "description": "A series of tools designed to improve the reading of web pages in a dark environment/other:",
+        "description": "A series of tools designed to improve the reading of web pages in a dark environment/other.",
+        "loadPreset": "Load the selected preset",
+        "settingsPresets": "Presets settings",
         "contrast": "Increase page contrast",
         "titleContrast": "Automatically adjust the graphical theme of the page to get the better possible contrast. Can badly work with complex graphical themes and/or deform the page.",
         "themeSelect": "Color theme:",
@@ -37,7 +39,15 @@
         "customThemeInfos": "To set your custom theme, you have to go to the Advanced settings of Page Shadow.",
         "customThemeInfoDisable": "Don't show anymore",
         "close": "Close",
-        "AdvSettings": "Advanced settings"
+        "AdvSettings": "Advanced settings",
+        "archive": {
+            "presetTitle": "Preset ",
+            "presetEmpty": "Empty",
+            "presetTitleEmpty": "Untitled",
+            "restorePresetError": "An error has occurred",
+            "restorePresetEmpty": "Cannot load this preset because it is empty",
+            "restorePresetSuccess": "Loading done successfully"
+        }
     },
     "modalAutoEnable": {
         "autoEnableSettingsTitle": "Settings",
