@@ -306,8 +306,8 @@ div.navbar-right {
 .snackbar {
     display: none;
     min-width: 250px;
-    background-color: #333;
-    color: #fff;
+    background-color: #727272;
+    color: white;
     text-align: center;
     padding: 8px;
     position: fixed;
@@ -321,19 +321,19 @@ div.navbar-right {
    animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 @-webkit-keyframes fadein {
-    from { bottom: 0; opacity: 0; } 
-    to { bottom: 30px; opacity: 1; }
+    from { bottom: 0; opacity: 0; }
+    to { bottom: 30px; opacity: 0.9; }
 }
 @keyframes fadein {
     from { bottom: 0; opacity: 0; }
-    to { bottom: 30px; opacity: 1; }
+    to { bottom: 30px; opacity: 0.9; }
 }
 @-webkit-keyframes fadeout {
-    from { bottom: 30px; opacity: 1; } 
+    from { bottom: 30px; opacity: 0.9; }
     to { bottom: 0; opacity: 0; }
 }
 @keyframes fadeout {
-    from { bottom: 30px; opacity: 1; }
+    from { bottom: 30px; opacity: 0.9; }
     to { bottom: 0; opacity: 0; }
 }
 @media (min-width: 768px) {

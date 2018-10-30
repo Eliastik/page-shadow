@@ -131,7 +131,10 @@
             "savePresetSelect": "Choisissez un slot :",
             "savePresetTitle": "Nom du pré-réglage (50 carac. max) :",
             "savePresetSuccess": "Pré-réglage créé avec succès",
-            "deletePresetSuccess": "Pré-réglage supprimé avec succès"
+            "deletePresetSuccess": "Pré-réglage supprimé avec succès",
+            "infoLoadPreset": "Ici, vous pouvez charger un pré-réglage.",
+            "infoSavePreset": "Le pré-réglage sera créé avec les paramètres actuels tels qu'affichés dans le menu de l'extension.",
+            "infoDeletePreset": "Attention, la suppression est définitive !"
         },
         "saved": {
             "title": "Information",
@@ -150,6 +153,8 @@
         "yes": "Oui",
         "no": "Non",
         "confirm": "Valider",
+        "load": "Charger",
+        "create": "Créer",
         "delete": "Supprimer"
     }
 }

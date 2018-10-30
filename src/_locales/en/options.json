@@ -132,7 +132,10 @@
             "savePresetSelect": "Choose a slot:",
             "savePresetTitle": "Preset name (50 characters max):",
             "savePresetSuccess": "Preset created successfully",
-            "deletePresetSuccess": "Preset deleted successfully"
+            "deletePresetSuccess": "Preset deleted successfully",
+            "infoLoadPreset": "Here, you can load a preset.",
+            "infoSavePreset": "The preset will be created with the current settings as displayed in the extension menu.",
+            "infoDeletePreset": "Warning, the deletion is definitive!"
         },
         "saved": {
             "title": "Information",
@@ -151,6 +154,8 @@
         "yes": "Yes",
         "no": "No",
         "confirm": "Confirm",
+        "load": "Load",
+        "create": "Create",
         "delete": "Delete"
     }
 }

@@ -353,8 +353,8 @@ function downloadData(data, name, dataType) {
 }
 
 function loadPresetSelect(selectId) {
-    $("#" + selectId).html("");
     var presetSelected = $("#" + selectId).val();
+    $("#" + selectId).html("");
     
     if(presetSelected == null) {
         var presetSelected = 1;
