@@ -122,7 +122,7 @@ $(document).ready(function() {
 
     $("#linkAdvSettings2").click(function() {
         chrome.tabs.create({
-            url: "options.html"
+            url: "options.html#customTheme"
         });
     });
 

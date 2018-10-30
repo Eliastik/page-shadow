@@ -24,6 +24,7 @@ if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsCo
 if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
 if(typeof(window["defaultVisitedLinksColorCustomTheme"]) == "undefined") defaultVisitedLinksColorCustomTheme = "ff00ff";
 if(typeof(window["defaultFontCustomTheme"]) == "undefined") defaultFontCustomTheme = "";
+if(typeof(window["defaultPresets"]) == "undefined") defaultPresets = {"preset1": {}, "preset2": {}, "preset3": {}, "preset4": {}, "preset5": {}};
 
 /* translation */
 function init_i18next() {
@@ -60,6 +61,7 @@ function translateContent() {
       selectorAttr: 'data-i18n'
     });
     listTranslations(i18next.languages);
+    loadPresetSelect("loadPresetSelect");
     $("nav").localize();
     $(".container").localize();
     $(".modal").localize();
@@ -305,6 +307,16 @@ $(document).ready(function() {
         $('span[data-toggle="tooltip"]').tooltip("hide");
         $('i[data-toggle="tooltip"]').tooltip("hide");
     });
+    
+    $("#loadPresetBtn").click(function() {
+        $("#loadPreset").show();
+        $("#savePreset").hide();
+    });
+    
+    $("#savePresetBtn").click(function() {
+        $("#loadPreset").hide();
+        $("#savePreset").show();
+    });
 
     $('span[data-toggle="tooltip"]').tooltip({
         trigger: 'hover',
@@ -422,4 +434,52 @@ $(document).ready(function() {
     if(getBrowser() == "Firefox") {
         $("#firefoxHelpArchive").show();
     }
+
+    // Hash
+    if(window.location.hash) {
+        if(window.location.hash == "#customTheme") {
+            $("#customTheme").modal("show");
+        } else if(window.location.hash == "#presets") {
+            $("#archive").modal("show");
+            $("#archiveTabLink").removeClass("active");
+            $("#archiveTab").removeClass("active");
+            $("#presetTabLink").addClass("active");
+            $("#presetTab").addClass("active");
+        }
+    }
+    
+    loadPresetSelect("loadPresetSelect");
+    loadPresetSelect("savePresetSelect");
+    
+    $("#loadPresetValid").click(function() {
+        $("#restorePresetSuccess").hide();
+        $("#restorePresetEmpty").hide();
+        $("#restorePresetError").hide();
+                
+        loadPreset(parseInt($("#loadPresetSelect").val()), function(result) {
+            if(result == "success") {
+                $("#restorePresetSuccess").fadeIn(500);
+            } else if(result == "empty") {
+                $("#restorePresetEmpty").fadeIn(500);
+            } else {
+                $("#restorePresetError").fadeIn(500);
+            }
+        });
+    });
+    
+    $("#savePresetValid").click(function() {
+        $("#savePresetError").hide();
+        $("#savePresetSuccess").hide();
+                
+        savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val(), function(result) {
+            if(result == "success") {
+                $("#savePresetSuccess").fadeIn(500);
+            } else {
+                $("#savePresetError").fadeIn(500);
+            }
+            
+            loadPresetSelect("loadPresetSelect");
+            loadPresetSelect("savePresetSelect");
+        });
+    });
 });

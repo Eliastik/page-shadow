@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 function setSettingItem(name, value) {
-    if(typeof(window["settingNames"]) == "undefined") settingNames = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'sitesInterditPageShadow', 'liveSettings', 'whiteList', 'colorTemp', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'globallyEnable', 'customThemeInfoDisable', 'customCSSCode', 'autoEnable', 'autoEnableHourFormat', 'hourEnable', 'minuteEnable', 'hourEnableFormat', 'hourDisable', 'minuteDisable', 'hourDisableFormat', 'disableImgBgColor', 'defaultLoad'];
+    if(typeof(window["settingNames"]) == "undefined") settingNames = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'sitesInterditPageShadow', 'liveSettings', 'whiteList', 'colorTemp', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'globallyEnable', 'customThemeInfoDisable', 'customCSSCode', 'autoEnable', 'autoEnableHourFormat', 'hourEnable', 'minuteEnable', 'hourEnableFormat', 'hourDisable', 'minuteDisable', 'hourDisableFormat', 'disableImgBgColor', 'defaultLoad', 'presets'];
     
     if(settingNames.indexOf(name) !== -1) {
         var newSetting = {};
@@ -51,6 +51,7 @@ function setFirstSettings() {
     if(typeof(window["defaultHourDisable"]) == "undefined") defaultHourDisable = "7";
     if(typeof(window["defaultMinuteDisable"]) == "undefined") defaultMinuteDisable = "0";
     if(typeof(window["defaultHourDisableFormat"]) == "undefined") defaultHourDisableFormat = "AM";
+    if(typeof(window["defaultPresets"]) == "undefined") defaultPresets = {"preset1": {}, "preset2": {}, "preset3": {}, "preset4": {}, "preset5": {}};
 
     // Set default settings values
     chrome.storage.local.set({
@@ -85,7 +86,8 @@ function setFirstSettings() {
         'hourDisable': defaultHourDisable,
         'minuteDisable': defaultMinuteDisable,
         'hourDisableFormat': defaultHourDisableFormat,
-        'disableImgBgColor': 'false'
+        'disableImgBgColor': 'false',
+        'presets': defaultPresets
     });
 }
 

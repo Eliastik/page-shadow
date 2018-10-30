@@ -19,7 +19,7 @@
         "titleHelp": "Il est seulement possible de bloquer des domaines (par ex. www.google.fr) ou des URLs particulières (par ex. https://fr.wikipedia.org/wiki/Google). Notez que vous pouvez exclure un site ou une page à l'aide du clic-droit et en choissant quoi bloquer dans le sous-menu Page Shadow, ou à l'aide du menu de l'extension (tout en bas).",
         "help": "Aide",
         "customThemeButton": "Paramétrer votre thème personnalisé…",
-        "backup": "Archiver et restaurer les paramètres…",
+        "backup": "Archivage, restaution des paramètres et pré-réglages…",
         "indiceList": "Les adresses des sites entrées ci-dessous seront ignorées par Page Shadow.",
         "whiteList": "Liste blanche (ignorer par défaut tous les sites)",
         "titleWhiteList": "Cochez cette case si vous souhaitez basculer cette liste en liste blanche. Tous les sites seront par défaut exclus, et vous devrez les débloquer à l'aide du clic-droit, à l'aide du menu de l'extension ou en entrant leurs adresses ci-dessous (par ex. www.google.fr). Le bloquage/débloquage d'URLs particulières n'est pas possible dans ce mode. Activer ou désactiver ce paramètre réinitialisera la liste.",
@@ -98,7 +98,7 @@
             "customCSSHelpExpUsers": "Pour les utilisateurs expérimentés uniquement."
         },
         "archive": {
-            "title": "Archiver et restaurer les paramètres",
+            "title": "Archivage, restaution des paramètres et pré-réglages",
             "archive": "Archiver",
             "restore": "Restaurer",
             "descriptionArchive": "Vous pouvez archiver vos paramètres en enregistrant un fichier archive sur votre appareil en cliquant sur le bouton ci-dessous. Ainsi, vous pourrez le restaurer plus tard. Les fichiers archives sont au format JSON.",
@@ -114,7 +114,22 @@
             "restoreErrorFilesize": "Fichier archive trop lourd. La taille maximale supportée d'un fichier archive est de 2 Mo.",
             "restoreErrorExtension": "Fichier invalide. Le fichier doit être un fichier au format JSON.",
             "restoreErrorArchive": "Ce fichier n'est pas une archive de paramètres Page Shadow. Assurez-vous d'avoir sélectionné le bon fichier.",
-            "restoreSuccess": "Restauration des données effectuée avec succès."
+            "restoreSuccess": "Restauration des données effectuée avec succès.",
+            "preset": "Pré-réglages",
+            "descriptionPreset": "Vous pouvez ici créer et charger des pré-réglages pour pouvoir les restaurer instantanément plus tard. Les réglages sauvegardables correspondent à ceux affichés dans le menu de l'extension. 5 slots de pré-réglages sont disponibles.",
+            "warningPreset": "Attention, avant de charger un pré-réglage, sauvegardez vos réglages actuels dans un autre slot car ils seront écrasés !",
+            "loadPreset": "Charger un pré-réglage",
+            "savePreset": "Créer un pré-réglage",
+            "loadPresetLabel": "Choisissez un pré-réglage :",
+            "presetTitle": "Pré-réglage n°",
+            "presetEmpty": "Vide",
+            "presetTitleEmpty": "Sans titre",
+            "restorePresetError": "Une erreur est survenue",
+            "restorePresetEmpty": "Impossible de charger ce pré-réglage car il est vide",
+            "restorePresetSuccess": "Chargement effectué avec succès",
+            "savePresetSelect": "Choisissez un slot :",
+            "savePresetTitle": "Nom du pré-réglage (50 carac. max) :",
+            "savePresetSuccess": "Pré-réglage créé avec succès"
         },
         "saved": {
             "title": "Information",

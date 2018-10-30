@@ -35,7 +35,9 @@ var defaultHourEnableFormat = "PM";
 var defaultHourDisable = "7";
 var defaultMinuteDisable = "0";
 var defaultHourDisableFormat = "AM";
-var settingNames = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'sitesInterditPageShadow', 'liveSettings', 'whiteList', 'colorTemp', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'globallyEnable', 'customThemeInfoDisable', 'customCSSCode', 'autoEnable', 'autoEnableHourFormat', 'hourEnable', 'minuteEnable', 'hourEnableFormat', 'hourDisable', 'minuteDisable', 'hourDisableFormat', 'disableImgBgColor', 'defaultLoad'];
+var settingNames = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'sitesInterditPageShadow', 'liveSettings', 'whiteList', 'colorTemp', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'globallyEnable', 'customThemeInfoDisable', 'customCSSCode', 'autoEnable', 'autoEnableHourFormat', 'hourEnable', 'minuteEnable', 'hourEnableFormat', 'hourDisable', 'minuteDisable', 'hourDisableFormat', 'disableImgBgColor', 'defaultLoad', 'presets'];
+var defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
+var settingsToSavePresets = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'liveSettings', 'colorTemp', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'autoEnable', 'disableImgBgColor'];
 // End of the global configuration of the extension
 
 function in_array(needle, haystack) {
@@ -347,4 +349,107 @@ function downloadData(data, name, dataType) {
         downloadElement.click();
         document.body.removeChild(downloadElement);
     }
+}
+
+function loadPresetSelect(selectId) {
+    $("#" + selectId).html("");
+
+    chrome.storage.local.get('presets', function (data) {
+        try {
+            if(data == null || typeof(data) == 'undefined') {
+                setSettingItem("presets", defaultPresets);
+                var presets = defaultPresets;
+            } else {
+                var presets = data.presets;
+            }
+
+            var nbValue = 1;
+            var optionTitle = "";
+
+            for (var name in presets) {
+                if (presets.hasOwnProperty(name)) {
+                    if(!presets[name].hasOwnProperty("name")) {
+                        var optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue + " : " + i18next.t("modal.archive.presetEmpty") + "</option>";
+                    } else {
+                        if(presets[name]["name"].trim() == "") {
+                            var optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue + " : " + i18next.t("modal.archive.presetTitleEmpty") + "</option>";
+                        } else {
+                            var optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue  + " : " + $('<div/>').text(presets[name]["name"].substring(0, 50)).html() + "</option>";
+                        }
+                    }
+
+                    nbValue++;
+                }
+            }
+
+            $("#" + selectId).html(optionTitle);
+        } catch(e) {
+            return false;
+        }
+    });
+}
+
+function loadPreset(nb, func) {
+    chrome.storage.local.get('presets', function (data) {
+        try {
+            if(data == null || typeof(data) == 'undefined') {
+                setSettingItem("presets", defaultPresets);
+                return func("empty");
+            } else {
+                var presets = data.presets;
+            }
+
+            var namePreset = nb;
+            var preset = presets[namePreset];
+            var settingsRestored = 0;
+
+            for (var key in preset) {
+                if(typeof(key) === "string") {
+                    if(preset.hasOwnProperty(key) && settingsToSavePresets.indexOf(key) !== -1) {
+                        setSettingItem(key, preset[key]);
+                        settingsRestored++;
+                    }
+                }
+            }
+
+            if(settingsRestored > 0) {
+                return func("success");
+            } else {
+                return func("empty");
+            }
+        } catch(e) {
+            return func("error");
+        }
+    });
+}
+function savePreset(nb, name, func) {
+    chrome.storage.local.get('presets', function (dataPreset) {
+        chrome.storage.local.get(settingsToSavePresets, function (data) {
+            try {
+                if(dataPreset == null || typeof(dataPreset) == 'undefined') {
+                    var presets = defaultPresets;
+                } else {
+                    var presets = dataPreset.presets;
+                }
+
+                var namePreset = nb;
+                var preset = presets;
+                preset[namePreset]["name"] = name.substring(0, 50);
+
+                for(var key in data) {
+                    if(typeof(key) === "string") {
+                        if(data.hasOwnProperty(key) && settingsToSavePresets.indexOf(key) !== -1) {
+                            preset[namePreset][key] = data[key];
+                        }
+                    }
+                }
+
+                setSettingItem("presets", preset);
+
+                return func("success");
+            } catch(e) {
+                return func("error");
+            }
+        });
+    });
 }

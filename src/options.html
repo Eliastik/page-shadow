@@ -79,7 +79,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                 <div class="form-group">
                     <label class="col-lg-2">&nbsp;</label>
                     <div class="col-lg-10">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#customTheme"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span data-i18n="container.customThemeButton"></span></button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#customTheme"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span data-i18n="container.customThemeButton"></span></button> &nbsp; <button type="button" class="btn btn-success" data-toggle="modal" data-target="#archive"><i class="fa fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="container.backup"></span></button>
                     </div>
                 </div>
                 <div class="form-group">
@@ -92,7 +92,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                 </div>
                 <div class="form-group">
                     <div class="col-lg-10 col-lg-offset-2">
-                        <button type="button" class="btn btn-primary" id="validerButton"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.validate"></span></button> &nbsp; <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#resetConfirm" id="resetConfirmBtn"><i class="fa fa-refresh" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button> &nbsp; <button type="button" class="btn btn-success" data-toggle="modal" data-target="#archive"><i class="fa fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="container.backup"></span></button>
+                        <button type="button" class="btn btn-primary" id="validerButton"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.validate"></span></button> &nbsp; <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#resetConfirm" id="resetConfirmBtn"><i class="fa fa-refresh" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button>
                     </div>
                 </div>
             </form>
@@ -416,8 +416,9 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     </div>
                     <div class="modal-body">
                         <ul class="nav nav-tabs" role="tablist">
-                            <li role="presentation" class="active"><a href="#archiveTab" aria-controls="archiveTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-archive" aria-hidden="true"></i> <span data-i18n="modal.archive.archive"></span></a></li>
-                            <li role="presentation"><a href="#restoreTab" aria-controls="restoreTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-repeat" aria-hidden="true"></i> <span data-i18n="modal.archive.restore"></span></a></li>
+                            <li role="presentation" id="archiveTabLink" class="active"><a href="#archiveTab" aria-controls="archiveTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-archive" aria-hidden="true"></i> <span data-i18n="modal.archive.archive"></span></a></li>
+                            <li role="presentation" id="restoreTabLink"><a href="#restoreTab" aria-controls="restoreTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-repeat" aria-hidden="true"></i> <span data-i18n="modal.archive.restore"></span></a></li>
+                            <li role="presentation" id="presetTabLink"><a href="#presetTab" aria-controls="presetTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-wrench" aria-hidden="true"></i> <span data-i18n="modal.archive.preset"></span></a></li>
                         </ul>
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="archiveTab">
@@ -442,6 +443,47 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                     <p id="restoreSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreSuccess"></span></p>
                                 </div>
                                 <input id="inputFileJSON" type="file" name="inputFileJSON" accept=".json" style="display: none;" />
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="presetTab">
+                                <p><span data-i18n="modal.archive.descriptionPreset"></span> <strong data-i18n="modal.archive.warningPreset"></strong></p>
+                                <center><a class="btn btn-primary" id="loadPresetBtn"><i class="fa fa-upload fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.loadPreset"></span></a> &nbsp; <a class="btn btn-primary" id="savePresetBtn"><i class="fa fa-pencil fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.savePreset"></span></a></center>
+                                <div id="loadPreset" style="display: none; text-align: center;">
+                                    <form class="form-horizontal">
+                                        <div class="form-group">
+                                            <label for="loadPresetSelect" class="col-lg-4 control-label bold" data-i18n="modal.archive.loadPresetLabel"></label>
+                                            <div class="col-lg-6">
+                                                <select id="loadPresetSelect" style="width: 100%;"></select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <a class="btn btn-success" id="loadPresetValid"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modal.confirm"></span></a>
+                                        </div>
+                                        <p id="restorePresetError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetError"></span></p>
+                                        <p id="restorePresetEmpty" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetEmpty"></span></p>
+                                        <p id="restorePresetSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetSuccess"></span></p>
+                                    </form>
+                                </div>
+                                <div id="savePreset" style="display: none; text-align: center;">
+                                    <form class="form-horizontal">
+                                        <div class="form-group">
+                                            <label for="savePresetSelect" class="col-lg-4 control-label bold" data-i18n="modal.archive.savePresetSelect"></label>
+                                            <div class="col-lg-6">
+                                                <select id="savePresetSelect" style="width: 100%;"></select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="savePresetTitle" class="col-lg-4 control-label bold" data-i18n="modal.archive.savePresetTitle"></label>
+                                            <div class="col-lg-6">
+                                                <input type="text" id="savePresetTitle" style="width: 100%;"></select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <a class="btn btn-success" id="savePresetValid"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modal.confirm"></span></a>
+                                        </div>
+                                        <p id="savePresetError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetError"></span></p>
+                                        <p id="savePresetSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.savePresetSuccess"></span></p>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>

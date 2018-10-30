@@ -288,8 +288,11 @@ div.navbar-right {
 .modal-body > .tab-content {
     overflow: hidden !important;
 }
-#infoRestore {
+#infoRestore, #loadPreset, #savePreset {
     margin-top: 8px;
+}
+.btn {
+    white-space: normal;
 }
 @media (min-width: 768px) {
     body.popup .navbar-right {
