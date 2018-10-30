@@ -188,8 +188,7 @@
                 }
                 // when the page is entirely loaded
                 if(document.readyState === 'complete') {
-                    setTimeout(function() { applyBI(element, add, detectType); }, 1); // detect for all the elements of the page
-                    setTimeout(function() { applyBI(element, add, detectType); }, 2000); // detect for all the elements of the page after 1000 ms
+                    setTimeout(function() { applyBI(element, add, detectType); }, 1500); // detect for all the elements of the page after 1500 ms
                 }
             };
         } else {
