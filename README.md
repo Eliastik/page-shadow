@@ -4,7 +4,7 @@
 ![Screenshot](screen.png)
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.5 (29/04/2018)
+* Latest version: 2.6 (31/10/2018)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -23,6 +23,20 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.6 (31/10/2018) :
+* Added the ability to set presets (max 5, which can be created from the advanced settings) to restore them later (via the extension menu, advanced settings or the right-click menu);
+* Added a keyboard shortcut (Alt+Shift+S) to enable/disable the extension globally;
+* Added the Videos and Backgrounds (images) elements in the Invert the colors function, so they can be inverted or not regardless of the entire page and images;
+* Added ability to enable or disable background coloring of the images when the function Increase page contrast is enabled;
+* Fixed the display of some elements that could be hidden when the function Increase page contrast was enabled (eg in Google News);
+* The space taken by the extension menu has been reduced to accommodate the new functions;
+* Other minor changes:
+    * Small changes in the interface;
+    * Performance improvement;
+    * Bugfixes;
+    * Updated the software libraries;
+    * Other minor fixes (code simplification, etc.).
 
 ### Version 2.5 (29/04/2018) :
 * Better rendering of the tool Increase page contrast + color contrast of the themes corrected;
@@ -226,7 +240,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ![Screenshot](screen_fr.png)
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.5 (29/04/2018)
+* Version actuelle : 2.6 (31/10/2018)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -245,6 +259,20 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.6 (31/10/2018) :
+* Ajout de la possibilité de définir des pré-réglages (5 max, pouvant être créés depuis les paramètres avancés) afin de les restaurer plus tard (via le menu de l'extension, les paramètres avancés ou le menu du clic-droit) ;
+* Ajout d'un raccourci clavier (Alt+Shift+S) permettant d'activer/désactiver l'extension globalement ;
+* Ajout des éléments Vidéos et Arrière-plans (images) dans la fonction Inverser les couleurs, ils peuvent ainsi être inversés ou non indépendamment de la page entière et des images ;
+* Ajout de la possibilité d'activer ou de désactiver la coloration de l'arrière-plan des images lorsque la fonction Augmenter le contraste de la page est activée ;
+* Correction de l'affichage de certains éléments qui pouvaient être masqués lorsque la fonction Augmenter le contraste de la page était activée (par exemple Google Actualités) ;
+* L'espace pris par le menu de l'extension a été réduit afin d'accueillir les nouvelles fonctions ;
+* Autres changements mineurs :
+    * Petits changements dans l'interface ;
+    * Amélioration des performances ;
+    * Correction de bugs ;
+    * Mise à jour des bibliothèques logicielles ;
+    * Autres corrections mineures (simplification du code, etc.).
 
 ### Version 2.5 (29/04/2018) :
 * Meilleur rendu de l'outil Augmenter le contraste de la page + contraste de couleurs des thèmes corrigé ;

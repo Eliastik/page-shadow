@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.5 (29/04/2018)
+* Version actuelle : 2.6 (31/10/2018)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -21,6 +21,20 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.6 (31/10/2018) :
+* Ajout de la possibilité de définir des pré-réglages (5 max, pouvant être créés depuis les paramètres avancés) afin de les restaurer plus tard (via le menu de l'extension, les paramètres avancés ou le menu du clic-droit) ;
+* Ajout d'un raccourci clavier (Alt+Shift+S) permettant d'activer/désactiver l'extension globalement ;
+* Ajout des éléments Vidéos et Arrière-plans (images) dans la fonction Inverser les couleurs, ils peuvent ainsi être inversés ou non indépendamment de la page entière et des images ;
+* Ajout de la possibilité d'activer ou de désactiver la coloration de l'arrière-plan des images lorsque la fonction Augmenter le contraste de la page est activée ;
+* Correction de l'affichage de certains éléments qui pouvaient être masqués lorsque la fonction Augmenter le contraste de la page était activée (par exemple Google Actualités) ;
+* L'espace pris par le menu de l'extension a été réduit afin d'accueillir les nouvelles fonctions ;
+* Autres changements mineurs :
+    * Petits changements dans l'interface ;
+    * Amélioration des performances ;
+    * Correction de bugs ;
+    * Mise à jour des bibliothèques logicielles ;
+    * Autres corrections mineures (simplification du code, etc.).
 
 ### Version 2.5 (29/04/2018) :
 * Meilleur rendu de l'outil Augmenter le contraste de la page + contraste de couleurs des thèmes corrigé ;

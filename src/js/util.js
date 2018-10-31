@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 // Global configuration of the extension
-var extensionVersion = "2.5";
+var extensionVersion = "2.6";
 var nbThemes = 15; // nb of themes for the function Increase the contrast (used globally in the extension)
 var colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"]; // color temperatures available for the function Night Mode (used globally in the extension)
 var minBrightnessPercentage = 0; // the minimum percentage of brightness
