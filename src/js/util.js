@@ -133,7 +133,7 @@ function customTheme(style, disableCustomCSS, lnkCssElement) {
         style.sheet.insertRule("html.pageShadowBackgroundCustom { background: #"+ backgroundTheme +" !important; }", 0);
         style.sheet.insertRule(".pageShadowContrastBlackCustom { background: #"+ backgroundTheme +" !important; background-image: url(); }", 0);
         style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon) { background-color: #"+ backgroundTheme +" !important; color: #"+ textsColorTheme +" !important; }", 0);
-        style.sheet.insertRule(".pageShadowContrastBlackCustom input { border: 1px solid #"+ textsColorTheme +" !important; }", 0);
+        style.sheet.insertRule(".pageShadowContrastBlackCustom input { background: #"+ backgroundTheme +" !important; border: 1px solid #"+ textsColorTheme +" !important; }", 0);
         style.sheet.insertRule(".pageShadowContrastBlackCustom * {  font-family: " + fontTheme + " !important; }", 0);
         style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg { color: #"+ textsColorTheme +" !important; }", 0);
         style.sheet.insertRule(".pageShadowContrastBlackCustom a { color: #"+ linksColorTheme +" !important; background-color: transparent !important; }", 0);
@@ -356,7 +356,7 @@ function downloadData(data, name, dataType) {
 function loadPresetSelect(selectId) {
     var presetSelected = $("#" + selectId).val();
     $("#" + selectId).html("");
-    
+
     if(presetSelected == null) {
         var presetSelected = 1;
     }
@@ -401,7 +401,7 @@ function loadPreset(nb, func) {
     if(nb < 1 || nb > nbPresets) {
         return func("error");
     }
-    
+
     chrome.storage.local.get('presets', function (data) {
         try {
             if(data.presets == null || typeof(data.presets) == 'undefined') {
@@ -438,7 +438,7 @@ function savePreset(nb, name, func) {
     if(nb < 1 || nb > nbPresets) {
         return func("error");
     }
-    
+
     chrome.storage.local.get('presets', function (dataPreset) {
         chrome.storage.local.get(settingsToSavePresets, function (data) {
             try {
@@ -473,7 +473,7 @@ function deletePreset(nb, func) {
     if(nb < 1 || nb > nbPresets) {
         return func("error");
     }
-    
+
     chrome.storage.local.get('presets', function (dataPreset) {
         try {
             if(dataPreset.presets == null || typeof(dataPreset.presets) == 'undefined') {
