@@ -20,6 +20,8 @@
         "help": "Help",
         "customThemeButton": "Setup your custom theme…",
         "backup": "Backup, restoring settings and presets…",
+        "keyboardShortcuts": "Manage keyboard shortcuts…",
+        "keyboardShortcutsInfos": "Not yet available with your browser. However, the keyboard shortcut Alt+Shift+S allow you to enable or disable globally the extension.",
         "indiceList": "The websites addresses entered below will be ignored by Page Shadow.",
         "whiteList": "Whitelist (ignore all the websites by default)",
         "titleWhiteList": "Check this checkbox if you want to toggle this list to a whitelist. All the websites will be ignored by default, and you will have to deblock them with the right-click, with the extension menu or by entering their addresses below (eg www.google.com). The blocking/deblocking of specific URLs isn't available with this mode. Enable or disable this setting will reset the list.",

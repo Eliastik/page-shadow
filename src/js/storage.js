@@ -18,11 +18,11 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 function setSettingItem(name, value) {
     if(typeof(window["settingNames"]) == "undefined") settingNames = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'sitesInterditPageShadow', 'liveSettings', 'whiteList', 'colorTemp', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'globallyEnable', 'customThemeInfoDisable', 'customCSSCode', 'autoEnable', 'autoEnableHourFormat', 'hourEnable', 'minuteEnable', 'hourEnableFormat', 'hourDisable', 'minuteDisable', 'hourDisableFormat', 'disableImgBgColor', 'defaultLoad', 'presets'];
-    
+
     if(settingNames.indexOf(name) !== -1) {
         var newSetting = {};
         newSetting[name] = value;
-        
+
         return chrome.storage.local.set(newSetting);
     } else {
         return false;

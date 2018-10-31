@@ -126,7 +126,7 @@ $(document).ready(function() {
             url: "pageTest.html"
         });
     });
-    
+
     $("#settingsPresets").click(function() {
         chrome.tabs.create({
             url: "options.html#presets"
@@ -795,11 +795,11 @@ $(document).ready(function() {
             setSettingItem("globallyEnable", "false");
         }
     });
-    
+
     $("#loadPresetValid").click(function() {
         clearTimeout(timeoutInfoPreset);
         $("#infoPreset").removeClass("show");
-        
+
         loadPreset(parseInt($("#loadPresetSelect").val()), function(result) {
             if(result == "success") {
                 $("#infoPreset").text(i18next.t("modal.archive.restorePresetSuccess"));
@@ -808,7 +808,7 @@ $(document).ready(function() {
             } else {
                 $("#infoPreset").text(i18next.t("modal.archive.restorePresetError"));
             }
-            
+
             $("#infoPreset").addClass("show");
             timeoutInfoPreset = setTimeout(function(){ $("#infoPreset").removeClass("show"); }, 3000);
         });
@@ -837,7 +837,7 @@ $(document).ready(function() {
             if(($("#autoEnableSettings").data('bs.modal') || {}).isShown !== true) {
                 checkSettingsAutoEnable();
             }
-            
+
             loadPresetSelect("loadPresetSelect");
         });
     }

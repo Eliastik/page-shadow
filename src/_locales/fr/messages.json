@@ -31,5 +31,8 @@
     },
     "loadPreset": {
         "message": "Charger le pré-réglage n°"
+    },
+    "enableDisableShortcut": {
+        "message": "Activer/désactiver l'extension"
     }
 }

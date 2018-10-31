@@ -478,6 +478,21 @@ $(document).ready(function() {
         $("#firefoxHelpArchive").show();
     }
 
+    if(getBrowser() == "Chrome") {
+        $("#keyboardShortcuts").click(function() {
+            chrome.tabs.create({
+                url: "chrome://extensions/configureCommands"
+            });
+        });
+    } else {
+        $("#keyboardShortcuts").tooltip({
+            trigger: 'focus',
+            container: 'body',
+            placement: 'auto bottom',
+            title: i18next.t("container.keyboardShortcutsInfos")
+        });
+    }
+
     // Hash
     if(window.location.hash) {
         if(window.location.hash == "#customTheme") {

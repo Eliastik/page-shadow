@@ -31,5 +31,8 @@
     },
     "loadPreset": {
         "message": "Load the preset n°"
+    },
+    "enableDisableShortcut": {
+        "message": "Enable/disable the extension"
     }
 }

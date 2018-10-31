@@ -415,7 +415,7 @@ function presetsEnabled(func) {
                         listPreset.push(numPreset);
                     }
                 }
-                
+
                 numPreset++;
             }
 

@@ -334,3 +334,17 @@ if(typeof(chrome.contextMenus) !== 'undefined' && typeof(chrome.contextMenus.onC
         });
     });
 }
+
+if(typeof(chrome.commands) !== 'undefined' && typeof(chrome.commands.onCommand) !== 'undefined') {
+    chrome.commands.onCommand.addListener(function(command) {
+        if(command == "enableDisable") {
+            chrome.storage.local.get("globallyEnable", function (result) {
+                if(result.globallyEnable == "false") {
+                    setSettingItem("globallyEnable", "true");
+                } else {
+                    setSettingItem("globallyEnable", "false");
+                }
+            });
+        }
+    });
+}
