@@ -88,7 +88,6 @@
         color: @selectxtcolor !important;
     }
     .pageShadowContrastBlack@{name} input {
-        background: @bgcolor !important;
         border: 1px solid @txtcolor !important;
     }
     .pageShadowContrastBlack@{name} ins {
@@ -122,7 +121,7 @@
     .pageShadowContrastBlack@{name} .pageShadowHasBackgroundImg {
         background-color: transparent !important;
     }
-    .pageShadowContrastBlack@{name} .pageShadowHasHiddenElement, .pageShadowContrastBlack@{name} .pageShadowHasHiddenElement > *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon) {
+    .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected .pageShadowHasHiddenElement, .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected .pageShadowHasHiddenElement > *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon) {
         background: transparent !important;
     }
 }
@@ -168,7 +167,7 @@
 .pageShadowContrastBlackCustom .pageShadowHasBackgroundImg {
     background-color: transparent !important;
 }
-.pageShadowContrastBlackCustom .pageShadowHasHiddenElement, .pageShadowContrastBlackCustom .pageShadowHasHiddenElement > *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon) {
+.pageShadowContrastBlackCustom.pageShadowBackgroundDetected .pageShadowHasHiddenElement, .pageShadowContrastBlackCustom.pageShadowBackgroundDetected .pageShadowHasHiddenElement > *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon) {
     background: transparent !important;
 }
 
