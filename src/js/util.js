@@ -396,7 +396,35 @@ function loadPresetSelect(selectId) {
         }
     });
 }
+function presetsEnabled(func) {
+    chrome.storage.local.get('presets', function (data) {
+        try {
+            if(data.presets == null || typeof(data.presets) == 'undefined') {
+                setSettingItem("presets", defaultPresets);
+                var presets = defaultPresets;
+            } else {
+                var presets = data.presets;
+            }
 
+            var listPreset = [];
+            var numPreset = 1;
+
+            for (var name in presets) {
+                if (presets.hasOwnProperty(name)) {
+                    if(presets[name].hasOwnProperty("name")) {
+                        listPreset.push(numPreset);
+                    }
+                }
+                
+                numPreset++;
+            }
+
+            return func(listPreset);
+        } catch(e) {
+            return func(false);
+        }
+    });
+}
 function loadPreset(nb, func) {
     if(nb < 1 || nb > nbPresets) {
         return func("error");

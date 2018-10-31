@@ -28,5 +28,8 @@
     },
     "pageShadowDisabled": {
         "message": "disabled"
+    },
+    "loadPreset": {
+        "message": "Load the preset n°"
     }
 }

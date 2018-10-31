@@ -114,16 +114,36 @@ function menu() {
                                 createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
                             }
                         }
-                    });
-                }
 
-                if(result.globallyEnable == "false") {
-                    createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], true);
+                        createMenuOthers();
+                    });
                 } else {
-                    createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], false);
+                    createMenuOthers();
                 }
             });
         }
+    }
+
+    function createMenuOthers() {
+        chrome.storage.local.get(['globallyEnable'], function (result) {
+            if(result.globallyEnable == "false") {
+                createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], true);
+            } else {
+                createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], false);
+            }
+
+            presetsEnabled(function(resultat) {
+                if(resultat !== false && Array.isArray(resultat) && resultat.length > 0) {
+                    createContextMenu("separator-presets", "separator", null, ["all"], false);
+
+                    for(var i = 0; i < resultat.length; i++) {
+                        if(resultat[i] <= nbPresets) {
+                            createContextMenu("load-preset-" + resultat[i], "normal", getUImessage("loadPreset") + resultat[i], ["all"], false);
+                        }
+                    }
+                }
+            });
+        });
     }
 
     if(typeof(chrome.contextMenus) !== 'undefined' && typeof(chrome.contextMenus.removeAll) !== 'undefined') {
@@ -260,7 +280,7 @@ if(typeof(chrome.contextMenus) !== 'undefined' && typeof(chrome.contextMenus.onC
                 var disabledWebsitesEmpty = false;
             }
 
-            switch (info.menuItemId) {
+            switch(info.menuItemId) {
                 case "disable-website":
                     if(result.whiteList == "true") {
                         if(info.checked == true && info.wasChecked == false) {
@@ -305,6 +325,11 @@ if(typeof(chrome.contextMenus) !== 'undefined' && typeof(chrome.contextMenus.onC
                         setSettingItem("globallyEnable", "true");
                     }
                     break;
+            }
+
+            if(info.menuItemId.substring(0, 11) == "load-preset") {
+                var nbPreset = info.menuItemId.substr(12, info.menuItemId.length - 11);
+                loadPreset(nbPreset, function(resultat){});
             }
         });
     });
