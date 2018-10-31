@@ -77,7 +77,7 @@ i18next.on('languageChanged', () => {
 function resetSettings() {
     $('span[data-toggle="tooltip"]').tooltip("hide");
     $('i[data-toggle="tooltip"]').tooltip("hide");
-    
+
     chrome.storage.local.clear(function() {
         setFirstSettings(function() {
             $("#textareaAssomPage").val("");
@@ -279,6 +279,22 @@ function restoreSettings(event) {
         $("#restoreError").hide();
     }
 }
+function createPreset() {
+    $("#savePresetError").hide();
+    $("#savePresetSuccess").hide();
+
+    savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val(), function(result) {
+        if(result == "success") {
+            $("#savePresetSuccess").fadeIn(500);
+        } else {
+            $("#savePresetError").fadeIn(500);
+        }
+
+        loadPresetSelect("loadPresetSelect");
+        loadPresetSelect("savePresetSelect");
+        loadPresetSelect("deletePresetSelect");
+    });
+}
 $(document).ready(function() {
     $("#validerButton").click(function() {
         setSettingItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
@@ -334,7 +350,7 @@ $(document).ready(function() {
         $("#savePreset").show();
         $("#deletePreset").hide();
     });
-    
+
     $("#deletePresetBtn").click(function() {
         $("#loadPreset").hide();
         $("#savePreset").hide();
@@ -492,22 +508,15 @@ $(document).ready(function() {
     });
 
     $("#savePresetValid").click(function() {
-        $("#savePresetError").hide();
-        $("#savePresetSuccess").hide();
-
-        savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val(), function(result) {
-            if(result == "success") {
-                $("#savePresetSuccess").fadeIn(500);
-            } else {
-                $("#savePresetError").fadeIn(500);
-            }
-
-            loadPresetSelect("loadPresetSelect");
-            loadPresetSelect("savePresetSelect");
-            loadPresetSelect("deletePresetSelect");
-        });
+        createPreset();
     });
-    
+
+    $("#savePresetTitle").keyup(function(e) {
+        if(e.keyCode === 13) {
+            createPreset();
+        }
+    });
+
     $("#deletePresetValid").click(function() {
         $("#deletePresetError").hide();
         $("#deletePresetSuccess").hide();

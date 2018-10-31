@@ -63,7 +63,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
             </div>
         </nav>
         <div class="container">
-            <form class="form-horizontal well">
+            <div class="form-horizontal well">
                 <p class="large-text"><span data-i18n="container.description"></span> <strong data-i18n="container.saveInfo"></strong></p>
                 <div class="form-group">
                     <div class="col-lg-8">
@@ -95,7 +95,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                         <button type="button" class="btn btn-primary" id="validerButton"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.validate"></span></button> &nbsp; <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#resetConfirm" id="resetConfirmBtn"><i class="fa fa-refresh" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
         <!-- modals :
              about -->
@@ -297,7 +297,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     </div>
                     <div class="modal-body">
                         <p><span data-i18n="modal.customTheme.description"></span> <strong data-i18n="modal.customTheme.saveInfo"></strong></p>
-                        <form class="form-horizontal">
+                        <div class="form-horizontal">
                             <div class="form-group">
                                 <label class="col-lg-4 control-label bold" data-i18n="modal.customTheme.preview"></label>
                                 <div class="col-lg-6">
@@ -347,7 +347,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modal.ok"></span></button>
@@ -448,7 +448,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 <p><span data-i18n="modal.archive.descriptionPreset"></span> <strong data-i18n="modal.archive.warningPreset"></strong></p>
                                 <center><a class="btn btn-success" id="loadPresetBtn"><i class="fa fa-upload fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.loadPreset"></span></a> &nbsp; <a class="btn btn-primary" id="savePresetBtn"><i class="fa fa-pencil fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.savePreset"></span></a> &nbsp; <a class="btn btn-danger" id="deletePresetBtn"><i class="fa fa-trash fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.deletePreset"></span></a></center>
                                 <div id="loadPreset" class="center" style="display: none;">
-                                    <form class="form-horizontal">
+                                    <div class="form-horizontal">
                                         <div class="form-group">
                                             <label for="loadPresetSelect" class="col-lg-4 control-label bold" data-i18n="modal.archive.loadPresetLabel"></label>
                                             <div class="col-lg-6">
@@ -461,10 +461,10 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                         <p id="restorePresetError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetError"></span></p>
                                         <p id="restorePresetEmpty" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetEmpty"></span></p>
                                         <p id="restorePresetSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetSuccess"></span></p>
-                                    </form>
+                                    </div>
                                 </div>
                                 <div id="savePreset" class="center" style="display: none;">
-                                    <form class="form-horizontal">
+                                    <div class="form-horizontal">
                                         <p data-i18n="modal.archive.infoSavePreset"></p>
                                         <div class="form-group">
                                             <label for="savePresetSelect" class="col-lg-4 control-label bold" data-i18n="modal.archive.savePresetSelect"></label>
@@ -483,10 +483,10 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                         </div>
                                         <p id="savePresetError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetError"></span></p>
                                         <p id="savePresetSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.savePresetSuccess"></span></p>
-                                    </form>
+                                    </div>
                                 </div>
                                 <div id="deletePreset" class="center" style="display: none;">
-                                    <form class="form-horizontal">
+                                    <div class="form-horizontal">
                                         <p><strong data-i18n="modal.archive.infoDeletePreset"></strong></p>
                                         <div class="form-group">
                                             <label for="deletePresetSelect" class="col-lg-4 control-label bold" data-i18n="modal.archive.loadPresetLabel"></label>
@@ -499,7 +499,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                         </div>
                                         <p id="deletePresetError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetError"></span></p>
                                         <p id="deletePresetSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.deletePresetSuccess"></span></p>
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
