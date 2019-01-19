@@ -181,7 +181,7 @@ Git clone the repository and cd to the project directory (or download it directl
 git clone https://github.com/Eliastik/page-shadow.git
 cd page-shadow
 ````
-The compilation need the following npm packages (which will be created in the project directory): gulp (local), fs, gulp-clean, gulp-clean-css, gulp-crx-pack, gulp-minify, gulp-zip, gulp-less and run-sequence
+The compilation need the following npm packages (which will be created in the project directory): gulp (local), fs, gulp-clean, gulp-clean-css, gulp-crx-pack, gulp-minify, gulp-zip and gulp-less.
 
 To install these packages, run the following command:
 ````
