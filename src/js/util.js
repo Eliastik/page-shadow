@@ -355,13 +355,12 @@ function downloadData(data, name, dataType) {
 
 function loadPresetSelect(selectId) {
     var presetSelected = $("#" + selectId).val();
-    $("#" + selectId).html("");
 
     if(presetSelected == null) {
         var presetSelected = 1;
     }
 
-    chrome.storage.local.get('presets', function (data) {
+    chrome.storage.local.get('presets', function(data) {
         try {
             if(data.presets == null || typeof(data.presets) == 'undefined') {
                 setSettingItem("presets", defaultPresets);
@@ -369,6 +368,8 @@ function loadPresetSelect(selectId) {
             } else {
                 var presets = data.presets;
             }
+
+            $("#" + selectId).html("");
 
             var nbValue = 1;
             var optionTitle = "";

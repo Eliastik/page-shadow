@@ -60,6 +60,7 @@ $(document).ready(function() {
     var brightnessChangedFromThisPage = false;
     if(typeof(themeTranslation) === "undefined") themeTranslation = "Theme";
     var timeoutInfoPreset = 0;
+    var selectedPreset = 1;
 
     /* Check if the configuration variables are set, if not set some default values (the variables are set globally, so we use window[variableName]) */
     if(typeof(window["nbThemes"]) == "undefined") nbThemes = 15;
@@ -814,6 +815,10 @@ $(document).ready(function() {
         });
     });
 
+    $("#loadPresetSelect").change(function() {
+      selectedPreset = $("#loadPresetSelect").val();
+    });
+
     function displaySettings() {
         chrome.storage.local.get(['theme', 'colorTemp', 'pourcentageLum'], function (result) {
             checkContrastMode();
@@ -839,6 +844,7 @@ $(document).ready(function() {
             }
 
             loadPresetSelect("loadPresetSelect");
+            $("#loadPresetSelect").val(selectedPreset).change();
         });
     }
 
