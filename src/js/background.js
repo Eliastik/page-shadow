@@ -265,73 +265,12 @@ if(typeof(chrome.storage) !== 'undefined' && typeof(chrome.storage.onChanged) !=
 
 if(typeof(chrome.contextMenus) !== 'undefined' && typeof(chrome.contextMenus.onClicked) !== 'undefined') {
     chrome.contextMenus.onClicked.addListener((info, tab) => {
-        chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
-            var disabledWebsites = '';
-            var disabledWebsitesEmpty = false;
-            var url = new URL(tab.url);
-            var domain = url.hostname;
+        disableEnableToggle(info.menuItemId, info.checked && !info.wasChecked, new URL(tab.url));
 
-            if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined') {
-                var disabledWebsitesEmpty = true;
-                var disabledWebsitesArray = [];
-            } else {
-                var disabledWebsites = result.sitesInterditPageShadow;
-                var disabledWebsitesArray = disabledWebsites.split("\n");
-                var disabledWebsitesEmpty = false;
-            }
-
-            switch(info.menuItemId) {
-                case "disable-website":
-                    if(result.whiteList == "true") {
-                        if(info.checked == true && info.wasChecked == false) {
-                            var disabledWebsitesNew = removeA(disabledWebsitesArray, domain);
-                            var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
-                            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
-                        } else {
-                            disabledWebsitesArray.push(domain);
-                            var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
-
-                            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
-                        }
-                    } else {
-                        if(info.checked == true && info.wasChecked == false) {
-                            disabledWebsitesArray.push(domain);
-                            var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
-
-                            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
-                        } else {
-                            var disabledWebsitesNew = removeA(disabledWebsitesArray, domain);
-                            var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
-                            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
-                        }
-                    }
-                    break;
-                case "disable-webpage":
-                    if(info.checked == true && info.wasChecked == false) {
-                        disabledWebsitesArray.push(tab.url);
-                        var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
-
-                        setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
-                    } else {
-                        var disabledWebsitesNew = removeA(disabledWebsitesArray, tab.url);
-                        var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
-                        setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
-                    }
-                    break;
-                case "disable-globally":
-                    if(info.checked == true && info.wasChecked == false) {
-                        setSettingItem("globallyEnable", "false");
-                    } else {
-                        setSettingItem("globallyEnable", "true");
-                    }
-                    break;
-            }
-
-            if(info.menuItemId.substring(0, 11) == "load-preset") {
-                var nbPreset = info.menuItemId.substr(12, info.menuItemId.length - 11);
-                loadPreset(nbPreset, function(resultat){});
-            }
-        });
+        if(info.menuItemId.substring(0, 11) == "load-preset") {
+            var nbPreset = info.menuItemId.substr(12, info.menuItemId.length - 11);
+            loadPreset(nbPreset);
+        }
     });
 }
 

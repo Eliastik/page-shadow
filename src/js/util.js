@@ -42,9 +42,7 @@ var nbPresets = 5;
 // End of the global configuration of the extension
 
 function in_array(needle, haystack) {
-    var key = '';
-
-    for(key in haystack) {
+    for(var key in haystack) {
         if(needle.indexOf(haystack[key]) != -1) {
             return true;
         }
@@ -54,9 +52,7 @@ function in_array(needle, haystack) {
 }
 
 function strict_in_array(needle, haystack) {
-    var key = '';
-
-    for(key in haystack) {
+    for(var key in haystack) {
         if(needle == haystack[key]) {
             return true;
         }
@@ -65,32 +61,26 @@ function strict_in_array(needle, haystack) {
     return false;
 }
 
-function in_array_website(needle, haystack) {
-    var key = '';
+function matchWebsite(needle, rule) {
+    if(!rule.trim().startsWith("#")) {
+        if(!rule.trim().startsWith("/") && !rule.trim().endsWith("/") && rule.indexOf("*") != -1) {
+            rule = rule.replace("*", "(.*)");
+            rule = "/" + rule + "/";
+        }
 
-    for(key in haystack) {
-        if(!key.trim().startsWith("#")) {
-            var value = haystack[key];
+        if(rule.trim().startsWith("/") && rule.trim().endsWith("/")) {
+            try {
+              var regex = new RegExp(rule.substring(1, rule.length - 1), "gi");
 
-            if(!value.trim().startsWith("/") && !value.trim().endsWith("/") && value.indexOf("*") != -1) {
-                value = value.replace("*", "(.*)");
-                value = "/" + value + "/";
+              if(regex.test(needle)) {
+                  return true;
+              }
+            } catch(e) {
+                  return false;
             }
-
-            if(value.trim().startsWith("/") && value.trim().endsWith("/")) {
-                try {
-                  var regex = new RegExp(value.substring(1, value.length - 1), "gi");
-
-                  if(regex.test(needle)) {
-                      return true;
-                  }
-                } catch(e) {
-                      return false;
-                }
-            } else {
-                if(needle == value) {
-                    return true;
-                }
+        } else {
+            if(needle == rule) {
+                return true;
             }
         }
     }
@@ -98,10 +88,89 @@ function in_array_website(needle, haystack) {
     return false;
 }
 
+function in_array_website(needle, haystack) {
+    for(var key in haystack) {
+        if(matchWebsite(needle, haystack[key])) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function disableEnableToggle(type, checked, url) {
+    chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
+        var disabledWebsites = "";
+        var disabledWebsitesEmpty = false;
+        var domain = url.hostname;
+        var href = url.href;
+
+        if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined') {
+            var disabledWebsitesEmpty = true;
+            var disabledWebsitesArray = [];
+        } else {
+            var disabledWebsites = result.sitesInterditPageShadow;
+            var disabledWebsitesArray = disabledWebsites.split("\n");
+            var disabledWebsitesEmpty = false;
+        }
+
+        switch(type) {
+            case "disable-website":
+                if(result.whiteList == "true") {
+                    if(checked) {
+                        var disabledWebsitesNew = removeA(disabledWebsitesArray, domain);
+                        var disabledWebsitesNew = commentMatched(disabledWebsitesNew, domain);
+                        var disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
+
+                        setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
+                    } else {
+                        disabledWebsitesArray.push(domain);
+                        var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
+
+                        setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
+                    }
+                } else {
+                    if(checked) {
+                        disabledWebsitesArray.push(domain);
+                        var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
+
+                        setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
+                    } else {
+                        var disabledWebsitesNew = removeA(disabledWebsitesArray, domain);
+                        var disabledWebsitesNew = commentMatched(disabledWebsitesNew, domain);
+                        var disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
+                        setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
+                    }
+                }
+                break;
+            case "disable-webpage":
+                if(checked) {
+                    disabledWebsitesArray.push(href);
+                    var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
+
+                    setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
+                } else {
+                    var disabledWebsitesNew = removeA(disabledWebsitesArray, href);
+                    var disabledWebsitesNew = commentMatched(disabledWebsitesNew, href);
+                    var disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
+                    setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
+                }
+                break;
+            case "disable-globally":
+                if(checked) {
+                    setSettingItem("globallyEnable", "false");
+                } else {
+                    setSettingItem("globallyEnable", "true");
+                }
+                break;
+        }
+    });
+}
+
 function removeA(arr) {
     var what, a = arguments, L = a.length, ax;
 
-    while (L > 1 && arr.length) {
+    while(L > 1 && arr.length) {
         what = a[--L];
         while ((ax= arr.indexOf(what)) !== -1) {
             arr.splice(ax, 1);
@@ -109,6 +178,20 @@ function removeA(arr) {
     }
 
     return arr;
+}
+
+function commentMatched(arr, website) {
+    var res = [];
+
+    for(var key in arr) {
+        if(matchWebsite(website, arr[key])) {
+            res.push("#" + arr[key]);
+        } else {
+            res.push(arr[key]);
+        }
+    }
+
+    return res;
 }
 
 function getUImessage(id) {
@@ -460,6 +543,10 @@ function presetsEnabled(func) {
     });
 }
 function loadPreset(nb, func) {
+    if(func == undefined) {
+      var func = function(res) {};
+    }
+
     if(nb < 1 || nb > nbPresets) {
         return func("error");
     }

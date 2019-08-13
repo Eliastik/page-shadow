@@ -229,66 +229,6 @@ $(document).ready(function() {
     }
 
     function disablePageShadow(type, checked) {
-        function disable(url) {
-            chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
-                var disabledWebsites = '';
-                var disabledWebsitesEmpty = false;
-                var domain = url.hostname;
-                var href = url.href;
-
-                if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined') {
-                    var disabledWebsitesEmpty = true;
-                    var disabledWebsitesArray = [];
-                } else {
-                    var disabledWebsites = result.sitesInterditPageShadow;
-                    var disabledWebsitesArray = disabledWebsites.split("\n");
-                    var disabledWebsitesEmpty = false;
-                }
-
-                switch (type) {
-                    case "disable-website":
-                        if(result.whiteList == "true") {
-                            if(checked == true) {
-                                var disabledWebsitesNew = removeA(disabledWebsitesArray, domain);
-                                var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
-                                setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
-                            } else {
-                                disabledWebsitesArray.push(domain);
-                                var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
-
-                                setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
-                            }
-                        } else {
-                            if(checked == true) {
-                                disabledWebsitesArray.push(domain);
-                                var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
-
-                                setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
-                            } else {
-                                var disabledWebsitesNew = removeA(disabledWebsitesArray, domain);
-                                var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
-                                setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
-                            }
-                        }
-                        break;
-                    case "disable-webpage":
-                        if(checked == true) {
-                            disabledWebsitesArray.push(href);
-                            var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
-
-                            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
-                        } else {
-                            var disabledWebsitesNew = removeA(disabledWebsitesArray, href);
-                            var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
-                            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
-                        }
-                        break;
-                }
-
-                checkEnable();
-            });
-        }
-
         var matches = window.location.search.match(/[\?&]tabId=([^&]+)/);
 
         if(matches && matches.length === 2) {
@@ -296,14 +236,16 @@ $(document).ready(function() {
             chrome.tabs.get(tabId, function(tabinfos) {
                 if(!chrome.runtime.lastError) {
                     var url = new URL(tabinfos.url);
-                    disable(url);
+                    disableEnableToggle(type, checked, url);
+                    checkEnable();
                 }
             });
         } else {
             chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
                 if(!chrome.runtime.lastError) {
                     var url = new URL(tabs[0].url);
-                    disable(url);
+                    disableEnableToggle(type, checked, url);
+                    checkEnable();
                 }
             });
         }
