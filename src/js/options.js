@@ -384,8 +384,9 @@ $(document).ready(function() {
 
     $('#colorpicker1').colpick({
         layout:'hex',
-        submit:0,
+        submit: false,
         color: '000000',
+        appendTo: $("#customTheme"),
         onChange:function(hsb,hex,rgb,el,bySetColor) {
             $("#colorpicker1").css("background-color", "#"+hex);
             $("#previsualisationDiv").css("background-color", "#"+hex);
@@ -395,8 +396,9 @@ $(document).ready(function() {
 
     $('#colorpicker2').colpick({
         layout:'hex',
-        submit:0,
+        submit: false,
         color: 'FFFFFF',
+        appendTo: $("#customTheme"),
         onChange:function(hsb,hex,rgb,el,bySetColor) {
             $("#colorpicker2").css("background-color", "#"+hex);
             $("#textPreview").css("color", "#"+hex);
@@ -406,8 +408,9 @@ $(document).ready(function() {
 
     $('#colorpicker3').colpick({
         layout:'hex',
-        submit:0,
+        submit: false,
         color: '1E90FF',
+        appendTo: $("#customTheme"),
         onChange:function(hsb,hex,rgb,el,bySetColor) {
             $("#colorpicker3").css("background-color", "#"+hex);
             $("#linkPreview").css("color", "#"+hex);
@@ -417,8 +420,9 @@ $(document).ready(function() {
 
     $('#colorpicker4').colpick({
         layout:'hex',
-        submit:0,
+        submit: false,
         color: '800080',
+        appendTo: $("#customTheme"),
         onChange:function(hsb,hex,rgb,el,bySetColor) {
             $("#colorpicker4").css("background-color", "#"+hex);
             $("#linkVisitedPreview").css("color", "#"+hex);
