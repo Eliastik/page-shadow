@@ -177,7 +177,7 @@ $(document).ready(function() {
                 var href = url.href;
 
                 if(result.whiteList == "true") {
-                    if(strict_in_array(domain, siteInterdits)) {
+                    if(in_array_website(domain, siteInterdits)) {
                         $("#disableWebsite-li").hide();
                         $("#enableWebsite-li").show();
                     } else {
@@ -189,7 +189,7 @@ $(document).ready(function() {
                     $("#enableWebpage-li").hide();
 
                 } else {
-                    if(strict_in_array(domain, siteInterdits)) {
+                    if(in_array_website(domain, siteInterdits)) {
                         $("#disableWebsite-li").show();
                         $("#enableWebsite-li").hide();
                     } else {
@@ -197,7 +197,7 @@ $(document).ready(function() {
                         $("#enableWebsite-li").show();
                     }
 
-                    if(strict_in_array(href, siteInterdits)) {
+                    if(in_array_website(href, siteInterdits)) {
                         $("#disableWebpage-li").show();
                         $("#enableWebpage-li").hide();
                     } else {

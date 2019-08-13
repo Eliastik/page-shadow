@@ -96,19 +96,19 @@ function menu() {
                         var href = url.href;
 
                         if(result.whiteList == "true") {
-                            if(strict_in_array(domain, siteInterdits)) {
+                            if(in_array_website(domain, siteInterdits)) {
                                 createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
                             } else {
                                 createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
                             }
                         } else {
-                            if(strict_in_array(domain, siteInterdits)) {
+                            if(in_array_website(domain, siteInterdits)) {
                                 createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
                             } else {
                                 createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
                             }
 
-                            if(strict_in_array(href, siteInterdits)) {
+                            if(in_array_website(href, siteInterdits)) {
                                 createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
                             } else {
                                 createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);

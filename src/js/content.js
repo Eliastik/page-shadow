@@ -490,8 +490,8 @@
                 document.body.classList.remove("pageShadowDisableImgBgColor");
                 document.body.classList.remove("pageShadowInvertBgColor");
 
-                for(i=1; i<=nbThemes; i++) {
-                    if(i == "1") {
+                for(i = 1; i <= nbThemes; i++) {
+                    if(i == 1) {
                         document.body.classList.remove("pageShadowContrastBlack");
                         document.getElementsByTagName('html')[0].classList.remove("pageShadowBackgroundContrast");
                     } else {
@@ -524,7 +524,7 @@
                 var websuteUrl_tmp = new URL(websiteUrl);
                 var domain = websuteUrl_tmp.hostname;
 
-                if(result.whiteList == "true" && strict_in_array(domain, siteInterdits) == true || result.whiteList !== "true" && strict_in_array(domain, siteInterdits) !== true && strict_in_array(websiteUrl, siteInterdits) !== true) {
+                if(result.whiteList == "true" && in_array_website(domain, siteInterdits) == true || result.whiteList !== "true" && in_array_website(domain, siteInterdits) !== true && in_array_website(websiteUrl, siteInterdits) !== true) {
                     var pageShadowEnabled = result.pageShadowEnabled;
                     var theme = result.theme;
                     var colorTemp = result.colorTemp;

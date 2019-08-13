@@ -44,8 +44,8 @@ var nbPresets = 5;
 function in_array(needle, haystack) {
     var key = '';
 
-    for (key in haystack) {
-        if (needle.indexOf(haystack[key]) != -1) {
+    for(key in haystack) {
+        if(needle.indexOf(haystack[key]) != -1) {
             return true;
         }
     }
@@ -56,9 +56,42 @@ function in_array(needle, haystack) {
 function strict_in_array(needle, haystack) {
     var key = '';
 
-    for (key in haystack) {
-        if (needle == haystack[key]) {
+    for(key in haystack) {
+        if(needle == haystack[key]) {
             return true;
+        }
+    }
+
+    return false;
+}
+
+function in_array_website(needle, haystack) {
+    var key = '';
+
+    for(key in haystack) {
+        if(!key.trim().startsWith("#")) {
+            var value = haystack[key];
+
+            if(!value.trim().startsWith("/") && !value.trim().endsWith("/") && value.indexOf("*") != -1) {
+                value = value.replace("*", "(.*)");
+                value = "/" + value + "/";
+            }
+
+            if(value.trim().startsWith("/") && value.trim().endsWith("/")) {
+                try {
+                  var regex = new RegExp(value.substring(1, value.length - 1), "gi");
+
+                  if(regex.test(needle)) {
+                      return true;
+                  }
+                } catch(e) {
+                      return false;
+                }
+            } else {
+                if(needle == value) {
+                    return true;
+                }
+            }
         }
     }
 
@@ -166,7 +199,7 @@ function pageShadowAllowed(url, func) {
             var websuteUrl_tmp = new URL(url);
             var domain = websuteUrl_tmp.hostname;
 
-            if(result.whiteList == "true" && strict_in_array(domain, siteInterdits) == true || result.whiteList !== "true" && strict_in_array(domain, siteInterdits) !== true && strict_in_array(url, siteInterdits) !== true) {
+            if(result.whiteList == "true" && in_array_website(domain, siteInterdits) == true || result.whiteList !== "true" && in_array_website(domain, siteInterdits) !== true && in_array_website(url, siteInterdits) !== true) {
                 return func(true);
             } else {
                 return func(false);
