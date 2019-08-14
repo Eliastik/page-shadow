@@ -94,7 +94,7 @@ function resetSettings() {
 }
 
 function displaySettings() {
-    chrome.storage.local.get("sitesInterditPageShadow", function(result) {
+    chrome.storage.local.get(["sitesInterditPageShadow", "whiteList"], function(result) {
         if(result.sitesInterditPageShadow != undefined) {
             $("#textareaAssomPage").val(result.sitesInterditPageShadow);
         }

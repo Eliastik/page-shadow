@@ -91,7 +91,7 @@
         },
         "customTheme": {
             "title": "Custom themes settings",
-            "description": "Here, you can set your custom themes. To change the colors of the themes, click on the colored circles and choose a color.",
+            "description": "Here, you can setup your custom themes. To change the colors of the themes, click on the colored circles and choose a color.",
             "saveInfo": "To save your settings, click on the button \"Save\" below the theme selector.",
             "slot": "Slot:",
             "save": "Save",
