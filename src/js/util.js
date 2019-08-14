@@ -184,7 +184,7 @@ function commentAllLines(string) {
     var res = [];
 
     for(var key in arr) {
-        if(!arr[key].trim().startsWith("#")) {
+        if(arr[key].trim() != "" && !arr[key].trim().startsWith("#")) {
             res.push("#" + arr[key]);
         } else {
             res.push(arr[key]);
