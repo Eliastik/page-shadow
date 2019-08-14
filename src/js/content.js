@@ -209,7 +209,7 @@
         }
     }
 
-    function luminositePage(enabled, pourcentage, nightmode, siteInterdits, colorTemp) {
+    function luminositePage(enabled, pourcentage, nightmode, colorTemp) {
         elLum.setAttribute("class", "");
 
         if(enabled == "true") {
@@ -513,18 +513,8 @@
                 }
             }
 
-            if(result.globallyEnable !== "false") {
-                if(result.sitesInterditPageShadow !== null && typeof(result.sitesInterditPageShadow) !== "undefined" && result.sitesInterditPageShadow !== "") {
-                    var siteInterdits = result.sitesInterditPageShadow.trim().split("\n");
-                } else {
-                    var siteInterdits = "";
-                }
-
-                var websiteUrl = window.location.href;
-                var websuteUrl_tmp = new URL(websiteUrl);
-                var domain = websuteUrl_tmp.hostname;
-
-                if(result.whiteList == "true" && in_array_website(domain, siteInterdits) == true || result.whiteList !== "true" && in_array_website(domain, siteInterdits) !== true && in_array_website(websiteUrl, siteInterdits) !== true) {
+            pageShadowAllowed(window.location.href, function(allowed) {
+                if(allowed) {
                     var pageShadowEnabled = result.pageShadowEnabled;
                     var theme = result.theme;
                     var colorTemp = result.colorTemp;
@@ -547,7 +537,7 @@
                     } else if(type == "onlyInvert") {
                         invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors);
                     } else if(type == "onlyBrightness") {
-                        luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits, colorTemp);
+                        luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, colorTemp);
                     } else if(pageShadowEnabled == "true") {
                         applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, result.disableImgBgColor, invertBgColors);
                     } else {
@@ -555,7 +545,7 @@
                     }
 
                     if(type !== "onlyContrast" && type !== "onlyInvert" && type !== "onlyBrightness") {
-                        luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, siteInterdits, colorTemp);
+                        luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, colorTemp);
                     }
 
                     if(pageShadowEnabled == "true" || colorInvert == "true") {
@@ -566,7 +556,7 @@
                         }
                     }
                 }
-            }
+            });
         });
     }
 

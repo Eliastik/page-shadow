@@ -81,10 +81,10 @@ function menu() {
     function createMenu() {
         if(typeof(chrome.storage) !== 'undefined' && typeof(chrome.storage.local) !== 'undefined') {
             chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'globallyEnable'], function (result) {
-                if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined' || result.sitesInterditPageShadow.trim() == '') {
-                    var siteInterdits = "";
+                if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
+                    var sitesInterdits = "";
                 } else {
-                    var siteInterdits = result.sitesInterditPageShadow.split("\n");
+                    var sitesInterdits = result.sitesInterditPageShadow.split("\n");
                 }
 
                 if(typeof(chrome.tabs) !== 'undefined' && typeof(chrome.tabs.query) !== 'undefined') {
@@ -96,19 +96,31 @@ function menu() {
                         var href = url.href;
 
                         if(result.whiteList == "true") {
-                            if(in_array_website(domain, siteInterdits)) {
+                            if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
                                 createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
                             } else {
                                 createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
                             }
+
+                            if(in_array_website(href, sitesInterdits) || in_array_website(domain, sitesInterdits)) {
+                                createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
+
+                                if(in_array_website(domain, sitesInterdits)) {
+                                    deleteContextMenu("disable-webpage");
+                                } else if(in_array_website(href, sitesInterdits)) {
+                                    deleteContextMenu("disable-website");
+                                }
+                            } else {
+                                createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
+                            }
                         } else {
-                            if(in_array_website(domain, siteInterdits)) {
+                            if(in_array_website(domain, sitesInterdits)) {
                                 createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
                             } else {
                                 createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
                             }
 
-                            if(in_array_website(href, siteInterdits)) {
+                            if(in_array_website(href, sitesInterdits)) {
                                 createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
                             } else {
                                 createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
@@ -265,12 +277,14 @@ if(typeof(chrome.storage) !== 'undefined' && typeof(chrome.storage.onChanged) !=
 
 if(typeof(chrome.contextMenus) !== 'undefined' && typeof(chrome.contextMenus.onClicked) !== 'undefined') {
     chrome.contextMenus.onClicked.addListener((info, tab) => {
-        disableEnableToggle(info.menuItemId, info.checked && !info.wasChecked, new URL(tab.url));
+        disableEnableToggle(info.menuItemId, info.checked && !info.wasChecked, new URL(tab.url), function() {
+            if(info.menuItemId.substring(0, 11) == "load-preset") {
+                var nbPreset = info.menuItemId.substr(12, info.menuItemId.length - 11);
+                loadPreset(nbPreset);
+            }
 
-        if(info.menuItemId.substring(0, 11) == "load-preset") {
-            var nbPreset = info.menuItemId.substr(12, info.menuItemId.length - 11);
-            loadPreset(nbPreset);
-        }
+            updateMenu();
+        });
     });
 }
 

@@ -98,14 +98,15 @@ function in_array_website(needle, haystack) {
     return false;
 }
 
-function disableEnableToggle(type, checked, url) {
+function disableEnableToggle(type, checked, url, func) {
     chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
         var disabledWebsites = "";
         var disabledWebsitesEmpty = false;
         var domain = url.hostname;
         var href = url.href;
+        var match = domain;
 
-        if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined') {
+        if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
             var disabledWebsitesEmpty = true;
             var disabledWebsitesArray = [];
         } else {
@@ -116,45 +117,10 @@ function disableEnableToggle(type, checked, url) {
 
         switch(type) {
             case "disable-website":
-                if(result.whiteList == "true") {
-                    if(checked) {
-                        var disabledWebsitesNew = removeA(disabledWebsitesArray, domain);
-                        var disabledWebsitesNew = commentMatched(disabledWebsitesNew, domain);
-                        var disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
-
-                        setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
-                    } else {
-                        disabledWebsitesArray.push(domain);
-                        var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
-
-                        setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
-                    }
-                } else {
-                    if(checked) {
-                        disabledWebsitesArray.push(domain);
-                        var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
-
-                        setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
-                    } else {
-                        var disabledWebsitesNew = removeA(disabledWebsitesArray, domain);
-                        var disabledWebsitesNew = commentMatched(disabledWebsitesNew, domain);
-                        var disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
-                        setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
-                    }
-                }
+                match = domain;
                 break;
             case "disable-webpage":
-                if(checked) {
-                    disabledWebsitesArray.push(href);
-                    var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
-
-                    setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
-                } else {
-                    var disabledWebsitesNew = removeA(disabledWebsitesArray, href);
-                    var disabledWebsitesNew = commentMatched(disabledWebsitesNew, href);
-                    var disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
-                    setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
-                }
+                match = href;
                 break;
             case "disable-globally":
                 if(checked) {
@@ -163,6 +129,25 @@ function disableEnableToggle(type, checked, url) {
                     setSettingItem("globallyEnable", "true");
                 }
                 break;
+        }
+
+        if(type == "disable-website" || type == "disable-webpage") {
+            if((checked && result.whiteList == "true") || (!checked && result.whiteList != "true")) {
+                var disabledWebsitesNew = removeA(disabledWebsitesArray, match);
+                var disabledWebsitesNew = commentMatched(disabledWebsitesNew, match);
+                var disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
+
+                setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
+            } else if((!checked && result.whiteList == "true") || (checked && result.whiteList != "true")) {
+                disabledWebsitesArray.push(match);
+                var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
+
+                setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
+            }
+        }
+
+        if(func != undefined) {
+            return func();
         }
     });
 }
@@ -192,6 +177,32 @@ function commentMatched(arr, website) {
     }
 
     return res;
+}
+
+// Callback function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not
+function pageShadowAllowed(url, func) {
+    chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'globallyEnable'], function (result) {
+        if(result.globallyEnable !== "false") {
+            if(result.sitesInterditPageShadow !== undefined && result.sitesInterditPageShadow !== "") {
+                var siteInterdits = result.sitesInterditPageShadow.trim().split("\n");
+            } else {
+                var siteInterdits = "";
+            }
+
+            var websuteUrl_tmp = new URL(url);
+            var domain = websuteUrl_tmp.hostname;
+
+            if((result.whiteList == "true" && (in_array_website(domain, siteInterdits) || in_array_website(url, siteInterdits))) || (result.whiteList !== "true" && !in_array_website(domain, siteInterdits) && !in_array_website(url, siteInterdits))) {
+                return func(true);
+            } else {
+                return func(false);
+            }
+        } else {
+            return func(false);
+        }
+
+        return func(false);
+    });
 }
 
 function getUImessage(id) {
@@ -266,32 +277,6 @@ function customTheme(style, disableCustomCSS, lnkCssElement) {
             lnkCssElement.setAttribute('href', 'data:text/css;charset=UTF-8,' + encodeURIComponent(result.customCSSCode));
             document.getElementsByTagName('head')[0].appendChild(lnkCssElement);
         }
-    });
-}
-
-// Callback function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not
-function pageShadowAllowed(url, func) {
-    chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'globallyEnable'], function (result) {
-        if(result.globallyEnable !== "false") {
-            if(result.sitesInterditPageShadow !== null && typeof(result.sitesInterditPageShadow) !== "undefined" && result.sitesInterditPageShadow !== "") {
-                var siteInterdits = result.sitesInterditPageShadow.trim().split("\n");
-            } else {
-                var siteInterdits = "";
-            }
-
-            var websuteUrl_tmp = new URL(url);
-            var domain = websuteUrl_tmp.hostname;
-
-            if(result.whiteList == "true" && in_array_website(domain, siteInterdits) == true || result.whiteList !== "true" && in_array_website(domain, siteInterdits) !== true && in_array_website(url, siteInterdits) !== true) {
-                return func(true);
-            } else {
-                return func(false);
-            }
-        } else {
-            return func(false);
-        }
-
-        return func(false);
     });
 }
 

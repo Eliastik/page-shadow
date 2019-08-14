@@ -168,16 +168,16 @@ $(document).ready(function() {
         function check(url) {
             chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
                 if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined' || result.sitesInterditPageShadow.trim() == '') {
-                    var siteInterdits = "";
+                    var sitesInterdits = "";
                 } else {
-                    var siteInterdits = result.sitesInterditPageShadow.split("\n");
+                    var sitesInterdits = result.sitesInterditPageShadow.split("\n");
                 }
 
                 var domain = url.hostname;
                 var href = url.href;
 
                 if(result.whiteList == "true") {
-                    if(in_array_website(domain, siteInterdits)) {
+                    if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
                         $("#disableWebsite-li").hide();
                         $("#enableWebsite-li").show();
                     } else {
@@ -185,11 +185,23 @@ $(document).ready(function() {
                         $("#enableWebsite-li").hide();
                     }
 
-                    $("#disableWebpage-li").hide();
-                    $("#enableWebpage-li").hide();
+                    if(in_array_website(href, sitesInterdits) || in_array_website(domain, sitesInterdits)) {
+                        $("#disableWebpage-li").hide();
+                        $("#enableWebpage-li").show();
 
+                        if(in_array_website(domain, sitesInterdits)) {
+                            $("#disableWebpage-li").hide();
+                            $("#enableWebpage-li").hide();
+                        } else if(in_array_website(href, sitesInterdits)) {
+                            $("#disableWebsite-li").hide();
+                            $("#enableWebsite-li").hide();
+                        }
+                    } else {
+                        $("#disableWebpage-li").show();
+                        $("#enableWebpage-li").hide();
+                    }
                 } else {
-                    if(in_array_website(domain, siteInterdits)) {
+                    if(in_array_website(domain, sitesInterdits)) {
                         $("#disableWebsite-li").show();
                         $("#enableWebsite-li").hide();
                     } else {
@@ -197,7 +209,7 @@ $(document).ready(function() {
                         $("#enableWebsite-li").show();
                     }
 
-                    if(in_array_website(href, siteInterdits)) {
+                    if(in_array_website(href, sitesInterdits)) {
                         $("#disableWebpage-li").show();
                         $("#enableWebpage-li").hide();
                     } else {
