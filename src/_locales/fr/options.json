@@ -16,20 +16,25 @@
                 "en": "English"
             },
         "labelList": "Liste des sites/pages à exclure (un élément par ligne) :",
-        "titleHelp": "Il est seulement possible de bloquer des domaines (par ex. www.google.fr) ou des URLs particulières (par ex. https://fr.wikipedia.org/wiki/Google). Notez que vous pouvez exclure un site ou une page à l'aide du clic-droit et en choissant quoi bloquer dans le sous-menu Page Shadow, ou à l'aide du menu de l'extension (tout en bas).",
+        "titleHelp": "Notez que vous pouvez exclure un site ou une page à l'aide du clic-droit et en choissant quoi bloquer dans le sous-menu Page Shadow, à l'aide du menu de l'extension (tout en bas) ou en entrant leurs adresses ci-dessous.",
         "help": "Aide",
         "customThemeButton": "Paramétrer votre thème personnalisé…",
         "backup": "Archivage, restaution des paramètres et pré-réglages…",
         "keyboardShortcuts": "Gérer les raccourcis clavier…",
         "keyboardShortcutsInfos": "Pas encore disponible avec votre navigateur. Cependant, le raccourci clavier Alt+Shift+S permet d'activer ou désactiver globalement l'extension.",
-        "indiceList": "Les adresses des sites entrées ci-dessous seront ignorées par Page Shadow.",
+        "indiceList": "Les entrées ci-dessous seront ignorées par Page Shadow.",
         "whiteList": "Liste blanche (ignorer par défaut tous les sites)",
-        "titleWhiteList": "Cochez cette case si vous souhaitez basculer cette liste en liste blanche. Tous les sites seront par défaut exclus, et vous devrez les débloquer à l'aide du clic-droit, à l'aide du menu de l'extension ou en entrant leurs adresses ci-dessous (par ex. www.google.fr). Le bloquage/débloquage d'URLs particulières n'est pas possible dans ce mode. Activer ou désactiver ce paramètre réinitialisera la liste.",
-        "textareaPlaceholder": "Exemple :\nwww.google.fr\nhttps://fr.wikipedia.org/wiki/Google",
+        "titleWhiteList": "Cochez cette case si vous souhaitez basculer cette liste en liste blanche. Tous les sites et les pages seront par défaut exclus, et vous devrez les débloquer à l'aide du clic-droit, à l'aide du menu de l'extension ou en entrant leurs adresses ci-dessous. Activer ou désactiver ce paramètre commentera tous les éléments de votre liste.",
+        "infoListSyntax": "Plus d'infos sur la syntaxe de la liste :",
+        "textareaPlaceholder": "# Un élément par ligne…\n# Exemple :\nwww.google.fr\nhttps://www.google.fr/maps\n*.google.*\n/(.*).google.(.*)/",
         "reset": "Réinitialiser les paramètres",
         "validate": "Valider"
     },
     "modal": {
+        "syntax": {
+            "title": "Syntaxe de la liste",
+            "content": "<ul><li>Vous pouvez entrer des domaines (par exemple <strong>www.google.fr</strong>). Dans ce cas, seul ce domaine exact sera exclu et non pas ses sous-domaines.</li><li>Vous pouvez entrer des adresses URL entières (par exemple <strong>https://www.google.fr/maps</strong>). Dans ce cas, seule cette adresse exacte sera exclue.</li><li>Vous pouvez utiliser le caractère joker <strong>*</strong> qui remplace 0, 1 ou plusieurs caractères : <strong>https://www.google.fr/maps*</strong> bloquera toutes les adresses URL commençant par cette occurence (par exemple https://www.google.fr/maps/blabla mais pas https://www.google.fr/blabla).</li><li>Vous pouvez placer le caractère joker <strong>*</strong> plusieurs fois et où vous le souhaitez. Ainsi, <strong>*.google.*</strong> bloquera tous les sous-domaines et tous les domaines de premier niveau de Google (par exemple google.fr, google.com, www.google.com, …).</li><li>Vous pouvez aussi utiliser des expressions régulières (commençant et terminant par <strong>/</strong>).<br />Exemple : <strong>/(.*).google.(.*)/</strong></li><li>Vous pouvez commenter une ligne en mettant un <strong>#</strong> au début de celle-ci.</li>"
+        },
         "about": {
             "title": "À propos de Page Shadow",
             "description": "Page Shadow est disponible sur Firefox, Chrome, Opera et Microsoft Edge. Cette extension est conçue par Eliastik",

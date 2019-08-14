@@ -140,7 +140,7 @@ function disableEnableToggle(type, checked, url, func) {
                 setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
             } else if((!checked && result.whiteList == "true") || (checked && result.whiteList != "true")) {
                 disabledWebsitesArray.push(match);
-                var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n")
+                var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
 
                 setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
             }
@@ -177,6 +177,21 @@ function commentMatched(arr, website) {
     }
 
     return res;
+}
+
+function commentAllLines(string) {
+    var arr = string.split("\n");
+    var res = [];
+
+    for(var key in arr) {
+        if(!arr[key].trim().startsWith("#")) {
+            res.push("#" + arr[key]);
+        } else {
+            res.push(arr[key]);
+        }
+    }
+
+    return res.join("\n");
 }
 
 // Callback function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not

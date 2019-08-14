@@ -307,16 +307,16 @@ $(document).ready(function() {
         codeMirrorUserCSS.save();
         setSettingItem("customCSSCode", $("#codeMirrorUserCSSTextarea").val());
 
-        chrome.storage.local.get('whiteList', function (result) {
+        chrome.storage.local.get(["whiteList", "sitesInterditPageShadow"], function (result) {
             if($("#checkWhiteList").prop("checked") == true) {
                 if(result.whiteList !== "true") {
-                    setSettingItem("sitesInterditPageShadow", "");
+                    setSettingItem("sitesInterditPageShadow", commentAllLines(result.sitesInterditPageShadow));
                 }
 
                 setSettingItem("whiteList", "true");
             } else {
                 if(result.whiteList == "true") {
-                    setSettingItem("sitesInterditPageShadow", "");
+                    setSettingItem("sitesInterditPageShadow", commentAllLines(result.sitesInterditPageShadow));
                 }
 
                 setSettingItem("whiteList", "false");
