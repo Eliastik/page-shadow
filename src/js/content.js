@@ -38,12 +38,12 @@
     var elLum = document.createElement("div");
 
     function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) {
-        if(pageShadowEnabled !== null && pageShadowEnabled == "true") {
-            if(theme !== null) {
+        if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
+            if(theme != undefined) {
                 if(theme == "1") {
                     document.body.classList.add("pageShadowContrastBlack");
                     document.getElementsByTagName('html')[0].classList.add("pageShadowBackgroundContrast");
-                } else if(theme == "custom") {
+                } else if(theme.startsWith("custom")) {
                     customThemeApply();
                     document.body.classList.add("pageShadowContrastBlackCustom");
                     document.getElementsByTagName('html')[0].classList.add("pageShadowBackgroundCustom");
@@ -56,7 +56,7 @@
                 document.getElementsByTagName('html')[0].classList.add("pageShadowBackgroundContrast");
             }
 
-            if(disableImgBgColor !== null && disableImgBgColor == "true") {
+            if(disableImgBgColor != undefined && disableImgBgColor == "true") {
                 document.body.classList.add("pageShadowDisableImgBgColor");
             }
         }
@@ -77,7 +77,11 @@
     }
 
     function customThemeApply() {
-        customTheme(style, false, lnkCustomTheme);
+        chrome.storage.local.get("theme", function(result) {
+            if(result.theme != undefined && typeof(result.theme) == "string" && result.theme.startsWith("custom")) {
+                customTheme(result.theme.replace("custom", ""), style, false, lnkCustomTheme);
+            }
+        });
     }
 
     function invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors) {

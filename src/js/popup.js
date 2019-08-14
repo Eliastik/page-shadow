@@ -33,6 +33,7 @@ i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend)
 }, function(err, t) {
     translateContent();
 });
+
 function translateContent() {
     jqueryI18next.init(i18next, $, {
       handleName: 'localize',
@@ -42,14 +43,27 @@ function translateContent() {
     $(".container").localize();
     $(".modal").localize();
     $("footer").localize();
-    themeTranslation = i18next.t("container.theme");
+
+    // append the list of themes in the select
+    $("#themeSelect").text("");
+
+    for(i = 1; i <= nbCustomThemesSlots; i++) {
+        $("#themeSelect").append('<option value="custom'+ i +'">'+ i18next.t("container.customTheme", { count: i }) + '</option>');
+    }
+
+    for(i = 1; i <= nbThemes; i++) {
+        $("#themeSelect").append('<option value="'+ i +'">'+ i18next.t("container.theme", { count: i }) + '</option>');
+    }
 }
+
 function changeLng(lng) {
     i18next.changeLanguage(lng);
 }
+
 i18next.on('languageChanged', () => {
     translateContent();
 });
+
 $(document).ready(function() {
     var elLumB = document.createElement("div");
     elLumB.style.display = "none";
@@ -58,36 +72,12 @@ $(document).ready(function() {
     style.type = 'text/css';
     var lnkCustomTheme = document.createElement('link');
     var brightnessChangedFromThisPage = false;
-    if(typeof(themeTranslation) === "undefined") themeTranslation = "Theme";
     var timeoutInfoPreset = 0;
     var selectedPreset = 1;
 
-    /* Check if the configuration variables are set, if not set some default values (the variables are set globally, so we use window[variableName]) */
-    if(typeof(window["nbThemes"]) == "undefined") nbThemes = 15;
-    if(typeof(window["colorTemperaturesAvailable"]) == "undefined") colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"];
-    if(typeof(window["minBrightnessPercentage"]) == "undefined") minBrightnessPercentage = 0;
-    if(typeof(window["maxBrightnessPercentage"]) == "undefined") maxBrightnessPercentage = 0.9;
-    if(typeof(window["brightnessDefaultValue"]) == "undefined") brightnessDefaultValue = 0.15;
-    if(typeof(window["defaultBGColorCustomTheme"]) == "undefined") defaultBGColorCustomTheme = "000000";
-    if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsColorCustomTheme = "FFFFFF";
-    if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
-    if(typeof(window["defaultVisitedLinksColorCustomTheme"]) == "undefined") defaultVisitedLinksColorCustomTheme = "ff00ff";
-    if(typeof(window["defaultFontCustomTheme"]) == "undefined") defaultFontCustomTheme = "";
-    if(typeof(window["defaultAutoEnableHourFormat"]) == "undefined") defaultAutoEnableHourFormat = "24";
-    if(typeof(window["defaultHourEnable"]) == "undefined") defaultHourEnable = "20";
-    if(typeof(window["defaultMinuteEnable"]) == "undefined") defaultMinuteEnable = "0";
-    if(typeof(window["defaultHourEnableFormat"]) == "undefined") defaultHourEnableFormat = "PM";
-    if(typeof(window["defaultHourDisable"]) == "undefined") defaultHourDisable = "7";
-    if(typeof(window["defaultMinuteDisable"]) == "undefined") defaultMinuteDisable = "0";
-    if(typeof(window["defaultHourDisableFormat"]) == "undefined") defaultHourDisableFormat = "AM";
-
-    // append the list of themes in the select
-    for(i=1; i <= nbThemes; i++) {
-        $("#themeSelect").append('<option value="'+ i +'">'+ themeTranslation +' '+ i +'</option>');
-    }
-
     // append the list of the color temperatures in the select
     $("#tempSelect").text("");
+
     for(i=0; i < colorTemperaturesAvailable.length; i++) {
         var colorTempIndex = i + 1;
         $("#tempSelect").append('<option value="'+ colorTempIndex +'">'+ colorTemperaturesAvailable[i] +' K</option>');
@@ -140,7 +130,7 @@ $(document).ready(function() {
         if(theme !== null) {
             if(theme == "1") {
                 $("#previsualisationDiv").addClass("pageShadowContrastBlack");
-            } else if(theme == "custom") {
+            } else if(theme.trim().startsWith("custom")) {
                 $("#previsualisationDiv").addClass("pageShadowContrastBlackCustom");
             } else {
                 $("#previsualisationDiv").addClass("pageShadowContrastBlack" + theme);
@@ -295,9 +285,14 @@ $(document).ready(function() {
 
     function checkContrastMode() {
         chrome.storage.local.get(["theme", "pageShadowEnabled", "disableImgBgColor"], function (result) {
-            if(typeof result.theme !== "undefined" && typeof result.theme !== null) {
-                $("#themeSelect").val(result.theme);
-                previewTheme(result.theme);
+            if(result.theme != undefined) {
+                if(result.theme == "custom") {
+                    $("#themeSelect").val("custom1");
+                    previewTheme("custom1");
+                } else {
+                    $("#themeSelect").val(result.theme);
+                    previewTheme(result.theme);
+                }
             } else {
                 $("#themeSelect").val("1");
                 previewTheme("1");
@@ -342,9 +337,9 @@ $(document).ready(function() {
     $("#themeSelect").change(function() {
         setSettingItem("theme", $(this).val());
 
-        if($(this).val() == "custom") {
-            chrome.storage.local.get(['customThemeInfoDisable'], function (result) {
-                if(typeof result.customThemeInfoDisable == "undefined" || typeof result.customThemeInfoDisable === null || result.customThemeInfoDisable !== "true") {
+        if($(this).val().trim().startsWith("custom")) {
+            chrome.storage.local.get("customThemeInfoDisable", function(result) {
+                if(typeof result.customThemeInfoDisable == undefined || result.customThemeInfoDisable !== "true") {
                     $('#customThemeInfos').modal('show');
                 }
             });
@@ -360,7 +355,11 @@ $(document).ready(function() {
     });
 
     function checkCustomTheme() {
-        customTheme(style, true, lnkCustomTheme);
+        chrome.storage.local.get("theme", function(result) {
+            if(result.theme != undefined && typeof(result.theme) == "string" && result.theme.startsWith("custom")) {
+                customTheme(result.theme.replace("custom", ""), style, true, lnkCustomTheme);
+            }
+        });
     }
 
     function checkColorInvert() {

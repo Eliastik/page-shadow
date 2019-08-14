@@ -16,6 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+
 // Global configuration of the extension
 var extensionVersion = "2.6";
 var nbThemes = 15; // nb of themes for the function Increase the contrast (used globally in the extension)
@@ -26,8 +27,9 @@ var brightnessDefaultValue = 0.15; // the default percentage value of brightness
 var defaultBGColorCustomTheme = "000000";
 var defaultTextsColorCustomTheme = "FFFFFF";
 var defaultLinksColorCustomTheme = "1E90FF";
-var defaultVisitedLinksColorCustomTheme = "ff00ff";
+var defaultVisitedLinksColorCustomTheme = "FF00FF";
 var defaultFontCustomTheme = "";
+var defaultCustomCSSCode = "/* Example - Add a blue border around the page:\nbody {\n\tborder: 2px solid blue;\n} */";
 var defaultAutoEnableHourFormat = "24";
 var defaultHourEnable = "20";
 var defaultMinuteEnable = "0";
@@ -35,10 +37,12 @@ var defaultHourEnableFormat = "PM";
 var defaultHourDisable = "7";
 var defaultMinuteDisable = "0";
 var defaultHourDisableFormat = "AM";
-var settingNames = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'sitesInterditPageShadow', 'liveSettings', 'whiteList', 'colorTemp', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'globallyEnable', 'customThemeInfoDisable', 'customCSSCode', 'autoEnable', 'autoEnableHourFormat', 'hourEnable', 'minuteEnable', 'hourEnableFormat', 'hourDisable', 'minuteDisable', 'hourDisableFormat', 'disableImgBgColor', 'defaultLoad', 'presets'];
-var defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
+var settingNames = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'sitesInterditPageShadow', 'liveSettings', 'whiteList', 'colorTemp', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'globallyEnable', 'customThemeInfoDisable', 'autoEnable', 'autoEnableHourFormat', 'hourEnable', 'minuteEnable', 'hourEnableFormat', 'hourDisable', 'minuteDisable', 'hourDisableFormat', 'disableImgBgColor', 'defaultLoad', 'presets', 'customThemes'];
 var settingsToSavePresets = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'liveSettings', 'colorTemp', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'autoEnable', 'disableImgBgColor'];
 var nbPresets = 5;
+var defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
+var nbCustomThemesSlots = 5;
+var defaultCustomThemes = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
 // End of the global configuration of the extension
 
 function in_array(needle, haystack) {
@@ -224,36 +228,43 @@ function getUImessage(id) {
     return chrome.i18n.getMessage(id);
 }
 
-function customTheme(style, disableCustomCSS, lnkCssElement) {
-    var disableCustomCSS = disableCustomCSS || false;
+function customTheme(nb, style, disableCustomCSS, lnkCssElement) {
+    var disableCustomCSS = disableCustomCSS == undefined ? false : disableCustomCSS;
+    var nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
-    chrome.storage.local.get(['customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'customCSSCode'], function (result) {
-        if(typeof result.customThemeBg !== "undefined" && typeof result.customThemeBg !== null) {
-            var backgroundTheme = result.customThemeBg;
+    chrome.storage.local.get("customThemes", function(result) {
+        if(result.customThemes[nb] != undefined) {
+            var customThemes = result.customThemes[nb];
+        } else {
+            var customThemes = defaultCustomThemes[nb];
+        }
+
+        if(customThemes["customThemeBg"] != undefined) {
+            var backgroundTheme = customThemes["customThemeBg"];
         } else {
             var backgroundTheme = defaultBGColorCustomTheme;
         }
 
-        if(typeof result.customThemeTexts !== "undefined" && typeof result.customThemeTexts !== null) {
-            var textsColorTheme = result.customThemeTexts;
+        if(customThemes["customThemeTexts"] != undefined) {
+            var textsColorTheme = customThemes["customThemeTexts"];
         } else {
             var textsColorTheme = defaultTextsColorCustomTheme;
         }
 
-        if(typeof result.customThemeLinks !== "undefined" && typeof result.customThemeLinks !== null) {
-            var linksColorTheme = result.customThemeLinks;
+        if(customThemes["customThemeLinks"] != undefined) {
+            var linksColorTheme = customThemes["customThemeLinks"];
         } else {
             var linksColorTheme = defaultLinksColorCustomTheme;
         }
 
-        if(typeof result.customThemeLinksVisited !== "undefined" && typeof result.customThemeLinksVisited !== null) {
-            var linksVisitedColorTheme = result.customThemeLinksVisited;
+        if(customThemes["customThemeLinksVisited"] != undefined) {
+            var linksVisitedColorTheme = customThemes["customThemeLinksVisited"];
         } else {
             var linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
         }
 
-        if(typeof result.customThemeFont !== "undefined" && typeof result.customThemeFont !== null && result.customThemeFont.trim() !== "") {
-            var fontTheme = '"' + result.customThemeFont + '"';
+        if(customThemes["customThemeFont"] != undefined && customThemes["customThemeFont"].trim() != "") {
+            var fontTheme = '"' + customThemes["customThemeFont"] + '"';
         } else {
             var fontTheme = defaultFontCustomTheme;
         }
@@ -266,7 +277,7 @@ function customTheme(style, disableCustomCSS, lnkCssElement) {
         document.getElementsByTagName('head')[0].appendChild(style);
 
         if(style.cssRules) { // Remove all rules
-            for(var i=0; i < style.cssRules.length; i++) {
+            for(var i = 0; i < style.cssRules.length; i++) {
                 style.sheet.deleteRule(i);
             }
         }
@@ -284,12 +295,12 @@ function customTheme(style, disableCustomCSS, lnkCssElement) {
         style.sheet.insertRule(".pageShadowContrastBlackCustom a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlackCustom #pageShadowLinkVisited { color: #"+ linksVisitedColorTheme +" !important; }", 0);
 
         // Custom CSS
-        if(disableCustomCSS !== true && typeof result.customCSSCode !== "undefined" && typeof result.customCSSCode !== null && result.customCSSCode.trim() !== "") {
+        if(!disableCustomCSS && typeof customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
             lnkCssElement.setAttribute('rel', 'stylesheet');
             lnkCssElement.setAttribute('type', 'text/css');
             lnkCssElement.setAttribute('id', 'pageShadowCustomCSS');
             lnkCssElement.setAttribute('name', 'pageShadowCustomCSS');
-            lnkCssElement.setAttribute('href', 'data:text/css;charset=UTF-8,' + encodeURIComponent(result.customCSSCode));
+            lnkCssElement.setAttribute('href', 'data:text/css;charset=UTF-8,' + encodeURIComponent(customThemes["customCSSCode"]));
             document.getElementsByTagName('head')[0].appendChild(lnkCssElement);
         }
     });
@@ -490,8 +501,8 @@ function loadPresetSelect(selectId) {
             var nbValue = 1;
             var optionTitle = "";
 
-            for (var name in presets) {
-                if (presets.hasOwnProperty(name)) {
+            for(var name in presets) {
+                if(presets.hasOwnProperty(name)) {
                     if(!presets[name].hasOwnProperty("name")) {
                         var optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue + " : " + i18next.t("modal.archive.presetEmpty") + "</option>";
                     } else {
@@ -513,6 +524,7 @@ function loadPresetSelect(selectId) {
         }
     });
 }
+
 function presetsEnabled(func) {
     chrome.storage.local.get('presets', function (data) {
         try {
@@ -542,6 +554,7 @@ function presetsEnabled(func) {
         }
     });
 }
+
 function loadPreset(nb, func) {
     if(func == undefined) {
       var func = function(res) {};
@@ -583,6 +596,7 @@ function loadPreset(nb, func) {
         }
     });
 }
+
 function savePreset(nb, name, func) {
     if(nb < 1 || nb > nbPresets) {
         return func("error");
@@ -618,6 +632,7 @@ function savePreset(nb, name, func) {
         });
     });
 }
+
 function deletePreset(nb, func) {
     if(nb < 1 || nb > nbPresets) {
         return func("error");

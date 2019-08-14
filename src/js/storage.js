@@ -17,8 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 function setSettingItem(name, value) {
-    if(typeof(window["settingNames"]) == "undefined") settingNames = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'sitesInterditPageShadow', 'liveSettings', 'whiteList', 'colorTemp', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'globallyEnable', 'customThemeInfoDisable', 'customCSSCode', 'autoEnable', 'autoEnableHourFormat', 'hourEnable', 'minuteEnable', 'hourEnableFormat', 'hourDisable', 'minuteDisable', 'hourDisableFormat', 'disableImgBgColor', 'defaultLoad', 'presets'];
-
     if(settingNames.indexOf(name) !== -1) {
         var newSetting = {};
         newSetting[name] = value;
@@ -28,6 +26,19 @@ function setSettingItem(name, value) {
         return false;
     }
 }
+
+function removeSettingItem(name) {
+    if(name != undefined) {
+        if(typeof(name) === "string") {
+            chrome.storage.local.remove(name);
+        } else if(Array.isArray(name)) {
+            for(var i = 0; i < name.length; i++) {
+                chrome.storage.local.remove(name[i]);
+            }
+        }
+    }
+}
+
 function checkFirstLoad() {
     chrome.storage.local.get('defaultLoad', function (result) {
         if (result.defaultLoad == undefined) {
@@ -37,22 +48,8 @@ function checkFirstLoad() {
         }
     });
 }
-function setFirstSettings(func) {
-    if(typeof(window["defaultBGColorCustomTheme"]) == "undefined") defaultBGColorCustomTheme = "000000";
-    if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsColorCustomTheme = "FFFFFF";
-    if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
-    if(typeof(window["defaultVisitedLinksColorCustomTheme"]) == "undefined") defaultVisitedLinksColorCustomTheme = "ff00ff";
-    if(typeof(window["defaultFontCustomTheme"]) == "undefined") defaultFontCustomTheme = "";
-    if(typeof(window["brightnessDefaultValue"]) == "undefined") brightnessDefaultValue = 0.15;
-    if(typeof(window["defaultAutoEnableHourFormat"]) == "undefined") defaultAutoEnableHourFormat = "24";
-    if(typeof(window["defaultHourEnable"]) == "undefined") defaultHourEnable = "20";
-    if(typeof(window["defaultMinuteEnable"]) == "undefined") defaultMinuteEnable = "0";
-    if(typeof(window["defaultHourEnableFormat"]) == "undefined") defaultHourEnableFormat = "PM";
-    if(typeof(window["defaultHourDisable"]) == "undefined") defaultHourDisable = "7";
-    if(typeof(window["defaultMinuteDisable"]) == "undefined") defaultMinuteDisable = "0";
-    if(typeof(window["defaultHourDisableFormat"]) == "undefined") defaultHourDisableFormat = "AM";
-    if(typeof(window["defaultPresets"]) == "undefined") defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
 
+function setFirstSettings(func) {
     // Set default settings values
     chrome.storage.local.set({
         'pageShadowEnabled': 'false',
@@ -64,11 +61,6 @@ function setFirstSettings(func) {
         'liveSettings': 'true',
         'whiteList': 'false',
         'colorTemp': '5',
-        'customThemeBg': defaultBGColorCustomTheme,
-        'customThemeTexts': defaultTextsColorCustomTheme,
-        'customThemeLinks': defaultLinksColorCustomTheme,
-        'customThemeLinksVisited': defaultVisitedLinksColorCustomTheme,
-        'customThemeFont': defaultFontCustomTheme,
         'colorInvert': 'false',
         'invertPageColors': 'false',
         'invertImageColors': 'true',
@@ -77,7 +69,6 @@ function setFirstSettings(func) {
         'invertBgColor': 'true',
         'globallyEnable': 'true',
         'customThemeInfoDisable': 'false',
-        'customCSSCode': '',
         'autoEnable': 'false',
         'autoEnableHourFormat': defaultAutoEnableHourFormat,
         'hourEnable': defaultHourEnable,
@@ -88,6 +79,7 @@ function setFirstSettings(func) {
         'hourDisableFormat': defaultHourDisableFormat,
         'disableImgBgColor': 'false',
         'presets': defaultPresets,
+        'customThemes': defaultCustomThemes,
         'defaultLoad': '0'
     }, function() {
         if(typeof(func) !== 'undefined') {
@@ -96,4 +88,59 @@ function setFirstSettings(func) {
     });
 }
 
+// Migrate deprecated settings
+function migrateSettings() {
+  chrome.storage.local.get(null, function (result) {
+      // Migrate old custom theme settings
+      if(result.customThemeBg != undefined || result.customThemeTexts != undefined || result.customThemeLinks != undefined || result.customThemeLinksVisited != undefined || result.customThemeFont != undefined || result.customCSSCode != undefined) {
+        var customThemeBg = defaultBGColorCustomTheme;
+        var customThemeTexts = defaultTextsColorCustomTheme;
+        var customThemeLinks = defaultLinksColorCustomTheme;
+        var customThemeLinksVisited = defaultVisitedLinksColorCustomTheme;
+        var customThemeFont = defaultFontCustomTheme;
+        var customCSSCode = defaultCustomCSSCode;
+        var customThemes = defaultCustomThemes;
+
+        if(result.customThemeBg != undefined) {
+            var customThemeBg = result.customThemeBg;
+        }
+
+        if(result.customThemeTexts != undefined) {
+            var customThemeTexts = result.customThemeTexts;
+        }
+
+        if(result.customThemeLinks != undefined) {
+            var customThemeLinks = result.customThemeLinks;
+        }
+
+        if(result.customThemeLinksVisited != undefined) {
+            var customThemeLinksVisited = result.customThemeLinksVisited;
+        }
+
+        if(result.customThemeFont != undefined) {
+            var customThemeFont = result.customThemeFont;
+        }
+
+        if(result.customCSSCode != undefined) {
+            var customCSSCode = result.customCSSCode;
+        }
+
+        if(result.customThemes != undefined) {
+            var customThemes = result.customThemes;
+        }
+
+        customThemes["1"]["customThemeBg"] = customThemeBg;
+        customThemes["1"]["customThemeTexts"] = customThemeTexts;
+        customThemes["1"]["customThemeLinks"] = customThemeLinks;
+        customThemes["1"]["customThemeLinksVisited"] = customThemeLinksVisited;
+        customThemes["1"]["customThemeFont"] = customThemeFont;
+        customThemes["1"]["customCSSCode"] = customCSSCode;
+
+        setSettingItem("customThemes", customThemes);
+        removeSettingItem(["customThemeBg", "customThemeTexts", "customThemeLinks", "customThemeLinksVisited", "customThemeFont", "customCSSCode"]);
+      }
+  });
+}
+
 checkFirstLoad();
+migrateSettings();

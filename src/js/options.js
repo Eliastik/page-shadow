@@ -55,6 +55,7 @@ function listTranslations(languages) {
     });
     $("#languageSelect").val(i18next.language.substr(0, 2));
 }
+
 function translateContent() {
     jqueryI18next.init(i18next, $, {
       handleName: 'localize',
@@ -68,12 +69,15 @@ function translateContent() {
     $(".container").localize();
     $(".modal").localize();
 }
+
 function changeLng(lng) {
     i18next.changeLanguage(lng);
 }
+
 i18next.on('languageChanged', () => {
     translateContent();
 });
+
 function resetSettings() {
     $('span[data-toggle="tooltip"]').tooltip("hide");
     $('i[data-toggle="tooltip"]').tooltip("hide");
@@ -91,6 +95,7 @@ function resetSettings() {
         });
     });
 }
+
 function displaySettings() {
     chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'customCSSCode'], function (result) {
         if(typeof result.sitesInterditPageShadow !== "undefined" && typeof result.sitesInterditPageShadow !== null) {
@@ -174,10 +179,15 @@ function displaySettings() {
         if(typeof result.customCSSCode !== "undefined" && typeof result.customCSSCode !== null && result.customCSSCode.trim() !== "") {
             codeMirrorUserCSS.getDoc().setValue(result.customCSSCode);
         } else {
-            codeMirrorUserCSS.getDoc().setValue('/* Example - Add a blue border around the page:\nbody {\n\tborder: 2px solid blue;\n} */');
+            codeMirrorUserCSS.getDoc().setValue(defaultCustomCSSCode);
         }
     });
 }
+
+function displayTheme() {
+    
+}
+
 function archiveSettings() {
     $("#archiveError").hide();
 
@@ -199,6 +209,7 @@ function archiveSettings() {
         }
     });
 }
+
 function restoreSettings(event) {
     $("#restoreError").hide();
     $("#restoreSuccess").hide();
@@ -241,8 +252,8 @@ function restoreSettings(event) {
             // Check if it's a Page Shadow archive file
             var ispageshadowarchive = false;
 
-            for (var key in obj) {
-                if (obj.hasOwnProperty(key)) {
+            for(var key in obj) {
+                if(obj.hasOwnProperty(key)) {
                     if(key === "ispageshadowarchive" && obj[key] === "true") {
                         var ispageshadowarchive = true;
                     }
@@ -260,9 +271,9 @@ function restoreSettings(event) {
                     $("#textareaAssomPage").val("");
                     $("#checkWhiteList").prop("checked", false);
 
-                    for (var key in obj) {
+                    for(var key in obj) {
                         if(typeof(key) === "string") {
-                            if (obj.hasOwnProperty(key)) {
+                            if(obj.hasOwnProperty(key)) {
                                 setSettingItem(key, obj[key]); // invalid data are ignored by the function
                             }
                         }
@@ -279,6 +290,7 @@ function restoreSettings(event) {
         $("#restoreError").hide();
     }
 }
+
 function createPreset() {
     $("#savePresetError").hide();
     $("#savePresetSuccess").hide();
@@ -295,6 +307,7 @@ function createPreset() {
         loadPresetSelect("deletePresetSelect");
     });
 }
+
 $(document).ready(function() {
     $("#validerButton").click(function() {
         setSettingItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
