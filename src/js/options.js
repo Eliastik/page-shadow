@@ -17,15 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 
-/* Check if the configuration variables are set, if not set some default values (the variables are set globally, so we use window[variableName]) */
-if(typeof(window["extensionVersion"]) == "undefined") extensionVersion = "???";
-if(typeof(window["defaultBGColorCustomTheme"]) == "undefined") defaultBGColorCustomTheme = "000000";
-if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsColorCustomTheme = "FFFFFF";
-if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
-if(typeof(window["defaultVisitedLinksColorCustomTheme"]) == "undefined") defaultVisitedLinksColorCustomTheme = "ff00ff";
-if(typeof(window["defaultFontCustomTheme"]) == "undefined") defaultFontCustomTheme = "";
-if(typeof(window["defaultPresets"]) == "undefined") defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
-
 /* translation */
 function init_i18next() {
     i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
@@ -68,6 +59,12 @@ function translateContent() {
     $("nav").localize();
     $(".container").localize();
     $(".modal").localize();
+
+    $("#themeSelect").text("");
+
+    for(i = 1; i <= nbCustomThemesSlots; i++) {
+        $("#themeSelect").append('<option value="' + i + '">' + i18next.t("container.customTheme", { count: i }) + '</option>');
+    }
 }
 
 function changeLng(lng) {
@@ -97,8 +94,8 @@ function resetSettings() {
 }
 
 function displaySettings() {
-    chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'customThemeBg', 'customThemeTexts', 'customThemeLinks', 'customThemeLinksVisited', 'customThemeFont', 'customCSSCode'], function (result) {
-        if(typeof result.sitesInterditPageShadow !== "undefined" && typeof result.sitesInterditPageShadow !== null) {
+    chrome.storage.local.get("sitesInterditPageShadow", function(result) {
+        if(result.sitesInterditPageShadow != undefined) {
             $("#textareaAssomPage").val(result.sitesInterditPageShadow);
         }
 
@@ -107,85 +104,130 @@ function displaySettings() {
         } else if(result.whiteList !== "true" && $("#checkWhiteList").is(':checked') == true) {
             $("#checkWhiteList").prop("checked", false);
         }
+    });
 
-        if(typeof result.customThemeBg !== "undefined" && typeof result.customThemeBg !== null) {
-            $("#colorpicker1").css("background-color", "#" + result.customThemeBg);
-            $("#colorpicker1").attr("value", result.customThemeBg);
-            $("#colorpicker1").colpickSetColor(result.customThemeBg);
-            $("#previsualisationDiv").css("background-color", "#"+ result.customThemeBg);
+    displayTheme($("#themeSelect").val());
+}
+
+function displayTheme(nb, defaultSettings) {
+    var nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
+    var defaultSettings = defaultSettings == undefined ? false : defaultSettings;
+
+    chrome.storage.local.get("customThemes", function(result) {
+        if(result.customThemes != undefined && result.customThemes[nb] != undefined) {
+            var customThemes = result.customThemes[nb];
         } else {
-            $("#colorpicker1").css("background-color", "#" + defaultBGColorCustomTheme);
-            $("#colorpicker1").attr("value", defaultBGColorCustomTheme);
-            $("#colorpicker1").colpickSetColor(defaultBGColorCustomTheme);
-            $("#previsualisationDiv").css("background-color", "#" + defaultBGColorCustomTheme);
+            var customThemes = defaultCustomThemes[nb];
         }
 
-        if(typeof result.customThemeTexts !== "undefined" && typeof result.customThemeTexts !== null) {
-            $("#colorpicker2").css("background-color", "#" + result.customThemeTexts);
-            $("#colorpicker2").attr("value", result.customThemeTexts);
-            $("#colorpicker2").colpickSetColor(result.customThemeTexts);
-            $("#textPreview").css("color", "#"+ result.customThemeTexts);
+        if(!defaultSettings && customThemes["customThemeBg"] != undefined) {
+            var backgroundTheme = customThemes["customThemeBg"];
         } else {
-            $("#colorpicker2").css("background-color", "#" + defaultTextsColorCustomTheme);
-            $("#colorpicker2").attr("value", defaultTextsColorCustomTheme);
-            $("#colorpicker2").colpickSetColor(defaultTextsColorCustomTheme);
-            $("#textPreview").css("color", "#" + defaultTextsColorCustomTheme);
+            var backgroundTheme = defaultBGColorCustomTheme;
         }
 
-        if(typeof result.customThemeLinks !== "undefined" && typeof result.customThemeLinks !== null) {
-            $("#colorpicker3").css("background-color", "#" + result.customThemeLinks);
-            $("#colorpicker3").attr("value", result.customThemeLinks);
-            $("#colorpicker3").colpickSetColor(result.customThemeLinks);
-            $("#linkPreview").css("color", "#"+ result.customThemeLinks);
+        if(!defaultSettings && customThemes["customThemeTexts"] != undefined) {
+            var textsColorTheme = customThemes["customThemeTexts"];
         } else {
-            $("#colorpicker3").css("background-color", "#" + defaultLinksColorCustomTheme);
-            $("#colorpicker3").attr("value", defaultLinksColorCustomTheme);
-            $("#colorpicker3").colpickSetColor(defaultLinksColorCustomTheme);
-            $("#linkPreview").css("color", "#" + defaultLinksColorCustomTheme);
+            var textsColorTheme = defaultTextsColorCustomTheme;
         }
 
-        if(typeof result.customThemeLinks !== "undefined" && typeof result.customThemeLinks !== null) {
-            $("#colorpicker3").css("background-color", "#" + result.customThemeLinks);
-            $("#colorpicker3").attr("value", result.customThemeLinks);
-            $("#colorpicker3").colpickSetColor(result.customThemeLinks);
-            $("#linkPreview").css("color", "#"+ result.customThemeLinks);
+        if(!defaultSettings && customThemes["customThemeLinks"] != undefined) {
+            var linksColorTheme = customThemes["customThemeLinks"];
         } else {
-            $("#colorpicker3").css("background-color", "#" + defaultLinksColorCustomTheme);
-            $("#colorpicker3").attr("value", defaultLinksColorCustomTheme);
-            $("#colorpicker3").colpickSetColor(defaultLinksColorCustomTheme);
-            $("#linkPreview").css("color", "#" + defaultLinksColorCustomTheme);
+            var linksColorTheme = defaultLinksColorCustomTheme;
         }
 
-        if(typeof result.customThemeLinksVisited !== "undefined" && typeof result.customThemeLinksVisited !== null) {
-            $("#colorpicker4").css("background-color", "#" + result.customThemeLinksVisited);
-            $("#colorpicker4").attr("value", result.customThemeLinksVisited);
-            $("#colorpicker4").colpickSetColor(result.customThemeLinksVisited);
-            $("#linkVisitedPreview").css("color", "#"+ result.customThemeLinksVisited);
+        if(!defaultSettings && customThemes["customThemeLinksVisited"] != undefined) {
+            var linksVisitedColorTheme = customThemes["customThemeLinksVisited"];
         } else {
-            $("#colorpicker4").css("background-color", "#" + defaultVisitedLinksColorCustomTheme);
-            $("#colorpicker4").attr("value", defaultVisitedLinksColorCustomTheme);
-            $("#colorpicker4").colpickSetColor(defaultVisitedLinksColorCustomTheme);
-            $("#linkVisitedPreview").css("color", "#" + defaultVisitedLinksColorCustomTheme);
+            var linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
         }
 
-        if(typeof result.customThemeFont !== "undefined" && typeof result.customThemeFont !== null && result.customThemeFont.trim() !== "") {
-            $("#customThemeFont").val(result.customThemeFont);
-            $("#previsualisationDiv").css("font-family", '"' + result.customThemeFont + '"');
+        if(!defaultSettings && customThemes["customThemeFont"] != undefined && customThemes["customThemeFont"].trim() != "") {
+            var fontTheme = customThemes["customThemeFont"];
         } else {
-            $("#customThemeFont").val(defaultFontCustomTheme);
-            $("#previsualisationDiv").css("font-family", defaultFontCustomTheme);
+            var fontTheme = defaultFontCustomTheme;
         }
 
-        if(typeof result.customCSSCode !== "undefined" && typeof result.customCSSCode !== null && result.customCSSCode.trim() !== "") {
-            codeMirrorUserCSS.getDoc().setValue(result.customCSSCode);
+        if(!defaultSettings && customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
+            var customCSS = customThemes["customCSSCode"];
         } else {
-            codeMirrorUserCSS.getDoc().setValue(defaultCustomCSSCode);
+            var customCSS = defaultCustomCSSCode;
         }
+
+        $("#colorpicker1").css("background-color", "#" + backgroundTheme);
+        $("#colorpicker1").attr("value", backgroundTheme);
+        $("#colorpicker1").colpickSetColor(backgroundTheme);
+        $("#previsualisationDiv").css("background-color", "#" + backgroundTheme);
+
+        $("#colorpicker2").css("background-color", "#" + textsColorTheme);
+        $("#colorpicker2").attr("value", textsColorTheme);
+        $("#colorpicker2").colpickSetColor(textsColorTheme);
+        $("#textPreview").css("color", "#" + textsColorTheme);
+
+        $("#colorpicker3").css("background-color", "#" + linksColorTheme);
+        $("#colorpicker3").attr("value", linksColorTheme);
+        $("#colorpicker3").colpickSetColor(linksColorTheme);
+        $("#linkPreview").css("color", "#" + linksColorTheme);
+
+        $("#colorpicker4").css("background-color", "#" + linksVisitedColorTheme);
+        $("#colorpicker4").attr("value", linksVisitedColorTheme);
+        $("#colorpicker4").colpickSetColor(linksVisitedColorTheme);
+        $("#linkVisitedPreview").css("color", "#" + linksVisitedColorTheme);
+
+        $("#customThemeFont").val(fontTheme);
+        $("#previsualisationDiv").css("font-family", fontTheme);
+
+        codeMirrorUserCSS.getDoc().setValue(customCSS);
     });
 }
 
-function displayTheme() {
-    
+function saveThemeSettings(nb) {
+    var nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
+
+    chrome.storage.local.get("customThemes", function (result) {
+        var customThemes = defaultCustomThemes;
+
+        if(result.customThemes != undefined) {
+            var customThemes = result.customThemes;
+        }
+
+        customThemes[nb]["customThemeBg"] = $("#colorpicker1").attr("value");
+        customThemes[nb]["customThemeTexts"] = $("#colorpicker2").attr("value");
+        customThemes[nb]["customThemeLinks"] = $("#colorpicker3").attr("value");
+        customThemes[nb]["customThemeLinksVisited"] = $("#colorpicker4").attr("value");
+        customThemes[nb]["customThemeFont"] = $("#customThemeFont").val();
+        codeMirrorUserCSS.save();
+        customThemes[nb]["customCSSCode"] = $("#codeMirrorUserCSSTextarea").val();
+
+        setSettingItem("customThemes", customThemes);
+    });
+}
+
+function saveSettings() {
+    setSettingItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
+
+    chrome.storage.local.get(["whiteList", "sitesInterditPageShadow"], function(result) {
+        if($("#checkWhiteList").prop("checked") == true) {
+            if(result.whiteList !== "true") {
+                setSettingItem("sitesInterditPageShadow", commentAllLines(result.sitesInterditPageShadow));
+            }
+
+            setSettingItem("whiteList", "true");
+        } else {
+            if(result.whiteList == "true") {
+                setSettingItem("sitesInterditPageShadow", commentAllLines(result.sitesInterditPageShadow));
+            }
+
+            setSettingItem("whiteList", "false");
+        }
+    });
+
+    changeLng($("#languageSelect").val());
+    $('span[data-toggle="tooltip"]').tooltip("hide");
+    $('i[data-toggle="tooltip"]').tooltip("hide");
+    $('#saved').modal("show");
 }
 
 function archiveSettings() {
@@ -310,36 +352,23 @@ function createPreset() {
 
 $(document).ready(function() {
     $("#validerButton").click(function() {
-        setSettingItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
-        setSettingItem("customThemeBg", $("#colorpicker1").attr("value"));
-        setSettingItem("customThemeTexts", $("#colorpicker2").attr("value"));
-        setSettingItem("customThemeLinks", $("#colorpicker3").attr("value"));
-        setSettingItem("customThemeLinksVisited", $("#colorpicker4").attr("value"));
-        setSettingItem("customThemeFont", $("#customThemeFont").val());
+        saveSettings();
+    });
 
-        codeMirrorUserCSS.save();
-        setSettingItem("customCSSCode", $("#codeMirrorUserCSSTextarea").val());
+    $("#themeSelect").change(function() {
+        displayTheme($("#themeSelect").val());
+    });
 
-        chrome.storage.local.get(["whiteList", "sitesInterditPageShadow"], function (result) {
-            if($("#checkWhiteList").prop("checked") == true) {
-                if(result.whiteList !== "true") {
-                    setSettingItem("sitesInterditPageShadow", commentAllLines(result.sitesInterditPageShadow));
-                }
+    $("#customThemeSave").click(function() {
+        saveThemeSettings($("#themeSelect").val());
+    });
 
-                setSettingItem("whiteList", "true");
-            } else {
-                if(result.whiteList == "true") {
-                    setSettingItem("sitesInterditPageShadow", commentAllLines(result.sitesInterditPageShadow));
-                }
+    $("#customThemeCancel").click(function() {
+        displayTheme($("#themeSelect").val());
+    });
 
-                setSettingItem("whiteList", "false");
-            }
-        });
-
-        changeLng($("#languageSelect").val());
-        $('span[data-toggle="tooltip"]').tooltip("hide");
-        $('i[data-toggle="tooltip"]').tooltip("hide");
-        $('#saved').modal("show");
+    $("#customThemeReset").click(function() {
+        displayTheme($("#themeSelect").val(), true);
     });
 
     $("#aboutDialogBtn").click(function() {

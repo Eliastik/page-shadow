@@ -16,10 +16,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-if(typeof(window["defaultHourEnable"]) == "undefined") defaultHourEnable = "20";
-if(typeof(window["defaultMinuteEnable"]) == "undefined") defaultMinuteEnable = "0";
-if(typeof(window["defaultHourDisable"]) == "undefined") defaultHourDisable = "7";
-if(typeof(window["defaultMinuteDisable"]) == "undefined") defaultMinuteDisable = "0";
 var autoEnableActivated = false;
 var lastAutoEnableDetected = null;
 

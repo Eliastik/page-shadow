@@ -18,7 +18,7 @@
         "labelList": "Liste des sites/pages à exclure (un élément par ligne) :",
         "titleHelp": "Notez que vous pouvez exclure un site ou une page à l'aide du clic-droit et en choissant quoi bloquer dans le sous-menu Page Shadow, à l'aide du menu de l'extension (tout en bas) ou en entrant leurs adresses ci-dessous.",
         "help": "Aide",
-        "customThemeButton": "Paramétrer votre thème personnalisé…",
+        "customThemeButton": "Paramétrer vos thèmes personnalisés…",
         "backup": "Archivage, restaution des paramètres et pré-réglages…",
         "keyboardShortcuts": "Gérer les raccourcis clavier…",
         "keyboardShortcutsInfos": "Pas encore disponible avec votre navigateur. Cependant, le raccourci clavier Alt+Shift+S permet d'activer ou désactiver globalement l'extension.",
@@ -28,7 +28,8 @@
         "infoListSyntax": "Plus d'infos sur la syntaxe de la liste :",
         "textareaPlaceholder": "# Un élément par ligne…\n# Exemple :\nwww.google.fr\nhttps://www.google.fr/maps\n*.google.*\n/(.*).google.(.*)/",
         "reset": "Réinitialiser les paramètres",
-        "validate": "Valider"
+        "validate": "Valider",
+        "customTheme": "Thème personnalisé n°{{count}}"
     },
     "modal": {
         "syntax": {
@@ -88,9 +89,13 @@
             "src": "README_FR.txt"
         },
         "customTheme": {
-            "title": "Paramètres du thème personnalisé",
-            "description": "Ici, vous pouvez paramétrer votre thème personnalisé. Pour modifier les couleurs du thème, cliquez sur les cercles colorés et choisissez une couleur.",
-            "saveInfo": "Pour sauvegarder vos paramètres, fermez cette fenêtre et cliquez sur le bouton « Valider » présent en bas de cette page.",
+            "title": "Paramètres des thèmes personnalisés",
+            "description": "Ici, vous pouvez paramétrer vos thèmes personnalisés. Pour modifier les couleurs du thème, cliquez sur les cercles colorés et choisissez une couleur.",
+            "saveInfo": "Pour sauvegarder vos paramètres, cliquez sur le bouton « Enregistrer » en dessous du sélecteur de thème.",
+            "slot": "Slot :",
+            "save": "Enregistrer",
+            "cancel": "Annuler",
+            "reset": "Réinitialiser",
             "background": "Couleur de fond :",
             "texts": "Couleur des textes :",
             "links": "Couleur des liens :",

@@ -59,6 +59,9 @@ body.popup #previsualisationDiv {
     display: inline-block;
     padding: 0 8px;
 }
+select {
+    padding-right: 15px;
+}
 #introPopup {
     margin: 0 0 4px 0 !important;
 }
@@ -148,6 +151,9 @@ hr {
 }
 .mb4 {
     margin-bottom: 4px;
+}
+.mt8 {
+    margin-top: 8px;
 }
 .checkbox-group {
     display: inline-block;
@@ -302,6 +308,9 @@ div.navbar-right {
     padding-left: 8px;
     padding-right: 8px;
     box-shadow: none;
+}
+.center-block.center-block-75 {
+    width: 75%;
 }
 .snackbar {
     display: none;

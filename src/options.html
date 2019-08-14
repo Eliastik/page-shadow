@@ -317,7 +317,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
             </div>
         </div>
         <!-- custom theme -->
-        <div class="modal fade" id="customTheme" tabindex="-1" role="dialog" aria-labelledby="customTheme">
+        <div class="modal fade" id="customTheme" tabindex="-1" role="dialog" aria-labelledby="customTheme" data-backdrop="static">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -326,6 +326,10 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     </div>
                     <div class="modal-body">
                         <p><span data-i18n="modal.customTheme.description"></span> <strong data-i18n="modal.customTheme.saveInfo"></strong></p>
+                        <div class="text-center">
+                            <select id="themeSelect" value="1" style="min-width: 80px;"></select>
+                            <p class="mt8"><button id="customThemeSave" type="button" class="btn btn-sm btn-success"><i class="fa fa-fw fa-check" aria-hidden="true"></i> <span data-i18n="modal.customTheme.save"></span></button> &nbsp; <button id="customThemeCancel" type="button" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-times" aria-hidden="true"></i> <span data-i18n="modal.customTheme.cancel"></span></button> &nbsp; <button id="customThemeReset" type="button" class="btn btn-sm btn-danger"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i> <span data-i18n="modal.customTheme.reset"></span></button></p>
+                        </div>
                         <div class="form-horizontal">
                             <div class="form-group">
                                 <label class="col-lg-4 control-label bold" data-i18n="modal.customTheme.preview"></label>
@@ -379,7 +383,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modal.ok"></span></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
                     </div>
                 </div>
             </div>

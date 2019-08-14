@@ -233,7 +233,7 @@ function customTheme(nb, style, disableCustomCSS, lnkCssElement) {
     var nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
     chrome.storage.local.get("customThemes", function(result) {
-        if(result.customThemes[nb] != undefined) {
+        if(result.customThemes != undefined && result.customThemes[nb] != undefined) {
             var customThemes = result.customThemes[nb];
         } else {
             var customThemes = defaultCustomThemes[nb];
@@ -295,7 +295,7 @@ function customTheme(nb, style, disableCustomCSS, lnkCssElement) {
         style.sheet.insertRule(".pageShadowContrastBlackCustom a:visited:not(#pageShadowLinkNotVisited), .pageShadowContrastBlackCustom #pageShadowLinkVisited { color: #"+ linksVisitedColorTheme +" !important; }", 0);
 
         // Custom CSS
-        if(!disableCustomCSS && typeof customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
+        if(!disableCustomCSS && customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
             lnkCssElement.setAttribute('rel', 'stylesheet');
             lnkCssElement.setAttribute('type', 'text/css');
             lnkCssElement.setAttribute('id', 'pageShadowCustomCSS');

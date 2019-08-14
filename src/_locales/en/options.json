@@ -18,7 +18,7 @@
         "labelList": "List of webpages/websites to exclude (one item per line):",
         "titleHelp": "Note that you can exclude a website or a webpage by right-clicking and choosing what to block in the Page Shadow submenu, with the extension menu (at the bottom) or by entering their addresses below.",
         "help": "Help",
-        "customThemeButton": "Setup your custom theme…",
+        "customThemeButton": "Custom themes settings…",
         "backup": "Backup, restore settings and presets…",
         "keyboardShortcuts": "Manage keyboard shortcuts…",
         "keyboardShortcutsInfos": "Not yet available with your browser. However, the keyboard shortcut Alt+Shift+S allow you to enable or disable globally the extension.",
@@ -28,7 +28,8 @@
         "infoListSyntax": "More informations about the syntax of the list:",
         "textareaPlaceholder": "# One item per line…\n# Example:\nwww.google.com\nhttps://www.google.com/maps\n*.google.*\n/(.*).google.(.*)/",
         "reset": "Reset the settings",
-        "validate": "Confirm"
+        "validate": "Confirm",
+        "customTheme": "Custom theme n°{{count}}"
     },
     "modal": {
         "syntax": {
@@ -89,9 +90,13 @@
             "src": "README_EN.txt"
         },
         "customTheme": {
-            "title": "Custom theme settings",
-            "description": "Here, you can set your custom theme. To change the colors of the theme, click on the colored circles and choose a color.",
-            "saveInfo": "To save your settings, close this window and click on the button \"Confirm\" present at the bottom of this page.",
+            "title": "Custom themes settings",
+            "description": "Here, you can set your custom themes. To change the colors of the themes, click on the colored circles and choose a color.",
+            "saveInfo": "To save your settings, click on the button \"Save\" below the theme selector.",
+            "slot": "Slot:",
+            "save": "Save",
+            "cancel": "Cancel",
+            "reset": "Reset",
             "background": "Background color:",
             "texts": "Texts color:",
             "links": "Links color:",

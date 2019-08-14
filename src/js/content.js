@@ -17,18 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 (function(){
-    /* Check if the configuration variables are set, if not set some default values (the variables are set globally, so we use window[variableName]) */
-    if(typeof(window["nbThemes"]) == "undefined") nbThemes = 15;
-    if(typeof(window["colorTemperaturesAvailable"]) == "undefined") colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"];
-    if(typeof(window["minBrightnessPercentage"]) == "undefined") minBrightnessPercentage = 0;
-    if(typeof(window["maxBrightnessPercentage"]) == "undefined") maxBrightnessPercentage = 0.9;
-    if(typeof(window["brightnessDefaultValue"]) == "undefined") brightnessDefaultValue = 0.15;
-    if(typeof(window["defaultBGColorCustomTheme"]) == "undefined") defaultBGColorCustomTheme = "000000";
-    if(typeof(window["defaultTextsColorCustomTheme"]) == "undefined") defaultTextsColorCustomTheme = "FFFFFF";
-    if(typeof(window["defaultLinksColorCustomTheme"]) == "undefined") defaultLinksColorCustomTheme = "1E90FF";
-    if(typeof(window["defaultVisitedLinksColorCustomTheme"]) == "undefined") defaultVisitedLinksColorCustomTheme = "ff00ff";
-    if(typeof(window["defaultFontCustomTheme"]) == "undefined") defaultFontCustomTheme = "";
-
     var style = document.createElement('style');
     style.type = 'text/css';
     var lnkCustomTheme = document.createElement('link');

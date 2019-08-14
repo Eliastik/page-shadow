@@ -125,7 +125,7 @@ function migrateSettings() {
             var customCSSCode = result.customCSSCode;
         }
 
-        if(result.customThemes != undefined) {
+        if(result.customThemes != undefined && result.customThemes != undefined) {
             var customThemes = result.customThemes;
         }
 
