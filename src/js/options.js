@@ -65,6 +65,15 @@ function translateContent() {
     for(i = 1; i <= nbCustomThemesSlots; i++) {
         $("#themeSelect").append('<option value="' + i + '">' + i18next.t("container.customTheme", { count: i }) + '</option>');
     }
+
+    if(getBrowser() != "Chrome") {
+        $("#keyboardShortcuts").tooltip({
+            trigger: 'focus',
+            container: 'body',
+            placement: 'auto bottom',
+            title: i18next.t("container.keyboardShortcutsInfos")
+        });
+    }
 }
 
 function changeLng(lng) {
@@ -677,13 +686,6 @@ $(document).ready(function() {
             chrome.tabs.create({
                 url: "chrome://extensions/configureCommands"
             });
-        });
-    } else {
-        $("#keyboardShortcuts").tooltip({
-            trigger: 'focus',
-            container: 'body',
-            placement: 'auto bottom',
-            title: i18next.t("container.keyboardShortcutsInfos")
         });
     }
 
