@@ -127,6 +127,7 @@ function displaySettings(areaName) {
 
     if(areaName != "sync") {
         displayTheme($("#themeSelect").val());
+        $("#restoreDataButton").removeClass("disabled");
     }
 }
 
@@ -254,6 +255,7 @@ function saveSettings() {
 
 function archiveSettings() {
     $("#archiveError").hide();
+    $("#archiveDataButton").addClass("disabled");
 
     chrome.storage.local.get(null, function (data) {
         try {
@@ -266,10 +268,12 @@ function archiveSettings() {
             codeMirrorJSONArchive.getDoc().setValue(JSON.stringify(data));
             $("#archiveSuggestedName").val(filename);
             $("#helpArchive").show();
+            $("#archiveDataButton").removeClass("disabled");
 
             downloadData(dataStr, filename, "application/json");
         } catch(e) {
             $("#archiveError").fadeIn(500);
+            $("#archiveDataButton").removeClass("disabled");
         }
     });
 }
@@ -312,6 +316,7 @@ function restoreSettingsFile(event) {
     $("#restoreErrorFilesize").hide();
     $("#restoreErrorExtension").hide();
     $("#restoreErrorArchive").hide();
+    $("#restoreDataButton").addClass("disabled");
 
     if (typeof FileReader !== "undefined") {
         var reader = new FileReader();
@@ -371,6 +376,8 @@ function archiveCloudSettings() {
         $("#restoreCloudError").hide();
         $("#archiveCloudSuccess").hide();
         $("#restoreCloudSuccess").hide();
+        $("#archiveCloudBtn").addClass("disabled");
+        $("#restoreCloudBtn").addClass("disabled");
 
         chrome.storage.local.get(null, function(data) {
             try {
@@ -394,6 +401,8 @@ function archiveCloudSettings() {
                 displaySettings("sync");
             } catch(e) {
                 $("#archiveCloudError").fadeIn(500);
+                $("#archiveCloudBtn").removeClass("disabled");
+                $("#restoreCloudBtn").removeClass("disabled");
             }
         });
     }
@@ -419,6 +428,8 @@ function restoreCloudSettings() {
         $("#restoreCloudError").hide();
         $("#archiveCloudSuccess").hide();
         $("#restoreCloudSuccess").hide();
+        $("#archiveCloudBtn").addClass("disabled");
+        $("#restoreCloudBtn").addClass("disabled");
 
         chrome.storage.sync.get("pageShadowStorageBackup", function(data) {
             if(data.pageShadowStorageBackup != undefined) {
