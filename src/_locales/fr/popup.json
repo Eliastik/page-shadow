@@ -3,11 +3,11 @@
         "globalSwitch": "Désactiver/activer globalement Page Shadow"
     },
     "container": {
-        "description": "Une série d'outils conçus pour améliorer la lecture de pages web dans une pièce mal éclairée/autre.",
+        "description": "Une série d'outils conçus pour améliorer la lecture des pages web dans une pièce mal éclairée/autre.",
         "loadPreset": "Charger le pré-réglage sélectionné",
         "settingsPresets": "Paramètres des pré-réglages",
         "contrast": "Augmenter le contraste de la page",
-        "titleContrast": "Ajuste automatiquement le thème graphique de la page afin d'obtenir le meilleur contraste possible. Peut mal fonctionner avec des thèmes graphiques complexes et/ou défigurer la page.",
+        "titleContrast": "Ajuste automatiquement le thème graphique de la page afin d'obtenir le meilleur contraste possible.",
         "themeSelect": "Thème de couleur :",
         "theme": "Thème {{count}}",
         "customTheme": "Personnalisé {{count}}",
@@ -21,7 +21,7 @@
         "imageInvert": "Images",
         "bgColorInvert": "Arr.-plans",
         "videoInvert": "Vidéos",
-        "tileEntirePageInvert": "Inverse les couleurs de la page entière. Fonctionne mal avec la fonction d'augmentation du contraste.",
+        "tileEntirePageInvert": "Inverse les couleurs de la page entière.",
         "brightness": "Baisser la luminosité de la page",
         "titleBrightness": "Baisse la luminosité de la page. C'est vous qui choisissez le pourcentage de baisse de luminosité de la page.",
         "percentage": "Pourcentage de baisse de luminosité :",
