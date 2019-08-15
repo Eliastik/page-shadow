@@ -95,6 +95,7 @@
             "saveInfo": "To save your settings, click on the button \"Save\" below the theme selector.",
             "slot": "Slot:",
             "save": "Save",
+            "saved": "Saved!",
             "cancel": "Cancel",
             "reset": "Reset",
             "background": "Background color:",

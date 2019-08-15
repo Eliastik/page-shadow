@@ -351,6 +351,8 @@ function createPreset() {
 }
 
 $(document).ready(function() {
+    var savedTimeout;
+
     $("#validerButton").click(function() {
         saveSettings();
     });
@@ -361,6 +363,18 @@ $(document).ready(function() {
 
     $("#customThemeSave").click(function() {
         saveThemeSettings($("#themeSelect").val());
+
+        console.log(savedTimeout);
+        clearTimeout(savedTimeout);
+        savedTimeout = setTimeout(function(){
+            $("#customThemeSave").attr("data-original-title", "");
+            $('#customThemeSave').tooltip('hide');
+            $('#customThemeSave').tooltip('disable');
+        }, 3000);
+
+        $("#customThemeSave").attr("data-original-title", i18next.t("modal.customTheme.saved"));
+        $('#customThemeSave').tooltip('enable');
+        $('#customThemeSave').tooltip('show');
     });
 
     $("#customThemeCancel").click(function() {

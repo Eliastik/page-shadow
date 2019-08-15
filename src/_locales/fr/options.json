@@ -94,6 +94,7 @@
             "saveInfo": "Pour sauvegarder vos paramètres, cliquez sur le bouton « Enregistrer » en dessous du sélecteur de thème.",
             "slot": "Slot :",
             "save": "Enregistrer",
+            "saved": "Enregistré !",
             "cancel": "Annuler",
             "reset": "Réinitialiser",
             "background": "Couleur de fond :",
