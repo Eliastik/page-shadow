@@ -17,6 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 /* translation */
+
+var checkContrastMode;
+
 i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
     fallbackLng: ['en', 'fr'],
     ns: 'popup',
@@ -43,17 +46,7 @@ function translateContent() {
     $(".container").localize();
     $(".modal").localize();
     $("footer").localize();
-
-    // append the list of themes in the select
-    $("#themeSelect").text("");
-
-    for(i = 1; i <= nbCustomThemesSlots; i++) {
-        $("#themeSelect").append('<option value="custom' + i + '">' + i18next.t("container.customTheme", { count: i }) + '</option>');
-    }
-
-    for(i = 1; i <= nbThemes; i++) {
-        $("#themeSelect").append('<option value="' + i + '">' + i18next.t("container.theme", { count: i }) + '</option>');
-    }
+    checkContrastMode();
 }
 
 function changeLng(lng) {
@@ -78,7 +71,7 @@ $(document).ready(function() {
     // append the list of the color temperatures in the select
     $("#tempSelect").text("");
 
-    for(i=0; i < colorTemperaturesAvailable.length; i++) {
+    for(i = 0; i < colorTemperaturesAvailable.length; i++) {
         var colorTempIndex = i + 1;
         $("#tempSelect").append('<option value="'+ colorTempIndex +'">'+ colorTemperaturesAvailable[i] +' K</option>');
     }
@@ -283,8 +276,19 @@ $(document).ready(function() {
         disablePageShadow("disable-webpage", true);
     });
 
-    function checkContrastMode() {
+    checkContrastMode = function() {
         chrome.storage.local.get(["theme", "pageShadowEnabled", "disableImgBgColor"], function (result) {
+            // append the list of themes in the select
+            $("#themeSelect").text("");
+
+            for(i = 1; i <= nbCustomThemesSlots; i++) {
+                $("#themeSelect").append('<option value="custom' + i + '">' + i18next.t("container.customTheme", { count: i }) + '</option>');
+            }
+
+            for(i = 1; i <= nbThemes; i++) {
+                $("#themeSelect").append('<option value="' + i + '">' + i18next.t("container.theme", { count: i }) + '</option>');
+            }
+
             if(result.theme != undefined) {
                 if(result.theme == "custom") {
                     $("#themeSelect").val("custom1");
