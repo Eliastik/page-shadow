@@ -212,7 +212,7 @@
 
                 var tempColor = "2000";
 
-                if(colorTemp !== null) {
+                if(colorTemp != undefined) {
                     var tempIndex = parseInt(colorTemp);
                     var tempColor = colorTemperaturesAvailable[tempIndex - 1];
 

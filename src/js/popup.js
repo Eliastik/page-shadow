@@ -144,7 +144,7 @@ $(document).ready(function() {
         $("#pageShadowLuminositeDivNightMode").attr("class", "");
         var tempColor = "2000";
 
-        if(temp !== null) {
+        if(temp != undefined) {
             var tempIndex = parseInt(temp);
             var tempColor = colorTemperaturesAvailable[tempIndex - 1];
 
@@ -631,7 +631,7 @@ $(document).ready(function() {
     var intervalCheckAutoEnable = setInterval(function() { infoAutoEnable(); }, 1000);
 
     function checkLiveSettings() {
-        chrome.storage.local.get("liveSettings", function (result) {
+        chrome.storage.local.get("liveSettings", function(result) {
             if(result.liveSettings == "true" && $("#liveSettings").is(':checked') == false) {
                 $("#liveSettings").prop("checked", true);
             } else if(result.liveSettings !== "true" && $("#liveSettings").is(':checked') == true) {
@@ -667,9 +667,12 @@ $(document).ready(function() {
 
                 elLumB.style.display = "block";
                 $("#sliderLuminositeDiv").stop().fadeIn();
+
                 if($("#checkLuminositePage").is(':checked') == false) {
                     $("#checkLuminositePage").prop("checked", true);
                 }
+
+                checkNightMode();
             } else {
                 $("#sliderLuminositeDiv").stop().fadeOut();
                 elLumB.style.display = "none";
@@ -697,7 +700,7 @@ $(document).ready(function() {
     function checkNightMode() {
         chrome.storage.local.get(['nightModeEnabled', 'colorTemp'], function (result) {
             if(result.nightModeEnabled == "true") {
-                if(typeof result.colorTemp !== "undefined" && typeof result.colorTemp !== null) {
+                if(result.colorTemp != undefined) {
                     $("#tempSelect").val(result.colorTemp);
                     previewTemp(result.colorTemp);
                 } else {
@@ -778,7 +781,6 @@ $(document).ready(function() {
             checkColorInvert();
             checkLiveSettings();
             checkBrightness();
-            checkNightMode();
             checkEnable();
             checkCustomTheme();
             checkAutoEnable();
