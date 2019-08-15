@@ -93,20 +93,41 @@ function resetSettings() {
     });
 }
 
-function displaySettings() {
+function displaySettings(areaName) {
     chrome.storage.local.get(["sitesInterditPageShadow", "whiteList"], function(result) {
-        if(result.sitesInterditPageShadow != undefined) {
-            $("#textareaAssomPage").val(result.sitesInterditPageShadow);
+        if(areaName != "sync") {
+            if(result.sitesInterditPageShadow != undefined) {
+                $("#textareaAssomPage").val(result.sitesInterditPageShadow);
+            }
+
+            if(result.whiteList == "true" && $("#checkWhiteList").is(':checked') == false) {
+                $("#checkWhiteList").prop("checked", true);
+            } else if(result.whiteList !== "true" && $("#checkWhiteList").is(':checked') == true) {
+                $("#checkWhiteList").prop("checked", false);
+            }
         }
 
-        if(result.whiteList == "true" && $("#checkWhiteList").is(':checked') == false) {
-            $("#checkWhiteList").prop("checked", true);
-        } else if(result.whiteList !== "true" && $("#checkWhiteList").is(':checked') == true) {
-            $("#checkWhiteList").prop("checked", false);
+        if(typeof(chrome.storage) != 'undefined' && typeof(chrome.storage.sync) != 'undefined') {
+            $("#archiveCloudBtn").removeClass("disabled");
+        } else {
+            $("#archiveCloudNotCompatible").show();
         }
+
+        archiveCloudAvailable(function(result, date, device) {
+            if(result) {
+                $("#restoreCloudBtn").removeClass("disabled");
+                $("#infoCloudLastArchive").show();
+                $("#dateCloudArchive").text(i18next.t("modal.archive.dateCloudLastArchive", { device: device, date: new Intl.DateTimeFormat(i18next.language).format(date), hour: new Intl.DateTimeFormat(i18next.language, { hour: "numeric", minute: "numeric", second: "numeric", timeZoneName: "short" }).format(date), interpolation: { escapeValue: false } }));
+            } else {
+                $("#restoreCloudBtn").addClass("disabled");
+                $("#infoCloudLastArchive").hide();
+            }
+        });
     });
 
-    displayTheme($("#themeSelect").val());
+    if(areaName != "sync") {
+        displayTheme($("#themeSelect").val());
+    }
 }
 
 function displayTheme(nb, defaultSettings) {
@@ -228,6 +249,7 @@ function saveSettings() {
     $('span[data-toggle="tooltip"]').tooltip("hide");
     $('i[data-toggle="tooltip"]').tooltip("hide");
     $('#saved').modal("show");
+    displaySettings("local");
 }
 
 function archiveSettings() {
@@ -252,7 +274,39 @@ function archiveSettings() {
     });
 }
 
-function restoreSettings(event) {
+function restoreSettings(object, func) {
+    // Check if it's a Page Shadow archive file
+    var ispageshadowarchive = false;
+
+    for(var key in object) {
+        if(object.hasOwnProperty(key)) {
+            if(key === "ispageshadowarchive" && object[key] === "true") {
+                var ispageshadowarchive = true;
+            }
+        }
+    }
+
+    if(ispageshadowarchive == false) {
+        return func(false);
+    }
+
+    // Reset data
+    chrome.storage.local.clear(function() {
+        setFirstSettings(function() {
+            for(var key in object) {
+                if(typeof(key) === "string") {
+                    if(object.hasOwnProperty(key)) {
+                        setSettingItem(key, object[key]); // invalid data are ignored by the function
+                    }
+                }
+            }
+
+            return func(true);
+        });
+    });
+}
+
+function restoreSettingsFile(event) {
     $("#restoreError").hide();
     $("#restoreSuccess").hide();
     $("#restoreErrorFilesize").hide();
@@ -272,7 +326,7 @@ function restoreSettings(event) {
         if(fileExtension == "json") {
             var filesize = event.target.files[0].size;
 
-            if(filesize <= 2000000) { // max size of 2 Mo
+            if(filesize <= 5000000) { // max size of 5 MB
                 reader.readAsText(event.target.files[0]);
             } else {
                 $("#restoreErrorFilesize").fadeIn(500);
@@ -291,45 +345,107 @@ function restoreSettings(event) {
                 return false;
             }
 
-            // Check if it's a Page Shadow archive file
-            var ispageshadowarchive = false;
+            $("#textareaAssomPage").val("");
+            $("#checkWhiteList").prop("checked", false);
 
-            for(var key in obj) {
-                if(obj.hasOwnProperty(key)) {
-                    if(key === "ispageshadowarchive" && obj[key] === "true") {
-                        var ispageshadowarchive = true;
-                    }
-                }
-            }
-
-            if(ispageshadowarchive == false) {
-                $("#restoreErrorArchive").fadeIn(500);
-                return false;
-            }
-
-            // Reset data
-            chrome.storage.local.clear(function() {
-                setFirstSettings(function() {
-                    $("#textareaAssomPage").val("");
-                    $("#checkWhiteList").prop("checked", false);
-
-                    for(var key in obj) {
-                        if(typeof(key) === "string") {
-                            if(obj.hasOwnProperty(key)) {
-                                setSettingItem(key, obj[key]); // invalid data are ignored by the function
-                            }
-                        }
-                    }
-
+            restoreSettings(obj, function(result) {
+                if(result) {
                     $("#restoreSuccess").fadeIn(500);
                     loadPresetSelect("loadPresetSelect");
                     loadPresetSelect("savePresetSelect");
                     loadPresetSelect("deletePresetSelect");
-                });
+                } else {
+                    $("#restoreErrorArchive").fadeIn(500);
+                    displaySettings("local");
+                }
             });
         }
     } else {
         $("#restoreError").hide();
+    }
+}
+
+function archiveCloudSettings() {
+    if(typeof(chrome.storage) != 'undefined' && typeof(chrome.storage.sync) != 'undefined') {
+        $("#archiveCloudError").hide();
+        $("#restoreCloudError").hide();
+        $("#archiveCloudSuccess").hide();
+        $("#restoreCloudSuccess").hide();
+
+        chrome.storage.local.get(null, function(data) {
+            try {
+                data["ispageshadowarchive"] = "true";
+
+                var dataStr = JSON.stringify(data);
+                var newSetting = {};
+                newSetting["pageShadowStorageBackup"] = dataStr;
+
+                var dateSettings = {};
+                dateSettings["dateLastBackup"] = Date.now().toString();
+
+                var deviceSettings = {};
+                deviceSettings["deviceBackup"] = window.navigator.platform;
+
+                chrome.storage.sync.set(newSetting);
+                chrome.storage.sync.set(dateSettings);
+                chrome.storage.sync.set(deviceSettings);
+
+                $("#archiveCloudSuccess").fadeIn(500);
+                displaySettings("sync");
+            } catch(e) {
+                $("#archiveCloudError").fadeIn(500);
+            }
+        });
+    }
+}
+
+function archiveCloudAvailable(func) {
+    if(typeof(chrome.storage) == 'undefined' && typeof(chrome.storage.sync) == 'undefined') {
+        return func(false, null, null);
+    }
+
+    chrome.storage.sync.get(["dateLastBackup", "pageShadowStorageBackup", "deviceBackup"], function(data) {
+        if(data.dateLastBackup != undefined && data.pageShadowStorageBackup != "undefined" && data.deviceBackup != "undefined") {
+            return func(true, data.dateLastBackup, data.deviceBackup);
+        } else {
+            return func(false, null, null);
+        }
+    });
+}
+
+function restoreCloudSettings() {
+    if(typeof(chrome.storage) != 'undefined' && typeof(chrome.storage.sync) != 'undefined') {
+        $("#archiveCloudError").hide();
+        $("#restoreCloudError").hide();
+        $("#archiveCloudSuccess").hide();
+        $("#restoreCloudSuccess").hide();
+
+        chrome.storage.sync.get("pageShadowStorageBackup", function(data) {
+            if(data.pageShadowStorageBackup != undefined) {
+                try {
+                    var dataObj = JSON.parse(data.pageShadowStorageBackup);
+
+                    $("#textareaAssomPage").val("");
+                    $("#checkWhiteList").prop("checked", false);
+
+                    restoreSettings(dataObj, function(result) {
+                        if(result) {
+                            $("#restoreCloudSuccess").fadeIn(500);
+                            loadPresetSelect("loadPresetSelect");
+                            loadPresetSelect("savePresetSelect");
+                            loadPresetSelect("deletePresetSelect");
+                        } else {
+                            $("#restoreCloudError").fadeIn(500);
+                            displaySettings("sync");
+                        }
+                    });
+                } catch(e) {
+                    $("#restoreCloudError").fadeIn(500);
+                }
+            } else {
+                $("#restoreCloudError").fadeIn(500);
+            }
+        });
     }
 }
 
@@ -364,7 +480,6 @@ $(document).ready(function() {
     $("#customThemeSave").click(function() {
         saveThemeSettings($("#themeSelect").val());
 
-        console.log(savedTimeout);
         clearTimeout(savedTimeout);
         savedTimeout = setTimeout(function(){
             $("#customThemeSave").attr("data-original-title", "");
@@ -413,6 +528,14 @@ $(document).ready(function() {
         $("#deletePreset").show();
     });
 
+    $("#archiveCloudBtn").click(function() {
+        archiveCloudSettings();
+    });
+
+    $("#restoreCloudBtn").click(function() {
+        restoreCloudSettings();
+    });
+
     $('span[data-toggle="tooltip"]').tooltip({
         trigger: 'hover',
         container: 'body',
@@ -433,8 +556,8 @@ $(document).ready(function() {
     $("#updateBtn").attr("href", "http://www.eliastiksofts.com/page-shadow/update.php?v="+ extensionVersion);
 
     if(typeof(chrome.storage.onChanged) !== 'undefined') {
-        chrome.storage.onChanged.addListener(function() {
-            displaySettings();
+        chrome.storage.onChanged.addListener(function(changes, areaName) {
+            displaySettings(areaName);
         });
     }
 
@@ -495,7 +618,7 @@ $(document).ready(function() {
     });
 
     $("#inputFileJSON").change(function(event) {
-        restoreSettings(event);
+        restoreSettingsFile(event);
         $(this).val("");
     });
 
@@ -528,7 +651,7 @@ $(document).ready(function() {
 
     codeMirrorJSONArchive.setSize(null, 50);
 
-    displaySettings();
+    displaySettings("local");
 
     loadPresetSelect("loadPresetSelect");
     loadPresetSelect("savePresetSelect");

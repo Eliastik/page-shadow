@@ -452,12 +452,15 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                             <li role="presentation" id="archiveTabLink" class="active"><a href="#archiveTab" aria-controls="archiveTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-archive" aria-hidden="true"></i> <span data-i18n="modal.archive.archive"></span></a></li>
                             <li role="presentation" id="restoreTabLink"><a href="#restoreTab" aria-controls="restoreTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-repeat" aria-hidden="true"></i> <span data-i18n="modal.archive.restore"></span></a></li>
                             <li role="presentation" id="presetTabLink"><a href="#presetTab" aria-controls="presetTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-wrench" aria-hidden="true"></i> <span data-i18n="modal.archive.preset"></span></a></li>
+                            <li role="presentation" id="cloudBackupLink"><a href="#cloudBackupTab" aria-controls="cloudBackupTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-cloud" aria-hidden="true"></i> <span data-i18n="modal.archive.cloud"></span></a></li>
                         </ul>
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="archiveTab">
                                 <p data-i18n="modal.archive.descriptionArchive"></p>
                                 <center><a class="btn btn-primary" id="archiveDataButton"><i class="fa fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.buttonArchive"></span></a></center>
-                                <p id="archiveError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveError"></span></p>
+                                <div class="center">
+                                    <p id="archiveError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveError"></span></p>
+                                </div>
                                 <p id="firefoxHelpArchive" class="orange" style="display: none;"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <strong data-i18n="modal.archive.firefoxHelp"></strong></p>
                                 <div id="helpArchive" style="display: none;">
                                     <p data-i18n="modal.archive.helpArchive"></p>
@@ -533,6 +536,18 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                         <p id="deletePresetError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetError"></span></p>
                                         <p id="deletePresetSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.deletePresetSuccess"></span></p>
                                     </div>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="cloudBackupTab">
+                                <p><span data-i18n="modal.archive.descriptionCloudBackup"></span> <strong data-i18n="modal.archive.warningCloudBackup"></strong></p>
+                                <center><a class="btn btn-success disabled" id="archiveCloudBtn"><i class="fa fa-cloud-upload fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudBtn"></span></a> &nbsp; <a class="btn btn-primary disabled" id="restoreCloudBtn"><i class="fa fa-cloud-download fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreCloudBtn"></span></a></center>
+                                <div id="infoCloud" class="center">
+                                    <p id="infoCloudLastArchive" style="display: none;"><strong data-i18n="modal.archive.infoCloudLastArchive"></strong> <span id="dateCloudArchive"></span></p>
+                                    <p id="archiveCloudNotCompatible" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudNotCompatible"></span></p>
+                                    <p id="archiveCloudError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudError"></span></p>
+                                    <p id="restoreCloudError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreCloudError"></span></p>
+                                    <p id="archiveCloudSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudSuccess"></span></p>
+                                    <p id="restoreCloudSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreCloudSuccess"></span></p>
                                 </div>
                             </div>
                         </div>
