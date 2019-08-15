@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 
 // Global configuration of the extension
-var extensionVersion = "2.6";
+var extensionVersion = "2.7";
 var nbThemes = 15; // nb of themes for the function Increase the contrast (used globally in the extension)
 var colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"]; // color temperatures available for the function Night Mode (used globally in the extension)
 var minBrightnessPercentage = 0; // the minimum percentage of brightness
@@ -105,18 +105,15 @@ function in_array_website(needle, haystack) {
 function disableEnableToggle(type, checked, url, func) {
     chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
         var disabledWebsites = "";
-        var disabledWebsitesEmpty = false;
         var domain = url.hostname;
         var href = url.href;
         var match = domain;
 
         if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
-            var disabledWebsitesEmpty = true;
             var disabledWebsitesArray = [];
         } else {
             var disabledWebsites = result.sitesInterditPageShadow;
             var disabledWebsitesArray = disabledWebsites.split("\n");
-            var disabledWebsitesEmpty = false;
         }
 
         switch(type) {
@@ -219,8 +216,6 @@ function pageShadowAllowed(url, func) {
         } else {
             return func(false);
         }
-
-        return func(false);
     });
 }
 

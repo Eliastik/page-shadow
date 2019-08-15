@@ -73,7 +73,11 @@ function translateContent() {
             placement: 'auto bottom',
             title: i18next.t("container.keyboardShortcutsInfos")
         });
+
+        $("#keyboardShortcuts").attr("data-original-title", i18next.t("container.keyboardShortcutsInfos"));
     }
+
+    displaySettings();
 }
 
 function changeLng(lng) {

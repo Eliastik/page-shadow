@@ -43,7 +43,7 @@ function checkFirstLoad() {
     chrome.storage.local.get('defaultLoad', function (result) {
         if (result.defaultLoad == undefined) {
             chrome.storage.local.set({'defaultLoad': '0'}, function() {
-                setFirstSettings(function(){});
+                setFirstSettings();
             });
         }
     });
@@ -82,7 +82,7 @@ function setFirstSettings(func) {
         'customThemes': defaultCustomThemes,
         'defaultLoad': '0'
     }, function() {
-        if(typeof(func) !== 'undefined') {
+        if(func != undefined) {
             return func();
         }
     });

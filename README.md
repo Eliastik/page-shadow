@@ -4,7 +4,7 @@
 ![Screenshot](screen.png)
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.6 (31/10/2018)
+* Latest version: 2.7 (16/08/2019)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -23,6 +23,13 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.7 (16/08/2019) :
+* Added the ability to create multiple custom themes instead of just one before;
+* Added Cloud backup in Backups and presets in Advanced settings;
+* Improved blacklist/whitelist with more blocking options (wildcard \*, regular expressions, etc.);
+* The whitelist now supports the same options as the blacklist, previously it only accepted domains;
+* Bug fixes and texts fixes.
 
 ### Version 2.6 (31/10/2018) :
 * Added the ability to set presets (max 5, which can be created from the advanced settings) to restore them later (via the extension menu, advanced settings or the right-click menu);
@@ -207,7 +214,7 @@ Then if you want to clean the build directory, run the command `gulp clean-build
 
 ### Licence :
 
-Copyright (C) 2015-2018 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2019 Eliastik (eliastiksofts.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -240,7 +247,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ![Screenshot](screen_fr.png)
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.6 (31/10/2018)
+* Version actuelle : 2.7 (16/08/2019)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -259,6 +266,13 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.7 (16/08/2019) :
+* Ajout de la possibilité de créer plusieurs thèmes personnalisés au lieu d'un seul auparavant ;
+* Ajout de Archive Cloud dans Archives et pré-réglages des Paramètres avancés ;
+* Amélioration de la liste noire/blanche avec plus d'options de blocage (joker \*, expressions régulières, etc.) ;
+* La liste blanche supporte désormais les mêmes options que la liste noire, auparavant elle acceptait uniquement les domaines ;
+* Corrections de bugs et des textes.
 
 ### Version 2.6 (31/10/2018) :
 * Ajout de la possibilité de définir des pré-réglages (5 max, pouvant être créés depuis les paramètres avancés) afin de les restaurer plus tard (via le menu de l'extension, les paramètres avancés ou le menu du clic-droit) ;
@@ -444,7 +458,7 @@ Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `gul
 
 ### Licence :
 
-Copyright (C) 2015-2018 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2019 Eliastik (eliastiksofts.com)
 
 Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le
 modifier suivant les termes de la GNU General Public License telle que

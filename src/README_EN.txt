@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.6 (31/10/2018)
+* Latest version: 2.7 (16/08/2019)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -21,6 +21,13 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.7 (16/08/2019) :
+* Added the ability to create multiple custom themes instead of just one before;
+* Added Cloud backup in Backups and presets in Advanced settings;
+* Improved blacklist/whitelist with more blocking options (wildcard \*, regular expressions, etc.);
+* The whitelist now supports the same options as the blacklist, previously it only accepted domains;
+* Bug fixes and texts fixes.
 
 ### Version 2.6 (31/10/2018) :
 * Added the ability to set presets (max 5, which can be created from the advanced settings) to restore them later (via the extension menu, advanced settings or the right-click menu);
@@ -205,7 +212,7 @@ Then if you want to clean the build directory, run the command `gulp clean-build
 
 ### Licence :
 
-Copyright (C) 2015-2018 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2019 Eliastik (eliastiksofts.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
