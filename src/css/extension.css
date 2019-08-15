@@ -323,11 +323,21 @@ div.navbar-right {
     z-index: 1;
     bottom: 30px;
     border-radius: 8px;
+    -webkit-animation-play-state: "paused";
+    -moz-animation-play-state: "paused";
+    -o-animation-play-state: "paused";
+    -ms-animation-play-state: "paused";
+    animation-play-state: "paused";
 }
 .snackbar.show {
     display: block;
     -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
     animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    -webkit-animation-play-state: "running";
+    -moz-animation-play-state: "running";
+    -o-animation-play-state: "running";
+    -ms-animation-play-state: "running";
+    animation-play-state: "running";
 }
 #customTheme .tooltip-inner {
     width: auto;

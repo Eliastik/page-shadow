@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 /* translation */
 
-var checkContrastMode;
+var checkContrastMode, timeoutInfoPreset;
 
 i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
     fallbackLng: ['en', 'fr'],
@@ -65,7 +65,6 @@ $(document).ready(function() {
     style.type = 'text/css';
     var lnkCustomTheme = document.createElement('link');
     var brightnessChangedFromThisPage = false;
-    var timeoutInfoPreset = 0;
     var selectedPreset = 1;
 
     // append the list of the color temperatures in the select
@@ -758,7 +757,6 @@ $(document).ready(function() {
     });
 
     $("#loadPresetValid").click(function() {
-        clearTimeout(timeoutInfoPreset);
         $("#infoPreset").removeClass("show");
 
         loadPreset(parseInt($("#loadPresetSelect").val()), function(result) {
@@ -771,12 +769,17 @@ $(document).ready(function() {
             }
 
             $("#infoPreset").addClass("show");
-            timeoutInfoPreset = setTimeout(function(){ $("#infoPreset").removeClass("show"); }, 3000);
+
+            $("#infoPreset").on('animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd', function(e) {
+                if(e.originalEvent.animationName === "fadeout") {
+                    $("#infoPreset").removeClass("show");
+                }
+            });
         });
     });
 
     $("#loadPresetSelect").change(function() {
-      selectedPreset = $("#loadPresetSelect").val();
+        selectedPreset = $("#loadPresetSelect").val();
     });
 
     function displaySettings() {
