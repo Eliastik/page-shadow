@@ -74,14 +74,14 @@
 
     function invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors) {
         document.body.classList.remove("pageShadowInvertImageColor");
-        document.body.classList.remove("pageShadowInvertEntirePage");
+        document.getElementsByTagName('html')[0].classList.remove("pageShadowInvertEntirePage");
         document.body.classList.remove("pageShadowInvertVideoColor");
         document.body.classList.remove("pageShadowInvertBgColor");
         document.getElementsByTagName('html')[0].classList.remove("pageShadowBackground");
 
         if(enabled !== null && enabled == "true") {
             if(invertEntirePage !== null && invertEntirePage == "true") {
-                document.body.classList.add("pageShadowInvertEntirePage");
+                document.getElementsByTagName('html')[0].classList.add("pageShadowInvertEntirePage");
                 document.getElementsByTagName('html')[0].classList.add("pageShadowBackground");
 
                 if(invertImageColors !== null && invertImageColors == "true") {
@@ -354,8 +354,6 @@
                             setTimeout(function() { main("onlyInvert", "invert"); }, 1);
                         } else if(mutation.oldValue.indexOf("pageShadowInvertBgColor") !== -1 && !classList.contains("pageShadowInvertBgColor")) {
                             setTimeout(function() { main("onlyInvert", "invert"); }, 1);
-                        } else if(mutation.oldValue.indexOf("pageShadowInvertEntirePage") !== -1 && !classList.contains("pageShadowInvertEntirePage")) {
-                            setTimeout(function() { main("onlyInvert", "invert"); }, 1);
                         } else {
                             reMutObserveInvert();
                         }
@@ -474,7 +472,7 @@
 
             if(type == "reset" || type == "onlyreset") {
                 document.body.classList.remove("pageShadowInvertImageColor");
-                document.body.classList.remove("pageShadowInvertEntirePage");
+                document.getElementsByTagName('html')[0].classList.remove("pageShadowInvertEntirePage");
                 document.body.classList.remove("pageShadowInvertVideoColor");
                 document.getElementsByTagName('html')[0].classList.remove("pageShadowBackground");
                 document.getElementsByTagName('html')[0].classList.remove("pageShadowBackgroundCustom");
