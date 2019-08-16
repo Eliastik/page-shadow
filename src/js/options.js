@@ -180,9 +180,11 @@ function displayTheme(nb, defaultSettings) {
         }
 
         if(!defaultSettings && customThemes["customThemeFont"] != undefined && customThemes["customThemeFont"].trim() != "") {
-            var fontTheme = customThemes["customThemeFont"];
+            var fontTheme = '"' + customThemes["customThemeFont"] + '"';
+            var fontName = customThemes["customThemeFont"];
         } else {
             var fontTheme = defaultFontCustomTheme;
+            var fontName = defaultFontCustomTheme;
         }
 
         if(!defaultSettings && customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
@@ -211,7 +213,7 @@ function displayTheme(nb, defaultSettings) {
         $("#colorpicker4").colpickSetColor(linksVisitedColorTheme);
         $("#linkVisitedPreview").css("color", "#" + linksVisitedColorTheme);
 
-        $("#customThemeFont").val(fontTheme);
+        $("#customThemeFont").val(fontName);
         $("#previsualisationDiv").css("font-family", fontTheme);
 
         codeMirrorUserCSS.getDoc().setValue(customCSS);
