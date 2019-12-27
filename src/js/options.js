@@ -339,6 +339,7 @@ function restoreSettingsFile(event) {
 
         reader.onerror = function() {
             $("#restoreError").fadeIn(500);
+            displaySettings("local");
         };
 
         var fileExtension = event.target.files[0].name.split('.').pop().toLowerCase();
@@ -350,10 +351,12 @@ function restoreSettingsFile(event) {
                 reader.readAsText(event.target.files[0]);
             } else {
                 $("#restoreErrorFilesize").fadeIn(500);
+                displaySettings("local");
                 return false;
             }
         } else {
             $("#restoreErrorExtension").fadeIn(500);
+            displaySettings("local");
             return false;
         }
 
@@ -362,6 +365,7 @@ function restoreSettingsFile(event) {
                 var obj = JSON.parse(event.target.result);
             } catch(e) {
                 $("#restoreError").fadeIn(500);
+                displaySettings("local");
                 return false;
             }
 
@@ -467,9 +471,11 @@ function restoreCloudSettings() {
                     });
                 } catch(e) {
                     $("#restoreCloudError").fadeIn(500);
+                    displaySettings("sync");
                 }
             } else {
                 $("#restoreCloudError").fadeIn(500);
+                displaySettings("sync");
             }
         });
     }
