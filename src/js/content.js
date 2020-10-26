@@ -288,7 +288,7 @@
                 var classList = document.body.classList;
                 var containsPageContrast = true;
 
-                for(i=1; i<=nbThemes; i++) {
+                for(var i = 1; i <= nbThemes; i++) {
                     if(i == "1" && !classList.contains("pageShadowContrastBlack")) {
                         var containsPageContrast = false;
                     } else if(!classList.contains("pageShadowContrastBlack" + i)) {
@@ -480,7 +480,7 @@
                 document.body.classList.remove("pageShadowDisableImgBgColor");
                 document.body.classList.remove("pageShadowInvertBgColor");
 
-                for(i = 1; i <= nbThemes; i++) {
+                for(var i = 1; i <= nbThemes; i++) {
                     if(i == 1) {
                         document.body.classList.remove("pageShadowContrastBlack");
                         document.getElementsByTagName('html')[0].classList.remove("pageShadowBackgroundContrast");

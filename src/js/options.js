@@ -62,7 +62,7 @@ function translateContent() {
 
     $("#themeSelect").text("");
 
-    for(i = 1; i <= nbCustomThemesSlots; i++) {
+    for(var i = 1; i <= nbCustomThemesSlots; i++) {
         $("#themeSelect").append('<option value="' + i + '">' + i18next.t("container.customTheme", { count: i }) + '</option>');
     }
 

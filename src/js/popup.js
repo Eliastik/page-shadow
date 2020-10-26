@@ -70,7 +70,7 @@ $(document).ready(function() {
     // append the list of the color temperatures in the select
     $("#tempSelect").text("");
 
-    for(i = 0; i < colorTemperaturesAvailable.length; i++) {
+    for(var i = 0; i < colorTemperaturesAvailable.length; i++) {
         var colorTempIndex = i + 1;
         $("#tempSelect").append('<option value="'+ colorTempIndex +'">'+ colorTemperaturesAvailable[i] +' K</option>');
     }
@@ -280,11 +280,11 @@ $(document).ready(function() {
             // append the list of themes in the select
             $("#themeSelect").text("");
 
-            for(i = 1; i <= nbCustomThemesSlots; i++) {
+            for(var i = 1; i <= nbCustomThemesSlots; i++) {
                 $("#themeSelect").append('<option value="custom' + i + '">' + i18next.t("container.customTheme", { count: i }) + '</option>');
             }
 
-            for(i = 1; i <= nbThemes; i++) {
+            for(var i = 1; i <= nbThemes; i++) {
                 $("#themeSelect").append('<option value="' + i + '">' + i18next.t("container.theme", { count: i }) + '</option>');
             }
 
