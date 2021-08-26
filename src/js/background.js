@@ -200,6 +200,10 @@ function updateBadge() {
                         });
                     }
                 }
+
+                if(typeof(chrome.tabs.sendMessage) !== 'undefined') {
+                    chrome.tabs.sendMessage(tabs[0].id, { updated: true, enabled: enabled });
+                }
             });
         });
     }

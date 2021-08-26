@@ -24,6 +24,7 @@
     var timeOutLum, timeOutAP, timeOutIC, timeOutBI;
     var elLumWrapper = document.createElement("div");
     var elLum = document.createElement("div");
+    var precEnabled = false;
 
     function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) {
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
@@ -438,7 +439,7 @@
         element.classList.add("pageShadowDisableStyling");
 
         var computedStyle = window.getComputedStyle(element, null);
-        var hasBackgroundImg = computedStyle.getPropertyValue("background").substr(0, 4) == "url(" || computedStyle.getPropertyValue("background-image").substr(0, 4) == "url(";
+        var hasBackgroundImg = computedStyle.getPropertyValue("background").substr(0, 4).toLowerCase() == "url(" || computedStyle.getPropertyValue("background-image").substr(0, 4).toLowerCase() == "url(";
         var hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
         var hasElementHidden = element.contains(element.querySelector("canvas")) || element.contains(element.querySelector("video"));
 
@@ -454,7 +455,7 @@
     }
 
     function main(type, mutation) {
-        chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertEntirePage', 'whiteList', 'colorTemp', 'globallyEnable', 'invertVideoColors', 'disableImgBgColor', 'invertBgColor'], function (result) {
+        chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertEntirePage', 'whiteList', 'colorTemp', 'globallyEnable', 'invertVideoColors', 'disableImgBgColor', 'invertBgColor'], function(result) {
             if(type == "reset" || type == "onlyreset") {
                 var mutation = "all";
             }
@@ -505,6 +506,7 @@
 
             pageShadowAllowed(window.location.href, function(allowed) {
                 if(allowed) {
+                    precEnabled = true;
                     var pageShadowEnabled = result.pageShadowEnabled;
                     var theme = result.theme;
                     var colorTemp = result.colorTemp;
@@ -545,6 +547,8 @@
                             applyDetectBackground(null, "*", 2, 1);
                         }
                     }
+                } else {
+                    precEnabled = false;
                 }
             });
         });
@@ -554,10 +558,17 @@
 
     // Execute Page Shadow on the page when the settings have been changed:
     chrome.storage.onChanged.addListener(function() {
-        chrome.storage.local.get('liveSettings', function (result) {
+        chrome.storage.local.get('liveSettings', function(result) {
             if(result.liveSettings !== "false") {
                 main("reset", "all");
             }
         });
+    });
+
+    // Execute when the page URL changes in Single Page Applications
+    chrome.runtime.onMessage.addListener(function(msg) {
+        if(msg.updated && ((msg.enabled && !precEnabled) || (!msg.enabled && precEnabled))) {
+            main("reset", "all");
+        }
     });
 }());
