@@ -25,6 +25,7 @@
     var elLumWrapper = document.createElement("div");
     var elLum = document.createElement("div");
     var precEnabled = false;
+    var runningInIframe = window !== window.top;
 
     function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) {
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
@@ -205,7 +206,7 @@
     function luminositePage(enabled, pourcentage, nightmode, colorTemp) {
         elLum.setAttribute("class", "");
 
-        if(enabled == "true") {
+        if(enabled == "true" && !runningInIframe) {
             elLum.style.display = "block";
             if(nightmode == "true") {
                 elLum.setAttribute("id", "pageShadowLuminositeDivNightMode");
