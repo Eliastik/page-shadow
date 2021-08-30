@@ -202,7 +202,10 @@ function updateBadge() {
                 }
 
                 if(typeof(chrome.tabs.sendMessage) !== 'undefined') {
-                    chrome.tabs.sendMessage(tabs[0].id, { updated: true, enabled: enabled });
+                    chrome.tabs.sendMessage(tabs[0].id, {
+                        type: "websiteUrlUpdated",
+                        enabled: enabled
+                    });
                 }
             });
         });
@@ -272,6 +275,18 @@ if(typeof(chrome.tabs) !== 'undefined' && typeof(chrome.tabs.onUpdated) !== 'und
 if(typeof(chrome.storage) !== 'undefined' && typeof(chrome.storage.onChanged) !== 'undefined') {
     chrome.storage.onChanged.addListener(function(changes) {
         autoEnable(changes);
+    });
+}
+
+if(typeof(chrome.runtime) !== 'undefined' && typeof(chrome.runtime.onMessage) !== 'undefined') {
+    chrome.runtime.onMessage.addListener(function(message, sender, sendMessage) {
+        if(message && message.type == "isEnabledForThisPage") {
+            pageShadowAllowed(sender.tab.url, function(enabled) {
+                sendMessage({ type: "isEnabledForThisPageResponse", enabled: enabled });
+            });
+        }
+
+        return true;
     });
 }
 
