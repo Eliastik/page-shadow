@@ -57,9 +57,9 @@
         if(document.readyState == "complete" || document.readyState == "interactive") {
             mutationObserve("contrast");
         } else {
-            window.onload = function() {
+            window.addEventListener("load", function() {
                 mutationObserve("contrast");
-            }
+            });
         }
 
         if(typeof timeOutAP !== "undefined") {
@@ -121,9 +121,9 @@
             if(document.readyState == "complete" || document.readyState == "interactive") {
                 mutationObserve("invert");
             } else {
-                window.onload = function() {
+                window.addEventListener("load", function() {
                     mutationObserve("invert");
-                }
+                });
             }
         }
 
@@ -238,9 +238,9 @@
             if(document.readyState == "complete" || document.readyState == "interactive") {
                 mutationObserve("brightness");
             } else {
-                window.onload = function() {
+                window.addEventListener("load", function() {
                     mutationObserve("brightness");
-                }
+                });
             }
         }
     }
@@ -315,9 +315,9 @@
                     if(document.readyState == "complete" || document.readyState == "interactive") {
                         mutationObserve("contrast");
                     } else {
-                        window.onload = function() {
+                        window.addEventListener("load", function() {
                             mutationObserve("contrast");
-                        }
+                        });
                     }
                 }
             });
@@ -340,9 +340,9 @@
                     if(document.readyState == "complete" || document.readyState == "interactive") {
                         mutationObserve("invert");
                     } else {
-                        window.onload = function() {
+                        window.addEventListener("load", function() {
                             mutationObserve("invert");
-                        }
+                        });
                     }
                 }
 
@@ -389,9 +389,9 @@
                         if(document.readyState == "complete" || document.readyState == "interactive") {
                             mutationObserve("brightness");
                         } else {
-                            window.onload = function() {
+                            window.addEventListener("load", function() {
                                 mutationObserve("brightness");
-                            }
+                            });
                         }
                     }
                 });
@@ -456,14 +456,34 @@
         element.classList.remove("pageShadowDisableStyling");
     }
 
-    function processFilters(filters) {
+    function processFilters() {
+        chrome.runtime.sendMessage({
+            "type": "getAllFilters"
+        }, function(response) {
+            if(response && response.type == "getAllFiltersResponse" && response.filters) {
+                doProcessFilters(response.filters);
+            }
+
+            return true;
+        });
+    }
+
+    function doProcessFilters(filters) {
+        var url = window.location.href;
+        var websuteUrl_tmp = new URL(url);
+        var domain = websuteUrl_tmp.hostname;
+
         filters.forEach(filter => {
-            if(matchWebsite(window.location.href, filter.website)) {
+            if(matchWebsite(domain, filter.website) || matchWebsite(url, filter.website)) {
                 var selector = filter.filter;
 
                 if(filter.type == "disableContrastFor") {
                     document.querySelectorAll(selector).forEach(element => {
                         if(!element.classList.contains("pageShadowElementDisabled")) element.classList.add("pageShadowElementDisabled");
+                    });
+                } else if(filter.type == "forceTransparentBackground") {
+                    document.querySelectorAll(selector).forEach(element => {
+                        if(!element.classList.contains("pageShadowElementForceTransparentBackground")) element.classList.add("pageShadowElementForceTransparentBackground");
                     });
                 }
             }
@@ -582,15 +602,13 @@
                     }
                 }
 
-                chrome.runtime.sendMessage({
-                    "type": "getAllFilters"
-                }, function(response) {
-                    if(response && response.type == "getAllFiltersResponse" && response.filters) {
-                        processFilters(response.filters);
-                    }
-        
-                    return true;
-                });
+                if(document.readyState == "complete") {
+                    processFilters();
+                } else {
+                    window.addEventListener("load", function() {
+                        processFilters();
+                    });
+                }
             });
         } else {
             precEnabled = false;

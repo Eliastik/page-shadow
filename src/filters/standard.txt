@@ -1,4 +1,11 @@
 # Standard Filter for Page Shadow
 # Last update: 8/31/2021 18:41:53
-http*://hacklol.eliastiksofts.com|disableContrastFor|#carousel-home,#carousel-home *
-http*://*jeuxvideo.com|disableContrastFor|#js-video-footer *
+hacklol.eliastiksofts.com|disableContrastFor|#carousel-home,#carousel-home *
+www.jeuxvideo.com|disableContrastFor|#js-video-footer
+www.jeuxvideo.com|disableContrastFor|#js-video-footer *
+*youtube.*|disableContrastFor|ytd-rich-item-renderer,ytd-rich-item-renderer *
+*youtube.*|disableContrastFor|#search,#player,#player *,ytd-watch-next-secondary-results-renderer,ytd-watch-next-secondary-results-renderer *
+fr.wikipedia.org|disableContrastFor|#mw-sidebar-button,#p-personal,#p-personal *,#accueil_2017_bandeau .colonnes,#accueil_2017_bandeau .colonnes *
+*.wikipedia.org|disableContrastFor|#wikiEditor-ui-top,#wikiEditor-ui-top *
+# Github: fix code addition/deletion background color
+github.com|disableContrastFor|.blob-code-addition,.blob-code-deletion,.blob-code-addition *,.blob-code-deletion *
