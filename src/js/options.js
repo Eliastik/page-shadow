@@ -40,11 +40,12 @@ function init_i18next() {
 init_i18next();
 
 function listTranslations(languages) {
+    var language = i18next.language.substr(0, 2);
     $("#languageSelect").text("");
+
     $.each(languages, function(index, value) {
-        $("#languageSelect").append('<option data-i18n="container.language.'+ value +'" value="'+ value +'"></option>');
+        $("#languageSelect").append('<option data-i18n="container.language.'+ value +'" value="' + value + '"' + (language == value ? " selected" : "") + '></option>');
     });
-    $("#languageSelect").val(i18next.language.substr(0, 2));
 }
 
 function translateContent() {

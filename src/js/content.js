@@ -441,7 +441,7 @@
         element.classList.add("pageShadowDisableStyling");
 
         var computedStyle = window.getComputedStyle(element, null);
-        var hasBackgroundImg = computedStyle.getPropertyValue("background").substr(0, 4).toLowerCase() == "url(" || computedStyle.getPropertyValue("background-image").substr(0, 4).toLowerCase() == "url(";
+        var hasBackgroundImg = computedStyle.getPropertyValue("background").trim().substr(0, 4).toLowerCase() == "url(" || computedStyle.getPropertyValue("background-image").trim().substr(0, 4).toLowerCase() == "url(";
         var hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
         var hasElementHidden = element.contains(element.querySelector("canvas")) || element.contains(element.querySelector("video"));
 
@@ -454,6 +454,20 @@
         }
 
         element.classList.remove("pageShadowDisableStyling");
+    }
+
+    function processFilters(filters) {
+        filters.forEach(filter => {
+            if(matchWebsite(window.location.href, filter.website)) {
+                var selector = filter.filter;
+
+                if(filter.type == "disableContrastFor") {
+                    document.querySelectorAll(selector).forEach(element => {
+                        if(!element.classList.contains("pageShadowElementDisabled")) element.classList.add("pageShadowElementDisabled");
+                    });
+                }
+            }
+        });
     }
 
     function main(type, mutation) {
@@ -567,13 +581,23 @@
                         applyDetectBackground(null, "*", 2, 1);
                     }
                 }
+
+                chrome.runtime.sendMessage({
+                    "type": "getAllFilters"
+                }, function(response) {
+                    if(response && response.type == "getAllFiltersResponse" && response.filters) {
+                        processFilters(response.filters);
+                    }
+        
+                    return true;
+                });
             });
         } else {
             precEnabled = false;
         }
 
         started = true;
-    } 
+    }
 
     main("start");
 
