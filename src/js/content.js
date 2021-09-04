@@ -27,6 +27,7 @@
     var precEnabled = false;
     var started = false;
     var runningInIframe = window !== window.top;
+    var filtersCache = [];
 
     function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) {
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
@@ -409,6 +410,7 @@
                     if(mutation.type == "childList") {
                         for(var i = 0; i < mutation.addedNodes.length; i++) {
                             mutationElementsBackgrounds(mutation.addedNodes[i], null, null);
+                            doProcessFilters(filtersCache, mutation.addedNodes[i]);
                         }
                     } else if(mutation.type == "attributes") {
                         mutationElementsBackgrounds(mutation.target, mutation.attributeName, mutation.oldValue);
@@ -461,6 +463,7 @@
             "type": "getAllFilters"
         }, function(response) {
             if(response && response.type == "getAllFiltersResponse" && response.filters) {
+                filtersCache = response.filters;
                 doProcessFilters(response.filters);
             }
 
@@ -468,7 +471,7 @@
         });
     }
 
-    function doProcessFilters(filters) {
+    function doProcessFilters(filters, element) {
         var url = window.location.href;
         var websuteUrl_tmp = new URL(url);
         var domain = websuteUrl_tmp.hostname;
@@ -476,16 +479,35 @@
         filters.forEach(filter => {
             if(matchWebsite(domain, filter.website) || matchWebsite(url, filter.website)) {
                 var selector = filter.filter;
+                var elements = (element ? [element] : document.querySelectorAll(selector));
 
-                if(filter.type == "disableContrastFor") {
-                    document.querySelectorAll(selector).forEach(element => {
-                        if(!element.classList.contains("pageShadowElementDisabled")) element.classList.add("pageShadowElementDisabled");
-                    });
-                } else if(filter.type == "forceTransparentBackground") {
-                    document.querySelectorAll(selector).forEach(element => {
-                        if(!element.classList.contains("pageShadowElementForceTransparentBackground")) element.classList.add("pageShadowElementForceTransparentBackground");
-                    });
+                if(element) {
+                    if(element.matches && !element.matches(selector)) {
+                        elements = [];
+                    }
+
+                    if(element.getElementsByTagName) {
+                        var elementChildrens = element.getElementsByTagName("*");
+    
+                        if(elementChildrens && elementChildrens.length > 0) {
+                            for(childrenElement of elementChildrens) {
+                                if(childrenElement.matches && !childrenElement.matches(selector)) {
+                                    elements.push(childrenElement);
+                                }
+                            }
+                        }
+                    }
                 }
+
+                elements.forEach(element => {
+                    if(element && element.classList) {
+                        if(filter.type == "disableContrastFor") {
+                            if(!element.classList.contains("pageShadowElementDisabled")) element.classList.add("pageShadowElementDisabled");
+                        } else if(filter.type == "forceTransparentBackground") {
+                            if(!element.classList.contains("pageShadowElementForceTransparentBackground")) element.classList.add("pageShadowElementForceTransparentBackground");
+                        }
+                    }
+                });
             }
         });
     }
