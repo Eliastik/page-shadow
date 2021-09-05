@@ -16,6 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+window.codeMirrorUserCss = null;
+window.codeMirrorJSONArchive = null;
 
 /* translation */
 function init_i18next() {
@@ -40,7 +42,7 @@ function init_i18next() {
 init_i18next();
 
 function listTranslations(languages) {
-    var language = i18next.language.substr(0, 2);
+    const language = i18next.language.substr(0, 2);
     $("#languageSelect").text("");
 
     $.each(languages, function(index, value) {
@@ -63,7 +65,7 @@ function translateContent() {
 
     $("#themeSelect").text("");
 
-    for(var i = 1; i <= nbCustomThemesSlots; i++) {
+    for(let i = 1; i <= nbCustomThemesSlots; i++) {
         $("#themeSelect").append('<option value="' + i + '">' + i18next.t("container.customTheme", { count: i }) + '</option>');
     }
 
@@ -146,52 +148,53 @@ function displaySettings(areaName) {
 }
 
 function displayTheme(nb, defaultSettings) {
-    var nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
-    var defaultSettings = defaultSettings == undefined ? false : defaultSettings;
+    nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
+    defaultSettings = defaultSettings == undefined ? false : defaultSettings;
+    let customThemes, fontTheme, fontName, customCSS, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme;
 
-    chrome.storage.local.get("customThemes", function(result) {
+    chrome.storage.local.get("customThemes", result => {
         if(result.customThemes != undefined && result.customThemes[nb] != undefined) {
-            var customThemes = result.customThemes[nb];
+            customThemes = result.customThemes[nb];
         } else {
-            var customThemes = defaultCustomThemes[nb];
+            customThemes = defaultCustomThemes[nb];
         }
 
         if(!defaultSettings && customThemes["customThemeBg"] != undefined) {
-            var backgroundTheme = customThemes["customThemeBg"];
+            backgroundTheme = customThemes["customThemeBg"];
         } else {
-            var backgroundTheme = defaultBGColorCustomTheme;
+            backgroundTheme = defaultBGColorCustomTheme;
         }
 
         if(!defaultSettings && customThemes["customThemeTexts"] != undefined) {
-            var textsColorTheme = customThemes["customThemeTexts"];
+            textsColorTheme = customThemes["customThemeTexts"];
         } else {
-            var textsColorTheme = defaultTextsColorCustomTheme;
+            textsColorTheme = defaultTextsColorCustomTheme;
         }
 
         if(!defaultSettings && customThemes["customThemeLinks"] != undefined) {
-            var linksColorTheme = customThemes["customThemeLinks"];
+            linksColorTheme = customThemes["customThemeLinks"];
         } else {
-            var linksColorTheme = defaultLinksColorCustomTheme;
+            linksColorTheme = defaultLinksColorCustomTheme;
         }
 
         if(!defaultSettings && customThemes["customThemeLinksVisited"] != undefined) {
-            var linksVisitedColorTheme = customThemes["customThemeLinksVisited"];
+            linksVisitedColorTheme = customThemes["customThemeLinksVisited"];
         } else {
-            var linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
+            linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
         }
 
         if(!defaultSettings && customThemes["customThemeFont"] != undefined && customThemes["customThemeFont"].trim() != "") {
-            var fontTheme = '"' + customThemes["customThemeFont"] + '"';
-            var fontName = customThemes["customThemeFont"];
+            fontTheme = '"' + customThemes["customThemeFont"] + '"';
+            fontName = customThemes["customThemeFont"];
         } else {
-            var fontTheme = defaultFontCustomTheme;
-            var fontName = defaultFontCustomTheme;
+            fontTheme = defaultFontCustomTheme;
+            fontName = defaultFontCustomTheme;
         }
 
         if(!defaultSettings && customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
-            var customCSS = customThemes["customCSSCode"];
+            customCSS = customThemes["customCSSCode"];
         } else {
-            var customCSS = defaultCustomCSSCode;
+            customCSS = defaultCustomCSSCode;
         }
 
         $("#colorpicker1").css("background-color", "#" + backgroundTheme);
@@ -217,18 +220,18 @@ function displayTheme(nb, defaultSettings) {
         $("#customThemeFont").val(fontName);
         $("#previsualisationDiv").css("font-family", fontTheme);
 
-        codeMirrorUserCSS.getDoc().setValue(customCSS);
+        window.codeMirrorUserCss.getDoc().setValue(customCSS);
     });
 }
 
 function saveThemeSettings(nb) {
-    var nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
+    nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
     chrome.storage.local.get("customThemes", function (result) {
-        var customThemes = defaultCustomThemes;
+        let customThemes = defaultCustomThemes;
 
         if(result.customThemes != undefined) {
-            var customThemes = result.customThemes;
+            customThemes = result.customThemes;
         }
 
         customThemes[nb]["customThemeBg"] = $("#colorpicker1").attr("value");
@@ -236,7 +239,7 @@ function saveThemeSettings(nb) {
         customThemes[nb]["customThemeLinks"] = $("#colorpicker3").attr("value");
         customThemes[nb]["customThemeLinksVisited"] = $("#colorpicker4").attr("value");
         customThemes[nb]["customThemeFont"] = $("#customThemeFont").val();
-        codeMirrorUserCSS.save();
+        window.codeMirrorUserCss.save();
         customThemes[nb]["customCSSCode"] = $("#codeMirrorUserCSSTextarea").val();
 
         setSettingItem("customThemes", customThemes);
@@ -276,12 +279,12 @@ function archiveSettings() {
     chrome.storage.local.get(null, function (data) {
         try {
             data["ispageshadowarchive"] = "true";
-            var date = new Date();
-            var dateString = date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1).toString() + "-" + date.getDate() + "-" + date.getHours() + "_" + date.getMinutes() + "_" + date.getSeconds();
-            var dataStr = JSON.stringify(data);
-            var filename = "page-shadow-backupdata-" + dateString + ".json";
+            const date = new Date();
+            const dateString = date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1).toString() + "-" + date.getDate() + "-" + date.getHours() + "_" + date.getMinutes() + "_" + date.getSeconds();
+            const dataStr = JSON.stringify(data);
+            const filename = "page-shadow-backupdata-" + dateString + ".json";
 
-            codeMirrorJSONArchive.getDoc().setValue(JSON.stringify(data));
+            window.codeMirrorJSONArchive.getDoc().setValue(JSON.stringify(data));
             $("#archiveSuggestedName").val(filename);
             $("#helpArchive").show();
             $("#archiveDataButton").removeClass("disabled");
@@ -296,12 +299,12 @@ function archiveSettings() {
 
 function restoreSettings(object, func) {
     // Check if it's a Page Shadow archive file
-    var ispageshadowarchive = false;
+    let ispageshadowarchive = false;
 
-    for(var key in object) {
+    for(const key in object) {
         if(object.hasOwnProperty(key)) {
             if(key === "ispageshadowarchive" && object[key] === "true") {
-                var ispageshadowarchive = true;
+                ispageshadowarchive = true;
             }
         }
     }
@@ -313,7 +316,7 @@ function restoreSettings(object, func) {
     // Reset data
     chrome.storage.local.clear(function() {
         setFirstSettings(function() {
-            for(var key in object) {
+            for(const key in object) {
                 if(typeof(key) === "string") {
                     if(object.hasOwnProperty(key)) {
                         setSettingItem(key, object[key]); // invalid data are ignored by the function
@@ -335,7 +338,7 @@ function restoreSettingsFile(event) {
     $("#restoreDataButton").addClass("disabled");
 
     if (typeof FileReader !== "undefined") {
-        var reader = new FileReader();
+        const reader = new FileReader();
         reader.onload = onReaderLoad;
 
         reader.onerror = function() {
@@ -343,10 +346,10 @@ function restoreSettingsFile(event) {
             displaySettings("local");
         };
 
-        var fileExtension = event.target.files[0].name.split('.').pop().toLowerCase();
+        const fileExtension = event.target.files[0].name.split('.').pop().toLowerCase();
 
         if(fileExtension == "json") {
-            var filesize = event.target.files[0].size;
+            const filesize = event.target.files[0].size;
 
             if(filesize <= 5000000) { // max size of 5 MB
                 reader.readAsText(event.target.files[0]);
@@ -361,9 +364,11 @@ function restoreSettingsFile(event) {
             return false;
         }
 
-        function onReaderLoad(event){
+        function onReaderLoad(event) {
+            let obj;
+
             try {
-                var obj = JSON.parse(event.target.result);
+                obj = JSON.parse(event.target.result);
             } catch(e) {
                 $("#restoreError").fadeIn(500);
                 displaySettings("local");
@@ -373,7 +378,7 @@ function restoreSettingsFile(event) {
             $("#textareaAssomPage").val("");
             $("#checkWhiteList").prop("checked", false);
 
-            restoreSettings(obj, function(result) {
+            restoreSettings(obj, result => {
                 if(result) {
                     $("#restoreSuccess").fadeIn(500);
                     loadPresetSelect("loadPresetSelect");
@@ -403,14 +408,14 @@ function archiveCloudSettings() {
             try {
                 data["ispageshadowarchive"] = "true";
 
-                var dataStr = JSON.stringify(data);
-                var newSetting = {};
+                const dataStr = JSON.stringify(data);
+                const newSetting = {};
                 newSetting["pageShadowStorageBackup"] = dataStr;
 
-                var dateSettings = {};
+                const dateSettings = {};
                 dateSettings["dateLastBackup"] = Date.now().toString();
 
-                var deviceSettings = {};
+                const deviceSettings = {};
                 deviceSettings["deviceBackup"] = window.navigator.platform;
 
                 chrome.storage.sync.set(newSetting);
@@ -454,7 +459,7 @@ function restoreCloudSettings() {
         chrome.storage.sync.get("pageShadowStorageBackup", function(data) {
             if(data.pageShadowStorageBackup != undefined) {
                 try {
-                    var dataObj = JSON.parse(data.pageShadowStorageBackup);
+                    const dataObj = JSON.parse(data.pageShadowStorageBackup);
 
                     $("#textareaAssomPage").val("");
                     $("#checkWhiteList").prop("checked", false);
@@ -500,7 +505,7 @@ function createPreset() {
 }
 
 $(document).ready(function() {
-    var savedTimeout;
+    let savedTimeout;
 
     $("#validerButton").click(function() {
         saveSettings();
@@ -668,21 +673,21 @@ $(document).ready(function() {
         this.select();
     });
 
-    codeMirrorUserCSS = CodeMirror.fromTextArea(document.getElementById("codeMirrorUserCSSTextarea"), {
+    window.codeMirrorUserCss = CodeMirror.fromTextArea(document.getElementById("codeMirrorUserCSSTextarea"), {
         lineNumbers: true,
         mode: "css",
         theme: "material",
         autoRefresh: true
     });
 
-    codeMirrorJSONArchive = CodeMirror.fromTextArea(document.getElementById("codeMirrorJSONArchiveTextarea"), {
+    window.codeMirrorJSONArchive = CodeMirror.fromTextArea(document.getElementById("codeMirrorJSONArchiveTextarea"), {
         lineNumbers: true,
         theme: "material",
         autoRefresh: true,
         readOnly: true
     });
 
-    codeMirrorJSONArchive.setSize(null, 50);
+    window.codeMirrorJSONArchive.setSize(null, 50);
 
     displaySettings("local");
 

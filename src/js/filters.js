@@ -16,10 +16,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-var filters = [];
+let filters = [];
 
 function openFiltersFiles(func) {
-    var files = {};
+    const files = {};
 
     fetch("/filters/standard.txt").then((data) => {
         data.text().then(text => {
@@ -31,14 +31,14 @@ function openFiltersFiles(func) {
 
 function parseLine(line) {
     if(line.length > 0) {
-        var parts = line.split("|");
-        var lineTrimmed = line.trim();
-        var isComment = lineTrimmed[0] == "#";
+        const parts = line.split("|");
+        const lineTrimmed = line.trim();
+        const isComment = lineTrimmed[0] == "#";
     
         if(parts.length > 0 && !isComment) {
-            var website = parts[0];
-            var type = parts[1];
-            var filter = parts[2];
+            const website = parts[0];
+            const type = parts[1];
+            const filter = parts[2];
     
             return { "website": website, "type": type, "filter": filter };
         }
@@ -50,9 +50,9 @@ function parseLine(line) {
 function cacheFilters() {
     openFiltersFiles(function(data) {
         Object.keys(data).forEach((key) => {
-            var lines = data[key].split("\n");
+            const lines = data[key].split("\n");
             lines.forEach(line => {
-                var parsed = parseLine(line);
+                const parsed = parseLine(line);
 
                 if(parsed) {
                     filters.push(parsed);

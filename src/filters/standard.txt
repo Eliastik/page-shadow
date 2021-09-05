@@ -9,5 +9,5 @@ fr.wikipedia.org|disableContrastFor|#mw-sidebar-button,#p-personal,#p-personal *
 *.wikipedia.org|disableContrastFor|#wikiEditor-ui-top,#wikiEditor-ui-top *
 # Github: fix code addition/deletion background color
 github.com|disableContrastFor|.blob-code-addition,.blob-code-deletion,.blob-code-addition *,.blob-code-deletion *
-*google.*|disableContrastFor|.e4xoPb,g-scrolling-carousel,.wXeWr,.rGhul,.related-question-pair,g-img,div[jsname="Cpkphb"]
+*google.*|disableContrastFor|.e4xoPb,g-scrolling-carousel,.wXeWr,.rGhul,.related-question-pair,g-img,div[jsname="Cpkphb"],#top-nav
 *google.*|disableContrastFor|.e4xoPb *,g-scrolling-carousel *,.wXeWr *,.rGhul *,.related-question-pair *,g-img *

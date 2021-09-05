@@ -17,17 +17,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 (function(){
-    var style = document.createElement('style');
+    let style = document.createElement('style');
     style.type = 'text/css';
-    var lnkCustomTheme = document.createElement('link');
-    var backgroundDetected = 0;
-    var timeOutLum, timeOutAP, timeOutIC, timeOutBI;
-    var elLumWrapper = document.createElement("div");
-    var elLum = document.createElement("div");
-    var precEnabled = false;
-    var started = false;
-    var runningInIframe = window !== window.top;
-    var filtersCache = [];
+    let lnkCustomTheme = document.createElement('link');
+    let backgroundDetected = 0;
+    let timeOutLum, timeOutAP, timeOutIC, timeOutBI;
+    let elLumWrapper = document.createElement("div");
+    let elLum = document.createElement("div");
+    let precEnabled = false;
+    let started = false;
+    const runningInIframe = window !== window.top;
+    let filtersCache = [];
+    let mut_contrast, mut_backgrounds, mut_brightness, mut_invert;
 
     function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) {
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
@@ -134,21 +135,21 @@
     }
 
     function detectBackground(tagName, add, type) {
-        var elements = document.body.getElementsByTagName(tagName);
-        var computedStyle = null;
+        const elements = document.body.getElementsByTagName(tagName);
+        let computedStyle = null;
 
         if(backgroundDetected <= 0) {
             document.body.classList.add("pageShadowBackgroundDetected");
         }
 
-        for(var i = 0; i < elements.length; i++) {
+        for(let i = 0; i < elements.length; i++) {
             elements[i].classList.add("pageShadowDisableStyling");
-            var computedStyle = window.getComputedStyle(elements[i], null);
+            computedStyle = window.getComputedStyle(elements[i], null);
 
             if(type == 1 || type == 3 || type == "image" || typeof type === "undefined") {
-                var hasBackgroundImg = computedStyle.getPropertyValue("background").substr(0, 4) == "url(" || computedStyle.getPropertyValue("background-image").substr(0, 4) == "url(";
-                var hasClassImg = elements[i].classList.contains("pageShadowHasBackgroundImg");
-                var hasElementHidden = elements[i].contains(elements[i].querySelector("canvas")) || elements[i].contains(elements[i].querySelector("video"));
+                const hasBackgroundImg = computedStyle.getPropertyValue("background").substr(0, 4) == "url(" || computedStyle.getPropertyValue("background-image").substr(0, 4) == "url(";
+                const hasClassImg = elements[i].classList.contains("pageShadowHasBackgroundImg");
+                const hasElementHidden = elements[i].contains(elements[i].querySelector("canvas")) || elements[i].contains(elements[i].querySelector("video"));
 
                 if(hasBackgroundImg && !hasClassImg) {
                     elements[i].classList.add("pageShadowHasBackgroundImg");
@@ -160,8 +161,8 @@
             }
 
             if(type == 2 || type == 3 || type == "color") {
-                var hasBackgroundColor = computedStyle.getPropertyValue("background-image").substr(0, 4) !== "url(" && computedStyle.getPropertyValue("background-color") !== "" && computedStyle.getPropertyValue("background-color").substr(0, 4) !== "none";
-                var hasClassColor = elements[i].classList.contains("pageShadowHasBackgroundColor");
+                const hasBackgroundColor = computedStyle.getPropertyValue("background-image").substr(0, 4) !== "url(" && computedStyle.getPropertyValue("background-color") !== "" && computedStyle.getPropertyValue("background-color").substr(0, 4) !== "none";
+                const hasClassColor = elements[i].classList.contains("pageShadowHasBackgroundColor");
 
                 if(hasBackgroundColor && !hasClassColor) {
                     elements[i].classList.add("pageShadowHasBackgroundColor");
@@ -214,11 +215,11 @@
                 elLum.setAttribute("id", "pageShadowLuminositeDivNightMode");
                 elLum.setAttribute("class", "");
 
-                var tempColor = "2000";
+                let tempColor = "2000";
 
                 if(colorTemp != undefined) {
-                    var tempIndex = parseInt(colorTemp);
-                    var tempColor = colorTemperaturesAvailable[tempIndex - 1];
+                    const tempIndex = parseInt(colorTemp);
+                    tempColor = colorTemperaturesAvailable[tempIndex - 1];
 
                     elLum.setAttribute("class", "k" + tempColor);
                 } else {
@@ -289,20 +290,20 @@
 
             mut_contrast = new MutationObserver(function(mutations, mut) {
                 mut_contrast.disconnect();
-                var classList = document.body.classList;
-                var containsPageContrast = true;
+                const classList = document.body.classList;
+                let containsPageContrast = true;
 
-                for(var i = 1; i <= nbThemes; i++) {
+                for(let i = 1; i <= nbThemes; i++) {
                     if(i == "1" && !classList.contains("pageShadowContrastBlack")) {
-                        var containsPageContrast = false;
+                        containsPageContrast = false;
                     } else if(!classList.contains("pageShadowContrastBlack" + i)) {
-                        var containsPageContrast = false;
+                        containsPageContrast = false;
                     }
                 }
 
                 mutations.forEach(function(mutation) {
                     if(mutation.type == "attributes" && mutation.attributeName == "class") {
-                        var classList = document.body.classList;
+                        const classList = document.body.classList;
 
                         if(mutation.oldValue.indexOf("pageShadowDisableImgBgColor") !== -1 && !classList.contains("pageShadowDisableImgBgColor")) {
                             containsPageContrast = false;
@@ -349,8 +350,8 @@
 
                 mutations.forEach(function(mutation) {
                     if(mutation.type == "attributes" && mutation.attributeName == "class") {
-                        var classList = document.body.classList;
-                        var classListHTML = document.getElementsByTagName('html')[0].classList;
+                        const classList = document.body.classList;
+                        const classListHTML = document.getElementsByTagName('html')[0].classList;
 
                         if(mutation.oldValue.indexOf("pageShadowInvertImageColor") !== -1 && !classList.contains("pageShadowInvertImageColor")) {
                             setTimeout(function() { main("onlyInvert", "invert"); }, 1);
@@ -380,8 +381,8 @@
 
             mut_brightness = new MutationObserver(function(mutations, mut) {
                 mut_brightness.disconnect();
-                var brightness = document.getElementById("pageShadowLuminositeDiv");
-                var nightmode = document.getElementById("pageShadowLuminositeDivNightMode");
+                const brightness = document.getElementById("pageShadowLuminositeDiv");
+                const nightmode = document.getElementById("pageShadowLuminositeDivNightMode");
 
                 mutations.forEach(function(mutation) {
                     if((!document.body.contains(brightness) && !document.body.contains(nightmode)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
@@ -408,7 +409,7 @@
             mut_backgrounds = new MutationObserver(function(mutations, mut) {
                 mutations.forEach(function(mutation) {
                     if(mutation.type == "childList") {
-                        for(var i = 0; i < mutation.addedNodes.length; i++) {
+                        for(let i = 0; i < mutation.addedNodes.length; i++) {
                             mutationElementsBackgrounds(mutation.addedNodes[i], null, null);
                             doProcessFilters(filtersCache, mutation.addedNodes[i]);
                         }
@@ -442,10 +443,10 @@
 
         element.classList.add("pageShadowDisableStyling");
 
-        var computedStyle = window.getComputedStyle(element, null);
-        var hasBackgroundImg = computedStyle.getPropertyValue("background").trim().substr(0, 4).toLowerCase() == "url(" || computedStyle.getPropertyValue("background-image").trim().substr(0, 4).toLowerCase() == "url(";
-        var hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
-        var hasElementHidden = element.contains(element.querySelector("canvas")) || element.contains(element.querySelector("video"));
+        const computedStyle = window.getComputedStyle(element, null);
+        const hasBackgroundImg = computedStyle.getPropertyValue("background").trim().substr(0, 4).toLowerCase() == "url(" || computedStyle.getPropertyValue("background-image").trim().substr(0, 4).toLowerCase() == "url(";
+        const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
+        const hasElementHidden = element.contains(element.querySelector("canvas")) || element.contains(element.querySelector("video"));
 
         if(hasBackgroundImg && !hasClassImg) {
             element.classList.add("pageShadowHasBackgroundImg");
@@ -472,14 +473,14 @@
     }
 
     function doProcessFilters(filters, element) {
-        var url = window.location.href;
-        var websuteUrl_tmp = new URL(url);
-        var domain = websuteUrl_tmp.hostname;
+        const url = window.location.href;
+        const websuteUrl_tmp = new URL(url);
+        const domain = websuteUrl_tmp.hostname;
 
         filters.forEach(filter => {
             if(matchWebsite(domain, filter.website) || matchWebsite(url, filter.website)) {
-                var selector = filter.filter;
-                var elements = (element ? [element] : document.querySelectorAll(selector));
+                const selector = filter.filter;
+                let elements = (element ? [element] : document.querySelectorAll(selector));
 
                 if(element) {
                     if(element.matches && !element.matches(selector)) {
@@ -487,10 +488,10 @@
                     }
 
                     if(element.getElementsByTagName) {
-                        var elementChildrens = element.getElementsByTagName("*");
+                        const elementChildrens = element.getElementsByTagName("*");
     
                         if(elementChildrens && elementChildrens.length > 0) {
-                            for(childrenElement of elementChildrens) {
+                            for(const childrenElement of elementChildrens) {
                                 if(childrenElement.matches && childrenElement.matches(selector)) {
                                     elements.push(childrenElement);
                                 }
@@ -538,7 +539,7 @@
             document.body.classList.remove("pageShadowDisableImgBgColor");
             document.body.classList.remove("pageShadowInvertBgColor");
 
-            for(var i = 1; i <= nbThemes; i++) {
+            for(let i = 1; i <= nbThemes; i++) {
                 if(i == 1) {
                     document.body.classList.remove("pageShadowContrastBlack");
                     document.getElementsByTagName('html')[0].classList.remove("pageShadowBackgroundContrast");
@@ -583,21 +584,22 @@
             chrome.storage.local.get(['sitesInterditPageShadow', 'pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertEntirePage', 'whiteList', 'colorTemp', 'globallyEnable', 'invertVideoColors', 'disableImgBgColor', 'invertBgColor'], function(result) {
                 precEnabled = true;
 
-                var pageShadowEnabled = result.pageShadowEnabled;
-                var theme = result.theme;
-                var colorTemp = result.colorTemp;
-                var invertEntirePage = result.invertEntirePage;
-                var invertImageColors = result.invertImageColors;
-                var invertVideoColors = result.invertVideoColors;
-                var invertBgColors = result.invertBgColor;
+                const pageShadowEnabled = result.pageShadowEnabled;
+                const theme = result.theme;
+                const colorTemp = result.colorTemp;
+                const invertEntirePage = result.invertEntirePage;
+                let invertImageColors = result.invertImageColors;
+                const invertVideoColors = result.invertVideoColors;
+                const invertBgColors = result.invertBgColor;
+                let colorInvert;
 
                 if(result.colorInvert == "true") {
-                    var colorInvert = "true";
-                    var invertImageColors = "true";
+                    colorInvert = "true";
+                    invertImageColors = "true";
                 } else if(result.invertPageColors == "true") {
-                    var colorInvert = "true";
+                    colorInvert = "true";
                 } else {
-                    var colorInvert = "false";
+                    colorInvert = "false";
                 }
 
                 if(type == "onlyContrast") {
@@ -653,7 +655,7 @@
     // Execute when the page URL changes in Single Page Applications
     chrome.runtime.onMessage.addListener(function(msg) {
         if(msg) {
-            var enabled = started && ((msg.enabled && !precEnabled) || (!msg.enabled && precEnabled));
+            const enabled = started && ((msg.enabled && !precEnabled) || (!msg.enabled && precEnabled));
     
             if(msg.type == "websiteUrlUpdated" && enabled) {
                 main("reset", "all");

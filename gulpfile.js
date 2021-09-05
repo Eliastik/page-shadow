@@ -1,13 +1,14 @@
 'use strict';
 
-var gulp = require('gulp');
-var clean = require('gulp-clean');
-var cleanCss = require('gulp-clean-css');
-var less = require('gulp-less');
-var minify = require('gulp-minify');
-var zip = require('gulp-zip');
-var crx = require('gulp-crx-pack');
-var fs = require('fs');
+const gulp = require('gulp');
+const clean = require('gulp-clean');
+const cleanCss = require('gulp-clean-css');
+const less = require('gulp-less');
+const minify = require('gulp-minify');
+const zip = require('gulp-zip');
+const crx = require('gulp-crx-pack');
+const fs = require('fs');
+const babel = require('gulp-babel');
 
 gulp.task('clean', function() {
     return gulp.src('./build/*', {read: false})
@@ -40,6 +41,14 @@ gulp.task('compress-css', function () {
     return gulp.src('./build/global/css/*.css')
         .pipe(cleanCss())
         .pipe(gulp.dest('./build/global/css/'));
+});
+
+gulp.task('compile-js', function () {
+    return gulp.src('./build/global/js/*.js')
+        .pipe(babel({
+            presets: ['@babel/env']
+        }))
+        .pipe(gulp.dest('./build/global/js/'));
 });
 
 gulp.task('compress-js', function () {
@@ -93,14 +102,14 @@ gulp.task('build', function() {
         .pipe(gulp.dest('./build'));
 });
 
-gulp.task('build-dev', gulp.series('clean', 'copy-global', 'compile-less', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories'));
+gulp.task('build-dev', gulp.series('clean', 'copy-global', 'compile-less', 'compile-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories'));
 
 gulp.task('default', gulp.series('build-dev'));
 
-gulp.task('build-prod', gulp.series('clean', 'copy-global', 'compile-less', 'compress-css', 'compress-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories'));
+gulp.task('build-prod', gulp.series('clean', 'copy-global', 'compile-less', 'compile-js', 'compress-css', 'compress-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories'));
 
-gulp.task('build-prod-no-js-compress', gulp.series('clean', 'copy-global', 'compile-less', 'compress-css', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories'));
+gulp.task('build-prod-no-js-compress', gulp.series('clean', 'copy-global', 'compile-less', 'compile-js', 'compress-css', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories'));
 
-gulp.task('build-prod-no-css-compress', gulp.series('clean', 'copy-global', 'compile-less', 'compress-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories'));
+gulp.task('build-prod-no-css-compress', gulp.series('clean', 'copy-global', 'compile-less', 'compile-js', 'compress-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories'));
 
 gulp.task('clean-build', gulp.series('clean'));

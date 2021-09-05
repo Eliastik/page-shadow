@@ -8,10 +8,12 @@
   },
   "author": "Eliastik",
   "license": "GPL-3.0",
-  "devDependencies": {},
-  "dependencies": {
+  "devDependencies": {
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.4",
     "fs": "0.0.1-security",
     "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
     "gulp-clean": "^0.4.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-crx-pack": "git+https://github.com/PavelVanecek/gulp-crx.git",
