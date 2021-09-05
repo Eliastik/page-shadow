@@ -491,7 +491,7 @@
     
                         if(elementChildrens && elementChildrens.length > 0) {
                             for(childrenElement of elementChildrens) {
-                                if(childrenElement.matches && !childrenElement.matches(selector)) {
+                                if(childrenElement.matches && childrenElement.matches(selector)) {
                                     elements.push(childrenElement);
                                 }
                             }
