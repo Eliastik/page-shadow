@@ -20,48 +20,54 @@ import { setSettingItem } from "./storage.js";
 
 let filters = [];
 
-function openFiltersFiles(func) {
+function openFiltersFiles() {
     const files = {};
 
-    chrome.storage.local.get("filtersSettings", result => {
-        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+    return new Promise(resolve => {
+        chrome.storage.local.get("filtersSettings", result => {
+            const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
 
-        filters.filters.forEach(filter => {
-            if(filter.content != null) {
-                files[filter.sourceUrl] = filter.content;
-            }
+            filters.filters.forEach(filter => {
+                if(filter.content != null) {
+                    files[filter.sourceUrl] = filter.content;
+                }
+            });
+
+            resolve(files);
         });
-
-        func(files);
     });
 }
 
 function updateFilter(idFilter) {
-    chrome.storage.local.get("filtersSettings", result => {
-        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
-        const filterToUpdate = filters.filters[idFilter];
-
-        if(!filterToUpdate.customFilter) {
-            fetch(filterToUpdate.sourceUrl).then((data) => {
-                if(!data.ok) {
-                    filterToUpdate.hasError = true;
-                    setSettingItem("filtersSettings", filters);
-                } else {
-                    data.text().then(text => {
-                        filterToUpdate.content = text;
-                        filterToUpdate.hasError = false;
-                        filterToUpdate.lastUpdated = Date.now();
-                        setSettingItem("filtersSettings", filters);
-                    }).catch(error => {
+    return new Promise(resolve => {
+        chrome.storage.local.get("filtersSettings", async(result) => {
+            const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+            const filterToUpdate = filters.filters[idFilter];
+    
+            if(!filterToUpdate.customFilter) {
+                try {
+                    const data = await fetch(filterToUpdate.sourceUrl);
+    
+                    if(!data.ok) {
                         filterToUpdate.hasError = true;
-                        setSettingItem("filtersSettings", filters);
-                    });
+                    } else {
+                        try {
+                            const text = await data.text();
+                            
+                            filterToUpdate.content = text;
+                            filterToUpdate.hasError = false;
+                            filterToUpdate.lastUpdated = Date.now();
+                        } catch(error2) {
+                            filterToUpdate.hasError = true;
+                        }
+                    }
+                } catch(error) {
+                    filterToUpdate.hasError = true;
                 }
-            }).catch(error => {
-                filterToUpdate.hasError = true;
-                setSettingItem("filtersSettings", filters);
-            });
-        }
+            }
+    
+            resolve(filterToUpdate);
+        });
     });
 }
 
@@ -71,8 +77,10 @@ async function updateAllFilters() {
         const nbFilters = filters.filters.length;
 
         for(let i = 0; i < nbFilters; i++) {
-            await updateFilter(i);
+            filters.filters[i] = await updateFilter(i);
         }
+
+        setSettingItem("filtersSettings", filters);
     });
 }
 
@@ -94,26 +102,26 @@ function parseLine(line) {
     return null;
 }
 
-function cacheFilters() {
-    openFiltersFiles(function(data) {
-        Object.keys(data).forEach((key) => {
-            const lines = data[key].split("\n");
-            lines.forEach(line => {
-                const parsed = parseLine(line);
+async function cacheFilters() {
+    const data = await openFiltersFiles();
+    
+    for(const key of Object.keys(data)) {
+        const lines = data[key].split("\n");
 
-                if(parsed) {
-                    filters.push(parsed);
-                }
-            });
-        });
-    });
+        for(const line of lines) {
+            const parsed = parseLine(line);
+
+            if(parsed) {
+                filters.push(parsed);
+            }
+        }
+    }
 }
 
-cacheFilters();
-
 if(typeof(chrome.runtime) !== 'undefined' && typeof(chrome.runtime.onMessage) !== 'undefined') {
-    chrome.runtime.onMessage.addListener(function(message, sender, sendMessage) {
+    chrome.runtime.onMessage.addListener(async(message, sender, sendMessage) => {
         if(message && message.type == "getAllFilters") {
+            await cacheFilters();
             sendMessage({ type: "getAllFiltersResponse", filters: filters });
         }
 

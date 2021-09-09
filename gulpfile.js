@@ -70,6 +70,8 @@ gulp.task('compile-js', function () {
             devtool: 'cheap-module-source-map'
         }))
         .pipe(gulp.dest('./build/global/js/'));
+
+    // TODO: clean not used JS files (util.js/storage.js/filters.js)
 });
 
 gulp.task('compress-js', function () {
@@ -123,7 +125,7 @@ gulp.task('build', function() {
         .pipe(gulp.dest('./build'));
 });
 
-gulp.task('build-dev', gulp.series('clean', 'copy-global', 'compile-less', 'compile-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build'));
+gulp.task('build-dev', gulp.series('clean', 'copy-global', 'compile-less', 'compile-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories'));
 
 gulp.task('default', gulp.series('build-dev'));
 
