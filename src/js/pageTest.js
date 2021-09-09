@@ -18,25 +18,25 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 /* translation */
 i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
-    fallbackLng: ['en', 'fr'],
-    ns: 'pageTest',
-    load: 'languageOnly',
-    defaultNS: 'pageTest',
-        detection: {
-            order: ['localStorage', 'navigator'],
-            lookupLocalStorage: 'i18nextLng',
-            caches: ['localStorage'],
-        },
-        backend: {
-            loadPath: '/_locales/{{lng}}/{{ns}}.json',
-        },
+    fallbackLng: ["en", "fr"],
+    ns: "pageTest",
+    load: "languageOnly",
+    defaultNS: "pageTest",
+    detection: {
+        order: ["localStorage", "navigator"],
+        lookupLocalStorage: "i18nextLng",
+        caches: ["localStorage"],
+    },
+    backend: {
+        loadPath: "/_locales/{{lng}}/{{ns}}.json",
+    },
 }, function(err, t) {
     translateContent();
 });
 function translateContent() {
     jqueryI18next.init(i18next, $, {
-      handleName: 'localize',
-      selectorAttr: 'data-i18n'
+        handleName: "localize",
+        selectorAttr: "data-i18n"
     });
     $("nav").localize();
     $(".container").localize();
@@ -44,6 +44,6 @@ function translateContent() {
 function changeLng(lng) {
     i18next.changeLanguage(lng);
 }
-i18next.on('languageChanged', () => {
+i18next.on("languageChanged", () => {
     translateContent();
 });

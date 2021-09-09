@@ -25,18 +25,18 @@ window.codeMirrorJSONArchive = null;
 /* translation */
 function init_i18next() {
     i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
-        fallbackLng: ['en', 'fr'],
-        ns: 'options',
-        load: 'languageOnly',
-        defaultNS: 'options',
-            detection: {
-                order: ['localStorage', 'navigator'],
-                lookupLocalStorage: 'i18nextLng',
-                caches: ['localStorage'],
-            },
-            backend: {
-                loadPath: '/_locales/{{lng}}/{{ns}}.json',
-            },
+        fallbackLng: ["en", "fr"],
+        ns: "options",
+        load: "languageOnly",
+        defaultNS: "options",
+        detection: {
+            order: ["localStorage", "navigator"],
+            lookupLocalStorage: "i18nextLng",
+            caches: ["localStorage"],
+        },
+        backend: {
+            loadPath: "/_locales/{{lng}}/{{ns}}.json",
+        },
     }, function(err, t) {
         translateContent();
     });
@@ -49,14 +49,14 @@ function listTranslations(languages) {
     $("#languageSelect").text("");
 
     $.each(languages, function(index, value) {
-        $("#languageSelect").append('<option data-i18n="container.language.'+ value +'" value="' + value + '"' + (language == value ? " selected" : "") + '></option>');
+        $("#languageSelect").append("<option data-i18n=\"container.language."+ value +"\" value=\"" + value + "\"" + (language == value ? " selected" : "") + "></option>");
     });
 }
 
 function translateContent() {
     jqueryI18next.init(i18next, $, {
-      handleName: 'localize',
-      selectorAttr: 'data-i18n'
+        handleName: "localize",
+        selectorAttr: "data-i18n"
     });
     listTranslations(i18next.languages);
     loadPresetSelect("loadPresetSelect");
@@ -69,14 +69,14 @@ function translateContent() {
     $("#themeSelect").text("");
 
     for(let i = 1; i <= nbCustomThemesSlots; i++) {
-        $("#themeSelect").append('<option value="' + i + '">' + i18next.t("container.customTheme", { count: i }) + '</option>');
+        $("#themeSelect").append("<option value=\"" + i + "\">" + i18next.t("container.customTheme", { count: i }) + "</option>");
     }
 
     if(getBrowser() != "Chrome") {
         $("#keyboardShortcuts").tooltip({
-            trigger: 'focus',
-            container: 'body',
-            placement: 'auto bottom',
+            trigger: "focus",
+            container: "body",
+            placement: "auto bottom",
             title: i18next.t("container.keyboardShortcutsInfos")
         });
 
@@ -90,20 +90,20 @@ function changeLng(lng) {
     i18next.changeLanguage(lng);
 }
 
-i18next.on('languageChanged', () => {
+i18next.on("languageChanged", () => {
     translateContent();
 });
 
 function resetSettings() {
-    $('span[data-toggle="tooltip"]').tooltip("hide");
-    $('i[data-toggle="tooltip"]').tooltip("hide");
+    $("span[data-toggle=\"tooltip\"]").tooltip("hide");
+    $("i[data-toggle=\"tooltip\"]").tooltip("hide");
 
     chrome.storage.local.clear(function() {
         setFirstSettings(function() {
             $("#textareaAssomPage").val("");
             $("#checkWhiteList").prop("checked", false);
             init_i18next();
-            $('#reset').modal("show");
+            $("#reset").modal("show");
             loadPresetSelect("loadPresetSelect");
             loadPresetSelect("savePresetSelect");
             loadPresetSelect("deletePresetSelect");
@@ -119,14 +119,14 @@ function displaySettings(areaName) {
                 $("#textareaAssomPage").val(result.sitesInterditPageShadow);
             }
 
-            if(result.whiteList == "true" && $("#checkWhiteList").is(':checked') == false) {
+            if(result.whiteList == "true" && $("#checkWhiteList").is(":checked") == false) {
                 $("#checkWhiteList").prop("checked", true);
-            } else if(result.whiteList !== "true" && $("#checkWhiteList").is(':checked') == true) {
+            } else if(result.whiteList !== "true" && $("#checkWhiteList").is(":checked") == true) {
                 $("#checkWhiteList").prop("checked", false);
             }
         }
 
-        if(typeof(chrome.storage) != 'undefined' && typeof(chrome.storage.sync) != 'undefined') {
+        if(typeof(chrome.storage) != "undefined" && typeof(chrome.storage.sync) != "undefined") {
             $("#archiveCloudBtn").removeClass("disabled");
         } else {
             $("#archiveCloudNotCompatible").show();
@@ -188,7 +188,7 @@ function displayTheme(nb, defaultSettings) {
         }
 
         if(!defaultSettings && customThemes["customThemeFont"] != undefined && customThemes["customThemeFont"].trim() != "") {
-            fontTheme = '"' + customThemes["customThemeFont"] + '"';
+            fontTheme = "\"" + customThemes["customThemeFont"] + "\"";
             fontName = customThemes["customThemeFont"];
         } else {
             fontTheme = defaultFontCustomTheme;
@@ -352,9 +352,9 @@ function saveSettings() {
     });
 
     changeLng($("#languageSelect").val());
-    $('span[data-toggle="tooltip"]').tooltip("hide");
-    $('i[data-toggle="tooltip"]').tooltip("hide");
-    $('#saved').modal("show");
+    $("span[data-toggle=\"tooltip\"]").tooltip("hide");
+    $("i[data-toggle=\"tooltip\"]").tooltip("hide");
+    $("#saved").modal("show");
     displaySettings("local");
 }
 
@@ -432,7 +432,7 @@ function restoreSettingsFile(event) {
             displaySettings("local");
         };
 
-        const fileExtension = event.target.files[0].name.split('.').pop().toLowerCase();
+        const fileExtension = event.target.files[0].name.split(".").pop().toLowerCase();
 
         if(fileExtension == "json") {
             const filesize = event.target.files[0].size;
@@ -482,7 +482,7 @@ function restoreSettingsFile(event) {
 }
 
 function archiveCloudSettings() {
-    if(typeof(chrome.storage) != 'undefined' && typeof(chrome.storage.sync) != 'undefined') {
+    if(typeof(chrome.storage) != "undefined" && typeof(chrome.storage.sync) != "undefined") {
         $("#archiveCloudError").hide();
         $("#restoreCloudError").hide();
         $("#archiveCloudSuccess").hide();
@@ -520,7 +520,7 @@ function archiveCloudSettings() {
 }
 
 function archiveCloudAvailable(func) {
-    if(typeof(chrome.storage) == 'undefined' && typeof(chrome.storage.sync) == 'undefined') {
+    if(typeof(chrome.storage) == "undefined" && typeof(chrome.storage.sync) == "undefined") {
         return func(false, null, null);
     }
 
@@ -534,7 +534,7 @@ function archiveCloudAvailable(func) {
 }
 
 function restoreCloudSettings() {
-    if(typeof(chrome.storage) != 'undefined' && typeof(chrome.storage.sync) != 'undefined') {
+    if(typeof(chrome.storage) != "undefined" && typeof(chrome.storage.sync) != "undefined") {
         $("#archiveCloudError").hide();
         $("#restoreCloudError").hide();
         $("#archiveCloudSuccess").hide();
@@ -607,13 +607,13 @@ $(document).ready(function() {
         clearTimeout(savedTimeout);
         savedTimeout = setTimeout(function(){
             $("#customThemeSave").attr("data-original-title", "");
-            $('#customThemeSave').tooltip('hide');
-            $('#customThemeSave').tooltip('disable');
+            $("#customThemeSave").tooltip("hide");
+            $("#customThemeSave").tooltip("disable");
         }, 3000);
 
         $("#customThemeSave").attr("data-original-title", i18next.t("modal.customTheme.saved"));
-        $('#customThemeSave').tooltip('enable');
-        $('#customThemeSave').tooltip('show');
+        $("#customThemeSave").tooltip("enable");
+        $("#customThemeSave").tooltip("show");
     });
 
     $("#customThemeCancel").click(function() {
@@ -625,13 +625,13 @@ $(document).ready(function() {
     });
 
     $("#aboutDialogBtn").click(function() {
-        $('span[data-toggle="tooltip"]').tooltip("hide");
-        $('i[data-toggle="tooltip"]').tooltip("hide");
+        $("span[data-toggle=\"tooltip\"]").tooltip("hide");
+        $("i[data-toggle=\"tooltip\"]").tooltip("hide");
     });
 
     $("#resetConfirmBtn").click(function() {
-        $('span[data-toggle="tooltip"]').tooltip("hide");
-        $('i[data-toggle="tooltip"]').tooltip("hide");
+        $("span[data-toggle=\"tooltip\"]").tooltip("hide");
+        $("i[data-toggle=\"tooltip\"]").tooltip("hide");
     });
 
     $("#loadPresetBtn").click(function() {
@@ -660,16 +660,16 @@ $(document).ready(function() {
         restoreCloudSettings();
     });
 
-    $('span[data-toggle="tooltip"]').tooltip({
-        trigger: 'hover',
-        container: 'body',
-        placement: 'auto top'
+    $("span[data-toggle=\"tooltip\"]").tooltip({
+        trigger: "hover",
+        container: "body",
+        placement: "auto top"
     });
 
-    $('i[data-toggle="tooltip"]').tooltip({
-        trigger: 'hover',
-        container: 'body',
-        placement: 'auto top'
+    $("i[data-toggle=\"tooltip\"]").tooltip({
+        trigger: "hover",
+        container: "body",
+        placement: "auto top"
     });
 
     $("#confirmReset").click(function() {
@@ -679,16 +679,16 @@ $(document).ready(function() {
     $("#versionExtension").text(extensionVersion);
     $("#updateBtn").attr("href", "http://www.eliastiksofts.com/page-shadow/update.php?v="+ extensionVersion);
 
-    if(typeof(chrome.storage.onChanged) !== 'undefined') {
+    if(typeof(chrome.storage.onChanged) !== "undefined") {
         chrome.storage.onChanged.addListener(function(changes, areaName) {
             displaySettings(areaName);
         });
     }
 
-    $('#colorpicker1').colpick({
-        layout:'hex',
+    $("#colorpicker1").colpick({
+        layout:"hex",
         submit: false,
-        color: '000000',
+        color: "000000",
         appendTo: $("#customTheme"),
         onChange:function(hsb,hex,rgb,el,bySetColor) {
             $("#colorpicker1").css("background-color", "#"+hex);
@@ -697,10 +697,10 @@ $(document).ready(function() {
         }
     });
 
-    $('#colorpicker2').colpick({
-        layout:'hex',
+    $("#colorpicker2").colpick({
+        layout:"hex",
         submit: false,
-        color: 'FFFFFF',
+        color: "FFFFFF",
         appendTo: $("#customTheme"),
         onChange:function(hsb,hex,rgb,el,bySetColor) {
             $("#colorpicker2").css("background-color", "#"+hex);
@@ -709,10 +709,10 @@ $(document).ready(function() {
         }
     });
 
-    $('#colorpicker3').colpick({
-        layout:'hex',
+    $("#colorpicker3").colpick({
+        layout:"hex",
         submit: false,
-        color: '1E90FF',
+        color: "1E90FF",
         appendTo: $("#customTheme"),
         onChange:function(hsb,hex,rgb,el,bySetColor) {
             $("#colorpicker3").css("background-color", "#"+hex);
@@ -721,10 +721,10 @@ $(document).ready(function() {
         }
     });
 
-    $('#colorpicker4').colpick({
-        layout:'hex',
+    $("#colorpicker4").colpick({
+        layout:"hex",
         submit: false,
-        color: '800080',
+        color: "800080",
         appendTo: $("#customTheme"),
         onChange:function(hsb,hex,rgb,el,bySetColor) {
             $("#colorpicker4").css("background-color", "#"+hex);
@@ -738,7 +738,7 @@ $(document).ready(function() {
     });
 
     $("#restoreDataButton").click(function() {
-        $("#inputFileJSON").trigger('click');
+        $("#inputFileJSON").trigger("click");
     });
 
     $("#inputFileJSON").change(function(event) {
@@ -748,9 +748,9 @@ $(document).ready(function() {
 
     $("#customThemeFont").on("input", function() {
         if($("#customThemeFont").val().trim() !== "") {
-            $("#previsualisationDiv").css("font-family", '"' + $("#customThemeFont").val() + '"');
+            $("#previsualisationDiv").css("font-family", "\"" + $("#customThemeFont").val() + "\"");
         } else {
-            $("#previsualisationDiv").css("font-family", '');
+            $("#previsualisationDiv").css("font-family", "");
         }
     });
 

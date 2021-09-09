@@ -23,17 +23,17 @@ var checkContrastMode, timeoutInfoPreset;
 
 /* translation */
 i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
-    fallbackLng: ['en', 'fr'],
-    ns: 'popup',
-    load: 'languageOnly',
-    defaultNS: 'popup',
+    fallbackLng: ["en", "fr"],
+    ns: "popup",
+    load: "languageOnly",
+    defaultNS: "popup",
         detection: {
-            order: ['localStorage', 'navigator'],
-            lookupLocalStorage: 'i18nextLng',
-            caches: ['localStorage'],
+            order: ["localStorage", "navigator"],
+            lookupLocalStorage: "i18nextLng",
+            caches: ["localStorage"],
         },
         backend: {
-            loadPath: '/_locales/{{lng}}/{{ns}}.json',
+            loadPath: "/_locales/{{lng}}/{{ns}}.json",
         },
 }, function(err, t) {
     translateContent();
@@ -41,8 +41,8 @@ i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend)
 
 function translateContent() {
     jqueryI18next.init(i18next, $, {
-      handleName: 'localize',
-      selectorAttr: 'data-i18n'
+      handleName: "localize",
+      selectorAttr: "data-i18n"
     });
     $(".navbar").localize();
     $(".container").localize();
@@ -55,7 +55,7 @@ function changeLng(lng) {
     i18next.changeLanguage(lng);
 }
 
-i18next.on('languageChanged', () => {
+i18next.on("languageChanged", () => {
     translateContent();
 });
 
@@ -63,9 +63,9 @@ $(document).ready(function() {
     var elLumB = document.createElement("div");
     elLumB.style.display = "none";
     document.body.appendChild(elLumB);
-    var style = document.createElement('style');
-    style.type = 'text/css';
-    var lnkCustomTheme = document.createElement('link');
+    var style = document.createElement("style");
+    style.type = "text/css";
+    var lnkCustomTheme = document.createElement("link");
     var brightnessChangedFromThisPage = false;
     var selectedPreset = 1;
 
@@ -74,7 +74,7 @@ $(document).ready(function() {
 
     for(var i = 0; i < colorTemperaturesAvailable.length; i++) {
         var colorTempIndex = i + 1;
-        $("#tempSelect").append('<option value="'+ colorTempIndex +'">'+ colorTemperaturesAvailable[i] +' K</option>');
+        $("#tempSelect").append("<option value=\""+ colorTempIndex +"\">"+ colorTemperaturesAvailable[i] +" K</option>");
     }
 
     // set the min and max percentage of brightness
@@ -82,13 +82,13 @@ $(document).ready(function() {
     $("#sliderLuminosite").attr("data-slider-max", maxBrightnessPercentage * 100);
     $("#sliderLuminosite").attr("data-slider-value", brightnessDefaultValue * 100);
 
-    $('[data-toggle="tooltip"]').tooltip({
-        trigger: 'hover',
-        container: 'body',
-        placement: 'auto top'
+    $("[data-toggle=\"tooltip\"]").tooltip({
+        trigger: "hover",
+        container: "body",
+        placement: "auto top"
     });
 
-    var sliderLuminosite = $('#sliderLuminosite').slider({
+    var sliderLuminosite = $("#sliderLuminosite").slider({
         formatter: function(value) {
             return value;
         }
@@ -150,8 +150,8 @@ $(document).ready(function() {
 
     function checkEnable() {
         function check(url) {
-            chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
-                if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == 'undefined' || result.sitesInterditPageShadow.trim() == '') {
+            chrome.storage.local.get(["sitesInterditPageShadow", "whiteList"], function (result) {
+                if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == "undefined" || result.sitesInterditPageShadow.trim() == "") {
                     var sitesInterdits = "";
                 } else {
                     var sitesInterdits = result.sitesInterditPageShadow.split("\n");
@@ -249,13 +249,13 @@ $(document).ready(function() {
 
     checkEnable();
 
-    if(typeof(chrome.tabs.onActivated) !== 'undefined') {
+    if(typeof(chrome.tabs.onActivated) !== "undefined") {
         chrome.tabs.onActivated.addListener(function() {
             checkEnable();
         });
     }
 
-    if(typeof(chrome.tabs.onUpdated) !== 'undefined') {
+    if(typeof(chrome.tabs.onUpdated) !== "undefined") {
         chrome.tabs.onUpdated.addListener(function() {
             checkEnable();
         });
@@ -283,11 +283,11 @@ $(document).ready(function() {
             $("#themeSelect").text("");
 
             for(var i = 1; i <= nbCustomThemesSlots; i++) {
-                $("#themeSelect").append('<option value="custom' + i + '">' + i18next.t("container.customTheme", { count: i }) + '</option>');
+                $("#themeSelect").append("<option value=\"custom" + i + "\">" + i18next.t("container.customTheme", { count: i }) + "</option>");
             }
 
             for(var i = 1; i <= nbThemes; i++) {
-                $("#themeSelect").append('<option value="' + i + '">' + i18next.t("container.theme", { count: i }) + '</option>');
+                $("#themeSelect").append("<option value=\"" + i + "\">" + i18next.t("container.theme", { count: i }) + "</option>");
             }
 
             if(result.theme != undefined) {
@@ -305,26 +305,26 @@ $(document).ready(function() {
 
             if(result.pageShadowEnabled == "true") {
                 $("#themeDiv").stop().fadeIn();
-                if($("#checkAssomPage").is(':checked') == false) {
+                if($("#checkAssomPage").is(":checked") == false) {
                     $("#checkAssomPage").prop("checked", true);
                 }
             } else {
                 $("#themeDiv").stop().fadeOut();
-                if($("#checkAssomPage").is(':checked') == true) {
+                if($("#checkAssomPage").is(":checked") == true) {
                     $("#checkAssomPage").prop("checked", false);
                 }
             }
 
-            if(result.disableImgBgColor == "true" && $("#checkDisableImgBgColor").is(':checked') == true) {
+            if(result.disableImgBgColor == "true" && $("#checkDisableImgBgColor").is(":checked") == true) {
                 $("#checkDisableImgBgColor").prop("checked", false);
-            } else if(result.disableImgBgColor !== "true" && $("#checkDisableImgBgColor").is(':checked') == false) {
+            } else if(result.disableImgBgColor !== "true" && $("#checkDisableImgBgColor").is(":checked") == false) {
                 $("#checkDisableImgBgColor").prop("checked", true);
             }
         });
     }
 
     $("#checkAssomPage").change(function() {
-        if($(this).is(':checked') == true) {
+        if($(this).is(":checked") == true) {
             setSettingItem("pageShadowEnabled", "true");
         } else {
             setSettingItem("pageShadowEnabled", "false");
@@ -332,7 +332,7 @@ $(document).ready(function() {
     });
 
     $("#checkDisableImgBgColor").change(function() {
-        if($(this).is(':checked') == true) {
+        if($(this).is(":checked") == true) {
             setSettingItem("disableImgBgColor", "false");
         } else {
             setSettingItem("disableImgBgColor", "true");
@@ -345,14 +345,14 @@ $(document).ready(function() {
         if($(this).val().trim().startsWith("custom")) {
             chrome.storage.local.get("customThemeInfoDisable", function(result) {
                 if(typeof result.customThemeInfoDisable == undefined || result.customThemeInfoDisable !== "true") {
-                    $('#customThemeInfos').modal('show');
+                    $("#customThemeInfos").modal("show");
                 }
             });
         }
     });
 
     $("#customThemeInfoDisable").change(function() {
-        if($(this).is(':checked') == true) {
+        if($(this).is(":checked") == true) {
             setSettingItem("customThemeInfoDisable", "true");
         } else {
             setSettingItem("customThemeInfoDisable", "false");
@@ -380,63 +380,63 @@ $(document).ready(function() {
             } else if(result.invertPageColors == "true") {
                 $("#invertPageColorsDiv").stop().fadeIn();
 
-                if($("#checkColorInvert").is(':checked') == false) {
+                if($("#checkColorInvert").is(":checked") == false) {
                     $("#checkColorInvert").prop("checked", true);
                 }
 
-                if(result.invertImageColors == "true" && $("#checkImageInvert").is(':checked') == false) {
+                if(result.invertImageColors == "true" && $("#checkImageInvert").is(":checked") == false) {
                     $("#checkImageInvert").prop("checked", true);
-                } else if(result.invertImageColors == "false" && $("#checkImageInvert").is(':checked') == true) {
+                } else if(result.invertImageColors == "false" && $("#checkImageInvert").is(":checked") == true) {
                     $("#checkImageInvert").prop("checked", false);
                 }
 
-                if(result.invertBgColor == "false" && $("#checkBgColorInvert").is(':checked') == true) {
+                if(result.invertBgColor == "false" && $("#checkBgColorInvert").is(":checked") == true) {
                     $("#checkBgColorInvert").prop("checked", false);
-                } else if(result.invertBgColor !== "false" && $("#checkBgColorInvert").is(':checked') == false) {
+                } else if(result.invertBgColor !== "false" && $("#checkBgColorInvert").is(":checked") == false) {
                     $("#checkBgColorInvert").prop("checked", true);
                 }
 
-                if(result.invertVideoColors == "true" && $("#checkVideoInvert").is(':checked') == false) {
+                if(result.invertVideoColors == "true" && $("#checkVideoInvert").is(":checked") == false) {
                     $("#checkVideoInvert").prop("checked", true);
-                } else if(result.invertVideoColors == "false" && $("#checkVideoInvert").is(':checked') == true) {
+                } else if(result.invertVideoColors == "false" && $("#checkVideoInvert").is(":checked") == true) {
                     $("#checkVideoInvert").prop("checked", false);
                 }
             } else {
                 $("#invertPageColorsDiv").stop().fadeOut();
 
-                if($("#checkColorInvert").is(':checked') == true) {
+                if($("#checkColorInvert").is(":checked") == true) {
                     $("#checkColorInvert").prop("checked", false);
                 }
 
                 if(result.invertImageColors !== "true") {
-                    if($("#checkImageInvert").is(':checked') == true) {
+                    if($("#checkImageInvert").is(":checked") == true) {
                         $("#checkImageInvert").prop("checked", false);
                     }
                 }
 
                 if(result.invertBgColor == "false") {
-                    if($("#checkBgColorInvert").is(':checked') == true) {
+                    if($("#checkBgColorInvert").is(":checked") == true) {
                         $("#checkBgColorInvert").prop("checked", false);
                     }
                 }
 
                 if(result.invertVideoColors !== "true") {
-                    if($("#checkVideoInvert").is(':checked') == true) {
+                    if($("#checkVideoInvert").is(":checked") == true) {
                         $("#checkVideoInvert").prop("checked", false);
                     }
                 }
             }
 
-            if(result.invertEntirePage == "true" && $("#checkEntirePageInvert").is(':checked') == false) {
+            if(result.invertEntirePage == "true" && $("#checkEntirePageInvert").is(":checked") == false) {
                 $("#checkEntirePageInvert").prop("checked", true);
-            } else if(result.invertEntirePage !== "true" && $("#checkEntirePageInvert").is(':checked') == true) {
+            } else if(result.invertEntirePage !== "true" && $("#checkEntirePageInvert").is(":checked") == true) {
                 $("#checkEntirePageInvert").prop("checked", false);
             }
         });
     }
 
     $("#checkColorInvert").change(function() {
-        if($(this).is(':checked') == true) {
+        if($(this).is(":checked") == true) {
             setSettingItem("invertPageColors", "true");
         } else {
             setSettingItem("invertPageColors", "false");
@@ -444,7 +444,7 @@ $(document).ready(function() {
     });
 
     $("#checkEntirePageInvert").change(function() {
-        if($(this).is(':checked') == true) {
+        if($(this).is(":checked") == true) {
             setSettingItem("invertEntirePage", "true");
         }
         else {
@@ -453,7 +453,7 @@ $(document).ready(function() {
     });
 
     $("#checkImageInvert").change(function() {
-        if($(this).is(':checked') == true) {
+        if($(this).is(":checked") == true) {
             setSettingItem("invertImageColors", "true");
         }
         else {
@@ -462,7 +462,7 @@ $(document).ready(function() {
     });
 
     $("#checkBgColorInvert").change(function() {
-        if($(this).is(':checked') == true) {
+        if($(this).is(":checked") == true) {
             setSettingItem("invertBgColor", "true");
         }
         else {
@@ -471,7 +471,7 @@ $(document).ready(function() {
     });
 
     $("#checkVideoInvert").change(function() {
-        if($(this).is(':checked') == true) {
+        if($(this).is(":checked") == true) {
             setSettingItem("invertVideoColors", "true");
         }
         else {
@@ -481,18 +481,18 @@ $(document).ready(function() {
 
     function checkAutoEnable() {
         chrome.storage.local.get("autoEnable", function (result) {
-            if(result.autoEnable == "true" && $("#autoEnable").is(':checked') == false) {
+            if(result.autoEnable == "true" && $("#autoEnable").is(":checked") == false) {
                 $("#autoEnable").prop("checked", true);
-            } else if(result.autoEnable !== "true" && $("#autoEnable").is(':checked') == true) {
+            } else if(result.autoEnable !== "true" && $("#autoEnable").is(":checked") == true) {
                 $("#autoEnable").prop("checked", false);
             }
         });
     }
 
     $("#autoEnable").change(function() {
-        if($(this).is(':checked') == true) {
+        if($(this).is(":checked") == true) {
             setSettingItem("autoEnable", "true");
-            $('#autoEnableSettings').modal('show');
+            $("#autoEnableSettings").modal("show");
         } else {
             setSettingItem("autoEnable", "false");
         }
@@ -582,18 +582,18 @@ $(document).ready(function() {
         var data = getAutoEnableFormData();
 
         chrome.storage.local.set({
-            'autoEnableHourFormat': data[0],
-            'hourEnable': data[1],
-            'minuteEnable': data[2],
-            'hourEnableFormat': data[3],
-            'hourDisable': data[4],
-            'minuteDisable': data[5],
-            'hourDisableFormat': data[6]
+            "autoEnableHourFormat": data[0],
+            "hourEnable": data[1],
+            "minuteEnable": data[2],
+            "hourEnableFormat": data[3],
+            "hourDisable": data[4],
+            "minuteDisable": data[5],
+            "hourDisableFormat": data[6]
         });
 
         checkSettingsAutoEnable();
         checkAutoEnableStartup();
-        $('#saved').modal("show");
+        $("#saved").modal("show");
     }
 
     function infoAutoEnable() {
@@ -617,7 +617,7 @@ $(document).ready(function() {
         checkSettingsAutoEnable();
     });
 
-    $('#autoEnableSettings').on('hidden.bs.modal', function () {
+    $("#autoEnableSettings").on("hidden.bs.modal", function () {
         checkSettingsAutoEnable();
     });
 
@@ -637,16 +637,16 @@ $(document).ready(function() {
 
     function checkLiveSettings() {
         chrome.storage.local.get("liveSettings", function(result) {
-            if(result.liveSettings == "true" && $("#liveSettings").is(':checked') == false) {
+            if(result.liveSettings == "true" && $("#liveSettings").is(":checked") == false) {
                 $("#liveSettings").prop("checked", true);
-            } else if(result.liveSettings !== "true" && $("#liveSettings").is(':checked') == true) {
+            } else if(result.liveSettings !== "true" && $("#liveSettings").is(":checked") == true) {
                 $("#liveSettings").prop("checked", false);
             }
         });
     }
 
     $("#liveSettings").change(function() {
-        if($(this).is(':checked') == true) {
+        if($(this).is(":checked") == true) {
             setSettingItem("liveSettings", "true");
         } else {
             setSettingItem("liveSettings", "false");
@@ -654,7 +654,7 @@ $(document).ready(function() {
     });
 
     function checkBrightness() {
-        chrome.storage.local.get(['pageLumEnabled', 'nightModeEnabled', 'pourcentageLum'], function (result) {
+        chrome.storage.local.get(["pageLumEnabled", "nightModeEnabled", "pourcentageLum"], function (result) {
             if(result.pageLumEnabled == "true") {
                 if(result.nightModeEnabled == "true") {
                     $("#checkNighMode").attr("checked", "checked");
@@ -665,7 +665,7 @@ $(document).ready(function() {
 
                 if(result.pourcentageLum / 100 > maxBrightnessPercentage || result.pourcentageLum / 100 < minBrightnessPercentage || typeof result.pourcentageLum === "undefined" || typeof result.pourcentageLum == null) {
                     elLumB.style.opacity = brightnessDefaultValue;
-                    sliderLuminosite.slider('setValue', brightnessDefaultValue * 100);
+                    sliderLuminosite.slider("setValue", brightnessDefaultValue * 100);
                 } else {
                     elLumB.style.opacity = result.pourcentageLum / 100;
                 }
@@ -673,7 +673,7 @@ $(document).ready(function() {
                 elLumB.style.display = "block";
                 $("#sliderLuminositeDiv").stop().fadeIn();
 
-                if($("#checkLuminositePage").is(':checked') == false) {
+                if($("#checkLuminositePage").is(":checked") == false) {
                     $("#checkLuminositePage").prop("checked", true);
                 }
 
@@ -681,7 +681,7 @@ $(document).ready(function() {
             } else {
                 $("#sliderLuminositeDiv").stop().fadeOut();
                 elLumB.style.display = "none";
-                if($("#checkLuminositePage").is(':checked') == true) {
+                if($("#checkLuminositePage").is(":checked") == true) {
                     $("#checkLuminositePage").prop("checked", false);
                 }
             }
@@ -689,7 +689,7 @@ $(document).ready(function() {
     }
 
     $("#checkLuminositePage").change(function() {
-        if($(this).is(':checked') == true) {
+        if($(this).is(":checked") == true) {
             setSettingItem("pageLumEnabled", "true");
         } else {
             setSettingItem("pageLumEnabled", "false");
@@ -697,13 +697,13 @@ $(document).ready(function() {
     });
 
     $("#sliderLuminosite").change(function() {
-        var sliderLumValue = sliderLuminosite.slider('getValue');
+        var sliderLumValue = sliderLuminosite.slider("getValue");
         brightnessChangedFromThisPage = true;
         setSettingItem("pourcentageLum", sliderLumValue);
     });
 
     function checkNightMode() {
-        chrome.storage.local.get(['nightModeEnabled', 'colorTemp'], function (result) {
+        chrome.storage.local.get(["nightModeEnabled", "colorTemp"], function (result) {
             if(result.nightModeEnabled == "true") {
                 if(result.colorTemp != undefined) {
                     $("#tempSelect").val(result.colorTemp);
@@ -715,13 +715,13 @@ $(document).ready(function() {
 
                 $("#tempSelectDiv").stop().fadeIn();
                 elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
-                if($("#checkNighMode").is(':checked') == false) {
+                if($("#checkNighMode").is(":checked") == false) {
                     $("#checkNighMode").prop("checked", true);
                 }
             } else {
                 $("#tempSelectDiv").stop().fadeOut();
                 elLumB.setAttribute("id", "pageShadowLuminositeDiv");
-                if($("#checkNighMode").is(':checked') == true) {
+                if($("#checkNighMode").is(":checked") == true) {
                     $("#checkNighMode").prop("checked", false);
                 }
             }
@@ -729,7 +729,7 @@ $(document).ready(function() {
     }
 
     $( "#checkNighMode" ).change(function() {
-        if($(this).is(':checked') == true) {
+        if($(this).is(":checked") == true) {
             setSettingItem("nightModeEnabled", "true");
         } else {
             setSettingItem("nightModeEnabled", "false");
@@ -751,7 +751,7 @@ $(document).ready(function() {
     }
 
     $("#pageShadowGlobalSwitch").change(function() {
-        if($(this).is(':checked') == true) {
+        if($(this).is(":checked") == true) {
             setSettingItem("globallyEnable", "true");
         } else {
             setSettingItem("globallyEnable", "false");
@@ -772,7 +772,7 @@ $(document).ready(function() {
 
             $("#infoPreset").addClass("show");
 
-            $("#infoPreset").on('animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd', function(e) {
+            $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", function(e) {
                 if(e.originalEvent.animationName === "fadeout") {
                     $("#infoPreset").removeClass("show");
                 }
@@ -785,7 +785,7 @@ $(document).ready(function() {
     });
 
     function displaySettings() {
-        chrome.storage.local.get(['theme', 'colorTemp', 'pourcentageLum'], function (result) {
+        chrome.storage.local.get(["theme", "colorTemp", "pourcentageLum"], function (result) {
             checkContrastMode();
             checkColorInvert();
             checkLiveSettings();
@@ -796,14 +796,14 @@ $(document).ready(function() {
             checkGlobalEnable();
 
             if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null && result.pourcentageLum / 100 <= maxBrightnessPercentage && result.pourcentageLum / 100 >= minBrightnessPercentage && brightnessChangedFromThisPage == false) {
-                sliderLuminosite.slider('setValue', result.pourcentageLum);
+                sliderLuminosite.slider("setValue", result.pourcentageLum);
                 brightnessChangedFromThisPage = false;
             } else if(brightnessChangedFromThisPage == false) {
-                sliderLuminosite.slider('setValue', brightnessDefaultValue * 100);
+                sliderLuminosite.slider("setValue", brightnessDefaultValue * 100);
                 brightnessChangedFromThisPage = false;
             }
 
-            if(($("#autoEnableSettings").data('bs.modal') || {}).isShown !== true) {
+            if(($("#autoEnableSettings").data("bs.modal") || {}).isShown !== true) {
                 checkSettingsAutoEnable();
             }
 
@@ -814,7 +814,7 @@ $(document).ready(function() {
 
     displaySettings();
 
-    if(typeof(chrome.storage.onChanged) !== 'undefined') {
+    if(typeof(chrome.storage.onChanged) !== "undefined") {
         chrome.storage.onChanged.addListener(function() {
             displaySettings();
         });

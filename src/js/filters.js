@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
+import { defaultFilters } from "./util.js";
 
 let filters = [];
 
@@ -118,7 +119,7 @@ async function cacheFilters() {
     }
 }
 
-if(typeof(chrome.runtime) !== 'undefined' && typeof(chrome.runtime.onMessage) !== 'undefined') {
+if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !== "undefined") {
     chrome.runtime.onMessage.addListener(async(message, sender, sendMessage) => {
         if(message && message.type == "getAllFilters") {
             await cacheFilters();

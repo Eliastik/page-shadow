@@ -38,8 +38,8 @@ const defaultHourEnableFormat = "PM";
 const defaultHourDisable = "7";
 const defaultMinuteDisable = "0";
 const defaultHourDisableFormat = "AM";
-const settingNames = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'sitesInterditPageShadow', 'liveSettings', 'whiteList', 'colorTemp', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'globallyEnable', 'customThemeInfoDisable', 'autoEnable', 'autoEnableHourFormat', 'hourEnable', 'minuteEnable', 'hourEnableFormat', 'hourDisable', 'minuteDisable', 'hourDisableFormat', 'disableImgBgColor', 'defaultLoad', 'presets', 'customThemes', 'filtersSettings', 'customFilter'];
-const settingsToSavePresets = ['pageShadowEnabled', 'theme', 'pageLumEnabled', 'pourcentageLum', 'nightModeEnabled', 'liveSettings', 'colorTemp', 'colorInvert', 'invertPageColors', 'invertImageColors', 'invertEntirePage', 'invertVideoColors', 'invertBgColor', 'autoEnable', 'disableImgBgColor'];
+const settingNames = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "sitesInterditPageShadow", "liveSettings", "whiteList", "colorTemp", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "globallyEnable", "customThemeInfoDisable", "autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat", "disableImgBgColor", "defaultLoad", "presets", "customThemes", "filtersSettings", "customFilter"];
+const settingsToSavePresets = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "liveSettings", "colorTemp", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "autoEnable", "disableImgBgColor"];
 const nbPresets = 5;
 const defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
 const nbCustomThemesSlots = 5;
@@ -126,13 +126,13 @@ function matchWebsite(needle, rule) {
 
         if(rule.trim().startsWith("/") && rule.trim().endsWith("/")) {
             try {
-              var regex = new RegExp(rule.substring(1, rule.length - 1), "gi");
+                var regex = new RegExp(rule.substring(1, rule.length - 1), "gi");
 
-              if(regex.test(needle)) {
-                  return true;
-              }
+                if(regex.test(needle)) {
+                    return true;
+                }
             } catch(e) {
-                  return false;
+                return false;
             }
         } else {
             if(needle == rule) {
@@ -155,7 +155,7 @@ function in_array_website(needle, haystack) {
 }
 
 function disableEnableToggle(type, checked, url, func) {
-    chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList'], function (result) {
+    chrome.storage.local.get(["sitesInterditPageShadow", "whiteList"], function (result) {
         var disabledWebsites = "";
         var domain = url.hostname;
         var href = url.href;
@@ -169,19 +169,19 @@ function disableEnableToggle(type, checked, url, func) {
         }
 
         switch(type) {
-            case "disable-website":
-                match = domain;
-                break;
-            case "disable-webpage":
-                match = href;
-                break;
-            case "disable-globally":
-                if(checked) {
-                    setSettingItem("globallyEnable", "false");
-                } else {
-                    setSettingItem("globallyEnable", "true");
-                }
-                break;
+        case "disable-website":
+            match = domain;
+            break;
+        case "disable-webpage":
+            match = href;
+            break;
+        case "disable-globally":
+            if(checked) {
+                setSettingItem("globallyEnable", "false");
+            } else {
+                setSettingItem("globallyEnable", "true");
+            }
+            break;
         }
 
         if(type == "disable-website" || type == "disable-webpage") {
@@ -249,7 +249,7 @@ function commentAllLines(string) {
 
 // Callback function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not
 function pageShadowAllowed(url, func) {
-    chrome.storage.local.get(['sitesInterditPageShadow', 'whiteList', 'globallyEnable'], function (result) {
+    chrome.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"], function (result) {
         if(result.globallyEnable !== "false") {
             if(result.sitesInterditPageShadow !== undefined && result.sitesInterditPageShadow !== "") {
                 var siteInterdits = result.sitesInterditPageShadow.trim().split("\n");
@@ -311,17 +311,17 @@ function customTheme(nb, style, disableCustomCSS, lnkCssElement) {
         }
 
         if(customThemes["customThemeFont"] != undefined && customThemes["customThemeFont"].trim() != "") {
-            var fontTheme = '"' + customThemes["customThemeFont"] + '"';
+            var fontTheme = "\"" + customThemes["customThemeFont"] + "\"";
         } else {
             var fontTheme = defaultFontCustomTheme;
         }
 
-        if(document.getElementsByTagName('head')[0].contains(style)) { // remove style element
-            document.getElementsByTagName('head')[0].removeChild(style);
+        if(document.getElementsByTagName("head")[0].contains(style)) { // remove style element
+            document.getElementsByTagName("head")[0].removeChild(style);
         }
 
         // Append style element
-        document.getElementsByTagName('head')[0].appendChild(style);
+        document.getElementsByTagName("head")[0].appendChild(style);
 
         if(style.cssRules) { // Remove all rules
             for(var i = 0; i < style.cssRules.length; i++) {
@@ -343,12 +343,12 @@ function customTheme(nb, style, disableCustomCSS, lnkCssElement) {
 
         // Custom CSS
         if(!disableCustomCSS && customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
-            lnkCssElement.setAttribute('rel', 'stylesheet');
-            lnkCssElement.setAttribute('type', 'text/css');
-            lnkCssElement.setAttribute('id', 'pageShadowCustomCSS');
-            lnkCssElement.setAttribute('name', 'pageShadowCustomCSS');
-            lnkCssElement.setAttribute('href', 'data:text/css;charset=UTF-8,' + encodeURIComponent(customThemes["customCSSCode"]));
-            document.getElementsByTagName('head')[0].appendChild(lnkCssElement);
+            lnkCssElement.setAttribute("rel", "stylesheet");
+            lnkCssElement.setAttribute("type", "text/css");
+            lnkCssElement.setAttribute("id", "pageShadowCustomCSS");
+            lnkCssElement.setAttribute("name", "pageShadowCustomCSS");
+            lnkCssElement.setAttribute("href", "data:text/css;charset=UTF-8," + encodeURIComponent(customThemes["customCSSCode"]));
+            document.getElementsByTagName("head")[0].appendChild(lnkCssElement);
         }
     });
 }
@@ -357,7 +357,7 @@ function hourToPeriodFormat(value, convertTo, format) {
     if(typeof(value) === "string") var value = parseInt(value);
 
     if(convertTo == 12) {
-        var ampm = value >= 12 ? 'PM' : 'AM';
+        var ampm = value >= 12 ? "PM" : "AM";
         var hours = value % 12;
         var hours = hours ? hours : 12;
 
@@ -388,7 +388,7 @@ function checkNumber(number, min, max) {
 }
 
 function getAutoEnableSavedData(func) {
-    chrome.storage.local.get(['autoEnable', 'autoEnableHourFormat', 'hourEnable', 'minuteEnable', 'hourEnableFormat', 'hourDisable', 'minuteDisable', 'hourDisableFormat'], function (result) {
+    chrome.storage.local.get(["autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat"], function (result) {
         var autoEnable = result.autoEnable || "false";
         var format = result.autoEnableHourFormat || defaultAutoEnableHourFormat;
         var hourEnable = result.hourEnable || defaultHourEnable;
@@ -512,12 +512,12 @@ function downloadData(data, name, dataType) {
     }
 
     if(getBrowser() == "Firefox") {
-        var downloadElement = document.createElement('iframe');
+        var downloadElement = document.createElement("iframe");
         downloadElement.style.display = "none";
         downloadElement.src = window.URL.createObjectURL(blob);
         document.body.appendChild(downloadElement);
     } else {
-        var downloadElement = document.createElement('a');
+        var downloadElement = document.createElement("a");
         downloadElement.style.display = "none";
         downloadElement.download = name;
         downloadElement.href = window.URL.createObjectURL(blob);
@@ -534,9 +534,9 @@ function loadPresetSelect(selectId) {
         var presetSelected = 1;
     }
 
-    chrome.storage.local.get('presets', function(data) {
+    chrome.storage.local.get("presets", function(data) {
         try {
-            if(data.presets == null || typeof(data.presets) == 'undefined') {
+            if(data.presets == null || typeof(data.presets) == "undefined") {
                 setSettingItem("presets", defaultPresets);
                 var presets = defaultPresets;
             } else {
@@ -556,7 +556,7 @@ function loadPresetSelect(selectId) {
                         if(presets[name]["name"].trim() == "") {
                             var optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue + " : " + i18next.t("modal.archive.presetTitleEmpty") + "</option>";
                         } else {
-                            var optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue  + " : " + $('<div/>').text(presets[name]["name"].substring(0, 50)).html() + "</option>";
+                            var optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue  + " : " + $("<div/>").text(presets[name]["name"].substring(0, 50)).html() + "</option>";
                         }
                     }
 
@@ -573,9 +573,9 @@ function loadPresetSelect(selectId) {
 }
 
 function presetsEnabled(func) {
-    chrome.storage.local.get('presets', function (data) {
+    chrome.storage.local.get("presets", function (data) {
         try {
-            if(data.presets == null || typeof(data.presets) == 'undefined') {
+            if(data.presets == null || typeof(data.presets) == "undefined") {
                 setSettingItem("presets", defaultPresets);
                 var presets = defaultPresets;
             } else {
@@ -604,16 +604,16 @@ function presetsEnabled(func) {
 
 function loadPreset(nb, func) {
     if(func == undefined) {
-      var func = function(res) {};
+        var func = function(res) {};
     }
 
     if(nb < 1 || nb > nbPresets) {
         return func("error");
     }
 
-    chrome.storage.local.get('presets', function (data) {
+    chrome.storage.local.get("presets", function (data) {
         try {
-            if(data.presets == null || typeof(data.presets) == 'undefined') {
+            if(data.presets == null || typeof(data.presets) == "undefined") {
                 setSettingItem("presets", defaultPresets);
                 return func("empty");
             } else {
@@ -649,10 +649,10 @@ function savePreset(nb, name, func) {
         return func("error");
     }
 
-    chrome.storage.local.get('presets', function (dataPreset) {
+    chrome.storage.local.get("presets", function (dataPreset) {
         chrome.storage.local.get(settingsToSavePresets, function (data) {
             try {
-                if(dataPreset.presets == null || typeof(dataPreset.presets) == 'undefined') {
+                if(dataPreset.presets == null || typeof(dataPreset.presets) == "undefined") {
                     var presets = defaultPresets;
                 } else {
                     var presets = dataPreset.presets;
@@ -685,9 +685,9 @@ function deletePreset(nb, func) {
         return func("error");
     }
 
-    chrome.storage.local.get('presets', function (dataPreset) {
+    chrome.storage.local.get("presets", function (dataPreset) {
         try {
-            if(dataPreset.presets == null || typeof(dataPreset.presets) == 'undefined') {
+            if(dataPreset.presets == null || typeof(dataPreset.presets) == "undefined") {
                 var presets = defaultPresets;
             } else {
                 var presets = dataPreset.presets;
