@@ -16,16 +16,63 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+import { setSettingItem } from "./storage.js";
+
 let filters = [];
 
 function openFiltersFiles(func) {
     const files = {};
 
-    fetch("/filters/standard.txt").then((data) => {
-        data.text().then(text => {
-            files["/filters/standard.txt"] = text;
-            func(files);
-        })
+    chrome.storage.local.get("filtersSettings", result => {
+        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+
+        filters.filters.forEach(filter => {
+            if(filter.content != null) {
+                files[filter.sourceUrl] = filter.content;
+            }
+        });
+
+        func(files);
+    });
+}
+
+function updateFilter(idFilter) {
+    chrome.storage.local.get("filtersSettings", result => {
+        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+        const filterToUpdate = filters.filters[idFilter];
+
+        if(!filterToUpdate.customFilter) {
+            fetch(filterToUpdate.sourceUrl).then((data) => {
+                if(!data.ok) {
+                    filterToUpdate.hasError = true;
+                    setSettingItem("filtersSettings", filters);
+                } else {
+                    data.text().then(text => {
+                        filterToUpdate.content = text;
+                        filterToUpdate.hasError = false;
+                        filterToUpdate.lastUpdated = Date.now();
+                        setSettingItem("filtersSettings", filters);
+                    }).catch(error => {
+                        filterToUpdate.hasError = true;
+                        setSettingItem("filtersSettings", filters);
+                    });
+                }
+            }).catch(error => {
+                filterToUpdate.hasError = true;
+                setSettingItem("filtersSettings", filters);
+            });
+        }
+    });
+}
+
+async function updateAllFilters() {
+    chrome.storage.local.get("filtersSettings", async(result) => {
+        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+        const nbFilters = filters.filters.length;
+
+        for(let i = 0; i < nbFilters; i++) {
+            await updateFilter(i);
+        }
     });
 }
 
@@ -73,3 +120,5 @@ if(typeof(chrome.runtime) !== 'undefined' && typeof(chrome.runtime.onMessage) !=
         return true;
     });
 }
+
+export { openFiltersFiles, updateFilter, updateAllFilters };

@@ -1,7 +1,7 @@
 # Standard Filter for Page Shadow
 # Last update: 8/31/2021 18:41:53
 hacklol.eliastiksofts.com|disableContrastFor|#carousel-home,#carousel-home *
-www.jeuxvideo.com|disableContrastFor|#js-video-footer
+www.jeuxvideo.com|disableContrastFor|#js-video-footer,.sideLatestPublications__iconPlay
 www.jeuxvideo.com|disableContrastFor|#js-video-footer *
 *youtube.*|disableContrastFor|ytd-rich-item-renderer,ytd-rich-item-renderer *
 *youtube.*|disableContrastFor|#search,#player,#player *,ytd-watch-next-secondary-results-renderer,ytd-watch-next-secondary-results-renderer *

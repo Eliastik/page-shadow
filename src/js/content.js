@@ -16,6 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue } from "./util.js";
+
 (function(){
     let style = document.createElement('style');
     style.type = 'text/css';

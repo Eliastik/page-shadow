@@ -16,10 +16,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-/* translation */
+import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots } from "./util.js";
+import { setSettingItem } from "./storage.js";
 
 var checkContrastMode, timeoutInfoPreset;
 
+/* translation */
 i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
     fallbackLng: ['en', 'fr'],
     ns: 'popup',

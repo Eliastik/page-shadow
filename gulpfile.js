@@ -1,14 +1,15 @@
 'use strict';
 
-const gulp = require('gulp');
-const clean = require('gulp-clean');
+const gulp     = require('gulp');
+const clean    = require('gulp-clean');
 const cleanCss = require('gulp-clean-css');
-const less = require('gulp-less');
-const minify = require('gulp-minify');
-const zip = require('gulp-zip');
-const crx = require('gulp-crx-pack');
-const fs = require('fs');
-const babel = require('gulp-babel');
+const less     = require('gulp-less');
+const minify   = require('gulp-minify');
+const zip      = require('gulp-zip');
+const crx      = require('gulp-crx-pack');
+const fs       = require('fs');
+const babel    = require('gulp-babel');
+const webpack  = require('webpack-stream');
 
 gulp.task('clean', function() {
     return gulp.src('./build/*', {read: false})
@@ -44,9 +45,29 @@ gulp.task('compress-css', function () {
 });
 
 gulp.task('compile-js', function () {
-    return gulp.src('./build/global/js/*.js')
+    gulp.src('./build/global/js/*.js')
         .pipe(babel({
-            presets: ['@babel/env']
+            presets: [
+                ['@babel/env', { "modules": false }]
+            ],
+            plugins: ["@babel/plugin-transform-runtime"]
+        }))
+        .pipe(gulp.dest('./build/global/js/'))
+
+    return gulp.src('./build/global/js/*.js')
+        .pipe(webpack({
+            entry: {
+                background: './build/global/js/background.js',
+                options: './build/global/js/options.js',
+                pageTest: './build/global/js/pageTest.js',
+                popup: './build/global/js/popup.js',
+                content: './build/global/js/content.js'
+            },
+            output: {
+                filename: './[name].js',
+            },
+            mode: "development",
+            devtool: 'cheap-module-source-map'
         }))
         .pipe(gulp.dest('./build/global/js/'));
 });
@@ -102,7 +123,7 @@ gulp.task('build', function() {
         .pipe(gulp.dest('./build'));
 });
 
-gulp.task('build-dev', gulp.series('clean', 'copy-global', 'compile-less', 'compile-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build', 'clean-directories'));
+gulp.task('build-dev', gulp.series('clean', 'copy-global', 'compile-less', 'compile-js', 'copyChrome', 'copyEdge', 'copyFirefox', 'build'));
 
 gulp.task('default', gulp.series('build-dev'));
 

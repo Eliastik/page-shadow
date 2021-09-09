@@ -29,7 +29,8 @@
         "textareaPlaceholder": "# Un élément par ligne…\n# Exemple :\nwww.google.fr\nhttps://www.google.fr/maps\n*.google.*\n/(.*).google.(.*)/",
         "reset": "Réinitialiser les paramètres",
         "validate": "Valider",
-        "customTheme": "Thème personnalisé n°{{count}}"
+        "customTheme": "Thème personnalisé n°{{count}}",
+        "filters": "Filtres"
     },
     "modal": {
         "syntax": {
@@ -176,6 +177,10 @@
         "resetConfirm": {
             "title": "Confirmation",
             "message": "Êtes-vous sûr de vouloir réinitialiser tous les paramètres de l'extension ?"
+        },
+        "filters": {
+            "lastUpdate": "Dernière mise à jour le : {{date}} à {{hour}}",
+            "lastUpdateNever": "Dernière mise à jour le : jamais"
         },
         "close": "Fermer",
         "ok": "OK",

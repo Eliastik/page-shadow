@@ -16,6 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+ import { settingNames } from "./util.js";
+
 function setSettingItem(name, value) {
     if(settingNames.indexOf(name) !== -1) {
         var newSetting = {};
@@ -80,6 +82,8 @@ function setFirstSettings(func) {
         'disableImgBgColor': 'false',
         'presets': defaultPresets,
         'customThemes': defaultCustomThemes,
+        'filtersSettings': defaultFilters,
+        'customFilter': '',
         'defaultLoad': '0'
     }, function() {
         if(func != undefined) {
@@ -142,5 +146,4 @@ function migrateSettings() {
   });
 }
 
-checkFirstLoad();
-migrateSettings();
+export { setSettingItem, removeSettingItem, checkFirstLoad, setFirstSettings, migrateSettings };

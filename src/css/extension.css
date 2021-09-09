@@ -339,6 +339,14 @@ div.navbar-right {
     -ms-animation-play-state: "running";
     animation-play-state: "running";
 }
+.filterButtons {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+.filterButtons button {
+    margin-right: 8px !important;
+}
 #customTheme .tooltip-inner {
     width: auto;
     min-width: none;

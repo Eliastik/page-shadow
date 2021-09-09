@@ -16,6 +16,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, extensionVersion, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, nbCustomThemesSlots, defaultCustomThemes, defaultFilters } from "./util.js";
+import { setSettingItem, setFirstSettings } from "./storage.js";
+
 window.codeMirrorUserCss = null;
 window.codeMirrorJSONArchive = null;
 
@@ -144,6 +147,7 @@ function displaySettings(areaName) {
     if(areaName != "sync") {
         displayTheme($("#themeSelect").val());
         $("#restoreDataButton").removeClass("disabled");
+        displayFilters();
     }
 }
 
@@ -224,6 +228,88 @@ function displayTheme(nb, defaultSettings) {
     });
 }
 
+function displayFilters() {
+    chrome.storage.local.get("filtersSettings", result => {
+        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+
+        $("#filtersList").text("");
+
+        filters.filters.forEach((filter, index) => {
+            const element = document.createElement("li");
+            element.setAttribute("class", "list-group-item filterButtons");
+
+            const texts = document.createElement("div");
+
+            const title = document.createElement("strong");
+            title.textContent = filter.filterName + " – " + filter.sourceName;
+            texts.appendChild(title);
+
+            if(!filter.customFilter) {
+                const lastUpdate = document.createElement("div");
+                lastUpdate.textContent = filter.lastUpdated > 0 ? i18next.t("modal.filters.lastUpdate", { date: new Intl.DateTimeFormat(i18next.language).format(filter.lastUpdated), hour: new Intl.DateTimeFormat(i18next.language, { hour: "numeric", minute: "numeric", second: "numeric", timeZoneName: "short" }).format(filter.lastUpdated), interpolation: { escapeValue: false } }) : i18next.t("modal.filters.lastUpdateNever");
+                texts.appendChild(lastUpdate);
+
+                if(filter.hasError) {
+                    const hasError = document.createElement("div");
+                    hasError.textContent = "Erreur lors de la dernière mise à jour";
+                    hasError.style.color = "red";
+                    texts.appendChild(hasError);
+                }
+            }
+
+            element.appendChild(texts);
+
+            const buttonContainer = document.createElement("div");
+            buttonContainer.style.display = "inline-block";
+
+            const buttonSee = document.createElement("button");
+            buttonSee.setAttribute("class", "btn btn-sm btn-default");
+            const iconSee = document.createElement("i");
+            iconSee.setAttribute("class", "fa fa-eye fa-fw");
+            buttonSee.appendChild(iconSee);
+
+            buttonContainer.appendChild(buttonSee);
+
+            if(!filter.customFilter) {
+                const buttonHome = document.createElement("button");
+                buttonHome.setAttribute("class", "btn btn-sm btn-default");
+                const iconHome = document.createElement("i");
+                iconHome.setAttribute("class", "fa fa-home fa-fw");
+                buttonHome.appendChild(iconHome);
+    
+                const buttonUpdate = document.createElement("button");
+                buttonUpdate.setAttribute("class", "btn btn-sm btn-default");
+                const iconUpdate = document.createElement("i");
+                iconUpdate.setAttribute("class", "fa fa-refresh fa-fw");
+                buttonUpdate.appendChild(iconUpdate);
+
+                buttonUpdate.addEventListener("click", () => {
+                    chrome.runtime.sendMessage({
+                        "type": "updateFilter",
+                        "filterId": index
+                    }, function(response) {
+                        //
+                    });
+                });
+
+                buttonContainer.appendChild(buttonHome);
+                buttonContainer.appendChild(buttonUpdate);
+            } else {
+                const buttonEdit = document.createElement("button");
+                buttonEdit.setAttribute("class", "btn btn-sm btn-default");
+                const iconEdit = document.createElement("i");
+                iconEdit.setAttribute("class", "fa fa-pencil fa-fw");
+                buttonEdit.appendChild(iconEdit);
+
+                buttonContainer.appendChild(buttonEdit);
+            }
+            
+            element.appendChild(buttonContainer);
+            document.getElementById("filtersList").appendChild(element);
+        });
+    });
+}
+
 function saveThemeSettings(nb) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
@@ -276,7 +362,7 @@ function archiveSettings() {
     $("#archiveError").hide();
     $("#archiveDataButton").addClass("disabled");
 
-    chrome.storage.local.get(null, function (data) {
+    chrome.storage.local.get(null, function(data) {
         try {
             data["ispageshadowarchive"] = "true";
             const date = new Date();
@@ -760,6 +846,14 @@ $(document).ready(function() {
             loadPresetSelect("loadPresetSelect");
             loadPresetSelect("savePresetSelect");
             loadPresetSelect("deletePresetSelect");
+        });
+    });
+
+    $("#updateAllFilters").click(function() {
+        chrome.runtime.sendMessage({
+            "type": "updateAllFilters"
+        }, function(response) {
+            //
         });
     });
 });

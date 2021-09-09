@@ -10,6 +10,7 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "@babel/core": "^7.15.5",
+    "@babel/plugin-transform-runtime": "^7.15.0",
     "@babel/preset-env": "^7.15.4",
     "fs": "0.0.1-security",
     "gulp": "^4.0.2",
@@ -19,6 +20,10 @@
     "gulp-crx-pack": "git+https://github.com/PavelVanecek/gulp-crx.git",
     "gulp-less": "^4.0.1",
     "gulp-minify": "^3.1.0",
-    "gulp-zip": "^4.2.0"
+    "gulp-zip": "^4.2.0",
+    "webpack-stream": "^7.0.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.15.4"
   }
 }

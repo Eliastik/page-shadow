@@ -16,6 +16,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, nbPresets } from "./util.js";
+import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
+import { updateFilter, updateAllFilters } from "./filters.js";
+
 var autoEnableActivated = false;
 var lastAutoEnableDetected = null;
 
@@ -245,10 +249,6 @@ function autoEnable(changed) {
     }
 }
 
-setPopup();
-menu();
-updateBadge();
-autoEnable();
 var intervalCheckAutoEnable = setInterval(function() { checkAutoEnable(); }, 1000);
 
 if(typeof(chrome.storage) !== 'undefined' && typeof(chrome.storage.onChanged) !== 'undefined') {
@@ -284,6 +284,14 @@ if(typeof(chrome.runtime) !== 'undefined' && typeof(chrome.runtime.onMessage) !=
             pageShadowAllowed(sender.tab.url, function(enabled) {
                 sendMessage({ type: "isEnabledForThisPageResponse", enabled: enabled });
             });
+        } else if(message && message.type == "updateAllFilters") {
+            updateAllFilters(function(result) {
+                sendMessage({ type: "updateAllFiltersFinished", result: result });
+            });
+        } else if(message && message.type == "updateFilter") {
+            updateFilter(message.filterId, function(result) {
+                sendMessage({ type: "updateFilterFinished", result: result, filterId: message.filterId });
+            });
         }
 
         return true;
@@ -316,3 +324,10 @@ if(typeof(chrome.commands) !== 'undefined' && typeof(chrome.commands.onCommand) 
         }
     });
 }
+
+setPopup();
+menu();
+updateBadge();
+autoEnable();
+checkFirstLoad();
+migrateSettings();

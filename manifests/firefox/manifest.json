@@ -49,8 +49,6 @@
     "content_scripts": [
         {
             "js": [
-                "js/util.js",
-                "js/storage.js",
                 "js/content.js"
             ],
             "css": [
@@ -67,7 +65,7 @@
         }
     ],
     "background": {
-        "scripts": ["js/util.js", "js/storage.js", "js/filters.js", "js/background.js"]
+        "scripts": ["js/background.js"]
     },
     "commands": {
         "enableDisable": {
