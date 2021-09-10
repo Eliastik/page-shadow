@@ -20,7 +20,7 @@ import { settingNames, brightnessDefaultValue, defaultAutoEnableHourFormat, defa
 
 function setSettingItem(name, value) {
     if(settingNames.indexOf(name) !== -1) {
-        var newSetting = {};
+        const newSetting = {};
         newSetting[name] = value;
 
         return chrome.storage.local.set(newSetting);
@@ -34,7 +34,7 @@ function removeSettingItem(name) {
         if(typeof(name) === "string") {
             chrome.storage.local.remove(name);
         } else if(Array.isArray(name)) {
-            for(var i = 0; i < name.length; i++) {
+            for(let i = 0; i < name.length; i++) {
                 chrome.storage.local.remove(name[i]);
             }
         }
@@ -42,9 +42,9 @@ function removeSettingItem(name) {
 }
 
 function checkFirstLoad() {
-    chrome.storage.local.get("defaultLoad", function (result) {
-        if (result.defaultLoad == undefined) {
-            chrome.storage.local.set({"defaultLoad": "0"}, function() {
+    chrome.storage.local.get("defaultLoad", result => {
+        if(result.defaultLoad == undefined) {
+            chrome.storage.local.set({ "defaultLoad": "0" }, () => {
                 setFirstSettings();
             });
         }
@@ -85,52 +85,50 @@ function setFirstSettings(func) {
         "filtersSettings": defaultFilters,
         "customFilter": "",
         "defaultLoad": "0"
-    }, function() {
-        if(func != undefined) {
-            return func();
-        }
+    }, () => {
+        if(func) func();
     });
 }
 
 // Migrate deprecated settings
 function migrateSettings() {
-    chrome.storage.local.get(null, function (result) {
+    chrome.storage.local.get(null, result => {
         // Migrate old custom theme settings
         if(result.customThemeBg != undefined || result.customThemeTexts != undefined || result.customThemeLinks != undefined || result.customThemeLinksVisited != undefined || result.customThemeFont != undefined || result.customCSSCode != undefined) {
-            var customThemeBg = defaultBGColorCustomTheme;
-            var customThemeTexts = defaultTextsColorCustomTheme;
-            var customThemeLinks = defaultLinksColorCustomTheme;
-            var customThemeLinksVisited = defaultVisitedLinksColorCustomTheme;
-            var customThemeFont = defaultFontCustomTheme;
-            var customCSSCode = defaultCustomCSSCode;
-            var customThemes = defaultCustomThemes;
+            let customThemeBg = defaultBGColorCustomTheme;
+            let customThemeTexts = defaultTextsColorCustomTheme;
+            let customThemeLinks = defaultLinksColorCustomTheme;
+            let customThemeLinksVisited = defaultVisitedLinksColorCustomTheme;
+            let customThemeFont = defaultFontCustomTheme;
+            let customCSSCode = defaultCustomCSSCode;
+            let customThemes = defaultCustomThemes;
 
             if(result.customThemeBg != undefined) {
-                var customThemeBg = result.customThemeBg;
+                customThemeBg = result.customThemeBg;
             }
 
             if(result.customThemeTexts != undefined) {
-                var customThemeTexts = result.customThemeTexts;
+                customThemeTexts = result.customThemeTexts;
             }
 
             if(result.customThemeLinks != undefined) {
-                var customThemeLinks = result.customThemeLinks;
+                customThemeLinks = result.customThemeLinks;
             }
 
             if(result.customThemeLinksVisited != undefined) {
-                var customThemeLinksVisited = result.customThemeLinksVisited;
+                customThemeLinksVisited = result.customThemeLinksVisited;
             }
 
             if(result.customThemeFont != undefined) {
-                var customThemeFont = result.customThemeFont;
+                customThemeFont = result.customThemeFont;
             }
 
             if(result.customCSSCode != undefined) {
-                var customCSSCode = result.customCSSCode;
+                customCSSCode = result.customCSSCode;
             }
 
             if(result.customThemes != undefined && result.customThemes != undefined) {
-                var customThemes = result.customThemes;
+                customThemes = result.customThemes;
             }
 
             customThemes["1"]["customThemeBg"] = customThemeBg;

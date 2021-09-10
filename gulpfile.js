@@ -4,12 +4,17 @@ const gulp     = require("gulp");
 const clean    = require("gulp-clean");
 const cleanCss = require("gulp-clean-css");
 const less     = require("gulp-less");
-const minify   = require("gulp-minify");
 const zip      = require("gulp-zip");
 const crx      = require("gulp-crx-pack");
 const fs       = require("fs");
-const babel    = require("gulp-babel");
 const webpack  = require("webpack-stream");
+
+let currentMode = "development";
+
+gulp.task("set-prod-mode", function() {
+    currentMode = "production";
+    return gulp.src("./build");
+});
 
 gulp.task("clean", function() {
     return gulp.src("./build/*", {read: false})
@@ -45,15 +50,6 @@ gulp.task("compress-css", function () {
 });
 
 gulp.task("compile-js", function () {
-    gulp.src("./build/global/js/*.js")
-        .pipe(babel({
-            presets: [
-                ["@babel/env", { "modules": false }]
-            ],
-            plugins: ["@babel/plugin-transform-runtime"]
-        }))
-        .pipe(gulp.dest("./build/global/js/"))
-
     return gulp.src("./build/global/js/*.js")
         .pipe(webpack({
             entry: {
@@ -66,24 +62,29 @@ gulp.task("compile-js", function () {
             output: {
                 filename: "./[name].js",
             },
-            mode: "development",
-            devtool: "cheap-module-source-map"
+            mode: currentMode,
+            devtool: "cheap-module-source-map",
+            module: {
+                rules: [
+                    {
+                        test: /\.m?js$/,
+                        exclude: /(node_modules|libs)/,
+                        use: {
+                            loader: "babel-loader",
+                            options: {
+                                presets: [
+                                    ["@babel/env", { "modules": false }]
+                                ],
+                                plugins: ["@babel/plugin-transform-runtime"]
+                            }
+                        }
+                    }
+                ]
+            }
         }))
         .pipe(gulp.dest("./build/global/js/"));
 
     // TODO: clean not used JS files (util.js/storage.js/filters.js)
-});
-
-gulp.task("compress-js", function () {
-    return gulp.src("./build/global/js/*.js")
-        .pipe(minify({
-            ext:{
-                min:".js"
-            },
-            noSource: true,
-            ignoreFiles: ["*.min.js", "*-min.js"]
-        }))
-        .pipe(gulp.dest("./build/global/js/"));
 });
 
 gulp.task("copyChrome", function() {
@@ -129,10 +130,8 @@ gulp.task("build-dev", gulp.series("clean", "copy-global", "compile-less", "comp
 
 gulp.task("default", gulp.series("build-dev"));
 
-gulp.task("build-prod", gulp.series("clean", "copy-global", "compile-less", "compile-js", "compress-css", "compress-js", "copyChrome", "copyEdge", "copyFirefox", "build", "clean-directories"));
+gulp.task("build-prod", gulp.series("set-prod-mode", "clean", "copy-global", "compile-less", "compile-js", "compress-css", "copyChrome", "copyEdge", "copyFirefox", "build", "clean-directories"));
 
-gulp.task("build-prod-no-js-compress", gulp.series("clean", "copy-global", "compile-less", "compile-js", "compress-css", "copyChrome", "copyEdge", "copyFirefox", "build", "clean-directories"));
-
-gulp.task("build-prod-no-css-compress", gulp.series("clean", "copy-global", "compile-less", "compile-js", "compress-js", "copyChrome", "copyEdge", "copyFirefox", "build", "clean-directories"));
+gulp.task("build-prod-no-css-compress", gulp.series("set-prod-mode", "clean", "copy-global", "compile-less", "compile-js", "copyChrome", "copyEdge", "copyFirefox", "build", "clean-directories"));
 
 gulp.task("clean-build", gulp.series("clean"));

@@ -199,7 +199,7 @@ npm install
 Then to compile:
 
 * Dev mode (no compression): `gulp` or `gulp build-dev`
-* Prod mode (compression): `gulp build-prod` or `gulp build-prod-no-js-compress` (only compress css files) or `build-prod-no-css-compress` (only compress js files)
+* Prod mode (compression): `gulp build-prod` or `build-prod-no-css-compress` (only compress js files)
 
 The extension files compiled will be created in the sub-directory "build".
 
@@ -443,7 +443,7 @@ npm install
 Puis pour compiler :
 
 * Mode dev (pas de compression): `gulp` ou `gulp build-dev`
-* Mode prod (compression): `gulp build-prod` ou `gulp build-prod-no-js-compress` (compresse uniquement les fichiers css) or `build-prod-no-css-compress` (compresse uniquement les fichiers js)
+* Mode prod (compression): `gulp build-prod` ou `build-prod-no-css-compress` (compresse uniquement les fichiers js)
 
 Les fichiers d'extension compilés seront créés dans le dossier "build".
 
