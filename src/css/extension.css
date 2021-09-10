@@ -351,6 +351,12 @@ div.navbar-right {
     width: auto;
     min-width: none;
 }
+.slider .tooltip.bs-tooltip-top {
+    margin-top: -30px !important;
+}
+.tooltip.show {
+    opacity: .9;
+}
 @-webkit-keyframes fadein {
     from { bottom: 0; opacity: 0; }
     to { bottom: 30px; opacity: 0.9; }

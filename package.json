@@ -8,6 +8,7 @@
   },
   "author": "Eliastik",
   "license": "GPL-3.0",
+  "homepage": "https://www.eliastiksofts.com/page-shadow",
   "devDependencies": {
     "@babel/core": "^7.15.5",
     "@babel/plugin-transform-runtime": "^7.15.0",
@@ -21,9 +22,17 @@
     "gulp-less": "^4.0.1",
     "gulp-minify": "^3.1.0",
     "gulp-zip": "^4.2.0",
+    "webpack": "^5.52.1",
+    "webpack-cli": "^4.8.0",
     "webpack-stream": "^7.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.15.4"
+    "@babel/runtime": "^7.15.4",
+    "bootstrap-slider": "^11.0.2",
+    "i18next": "^20.6.1",
+    "i18next-browser-languagedetector": "^6.1.2",
+    "i18next-xhr-backend": "^3.2.2",
+    "jquery": "^3.6.0",
+    "jquery-i18next": "^1.2.1"
   }
 }

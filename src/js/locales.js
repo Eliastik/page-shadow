@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2019 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -17,25 +17,27 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 /* translation */
-import $ from "jquery";
 import i18next from "i18next";
-import jqueryI18next from "jquery-i18next";
-import { init_i18next } from "./locales.js";
+import i18nextBrowserLanguageDetector from "i18next-browser-languagedetector";
+import i18nextXHRBackend from "i18next-xhr-backend";
 
-window.$ = $;
-window.jQuery = $;
-
-init_i18next("pageTest", () => translateContent());
-
-function translateContent() {
-    jqueryI18next.init(i18next, $, {
-        handleName: "localize",
-        selectorAttr: "data-i18n"
+function init_i18next(ns, func) {
+    i18next.use(i18nextBrowserLanguageDetector).use(i18nextXHRBackend).init({
+        fallbackLng: ["en", "fr"],
+        ns: ns,
+        load: "languageOnly",
+        defaultNS: ns,
+        detection: {
+            order: ["localStorage", "navigator"],
+            lookupLocalStorage: "i18nextLng",
+            caches: ["localStorage"],
+        },
+        backend: {
+            loadPath: "/_locales/{{lng}}/{{ns}}.json",
+        },
+    }, () => {
+        if(func) func();
     });
-    $("nav").localize();
-    $(".container").localize();
 }
 
-i18next.on("languageChanged", () => {
-    translateContent();
-});
+export { init_i18next };

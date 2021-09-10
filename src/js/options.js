@@ -16,33 +16,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, extensionVersion, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, nbCustomThemesSlots, defaultCustomThemes, defaultFilters } from "./util.js";
+import $ from "jquery";
+import i18next from "i18next";
+import jqueryI18next from "jquery-i18next";
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, extensionVersion, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, deletePreset } from "./util.js";
 import { setSettingItem, setFirstSettings } from "./storage.js";
+import { init_i18next } from "./locales.js";
+
+window.$ = $;
+window.jQuery = $;
 
 window.codeMirrorUserCss = null;
 window.codeMirrorJSONArchive = null;
 
-/* translation */
-function init_i18next() {
-    i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
-        fallbackLng: ["en", "fr"],
-        ns: "options",
-        load: "languageOnly",
-        defaultNS: "options",
-        detection: {
-            order: ["localStorage", "navigator"],
-            lookupLocalStorage: "i18nextLng",
-            caches: ["localStorage"],
-        },
-        backend: {
-            loadPath: "/_locales/{{lng}}/{{ns}}.json",
-        },
-    }, function(err, t) {
-        translateContent();
-    });
-}
-
-init_i18next();
+init_i18next("options", () => translateContent());
 
 function listTranslations(languages) {
     const language = i18next.language.substr(0, 2);

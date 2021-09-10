@@ -16,33 +16,25 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+import $ from "jquery";
+import i18next from "i18next";
+import jqueryI18next from "jquery-i18next";
+import Slider from "bootstrap-slider";
 import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots } from "./util.js";
 import { setSettingItem } from "./storage.js";
+import { init_i18next } from "./locales.js";
+
+window.$ = $;
+window.jQuery = $;
 
 var checkContrastMode, timeoutInfoPreset;
 
-/* translation */
-i18next.use(window.i18nextBrowserLanguageDetector).use(window.i18nextXHRBackend).init({
-    fallbackLng: ["en", "fr"],
-    ns: "popup",
-    load: "languageOnly",
-    defaultNS: "popup",
-        detection: {
-            order: ["localStorage", "navigator"],
-            lookupLocalStorage: "i18nextLng",
-            caches: ["localStorage"],
-        },
-        backend: {
-            loadPath: "/_locales/{{lng}}/{{ns}}.json",
-        },
-}, function(err, t) {
-    translateContent();
-});
+init_i18next("popup", () => translateContent());
 
 function translateContent() {
     jqueryI18next.init(i18next, $, {
-      handleName: "localize",
-      selectorAttr: "data-i18n"
+        handleName: "localize",
+        selectorAttr: "data-i18n"
     });
     $(".navbar").localize();
     $(".container").localize();
@@ -88,8 +80,11 @@ $(document).ready(function() {
         placement: "auto top"
     });
 
-    var sliderLuminosite = $("#sliderLuminosite").slider({
-        formatter: function(value) {
+    const sliderLuminosite = new Slider("#sliderLuminosite", {
+        tooltip: "show",
+        step: 1,
+        tooltip_position: "top",
+        formatter: value => {
             return value;
         }
     });
@@ -321,7 +316,7 @@ $(document).ready(function() {
                 $("#checkDisableImgBgColor").prop("checked", true);
             }
         });
-    }
+    };
 
     $("#checkAssomPage").change(function() {
         if($(this).is(":checked") == true) {
@@ -665,7 +660,7 @@ $(document).ready(function() {
 
                 if(result.pourcentageLum / 100 > maxBrightnessPercentage || result.pourcentageLum / 100 < minBrightnessPercentage || typeof result.pourcentageLum === "undefined" || typeof result.pourcentageLum == null) {
                     elLumB.style.opacity = brightnessDefaultValue;
-                    sliderLuminosite.slider("setValue", brightnessDefaultValue * 100);
+                    sliderLuminosite.setValue(brightnessDefaultValue * 100);
                 } else {
                     elLumB.style.opacity = result.pourcentageLum / 100;
                 }
@@ -697,7 +692,7 @@ $(document).ready(function() {
     });
 
     $("#sliderLuminosite").change(function() {
-        var sliderLumValue = sliderLuminosite.slider("getValue");
+        var sliderLumValue = sliderLuminosite.getValue();
         brightnessChangedFromThisPage = true;
         setSettingItem("pourcentageLum", sliderLumValue);
     });
@@ -796,10 +791,10 @@ $(document).ready(function() {
             checkGlobalEnable();
 
             if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null && result.pourcentageLum / 100 <= maxBrightnessPercentage && result.pourcentageLum / 100 >= minBrightnessPercentage && brightnessChangedFromThisPage == false) {
-                sliderLuminosite.slider("setValue", result.pourcentageLum);
+                sliderLuminosite.setValue(result.pourcentageLum);
                 brightnessChangedFromThisPage = false;
             } else if(brightnessChangedFromThisPage == false) {
-                sliderLuminosite.slider("setValue", brightnessDefaultValue * 100);
+                sliderLuminosite.setValue(brightnessDefaultValue * 100);
                 brightnessChangedFromThisPage = false;
             }
 
