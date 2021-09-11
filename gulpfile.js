@@ -11,17 +11,17 @@ const webpack  = require("webpack-stream");
 
 let currentMode = "development";
 
-gulp.task("set-prod-mode", function() {
+gulp.task("set-prod-mode", () => {
     currentMode = "production";
     return gulp.src("./build");
 });
 
-gulp.task("clean", function() {
+gulp.task("clean", () => {
     return gulp.src("./build/*", {read: false})
         .pipe(clean());
 });
 
-gulp.task("clean-directories", function() {
+gulp.task("clean-directories", () => {
     gulp.src("./build/chrome/*", {read: false})
         .pipe(clean());
     gulp.src("./build/edge/*", {read: false})
@@ -32,24 +32,24 @@ gulp.task("clean-directories", function() {
         .pipe(clean());
 });
 
-gulp.task("copy-global", function() {
+gulp.task("copy-global", () => {
     return gulp.src(["./src/**", "!./src/img/src/**", "!./src/js/*.js", "!./src/img/icon_old.png", "!./src/css/src/**", "!./src/css/*.less", "!./src/css/content_old.css"])
         .pipe(gulp.dest("./build/global/"));
 });
 
-gulp.task("compile-less", function () {
+gulp.task("compile-less", () => {
     return gulp.src("./src/css/*.less")
         .pipe(less())
         .pipe(gulp.dest("./build/global/css/"));
 });
 
-gulp.task("compress-css", function () {
+gulp.task("compress-css", () => {
     return gulp.src("./build/global/css/*.css")
         .pipe(cleanCss())
         .pipe(gulp.dest("./build/global/css/"));
 });
 
-gulp.task("compile-js", function () {
+gulp.task("compile-js", () => {
     return gulp.src("./src/js/*.js")
         .pipe(webpack({
             entry: {
@@ -72,6 +72,10 @@ gulp.task("compile-js", function () {
                         use: {
                             loader: "babel-loader"
                         }
+                    },
+                    {
+                        test: /\.css$/i,
+                        use: ["style-loader", "css-loader"],
                     }
                 ]
             }
@@ -79,27 +83,25 @@ gulp.task("compile-js", function () {
         .pipe(gulp.dest("./build/global/js/"));
 });
 
-gulp.task("copyChrome", function() {
+gulp.task("copyChrome", () => {
     return gulp.src(["./build/global/**", "./manifests/chrome/**/*"])
         .pipe(gulp.dest("./build/chrome/"));
 });
 
-gulp.task("copyEdge", function() {
+gulp.task("copyEdge", () => {
     return gulp.src(["./build/global/**", "./manifests/edge/*"])
         .pipe(gulp.dest("./build/edge/"));
 });
 
-gulp.task("copyFirefox", function() {
+gulp.task("copyFirefox", () => {
     return gulp.src(["./build/global/**", "./manifests/firefox/**/*"])
         .pipe(gulp.dest("./build/firefox/"));
 });
 
-gulp.task("build", function() {
-    var manifestChrome = require("./manifests/chrome/manifest.json"),
-        manifestEdge = require("./manifests/edge/manifest.json"),
-        manifestFirefox = require("./manifests/firefox/manifest.json"),
+gulp.task("build", () => {
+    const manifestChrome = require("./manifests/chrome/manifest.json"),
         distFileName = manifestChrome.name + " v" + manifestChrome.version;
-    var codebase = manifestChrome.codebase;
+    const codebase = manifestChrome.codebase;
     gulp.src("build/firefox/**/**/*")
         .pipe(zip(distFileName + ".xpi"))
         .pipe(gulp.dest("./build"));

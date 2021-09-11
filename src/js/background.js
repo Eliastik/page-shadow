@@ -147,7 +147,7 @@ function menu() {
                 createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], false);
             }
 
-            presetsEnabled((resultat) => {
+            presetsEnabled(resultat => {
                 if(resultat !== false && Array.isArray(resultat) && resultat.length > 0) {
                     createContextMenu("separator-presets", "separator", null, ["all"], false);
 
