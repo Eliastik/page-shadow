@@ -22,7 +22,8 @@
     "gulp-clean-css": "^4.3.0",
     "gulp-crx-pack": "git+https://github.com/PavelVanecek/gulp-crx.git",
     "gulp-less": "^5.0.0",
-    "gulp-zip": "^5.1.0s",
+    "gulp-zip": "^5.1.0",
+    "style-loader": "^3.2.1",
     "webpack": "^5.52.1",
     "webpack-cli": "^4.8.0",
     "webpack-stream": "^7.0.0"
@@ -35,7 +36,7 @@
     "i18next-browser-languagedetector": "^6.1.2",
     "i18next-xhr-backend": "^3.2.2",
     "jquery": "^3.6.0",
-    "jquery-i18next": "^1.2.1",
-    "style-loader": "^3.2.1"
+    "jquery-colpick": "^3.1.0",
+    "jquery-i18next": "^1.2.1"
   }
 }
