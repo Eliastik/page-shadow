@@ -17,6 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
+import $ from "jquery";
+import i18next from "i18next";
 
 // Global configuration of the extension
 const extensionVersion = "2.7";
@@ -98,7 +100,7 @@ const defaultFiltersContent = {};
 // End of the global configuration of the extension
 
 function in_array(needle, haystack) {
-    for(var key in haystack) {
+    for(const key in haystack) {
         if(needle.indexOf(haystack[key]) != -1) {
             return true;
         }
@@ -108,7 +110,7 @@ function in_array(needle, haystack) {
 }
 
 function strict_in_array(needle, haystack) {
-    for(var key in haystack) {
+    for(const key in haystack) {
         if(needle == haystack[key]) {
             return true;
         }
@@ -126,7 +128,7 @@ function matchWebsite(needle, rule) {
 
         if(rule.trim().startsWith("/") && rule.trim().endsWith("/")) {
             try {
-                var regex = new RegExp(rule.substring(1, rule.length - 1), "gi");
+                const regex = new RegExp(rule.substring(1, rule.length - 1), "gi");
 
                 if(regex.test(needle)) {
                     return true;
@@ -145,7 +147,7 @@ function matchWebsite(needle, rule) {
 }
 
 function in_array_website(needle, haystack) {
-    for(var key in haystack) {
+    for(const key in haystack) {
         if(matchWebsite(needle, haystack[key])) {
             return true;
         }
@@ -156,16 +158,17 @@ function in_array_website(needle, haystack) {
 
 function disableEnableToggle(type, checked, url, func) {
     chrome.storage.local.get(["sitesInterditPageShadow", "whiteList"], function (result) {
-        var disabledWebsites = "";
-        var domain = url.hostname;
-        var href = url.href;
-        var match = domain;
+        let disabledWebsites = "";
+        const domain = url.hostname;
+        const href = url.href;
+        let match = domain;
+        let disabledWebsitesArray;
 
         if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
-            var disabledWebsitesArray = [];
+            disabledWebsitesArray = [];
         } else {
-            var disabledWebsites = result.sitesInterditPageShadow;
-            var disabledWebsitesArray = disabledWebsites.split("\n");
+            disabledWebsites = result.sitesInterditPageShadow;
+            disabledWebsitesArray = disabledWebsites.split("\n");
         }
 
         switch(type) {
@@ -185,15 +188,17 @@ function disableEnableToggle(type, checked, url, func) {
         }
 
         if(type == "disable-website" || type == "disable-webpage") {
+            let disabledWebsitesNew;
+
             if((checked && result.whiteList == "true") || (!checked && result.whiteList != "true")) {
-                var disabledWebsitesNew = removeA(disabledWebsitesArray, match);
-                var disabledWebsitesNew = commentMatched(disabledWebsitesNew, match);
-                var disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
+                disabledWebsitesNew = removeA(disabledWebsitesArray, match);
+                disabledWebsitesNew = commentMatched(disabledWebsitesNew, match);
+                disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
 
                 setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
             } else if((!checked && result.whiteList == "true") || (checked && result.whiteList != "true")) {
                 disabledWebsitesArray.push(match);
-                var disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
+                disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
 
                 setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
             }
@@ -206,11 +211,11 @@ function disableEnableToggle(type, checked, url, func) {
 }
 
 function removeA(arr) {
-    var what, a = arguments, L = a.length, ax;
+    let what, a = arguments, L = a.length, ax;
 
     while(L > 1 && arr.length) {
         what = a[--L];
-        while ((ax= arr.indexOf(what)) !== -1) {
+        while((ax= arr.indexOf(what)) !== -1) {
             arr.splice(ax, 1);
         }
     }
@@ -219,9 +224,9 @@ function removeA(arr) {
 }
 
 function commentMatched(arr, website) {
-    var res = [];
+    const res = [];
 
-    for(var key in arr) {
+    for(const key in arr) {
         if(matchWebsite(website, arr[key])) {
             res.push("#" + arr[key]);
         } else {
@@ -233,10 +238,10 @@ function commentMatched(arr, website) {
 }
 
 function commentAllLines(string) {
-    var arr = string.split("\n");
-    var res = [];
+    const arr = string.split("\n");
+    const res = [];
 
-    for(var key in arr) {
+    for(const key in arr) {
         if(arr[key].trim() != "" && !arr[key].trim().startsWith("#")) {
             res.push("#" + arr[key]);
         } else {
@@ -249,18 +254,20 @@ function commentAllLines(string) {
 
 // Callback function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not
 function pageShadowAllowed(url, func) {
-    chrome.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"], function (result) {
+    chrome.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"], result => {
         if(result.globallyEnable !== "false") {
+            let forbiddenWebsites;
+
             if(result.sitesInterditPageShadow !== undefined && result.sitesInterditPageShadow !== "") {
-                var siteInterdits = result.sitesInterditPageShadow.trim().split("\n");
+                forbiddenWebsites = result.sitesInterditPageShadow.trim().split("\n");
             } else {
-                var siteInterdits = "";
+                forbiddenWebsites = "";
             }
 
-            var websuteUrl_tmp = new URL(url);
-            var domain = websuteUrl_tmp.hostname;
+            const websuteUrl_tmp = new URL(url);
+            const domain = websuteUrl_tmp.hostname;
 
-            if((result.whiteList == "true" && (in_array_website(domain, siteInterdits) || in_array_website(url, siteInterdits))) || (result.whiteList !== "true" && !in_array_website(domain, siteInterdits) && !in_array_website(url, siteInterdits))) {
+            if((result.whiteList == "true" && (in_array_website(domain, forbiddenWebsites) || in_array_website(url, forbiddenWebsites))) || (result.whiteList !== "true" && !in_array_website(domain, forbiddenWebsites) && !in_array_website(url, forbiddenWebsites))) {
                 return func(true);
             } else {
                 return func(false);
@@ -276,44 +283,46 @@ function getUImessage(id) {
 }
 
 function customTheme(nb, style, disableCustomCSS, lnkCssElement) {
-    var disableCustomCSS = disableCustomCSS == undefined ? false : disableCustomCSS;
-    var nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
+    disableCustomCSS = disableCustomCSS == undefined ? false : disableCustomCSS;
+    nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
-    chrome.storage.local.get("customThemes", function(result) {
+    let customThemes, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme, fontTheme;
+
+    chrome.storage.local.get("customThemes", result => {
         if(result.customThemes != undefined && result.customThemes[nb] != undefined) {
-            var customThemes = result.customThemes[nb];
+            customThemes = result.customThemes[nb];
         } else {
-            var customThemes = defaultCustomThemes[nb];
+            customThemes = defaultCustomThemes[nb];
         }
 
         if(customThemes["customThemeBg"] != undefined) {
-            var backgroundTheme = customThemes["customThemeBg"];
+            backgroundTheme = customThemes["customThemeBg"];
         } else {
-            var backgroundTheme = defaultBGColorCustomTheme;
+            backgroundTheme = defaultBGColorCustomTheme;
         }
 
         if(customThemes["customThemeTexts"] != undefined) {
-            var textsColorTheme = customThemes["customThemeTexts"];
+            textsColorTheme = customThemes["customThemeTexts"];
         } else {
-            var textsColorTheme = defaultTextsColorCustomTheme;
+            textsColorTheme = defaultTextsColorCustomTheme;
         }
 
         if(customThemes["customThemeLinks"] != undefined) {
-            var linksColorTheme = customThemes["customThemeLinks"];
+            linksColorTheme = customThemes["customThemeLinks"];
         } else {
-            var linksColorTheme = defaultLinksColorCustomTheme;
+            linksColorTheme = defaultLinksColorCustomTheme;
         }
 
         if(customThemes["customThemeLinksVisited"] != undefined) {
-            var linksVisitedColorTheme = customThemes["customThemeLinksVisited"];
+            linksVisitedColorTheme = customThemes["customThemeLinksVisited"];
         } else {
-            var linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
+            linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
         }
 
         if(customThemes["customThemeFont"] != undefined && customThemes["customThemeFont"].trim() != "") {
-            var fontTheme = "\"" + customThemes["customThemeFont"] + "\"";
+            fontTheme = "\"" + customThemes["customThemeFont"] + "\"";
         } else {
-            var fontTheme = defaultFontCustomTheme;
+            fontTheme = defaultFontCustomTheme;
         }
 
         if(document.getElementsByTagName("head")[0].contains(style)) { // remove style element
@@ -324,7 +333,7 @@ function customTheme(nb, style, disableCustomCSS, lnkCssElement) {
         document.getElementsByTagName("head")[0].appendChild(style);
 
         if(style.cssRules) { // Remove all rules
-            for(var i = 0; i < style.cssRules.length; i++) {
+            for(let i = 0; i < style.cssRules.length; i++) {
                 style.sheet.deleteRule(i);
             }
         }
@@ -354,21 +363,21 @@ function customTheme(nb, style, disableCustomCSS, lnkCssElement) {
 }
 
 function hourToPeriodFormat(value, convertTo, format) {
-    if(typeof(value) === "string") var value = parseInt(value);
+    if(typeof(value) === "string") value = parseInt(value);
 
     if(convertTo == 12) {
-        var ampm = value >= 12 ? "PM" : "AM";
-        var hours = value % 12;
-        var hours = hours ? hours : 12;
+        const ampm = value >= 12 ? "PM" : "AM";
+        let hours = value % 12;
+        hours = hours ? hours : 12;
 
         return [ampm, hours.toString()];
     } else if(convertTo == 24) {
         if(format == "PM") {
-            if(value < 12) var value = 12 + value;
+            if(value < 12) value = 12 + value;
 
             return value.toString();
         } else if(format == "AM") {
-            if(value == 12) var value = 0;
+            if(value == 12) value = 0;
 
             return value.toString();
         } else {
@@ -388,76 +397,76 @@ function checkNumber(number, min, max) {
 }
 
 function getAutoEnableSavedData(func) {
-    chrome.storage.local.get(["autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat"], function (result) {
-        var autoEnable = result.autoEnable || "false";
-        var format = result.autoEnableHourFormat || defaultAutoEnableHourFormat;
-        var hourEnable = result.hourEnable || defaultHourEnable;
-        var minuteEnable = result.minuteEnable || defaultMinuteEnable;
-        var hourEnableFormat = result.hourEnableFormat || defaultHourEnableFormat;
-        var hourDisable = result.hourDisable || defaultHourDisable;
-        var minuteDisable = result.minuteDisable || defaultMinuteDisable;
-        var hourDisableFormat = result.hourDisableFormat || defaultHourDisableFormat;
+    chrome.storage.local.get(["autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat"], result => {
+        let autoEnable = result.autoEnable || "false";
+        let format = result.autoEnableHourFormat || defaultAutoEnableHourFormat;
+        let hourEnable = result.hourEnable || defaultHourEnable;
+        let minuteEnable = result.minuteEnable || defaultMinuteEnable;
+        let hourEnableFormat = result.hourEnableFormat || defaultHourEnableFormat;
+        let hourDisable = result.hourDisable || defaultHourDisable;
+        let minuteDisable = result.minuteDisable || defaultMinuteDisable;
+        let hourDisableFormat = result.hourDisableFormat || defaultHourDisableFormat;
 
-        // Verifications
-        var autoEnable = autoEnable == "true" || autoEnable == "false" ? autoEnable : "false";
-        var format = format == "24" || format == "12" ? format : defaultAutoEnableHourFormat;
-        var hourEnableFormat = hourEnableFormat == "PM" || hourEnableFormat == "AM" ? hourEnableFormat : defaultHourEnableFormat;
-        var hourDisableFormat = hourDisableFormat == "PM" || hourDisableFormat == "AM" ? hourDisableFormat : defaultHourDisableFormat;
-        var minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
-        var minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : defaultMinuteDisable;
-        var hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
-        var hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
+        // Checking
+        autoEnable = autoEnable == "true" || autoEnable == "false" ? autoEnable : "false";
+        format = format == "24" || format == "12" ? format : defaultAutoEnableHourFormat;
+        hourEnableFormat = hourEnableFormat == "PM" || hourEnableFormat == "AM" ? hourEnableFormat : defaultHourEnableFormat;
+        hourDisableFormat = hourDisableFormat == "PM" || hourDisableFormat == "AM" ? hourDisableFormat : defaultHourDisableFormat;
+        minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
+        minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : defaultMinuteDisable;
+        hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
+        hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
 
         return func([autoEnable, format, hourEnableFormat, hourDisableFormat, minuteEnable, minuteDisable, hourEnable, hourDisable]);
     });
 }
 
 function getAutoEnableFormData() {
-    var format = $("#autoEnableHourFormat").val();
-    var format = format == "24" || format == "12" ? format : defaultAutoEnableHourFormat;
-    var hourEnableFormat = $("#hourEnableFormat").val();
-    var hourEnableFormat = hourEnableFormat == "PM" || hourEnableFormat == "AM" ? hourEnableFormat : defaultHourEnableFormat;
-    var hourDisableFormat = $("#hourDisableFormat").val();
-    var hourDisableFormat = hourDisableFormat == "PM" || hourDisableFormat == "AM" ? hourDisableFormat : defaultHourDisableFormat;
-    var minuteEnable = $("#minuteEnable").val();
-    var minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
-    var minuteDisable = $("#minuteDisable").val();
-    var minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : defaultMinuteDisable;
-    var hourEnable = $("#hourEnable").val();
-    var hourDisable = $("#hourDisable").val();
+    let format = $("#autoEnableHourFormat").val();
+    format = format == "24" || format == "12" ? format : defaultAutoEnableHourFormat;
+    let hourEnableFormat = $("#hourEnableFormat").val();
+    hourEnableFormat = hourEnableFormat == "PM" || hourEnableFormat == "AM" ? hourEnableFormat : defaultHourEnableFormat;
+    let hourDisableFormat = $("#hourDisableFormat").val();
+    hourDisableFormat = hourDisableFormat == "PM" || hourDisableFormat == "AM" ? hourDisableFormat : defaultHourDisableFormat;
+    let minuteEnable = $("#minuteEnable").val();
+    minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
+    let minuteDisable = $("#minuteDisable").val();
+    minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : defaultMinuteDisable;
+    let hourEnable = $("#hourEnable").val();
+    let hourDisable = $("#hourDisable").val();
 
     if(format == "12") {
-        var hourEnable = checkNumber(hourEnable, 0, 12) ? hourEnable : hourToPeriodFormat(defaultHourEnable, 12, null)[1];
-        var hourEnable = hourToPeriodFormat(hourEnable, 24, hourEnableFormat);
-        var hourDisable = checkNumber(hourDisable, 0, 12) ? hourDisable : hourToPeriodFormat(defaultHourDisable, 12, null)[1];
-        var hourDisable = hourToPeriodFormat(hourDisable, 24, hourDisableFormat);
+        hourEnable = checkNumber(hourEnable, 0, 12) ? hourEnable : hourToPeriodFormat(defaultHourEnable, 12, null)[1];
+        hourEnable = hourToPeriodFormat(hourEnable, 24, hourEnableFormat);
+        hourDisable = checkNumber(hourDisable, 0, 12) ? hourDisable : hourToPeriodFormat(defaultHourDisable, 12, null)[1];
+        hourDisable = hourToPeriodFormat(hourDisable, 24, hourDisableFormat);
     } else {
-        var hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
-        var hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
+        hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
+        hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
     }
 
     return [format, hourEnable, minuteEnable, hourEnableFormat, hourDisable, minuteDisable, hourDisableFormat];
 }
 
 function checkAutoEnableStartup(hourEnable, minuteEnable, hourDisable, minuteDisable) {
-    var date = new Date();
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
+    const date = new Date();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
 
-    var timeNow = ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2) + ":00";
+    const timeNow = ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2) + ":00";
 
-    var hourEnable = hourEnable || defaultHourEnable;
-    var minuteEnable = minuteEnable || defaultMinuteEnable;
-    var hourDisable = hourDisable || defaultHourDisable;
-    var minuteDisable = minuteDisable || defaultMinuteDisable;
+    hourEnable = hourEnable || defaultHourEnable;
+    minuteEnable = minuteEnable || defaultMinuteEnable;
+    hourDisable = hourDisable || defaultHourDisable;
+    minuteDisable = minuteDisable || defaultMinuteDisable;
 
-    var hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
-    var hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
-    var minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
-    var minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : defaultMinuteDisable;
+    hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
+    hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
+    minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
+    minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : defaultMinuteDisable;
 
-    var timeEnable = ("0" + hourEnable).slice(-2) + ":" + ("0" + minuteEnable).slice(-2) + ":00";
-    var timeDisable = ("0" + hourDisable).slice(-2) + ":" + ("0" + minuteDisable).slice(-2) + ":00";
+    const timeEnable = ("0" + hourEnable).slice(-2) + ":" + ("0" + minuteEnable).slice(-2) + ":00";
+    const timeDisable = ("0" + hourDisable).slice(-2) + ":" + ("0" + minuteDisable).slice(-2) + ":00";
 
     if(timeEnable > timeDisable) {
         if(timeNow >= timeEnable || timeNow < timeDisable) {
@@ -480,10 +489,10 @@ function checkAutoEnableStartup(hourEnable, minuteEnable, hourDisable, minuteDis
 
 function checkChangedStorageData(key, object) {
     if(typeof(key) === "string") {
-        return object.hasOwnProperty(key);
+        return Object.prototype.hasOwnProperty.call(object, key);
     } else if(Array.isArray(key)) {
-        for(var i = 0; i < key.length; i++) {
-            if(object.hasOwnProperty(key[i])) {
+        for(let i = 0; i < key.length; i++) {
+            if(Object.prototype.hasOwnProperty.call(object, key[i])) {
                 return true;
             }
         }
@@ -504,20 +513,21 @@ function getBrowser() {
 
 function downloadData(data, name, dataType) {
     window.URL = window.URL || window.webkitURL;
+    let blob;
 
     if(getBrowser() == "Firefox") {
-        var blob = new Blob([data], {type: "application/octet-stream"});
+        blob = new Blob([data], {type: "application/octet-stream"});
     } else {
-        var blob = new Blob([data], {type: dataType});
+        blob = new Blob([data], {type: dataType});
     }
 
     if(getBrowser() == "Firefox") {
-        var downloadElement = document.createElement("iframe");
+        const downloadElement = document.createElement("iframe");
         downloadElement.style.display = "none";
         downloadElement.src = window.URL.createObjectURL(blob);
         document.body.appendChild(downloadElement);
     } else {
-        var downloadElement = document.createElement("a");
+        const downloadElement = document.createElement("a");
         downloadElement.style.display = "none";
         downloadElement.download = name;
         downloadElement.href = window.URL.createObjectURL(blob);
@@ -528,35 +538,36 @@ function downloadData(data, name, dataType) {
 }
 
 function loadPresetSelect(selectId) {
-    var presetSelected = $("#" + selectId).val();
+    let presetSelected = $("#" + selectId).val();
 
     if(presetSelected == null) {
-        var presetSelected = 1;
+        presetSelected = 1;
     }
 
     chrome.storage.local.get("presets", function(data) {
         try {
+            let presets;
             if(data.presets == null || typeof(data.presets) == "undefined") {
                 setSettingItem("presets", defaultPresets);
-                var presets = defaultPresets;
+                presets = defaultPresets;
             } else {
-                var presets = data.presets;
+                presets = data.presets;
             }
 
             $("#" + selectId).html("");
 
-            var nbValue = 1;
-            var optionTitle = "";
+            let nbValue = 1;
+            let optionTitle = "";
 
-            for(var name in presets) {
-                if(presets.hasOwnProperty(name)) {
-                    if(!presets[name].hasOwnProperty("name")) {
-                        var optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue + " : " + i18next.t("modal.archive.presetEmpty") + "</option>";
+            for(const name in presets) {
+                if(Object.prototype.hasOwnProperty.call(presets, name)) {
+                    if(!Object.prototype.hasOwnProperty.call(presets[name], "name")) {
+                        optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue + " : " + i18next.t("modal.archive.presetEmpty") + "</option>";
                     } else {
                         if(presets[name]["name"].trim() == "") {
-                            var optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue + " : " + i18next.t("modal.archive.presetTitleEmpty") + "</option>";
+                            optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue + " : " + i18next.t("modal.archive.presetTitleEmpty") + "</option>";
                         } else {
-                            var optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue  + " : " + $("<div/>").text(presets[name]["name"].substring(0, 50)).html() + "</option>";
+                            optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue  + " : " + $("<div/>").text(presets[name]["name"].substring(0, 50)).html() + "</option>";
                         }
                     }
 
@@ -575,19 +586,21 @@ function loadPresetSelect(selectId) {
 function presetsEnabled(func) {
     chrome.storage.local.get("presets", function (data) {
         try {
+            let presets;
+
             if(data.presets == null || typeof(data.presets) == "undefined") {
                 setSettingItem("presets", defaultPresets);
-                var presets = defaultPresets;
+                presets = defaultPresets;
             } else {
-                var presets = data.presets;
+                presets = data.presets;
             }
 
-            var listPreset = [];
-            var numPreset = 1;
+            const listPreset = [];
+            let numPreset = 1;
 
-            for (var name in presets) {
-                if (presets.hasOwnProperty(name)) {
-                    if(presets[name].hasOwnProperty("name")) {
+            for(const name in presets) {
+                if(Object.prototype.hasOwnProperty.call(presets, name)) {
+                    if(Object.prototype.hasOwnProperty.call(presets[name], "name")) {
                         listPreset.push(numPreset);
                     }
                 }
@@ -604,29 +617,31 @@ function presetsEnabled(func) {
 
 function loadPreset(nb, func) {
     if(func == undefined) {
-        var func = function(res) {};
+        func = function() {};
     }
 
     if(nb < 1 || nb > nbPresets) {
         return func("error");
     }
 
-    chrome.storage.local.get("presets", function (data) {
+    chrome.storage.local.get("presets", data => {
         try {
+            let presets;
+
             if(data.presets == null || typeof(data.presets) == "undefined") {
                 setSettingItem("presets", defaultPresets);
                 return func("empty");
             } else {
-                var presets = data.presets;
+                presets = data.presets;
             }
 
-            var namePreset = nb;
-            var preset = presets[namePreset];
-            var settingsRestored = 0;
+            const namePreset = nb;
+            const preset = presets[namePreset];
+            let settingsRestored = 0;
 
-            for (var key in preset) {
+            for(const key in preset) {
                 if(typeof(key) === "string") {
-                    if(preset.hasOwnProperty(key) && settingsToSavePresets.indexOf(key) !== -1) {
+                    if(Object.prototype.hasOwnProperty.call(preset, key) && settingsToSavePresets.indexOf(key) !== -1) {
                         setSettingItem(key, preset[key]);
                         settingsRestored++;
                     }
@@ -652,19 +667,21 @@ function savePreset(nb, name, func) {
     chrome.storage.local.get("presets", function (dataPreset) {
         chrome.storage.local.get(settingsToSavePresets, function (data) {
             try {
+                let presets;
+
                 if(dataPreset.presets == null || typeof(dataPreset.presets) == "undefined") {
-                    var presets = defaultPresets;
+                    presets = defaultPresets;
                 } else {
-                    var presets = dataPreset.presets;
+                    presets = dataPreset.presets;
                 }
 
-                var namePreset = nb;
-                var preset = presets;
+                const namePreset = nb;
+                const preset = presets;
                 preset[namePreset]["name"] = name.substring(0, 50);
 
-                for(var key in data) {
+                for(const key in data) {
                     if(typeof(key) === "string") {
-                        if(data.hasOwnProperty(key) && settingsToSavePresets.indexOf(key) !== -1) {
+                        if(Object.prototype.hasOwnProperty.call(data, key) && settingsToSavePresets.indexOf(key) !== -1) {
                             preset[namePreset][key] = data[key];
                         }
                     }
@@ -687,13 +704,15 @@ function deletePreset(nb, func) {
 
     chrome.storage.local.get("presets", function (dataPreset) {
         try {
+            let presets;
+
             if(dataPreset.presets == null || typeof(dataPreset.presets) == "undefined") {
-                var presets = defaultPresets;
+                presets = defaultPresets;
             } else {
-                var presets = dataPreset.presets;
+                presets = dataPreset.presets;
             }
 
-            var preset = presets;
+            const preset = presets;
             preset[nb] = {};
 
             setSettingItem("presets", preset);

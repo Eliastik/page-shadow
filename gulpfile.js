@@ -33,7 +33,7 @@ gulp.task("clean-directories", function() {
 });
 
 gulp.task("copy-global", function() {
-    return gulp.src(["./src/**", "!./src/img/src/**", "!./src/img/icon_old.png", "!./src/css/src/**", "!./src/css/*.less", "!./src/css/content_old.css"])
+    return gulp.src(["./src/**", "!./src/img/src/**", "!./src/js/*.js", "!./src/img/icon_old.png", "!./src/css/src/**", "!./src/css/*.less", "!./src/css/content_old.css"])
         .pipe(gulp.dest("./build/global/"));
 });
 
@@ -50,14 +50,14 @@ gulp.task("compress-css", function () {
 });
 
 gulp.task("compile-js", function () {
-    return gulp.src("./build/global/js/*.js")
+    return gulp.src("./src/js/*.js")
         .pipe(webpack({
             entry: {
-                background: "./build/global/js/background.js",
-                options: "./build/global/js/options.js",
-                pageTest: "./build/global/js/pageTest.js",
-                popup: "./build/global/js/popup.js",
-                content: "./build/global/js/content.js"
+                background: "./src/js/background.js",
+                options: "./src/js/options.js",
+                pageTest: "./src/js/pageTest.js",
+                popup: "./src/js/popup.js",
+                content: "./src/js/content.js"
             },
             output: {
                 filename: "./[name].js",
@@ -83,8 +83,6 @@ gulp.task("compile-js", function () {
             }
         }))
         .pipe(gulp.dest("./build/global/js/"));
-
-    // TODO: clean not used JS files (util.js/storage.js/filters.js)
 });
 
 gulp.task("copyChrome", function() {
