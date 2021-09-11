@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2019 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -157,7 +157,7 @@ function in_array_website(needle, haystack) {
 }
 
 function disableEnableToggle(type, checked, url, func) {
-    chrome.storage.local.get(["sitesInterditPageShadow", "whiteList"], function (result) {
+    chrome.storage.local.get(["sitesInterditPageShadow", "whiteList"], result => {
         let disabledWebsites = "";
         const domain = url.hostname;
         const href = url.href;
@@ -211,11 +211,14 @@ function disableEnableToggle(type, checked, url, func) {
 }
 
 function removeA(arr) {
-    let what, a = arguments, L = a.length, ax;
+    let what;
+    const a = arguments;
+    let L = a.length;
+    let ax;
 
     while(L > 1 && arr.length) {
         what = a[--L];
-        while((ax= arr.indexOf(what)) !== -1) {
+        while((ax = arr.indexOf(what)) !== -1) {
             arr.splice(ax, 1);
         }
     }
@@ -544,7 +547,7 @@ function loadPresetSelect(selectId) {
         presetSelected = 1;
     }
 
-    chrome.storage.local.get("presets", function(data) {
+    chrome.storage.local.get("presets", data => {
         try {
             let presets;
             if(data.presets == null || typeof(data.presets) == "undefined") {
@@ -584,7 +587,7 @@ function loadPresetSelect(selectId) {
 }
 
 function presetsEnabled(func) {
-    chrome.storage.local.get("presets", function (data) {
+    chrome.storage.local.get("presets", data => {
         try {
             let presets;
 
@@ -664,8 +667,8 @@ function savePreset(nb, name, func) {
         return func("error");
     }
 
-    chrome.storage.local.get("presets", function (dataPreset) {
-        chrome.storage.local.get(settingsToSavePresets, function (data) {
+    chrome.storage.local.get("presets", dataPreset => {
+        chrome.storage.local.get(settingsToSavePresets, data => {
             try {
                 let presets;
 
@@ -702,7 +705,7 @@ function deletePreset(nb, func) {
         return func("error");
     }
 
-    chrome.storage.local.get("presets", function (dataPreset) {
+    chrome.storage.local.get("presets", dataPreset => {
         try {
             let presets;
 

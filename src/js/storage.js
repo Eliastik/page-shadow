@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2019 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *

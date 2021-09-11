@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2019 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -19,13 +19,13 @@
 import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue } from "./util.js";
 
 (function(){
-    let style = document.createElement("style");
+    const style = document.createElement("style");
     style.type = "text/css";
-    let lnkCustomTheme = document.createElement("link");
+    const lnkCustomTheme = document.createElement("link");
     let backgroundDetected = 0;
     let timeOutLum, timeOutAP, timeOutIC, timeOutBI;
-    let elLumWrapper = document.createElement("div");
-    let elLum = document.createElement("div");
+    const elLumWrapper = document.createElement("div");
+    const elLum = document.createElement("div");
     let precEnabled = false;
     let started = false;
     const runningInIframe = window !== window.top;
@@ -61,18 +61,18 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
         if(document.readyState == "complete" || document.readyState == "interactive") {
             mutationObserve("contrast");
         } else {
-            window.addEventListener("load", function() {
+            window.addEventListener("load", () => {
                 mutationObserve("contrast");
             });
         }
 
         if(typeof timeOutAP !== "undefined") {
-            clearTimeout(timeOutAP)
+            clearTimeout(timeOutAP);
         }
     }
 
     function customThemeApply() {
-        chrome.storage.local.get("theme", function(result) {
+        chrome.storage.local.get("theme", result => {
             if(result.theme != undefined && typeof(result.theme) == "string" && result.theme.startsWith("custom")) {
                 customTheme(result.theme.replace("custom", ""), style, false, lnkCustomTheme);
             }
@@ -125,14 +125,14 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
             if(document.readyState == "complete" || document.readyState == "interactive") {
                 mutationObserve("invert");
             } else {
-                window.addEventListener("load", function() {
+                window.addEventListener("load", () => {
                     mutationObserve("invert");
                 });
             }
         }
 
         if(typeof timeOutIC !== "undefined") {
-            clearTimeout(timeOutIC)
+            clearTimeout(timeOutIC);
         }
     }
 
@@ -192,16 +192,16 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
             document.onreadystatechange = function() {
                 // when the DOM is ready
                 if(document.readyState === "interactive") {
-                    setTimeout(function() { applyBI(element, add, detectType); }, 1); // detect for all the elements of the page
+                    setTimeout(() => applyBI(element, add, detectType), 1); // detect for all the elements of the page
                 }
                 // when the page is entirely loaded
                 if(document.readyState === "complete") {
-                    setTimeout(function() { applyBI(element, add, detectType); }, 1500); // detect for all the elements of the page after 1500 ms
+                    setTimeout(() => applyBI(element, add, detectType), 1500); // detect for all the elements of the page after 1500 ms
                 }
             };
         } else {
             if(document.readyState === "complete") {
-                setTimeout(function() { applyBI(element, add, detectType); }, 1); // detect for all the elements of the page
+                setTimeout(() => applyBI(element, add, detectType), 1); // detect for all the elements of the page
             } else {
                 applyDetectBackground("loading", element, add, detectType);
             }
@@ -231,7 +231,7 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
                 elLum.setAttribute("id", "pageShadowLuminositeDiv");
             }
 
-            if(pourcentage / 100 > maxBrightnessPercentage || pourcentage / 100 < minBrightnessPercentage || typeof pourcentage === "undefined" || typeof pourcentage == null) {
+            if(pourcentage / 100 > maxBrightnessPercentage || pourcentage / 100 < minBrightnessPercentage || typeof pourcentage === "undefined" || pourcentage == null) {
                 elLum.style.opacity = brightnessDefaultValue;
             } else {
                 elLum.style.opacity = pourcentage / 100;
@@ -242,7 +242,7 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
             if(document.readyState == "complete" || document.readyState == "interactive") {
                 mutationObserve("brightness");
             } else {
-                window.addEventListener("load", function() {
+                window.addEventListener("load", () => {
                     mutationObserve("brightness");
                 });
             }
@@ -268,29 +268,29 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
 
     function applyAL(element, wrapper) {
         if(document.body) return appendLum(element, wrapper);
-        timeOutLum = setTimeout(function() { applyAL(element, wrapper) }, 50);
+        timeOutLum = setTimeout(() => applyAL(element, wrapper), 50);
     }
 
     function applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) {
         if(document.body) return assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors);
-        timeOutAP = setTimeout(function() { applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) }, 50);
+        timeOutAP = setTimeout(() => applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors), 50);
     }
 
     function applyIC(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors) {
         if(document.body) return invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors);
-        timeOutIC = setTimeout(function() { applyIC(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors) }, 50);
+        timeOutIC = setTimeout(() => applyIC(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors), 50);
     }
 
     function applyBI(tagName, add, type) {
         if(document.body) return detectBackground(tagName, add, type);
-        timeOutBI = setTimeout(function() { applyBI(tagName, add, type) }, 50);
+        timeOutBI = setTimeout(() => applyBI(tagName, add, type), 50);
     }
 
     function mutationObserve(type) {
         if(type == "contrast") {
             if(typeof mut_contrast !== "undefined") mut_contrast.disconnect();
 
-            mut_contrast = new MutationObserver(function(mutations, mut) {
+            mut_contrast = new MutationObserver(mutations => {
                 mut_contrast.disconnect();
                 const classList = document.body.classList;
                 let containsPageContrast = true;
@@ -303,7 +303,7 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
                     }
                 }
 
-                mutations.forEach(function(mutation) {
+                mutations.forEach((mutation) => {
                     if(mutation.type == "attributes" && mutation.attributeName == "class") {
                         const classList = document.body.classList;
 
@@ -314,12 +314,12 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
                 });
 
                 if(!containsPageContrast) {
-                    setTimeout(function() { main("onlycontrast", "contrast"); }, 1);
+                    setTimeout(() => main("onlycontrast", "contrast"), 1);
                 } else {
                     if(document.readyState == "complete" || document.readyState == "interactive") {
                         mutationObserve("contrast");
                     } else {
-                        window.addEventListener("load", function() {
+                        window.addEventListener("load", () => {
                             mutationObserve("contrast");
                         });
                     }
@@ -337,30 +337,29 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
         } else if(type == "invert") {
             if(typeof mut_invert !== "undefined") mut_invert.disconnect();
 
-            mut_invert = new MutationObserver(function(mutations, mut) {
+            mut_invert = new MutationObserver(mutations => {
                 mut_invert.disconnect();
 
                 function reMutObserveInvert() {
                     if(document.readyState == "complete" || document.readyState == "interactive") {
                         mutationObserve("invert");
                     } else {
-                        window.addEventListener("load", function() {
+                        window.addEventListener("load", () => {
                             mutationObserve("invert");
                         });
                     }
                 }
 
-                mutations.forEach(function(mutation) {
+                mutations.forEach((mutation) => {
                     if(mutation.type == "attributes" && mutation.attributeName == "class") {
                         const classList = document.body.classList;
-                        const classListHTML = document.getElementsByTagName("html")[0].classList;
 
                         if(mutation.oldValue.indexOf("pageShadowInvertImageColor") !== -1 && !classList.contains("pageShadowInvertImageColor")) {
-                            setTimeout(function() { main("onlyInvert", "invert"); }, 1);
+                            setTimeout(() => main("onlyInvert", "invert"), 1);
                         } else if(mutation.oldValue.indexOf("pageShadowInvertVideoColor") !== -1 && !classList.contains("pageShadowInvertVideoColor")) {
-                            setTimeout(function() { main("onlyInvert", "invert"); }, 1);
+                            setTimeout(() => main("onlyInvert", "invert"), 1);
                         } else if(mutation.oldValue.indexOf("pageShadowInvertBgColor") !== -1 && !classList.contains("pageShadowInvertBgColor")) {
-                            setTimeout(function() { main("onlyInvert", "invert"); }, 1);
+                            setTimeout(() => main("onlyInvert", "invert"), 1);
                         } else {
                             reMutObserveInvert();
                         }
@@ -381,19 +380,19 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
         } else if(type == "brightness") {
             if(typeof mut_brightness !== "undefined") mut_brightness.disconnect();
 
-            mut_brightness = new MutationObserver(function(mutations, mut) {
+            mut_brightness = new MutationObserver(mutations => {
                 mut_brightness.disconnect();
                 const brightness = document.getElementById("pageShadowLuminositeDiv");
                 const nightmode = document.getElementById("pageShadowLuminositeDivNightMode");
 
-                mutations.forEach(function(mutation) {
+                mutations.forEach(mutation => {
                     if((!document.body.contains(brightness) && !document.body.contains(nightmode)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
-                        setTimeout(function() { main("onlyBrightness", "brightness"); }, 1);
+                        setTimeout(() => main("onlyBrightness", "brightness"), 1);
                     } else {
                         if(document.readyState == "complete" || document.readyState == "interactive") {
                             mutationObserve("brightness");
                         } else {
-                            window.addEventListener("load", function() {
+                            window.addEventListener("load", () => {
                                 mutationObserve("brightness");
                             });
                         }
@@ -408,8 +407,8 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
                 "characterData": false
             });
         } else if(type == "backgrounds") {
-            mut_backgrounds = new MutationObserver(function(mutations, mut) {
-                mutations.forEach(function(mutation) {
+            mut_backgrounds = new MutationObserver(mutations => {
+                mutations.forEach(mutation => {
                     if(mutation.type == "childList") {
                         for(let i = 0; i < mutation.addedNodes.length; i++) {
                             mutationElementsBackgrounds(mutation.addedNodes[i], null, null);
@@ -464,7 +463,7 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
     function processFilters() {
         chrome.runtime.sendMessage({
             "type": "getAllFilters"
-        }, function(response) {
+        }, response => {
             if(response && response.type == "getAllFiltersResponse" && response.filters) {
                 filtersCache = response.filters;
                 doProcessFilters(response.filters);
@@ -567,7 +566,7 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
         if(runningInIframe) {
             chrome.runtime.sendMessage({
                 "type": "isEnabledForThisPage"
-            }, function(response) {
+            }, response => {
                 if(response && response.type == "isEnabledForThisPageResponse" && response.enabled) {
                     process(true, type);
                 }
@@ -575,7 +574,7 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
                 return true;
             });
         } else {
-            pageShadowAllowed(window.location.href, function(allowed) {
+            pageShadowAllowed(window.location.href, allowed => {
                 process(allowed, type);
             });
         }
@@ -583,7 +582,7 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
 
     function process(allowed, type) {
         if(allowed) {
-            chrome.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor"], function(result) {
+            chrome.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor"], result => {
                 precEnabled = true;
 
                 const pageShadowEnabled = result.pageShadowEnabled;
@@ -631,7 +630,7 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
                 if(document.readyState == "complete") {
                     processFilters();
                 } else {
-                    window.addEventListener("load", function() {
+                    window.addEventListener("load", () => {
                         processFilters();
                     });
                 }
@@ -646,8 +645,8 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
     main("start");
 
     // Execute Page Shadow on the page when the settings have been changed:
-    chrome.storage.onChanged.addListener(function() {
-        chrome.storage.local.get("liveSettings", function(result) {
+    chrome.storage.onChanged.addListener(() => {
+        chrome.storage.local.get("liveSettings", result => {
             if(result.liveSettings !== "false") {
                 main("reset", "all");
             }
@@ -655,7 +654,7 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
     });
 
     // Execute when the page URL changes in Single Page Applications
-    chrome.runtime.onMessage.addListener(function(msg) {
+    chrome.runtime.onMessage.addListener((msg) => {
         if(msg) {
             const enabled = started && ((msg.enabled && !precEnabled) || (!msg.enabled && precEnabled));
     

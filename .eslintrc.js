@@ -7,7 +7,10 @@ module.exports = {
     "extends": "eslint:recommended",
     "parserOptions": {
         "ecmaVersion": 12,
-        "sourceType": "module"
+        "sourceType": "module",
+        "babelOptions": {
+            configFile: "./babel.config.json",
+        }
     },
     "rules": {
         "indent": [
@@ -25,6 +28,22 @@ module.exports = {
         "semi": [
             "error",
             "always"
+        ],
+        "no-var": [
+            "error"
+        ],
+        "no-eval": [
+            "error"
+        ],
+        "prefer-const": [
+            "error"
+        ],
+        "no-implicit-globals": [
+            "error"
+        ],
+        "prefer-arrow-callback": [
+            "error"
         ]
-    }
+    },
+    parser: "@babel/eslint-parser"
 };

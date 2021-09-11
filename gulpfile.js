@@ -70,13 +70,7 @@ gulp.task("compile-js", function () {
                         test: /\.m?js$/,
                         exclude: /(node_modules|libs)/,
                         use: {
-                            loader: "babel-loader",
-                            options: {
-                                presets: [
-                                    ["@babel/env", { "modules": false }]
-                                ],
-                                plugins: ["@babel/plugin-transform-runtime"]
-                            }
+                            loader: "babel-loader"
                         }
                     }
                 ]

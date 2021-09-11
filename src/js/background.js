@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2019 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -20,8 +20,8 @@ import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage,
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
 import { updateFilter, updateAllFilters } from "./filters.js";
 
-var autoEnableActivated = false;
-var lastAutoEnableDetected = null;
+let autoEnableActivated = false;
+let lastAutoEnableDetected = null;
 
 function setPopup() {
     if(typeof(chrome.browserAction) !== "undefined" && typeof(chrome.browserAction.setPopup) !== "undefined") {
@@ -30,7 +30,7 @@ function setPopup() {
         });
     } else if(typeof(chrome.browserAction) !== "undefined" && typeof(chrome.browserAction.onClicked) !== "undefined" && typeof(chrome.tabs) !== "undefined" && typeof(chrome.tabs.create) !== "undefined") {
         // For Firefox for Android
-        chrome.browserAction.onClicked.addListener(function(tab) {
+        chrome.browserAction.onClicked.addListener(tab => {
             if(typeof(tab.id) !== "undefined") {
                 chrome.tabs.create({
                     url: "../extension.html?tabId="+ tab.id
@@ -52,12 +52,13 @@ function createContextMenu(id, type, title, contexts, checked) {
             title: title,
             contexts: contexts,
             checked: checked
-        }, function() {
+        }, () => {
             if(chrome.runtime.lastError) return; // ignore the error messages
         });
     }
 }
 
+// eslint-disable-next-line no-unused-vars
 function updateContextMenu(id, type, title, contexts, checked) {
     if(typeof(chrome.contextMenus) !== "undefined" && typeof(chrome.contextMenus.update) !== "undefined") {
         chrome.contextMenus.update(id, {
@@ -65,7 +66,7 @@ function updateContextMenu(id, type, title, contexts, checked) {
             title: title,
             contexts: contexts,
             checked: checked
-        }, function() {
+        }, () => {
             if(chrome.runtime.lastError) return; // ignore the error messages
         });
     }
@@ -80,20 +81,22 @@ function deleteContextMenu(id) {
 function menu() {
     function createMenu() {
         if(typeof(chrome.storage) !== "undefined" && typeof(chrome.storage.local) !== "undefined") {
-            chrome.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"], function (result) {
+            chrome.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"], result => {
+                let sitesInterdits;
+
                 if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
-                    var sitesInterdits = "";
+                    sitesInterdits = "";
                 } else {
-                    var sitesInterdits = result.sitesInterditPageShadow.split("\n");
+                    sitesInterdits = result.sitesInterditPageShadow.split("\n");
                 }
 
                 if(typeof(chrome.tabs) !== "undefined" && typeof(chrome.tabs.query) !== "undefined") {
-                    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                        var tabUrl = tabs[0].url;
+                    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                        const tabUrl = tabs[0].url;
 
-                        var url = new URL(tabUrl);
-                        var domain = url.hostname;
-                        var href = url.href;
+                        const url = new URL(tabUrl);
+                        const domain = url.hostname;
+                        const href = url.href;
 
                         if(result.whiteList == "true") {
                             if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
@@ -137,18 +140,18 @@ function menu() {
     }
 
     function createMenuOthers() {
-        chrome.storage.local.get(["globallyEnable"], function (result) {
+        chrome.storage.local.get(["globallyEnable"], result => {
             if(result.globallyEnable == "false") {
                 createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], true);
             } else {
                 createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], false);
             }
 
-            presetsEnabled(function(resultat) {
+            presetsEnabled((resultat) => {
                 if(resultat !== false && Array.isArray(resultat) && resultat.length > 0) {
                     createContextMenu("separator-presets", "separator", null, ["all"], false);
 
-                    for(var i = 0; i < resultat.length; i++) {
+                    for(let i = 0; i < resultat.length; i++) {
                         if(resultat[i] <= nbPresets) {
                             createContextMenu("load-preset-" + resultat[i], "normal", getUImessage("loadPreset") + resultat[i], ["all"], false);
                         }
@@ -159,7 +162,7 @@ function menu() {
     }
 
     if(typeof(chrome.contextMenus) !== "undefined" && typeof(chrome.contextMenus.removeAll) !== "undefined") {
-        chrome.contextMenus.removeAll(function() {
+        chrome.contextMenus.removeAll(() => {
             createMenu();
         });
     } else {
@@ -173,8 +176,8 @@ function updateMenu() {
 
 function updateBadge() {
     if(typeof(chrome.tabs) !== "undefined" && typeof(chrome.tabs.query) !== "undefined") {
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            pageShadowAllowed(tabs[0].url, function(enabled) {
+        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+            pageShadowAllowed(tabs[0].url, enabled => {
                 if(typeof(chrome.browserAction) !== "undefined" && typeof(chrome.browserAction.setBadgeText) !== "undefined") {
                     chrome.browserAction.setBadgeText({
                         text: " "
@@ -218,8 +221,8 @@ function updateBadge() {
 
 function checkAutoEnable() {
     if(autoEnableActivated) {
-        getAutoEnableSavedData(function(data) {
-            var enabled = checkAutoEnableStartup(data[6], data[4], data[7], data[5]);
+        getAutoEnableSavedData(data => {
+            const enabled = checkAutoEnableStartup(data[6], data[4], data[7], data[5]);
 
             if(enabled && !lastAutoEnableDetected || enabled && lastAutoEnableDetected == null) {
                 setSettingItem("globallyEnable", "true");
@@ -234,7 +237,7 @@ function checkAutoEnable() {
 
 function autoEnable(changed) {
     if(typeof(chrome.storage) !== "undefined" && typeof(chrome.storage.local) !== "undefined") {
-        chrome.storage.local.get("autoEnable", function (result) {
+        chrome.storage.local.get("autoEnable", result => {
             if(result.autoEnable == "true") {
                 autoEnableActivated = true;
             } else {
@@ -249,47 +252,45 @@ function autoEnable(changed) {
     }
 }
 
-var intervalCheckAutoEnable = setInterval(function() { checkAutoEnable(); }, 1000);
-
 if(typeof(chrome.storage) !== "undefined" && typeof(chrome.storage.onChanged) !== "undefined") {
-    chrome.storage.onChanged.addListener(function() {
+    chrome.storage.onChanged.addListener(() => {
         menu();
         updateBadge();
     });
 }
 
 if(typeof(chrome.tabs) !== "undefined" && typeof(chrome.tabs.onActivated) !== "undefined") {
-    chrome.tabs.onActivated.addListener(function() {
+    chrome.tabs.onActivated.addListener(() => {
         menu();
         updateBadge();
     });
 }
 
 if(typeof(chrome.tabs) !== "undefined" && typeof(chrome.tabs.onUpdated) !== "undefined") {
-    chrome.tabs.onUpdated.addListener(function() {
+    chrome.tabs.onUpdated.addListener(() => {
         menu();
         updateBadge();
     });
 }
 
 if(typeof(chrome.storage) !== "undefined" && typeof(chrome.storage.onChanged) !== "undefined") {
-    chrome.storage.onChanged.addListener(function(changes) {
+    chrome.storage.onChanged.addListener(changes => {
         autoEnable(changes);
     });
 }
 
 if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !== "undefined") {
-    chrome.runtime.onMessage.addListener(function(message, sender, sendMessage) {
+    chrome.runtime.onMessage.addListener((message, sender, sendMessage) => {
         if(message && message.type == "isEnabledForThisPage") {
-            pageShadowAllowed(sender.tab.url, function(enabled) {
+            pageShadowAllowed(sender.tab.url, enabled => {
                 sendMessage({ type: "isEnabledForThisPageResponse", enabled: enabled });
             });
         } else if(message && message.type == "updateAllFilters") {
-            updateAllFilters(function(result) {
+            updateAllFilters(result => {
                 sendMessage({ type: "updateAllFiltersFinished", result: result });
             });
         } else if(message && message.type == "updateFilter") {
-            updateFilter(message.filterId, function(result) {
+            updateFilter(message.filterId, result => {
                 sendMessage({ type: "updateFilterFinished", result: result, filterId: message.filterId });
             });
         }
@@ -300,9 +301,9 @@ if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !=
 
 if(typeof(chrome.contextMenus) !== "undefined" && typeof(chrome.contextMenus.onClicked) !== "undefined") {
     chrome.contextMenus.onClicked.addListener((info, tab) => {
-        disableEnableToggle(info.menuItemId, info.checked && !info.wasChecked, new URL(tab.url), function() {
+        disableEnableToggle(info.menuItemId, info.checked && !info.wasChecked, new URL(tab.url), () => {
             if(info.menuItemId.substring(0, 11) == "load-preset") {
-                var nbPreset = info.menuItemId.substr(12, info.menuItemId.length - 11);
+                const nbPreset = info.menuItemId.substr(12, info.menuItemId.length - 11);
                 loadPreset(nbPreset);
             }
 
@@ -312,9 +313,9 @@ if(typeof(chrome.contextMenus) !== "undefined" && typeof(chrome.contextMenus.onC
 }
 
 if(typeof(chrome.commands) !== "undefined" && typeof(chrome.commands.onCommand) !== "undefined") {
-    chrome.commands.onCommand.addListener(function(command) {
+    chrome.commands.onCommand.addListener(command => {
         if(command == "enableDisable") {
-            chrome.storage.local.get("globallyEnable", function (result) {
+            chrome.storage.local.get("globallyEnable", result => {
                 if(result.globallyEnable == "false") {
                     setSettingItem("globallyEnable", "true");
                 } else {
@@ -331,3 +332,4 @@ updateBadge();
 autoEnable();
 checkFirstLoad();
 migrateSettings();
+setInterval(() => { checkAutoEnable(); }, 1000);

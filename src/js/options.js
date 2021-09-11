@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2019 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -36,7 +36,7 @@ function listTranslations(languages) {
     const language = i18next.language.substr(0, 2);
     $("#languageSelect").text("");
 
-    $.each(languages, function(index, value) {
+    $.each(languages, (index, value) => {
         $("#languageSelect").append("<option data-i18n=\"container.language."+ value +"\" value=\"" + value + "\"" + (language == value ? " selected" : "") + "></option>");
     });
 }
@@ -86,8 +86,8 @@ function resetSettings() {
     $("span[data-toggle=\"tooltip\"]").tooltip("hide");
     $("i[data-toggle=\"tooltip\"]").tooltip("hide");
 
-    chrome.storage.local.clear(function() {
-        setFirstSettings(function() {
+    chrome.storage.local.clear(() => {
+        setFirstSettings(() => {
             $("#textareaAssomPage").val("");
             $("#checkWhiteList").prop("checked", false);
             init_i18next();
@@ -101,7 +101,7 @@ function resetSettings() {
 }
 
 function displaySettings(areaName) {
-    chrome.storage.local.get(["sitesInterditPageShadow", "whiteList"], function(result) {
+    chrome.storage.local.get(["sitesInterditPageShadow", "whiteList"], result => {
         if(areaName != "sync") {
             if(result.sitesInterditPageShadow != undefined) {
                 $("#textareaAssomPage").val(result.sitesInterditPageShadow);
@@ -120,7 +120,7 @@ function displaySettings(areaName) {
             $("#archiveCloudNotCompatible").show();
         }
 
-        archiveCloudAvailable(function(result, date, device) {
+        archiveCloudAvailable((result, date, device) => {
             if(result) {
                 $("#restoreCloudBtn").removeClass("disabled");
                 $("#infoCloudLastArchive").show();
@@ -275,7 +275,8 @@ function displayFilters() {
                     chrome.runtime.sendMessage({
                         "type": "updateFilter",
                         "filterId": index
-                    }, function(response) {
+                    // eslint-disable-next-line no-unused-vars
+                    }, response => {
                         //
                     });
                 });
@@ -301,7 +302,7 @@ function displayFilters() {
 function saveThemeSettings(nb) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
-    chrome.storage.local.get("customThemes", function (result) {
+    chrome.storage.local.get("customThemes", result => {
         let customThemes = defaultCustomThemes;
 
         if(result.customThemes != undefined) {
@@ -323,7 +324,7 @@ function saveThemeSettings(nb) {
 function saveSettings() {
     setSettingItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
 
-    chrome.storage.local.get(["whiteList", "sitesInterditPageShadow"], function(result) {
+    chrome.storage.local.get(["whiteList", "sitesInterditPageShadow"], result => {
         if($("#checkWhiteList").prop("checked") == true) {
             if(result.whiteList !== "true") {
                 setSettingItem("sitesInterditPageShadow", commentAllLines(result.sitesInterditPageShadow));
@@ -350,7 +351,7 @@ function archiveSettings() {
     $("#archiveError").hide();
     $("#archiveDataButton").addClass("disabled");
 
-    chrome.storage.local.get(null, function(data) {
+    chrome.storage.local.get(null, data => {
         try {
             data["ispageshadowarchive"] = "true";
             const date = new Date();
@@ -376,7 +377,7 @@ function restoreSettings(object, func) {
     let ispageshadowarchive = false;
 
     for(const key in object) {
-        if(object.hasOwnProperty(key)) {
+        if(Object.prototype.hasOwnProperty.call(object, key)) {
             if(key === "ispageshadowarchive" && object[key] === "true") {
                 ispageshadowarchive = true;
             }
@@ -388,11 +389,11 @@ function restoreSettings(object, func) {
     }
 
     // Reset data
-    chrome.storage.local.clear(function() {
-        setFirstSettings(function() {
+    chrome.storage.local.clear(() => {
+        setFirstSettings(() => {
             for(const key in object) {
                 if(typeof(key) === "string") {
-                    if(object.hasOwnProperty(key)) {
+                    if(Object.prototype.hasOwnProperty.call(object, key)) {
                         setSettingItem(key, object[key]); // invalid data are ignored by the function
                     }
                 }
@@ -413,32 +414,7 @@ function restoreSettingsFile(event) {
 
     if (typeof FileReader !== "undefined") {
         const reader = new FileReader();
-        reader.onload = onReaderLoad;
-
-        reader.onerror = function() {
-            $("#restoreError").fadeIn(500);
-            displaySettings("local");
-        };
-
-        const fileExtension = event.target.files[0].name.split(".").pop().toLowerCase();
-
-        if(fileExtension == "json") {
-            const filesize = event.target.files[0].size;
-
-            if(filesize <= 5000000) { // max size of 5 MB
-                reader.readAsText(event.target.files[0]);
-            } else {
-                $("#restoreErrorFilesize").fadeIn(500);
-                displaySettings("local");
-                return false;
-            }
-        } else {
-            $("#restoreErrorExtension").fadeIn(500);
-            displaySettings("local");
-            return false;
-        }
-
-        function onReaderLoad(event) {
+        reader.onload = event => {
             let obj;
 
             try {
@@ -463,6 +439,29 @@ function restoreSettingsFile(event) {
                     displaySettings("local");
                 }
             });
+        };
+
+        reader.onerror = function() {
+            $("#restoreError").fadeIn(500);
+            displaySettings("local");
+        };
+
+        const fileExtension = event.target.files[0].name.split(".").pop().toLowerCase();
+
+        if(fileExtension == "json") {
+            const filesize = event.target.files[0].size;
+
+            if(filesize <= 5000000) { // max size of 5 MB
+                reader.readAsText(event.target.files[0]);
+            } else {
+                $("#restoreErrorFilesize").fadeIn(500);
+                displaySettings("local");
+                return false;
+            }
+        } else {
+            $("#restoreErrorExtension").fadeIn(500);
+            displaySettings("local");
+            return false;
         }
     } else {
         $("#restoreError").hide();
@@ -478,7 +477,7 @@ function archiveCloudSettings() {
         $("#archiveCloudBtn").addClass("disabled");
         $("#restoreCloudBtn").addClass("disabled");
 
-        chrome.storage.local.get(null, function(data) {
+        chrome.storage.local.get(null, data => {
             try {
                 data["ispageshadowarchive"] = "true";
 
@@ -512,7 +511,7 @@ function archiveCloudAvailable(func) {
         return func(false, null, null);
     }
 
-    chrome.storage.sync.get(["dateLastBackup", "pageShadowStorageBackup", "deviceBackup"], function(data) {
+    chrome.storage.sync.get(["dateLastBackup", "pageShadowStorageBackup", "deviceBackup"], data => {
         if(data.dateLastBackup != undefined && data.pageShadowStorageBackup != "undefined" && data.deviceBackup != "undefined") {
             return func(true, data.dateLastBackup, data.deviceBackup);
         } else {
@@ -530,7 +529,7 @@ function restoreCloudSettings() {
         $("#archiveCloudBtn").addClass("disabled");
         $("#restoreCloudBtn").addClass("disabled");
 
-        chrome.storage.sync.get("pageShadowStorageBackup", function(data) {
+        chrome.storage.sync.get("pageShadowStorageBackup", data => {
             if(data.pageShadowStorageBackup != undefined) {
                 try {
                     const dataObj = JSON.parse(data.pageShadowStorageBackup);
@@ -538,7 +537,7 @@ function restoreCloudSettings() {
                     $("#textareaAssomPage").val("");
                     $("#checkWhiteList").prop("checked", false);
 
-                    restoreSettings(dataObj, function(result) {
+                    restoreSettings(dataObj, result => {
                         if(result) {
                             $("#restoreCloudSuccess").fadeIn(500);
                             loadPresetSelect("loadPresetSelect");
@@ -565,7 +564,7 @@ function createPreset() {
     $("#savePresetError").hide();
     $("#savePresetSuccess").hide();
 
-    savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val(), function(result) {
+    savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val(), result => {
         if(result == "success") {
             $("#savePresetSuccess").fadeIn(500);
         } else {
@@ -578,22 +577,22 @@ function createPreset() {
     });
 }
 
-$(document).ready(function() {
+$(document).ready(() => {
     let savedTimeout;
 
-    $("#validerButton").click(function() {
+    $("#validerButton").click(() => {
         saveSettings();
     });
 
-    $("#themeSelect").change(function() {
+    $("#themeSelect").change(() => {
         displayTheme($("#themeSelect").val());
     });
 
-    $("#customThemeSave").click(function() {
+    $("#customThemeSave").click(() => {
         saveThemeSettings($("#themeSelect").val());
 
         clearTimeout(savedTimeout);
-        savedTimeout = setTimeout(function(){
+        savedTimeout = setTimeout(()=> {
             $("#customThemeSave").attr("data-original-title", "");
             $("#customThemeSave").tooltip("hide");
             $("#customThemeSave").tooltip("disable");
@@ -604,47 +603,47 @@ $(document).ready(function() {
         $("#customThemeSave").tooltip("show");
     });
 
-    $("#customThemeCancel").click(function() {
+    $("#customThemeCancel").click(() => {
         displayTheme($("#themeSelect").val());
     });
 
-    $("#customThemeReset").click(function() {
+    $("#customThemeReset").click(() => {
         displayTheme($("#themeSelect").val(), true);
     });
 
-    $("#aboutDialogBtn").click(function() {
+    $("#aboutDialogBtn").click(() => {
         $("span[data-toggle=\"tooltip\"]").tooltip("hide");
         $("i[data-toggle=\"tooltip\"]").tooltip("hide");
     });
 
-    $("#resetConfirmBtn").click(function() {
+    $("#resetConfirmBtn").click(() => {
         $("span[data-toggle=\"tooltip\"]").tooltip("hide");
         $("i[data-toggle=\"tooltip\"]").tooltip("hide");
     });
 
-    $("#loadPresetBtn").click(function() {
+    $("#loadPresetBtn").click(() => {
         $("#loadPreset").show();
         $("#savePreset").hide();
         $("#deletePreset").hide();
     });
 
-    $("#savePresetBtn").click(function() {
+    $("#savePresetBtn").click(() => {
         $("#loadPreset").hide();
         $("#savePreset").show();
         $("#deletePreset").hide();
     });
 
-    $("#deletePresetBtn").click(function() {
+    $("#deletePresetBtn").click(() => {
         $("#loadPreset").hide();
         $("#savePreset").hide();
         $("#deletePreset").show();
     });
 
-    $("#archiveCloudBtn").click(function() {
+    $("#archiveCloudBtn").click(() => {
         archiveCloudSettings();
     });
 
-    $("#restoreCloudBtn").click(function() {
+    $("#restoreCloudBtn").click(() => {
         restoreCloudSettings();
     });
 
@@ -660,7 +659,7 @@ $(document).ready(function() {
         placement: "auto top"
     });
 
-    $("#confirmReset").click(function() {
+    $("#confirmReset").click(() => {
         resetSettings();
     });
 
@@ -668,7 +667,7 @@ $(document).ready(function() {
     $("#updateBtn").attr("href", "http://www.eliastiksofts.com/page-shadow/update.php?v="+ extensionVersion);
 
     if(typeof(chrome.storage.onChanged) !== "undefined") {
-        chrome.storage.onChanged.addListener(function(changes, areaName) {
+        chrome.storage.onChanged.addListener((changes, areaName) => {
             displaySettings(areaName);
         });
     }
@@ -678,7 +677,7 @@ $(document).ready(function() {
         submit: false,
         color: "000000",
         appendTo: $("#customTheme"),
-        onChange:function(hsb,hex,rgb,el,bySetColor) {
+        onChange: (hsb, hex) => {
             $("#colorpicker1").css("background-color", "#"+hex);
             $("#previsualisationDiv").css("background-color", "#"+hex);
             $("#colorpicker1").attr("value", hex);
@@ -690,7 +689,7 @@ $(document).ready(function() {
         submit: false,
         color: "FFFFFF",
         appendTo: $("#customTheme"),
-        onChange:function(hsb,hex,rgb,el,bySetColor) {
+        onChange: (hsb, hex) => {
             $("#colorpicker2").css("background-color", "#"+hex);
             $("#textPreview").css("color", "#"+hex);
             $("#colorpicker2").attr("value", hex);
@@ -702,7 +701,7 @@ $(document).ready(function() {
         submit: false,
         color: "1E90FF",
         appendTo: $("#customTheme"),
-        onChange:function(hsb,hex,rgb,el,bySetColor) {
+        onChange: (hsb, hex) => {
             $("#colorpicker3").css("background-color", "#"+hex);
             $("#linkPreview").css("color", "#"+hex);
             $("#colorpicker3").attr("value", hex);
@@ -714,18 +713,18 @@ $(document).ready(function() {
         submit: false,
         color: "800080",
         appendTo: $("#customTheme"),
-        onChange:function(hsb,hex,rgb,el,bySetColor) {
+        onChange: (hsb, hex) => {
             $("#colorpicker4").css("background-color", "#"+hex);
             $("#linkVisitedPreview").css("color", "#"+hex);
             $("#colorpicker4").attr("value", hex);
         }
     });
 
-    $("#archiveDataButton").click(function() {
+    $("#archiveDataButton").click(() => {
         archiveSettings();
     });
 
-    $("#restoreDataButton").click(function() {
+    $("#restoreDataButton").click(() => {
         $("#inputFileJSON").trigger("click");
     });
 
@@ -734,7 +733,7 @@ $(document).ready(function() {
         $(this).val("");
     });
 
-    $("#customThemeFont").on("input", function() {
+    $("#customThemeFont").on("input", () => {
         if($("#customThemeFont").val().trim() !== "") {
             $("#previsualisationDiv").css("font-family", "\"" + $("#customThemeFont").val() + "\"");
         } else {
@@ -774,7 +773,7 @@ $(document).ready(function() {
     }
 
     if(getBrowser() == "Chrome") {
-        $("#keyboardShortcuts").click(function() {
+        $("#keyboardShortcuts").click(() => {
             chrome.tabs.create({
                 url: "chrome://extensions/configureCommands"
             });
@@ -794,12 +793,12 @@ $(document).ready(function() {
         }
     }
 
-    $("#loadPresetValid").click(function() {
+    $("#loadPresetValid").click(() => {
         $("#restorePresetSuccess").hide();
         $("#restorePresetEmpty").hide();
         $("#restorePresetError").hide();
 
-        loadPreset(parseInt($("#loadPresetSelect").val()), function(result) {
+        loadPreset(parseInt($("#loadPresetSelect").val()), result => {
             if(result == "success") {
                 $("#restorePresetSuccess").fadeIn(500);
             } else if(result == "empty") {
@@ -810,21 +809,21 @@ $(document).ready(function() {
         });
     });
 
-    $("#savePresetValid").click(function() {
+    $("#savePresetValid").click(() => {
         createPreset();
     });
 
-    $("#savePresetTitle").keyup(function(e) {
+    $("#savePresetTitle").keyup((e) => {
         if(e.keyCode === 13) {
             createPreset();
         }
     });
 
-    $("#deletePresetValid").click(function() {
+    $("#deletePresetValid").click(() => {
         $("#deletePresetError").hide();
         $("#deletePresetSuccess").hide();
 
-        deletePreset(parseInt($("#deletePresetSelect").val()), function(result) {
+        deletePreset(parseInt($("#deletePresetSelect").val()), result => {
             if(result == "success") {
                 $("#deletePresetSuccess").fadeIn(500);
             } else {
@@ -837,10 +836,11 @@ $(document).ready(function() {
         });
     });
 
-    $("#updateAllFilters").click(function() {
+    $("#updateAllFilters").click(() => {
         chrome.runtime.sendMessage({
             "type": "updateAllFilters"
-        }, function(response) {
+        // eslint-disable-next-line no-unused-vars
+        }, response => {
             //
         });
     });

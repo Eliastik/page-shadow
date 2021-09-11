@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2019 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -27,7 +27,7 @@ import { init_i18next } from "./locales.js";
 window.$ = $;
 window.jQuery = $;
 
-var checkContrastMode, timeoutInfoPreset;
+let checkContrastMode;
 
 init_i18next("popup", () => translateContent());
 
@@ -43,29 +43,25 @@ function translateContent() {
     checkContrastMode();
 }
 
-function changeLng(lng) {
-    i18next.changeLanguage(lng);
-}
-
 i18next.on("languageChanged", () => {
     translateContent();
 });
 
-$(document).ready(function() {
-    var elLumB = document.createElement("div");
+$(document).ready(() => {
+    const elLumB = document.createElement("div");
     elLumB.style.display = "none";
     document.body.appendChild(elLumB);
-    var style = document.createElement("style");
+    const style = document.createElement("style");
     style.type = "text/css";
-    var lnkCustomTheme = document.createElement("link");
-    var brightnessChangedFromThisPage = false;
-    var selectedPreset = 1;
+    const lnkCustomTheme = document.createElement("link");
+    let brightnessChangedFromThisPage = false;
+    let selectedPreset = 1;
 
     // append the list of the color temperatures in the select
     $("#tempSelect").text("");
 
-    for(var i = 0; i < colorTemperaturesAvailable.length; i++) {
-        var colorTempIndex = i + 1;
+    for(let i = 0; i < colorTemperaturesAvailable.length; i++) {
+        const colorTempIndex = i + 1;
         $("#tempSelect").append("<option value=\""+ colorTempIndex +"\">"+ colorTemperaturesAvailable[i] +" K</option>");
     }
 
@@ -89,25 +85,25 @@ $(document).ready(function() {
         }
     });
 
-    $("#linkAdvSettings").click(function() {
+    $("#linkAdvSettings").click(() => {
         chrome.tabs.create({
             url: "options.html"
         });
     });
 
-    $("#linkAdvSettings2").click(function() {
+    $("#linkAdvSettings2").click(() => {
         chrome.tabs.create({
             url: "options.html#customTheme"
         });
     });
 
-    $("#linkTestExtension").click(function() {
+    $("#linkTestExtension").click(() => {
         chrome.tabs.create({
             url: "pageTest.html"
         });
     });
 
-    $("#settingsPresets").click(function() {
+    $("#settingsPresets").click(() => {
         chrome.tabs.create({
             url: "options.html#presets"
         });
@@ -131,11 +127,11 @@ $(document).ready(function() {
 
     function previewTemp(temp) {
         $("#pageShadowLuminositeDivNightMode").attr("class", "");
-        var tempColor = "2000";
+        let tempColor = "2000";
 
         if(temp != undefined) {
-            var tempIndex = parseInt(temp);
-            var tempColor = colorTemperaturesAvailable[tempIndex - 1];
+            const tempIndex = parseInt(temp);
+            tempColor = colorTemperaturesAvailable[tempIndex - 1];
 
             $("#pageShadowLuminositeDivNightMode").addClass("k" + tempColor);
         } else {
@@ -145,15 +141,17 @@ $(document).ready(function() {
 
     function checkEnable() {
         function check(url) {
-            chrome.storage.local.get(["sitesInterditPageShadow", "whiteList"], function (result) {
+            chrome.storage.local.get(["sitesInterditPageShadow", "whiteList"], result => {
+                let sitesInterdits;
+
                 if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == "undefined" || result.sitesInterditPageShadow.trim() == "") {
-                    var sitesInterdits = "";
+                    sitesInterdits = "";
                 } else {
-                    var sitesInterdits = result.sitesInterditPageShadow.split("\n");
+                    sitesInterdits = result.sitesInterditPageShadow.split("\n");
                 }
 
-                var domain = url.hostname;
-                var href = url.href;
+                const domain = url.hostname;
+                const href = url.href;
 
                 if(result.whiteList == "true") {
                     if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
@@ -199,20 +197,20 @@ $(document).ready(function() {
             });
         }
 
-        var matches = window.location.search.match(/[\?&]tabId=([^&]+)/);
+        const matches = window.location.search.match(/[?&]tabId=([^&]+)/);
 
         if(matches && matches.length === 2) {
-            var tabId = parseInt(matches[1]);
-            chrome.tabs.get(tabId, function(tabinfos) {
+            const tabId = parseInt(matches[1]);
+            chrome.tabs.get(tabId, (tabinfos) => {
                 if(!chrome.runtime.lastError) {
-                    var url = new URL(tabinfos.url);
+                    const url = new URL(tabinfos.url);
                     check(url);
                 }
             });
         } else {
-            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.query({active: true, currentWindow: true}, tabs => {
                 if(!chrome.runtime.lastError) {
-                    var url = new URL(tabs[0].url);
+                    const url = new URL(tabs[0].url);
                     check(url);
                 }
             });
@@ -220,21 +218,21 @@ $(document).ready(function() {
     }
 
     function disablePageShadow(type, checked) {
-        var matches = window.location.search.match(/[\?&]tabId=([^&]+)/);
+        const matches = window.location.search.match(/[?&]tabId=([^&]+)/);
 
         if(matches && matches.length === 2) {
-            var tabId = parseInt(matches[1]);
-            chrome.tabs.get(tabId, function(tabinfos) {
+            const tabId = parseInt(matches[1]);
+            chrome.tabs.get(tabId, (tabinfos) => {
                 if(!chrome.runtime.lastError) {
-                    var url = new URL(tabinfos.url);
+                    const url = new URL(tabinfos.url);
                     disableEnableToggle(type, checked, url);
                     checkEnable();
                 }
             });
         } else {
-            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.query({active: true, currentWindow: true}, tabs => {
                 if(!chrome.runtime.lastError) {
-                    var url = new URL(tabs[0].url);
+                    const url = new URL(tabs[0].url);
                     disableEnableToggle(type, checked, url);
                     checkEnable();
                 }
@@ -245,43 +243,43 @@ $(document).ready(function() {
     checkEnable();
 
     if(typeof(chrome.tabs.onActivated) !== "undefined") {
-        chrome.tabs.onActivated.addListener(function() {
+        chrome.tabs.onActivated.addListener(() => {
             checkEnable();
         });
     }
 
     if(typeof(chrome.tabs.onUpdated) !== "undefined") {
-        chrome.tabs.onUpdated.addListener(function() {
+        chrome.tabs.onUpdated.addListener(() => {
             checkEnable();
         });
     }
 
-    $("#disableWebsite").click(function() {
+    $("#disableWebsite").click(() => {
         disablePageShadow("disable-website", false);
     });
 
-    $("#enableWebsite").click(function() {
+    $("#enableWebsite").click(() => {
         disablePageShadow("disable-website", true);
     });
 
-    $("#disableWebpage").click(function() {
+    $("#disableWebpage").click(() => {
         disablePageShadow("disable-webpage", false);
     });
 
-    $("#enableWebpage").click(function() {
+    $("#enableWebpage").click(() => {
         disablePageShadow("disable-webpage", true);
     });
 
     checkContrastMode = function() {
-        chrome.storage.local.get(["theme", "pageShadowEnabled", "disableImgBgColor"], function (result) {
+        chrome.storage.local.get(["theme", "pageShadowEnabled", "disableImgBgColor"], result => {
             // append the list of themes in the select
             $("#themeSelect").text("");
 
-            for(var i = 1; i <= nbCustomThemesSlots; i++) {
+            for(let i = 1; i <= nbCustomThemesSlots; i++) {
                 $("#themeSelect").append("<option value=\"custom" + i + "\">" + i18next.t("container.customTheme", { count: i }) + "</option>");
             }
 
-            for(var i = 1; i <= nbThemes; i++) {
+            for(let i = 1; i <= nbThemes; i++) {
                 $("#themeSelect").append("<option value=\"" + i + "\">" + i18next.t("container.theme", { count: i }) + "</option>");
             }
 
@@ -338,7 +336,7 @@ $(document).ready(function() {
         setSettingItem("theme", $(this).val());
 
         if($(this).val().trim().startsWith("custom")) {
-            chrome.storage.local.get("customThemeInfoDisable", function(result) {
+            chrome.storage.local.get("customThemeInfoDisable", result => {
                 if(typeof result.customThemeInfoDisable == undefined || result.customThemeInfoDisable !== "true") {
                     $("#customThemeInfos").modal("show");
                 }
@@ -355,7 +353,7 @@ $(document).ready(function() {
     });
 
     function checkCustomTheme() {
-        chrome.storage.local.get("theme", function(result) {
+        chrome.storage.local.get("theme", result => {
             if(result.theme != undefined && typeof(result.theme) == "string" && result.theme.startsWith("custom")) {
                 customTheme(result.theme.replace("custom", ""), style, true, lnkCustomTheme);
             }
@@ -363,7 +361,7 @@ $(document).ready(function() {
     }
 
     function checkColorInvert() {
-        chrome.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor"], function (result) {
+        chrome.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor"], (result) => {
             if(result.colorInvert == "true") {
                 // Convert old settings to new settings
                 setSettingItem("colorInvert", "false");
@@ -475,7 +473,7 @@ $(document).ready(function() {
     });
 
     function checkAutoEnable() {
-        chrome.storage.local.get("autoEnable", function (result) {
+        chrome.storage.local.get("autoEnable", result => {
             if(result.autoEnable == "true" && $("#autoEnable").is(":checked") == false) {
                 $("#autoEnable").prop("checked", true);
             } else if(result.autoEnable !== "true" && $("#autoEnable").is(":checked") == true) {
@@ -497,15 +495,14 @@ $(document).ready(function() {
         $("#hourEnableFormat").hide();
         $("#hourDisableFormat").hide();
 
-        getAutoEnableSavedData(function(data) {
-            var autoEnable = data[0];
-            var format = data[1];
-            var hourEnableFormat = data[2];
-            var hourDisableFormat = data[3];
-            var minuteEnable = data[4];
-            var minuteDisable =  data[5];
-            var hourEnable = data[6];
-            var hourDisable = data[7];
+        getAutoEnableSavedData(data => {
+            const format = data[1];
+            const hourEnableFormat = data[2];
+            const hourDisableFormat = data[3];
+            const minuteEnable = data[4];
+            const minuteDisable =  data[5];
+            const hourEnable = data[6];
+            const hourDisable = data[7];
 
             if(format == "12") {
                 $("#autoEnableHourFormat").val("12");
@@ -538,32 +535,32 @@ $(document).ready(function() {
         $("#hourEnableFormat").hide();
         $("#hourDisableFormat").hide();
 
-        var data = getAutoEnableFormData();
+        const data = getAutoEnableFormData();
 
-        var type = data[0];
-        var hourEnableFormat = data[3];
-        var hourDisableFormat = data[6];
-        var hourEnable = $("#hourEnable").val();
-        var hourDisable = $("#hourDisable").val();
+        const type = data[0];
+        const hourEnableFormat = data[3];
+        const hourDisableFormat = data[6];
+        let hourEnable = $("#hourEnable").val();
+        let hourDisable = $("#hourDisable").val();
 
         if(type == "24") {
-            var hourEnable = checkNumber(hourEnable, 0, 12) ? hourEnable : hourToPeriodFormat(defaultHourEnable, 12, null)[1];
-            var hourEnable = hourToPeriodFormat(hourEnable, 24, hourEnableFormat);
+            hourEnable = checkNumber(hourEnable, 0, 12) ? hourEnable : hourToPeriodFormat(defaultHourEnable, 12, null)[1];
+            hourEnable = hourToPeriodFormat(hourEnable, 24, hourEnableFormat);
             $("#hourEnable").val(hourEnable);
-            var hourDisable = checkNumber(hourDisable, 0, 12) ? hourDisable : hourToPeriodFormat(defaultHourDisable, 12, null)[1];
-            var hourDisable = hourToPeriodFormat(hourDisable, 24, hourDisableFormat);
+            hourDisable = checkNumber(hourDisable, 0, 12) ? hourDisable : hourToPeriodFormat(defaultHourDisable, 12, null)[1];
+            hourDisable = hourToPeriodFormat(hourDisable, 24, hourDisableFormat);
             $("#hourDisable").val(hourDisable);
             $("#hourEnable").attr("max", 23);
             $("#hourDisable").attr("max", 23);
         } else if(type == "12") {
             $("#hourEnableFormat").show();
             $("#hourDisableFormat").show();
-            var hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
-            var hourEnable = hourToPeriodFormat(hourEnable, 12, null);
+            hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
+            hourEnable = hourToPeriodFormat(hourEnable, 12, null);
             $("#hourEnable").val(hourEnable[1]);
             $("#hourEnableFormat").val(hourEnable[0]);
-            var hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
-            var hourDisable = hourToPeriodFormat(hourDisable, 12, null);
+            hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
+            hourDisable = hourToPeriodFormat(hourDisable, 12, null);
             $("#hourDisable").val(hourDisable[1]);
             $("#hourDisableFormat").val(hourDisable[0]);
             $("#hourEnable").attr("max", 12);
@@ -574,7 +571,7 @@ $(document).ready(function() {
     }
 
     function saveSettingsAutoEnable() {
-        var data = getAutoEnableFormData();
+        const data = getAutoEnableFormData();
 
         chrome.storage.local.set({
             "autoEnableHourFormat": data[0],
@@ -595,7 +592,7 @@ $(document).ready(function() {
         $("#infoTimeEnabled").hide();
         $("#infoTimeDisabled").hide();
 
-        var data = getAutoEnableFormData();
+        const data = getAutoEnableFormData();
 
         if(checkAutoEnableStartup(data[1], data[2], data[4], data[5])) {
             $("#infoTimeEnabled").show();
@@ -604,34 +601,34 @@ $(document).ready(function() {
         }
     }
 
-    $("#saveSettingsAutoEnable").click(function() {
+    $("#saveSettingsAutoEnable").click(() => {
         saveSettingsAutoEnable();
     });
 
-    $("#cancelSettingsAutoEnable").click(function() {
+    $("#cancelSettingsAutoEnable").click(() => {
         checkSettingsAutoEnable();
     });
 
-    $("#autoEnableSettings").on("hidden.bs.modal", function () {
+    $("#autoEnableSettings").on("hidden.bs.modal", () => {
         checkSettingsAutoEnable();
     });
 
-    $("#autoEnableHourFormat").change(function() {
+    $("#autoEnableHourFormat").change(() => {
         changeFormat();
     });
 
-    $("#formAutoEnable input").on("input", function() {
+    $("#formAutoEnable input").on("input", () => {
         infoAutoEnable();
     });
 
-    $("#hourEnableFormat, #hourDisableFormat").change(function() {
+    $("#hourEnableFormat, #hourDisableFormat").change(() => {
         infoAutoEnable();
     });
 
-    var intervalCheckAutoEnable = setInterval(function() { infoAutoEnable(); }, 1000);
+    setInterval(() => { infoAutoEnable(); }, 1000);
 
     function checkLiveSettings() {
-        chrome.storage.local.get("liveSettings", function(result) {
+        chrome.storage.local.get("liveSettings", result => {
             if(result.liveSettings == "true" && $("#liveSettings").is(":checked") == false) {
                 $("#liveSettings").prop("checked", true);
             } else if(result.liveSettings !== "true" && $("#liveSettings").is(":checked") == true) {
@@ -649,7 +646,7 @@ $(document).ready(function() {
     });
 
     function checkBrightness() {
-        chrome.storage.local.get(["pageLumEnabled", "nightModeEnabled", "pourcentageLum"], function (result) {
+        chrome.storage.local.get(["pageLumEnabled", "nightModeEnabled", "pourcentageLum"], result => {
             if(result.pageLumEnabled == "true") {
                 if(result.nightModeEnabled == "true") {
                     $("#checkNighMode").attr("checked", "checked");
@@ -658,7 +655,7 @@ $(document).ready(function() {
                     elLumB.setAttribute("id", "pageShadowLuminositeDiv");
                 }
 
-                if(result.pourcentageLum / 100 > maxBrightnessPercentage || result.pourcentageLum / 100 < minBrightnessPercentage || typeof result.pourcentageLum === "undefined" || typeof result.pourcentageLum == null) {
+                if(result.pourcentageLum / 100 > maxBrightnessPercentage || result.pourcentageLum / 100 < minBrightnessPercentage || typeof result.pourcentageLum === "undefined" || result.pourcentageLum == null) {
                     elLumB.style.opacity = brightnessDefaultValue;
                     sliderLuminosite.setValue(brightnessDefaultValue * 100);
                 } else {
@@ -691,14 +688,14 @@ $(document).ready(function() {
         }
     });
 
-    $("#sliderLuminosite").change(function() {
-        var sliderLumValue = sliderLuminosite.getValue();
+    $("#sliderLuminosite").change(() => {
+        const sliderLumValue = sliderLuminosite.getValue();
         brightnessChangedFromThisPage = true;
         setSettingItem("pourcentageLum", sliderLumValue);
     });
 
     function checkNightMode() {
-        chrome.storage.local.get(["nightModeEnabled", "colorTemp"], function (result) {
+        chrome.storage.local.get(["nightModeEnabled", "colorTemp"], result => {
             if(result.nightModeEnabled == "true") {
                 if(result.colorTemp != undefined) {
                     $("#tempSelect").val(result.colorTemp);
@@ -736,7 +733,7 @@ $(document).ready(function() {
     });
 
     function checkGlobalEnable() {
-        chrome.storage.local.get("globallyEnable", function (result) {
+        chrome.storage.local.get("globallyEnable", (result) => {
             if(result.globallyEnable == "false") {
                 $("#pageShadowGlobalSwitch").prop("checked", false);
             } else {
@@ -753,10 +750,10 @@ $(document).ready(function() {
         }
     });
 
-    $("#loadPresetValid").click(function() {
+    $("#loadPresetValid").click(() => {
         $("#infoPreset").removeClass("show");
 
-        loadPreset(parseInt($("#loadPresetSelect").val()), function(result) {
+        loadPreset(parseInt($("#loadPresetSelect").val()), (result) => {
             if(result == "success") {
                 $("#infoPreset").text(i18next.t("modal.archive.restorePresetSuccess"));
             } else if(result == "empty") {
@@ -767,7 +764,7 @@ $(document).ready(function() {
 
             $("#infoPreset").addClass("show");
 
-            $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", function(e) {
+            $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", (e) => {
                 if(e.originalEvent.animationName === "fadeout") {
                     $("#infoPreset").removeClass("show");
                 }
@@ -775,12 +772,12 @@ $(document).ready(function() {
         });
     });
 
-    $("#loadPresetSelect").change(function() {
+    $("#loadPresetSelect").change(() => {
         selectedPreset = $("#loadPresetSelect").val();
     });
 
     function displaySettings() {
-        chrome.storage.local.get(["theme", "colorTemp", "pourcentageLum"], function (result) {
+        chrome.storage.local.get(["theme", "colorTemp", "pourcentageLum"], result => {
             checkContrastMode();
             checkColorInvert();
             checkLiveSettings();
@@ -790,7 +787,7 @@ $(document).ready(function() {
             checkAutoEnable();
             checkGlobalEnable();
 
-            if(typeof result.pourcentageLum !== "undefined" && typeof result.pourcentageLum !== null && result.pourcentageLum / 100 <= maxBrightnessPercentage && result.pourcentageLum / 100 >= minBrightnessPercentage && brightnessChangedFromThisPage == false) {
+            if(typeof result.pourcentageLum !== "undefined" && result.pourcentageLum !== null && result.pourcentageLum / 100 <= maxBrightnessPercentage && result.pourcentageLum / 100 >= minBrightnessPercentage && brightnessChangedFromThisPage == false) {
                 sliderLuminosite.setValue(result.pourcentageLum);
                 brightnessChangedFromThisPage = false;
             } else if(brightnessChangedFromThisPage == false) {
@@ -810,7 +807,7 @@ $(document).ready(function() {
     displaySettings();
 
     if(typeof(chrome.storage.onChanged) !== "undefined") {
-        chrome.storage.onChanged.addListener(function() {
+        chrome.storage.onChanged.addListener(() => {
             displaySettings();
         });
     }

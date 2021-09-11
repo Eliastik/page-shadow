@@ -19,7 +19,7 @@
 import { setSettingItem } from "./storage.js";
 import { defaultFilters } from "./util.js";
 
-let filters = [];
+const rules = [];
 
 function openFiltersFiles() {
     const files = {};
@@ -113,7 +113,7 @@ async function cacheFilters() {
             const parsed = parseLine(line);
 
             if(parsed) {
-                filters.push(parsed);
+                rules.push(parsed);
             }
         }
     }
@@ -123,7 +123,7 @@ if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !=
     chrome.runtime.onMessage.addListener(async(message, sender, sendMessage) => {
         if(message && message.type == "getAllFilters") {
             await cacheFilters();
-            sendMessage({ type: "getAllFiltersResponse", filters: filters });
+            sendMessage({ type: "getAllFiltersResponse", filters: rules });
         }
 
         return true;
