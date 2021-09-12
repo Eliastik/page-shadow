@@ -186,7 +186,8 @@
             "lastUpdate": "Dernière mise à jour le : {{date}} à {{hour}}",
             "lastUpdateNever": "Dernière mise à jour le : jamais",
             "errorUpdate": "Erreur lors de la dernière mise à jour",
-            "filterDetails": "Détails du filtre"
+            "filterDetails": "Détails du filtre",
+            "cleanAll": "Vider tous les caches"
         },
         "close": "Fermer",
         "ok": "OK",

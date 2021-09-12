@@ -19,7 +19,7 @@
 import { setSettingItem } from "./storage.js";
 import { defaultFilters } from "./util.js";
 
-const rules = [];
+let rules = [];
 
 function openFiltersFiles() {
     const files = {};
@@ -82,6 +82,24 @@ async function updateAllFilters() {
                 filters.filters[i] = await updateFilter(i);
             }
 
+            filters.lastUpdated = Date.now();
+            setSettingItem("filtersSettings", filters);
+            resolve(true);
+        });
+    });
+}
+
+async function cleanAllFilters() {
+    return new Promise(resolve => {
+        chrome.storage.local.get("filtersSettings", async(result) => {
+            const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+            const nbFilters = filters.filters.length;
+
+            for(let i = 0; i < nbFilters; i++) {
+                filters.filters[i].content = null;
+                filters.filters[i].lastUpdated = 0;
+            }
+
             setSettingItem("filtersSettings", filters);
             resolve(true);
         });
@@ -129,6 +147,7 @@ function parseLine(line) {
 }
 
 async function cacheFilters() {
+    rules = [];
     const data = await openFiltersFiles();
     
     for(const key of Object.keys(data)) {
@@ -155,4 +174,4 @@ if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !=
     });
 }
 
-export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter };
+export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters };

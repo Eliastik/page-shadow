@@ -186,7 +186,8 @@
             "lastUpdate": "Last update: {{date}} at {{hour}}",
             "lastUpdateNever": "Last update: never",
             "errorUpdate": "Error during the last update",
-            "filterDetails": "Filter details"
+            "filterDetails": "Filter details",
+            "cleanAll": "Clean all cache"
         },
         "close": "Close",
         "ok": "OK",

@@ -917,4 +917,15 @@ $(document).ready(() => {
             return true;
         });
     });
+
+    $("#cleanAllFilters").click(() => {
+        $("#cleanAllFilters").attr("disabled", "disabled");
+        
+        chrome.runtime.sendMessage({
+            "type": "cleanAllFilters"
+        }, response => {
+            if(response && response.type == "cleanAllFiltersFinished") $("#cleanAllFilters").removeAttr("disabled");
+            return true;
+        });
+    });
 });

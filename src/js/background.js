@@ -16,9 +16,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, nbPresets } from "./util.js";
+import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, nbPresets, defaultFilters } from "./util.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
-import { updateOneFilter, updateAllFilters, toggleFilter } from "./filters.js";
+import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters } from "./filters.js";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
@@ -235,6 +235,19 @@ function checkAutoEnable() {
     }
 }
 
+function checkAutoUpdateFilters() {
+    chrome.storage.local.get("filtersSettings", result => {
+        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+        const lastUpdate = filters.lastUpdated;
+        const updateInterval = filters.updateInterval;
+        const currentDate = Date.now();
+
+        if(updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
+            updateAllFilters();
+        }
+    });
+}
+
 function autoEnable(changed) {
     if(typeof(chrome.storage) !== "undefined" && typeof(chrome.storage.local) !== "undefined") {
         chrome.storage.local.get("autoEnable", result => {
@@ -302,6 +315,10 @@ if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !=
                 toggleFilter(message.filterId, true).then(result => {
                     sendMessage({ type: "enabledFilter", result: result, filterId: message.filterId });
                 });
+            } else if(message.type == "cleanAllFilters") {
+                cleanAllFilters().then(result => {
+                    sendMessage({ type: "cleanAllFiltersFinished", result: result });
+                });
             }
         }
 
@@ -342,4 +359,7 @@ updateBadge();
 autoEnable();
 checkFirstLoad();
 migrateSettings();
-setInterval(() => { checkAutoEnable(); }, 1000);
+setInterval(() => {
+    checkAutoEnable();
+    checkAutoUpdateFilters();
+}, 1000);

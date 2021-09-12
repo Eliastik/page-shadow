@@ -94,7 +94,8 @@ const defaultFilters = {
             "content": null
         }
     ],
-    "lastUpdated": 0
+    "lastUpdated": 0,
+    "updateInterval": 24 * 60 * 60 * 1000
 };
 const defaultFiltersContent = {};
 // End of the global configuration of the extension
