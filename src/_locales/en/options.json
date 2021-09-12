@@ -178,6 +178,16 @@
             "title": "Confirmation",
             "message": "Are you sure that you want to reset all the settings of the extension?"
         },
+        "filters": {
+            "title": "Filters",
+            "infos": "The filters improve Page Shadow compatibility with websites by fixing display issues. These filters are used by the Increase page contrast and Invert the colors features. These filters are downloaded from online sources. They are automatically updated, and it's also possible to do this manually. You can also write your own filter rules.",
+            "updateAll": "Update all",
+            "addFilter": "Add a new filter source",
+            "lastUpdate": "Last update: {{date}} at {{hour}}",
+            "lastUpdateNever": "Last update: never",
+            "errorUpdate": "Error during the last update",
+            "filterDetails": "Filter details"
+        },
         "close": "Close",
         "ok": "OK",
         "yes": "Yes",

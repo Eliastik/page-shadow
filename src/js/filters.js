@@ -29,7 +29,7 @@ function openFiltersFiles() {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
 
             filters.filters.forEach(filter => {
-                if(filter.content != null) {
+                if(filter.content != null && filter.enabled) {
                     files[filter.sourceUrl] = filter.content;
                 }
             });
@@ -73,15 +73,40 @@ function updateFilter(idFilter) {
 }
 
 async function updateAllFilters() {
-    chrome.storage.local.get("filtersSettings", async(result) => {
-        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
-        const nbFilters = filters.filters.length;
+    return new Promise(resolve => {
+        chrome.storage.local.get("filtersSettings", async(result) => {
+            const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+            const nbFilters = filters.filters.length;
 
-        for(let i = 0; i < nbFilters; i++) {
-            filters.filters[i] = await updateFilter(i);
-        }
+            for(let i = 0; i < nbFilters; i++) {
+                filters.filters[i] = await updateFilter(i);
+            }
 
-        setSettingItem("filtersSettings", filters);
+            setSettingItem("filtersSettings", filters);
+            resolve(true);
+        });
+    });
+}
+
+async function updateOneFilter(idFilter) {
+    return new Promise(resolve => {
+        chrome.storage.local.get("filtersSettings", async(result) => {
+            const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+            filters.filters[idFilter] = await updateFilter(idFilter);
+            setSettingItem("filtersSettings", filters);
+            resolve(true);
+        });
+    });
+}
+
+async function toggleFilter(idFilter, enable) {
+    return new Promise(resolve => {
+        chrome.storage.local.get("filtersSettings", result => {
+            const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+            filters.filters[idFilter].enabled = enable;
+            setSettingItem("filtersSettings", filters);
+            resolve(true);
+        });
     });
 }
 
@@ -130,4 +155,4 @@ if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !=
     });
 }
 
-export { openFiltersFiles, updateFilter, updateAllFilters };
+export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter };

@@ -62,12 +62,12 @@ const defaultFilters = {
         {
             "filterName": "Filtre par défaut/Default filter",
             "sourceName": "Eliastik's Softs",
-            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/default.txt",
+            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/standard.txt",
             "lastUpdated": 0,
             "enabled": true,
             "hasError": false,
             "local": false,
-            "homepage": "",
+            "homepage": "https://www.eliastiksofts.com/page-shadow/",
             "content": null
         },
         {
@@ -78,7 +78,7 @@ const defaultFilters = {
             "enabled": true,
             "hasError": false,
             "local": false,
-            "homepage": "",
+            "homepage": "https://www.eliastiksofts.com/page-shadow/",
             "content": null
         },
         {

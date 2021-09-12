@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, nbPresets } from "./util.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
-import { updateFilter, updateAllFilters } from "./filters.js";
+import { updateOneFilter, updateAllFilters, toggleFilter } from "./filters.js";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
@@ -281,18 +281,28 @@ if(typeof(chrome.storage) !== "undefined" && typeof(chrome.storage.onChanged) !=
 
 if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !== "undefined") {
     chrome.runtime.onMessage.addListener((message, sender, sendMessage) => {
-        if(message && message.type == "isEnabledForThisPage") {
-            pageShadowAllowed(sender.tab.url, enabled => {
-                sendMessage({ type: "isEnabledForThisPageResponse", enabled: enabled });
-            });
-        } else if(message && message.type == "updateAllFilters") {
-            updateAllFilters(result => {
-                sendMessage({ type: "updateAllFiltersFinished", result: result });
-            });
-        } else if(message && message.type == "updateFilter") {
-            updateFilter(message.filterId, result => {
-                sendMessage({ type: "updateFilterFinished", result: result, filterId: message.filterId });
-            });
+        if(message) {
+            if(message.type == "isEnabledForThisPage") {
+                pageShadowAllowed(sender.tab.url, enabled => {
+                    sendMessage({ type: "isEnabledForThisPageResponse", enabled: enabled });
+                });
+            } else if(message.type == "updateAllFilters") {
+                updateAllFilters().then(result => {
+                    sendMessage({ type: "updateAllFiltersFinished", result: result });
+                });
+            } else if(message.type == "updateFilter") {
+                updateOneFilter(message.filterId).then(result => {
+                    sendMessage({ type: "updateFilterFinished", result: result, filterId: message.filterId });
+                });
+            } else if(message.type == "disableFilter") {
+                toggleFilter(message.filterId, false).then(result => {
+                    sendMessage({ type: "disabledFilter", result: result, filterId: message.filterId });
+                });
+            } else if(message.type == "enableFilter") {
+                toggleFilter(message.filterId, true).then(result => {
+                    sendMessage({ type: "enabledFilter", result: result, filterId: message.filterId });
+                });
+            }
         }
 
         return true;

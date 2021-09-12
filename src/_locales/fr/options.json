@@ -179,8 +179,14 @@
             "message": "Êtes-vous sûr de vouloir réinitialiser tous les paramètres de l'extension ?"
         },
         "filters": {
+            "title": "Filtres",
+            "infos": "Les filtres permettent d'améliorer la compatibilité de Page Shadow avec les sites web en corrigeant les problèmes d'affichage. Ces filtres sont utilisés par la fonctionnalité Augmenter le contraste de la page et Inverser les couleurs. Ces filtres sont téléchargés depuis des sources en ligne. Ils sont automatiquement mis à jour, et il est également possible de le faire manuellement. Vous pouvez également écrire vos propres règles de filtre.",
+            "updateAll": "Tout mettre à jour",
+            "addFilter": "Ajouter une source de filtre",
             "lastUpdate": "Dernière mise à jour le : {{date}} à {{hour}}",
-            "lastUpdateNever": "Dernière mise à jour le : jamais"
+            "lastUpdateNever": "Dernière mise à jour le : jamais",
+            "errorUpdate": "Erreur lors de la dernière mise à jour",
+            "filterDetails": "Détails du filtre"
         },
         "close": "Fermer",
         "ok": "OK",

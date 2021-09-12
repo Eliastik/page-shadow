@@ -35,6 +35,7 @@ window.jQuery = $;
 
 window.codeMirrorUserCss = null;
 window.codeMirrorJSONArchive = null;
+window.codeMirrorFilterData = null;
 
 init_i18next("options", () => translateContent());
 
@@ -232,7 +233,29 @@ function displayFilters() {
             const element = document.createElement("li");
             element.setAttribute("class", "list-group-item filterButtons");
 
+            const checkbox = document.createElement("input");
+            checkbox.setAttribute("type", "checkbox");
+            if(filter.enabled) checkbox.checked = true;
+
+            checkbox.addEventListener("click", () => {
+                checkbox.disabled = true;
+                let messageType = "enableFilter";
+
+                if(!checkbox.checked) messageType = "disableFilter";
+
+                chrome.runtime.sendMessage({
+                    "type": messageType,
+                    "filterId": index
+                }, response => {
+                    if(response && (response.type == "enabledFilter" || response.type == "disabledFilter")) checkbox.disabled = false;
+                    return true;
+                });
+            });
+
+            element.appendChild(checkbox);
+
             const texts = document.createElement("div");
+            texts.setAttribute("class", "filterText");
 
             const title = document.createElement("strong");
             title.textContent = filter.filterName + " – " + filter.sourceName;
@@ -245,7 +268,7 @@ function displayFilters() {
 
                 if(filter.hasError) {
                     const hasError = document.createElement("div");
-                    hasError.textContent = "Erreur lors de la dernière mise à jour";
+                    hasError.textContent = i18next.t("modal.filters.errorUpdate");
                     hasError.style.color = "red";
                     texts.appendChild(hasError);
                 }
@@ -256,20 +279,37 @@ function displayFilters() {
             const buttonContainer = document.createElement("div");
             buttonContainer.style.display = "inline-block";
 
-            const buttonSee = document.createElement("button");
-            buttonSee.setAttribute("class", "btn btn-sm btn-default");
-            const iconSee = document.createElement("i");
-            iconSee.setAttribute("class", "fa fa-eye fa-fw");
-            buttonSee.appendChild(iconSee);
+            if(!filter.customFilter) {
+                const buttonSee = document.createElement("button");
+                buttonSee.setAttribute("class", "btn btn-sm btn-default");
+                buttonSee.setAttribute("data-toggle", "modal");
+                buttonSee.setAttribute("data-target", "#filterDetails");
+                if(!filter.content) buttonSee.disabled = true;
+                const iconSee = document.createElement("i");
+                iconSee.setAttribute("class", "fa fa-eye fa-fw");
+                buttonSee.appendChild(iconSee);
 
-            buttonContainer.appendChild(buttonSee);
+                buttonSee.addEventListener("click", () => {
+                    displayDetailsFilters(index);
+                });
+
+                buttonContainer.appendChild(buttonSee);
+            }
 
             if(!filter.customFilter) {
-                const buttonHome = document.createElement("button");
-                buttonHome.setAttribute("class", "btn btn-sm btn-default");
-                const iconHome = document.createElement("i");
-                iconHome.setAttribute("class", "fa fa-home fa-fw");
-                buttonHome.appendChild(iconHome);
+                if(filter.homepage && filter.homepage.trim() != "") {
+                    const buttonHome = document.createElement("button");
+                    buttonHome.setAttribute("class", "btn btn-sm btn-default");
+                    const iconHome = document.createElement("i");
+                    iconHome.setAttribute("class", "fa fa-home fa-fw");
+                    buttonHome.appendChild(iconHome);
+
+                    buttonHome.addEventListener("click", () => {
+                        window.open(filter.homepage);
+                    });
+
+                    buttonContainer.appendChild(buttonHome);
+                }
     
                 const buttonUpdate = document.createElement("button");
                 buttonUpdate.setAttribute("class", "btn btn-sm btn-default");
@@ -278,16 +318,17 @@ function displayFilters() {
                 buttonUpdate.appendChild(iconUpdate);
 
                 buttonUpdate.addEventListener("click", () => {
+                    buttonUpdate.disabled = true;
+
                     chrome.runtime.sendMessage({
                         "type": "updateFilter",
                         "filterId": index
-                    // eslint-disable-next-line no-unused-vars
                     }, response => {
-                        //
+                        if(response && response.type == "updateFilterFinished") buttonUpdate.disabled = false;
+                        return true;
                     });
                 });
 
-                buttonContainer.appendChild(buttonHome);
                 buttonContainer.appendChild(buttonUpdate);
             } else {
                 const buttonEdit = document.createElement("button");
@@ -302,6 +343,22 @@ function displayFilters() {
             element.appendChild(buttonContainer);
             document.getElementById("filtersList").appendChild(element);
         });
+    });
+}
+
+function displayDetailsFilters(idFilter) {
+    window.codeMirrorFilterData.getDoc().setValue("");
+
+    chrome.storage.local.get("filtersSettings", result => {
+        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+
+        if(filters) {
+            const filter = filters.filters[idFilter];
+
+            if(filter) {
+                window.codeMirrorFilterData.getDoc().setValue(filter.content);
+            }
+        }
     });
 }
 
@@ -766,6 +823,14 @@ $(document).ready(() => {
         readOnly: true
     });
 
+    window.codeMirrorFilterData = CodeMirror.fromTextArea(document.getElementById("codeMirrorFilterData"), {
+        lineNumbers: true,
+        theme: "material",
+        autoRefresh: true,
+        readOnly: true,
+        lineWrapping: true
+    });
+
     window.codeMirrorJSONArchive.setSize(null, 50);
 
     displaySettings("local");
@@ -843,11 +908,13 @@ $(document).ready(() => {
     });
 
     $("#updateAllFilters").click(() => {
+        $("#updateAllFilters").attr("disabled", "disabled");
+        
         chrome.runtime.sendMessage({
             "type": "updateAllFilters"
-        // eslint-disable-next-line no-unused-vars
         }, response => {
-            //
+            if(response && response.type == "updateAllFiltersFinished") $("#updateAllFilters").removeAttr("disabled");
+            return true;
         });
     });
 });

@@ -559,13 +559,30 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="readmeLabel"><i class="fa fa-filter fa-fw" aria-hidden="true"></i> <span>Filtres</span></h4>
+                        <h4 class="modal-title" id="readmeLabel"><i class="fa fa-filter fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.title"></span></h4>
                     </div>
                     <div class="modal-body">
-                        <p><span>Les filtres permettent d'améliorer la compatibilité de Page Shadow avec les sites web en corrigeant les problèmes d'affichage. Ces filtres sont utilisés par la fonctionnalité Augmenter le contraste de la page et Inverser les couleurs. Ces filtres sont téléchargés depuis des sources en ligne. Ils sont automatiquement mis à jour, et il est également possible de le faire manuellement. Vous pouvez également écrire vos propres règles de filtre.</span></p>
-                        <button class="btn btn-sm btn-primary" id="updateAllFilters"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> Tout mettre à jour</button>
+                        <p><span data-i18n="modal.filters.infos"></span></p>
+                        <button class="btn btn-sm btn-primary" id="updateAllFilters"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.updateAll"></span></button>
                         <ul class="list-group" id="filtersList"></ul>
-                        <button class="btn btn-sm btn-primary"><i class="fa fa-plus fa-fw" aria-hidden="true"></i> Ajouter une source de filtre</button>
+                        <button class="btn btn-sm btn-primary"><i class="fa fa-plus fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.addFilter"></span></button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- filters display -->
+        <div class="modal fade" id="filterDetails" tabindex="-1" role="dialog" aria-labelledby="filterDetails">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="readmeLabel"><i class="fa fa-filter fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.filterDetails"></span></h4>
+                    </div>
+                    <div class="modal-body">
+                        <textarea id="codeMirrorFilterData" style="width: 100%; height: 650px;"></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>

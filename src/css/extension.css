@@ -341,11 +341,16 @@ div.navbar-right {
 }
 .filterButtons {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
 }
 .filterButtons button {
     margin-right: 8px !important;
+    margin-bottom: 0 !important;
+}
+.filterButtons .filterText {
+    flex-grow: 1;
+    margin-left: 8px;
 }
 #customTheme .tooltip-inner {
     width: auto;
