@@ -566,7 +566,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                         <button class="btn btn-sm btn-primary" id="updateAllFilters"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.updateAll"></span></button> &nbsp; 
                         <button class="btn btn-sm btn-default" id="cleanAllFilters"><i class="fa fa-trash fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.cleanAll"></span></button>
                         <ul class="list-group" id="filtersList"></ul>
-                        <button class="btn btn-sm btn-primary"><i class="fa fa-plus fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.addFilter"></span></button>
+                        <button class="btn btn-sm btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#addFilterSource"><i class="fa fa-plus fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.addFilter"></span></button>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
@@ -587,6 +587,37 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- add filters -->
+        <div class="modal fade" id="addFilterSource" tabindex="-1" role="dialog" aria-labelledby="addFilterSource" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="readmeLabel"><i class="fa fa-plus fa-fw" aria-hidden="true"></i> <span>Ajouter une source de filtre</span></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-horizontal">
+                            <p class="large-text"><span>Entrez ci-dessous l'adresse vers la source de filtre :</span></p>
+                            <div class="form-group">
+                                <label for="filterAddress" class="col-lg-2 control-label bold">Adresse du filtre :</label>
+                                <div class="col-lg-10">
+                                    <input type="text" id="filterAddress" class="form-control"></select>
+                                </div>
+                            </div>
+                            <div class="form-group center">
+                                <p id="addFilterErrorFetch" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span>Erreur lors de la connexion à l'adresse entrée.</span></p>
+                                <p id="addFilterErrorParsing" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span>Erreur lors de la récupération des données du filtre. Assurez-vous qu'il s'agisse bien d'un filtre Page Shadow.</span></p>
+                                <p id="addFilterErrorAlreadyAdded" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span>Ce filtre a déjà été ajouté.</span></p>
+                                <p id="addFilterErrorUnknown" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span>Une erreur inconnue est survenue.</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="addFilterBtn"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modal.confirm"></span></button>
+                        <button type="button" class="btn btn-danger" id="addFilterCancelBtn" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.cancel"></span></button>
                     </div>
                 </div>
             </div>

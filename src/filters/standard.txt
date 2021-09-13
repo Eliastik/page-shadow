@@ -1,3 +1,10 @@
+#! Page Shadow Filter 1.0
+#! Name: Default filter
+#! Homepage: https://www.eliastiksofts.com/page-shadow/
+#! Sourcename: Page Shadow
+#! Version: 1
+#! LastUpdate: 0
+#! License: GPL-3.0
 # Standard Filter for Page Shadow
 # Last update: 8/31/2021 18:41:53
 hacklol.eliastiksofts.com|disableContrastFor|#carousel-home,#carousel-home *

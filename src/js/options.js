@@ -310,6 +310,26 @@ function displayFilters() {
 
                     buttonContainer.appendChild(buttonHome);
                 }
+
+                if(!filter.builtIn) {
+                    const buttonDelete = document.createElement("button");
+                    buttonDelete.setAttribute("class", "btn btn-sm btn-default");
+                    const iconDelete = document.createElement("i");
+                    iconDelete.setAttribute("class", "fa fa-trash fa-fw");
+                    buttonDelete.appendChild(iconDelete);
+
+                    buttonDelete.addEventListener("click", () => {
+                        buttonDelete.disabled = true;
+
+                        chrome.runtime.sendMessage({
+                            "type": "deleteFilter",
+                            "filterId": index
+                        }, response => {
+                            if(response && response.type == "deleteFilterFinished") buttonDelete.disabled = false;
+                            return true;
+                        });
+                    });
+                }
     
                 const buttonUpdate = document.createElement("button");
                 buttonUpdate.setAttribute("class", "btn btn-sm btn-default");
@@ -926,6 +946,52 @@ $(document).ready(() => {
         }, response => {
             if(response && response.type == "cleanAllFiltersFinished") $("#cleanAllFilters").removeAttr("disabled");
             return true;
+        });
+    });
+
+    $("#addFilterBtn").click(() => {
+        $("#addFilterBtn").attr("disabled", "disabled");
+        $("#filterAddress").attr("disabled", "disabled");
+        $("#addFilterCancelBtn").attr("disabled", "disabled");
+        $("#addFilterErrorFetch").hide();
+        $("#addFilterErrorParsing").hide();
+        $("#addFilterErrorUnknown").hide();
+        $("#addFilterErrorAlreadyAdded").hide();
+        
+        chrome.runtime.sendMessage({
+            "type": "addFilter",
+            "address": $("#filterAddress").val()
+        }, response => {
+            if(response && (response.type == "addFilterFinished" || response.type == "addFilterError")) {
+                $("#addFilterBtn").removeAttr("disabled");
+                $("#filterAddress").removeAttr("disabled");
+                $("#addFilterCancelBtn").removeAttr("disabled");
+
+                if(response.type == "addFilterError") {
+                    switch(response.error) {
+                    case "Fetch error":
+                        $("#addFilterErrorFetch").show();
+                        break;
+                    case "Parsing error":
+                        $("#addFilterErrorParsing").show();
+                        break;
+                    case "Unknown error":
+                        $("#addFilterErrorUnknown").show();
+                        break;
+                    case "Already added error":
+                        $("#addFilterErrorAlreadyAdded").show();
+                        break;
+                    }
+                } else {
+                    $("#addFilterSource").modal("hide");
+                }
+            }
+
+            return true;
+        });
+        
+        $("#addFilterSource").on("hidden.bs.modal", () => {
+            $("#filters").modal("show");
         });
     });
 });

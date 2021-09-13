@@ -163,6 +163,107 @@ async function cacheFilters() {
     }
 }
 
+function extractMetadataLine(line) {
+    if(line) {
+        const lineTrimmed = line.trim();
+
+        if(lineTrimmed && lineTrimmed.startsWith("#!")) {
+            const data = line.split("#!")[1];
+            const lineSplitted = data.split(/:(.+)/);
+
+            if(lineSplitted && lineSplitted.length >= 2) {
+                const dataObject = {};
+                dataObject[lineSplitted[0].trim().toLowerCase()] = lineSplitted[1].trim();
+                return dataObject;
+            }
+        }
+    }
+
+    return null;
+}
+
+function extractMetadata(text) {
+    const lines = text.split("\n");
+    const data = {};
+
+    if(lines) {
+        if(lines[0]) {
+            const splitted = lines[0].split("#!");
+            const isPageShadowFilter = splitted && splitted.length >= 2 && splitted[1].trim().toLowerCase().startsWith("page shadow filter");
+
+            if(!isPageShadowFilter) {
+                return null;
+            }
+        }
+
+        for(const line of lines) {
+            const parsed = extractMetadataLine(line);
+    
+            if(parsed && Object.keys(parsed).length > 0) {
+                const key = Object.keys(parsed)[0];
+                data[key] = parsed[key];
+            }
+        }
+    }
+
+    return data;
+}
+
+async function addFilter(address) {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get("filtersSettings", async(result) => {
+            const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+
+            if(filters && filters.filters) {
+                for(let i = 0; i < filters.filters.length; i++) {
+                    if(filters.filters[i].sourceUrl == address) {
+                        reject("Already added error");
+                    }
+                }
+    
+                try {
+                    const data = await fetch(address);
+        
+                    if(data) {
+                        const text = await data.text();
+                        const metadata = extractMetadata(text);
+    
+                        if(metadata) {
+                            const name = metadata["name"];
+                            const sourcename = metadata["sourcename"];
+                            const homepage = metadata["homepage"];
+    
+                            if(name != null && sourcename != null) {
+                                filters.filters.push({
+                                    "filterName": name,
+                                    "sourceName": sourcename,
+                                    "sourceUrl": address,
+                                    "lastUpdated": 0,
+                                    "enabled": true,
+                                    "hasError": false,
+                                    "local": false,
+                                    "homepage": homepage,
+                                    "builtIn": false,
+                                    "content": null
+                                });
+                            }
+    
+                            setSettingItem("filtersSettings", filters);
+                            resolve();
+                        }
+                        
+                        reject("Parsing error");
+                    }
+                } catch(e) {
+                    reject("Fetch error");
+                }
+            }
+            
+            reject("Unknown error");
+        });
+    });
+}
+
 if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !== "undefined") {
     chrome.runtime.onMessage.addListener(async(message, sender, sendMessage) => {
         if(message && message.type == "getAllFilters") {
@@ -174,4 +275,4 @@ if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !=
     });
 }
 
-export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters };
+export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter };

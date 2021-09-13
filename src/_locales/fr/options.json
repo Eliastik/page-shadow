@@ -196,6 +196,7 @@
         "confirm": "Valider",
         "load": "Charger",
         "create": "Créer",
-        "delete": "Supprimer"
+        "delete": "Supprimer",
+        "cancel": "Annuler"
     }
 }

@@ -196,6 +196,7 @@
         "confirm": "Confirm",
         "load": "Load",
         "create": "Create",
-        "delete": "Delete"
+        "delete": "Delete",
+        "cancel": "Cancel"
     }
 }

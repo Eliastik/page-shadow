@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, nbPresets, defaultFilters } from "./util.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
-import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters } from "./filters.js";
+import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter } from "./filters.js";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
@@ -318,6 +318,12 @@ if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !=
             } else if(message.type == "cleanAllFilters") {
                 cleanAllFilters().then(result => {
                     sendMessage({ type: "cleanAllFiltersFinished", result: result });
+                });
+            } else if(message.type == "addFilter") {
+                addFilter(message.address).then(result => {
+                    sendMessage({ type: "addFilterFinished", result: result });
+                }).catch(error => {
+                    sendMessage({ type: "addFilterError", error: error });
                 });
             }
         }
