@@ -84,6 +84,7 @@ async function updateAllFilters() {
 
             filters.lastUpdated = Date.now();
             setSettingItem("filtersSettings", filters);
+            cacheFilters();
             resolve(true);
         });
     });
@@ -101,6 +102,7 @@ async function cleanAllFilters() {
             }
 
             setSettingItem("filtersSettings", filters);
+            cacheFilters();
             resolve(true);
         });
     });
@@ -112,6 +114,7 @@ async function updateOneFilter(idFilter) {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
             filters.filters[idFilter] = await updateFilter(idFilter);
             setSettingItem("filtersSettings", filters);
+            cacheFilters();
             resolve(true);
         });
     });
@@ -123,6 +126,7 @@ async function toggleFilter(idFilter, enable) {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
             filters.filters[idFilter].enabled = enable;
             setSettingItem("filtersSettings", filters);
+            cacheFilters();
             resolve(true);
         });
     });
@@ -211,13 +215,17 @@ function extractMetadata(text) {
 
 async function addFilter(address) {
     return new Promise((resolve, reject) => {
+        if(!address || (address && address.trim() == "")) {
+            return reject("Empty error");
+        }
+
         chrome.storage.local.get("filtersSettings", async(result) => {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
 
             if(filters && filters.filters) {
                 for(let i = 0; i < filters.filters.length; i++) {
                     if(filters.filters[i].sourceUrl == address) {
-                        reject("Already added error");
+                        return reject("Already added error");
                     }
                 }
     
@@ -249,17 +257,32 @@ async function addFilter(address) {
                             }
     
                             setSettingItem("filtersSettings", filters);
-                            resolve();
+                            return resolve();
                         }
                         
-                        reject("Parsing error");
+                        return reject("Parsing error");
                     }
                 } catch(e) {
-                    reject("Fetch error");
+                    return reject("Fetch error");
                 }
             }
             
-            reject("Unknown error");
+            return reject("Unknown error");
+        });
+    });
+}
+
+async function removeFilter(idFilter) {
+    return new Promise(resolve => {
+        chrome.storage.local.get("filtersSettings", result => {
+            const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+
+            if(filters && filters.filters) {
+                filters.filters = filters.filters.filter((value, index) => index != idFilter);
+                setSettingItem("filtersSettings", filters);
+            }
+
+            resolve();
         });
     });
 }
@@ -267,7 +290,6 @@ async function addFilter(address) {
 if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !== "undefined") {
     chrome.runtime.onMessage.addListener(async(message, sender, sendMessage) => {
         if(message && message.type == "getAllFilters") {
-            await cacheFilters();
             sendMessage({ type: "getAllFiltersResponse", filters: rules });
         }
 
@@ -275,4 +297,4 @@ if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !=
     });
 }
 
-export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter };
+export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter };

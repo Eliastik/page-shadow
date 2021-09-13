@@ -29,7 +29,8 @@
         "textareaPlaceholder": "# One item per line…\n# Example:\nwww.google.com\nhttps://www.google.com/maps\n*.google.*\n/(.*).google.(.*)/",
         "reset": "Reset the settings",
         "validate": "Confirm",
-        "customTheme": "Custom theme n°{{count}}"
+        "customTheme": "Custom theme n°{{count}}",
+        "filters": "Filters"
     },
     "modal": {
         "syntax": {
@@ -187,7 +188,20 @@
             "lastUpdateNever": "Last update: never",
             "errorUpdate": "Error during the last update",
             "filterDetails": "Filter details",
-            "cleanAll": "Clean all cache"
+            "cleanAll": "Clean all cache",
+            "addFilterTitle": "Add a filter source",
+            "addFilterInfos": "Enter below the address to the filter source:",
+            "addFilterAddress": "Filter address:",
+            "addFilterErrorEmpty": "You didn't enter anything.",
+            "addFilterErrorFetch": "Error connecting to the entered address.",
+            "addFilterErrorParsing": "Error retrieving data from the filter. Make sure it's a Page Shadow filter.",
+            "addFilterErrorAlreadyAdded": "This filter has already been added.",
+            "addFilterErrorUnknown": "An unknown error has occurred.",
+            "seeDetails": "See filter details",
+            "homepage": "Source homepage",
+            "deleteSource": "Delete this source",
+            "updateFilter": "Update this filter",
+            "editFilter": "Edit your filter"
         },
         "close": "Close",
         "ok": "OK",

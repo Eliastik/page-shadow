@@ -282,8 +282,8 @@ function displayFilters() {
             if(!filter.customFilter) {
                 const buttonSee = document.createElement("button");
                 buttonSee.setAttribute("class", "btn btn-sm btn-default");
-                buttonSee.setAttribute("data-toggle", "modal");
-                buttonSee.setAttribute("data-target", "#filterDetails");
+                buttonSee.setAttribute("data-toggle", "tooltip");
+                buttonSee.setAttribute("title", i18next.t("modal.filters.seeDetails"));
                 if(!filter.content) buttonSee.disabled = true;
                 const iconSee = document.createElement("i");
                 iconSee.setAttribute("class", "fa fa-eye fa-fw");
@@ -300,6 +300,8 @@ function displayFilters() {
                 if(filter.homepage && filter.homepage.trim() != "") {
                     const buttonHome = document.createElement("button");
                     buttonHome.setAttribute("class", "btn btn-sm btn-default");
+                    buttonHome.setAttribute("data-toggle", "tooltip");
+                    buttonHome.setAttribute("title", i18next.t("modal.filters.homepage"));
                     const iconHome = document.createElement("i");
                     iconHome.setAttribute("class", "fa fa-home fa-fw");
                     buttonHome.appendChild(iconHome);
@@ -314,6 +316,8 @@ function displayFilters() {
                 if(!filter.builtIn) {
                     const buttonDelete = document.createElement("button");
                     buttonDelete.setAttribute("class", "btn btn-sm btn-default");
+                    buttonDelete.setAttribute("data-toggle", "tooltip");
+                    buttonDelete.setAttribute("title", i18next.t("modal.filters.deleteSource"));
                     const iconDelete = document.createElement("i");
                     iconDelete.setAttribute("class", "fa fa-trash fa-fw");
                     buttonDelete.appendChild(iconDelete);
@@ -322,17 +326,21 @@ function displayFilters() {
                         buttonDelete.disabled = true;
 
                         chrome.runtime.sendMessage({
-                            "type": "deleteFilter",
+                            "type": "removeFilter",
                             "filterId": index
                         }, response => {
-                            if(response && response.type == "deleteFilterFinished") buttonDelete.disabled = false;
+                            if(response && response.type == "removeFilterFinished") buttonDelete.disabled = false;
                             return true;
                         });
                     });
+
+                    buttonContainer.appendChild(buttonDelete);
                 }
     
                 const buttonUpdate = document.createElement("button");
                 buttonUpdate.setAttribute("class", "btn btn-sm btn-default");
+                buttonUpdate.setAttribute("data-toggle", "tooltip");
+                buttonUpdate.setAttribute("title", i18next.t("modal.filters.updateFilter"));
                 const iconUpdate = document.createElement("i");
                 iconUpdate.setAttribute("class", "fa fa-refresh fa-fw");
                 buttonUpdate.appendChild(iconUpdate);
@@ -353,6 +361,8 @@ function displayFilters() {
             } else {
                 const buttonEdit = document.createElement("button");
                 buttonEdit.setAttribute("class", "btn btn-sm btn-default");
+                buttonEdit.setAttribute("data-toggle", "tooltip");
+                buttonEdit.setAttribute("title", i18next.t("modal.filters.editFilter"));
                 const iconEdit = document.createElement("i");
                 iconEdit.setAttribute("class", "fa fa-pencil fa-fw");
                 buttonEdit.appendChild(iconEdit);
@@ -363,11 +373,14 @@ function displayFilters() {
             element.appendChild(buttonContainer);
             document.getElementById("filtersList").appendChild(element);
         });
+
+        $("[data-toggle=\"tooltip\"]").tooltip();
     });
 }
 
 function displayDetailsFilters(idFilter) {
     window.codeMirrorFilterData.getDoc().setValue("");
+    $("#filterDetails").modal("show");
 
     chrome.storage.local.get("filtersSettings", result => {
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
@@ -376,6 +389,7 @@ function displayDetailsFilters(idFilter) {
             const filter = filters.filters[idFilter];
 
             if(filter) {
+                $("#detailsFilterAddress").val(filter.sourceUrl);
                 window.codeMirrorFilterData.getDoc().setValue(filter.content);
             }
         }
@@ -949,6 +963,15 @@ $(document).ready(() => {
         });
     });
 
+    $("#addFilterSourceBtnOpen").click(() => {
+        $("#addFilterErrorFetch").hide();
+        $("#addFilterErrorParsing").hide();
+        $("#addFilterErrorUnknown").hide();
+        $("#addFilterErrorAlreadyAdded").hide();
+        $("#addFilterErrorEmpty").hide();
+        $("#filterAddress").val("");
+    });
+
     $("#addFilterBtn").click(() => {
         $("#addFilterBtn").attr("disabled", "disabled");
         $("#filterAddress").attr("disabled", "disabled");
@@ -957,6 +980,7 @@ $(document).ready(() => {
         $("#addFilterErrorParsing").hide();
         $("#addFilterErrorUnknown").hide();
         $("#addFilterErrorAlreadyAdded").hide();
+        $("#addFilterErrorEmpty").hide();
         
         chrome.runtime.sendMessage({
             "type": "addFilter",
@@ -981,6 +1005,9 @@ $(document).ready(() => {
                     case "Already added error":
                         $("#addFilterErrorAlreadyAdded").show();
                         break;
+                    case "Empty error":
+                        $("#addFilterErrorEmpty").show();
+                        break;
                     }
                 } else {
                     $("#addFilterSource").modal("hide");
@@ -989,9 +1016,17 @@ $(document).ready(() => {
 
             return true;
         });
+    });
         
-        $("#addFilterSource").on("hidden.bs.modal", () => {
-            $("#filters").modal("show");
-        });
+    $("#addFilterSource").on("hidden.bs.modal", () => {
+        $("#filters").modal("show");
+    });
+    
+    $("#filterDetails").on("hidden.bs.modal", () => {
+        $("#filters").modal("show");
+    });
+    
+    $("#filterDetails").on("show.bs.modal", () => {
+        $("#filters").modal("hide");
     });
 });
