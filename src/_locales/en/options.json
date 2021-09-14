@@ -201,7 +201,8 @@
             "homepage": "Source homepage",
             "deleteSource": "Delete this source",
             "updateFilter": "Update this filter",
-            "editFilter": "Edit your filter"
+            "editFilter": "Edit your filter",
+            "enableFilterAutoUpdate": "Enable auto update"
         },
         "close": "Close",
         "ok": "OK",

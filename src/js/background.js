@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, nbPresets, defaultFilters } from "./util.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
-import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter } from "./filters.js";
+import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate } from "./filters.js";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
@@ -240,10 +240,11 @@ function checkAutoUpdateFilters() {
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
         const lastUpdate = filters.lastUpdated;
         const updateInterval = filters.updateInterval;
+        const enableAutoUpdate = filters.enableAutoUpdate;
         const currentDate = Date.now();
 
-        if(updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
-            updateAllFilters();
+        if(enableAutoUpdate && updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
+            updateAllFilters(true);
         }
     });
 }
@@ -328,6 +329,10 @@ if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !=
             } else if(message.type == "removeFilter") {
                 removeFilter(message.filterId).then(result => {
                     sendMessage({ type: "addFilterFinished", result: result, filterId: message.filterId });
+                });
+            } else if(message.type == "toggleAutoUpdate") {
+                toggleAutoUpdate(message.enabled).then(result => {
+                    sendMessage({ type: "toggleAutoUpdateFinished", result: result });
                 });
             }
         }

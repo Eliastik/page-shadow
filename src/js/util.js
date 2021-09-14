@@ -58,6 +58,7 @@ const defaultFilters = {
             "local": true,
             "homepage": "",
             "builtIn": true,
+            "expiresIn": 0, // days
             "content": null
         },
         {
@@ -70,6 +71,7 @@ const defaultFilters = {
             "local": false,
             "homepage": "https://www.eliastiksofts.com/page-shadow/",
             "builtIn": true,
+            "expiresIn": 4, // days
             "content": null
         },
         {
@@ -82,6 +84,7 @@ const defaultFilters = {
             "local": false,
             "homepage": "https://www.eliastiksofts.com/page-shadow/",
             "builtIn": true,
+            "expiresIn": 4, // days
             "content": null
         },
         {
@@ -95,11 +98,13 @@ const defaultFilters = {
             "local": false,
             "homepage": "",
             "builtIn": true,
+            "expiresIn": 0,
             "content": null
         }
     ],
     "lastUpdated": 0,
-    "updateInterval": 24 * 60 * 60 * 1000
+    "updateInterval": 24 * 60 * 60 * 1000,
+    "enableAutoUpdate": true
 };
 const defaultFiltersContent = {};
 // End of the global configuration of the extension

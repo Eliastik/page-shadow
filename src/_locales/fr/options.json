@@ -200,7 +200,8 @@
             "homepage": "Page d'accueil de la source",
             "deleteSource": "Supprimer cette source",
             "updateFilter": "Mettre à jour le filtre",
-            "editFilter": "Éditer votre filtre"
+            "editFilter": "Éditer votre filtre",
+            "enableFilterAutoUpdate": "Activer les mises à jour automatiques"
         },
         "close": "Fermer",
         "ok": "OK",

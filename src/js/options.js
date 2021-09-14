@@ -227,7 +227,13 @@ function displayFilters() {
     chrome.storage.local.get("filtersSettings", result => {
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
 
-        $("#filtersList").text("");
+        document.getElementById("filtersList").innerHTML = "";
+
+        if(filters.enableAutoUpdate) {
+            document.getElementById("enableFilterAutoUpdate").checked = true;
+        } else {
+            document.getElementById("enableFilterAutoUpdate").checked = false;
+        }
 
         filters.filters.forEach((filter, index) => {
             const element = document.createElement("li");
@@ -1028,5 +1034,16 @@ $(document).ready(() => {
     
     $("#filterDetails").on("show.bs.modal", () => {
         $("#filters").modal("hide");
+    });
+
+    $("#enableFilterAutoUpdate").on("change", () => {
+        $("#enableFilterAutoUpdate").attr("disabled", "disabled");
+
+        chrome.runtime.sendMessage({
+            "type": "toggleAutoUpdate",
+            "enabled": $("#enableFilterAutoUpdate").is(":checked")
+        }, response => {
+            if(response && response.type == "toggleAutoUpdateFinished") $("#enableFilterAutoUpdate").removeAttr("disabled");
+        });
     });
 });

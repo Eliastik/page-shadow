@@ -54,6 +54,17 @@ function updateFilter(idFilter) {
                     } else {
                         try {
                             const text = await data.text();
+                            const metadata = extractMetadata(text);
+
+                            const name = metadata["name"];
+                            const sourcename = metadata["sourcename"];
+                            const homepage = metadata["homepage"];
+                            const expires = metadata["expires"];
+                            
+                            if(name != null) filterToUpdate.filterName = name;
+                            if(sourcename != null) filterToUpdate.sourceName = sourcename;
+                            if(homepage != null) filterToUpdate.homepage = homepage;
+                            if(expires != null) filterToUpdate.expiresIn = expires;
                             
                             filterToUpdate.content = text;
                             filterToUpdate.hasError = false;
@@ -72,14 +83,22 @@ function updateFilter(idFilter) {
     });
 }
 
-async function updateAllFilters() {
+async function updateAllFilters(autoUpdate) {
     return new Promise(resolve => {
         chrome.storage.local.get("filtersSettings", async(result) => {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
             const nbFilters = filters.filters.length;
 
             for(let i = 0; i < nbFilters; i++) {
-                filters.filters[i] = await updateFilter(i);
+                const filter = filters.filters[i];
+                const expires = filter.expiresIn;
+                const expiresMs = expires * 24 * 60 * 60 * 1000;
+                const lastUpdate = filter.lastUpdated;
+                const currentDate = Date.now();
+
+                if(!autoUpdate || (autoUpdate && (!expires || (lastUpdate <= 0 || (currentDate - lastUpdate) >= expiresMs)))) {
+                    filters.filters[i] = await updateFilter(i);
+                }
             }
 
             filters.lastUpdated = Date.now();
@@ -125,6 +144,18 @@ async function toggleFilter(idFilter, enable) {
         chrome.storage.local.get("filtersSettings", result => {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
             filters.filters[idFilter].enabled = enable;
+            setSettingItem("filtersSettings", filters);
+            cacheFilters();
+            resolve(true);
+        });
+    });
+}
+
+async function toggleAutoUpdate(enabled) {
+    return new Promise(resolve => {
+        chrome.storage.local.get("filtersSettings", result => {
+            const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+            filters.enableAutoUpdate = enabled;
             setSettingItem("filtersSettings", filters);
             cacheFilters();
             resolve(true);
@@ -297,4 +328,4 @@ if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !=
     });
 }
 
-export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter };
+export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate };
