@@ -559,7 +559,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="readmeLabel"><i class="fa fa-filter fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.title"></span></h4>
+                        <h4 class="modal-title" id="filtersLabel"><i class="fa fa-filter fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.title"></span></h4>
                     </div>
                     <div class="modal-body">
                         <p><span data-i18n="modal.filters.infos"></span></p>
@@ -581,7 +581,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="readmeLabel"><i class="fa fa-filter fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.filterDetails"></span></h4>
+                        <h4 class="modal-title" id="filterDetailsLabel"><i class="fa fa-filter fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.filterDetails"></span></h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -600,12 +600,39 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                 </div>
             </div>
         </div>
+        <!-- filters edit -->
+        <div class="modal fade" id="editFilter" tabindex="-1" role="dialog" aria-labelledby="editFilter" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="editFilterLabel"><i class="fa fa-pencil fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.editFilterTitle"></span></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <p class="large-text"><span data-i18n="modal.filters.editFilterInfos"></span></p>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button id="customFilterSave" data-delay="0" data-container="#editFilter" data-trigger="manual" data-placement="bottom" type="button" class="btn btn-sm btn-success"><i class="fa fa-fw fa-check" aria-hidden="true"></i> <span data-i18n="modal.filters.save"></span></button> &nbsp; <button id="customFilterCancel" type="button" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-times" aria-hidden="true"></i> <span data-i18n="modal.filters.cancel"></span></button> &nbsp; <button id="customFilterGuide" type="button" class="btn btn-sm btn-primary"><i class="fa fa-file-text fa-times" aria-hidden="true"></i> <span data-i18n="modal.filters.guide"></span></button></button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <textarea id="codeMirrorEditFilter" style="width: 100%; height: 650px;"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" id="closeAndSaveCustomFilter"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modal.closeAndSave"></span></button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.closeWithoutSave"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- add filters -->
         <div class="modal fade" id="addFilterSource" tabindex="-1" role="dialog" aria-labelledby="addFilterSource" data-backdrop="static" data-keyboard="false">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="readmeLabel"><i class="fa fa-plus fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.addFilterTitle"></span></h4>
+                        <h4 class="modal-title" id="addFilterSourceLabel"><i class="fa fa-plus fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.addFilterTitle"></span></h4>
                     </div>
                     <div class="modal-body">
                         <div class="form-horizontal">

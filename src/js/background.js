@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, nbPresets, defaultFilters } from "./util.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
-import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate } from "./filters.js";
+import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter } from "./filters.js";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
@@ -333,6 +333,14 @@ if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !=
             } else if(message.type == "toggleAutoUpdate") {
                 toggleAutoUpdate(message.enabled).then(result => {
                     sendMessage({ type: "toggleAutoUpdateFinished", result: result });
+                });
+            } else if(message.type == "getCustomFilter") {
+                getCustomFilter().then(result => {
+                    sendMessage({ type: "getCustomFilterFinished", result: result });
+                });
+            } else if(message.type == "updateCustomFilter") {
+                updateCustomFilter(message.text).then(result => {
+                    sendMessage({ type: "updateCustomFilterFinished", result: result });
                 });
             }
         }

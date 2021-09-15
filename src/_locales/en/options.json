@@ -202,7 +202,12 @@
             "deleteSource": "Delete this source",
             "updateFilter": "Update this filter",
             "editFilter": "Edit your filter",
-            "enableFilterAutoUpdate": "Enable auto update"
+            "enableFilterAutoUpdate": "Enable auto update",
+            "editFilterTitle": "Filter edit",
+            "save": "Save",
+            "cancel": "Cancel modifications",
+            "guide": "Syntax guide",
+            "saved": "Saved!"
         },
         "close": "Close",
         "ok": "OK",
@@ -212,6 +217,8 @@
         "load": "Load",
         "create": "Create",
         "delete": "Delete",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "closeAndSave": "Close and save",
+        "closeWithoutSave": "Close without saving"
     }
 }

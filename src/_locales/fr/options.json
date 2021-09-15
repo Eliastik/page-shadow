@@ -201,7 +201,12 @@
             "deleteSource": "Supprimer cette source",
             "updateFilter": "Mettre à jour le filtre",
             "editFilter": "Éditer votre filtre",
-            "enableFilterAutoUpdate": "Activer les mises à jour automatiques"
+            "enableFilterAutoUpdate": "Activer les mises à jour automatiques",
+            "editFilterTitle": "Édition du filtre",
+            "save": "Sauvegarder",
+            "cancel": "Annuler les modifications",
+            "guide": "Guide de la syntaxe",
+            "saved": "Sauvegardé !"
         },
         "close": "Fermer",
         "ok": "OK",
@@ -211,6 +216,8 @@
         "load": "Charger",
         "create": "Créer",
         "delete": "Supprimer",
-        "cancel": "Annuler"
+        "cancel": "Annuler",
+        "closeAndSave": "Fermer et sauvegarder",
+        "closeWithoutSave": "Fermer sans sauvegarder"
     }
 }

@@ -25,14 +25,17 @@ function openFiltersFiles() {
     const files = {};
 
     return new Promise(resolve => {
-        chrome.storage.local.get("filtersSettings", result => {
+        chrome.storage.local.get(["filtersSettings", "customFilter"], result => {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+            const customFilter = result.customFilter != null ? result.customFilter : "";
 
             filters.filters.forEach(filter => {
                 if(filter.content != null && filter.enabled) {
                     files[filter.sourceUrl] = filter.content;
                 }
             });
+
+            files["customFilter"] = customFilter;
 
             resolve(files);
         });
@@ -311,8 +314,39 @@ async function removeFilter(idFilter) {
             if(filters && filters.filters) {
                 filters.filters = filters.filters.filter((value, index) => index != idFilter);
                 setSettingItem("filtersSettings", filters);
+                cacheFilters();
             }
 
+            resolve();
+        });
+    });
+}
+
+async function getCustomFilter() {
+    return new Promise(resolve => {
+        chrome.storage.local.get("customFilter", result => {
+            const customFilterFilter = result.customFilter != null ? result.customFilter : "";
+            resolve(customFilterFilter);
+        });
+    });
+}
+
+async function updateCustomFilter(text) {
+    return new Promise(resolve => {
+        chrome.storage.local.get(["filtersSettings", "customFilter"], result => {
+            const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+
+            if(filters && filters.filters) {
+                filters.filters.forEach(filter => {
+                    if(filter.customFilter) {
+                        filter.lastUpdated = Date.now();
+                    }
+                });
+            }
+
+            setSettingItem("customFilter", text);
+            setSettingItem("filtersSettings", filters);
+            cacheFilters();
             resolve();
         });
     });
@@ -328,4 +362,4 @@ if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !=
     });
 }
 
-export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate };
+export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter };
