@@ -29,6 +29,8 @@ window.$ = $;
 window.jQuery = $;
 
 let checkContrastMode;
+let i18nextLoaded = false;
+let selectedPreset = 1;
 
 init_i18next("popup", () => translateContent());
 
@@ -42,6 +44,9 @@ function translateContent() {
     $(".modal").localize();
     $("footer").localize();
     checkContrastMode();
+    loadPresetSelect("loadPresetSelect");
+    $("#loadPresetSelect").val(selectedPreset).change();
+    i18nextLoaded = true;
 }
 
 i18next.on("languageChanged", () => {
@@ -56,7 +61,6 @@ $(document).ready(() => {
     style.type = "text/css";
     const lnkCustomTheme = document.createElement("link");
     let brightnessChangedFromThisPage = false;
-    let selectedPreset = 1;
 
     // append the list of the color temperatures in the select
     $("#tempSelect").text("");
@@ -800,8 +804,10 @@ $(document).ready(() => {
                 checkSettingsAutoEnable();
             }
 
-            loadPresetSelect("loadPresetSelect");
-            $("#loadPresetSelect").val(selectedPreset).change();
+            if(i18nextLoaded) {
+                loadPresetSelect("loadPresetSelect");
+                $("#loadPresetSelect").val(selectedPreset).change();
+            }
         });
     }
 
