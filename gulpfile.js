@@ -5,7 +5,7 @@ const clean    = require("gulp-clean");
 const cleanCss = require("gulp-clean-css");
 const less     = require("gulp-less");
 const zip      = require("gulp-zip");
-const crx      = require("gulp-crx-pack");
+const crx      = require("@crxs/gulp-crx");
 const fs       = require("fs");
 const webpack  = require("webpack-stream");
 
