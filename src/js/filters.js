@@ -137,7 +137,11 @@ async function updateOneFilter(idFilter) {
             filters.filters[idFilter] = await updateFilter(idFilter);
             setSettingItem("filtersSettings", filters);
             cacheFilters();
-            resolve(true);
+            if(filters.filters[idFilter].hasError) {
+                resolve(false);
+            } else {
+                resolve(true);
+            }
         });
     });
 }
@@ -352,14 +356,8 @@ async function updateCustomFilter(text) {
     });
 }
 
-if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !== "undefined") {
-    chrome.runtime.onMessage.addListener(async(message, sender, sendMessage) => {
-        if(message && message.type == "getAllFilters") {
-            sendMessage({ type: "getAllFiltersResponse", filters: rules });
-        }
-
-        return true;
-    });
+function getRules() {
+    return rules;
 }
 
-export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter };
+export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules };

@@ -37,6 +37,7 @@
     "i18next-xhr-backend": "^3.2.2",
     "jquery": "^3.6.0",
     "jquery-colpick": "^3.1.0",
-    "jquery-i18next": "^1.2.1"
+    "jquery-i18next": "^1.2.1",
+    "webextension-polyfill": "^0.8.0"
   }
 }

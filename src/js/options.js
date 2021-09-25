@@ -29,6 +29,7 @@ import "jquery-colpick/css/colpick.css";
 import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, extensionVersion, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, deletePreset, customFilterGuideURL } from "./util.js";
 import { setSettingItem, setFirstSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
+import browser from "webextension-polyfill";
 
 window.$ = $;
 window.jQuery = $;
@@ -37,6 +38,8 @@ window.codeMirrorUserCss = null;
 window.codeMirrorJSONArchive = null;
 window.codeMirrorFilterData = null;
 window.codeMirrorEditFilter = null;
+
+let filterSavedTimeout;
 
 init_i18next("options", () => translateContent());
 
@@ -250,12 +253,9 @@ function displayFilters() {
 
                 if(!checkbox.checked) messageType = "disableFilter";
 
-                chrome.runtime.sendMessage({
+                browser.runtime.sendMessage({
                     "type": messageType,
                     "filterId": index
-                }, response => {
-                    if(response && (response.type == "enabledFilter" || response.type == "disabledFilter")) checkbox.disabled = false;
-                    return true;
                 });
             });
 
@@ -314,7 +314,9 @@ function displayFilters() {
                     buttonHome.appendChild(iconHome);
 
                     buttonHome.addEventListener("click", () => {
-                        window.open(filter.homepage);
+                        chrome.tabs.create({
+                            url: filter.homepage
+                        });
                     });
 
                     buttonContainer.appendChild(buttonHome);
@@ -332,12 +334,9 @@ function displayFilters() {
                     buttonDelete.addEventListener("click", () => {
                         buttonDelete.disabled = true;
 
-                        chrome.runtime.sendMessage({
+                        browser.runtime.sendMessage({
                             "type": "removeFilter",
                             "filterId": index
-                        }, response => {
-                            if(response && response.type == "removeFilterFinished") buttonDelete.disabled = false;
-                            return true;
                         });
                     });
 
@@ -355,12 +354,9 @@ function displayFilters() {
                 buttonUpdate.addEventListener("click", () => {
                     buttonUpdate.disabled = true;
 
-                    chrome.runtime.sendMessage({
+                    browser.runtime.sendMessage({
                         "type": "updateFilter",
                         "filterId": index
-                    }, response => {
-                        if(response && response.type == "updateFilterFinished") buttonUpdate.disabled = false;
-                        return true;
                     });
                 });
 
@@ -420,16 +416,12 @@ function displayFilterEdit() {
     });
 }
 
-async function saveCustomFilter() {
-    return new Promise((resolve) => {
-        const text = window.codeMirrorEditFilter.getDoc().getValue();
-    
-        chrome.runtime.sendMessage({
-            "type": "updateCustomFilter",
-            "text": text
-        }, response => {
-            if(response && response.type == "updateCustomFilterFinished") resolve();
-        });
+function saveCustomFilter(close) {
+    const text = window.codeMirrorEditFilter.getDoc().getValue();
+
+    browser.runtime.sendMessage({
+        "type": close ? "updateCustomFilterAndClose" : "updateCustomFilter",
+        "text": text
     });
 }
 
@@ -713,7 +705,6 @@ function createPreset() {
 
 $(document).ready(() => {
     let savedTimeout;
-    let filterSavedTimeout;
 
     $("#validerButton").click(() => {
         saveSettings();
@@ -989,22 +980,16 @@ $(document).ready(() => {
     $("#updateAllFilters").click(() => {
         $("#updateAllFilters").attr("disabled", "disabled");
         
-        chrome.runtime.sendMessage({
+        browser.runtime.sendMessage({
             "type": "updateAllFilters"
-        }, response => {
-            if(response && response.type == "updateAllFiltersFinished") $("#updateAllFilters").removeAttr("disabled");
-            return true;
         });
     });
 
     $("#cleanAllFilters").click(() => {
         $("#cleanAllFilters").attr("disabled", "disabled");
         
-        chrome.runtime.sendMessage({
+        browser.runtime.sendMessage({
             "type": "cleanAllFilters"
-        }, response => {
-            if(response && response.type == "cleanAllFiltersFinished") $("#cleanAllFilters").removeAttr("disabled");
-            return true;
         });
     });
 
@@ -1027,39 +1012,9 @@ $(document).ready(() => {
         $("#addFilterErrorAlreadyAdded").hide();
         $("#addFilterErrorEmpty").hide();
         
-        chrome.runtime.sendMessage({
+        browser.runtime.sendMessage({
             "type": "addFilter",
             "address": $("#filterAddress").val()
-        }, response => {
-            if(response && (response.type == "addFilterFinished" || response.type == "addFilterError")) {
-                $("#addFilterBtn").removeAttr("disabled");
-                $("#filterAddress").removeAttr("disabled");
-                $("#addFilterCancelBtn").removeAttr("disabled");
-
-                if(response.type == "addFilterError") {
-                    switch(response.error) {
-                    case "Fetch error":
-                        $("#addFilterErrorFetch").show();
-                        break;
-                    case "Parsing error":
-                        $("#addFilterErrorParsing").show();
-                        break;
-                    case "Unknown error":
-                        $("#addFilterErrorUnknown").show();
-                        break;
-                    case "Already added error":
-                        $("#addFilterErrorAlreadyAdded").show();
-                        break;
-                    case "Empty error":
-                        $("#addFilterErrorEmpty").show();
-                        break;
-                    }
-                } else {
-                    $("#addFilterSource").modal("hide");
-                }
-            }
-
-            return true;
         });
     });
         
@@ -1086,43 +1041,103 @@ $(document).ready(() => {
     $("#enableFilterAutoUpdate").on("change", () => {
         $("#enableFilterAutoUpdate").attr("disabled", "disabled");
 
-        chrome.runtime.sendMessage({
+        browser.runtime.sendMessage({
             "type": "toggleAutoUpdate",
             "enabled": $("#enableFilterAutoUpdate").is(":checked")
-        }, response => {
-            if(response && response.type == "toggleAutoUpdateFinished") $("#enableFilterAutoUpdate").removeAttr("disabled");
         });
     });
 
-    $("#customFilterSave").click(async() => {
+    $("#customFilterSave").click(() => {
         $("#customFilterSave").attr("disabled", "disabled");
-        await saveCustomFilter();
-        $("#customFilterSave").removeAttr("disabled", "disabled");
-
-        clearTimeout(filterSavedTimeout);
-        filterSavedTimeout = setTimeout(() => {
-            $("#customFilterSave").attr("data-original-title", "");
-            $("#customFilterSave").tooltip("hide");
-            $("#customFilterSave").tooltip("disable");
-        }, 3000);
-
-        $("#customFilterSave").attr("data-original-title", i18next.t("modal.filters.saved"));
-        $("#customFilterSave").tooltip("enable");
-        $("#customFilterSave").tooltip("show");
+        saveCustomFilter();
+        
     });
 
-    $("#customFilterCancel").click(async() => {
+    $("#customFilterCancel").click(() => {
         displayFilterEdit();
     });
 
-    $("#customFilterGuide").click(async() => {
-        window.open(customFilterGuideURL);
+    $("#customFilterGuide").click(() => {
+        chrome.tabs.create({
+            url: customFilterGuideURL
+        });
     });
 
-    $("#closeAndSaveCustomFilter").click(async() => {
+    $("#closeAndSaveCustomFilter").click(() => {
         $("#closeAndSaveCustomFilter").attr("disabled", "disabled");
-        await saveCustomFilter();
-        $("#closeAndSaveCustomFilter").removeAttr("disabled", "disabled");
-        $("#editFilter").modal("hide");
+        saveCustomFilter(true);
     });
+});
+
+// Message/response handling
+browser.runtime.onMessage.addListener(message => {
+    if(message) {
+        switch(message.type) {
+        case "toggleAutoUpdateFinished": {
+            if(message.result) $("#enableFilterAutoUpdate").removeAttr("disabled");
+            break;
+        }
+        case "cleanAllFiltersFinished": {
+            if(message.result) $("#cleanAllFilters").removeAttr("disabled");
+            break;
+        }
+        case "updateAllFiltersFinished": {
+            if(message.result) $("#updateAllFilters").removeAttr("disabled");
+            break;
+        }
+        case "updateFilterFinished": {
+            if(!message.result) displayFilters();
+            break;
+        }
+        case "addFilterFinished":
+        case "addFilterError": {
+            $("#addFilterBtn").removeAttr("disabled");
+            $("#filterAddress").removeAttr("disabled");
+            $("#addFilterCancelBtn").removeAttr("disabled");
+
+            if(message.type == "addFilterError") {
+                switch(message.error) {
+                case "Fetch error":
+                    $("#addFilterErrorFetch").show();
+                    break;
+                case "Parsing error":
+                    $("#addFilterErrorParsing").show();
+                    break;
+                case "Unknown error":
+                    $("#addFilterErrorUnknown").show();
+                    break;
+                case "Already added error":
+                    $("#addFilterErrorAlreadyAdded").show();
+                    break;
+                case "Empty error":
+                    $("#addFilterErrorEmpty").show();
+                    break;
+                }
+            } else {
+                $("#addFilterSource").modal("hide");
+            }
+            break;
+        }
+        case "updateCustomFilterFinished": {
+            $("#customFilterSave").removeAttr("disabled", "disabled");
+
+            clearTimeout(filterSavedTimeout);
+            filterSavedTimeout = setTimeout(() => {
+                $("#customFilterSave").attr("data-original-title", "");
+                $("#customFilterSave").tooltip("hide");
+                $("#customFilterSave").tooltip("disable");
+            }, 3000);
+
+            $("#customFilterSave").attr("data-original-title", i18next.t("modal.filters.saved"));
+            $("#customFilterSave").tooltip("enable");
+            $("#customFilterSave").tooltip("show");
+            break;
+        }
+        case "updateCustomFilterAndCloseFinished": {
+            $("#closeAndSaveCustomFilter").removeAttr("disabled", "disabled");
+            $("#editFilter").modal("hide");
+            break;
+        }
+        }
+    }
 });

@@ -18,7 +18,8 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, nbPresets, defaultFilters } from "./util.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
-import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter } from "./filters.js";
+import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules } from "./filters.js";
+import browser from "webextension-polyfill";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
@@ -212,6 +213,8 @@ function updateBadge() {
                     chrome.tabs.sendMessage(tabs[0].id, {
                         type: "websiteUrlUpdated",
                         enabled: enabled
+                    }, () => {
+                        if(chrome.runtime.lastError) return; // ignore the error messages
                     });
                 }
             });
@@ -293,59 +296,65 @@ if(typeof(chrome.storage) !== "undefined" && typeof(chrome.storage.onChanged) !=
     });
 }
 
-if(typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.onMessage) !== "undefined") {
-    chrome.runtime.onMessage.addListener((message, sender, sendMessage) => {
-        if(message) {
-            if(message.type == "isEnabledForThisPage") {
-                pageShadowAllowed(sender.tab.url, enabled => {
-                    sendMessage({ type: "isEnabledForThisPageResponse", enabled: enabled });
-                });
-            } else if(message.type == "updateAllFilters") {
-                updateAllFilters().then(result => {
-                    sendMessage({ type: "updateAllFiltersFinished", result: result });
-                });
-            } else if(message.type == "updateFilter") {
-                updateOneFilter(message.filterId).then(result => {
-                    sendMessage({ type: "updateFilterFinished", result: result, filterId: message.filterId });
-                });
-            } else if(message.type == "disableFilter") {
-                toggleFilter(message.filterId, false).then(result => {
-                    sendMessage({ type: "disabledFilter", result: result, filterId: message.filterId });
-                });
-            } else if(message.type == "enableFilter") {
-                toggleFilter(message.filterId, true).then(result => {
-                    sendMessage({ type: "enabledFilter", result: result, filterId: message.filterId });
-                });
-            } else if(message.type == "cleanAllFilters") {
-                cleanAllFilters().then(result => {
-                    sendMessage({ type: "cleanAllFiltersFinished", result: result });
-                });
-            } else if(message.type == "addFilter") {
-                addFilter(message.address).then(result => {
-                    sendMessage({ type: "addFilterFinished", result: result });
-                }).catch(error => {
-                    sendMessage({ type: "addFilterError", error: error });
-                });
-            } else if(message.type == "removeFilter") {
-                removeFilter(message.filterId).then(result => {
-                    sendMessage({ type: "addFilterFinished", result: result, filterId: message.filterId });
-                });
-            } else if(message.type == "toggleAutoUpdate") {
-                toggleAutoUpdate(message.enabled).then(result => {
-                    sendMessage({ type: "toggleAutoUpdateFinished", result: result });
-                });
-            } else if(message.type == "getCustomFilter") {
-                getCustomFilter().then(result => {
-                    sendMessage({ type: "getCustomFilterFinished", result: result });
-                });
-            } else if(message.type == "updateCustomFilter") {
-                updateCustomFilter(message.text).then(result => {
-                    sendMessage({ type: "updateCustomFilterFinished", result: result });
-                });
+if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) !== "undefined") {
+    browser.runtime.onMessage.addListener((message, sender) => {
+        new Promise(resolve => {
+            if(message) {
+                if(message.type == "isEnabledForThisPage") {
+                    pageShadowAllowed(sender.tab.url, enabled => {
+                        resolve({ type: "isEnabledForThisPageResponse", enabled: enabled });
+                    });
+                } else if(message.type == "updateAllFilters") {
+                    updateAllFilters().then(result => {
+                        console.log({ type: "updateAllFiltersFinished", result: result });
+                        resolve({ type: "updateAllFiltersFinished", result: result });
+                    });
+                } else if(message.type == "updateFilter") {
+                    updateOneFilter(message.filterId).then(result => {
+                        resolve({ type: "updateFilterFinished", result: result, filterId: message.filterId });
+                    });
+                } else if(message.type == "disableFilter") {
+                    toggleFilter(message.filterId, false).then(result => {
+                        resolve({ type: "disabledFilter", result: result, filterId: message.filterId });
+                    });
+                } else if(message.type == "enableFilter") {
+                    toggleFilter(message.filterId, true).then(result => {
+                        resolve({ type: "enabledFilter", result: result, filterId: message.filterId });
+                    });
+                } else if(message.type == "cleanAllFilters") {
+                    cleanAllFilters().then(result => {
+                        resolve({ type: "cleanAllFiltersFinished", result: result });
+                    });
+                } else if(message.type == "addFilter") {
+                    addFilter(message.address).then(result => {
+                        resolve({ type: "addFilterFinished", result: result });
+                    }).catch(error => {
+                        resolve({ type: "addFilterError", error: error });
+                    });
+                } else if(message.type == "removeFilter") {
+                    removeFilter(message.filterId).then(result => {
+                        resolve({ type: "addFilterFinished", result: result, filterId: message.filterId });
+                    });
+                } else if(message.type == "toggleAutoUpdate") {
+                    toggleAutoUpdate(message.enabled).then(result => {
+                        resolve({ type: "toggleAutoUpdateFinished", result: result });
+                    });
+                } else if(message.type == "getCustomFilter") {
+                    getCustomFilter().then(result => {
+                        resolve({ type: "getCustomFilterFinished", result: result });
+                    });
+                } else if(message.type == "updateCustomFilter" || message.type == "updateCustomFilterAndClose") {
+                    updateCustomFilter(message.text).then(result => {
+                        resolve({ type: message.type == "updateCustomFilter" ?
+                            "updateCustomFilterFinished" : "updateCustomFilterAndCloseFinished", result: result });
+                    });
+                } else if(message && message.type == "getAllFilters") {
+                    resolve({ type: "getAllFiltersResponse", filters: getRules() });
+                }
             }
-        }
-
-        return true;
+        }).then(result => {
+            browser.tabs.sendMessage(sender.tab.id, result);
+        });
     });
 }
 

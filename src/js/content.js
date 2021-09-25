@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue } from "./util.js";
+import browser from "webextension-polyfill";
 
 (function(){
     const style = document.createElement("style");
@@ -31,6 +32,7 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
     const runningInIframe = window !== window.top;
     let filtersCache = [];
     let mut_contrast, mut_backgrounds, mut_brightness, mut_invert;
+    let typeProcess = "";
 
     function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) {
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
@@ -461,15 +463,8 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
     }
 
     function processFilters() {
-        chrome.runtime.sendMessage({
+        browser.runtime.sendMessage({
             "type": "getAllFilters"
-        }, response => {
-            if(response && response.type == "getAllFiltersResponse" && response.filters) {
-                filtersCache = response.filters;
-                doProcessFilters(response.filters);
-            }
-
-            return true;
         });
     }
 
@@ -564,14 +559,10 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
         }
 
         if(runningInIframe) {
+            typeProcess = type;
+
             chrome.runtime.sendMessage({
                 "type": "isEnabledForThisPage"
-            }, response => {
-                if(response && response.type == "isEnabledForThisPageResponse" && response.enabled) {
-                    process(true, type);
-                }
-
-                return true;
             });
         } else {
             pageShadowAllowed(window.location.href, allowed => {
@@ -653,13 +644,31 @@ import { matchWebsite, pageShadowAllowed, customTheme, nbThemes, colorTemperatur
         });
     });
 
-    // Execute when the page URL changes in Single Page Applications
-    chrome.runtime.onMessage.addListener((msg) => {
-        if(msg) {
-            const enabled = started && ((msg.enabled && !precEnabled) || (!msg.enabled && precEnabled));
-    
-            if(msg.type == "websiteUrlUpdated" && enabled) {
-                main("reset", "all");
+    // Message/response handling
+    browser.runtime.onMessage.addListener(message => {
+        if(message) {
+            switch(message.type) {
+            case "getAllFiltersResponse": {
+                if(message.filters) {
+                    filtersCache = message.filters;
+                    doProcessFilters(message.filters);
+                }
+                break;
+            }
+            case "isEnabledForThisPageResponse": {
+                if(message.enabled) {
+                    process(true, typeProcess);
+                }
+                break;
+            }
+            case "websiteUrlUpdated": { // Execute when the page URL changes in Single Page Applications
+                const enabled = started && ((message.enabled && !precEnabled) || (!message.enabled && precEnabled));
+
+                if(enabled) {
+                    main("reset", "all");
+                }
+                break;
+            }
             }
         }
     });
