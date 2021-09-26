@@ -101,7 +101,7 @@ function resetSettings() {
         setFirstSettings(() => {
             $("#textareaAssomPage").val("");
             $("#checkWhiteList").prop("checked", false);
-            init_i18next();
+            init_i18next("options", () => translateContent());
             $("#reset").modal("show");
             loadPresetSelect("loadPresetSelect");
             loadPresetSelect("savePresetSelect");
