@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
-import $ from "jquery";
 import i18next from "i18next";
 
 // Global configuration of the extension
@@ -435,18 +434,18 @@ function getAutoEnableSavedData(func) {
 }
 
 function getAutoEnableFormData() {
-    let format = $("#autoEnableHourFormat").val();
+    let format = document.getElementById("autoEnableHourFormat").value;
     format = format == "24" || format == "12" ? format : defaultAutoEnableHourFormat;
-    let hourEnableFormat = $("#hourEnableFormat").val();
+    let hourEnableFormat = document.getElementById("hourEnableFormat").value;
     hourEnableFormat = hourEnableFormat == "PM" || hourEnableFormat == "AM" ? hourEnableFormat : defaultHourEnableFormat;
-    let hourDisableFormat = $("#hourDisableFormat").val();
+    let hourDisableFormat = document.getElementById("hourDisableFormat").value;
     hourDisableFormat = hourDisableFormat == "PM" || hourDisableFormat == "AM" ? hourDisableFormat : defaultHourDisableFormat;
-    let minuteEnable = $("#minuteEnable").val();
+    let minuteEnable = document.getElementById("minuteEnable").value;
     minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
-    let minuteDisable = $("#minuteDisable").val();
+    let minuteDisable = document.getElementById("minuteDisable").value;
     minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : defaultMinuteDisable;
-    let hourEnable = $("#hourEnable").val();
-    let hourDisable = $("#hourDisable").val();
+    let hourEnable = document.getElementById("hourEnable").value;
+    let hourDisable = document.getElementById("hourDisable").value;
 
     if(format == "12") {
         hourEnable = checkNumber(hourEnable, 0, 12) ? hourEnable : hourToPeriodFormat(defaultHourEnable, 12, null)[1];
@@ -551,9 +550,9 @@ function downloadData(data, name, dataType) {
 }
 
 function loadPresetSelect(selectId) {
-    let presetSelected = $("#" + selectId).val();
+    let presetSelected = document.getElementById(selectId).value;
 
-    if(presetSelected == null) {
+    if(!presetSelected) {
         presetSelected = 1;
     }
 
@@ -567,7 +566,7 @@ function loadPresetSelect(selectId) {
                 presets = data.presets;
             }
 
-            $("#" + selectId).html("");
+            document.getElementById(selectId).innerHTML = "";
 
             let nbValue = 1;
             let optionTitle = "";
@@ -580,7 +579,9 @@ function loadPresetSelect(selectId) {
                         if(presets[name]["name"].trim() == "") {
                             optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue + " : " + i18next.t("modal.archive.presetTitleEmpty") + "</option>";
                         } else {
-                            optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue  + " : " + $("<div/>").text(presets[name]["name"].substring(0, 50)).html() + "</option>";
+                            const element = document.createElement("div");
+                            element.textContent = presets[name]["name"].substring(0, 50);
+                            optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue  + " : " + element.innerHTML + "</option>";
                         }
                     }
 
@@ -588,8 +589,10 @@ function loadPresetSelect(selectId) {
                 }
             }
 
-            $("#" + selectId).html(optionTitle);
-            $("#" + selectId).val(presetSelected).change();
+            document.getElementById(selectId).innerHTML = optionTitle;
+            document.getElementById(selectId).value = presetSelected;
+            document.getElementById(selectId).dispatchEvent(new Event("change"));
+            document.getElementById(selectId).onchange();
         } catch(e) {
             return false;
         }
