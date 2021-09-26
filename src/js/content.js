@@ -498,11 +498,36 @@ import browser from "webextension-polyfill";
 
                 elements.forEach(element => {
                     if(element && element.classList) {
-                        if(filter.type == "disableContrastFor") {
-                            if(!element.classList.contains("pageShadowElementDisabled")) element.classList.add("pageShadowElementDisabled");
-                        } else if(filter.type == "forceTransparentBackground") {
-                            if(!element.classList.contains("pageShadowElementForceTransparentBackground")) element.classList.add("pageShadowElementForceTransparentBackground");
-                        }
+                        const filterTypes = filter.type.split(",");
+
+                        filterTypes.forEach(filterType => {
+                            switch(filterType) {
+                            case "disableContrastFor":
+                                if(!element.classList.contains("pageShadowElementDisabled")) element.classList.add("pageShadowElementDisabled");
+                                break;
+                            case "forceTransparentBackground":
+                                if(!element.classList.contains("pageShadowElementForceTransparentBackground")) element.classList.add("pageShadowElementForceTransparentBackground");
+                                break;
+                            case "disableBackgroundStylingFor":
+                                if(!element.classList.contains("pageShadowDisableBackgroundStyling")) element.classList.add("pageShadowDisableBackgroundStyling");
+                                break;
+                            case "disableTextColorStylingFor":
+                                if(!element.classList.contains("pageShadowDisableColorStyling")) element.classList.add("pageShadowDisableColorStyling");
+                                break;
+                            case "disableInputBorderStylingFor":
+                                if(!element.classList.contains("pageShadowDisableInputBorderStyling")) element.classList.add("pageShadowDisableInputBorderStyling");
+                                break;
+                            case "disableLinkStylingFor":
+                                if(!element.classList.contains("pageShadowDisableLinkStyling")) element.classList.add("pageShadowDisableLinkStyling");
+                                break;
+                            case "disableFontFamilyStylingFor":
+                                if(!element.classList.contains("pageShadowDisableFontFamilyStyling")) element.classList.add("pageShadowDisableFontFamilyStyling");
+                                break;
+                            case "disableElementInvertFor":
+                                if(!element.classList.contains("pageShadowDisableElementInvert")) element.classList.add("pageShadowDisableElementInvert");
+                                break;
+                            }
+                        });
                     }
                 });
             }

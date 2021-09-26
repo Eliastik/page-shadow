@@ -69,56 +69,68 @@
 .loopThemes(1);
 
 .themes(@i, @name, @bgcolor, @txtcolor, @lnkcolor, @visitedlnkcolor, @selectbgcolor, @selectxtcolor, @insbgcolor, @instxtcolor, @delbgcolor, @deltxtcolor, @markbgcolor, @marktxtcolor, @imgbgcolor) {
-    html.pageShadowBackgroundContrast@{name} {
+    html.pageShadowBackgroundContrast@{name}:not(.pageShadowDisableBackgroundStyling) {
         background: @bgcolor !important;
     }
-    .pageShadowContrastBlack@{name} {
+    .pageShadowContrastBlack@{name}:not(.pageShadowDisableBackgroundStyling) {
         background: @bgcolor !important;
         background-image: url();
     }
-    .pageShadowContrastBlack@{name} *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled) {
+    .pageShadowContrastBlack@{name} *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
         background-color: @bgcolor !important;
+    }
+    .pageShadowContrastBlack@{name} *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
         color: @txtcolor !important;
     }
-    .pageShadowContrastBlack@{name} :not(.pageShadowInvertImageColor) svg:not(.pageShadowElementDisabled) {
+    .pageShadowContrastBlack@{name} :not(.pageShadowInvertImageColor) svg:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
         color: @txtcolor !important;
     }
-    .pageShadowContrastBlack@{name} select:not(.pageShadowElementDisabled) {
+    .pageShadowContrastBlack@{name} select:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
         background-color: @selectbgcolor !important;
+    }
+    .pageShadowContrastBlack@{name} select:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
         color: @selectxtcolor !important;
     }
-    .pageShadowContrastBlack@{name} input:not(.pageShadowElementDisabled) {
+    .pageShadowContrastBlack@{name} input:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling) {
         border: 1px solid @txtcolor !important;
     }
-    .pageShadowContrastBlack@{name} ins:not(.pageShadowElementDisabled) {
+    .pageShadowContrastBlack@{name} ins:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
         background-color: @insbgcolor !important;
+    }
+    .pageShadowContrastBlack@{name} ins:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
         color: @instxtcolor !important;
     }
-    .pageShadowContrastBlack@{name} del:not(.pageShadowElementDisabled) {
+    .pageShadowContrastBlack@{name} del:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
         background-color: @delbgcolor !important;
+    }
+    .pageShadowContrastBlack@{name} del:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
         color: @deltxtcolor !important;
     }
-    .pageShadowContrastBlack@{name} mark:not(.pageShadowElementDisabled) {
+    .pageShadowContrastBlack@{name} mark:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
         background-color: @markbgcolor !important;
+    }
+    .pageShadowContrastBlack@{name} mark:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
         color: @marktxtcolor !important;
     }
-    .pageShadowContrastBlack@{name} a:not(.pageShadowElementDisabled) {
-        color: @lnkcolor !important;
+    .pageShadowContrastBlack@{name} a:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowDisableLinkStyling) {
         background-color: transparent !important;
+    }
+    .pageShadowContrastBlack@{name} a:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowDisableLinkStyling) {
+        color: @lnkcolor !important;
     }
     .pageShadowContrastBlack@{name} img, .pageShadowContrastBlack@{name} video, .pageShadowContrastBlack@{name} canvas {
         filter: invert(0%) !important;
     }
-    .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected * > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled) {
+    .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected * > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
         background: @bgcolor !important;
     }
-    .pageShadowContrastBlack@{name} a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled), .pageShadowContrastBlack@{name} #pageShadowLinkVisited:not(.pageShadowElementDisabled) {
+    .pageShadowContrastBlack@{name} a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling), .pageShadowContrastBlack@{name} #pageShadowLinkVisited:not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling) {
         color: @visitedlnkcolor !important;
     }
-    .pageShadowContrastBlack@{name}:not(.pageShadowDisableImgBgColor) img:not(.pageShadowElementDisabled) {
+    .pageShadowContrastBlack@{name}:not(.pageShadowDisableImgBgColor) img:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
         background-color: @imgbgcolor !important;
     }
-    .pageShadowContrastBlack@{name} .pageShadowHasBackgroundImg {
+    .pageShadowContrastBlack@{name} .pageShadowHasBackgroundImg, .pageShadowContrastBlack@{name} .pageShadowDisableElementInvert {
         background-color: transparent !important;
     }
     .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected .pageShadowHasHiddenElement, .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected *.pageShadowHasHiddenElement > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled), .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected *.pageShadowElementForceTransparentBackground, .pageShadowContrastBlack@{name}.pageShadowBackgroundDetected *.pageShadowElementForceTransparentBackground * {
@@ -145,26 +157,34 @@
 }
 
 /* Custom theme */
-.pageShadowContrastBlackCustom select:not(.pageShadowElementDisabled) {
+.pageShadowContrastBlackCustom select:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
     background-color: grey !important;
+}
+.pageShadowContrastBlackCustom select:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
     color: black !important;
 }
-.pageShadowContrastBlackCustom ins:not(.pageShadowElementDisabled) {
+.pageShadowContrastBlackCustom ins:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
     background-color: green !important;
+}
+.pageShadowContrastBlackCustom ins:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
     color: white !important;
 }
-.pageShadowContrastBlackCustom del:not(.pageShadowElementDisabled) {
+.pageShadowContrastBlackCustom del:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
     background-color: red !important;
+}
+.pageShadowContrastBlackCustom del:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
     color: white !important;
 }
-.pageShadowContrastBlackCustom mark:not(.pageShadowElementDisabled) {
+.pageShadowContrastBlackCustom mark:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
     background-color: orange !important;
+}
+.pageShadowContrastBlackCustom mark:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
     color: dark !important;
 }
-.pageShadowContrastBlackCustom:not(.pageShadowDisableImgBgColor) img:not(.pageShadowElementDisabled) {
+.pageShadowContrastBlackCustom:not(.pageShadowDisableImgBgColor) img:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
     background-color: #BDBDBD !important;
 }
-.pageShadowContrastBlackCustom .pageShadowHasBackgroundImg {
+.pageShadowContrastBlackCustom .pageShadowHasBackgroundImg, .pageShadowContrastBlackCustom .pageShadowDisableElementInvert {
     background-color: transparent !important;
 }
 .pageShadowContrastBlackCustom.pageShadowBackgroundDetected .pageShadowHasHiddenElement, .pageShadowContrastBlackCustom.pageShadowBackgroundDetected *.pageShadowHasHiddenElement > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled), .pageShadowContrastBlackCustom.pageShadowBackgroundDetected *.pageShadowElementForceTransparentBackground, .pageShadowContrastBlackCustom.pageShadowBackgroundDetected *.pageShadowElementForceTransparentBackground * {
@@ -190,21 +210,21 @@ html.pageShadowInvertEntirePage div#pageShadowLuminositeDiv, html.pageShadowInve
     -o-filter: invert(100%) !important;
     -webkit-filter: invert(100%) !important;
 }
-body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg) img, body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg) svg {
+body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) img, body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) svg {
     filter: invert(100%) !important;
     -moz-filter: invert(100%) !important;
     -o-filter: invert(100%) !important;
     -webkit-filter: invert(100%) !important;
     background-color: transparent !important;
 }
-body.pageShadowInvertBgColor .pageShadowHasBackgroundImg {
+body.pageShadowInvertBgColor .pageShadowHasBackgroundImg, body.pageShadowInvertBgColor .pageShadowDisableElementInvert {
     filter: invert(100%) !important;
     -moz-filter: invert(100%) !important;
     -o-filter: invert(100%) !important;
     -webkit-filter: invert(100%) !important;
     background-color: transparent !important;
 }
-body.pageShadowInvertBgColor .pageShadowHasBackgroundImg > * {
+body.pageShadowInvertBgColor .pageShadowHasBackgroundImg > *, body.pageShadowInvertBgColor .pageShadowDisableElementInvert > * {
     filter: invert(100%) !important;
     -moz-filter: invert(100%) !important;
     -o-filter: invert(100%) !important;

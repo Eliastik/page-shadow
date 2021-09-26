@@ -490,7 +490,6 @@ function getSettingsToArchive() {
                 const dataStr = JSON.stringify(data);
                 resolve(dataStr);
             } catch(e) {
-                console.log(e);
                 reject();
             }
         });

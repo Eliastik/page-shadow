@@ -306,7 +306,6 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     });
                 } else if(message.type == "updateAllFilters") {
                     updateAllFilters().then(result => {
-                        console.log({ type: "updateAllFiltersFinished", result: result });
                         resolve({ type: "updateAllFiltersFinished", result: result });
                     });
                 } else if(message.type == "updateFilter") {
