@@ -490,7 +490,7 @@ function archiveSettings() {
             $("#helpArchive").show();
             $("#archiveDataButton").removeClass("disabled");
 
-            downloadData(dataStr, filename, "application/json");
+            downloadData(dataStr, filename);
         } catch(e) {
             $("#archiveError").fadeIn(500);
             $("#archiveDataButton").removeClass("disabled");
@@ -908,10 +908,6 @@ $(document).ready(() => {
     loadPresetSelect("loadPresetSelect");
     loadPresetSelect("savePresetSelect");
     loadPresetSelect("deletePresetSelect");
-
-    if(getBrowser() == "Firefox") {
-        $("#firefoxHelpArchive").show();
-    }
 
     if(getBrowser() == "Chrome") {
         $("#keyboardShortcuts").click(() => {

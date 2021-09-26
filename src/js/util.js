@@ -523,30 +523,13 @@ function getBrowser() {
     }
 }
 
-function downloadData(data, name, dataType) {
-    window.URL = window.URL || window.webkitURL;
-    let blob;
-
-    if(getBrowser() == "Firefox") {
-        blob = new Blob([data], {type: "application/octet-stream"});
-    } else {
-        blob = new Blob([data], {type: dataType});
-    }
-
-    if(getBrowser() == "Firefox") {
-        const downloadElement = document.createElement("iframe");
-        downloadElement.style.display = "none";
-        downloadElement.src = window.URL.createObjectURL(blob);
-        document.body.appendChild(downloadElement);
-    } else {
-        const downloadElement = document.createElement("a");
-        downloadElement.style.display = "none";
-        downloadElement.download = name;
-        downloadElement.href = window.URL.createObjectURL(blob);
-        document.body.appendChild(downloadElement);
-        downloadElement.click();
-        document.body.removeChild(downloadElement);
-    }
+function downloadData(data, name) {
+    const url = "data:text/plain;charset=utf-8," + encodeURIComponent(data);
+    const a = document.createElement("a");
+    a.href = url;
+    a.setAttribute("download", name || "");
+    a.setAttribute("type", "text/plain");
+    a.dispatchEvent(new MouseEvent("click"));
 }
 
 function loadPresetSelect(selectId) {
