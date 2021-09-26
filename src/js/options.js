@@ -473,29 +473,50 @@ function saveSettings() {
     displaySettings("local");
 }
 
-function archiveSettings() {
+function getSettingsToArchive() {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get(null, data => {
+            try {
+                data["ispageshadowarchive"] = "true";
+    
+                // Remove filter content
+                const filters = data["filtersSettings"];
+                
+                filters.filters.forEach(filter => {
+                    filter.content = null;
+                    filter.lastUpdated = 0;
+                });
+
+                const dataStr = JSON.stringify(data);
+                resolve(dataStr);
+            } catch(e) {
+                console.log(e);
+                reject();
+            }
+        });
+    });
+}
+
+async function archiveSettings() {
     $("#archiveError").hide();
     $("#archiveDataButton").addClass("disabled");
 
-    chrome.storage.local.get(null, data => {
-        try {
-            data["ispageshadowarchive"] = "true";
-            const date = new Date();
-            const dateString = date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1).toString() + "-" + date.getDate() + "-" + date.getHours() + "_" + date.getMinutes() + "_" + date.getSeconds();
-            const dataStr = JSON.stringify(data);
-            const filename = "page-shadow-backupdata-" + dateString + ".json";
+    try {
+        const date = new Date();
+        const dateString = date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1).toString() + "-" + date.getDate() + "-" + date.getHours() + "_" + date.getMinutes() + "_" + date.getSeconds();
+        const dataStr = await getSettingsToArchive();
+        const filename = "page-shadow-backupdata-" + dateString + ".json";
 
-            window.codeMirrorJSONArchive.getDoc().setValue(JSON.stringify(data));
-            $("#archiveSuggestedName").val(filename);
-            $("#helpArchive").show();
-            $("#archiveDataButton").removeClass("disabled");
+        window.codeMirrorJSONArchive.getDoc().setValue(dataStr);
+        $("#archiveSuggestedName").val(filename);
+        $("#helpArchive").show();
+        $("#archiveDataButton").removeClass("disabled");
 
-            downloadData(dataStr, filename);
-        } catch(e) {
-            $("#archiveError").fadeIn(500);
-            $("#archiveDataButton").removeClass("disabled");
-        }
-    });
+        downloadData(dataStr, filename);
+    } catch(e) {
+        $("#archiveError").fadeIn(500);
+        $("#archiveDataButton").removeClass("disabled");
+    }
 }
 
 function restoreSettings(object, func) {
@@ -594,7 +615,7 @@ function restoreSettingsFile(event) {
     }
 }
 
-function archiveCloudSettings() {
+async function archiveCloudSettings() {
     if(typeof(chrome.storage) != "undefined" && typeof(chrome.storage.sync) != "undefined") {
         $("#archiveCloudError").hide();
         $("#restoreCloudError").hide();
@@ -603,32 +624,28 @@ function archiveCloudSettings() {
         $("#archiveCloudBtn").addClass("disabled");
         $("#restoreCloudBtn").addClass("disabled");
 
-        chrome.storage.local.get(null, data => {
-            try {
-                data["ispageshadowarchive"] = "true";
+        try {
+            const dataStr = await getSettingsToArchive();
+            const newSetting = {};
+            newSetting["pageShadowStorageBackup"] = dataStr;
 
-                const dataStr = JSON.stringify(data);
-                const newSetting = {};
-                newSetting["pageShadowStorageBackup"] = dataStr;
+            const dateSettings = {};
+            dateSettings["dateLastBackup"] = Date.now().toString();
 
-                const dateSettings = {};
-                dateSettings["dateLastBackup"] = Date.now().toString();
+            const deviceSettings = {};
+            deviceSettings["deviceBackup"] = window.navigator.platform;
 
-                const deviceSettings = {};
-                deviceSettings["deviceBackup"] = window.navigator.platform;
+            chrome.storage.sync.set(newSetting);
+            chrome.storage.sync.set(dateSettings);
+            chrome.storage.sync.set(deviceSettings);
 
-                chrome.storage.sync.set(newSetting);
-                chrome.storage.sync.set(dateSettings);
-                chrome.storage.sync.set(deviceSettings);
-
-                $("#archiveCloudSuccess").fadeIn(500);
-                displaySettings("sync");
-            } catch(e) {
-                $("#archiveCloudError").fadeIn(500);
-                $("#archiveCloudBtn").removeClass("disabled");
-                $("#restoreCloudBtn").removeClass("disabled");
-            }
-        });
+            $("#archiveCloudSuccess").fadeIn(500);
+            displaySettings("sync");
+        } catch(e) {
+            $("#archiveCloudError").fadeIn(500);
+            $("#archiveCloudBtn").removeClass("disabled");
+            $("#restoreCloudBtn").removeClass("disabled");
+        }
     }
 }
 
