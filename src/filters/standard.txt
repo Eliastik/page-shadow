@@ -24,3 +24,5 @@ github.com|disableContrastFor|.blob-code-addition,.blob-code-deletion,.blob-code
 # Google: fix link color
 *google.*|disableTextColorStylingFor|a h3
 *disqus.*|disableBackgroundStylingFor|.recommend-image-wrapper .overlay,.recommend-image-wrapper
+# Jira
+*atlassian.net|disableElementInvertFor|span[role='img']
