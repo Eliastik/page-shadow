@@ -44,7 +44,7 @@
         }
     },
     "permissions": [
-        "storage", "contextMenus", "tabs", "<all_urls>"
+        "storage", "contextMenus", "tabs", "<all_urls>", "unlimitedStorage"
     ],
     "content_scripts": [
         {
