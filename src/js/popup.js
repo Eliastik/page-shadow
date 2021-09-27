@@ -44,7 +44,7 @@ function translateContent() {
     $(".modal").localize();
     $("footer").localize();
     checkContrastMode();
-    loadPresetSelect("loadPresetSelect");
+    loadPresetSelect("loadPresetSelect", i18next);
     $("#loadPresetSelect").val(selectedPreset).change();
     i18nextLoaded = true;
 }
@@ -805,7 +805,7 @@ $(document).ready(() => {
             }
 
             if(i18nextLoaded) {
-                loadPresetSelect("loadPresetSelect");
+                loadPresetSelect("loadPresetSelect", i18next);
                 $("#loadPresetSelect").val(selectedPreset).change();
             }
         });

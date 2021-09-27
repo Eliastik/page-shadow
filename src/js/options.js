@@ -58,9 +58,9 @@ function translateContent() {
         selectorAttr: "data-i18n"
     });
     listTranslations(i18next.languages);
-    loadPresetSelect("loadPresetSelect");
-    loadPresetSelect("savePresetSelect");
-    loadPresetSelect("deletePresetSelect");
+    loadPresetSelect("loadPresetSelect", i18next);
+    loadPresetSelect("savePresetSelect", i18next);
+    loadPresetSelect("deletePresetSelect", i18next);
     $("nav").localize();
     $(".container").localize();
     $(".modal").localize();
@@ -103,9 +103,9 @@ function resetSettings() {
             $("#checkWhiteList").prop("checked", false);
             init_i18next("options", () => translateContent());
             $("#reset").modal("show");
-            loadPresetSelect("loadPresetSelect");
-            loadPresetSelect("savePresetSelect");
-            loadPresetSelect("deletePresetSelect");
+            loadPresetSelect("loadPresetSelect", i18next);
+            loadPresetSelect("savePresetSelect", i18next);
+            loadPresetSelect("deletePresetSelect", i18next);
             localStorage.clear();
         });
     });
@@ -577,9 +577,9 @@ function restoreSettingsFile(event) {
             restoreSettings(obj, result => {
                 if(result) {
                     $("#restoreSuccess").fadeIn(500);
-                    loadPresetSelect("loadPresetSelect");
-                    loadPresetSelect("savePresetSelect");
-                    loadPresetSelect("deletePresetSelect");
+                    loadPresetSelect("loadPresetSelect", i18next);
+                    loadPresetSelect("savePresetSelect", i18next);
+                    loadPresetSelect("deletePresetSelect", i18next);
                 } else {
                     $("#restoreErrorArchive").fadeIn(500);
                     displaySettings("local");
@@ -682,9 +682,9 @@ function restoreCloudSettings() {
                     restoreSettings(dataObj, result => {
                         if(result) {
                             $("#restoreCloudSuccess").fadeIn(500);
-                            loadPresetSelect("loadPresetSelect");
-                            loadPresetSelect("savePresetSelect");
-                            loadPresetSelect("deletePresetSelect");
+                            loadPresetSelect("loadPresetSelect", i18next);
+                            loadPresetSelect("savePresetSelect", i18next);
+                            loadPresetSelect("deletePresetSelect", i18next);
                         } else {
                             $("#restoreCloudError").fadeIn(500);
                             displaySettings("sync");
@@ -713,9 +713,9 @@ function createPreset() {
             $("#savePresetError").fadeIn(500);
         }
 
-        loadPresetSelect("loadPresetSelect");
-        loadPresetSelect("savePresetSelect");
-        loadPresetSelect("deletePresetSelect");
+        loadPresetSelect("loadPresetSelect", i18next);
+        loadPresetSelect("savePresetSelect", i18next);
+        loadPresetSelect("deletePresetSelect", i18next);
     });
 }
 
@@ -921,9 +921,9 @@ $(document).ready(() => {
 
     displaySettings("local");
 
-    loadPresetSelect("loadPresetSelect");
-    loadPresetSelect("savePresetSelect");
-    loadPresetSelect("deletePresetSelect");
+    loadPresetSelect("loadPresetSelect", i18next);
+    loadPresetSelect("savePresetSelect", i18next);
+    loadPresetSelect("deletePresetSelect", i18next);
 
     if(getBrowser() == "Chrome") {
         $("#keyboardShortcuts").click(() => {
@@ -983,9 +983,9 @@ $(document).ready(() => {
                 $("#deletePresetError").fadeIn(500);
             }
 
-            loadPresetSelect("loadPresetSelect");
-            loadPresetSelect("savePresetSelect");
-            loadPresetSelect("deletePresetSelect");
+            loadPresetSelect("loadPresetSelect", i18next);
+            loadPresetSelect("savePresetSelect", i18next);
+            loadPresetSelect("deletePresetSelect", i18next);
         });
     });
 

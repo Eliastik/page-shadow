@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
-import i18next from "i18next";
 
 // Global configuration of the extension
 const extensionVersion = "2.7";
@@ -534,7 +533,7 @@ function downloadData(data, name) {
     a.dispatchEvent(new MouseEvent("click"));
 }
 
-function loadPresetSelect(selectId) {
+function loadPresetSelect(selectId, i18next) {
     let presetSelected = document.getElementById(selectId).value;
 
     if(!presetSelected) {
