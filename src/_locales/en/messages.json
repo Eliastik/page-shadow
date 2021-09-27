@@ -34,5 +34,20 @@
     },
     "enableDisableShortcut": {
         "message": "Enable/disable the extension"
+    },
+    "enablePresetOne": {
+        "message": "Load the preset n°1"
+    },
+    "enablePresetTwo": {
+        "message": "Load the preset n°2"
+    },
+    "enablePresetThree": {
+        "message": "Load the preset n°3"
+    },
+    "enablePresetFour": {
+        "message": "Load the preset n°4"
+    },
+    "enablePresetFive": {
+        "message": "Load the preset n°5"
     }
 }

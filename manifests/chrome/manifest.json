@@ -64,6 +64,21 @@
                 "default": "Alt+Shift+S"
             },
             "description": "__MSG_enableDisableShortcut__"
+        },
+        "enablePresetOne": {
+            "description": "__MSG_enablePresetOne__"
+        },
+        "enablePresetTwo": {
+            "description": "__MSG_enablePresetTwo__"
+        },
+        "enablePresetThree": {
+            "description": "__MSG_enablePresetThree__"
+        },
+        "enablePresetFour": {
+            "description": "__MSG_enablePresetFour__"
+        },
+        "enablePresetFive": {
+            "description": "__MSG_enablePresetFive__"
         }
     }
 }

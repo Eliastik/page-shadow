@@ -372,7 +372,8 @@ if(typeof(chrome.contextMenus) !== "undefined" && typeof(chrome.contextMenus.onC
 
 if(typeof(chrome.commands) !== "undefined" && typeof(chrome.commands.onCommand) !== "undefined") {
     chrome.commands.onCommand.addListener(command => {
-        if(command == "enableDisable") {
+        switch(command) {
+        case "enableDisable":
             chrome.storage.local.get("globallyEnable", result => {
                 if(result.globallyEnable == "false") {
                     setSettingItem("globallyEnable", "true");
@@ -380,6 +381,22 @@ if(typeof(chrome.commands) !== "undefined" && typeof(chrome.commands.onCommand) 
                     setSettingItem("globallyEnable", "false");
                 }
             });
+            break;
+        case "enablePresetOne":
+            loadPreset(1);
+            break;
+        case "enablePresetTwo":
+            loadPreset(2);
+            break;
+        case "enablePresetThree":
+            loadPreset(3);
+            break;
+        case "enablePresetFour":
+            loadPreset(4);
+            break;
+        case "enablePresetFive":
+            loadPreset(5);
+            break;
         }
     });
 }

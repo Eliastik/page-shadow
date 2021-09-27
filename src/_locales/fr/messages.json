@@ -34,5 +34,20 @@
     },
     "enableDisableShortcut": {
         "message": "Activer/désactiver l'extension"
+    },
+    "enablePresetOne": {
+        "message": "Charger le pré-réglage n°1"
+    },
+    "enablePresetTwo": {
+        "message": "Charger le pré-réglage n°2"
+    },
+    "enablePresetThree": {
+        "message": "Charger le pré-réglage n°3"
+    },
+    "enablePresetFour": {
+        "message": "Charger le pré-réglage n°4"
+    },
+    "enablePresetFive": {
+        "message": "Charger le pré-réglage n°5"
     }
 }
