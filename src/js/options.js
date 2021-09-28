@@ -41,7 +41,7 @@ window.codeMirrorEditFilter = null;
 
 let filterSavedTimeout;
 
-init_i18next("options", () => translateContent());
+init_i18next("options").then(() => translateContent());
 
 function listTranslations(languages) {
     const language = i18next.language.substr(0, 2);
@@ -98,10 +98,10 @@ function resetSettings() {
     $("i[data-toggle=\"tooltip\"]").tooltip("hide");
 
     browser.storage.local.clear().then(() => {
-        setFirstSettings(() => {
+        setFirstSettings().then(() => {
             $("#textareaAssomPage").val("");
             $("#checkWhiteList").prop("checked", false);
-            init_i18next("options", () => translateContent());
+            init_i18next("options").then(() => translateContent());
             $("#reset").modal("show");
             loadPresetSelect("loadPresetSelect", i18next);
             loadPresetSelect("savePresetSelect", i18next);
@@ -131,7 +131,7 @@ function displaySettings(areaName) {
             $("#archiveCloudNotCompatible").show();
         }
 
-        archiveCloudAvailable((result, date, device) => {
+        isArchiveCloudAvailable().then((result, date, device) => {
             if(result) {
                 $("#restoreCloudBtn").removeClass("disabled");
                 $("#infoCloudLastArchive").show();
@@ -518,34 +518,36 @@ async function archiveSettings() {
     }
 }
 
-function restoreSettings(object, func) {
-    // Check if it's a Page Shadow archive file
-    let ispageshadowarchive = false;
-
-    for(const key in object) {
-        if(Object.prototype.hasOwnProperty.call(object, key)) {
-            if(key === "ispageshadowarchive" && object[key] === "true") {
-                ispageshadowarchive = true;
-            }
-        }
-    }
-
-    if(ispageshadowarchive == false) {
-        return func(false);
-    }
-
-    // Reset data
-    browser.storage.local.clear().then(() => {
-        setFirstSettings(() => {
-            for(const key in object) {
-                if(typeof(key) === "string") {
-                    if(Object.prototype.hasOwnProperty.call(object, key)) {
-                        setSettingItem(key, object[key]); // invalid data are ignored by the function
-                    }
+function restoreSettings(object) {
+    return new Promise(resolve => {
+        // Check if it's a Page Shadow archive file
+        let ispageshadowarchive = false;
+    
+        for(const key in object) {
+            if(Object.prototype.hasOwnProperty.call(object, key)) {
+                if(key === "ispageshadowarchive" && object[key] === "true") {
+                    ispageshadowarchive = true;
                 }
             }
-
-            return func(true);
+        }
+    
+        if(ispageshadowarchive == false) {
+            return resolve(false);
+        }
+    
+        // Reset data
+        browser.storage.local.clear().then(() => {
+            setFirstSettings().then(() => {
+                for(const key in object) {
+                    if(typeof(key) === "string") {
+                        if(Object.prototype.hasOwnProperty.call(object, key)) {
+                            setSettingItem(key, object[key]); // invalid data are ignored by the function
+                        }
+                    }
+                }
+    
+                return resolve(true);
+            });
         });
     });
 }
@@ -574,7 +576,7 @@ function restoreSettingsFile(event) {
             $("#textareaAssomPage").val("");
             $("#checkWhiteList").prop("checked", false);
 
-            restoreSettings(obj, result => {
+            restoreSettings(obj).then(result => {
                 if(result) {
                     $("#restoreSuccess").fadeIn(500);
                     loadPresetSelect("loadPresetSelect", i18next);
@@ -648,17 +650,19 @@ async function archiveCloudSettings() {
     }
 }
 
-function archiveCloudAvailable(func) {
-    if(typeof(browser.storage) == "undefined" && typeof(browser.storage.sync) == "undefined") {
-        return func(false, null, null);
-    }
-
-    browser.storage.sync.get(["dateLastBackup", "pageShadowStorageBackup", "deviceBackup"]).then(data => {
-        if(data.dateLastBackup != undefined && data.pageShadowStorageBackup != "undefined" && data.deviceBackup != "undefined") {
-            return func(true, data.dateLastBackup, data.deviceBackup);
-        } else {
-            return func(false, null, null);
+function isArchiveCloudAvailable() {
+    return new Promise(resolve => {
+        if(typeof(browser.storage) == "undefined" && typeof(browser.storage.sync) == "undefined") {
+            return resolve(false, null, null);
         }
+    
+        browser.storage.sync.get(["dateLastBackup", "pageShadowStorageBackup", "deviceBackup"]).then(data => {
+            if(data.dateLastBackup != undefined && data.pageShadowStorageBackup != "undefined" && data.deviceBackup != "undefined") {
+                return resolve(true, data.dateLastBackup, data.deviceBackup);
+            } else {
+                return resolve(false, null, null);
+            }
+        });
     });
 }
 
@@ -679,7 +683,7 @@ function restoreCloudSettings() {
                     $("#textareaAssomPage").val("");
                     $("#checkWhiteList").prop("checked", false);
 
-                    restoreSettings(dataObj, result => {
+                    restoreSettings(dataObj).then(result => {
                         if(result) {
                             $("#restoreCloudSuccess").fadeIn(500);
                             loadPresetSelect("loadPresetSelect", i18next);
@@ -706,7 +710,7 @@ function createPreset() {
     $("#savePresetError").hide();
     $("#savePresetSuccess").hide();
 
-    savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val(), result => {
+    savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val()).then(result => {
         if(result == "success") {
             $("#savePresetSuccess").fadeIn(500);
         } else {
@@ -951,7 +955,7 @@ $(document).ready(() => {
         $("#restorePresetEmpty").hide();
         $("#restorePresetError").hide();
 
-        loadPreset(parseInt($("#loadPresetSelect").val()), result => {
+        loadPreset(parseInt($("#loadPresetSelect").val())).then(result => {
             if(result == "success") {
                 $("#restorePresetSuccess").fadeIn(500);
             } else if(result == "empty") {
@@ -976,7 +980,7 @@ $(document).ready(() => {
         $("#deletePresetError").hide();
         $("#deletePresetSuccess").hide();
 
-        deletePreset(parseInt($("#deletePresetSelect").val()), result => {
+        deletePreset(parseInt($("#deletePresetSelect").val())).then(result => {
             if(result == "success") {
                 $("#deletePresetSuccess").fadeIn(500);
             } else {

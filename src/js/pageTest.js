@@ -25,7 +25,7 @@ import { init_i18next } from "./locales.js";
 window.$ = $;
 window.jQuery = $;
 
-init_i18next("pageTest", () => translateContent());
+init_i18next("pageTest").then(() => translateContent());
 
 function translateContent() {
     jqueryI18next.init(i18next, $, {

@@ -165,57 +165,57 @@ function in_array_website(needle, haystack) {
     return false;
 }
 
-function disableEnableToggle(type, checked, url, func) {
-    browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]).then(result => {
-        let disabledWebsites = "";
-        const domain = url.hostname;
-        const href = url.href;
-        let match = domain;
-        let disabledWebsitesArray;
-
-        if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
-            disabledWebsitesArray = [];
-        } else {
-            disabledWebsites = result.sitesInterditPageShadow;
-            disabledWebsitesArray = disabledWebsites.split("\n");
-        }
-
-        switch(type) {
-        case "disable-website":
-            match = domain;
-            break;
-        case "disable-webpage":
-            match = href;
-            break;
-        case "disable-globally":
-            if(checked) {
-                setSettingItem("globallyEnable", "false");
+function disableEnableToggle(type, checked, url) {
+    return new Promise(resolve => {
+        browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]).then(result => {
+            let disabledWebsites = "";
+            const domain = url.hostname;
+            const href = url.href;
+            let match = domain;
+            let disabledWebsitesArray;
+    
+            if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
+                disabledWebsitesArray = [];
             } else {
-                setSettingItem("globallyEnable", "true");
+                disabledWebsites = result.sitesInterditPageShadow;
+                disabledWebsitesArray = disabledWebsites.split("\n");
             }
-            break;
-        }
-
-        if(type == "disable-website" || type == "disable-webpage") {
-            let disabledWebsitesNew;
-
-            if((checked && result.whiteList == "true") || (!checked && result.whiteList != "true")) {
-                disabledWebsitesNew = removeA(disabledWebsitesArray, match);
-                disabledWebsitesNew = commentMatched(disabledWebsitesNew, match);
-                disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
-
-                setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
-            } else if((!checked && result.whiteList == "true") || (checked && result.whiteList != "true")) {
-                disabledWebsitesArray.push(match);
-                disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
-
-                setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
+    
+            switch(type) {
+            case "disable-website":
+                match = domain;
+                break;
+            case "disable-webpage":
+                match = href;
+                break;
+            case "disable-globally":
+                if(checked) {
+                    setSettingItem("globallyEnable", "false");
+                } else {
+                    setSettingItem("globallyEnable", "true");
+                }
+                break;
             }
-        }
-
-        if(func != undefined) {
-            return func();
-        }
+    
+            if(type == "disable-website" || type == "disable-webpage") {
+                let disabledWebsitesNew;
+    
+                if((checked && result.whiteList == "true") || (!checked && result.whiteList != "true")) {
+                    disabledWebsitesNew = removeA(disabledWebsitesArray, match);
+                    disabledWebsitesNew = commentMatched(disabledWebsitesNew, match);
+                    disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
+    
+                    setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
+                } else if((!checked && result.whiteList == "true") || (checked && result.whiteList != "true")) {
+                    disabledWebsitesArray.push(match);
+                    disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
+    
+                    setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
+                }
+            }
+    
+            resolve();
+        });
     });
 }
 
@@ -265,28 +265,28 @@ function commentAllLines(string) {
 }
 
 // Callback function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not
-function pageShadowAllowed(url, func) {
-    browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]).then(result => {
-        if(result.globallyEnable !== "false") {
-            let forbiddenWebsites;
-
-            if(result.sitesInterditPageShadow !== undefined && result.sitesInterditPageShadow !== "") {
-                forbiddenWebsites = result.sitesInterditPageShadow.trim().split("\n");
-            } else {
-                forbiddenWebsites = "";
+function pageShadowAllowed(url) {
+    return new Promise(resolve => {
+        browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]).then(result => {
+            if(result.globallyEnable !== "false") {
+                let forbiddenWebsites;
+    
+                if(result.sitesInterditPageShadow !== undefined && result.sitesInterditPageShadow !== "") {
+                    forbiddenWebsites = result.sitesInterditPageShadow.trim().split("\n");
+                } else {
+                    forbiddenWebsites = "";
+                }
+    
+                const websuteUrl_tmp = new URL(url);
+                const domain = websuteUrl_tmp.hostname;
+    
+                if((result.whiteList == "true" && (in_array_website(domain, forbiddenWebsites) || in_array_website(url, forbiddenWebsites))) || (result.whiteList !== "true" && !in_array_website(domain, forbiddenWebsites) && !in_array_website(url, forbiddenWebsites))) {
+                    return resolve(true);
+                }
             }
-
-            const websuteUrl_tmp = new URL(url);
-            const domain = websuteUrl_tmp.hostname;
-
-            if((result.whiteList == "true" && (in_array_website(domain, forbiddenWebsites) || in_array_website(url, forbiddenWebsites))) || (result.whiteList !== "true" && !in_array_website(domain, forbiddenWebsites) && !in_array_website(url, forbiddenWebsites))) {
-                return func(true);
-            } else {
-                return func(false);
-            }
-        } else {
-            return func(false);
-        }
+            
+            return resolve(false);
+        });
     });
 }
 
@@ -410,28 +410,30 @@ function checkNumber(number, min, max) {
     return true;
 }
 
-function getAutoEnableSavedData(func) {
-    browser.storage.local.get(["autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat"]).then(result => {
-        let autoEnable = result.autoEnable || "false";
-        let format = result.autoEnableHourFormat || defaultAutoEnableHourFormat;
-        let hourEnable = result.hourEnable || defaultHourEnable;
-        let minuteEnable = result.minuteEnable || defaultMinuteEnable;
-        let hourEnableFormat = result.hourEnableFormat || defaultHourEnableFormat;
-        let hourDisable = result.hourDisable || defaultHourDisable;
-        let minuteDisable = result.minuteDisable || defaultMinuteDisable;
-        let hourDisableFormat = result.hourDisableFormat || defaultHourDisableFormat;
-
-        // Checking
-        autoEnable = autoEnable == "true" || autoEnable == "false" ? autoEnable : "false";
-        format = format == "24" || format == "12" ? format : defaultAutoEnableHourFormat;
-        hourEnableFormat = hourEnableFormat == "PM" || hourEnableFormat == "AM" ? hourEnableFormat : defaultHourEnableFormat;
-        hourDisableFormat = hourDisableFormat == "PM" || hourDisableFormat == "AM" ? hourDisableFormat : defaultHourDisableFormat;
-        minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
-        minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : defaultMinuteDisable;
-        hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
-        hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
-
-        return func([autoEnable, format, hourEnableFormat, hourDisableFormat, minuteEnable, minuteDisable, hourEnable, hourDisable]);
+function getAutoEnableSavedData() {
+    return new Promise(resolve => {
+        browser.storage.local.get(["autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat"]).then(result => {
+            let autoEnable = result.autoEnable || "false";
+            let format = result.autoEnableHourFormat || defaultAutoEnableHourFormat;
+            let hourEnable = result.hourEnable || defaultHourEnable;
+            let minuteEnable = result.minuteEnable || defaultMinuteEnable;
+            let hourEnableFormat = result.hourEnableFormat || defaultHourEnableFormat;
+            let hourDisable = result.hourDisable || defaultHourDisable;
+            let minuteDisable = result.minuteDisable || defaultMinuteDisable;
+            let hourDisableFormat = result.hourDisableFormat || defaultHourDisableFormat;
+    
+            // Checking
+            autoEnable = autoEnable == "true" || autoEnable == "false" ? autoEnable : "false";
+            format = format == "24" || format == "12" ? format : defaultAutoEnableHourFormat;
+            hourEnableFormat = hourEnableFormat == "PM" || hourEnableFormat == "AM" ? hourEnableFormat : defaultHourEnableFormat;
+            hourDisableFormat = hourDisableFormat == "PM" || hourDisableFormat == "AM" ? hourDisableFormat : defaultHourDisableFormat;
+            minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
+            minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : defaultMinuteDisable;
+            hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
+            hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
+    
+            resolve([autoEnable, format, hourEnableFormat, hourDisableFormat, minuteEnable, minuteDisable, hourEnable, hourDisable]);
+        });
     });
 }
 
@@ -584,89 +586,129 @@ function loadPresetSelect(selectId, i18next) {
     });
 }
 
-function presetsEnabled(func) {
-    browser.storage.local.get("presets").then(data => {
-        try {
-            let presets;
-
-            if(data.presets == null || typeof(data.presets) == "undefined") {
-                setSettingItem("presets", defaultPresets);
-                presets = defaultPresets;
-            } else {
-                presets = data.presets;
-            }
-
-            const listPreset = [];
-            let numPreset = 1;
-
-            for(const name in presets) {
-                if(Object.prototype.hasOwnProperty.call(presets, name)) {
-                    if(Object.prototype.hasOwnProperty.call(presets[name], "name")) {
-                        listPreset.push(numPreset);
-                    }
+function presetsEnabled() {
+    return new Promise((resolve, reject) => {
+        browser.storage.local.get("presets").then(data => {
+            try {
+                let presets;
+    
+                if(data.presets == null || typeof(data.presets) == "undefined") {
+                    setSettingItem("presets", defaultPresets);
+                    presets = defaultPresets;
+                } else {
+                    presets = data.presets;
                 }
-
-                numPreset++;
+    
+                const listPreset = [];
+                let numPreset = 1;
+    
+                for(const name in presets) {
+                    if(Object.prototype.hasOwnProperty.call(presets, name)) {
+                        if(Object.prototype.hasOwnProperty.call(presets[name], "name")) {
+                            listPreset.push(numPreset);
+                        }
+                    }
+    
+                    numPreset++;
+                }
+    
+                resolve(listPreset);
+            } catch(e) {
+                reject();
             }
-
-            return func(listPreset);
-        } catch(e) {
-            return func(false);
-        }
+        });
     });
 }
 
-function loadPreset(nb, func) {
-    if(func == undefined) {
-        func = function() {};
-    }
+function loadPreset(nb) {
+    return new Promise(resolve => {
+        if(nb < 1 || nb > nbPresets) {
+            return resolve("error");
+        }
 
-    if(nb < 1 || nb > nbPresets) {
-        return func("error");
-    }
+        browser.storage.local.get("presets").then(data => {
+            try {
+                let presets;
 
-    browser.storage.local.get("presets").then(data => {
-        try {
-            let presets;
+                if(data.presets == null || typeof(data.presets) == "undefined") {
+                    setSettingItem("presets", defaultPresets);
+                    return resolve("empty");
+                } else {
+                    presets = data.presets;
+                }
 
-            if(data.presets == null || typeof(data.presets) == "undefined") {
-                setSettingItem("presets", defaultPresets);
-                return func("empty");
-            } else {
-                presets = data.presets;
-            }
+                const namePreset = nb;
+                const preset = presets[namePreset];
+                let settingsRestored = 0;
 
-            const namePreset = nb;
-            const preset = presets[namePreset];
-            let settingsRestored = 0;
-
-            for(const key in preset) {
-                if(typeof(key) === "string") {
-                    if(Object.prototype.hasOwnProperty.call(preset, key) && settingsToSavePresets.indexOf(key) !== -1) {
-                        setSettingItem(key, preset[key]);
-                        settingsRestored++;
+                for(const key in preset) {
+                    if(typeof(key) === "string") {
+                        if(Object.prototype.hasOwnProperty.call(preset, key) && settingsToSavePresets.indexOf(key) !== -1) {
+                            setSettingItem(key, preset[key]);
+                            settingsRestored++;
+                        }
                     }
                 }
-            }
 
-            if(settingsRestored > 0) {
-                return func("success");
-            } else {
-                return func("empty");
+                if(settingsRestored > 0) {
+                    resolve("success");
+                } else {
+                    resolve("empty");
+                }
+            } catch(e) {
+                resolve("error");
             }
-        } catch(e) {
-            return func("error");
-        }
+        });
     });
 }
 
-function savePreset(nb, name, func) {
-    if(nb < 1 || nb > nbPresets) {
-        return func("error");
-    }
+function savePreset(nb, name) {
+    return new Promise(resolve => {
+        if(nb < 1 || nb > nbPresets) {
+            return resolve("error");
+        }
 
-    browser.storage.local.get("presets").then(dataPreset => {
-        browser.storage.local.get(settingsToSavePresets).then(data => {
+        browser.storage.local.get("presets").then(dataPreset => {
+            browser.storage.local.get(settingsToSavePresets).then(data => {
+                try {
+                    let presets;
+
+                    if(dataPreset.presets == null || typeof(dataPreset.presets) == "undefined") {
+                        presets = defaultPresets;
+                    } else {
+                        presets = dataPreset.presets;
+                    }
+
+                    const namePreset = nb;
+                    const preset = presets;
+                    preset[namePreset]["name"] = name.substring(0, 50);
+
+                    for(const key in data) {
+                        if(typeof(key) === "string") {
+                            if(Object.prototype.hasOwnProperty.call(data, key) && settingsToSavePresets.indexOf(key) !== -1) {
+                                preset[namePreset][key] = data[key];
+                            }
+                        }
+                    }
+
+                    setSettingItem("presets", preset);
+
+                    return resolve("success");
+                } catch(e) {
+                    return resolve("error");
+                }
+            });
+        });
+    });
+}
+
+function deletePreset(nb) {
+    return new Promise(resolve => {
+        if(nb < 1 || nb > nbPresets) {
+            return resolve("error");
+        }
+
+        browser.storage.local.get("presets").then(dataPreset => {
             try {
                 let presets;
 
@@ -676,52 +718,16 @@ function savePreset(nb, name, func) {
                     presets = dataPreset.presets;
                 }
 
-                const namePreset = nb;
                 const preset = presets;
-                preset[namePreset]["name"] = name.substring(0, 50);
-
-                for(const key in data) {
-                    if(typeof(key) === "string") {
-                        if(Object.prototype.hasOwnProperty.call(data, key) && settingsToSavePresets.indexOf(key) !== -1) {
-                            preset[namePreset][key] = data[key];
-                        }
-                    }
-                }
+                preset[nb] = {};
 
                 setSettingItem("presets", preset);
 
-                return func("success");
+                return resolve("success");
             } catch(e) {
-                return func("error");
+                return resolve("error");
             }
         });
-    });
-}
-
-function deletePreset(nb, func) {
-    if(nb < 1 || nb > nbPresets) {
-        return func("error");
-    }
-
-    browser.storage.local.get("presets").then(dataPreset => {
-        try {
-            let presets;
-
-            if(dataPreset.presets == null || typeof(dataPreset.presets) == "undefined") {
-                presets = defaultPresets;
-            } else {
-                presets = dataPreset.presets;
-            }
-
-            const preset = presets;
-            preset[nb] = {};
-
-            setSettingItem("presets", preset);
-
-            return func("success");
-        } catch(e) {
-            return func("error");
-        }
     });
 }
 

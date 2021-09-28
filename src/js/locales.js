@@ -21,22 +21,24 @@ import i18next from "i18next";
 import i18nextBrowserLanguageDetector from "i18next-browser-languagedetector";
 import i18nextXHRBackend from "i18next-xhr-backend";
 
-function init_i18next(ns, func) {
-    i18next.use(i18nextBrowserLanguageDetector).use(i18nextXHRBackend).init({
-        fallbackLng: ["en", "fr"],
-        ns: ns,
-        load: "languageOnly",
-        defaultNS: ns,
-        detection: {
-            order: ["localStorage", "navigator"],
-            lookupLocalStorage: "i18nextLng",
-            caches: ["localStorage"],
-        },
-        backend: {
-            loadPath: "/_locales/{{lng}}/{{ns}}.json",
-        },
-    }, () => {
-        if(func) func();
+function init_i18next(ns) {
+    return new Promise(resolve => {
+        i18next.use(i18nextBrowserLanguageDetector).use(i18nextXHRBackend).init({
+            fallbackLng: ["en", "fr"],
+            ns: ns,
+            load: "languageOnly",
+            defaultNS: ns,
+            detection: {
+                order: ["localStorage", "navigator"],
+                lookupLocalStorage: "i18nextLng",
+                caches: ["localStorage"],
+            },
+            backend: {
+                loadPath: "/_locales/{{lng}}/{{ns}}.json",
+            },
+        }, () => {
+            resolve();
+        });
     });
 }
 

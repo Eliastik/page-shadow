@@ -93,6 +93,7 @@ function menu() {
 
                 if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.query) !== "undefined") {
                     browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
+                        if(!tabs) return;
                         const tabUrl = tabs[0].url;
 
                         const url = new URL(tabUrl);
@@ -148,7 +149,7 @@ function menu() {
                 createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], false);
             }
 
-            presetsEnabled(resultat => {
+            presetsEnabled().then(resultat => {
                 if(resultat !== false && Array.isArray(resultat) && resultat.length > 0) {
                     createContextMenu("separator-presets", "separator", null, ["all"], false);
 
@@ -178,7 +179,7 @@ function updateMenu() {
 function updateBadge() {
     if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.query) !== "undefined") {
         browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
-            pageShadowAllowed(tabs[0].url, enabled => {
+            pageShadowAllowed(tabs[0].url).then(enabled => {
                 if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeText) !== "undefined") {
                     browser.browserAction.setBadgeText({
                         text: " "
@@ -213,7 +214,7 @@ function updateBadge() {
                     browser.tabs.sendMessage(tabs[0].id, {
                         type: "websiteUrlUpdated",
                         enabled: enabled
-                    }).then(() => {
+                    }).catch(() => {
                         if(browser.runtime.lastError) return; // ignore the error messages
                     });
                 }
@@ -224,7 +225,7 @@ function updateBadge() {
 
 function checkAutoEnable() {
     if(autoEnableActivated) {
-        getAutoEnableSavedData(data => {
+        getAutoEnableSavedData().then(data => {
             const enabled = checkAutoEnableStartup(data[6], data[4], data[7], data[5]);
 
             if(enabled && !lastAutoEnableDetected || enabled && lastAutoEnableDetected == null) {
@@ -301,7 +302,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
         new Promise(resolve => {
             if(message) {
                 if(message.type == "isEnabledForThisPage") {
-                    pageShadowAllowed(sender.tab.url, enabled => {
+                    pageShadowAllowed(sender.tab.url).then(enabled => {
                         resolve({ type: "isEnabledForThisPageResponse", enabled: enabled });
                     });
                 } else if(message.type == "updateAllFilters") {
@@ -359,7 +360,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
 
 if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.onClicked) !== "undefined") {
     browser.contextMenus.onClicked.addListener((info, tab) => {
-        disableEnableToggle(info.menuItemId, info.checked && !info.wasChecked, new URL(tab.url), () => {
+        disableEnableToggle(info.menuItemId, info.checked && !info.wasChecked, new URL(tab.url)).then(() => {
             if(info.menuItemId.substring(0, 11) == "load-preset") {
                 const nbPreset = info.menuItemId.substr(12, info.menuItemId.length - 11);
                 loadPreset(nbPreset);

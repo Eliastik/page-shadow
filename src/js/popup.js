@@ -33,7 +33,7 @@ let checkContrastMode;
 let i18nextLoaded = false;
 let selectedPreset = 1;
 
-init_i18next("popup", () => translateContent());
+init_i18next("popup").then(() => translateContent());
 
 function translateContent() {
     jqueryI18next.init(i18next, $, {
@@ -501,7 +501,7 @@ $(document).ready(() => {
         $("#hourEnableFormat").hide();
         $("#hourDisableFormat").hide();
 
-        getAutoEnableSavedData(data => {
+        getAutoEnableSavedData().then(data => {
             const format = data[1];
             const hourEnableFormat = data[2];
             const hourDisableFormat = data[3];
@@ -759,7 +759,7 @@ $(document).ready(() => {
     $("#loadPresetValid").click(() => {
         $("#infoPreset").removeClass("show");
 
-        loadPreset(parseInt($("#loadPresetSelect").val()), (result) => {
+        loadPreset(parseInt($("#loadPresetSelect").val())).then(result => {
             if(result == "success") {
                 $("#infoPreset").text(i18next.t("modal.archive.restorePresetSuccess"));
             } else if(result == "empty") {

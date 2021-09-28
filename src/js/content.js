@@ -590,7 +590,7 @@ import browser from "webextension-polyfill";
                 "type": "isEnabledForThisPage"
             });
         } else {
-            pageShadowAllowed(window.location.href, allowed => {
+            pageShadowAllowed(window.location.href).then(allowed => {
                 process(allowed, type);
             });
         }

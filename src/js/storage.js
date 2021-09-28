@@ -52,42 +52,44 @@ function checkFirstLoad() {
     });
 }
 
-function setFirstSettings(func) {
-    // Set default settings values
-    browser.storage.local.set({
-        "pageShadowEnabled": "false",
-        "theme": "1",
-        "pageLumEnabled": "false",
-        "pourcentageLum": (brightnessDefaultValue * 100).toString(),
-        "nightModeEnabled": "false",
-        "sitesInterditPageShadow": "",
-        "liveSettings": "true",
-        "whiteList": "false",
-        "colorTemp": "5",
-        "colorInvert": "false",
-        "invertPageColors": "false",
-        "invertImageColors": "true",
-        "invertEntirePage": "false",
-        "invertVideoColors": "false",
-        "invertBgColor": "true",
-        "globallyEnable": "true",
-        "customThemeInfoDisable": "false",
-        "autoEnable": "false",
-        "autoEnableHourFormat": defaultAutoEnableHourFormat,
-        "hourEnable": defaultHourEnable,
-        "minuteEnable": defaultMinuteEnable,
-        "hourEnableFormat": defaultHourEnableFormat,
-        "hourDisable": defaultHourDisable,
-        "minuteDisable": defaultMinuteDisable,
-        "hourDisableFormat": defaultHourDisableFormat,
-        "disableImgBgColor": "false",
-        "presets": defaultPresets,
-        "customThemes": defaultCustomThemes,
-        "filtersSettings": defaultFilters,
-        "customFilter": "",
-        "defaultLoad": "0"
-    }, () => {
-        if(func) func();
+function setFirstSettings() {
+    return new Promise(resolve => {
+        // Set default settings values
+        browser.storage.local.set({
+            "pageShadowEnabled": "false",
+            "theme": "1",
+            "pageLumEnabled": "false",
+            "pourcentageLum": (brightnessDefaultValue * 100).toString(),
+            "nightModeEnabled": "false",
+            "sitesInterditPageShadow": "",
+            "liveSettings": "true",
+            "whiteList": "false",
+            "colorTemp": "5",
+            "colorInvert": "false",
+            "invertPageColors": "false",
+            "invertImageColors": "true",
+            "invertEntirePage": "false",
+            "invertVideoColors": "false",
+            "invertBgColor": "true",
+            "globallyEnable": "true",
+            "customThemeInfoDisable": "false",
+            "autoEnable": "false",
+            "autoEnableHourFormat": defaultAutoEnableHourFormat,
+            "hourEnable": defaultHourEnable,
+            "minuteEnable": defaultMinuteEnable,
+            "hourEnableFormat": defaultHourEnableFormat,
+            "hourDisable": defaultHourDisable,
+            "minuteDisable": defaultMinuteDisable,
+            "hourDisableFormat": defaultHourDisableFormat,
+            "disableImgBgColor": "false",
+            "presets": defaultPresets,
+            "customThemes": defaultCustomThemes,
+            "filtersSettings": defaultFilters,
+            "customFilter": "",
+            "defaultLoad": "0"
+        }).then(() => {
+            resolve();
+        });
     });
 }
 
