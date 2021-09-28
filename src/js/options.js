@@ -131,11 +131,11 @@ function displaySettings(areaName) {
             $("#archiveCloudNotCompatible").show();
         }
 
-        isArchiveCloudAvailable().then((result, date, device) => {
-            if(result) {
+        isArchiveCloudAvailable().then(result => {
+            if(result.available) {
                 $("#restoreCloudBtn").removeClass("disabled");
                 $("#infoCloudLastArchive").show();
-                $("#dateCloudArchive").text(i18next.t("modal.archive.dateCloudLastArchive", { device: device, date: new Intl.DateTimeFormat(i18next.language).format(date), hour: new Intl.DateTimeFormat(i18next.language, { hour: "numeric", minute: "numeric", second: "numeric", timeZoneName: "short" }).format(date), interpolation: { escapeValue: false } }));
+                $("#dateCloudArchive").text(i18next.t("modal.archive.dateCloudLastArchive", { device: result.device, date: new Intl.DateTimeFormat(i18next.language).format(result.date), hour: new Intl.DateTimeFormat(i18next.language, { hour: "numeric", minute: "numeric", second: "numeric", timeZoneName: "short" }).format(result.date), interpolation: { escapeValue: false } }));
             } else {
                 $("#restoreCloudBtn").addClass("disabled");
                 $("#infoCloudLastArchive").hide();
@@ -653,14 +653,26 @@ async function archiveCloudSettings() {
 function isArchiveCloudAvailable() {
     return new Promise(resolve => {
         if(typeof(browser.storage) == "undefined" && typeof(browser.storage.sync) == "undefined") {
-            return resolve(false, null, null);
+            return resolve({
+                "available": false,
+                "date": null,
+                "device": null
+            });
         }
     
         browser.storage.sync.get(["dateLastBackup", "pageShadowStorageBackup", "deviceBackup"]).then(data => {
-            if(data.dateLastBackup != undefined && data.pageShadowStorageBackup != "undefined" && data.deviceBackup != "undefined") {
-                return resolve(true, data.dateLastBackup, data.deviceBackup);
+            if(data.dateLastBackup && data.pageShadowStorageBackup && data.deviceBackup) {
+                return resolve({
+                    "available": true,
+                    "date": data.dateLastBackup,
+                    "device": data.deviceBackup
+                });
             } else {
-                return resolve(false, null, null);
+                return resolve({
+                    "available": false,
+                    "date": null,
+                    "device": null
+                });
             }
         });
     });
