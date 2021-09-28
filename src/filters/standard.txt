@@ -26,3 +26,7 @@ github.com|disableContrastFor|.blob-code-addition,.blob-code-deletion,.blob-code
 *disqus.*|disableBackgroundStylingFor|.recommend-image-wrapper .overlay,.recommend-image-wrapper
 # Jira
 *atlassian.net|disableElementInvertFor|span[role='img']
+# web.dev
+web.dev|disableContrastFor|web-navigation-drawer,web-navigation-drawer *,web-snackbar-container,web-snackbar-container web-snackbar
+# Medium
+medium.com|disableContrastFor|div[data-test-id="post-sidebar"],div[data-test-id="post-sidebar"] .n,div[data-test-id="post-sidebar"] .n .aq

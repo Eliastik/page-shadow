@@ -97,7 +97,7 @@ function resetSettings() {
     $("span[data-toggle=\"tooltip\"]").tooltip("hide");
     $("i[data-toggle=\"tooltip\"]").tooltip("hide");
 
-    chrome.storage.local.clear(() => {
+    browser.storage.local.clear().then(() => {
         setFirstSettings(() => {
             $("#textareaAssomPage").val("");
             $("#checkWhiteList").prop("checked", false);
@@ -112,7 +112,7 @@ function resetSettings() {
 }
 
 function displaySettings(areaName) {
-    chrome.storage.local.get(["sitesInterditPageShadow", "whiteList"], result => {
+    browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]).then(result => {
         if(areaName != "sync") {
             if(result.sitesInterditPageShadow != undefined) {
                 $("#textareaAssomPage").val(result.sitesInterditPageShadow);
@@ -125,7 +125,7 @@ function displaySettings(areaName) {
             }
         }
 
-        if(typeof(chrome.storage) != "undefined" && typeof(chrome.storage.sync) != "undefined") {
+        if(typeof(browser.storage) != "undefined" && typeof(browser.storage.sync) != "undefined") {
             $("#archiveCloudBtn").removeClass("disabled");
         } else {
             $("#archiveCloudNotCompatible").show();
@@ -155,7 +155,7 @@ function displayTheme(nb, defaultSettings) {
     defaultSettings = defaultSettings == undefined ? false : defaultSettings;
     let customThemes, fontTheme, fontName, customCSS, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme;
 
-    chrome.storage.local.get("customThemes", result => {
+    browser.storage.local.get("customThemes").then(result => {
         if(result.customThemes != undefined && result.customThemes[nb] != undefined) {
             customThemes = result.customThemes[nb];
         } else {
@@ -228,7 +228,7 @@ function displayTheme(nb, defaultSettings) {
 }
 
 function displayFilters() {
-    chrome.storage.local.get("filtersSettings", result => {
+    browser.storage.local.get("filtersSettings").then(result => {
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
 
         document.getElementById("filtersList").innerHTML = "";
@@ -314,7 +314,7 @@ function displayFilters() {
                     buttonHome.appendChild(iconHome);
 
                     buttonHome.addEventListener("click", () => {
-                        chrome.tabs.create({
+                        browser.tabs.create({
                             url: filter.homepage
                         });
                     });
@@ -389,7 +389,7 @@ function displayDetailsFilters(idFilter) {
     window.codeMirrorFilterData.getDoc().setValue("");
     $("#filterDetails").modal("show");
 
-    chrome.storage.local.get("filtersSettings", result => {
+    browser.storage.local.get("filtersSettings").then(result => {
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
 
         if(filters) {
@@ -407,7 +407,7 @@ function displayFilterEdit() {
     window.codeMirrorEditFilter.getDoc().setValue("");
     $("#editFilter").modal("show");
 
-    chrome.storage.local.get("customFilter", result => {
+    browser.storage.local.get("customFilter").then(result => {
         const filter = result.customFilter != null ? result.customFilter : "";
 
         if(filter) {
@@ -428,7 +428,7 @@ function saveCustomFilter(close) {
 function saveThemeSettings(nb) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
-    chrome.storage.local.get("customThemes", result => {
+    browser.storage.local.get("customThemes").then(result => {
         let customThemes = defaultCustomThemes;
 
         if(result.customThemes != undefined) {
@@ -450,7 +450,7 @@ function saveThemeSettings(nb) {
 function saveSettings() {
     setSettingItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
 
-    chrome.storage.local.get(["whiteList", "sitesInterditPageShadow"], result => {
+    browser.storage.local.get(["whiteList", "sitesInterditPageShadow"]).then(result => {
         if($("#checkWhiteList").prop("checked") == true) {
             if(result.whiteList !== "true") {
                 setSettingItem("sitesInterditPageShadow", commentAllLines(result.sitesInterditPageShadow));
@@ -475,7 +475,7 @@ function saveSettings() {
 
 function getSettingsToArchive() {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get(null, data => {
+        browser.storage.local.get(null).then(data => {
             try {
                 data["ispageshadowarchive"] = "true";
     
@@ -535,7 +535,7 @@ function restoreSettings(object, func) {
     }
 
     // Reset data
-    chrome.storage.local.clear(() => {
+    browser.storage.local.clear().then(() => {
         setFirstSettings(() => {
             for(const key in object) {
                 if(typeof(key) === "string") {
@@ -615,7 +615,7 @@ function restoreSettingsFile(event) {
 }
 
 async function archiveCloudSettings() {
-    if(typeof(chrome.storage) != "undefined" && typeof(chrome.storage.sync) != "undefined") {
+    if(typeof(browser.storage) != "undefined" && typeof(browser.storage.sync) != "undefined") {
         $("#archiveCloudError").hide();
         $("#restoreCloudError").hide();
         $("#archiveCloudSuccess").hide();
@@ -634,9 +634,9 @@ async function archiveCloudSettings() {
             const deviceSettings = {};
             deviceSettings["deviceBackup"] = window.navigator.platform;
 
-            chrome.storage.sync.set(newSetting);
-            chrome.storage.sync.set(dateSettings);
-            chrome.storage.sync.set(deviceSettings);
+            browser.storage.sync.set(newSetting);
+            browser.storage.sync.set(dateSettings);
+            browser.storage.sync.set(deviceSettings);
 
             $("#archiveCloudSuccess").fadeIn(500);
             displaySettings("sync");
@@ -649,11 +649,11 @@ async function archiveCloudSettings() {
 }
 
 function archiveCloudAvailable(func) {
-    if(typeof(chrome.storage) == "undefined" && typeof(chrome.storage.sync) == "undefined") {
+    if(typeof(browser.storage) == "undefined" && typeof(browser.storage.sync) == "undefined") {
         return func(false, null, null);
     }
 
-    chrome.storage.sync.get(["dateLastBackup", "pageShadowStorageBackup", "deviceBackup"], data => {
+    browser.storage.sync.get(["dateLastBackup", "pageShadowStorageBackup", "deviceBackup"]).then(data => {
         if(data.dateLastBackup != undefined && data.pageShadowStorageBackup != "undefined" && data.deviceBackup != "undefined") {
             return func(true, data.dateLastBackup, data.deviceBackup);
         } else {
@@ -663,7 +663,7 @@ function archiveCloudAvailable(func) {
 }
 
 function restoreCloudSettings() {
-    if(typeof(chrome.storage) != "undefined" && typeof(chrome.storage.sync) != "undefined") {
+    if(typeof(browser.storage) != "undefined" && typeof(browser.storage.sync) != "undefined") {
         $("#archiveCloudError").hide();
         $("#restoreCloudError").hide();
         $("#archiveCloudSuccess").hide();
@@ -671,7 +671,7 @@ function restoreCloudSettings() {
         $("#archiveCloudBtn").addClass("disabled");
         $("#restoreCloudBtn").addClass("disabled");
 
-        chrome.storage.sync.get("pageShadowStorageBackup", data => {
+        browser.storage.sync.get("pageShadowStorageBackup").then(data => {
             if(data.pageShadowStorageBackup != undefined) {
                 try {
                     const dataObj = JSON.parse(data.pageShadowStorageBackup);
@@ -808,8 +808,8 @@ $(document).ready(() => {
     $("#versionExtension").text(extensionVersion);
     $("#updateBtn").attr("href", "http://www.eliastiksofts.com/page-shadow/update.php?v="+ extensionVersion);
 
-    if(typeof(chrome.storage.onChanged) !== "undefined") {
-        chrome.storage.onChanged.addListener((changes, areaName) => {
+    if(typeof(browser.storage.onChanged) !== "undefined") {
+        browser.storage.onChanged.addListener((changes, areaName) => {
             displaySettings(areaName);
         });
     }
@@ -927,7 +927,7 @@ $(document).ready(() => {
 
     if(getBrowser() == "Chrome") {
         $("#keyboardShortcuts").click(() => {
-            chrome.tabs.create({
+            browser.tabs.create({
                 url: "chrome://extensions/configureCommands"
             });
         });
@@ -1070,7 +1070,7 @@ $(document).ready(() => {
     });
 
     $("#customFilterGuide").click(() => {
-        chrome.tabs.create({
+        browser.tabs.create({
             url: customFilterGuideURL
         });
     });

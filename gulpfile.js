@@ -63,7 +63,7 @@ gulp.task("compile-js", () => {
                 filename: "./[name].js",
             },
             mode: currentMode,
-            devtool: "cheap-module-source-map",
+            devtool: currentMode != "production" ? "source-map" : false,
             module: {
                 rules: [
                     {

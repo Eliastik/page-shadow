@@ -17,13 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { settingNames, brightnessDefaultValue, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, defaultPresets, defaultCustomThemes, defaultFilters, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode } from "./util.js";
+import browser from "webextension-polyfill";
 
 function setSettingItem(name, value) {
     if(settingNames.indexOf(name) !== -1) {
         const newSetting = {};
         newSetting[name] = value;
 
-        return chrome.storage.local.set(newSetting);
+        return browser.storage.local.set(newSetting);
     } else {
         return false;
     }
@@ -32,19 +33,19 @@ function setSettingItem(name, value) {
 function removeSettingItem(name) {
     if(name != undefined) {
         if(typeof(name) === "string") {
-            chrome.storage.local.remove(name);
+            browser.storage.local.remove(name);
         } else if(Array.isArray(name)) {
             for(let i = 0; i < name.length; i++) {
-                chrome.storage.local.remove(name[i]);
+                browser.storage.local.remove(name[i]);
             }
         }
     }
 }
 
 function checkFirstLoad() {
-    chrome.storage.local.get("defaultLoad", result => {
+    browser.storage.local.get("defaultLoad").then(result => {
         if(result.defaultLoad == undefined) {
-            chrome.storage.local.set({ "defaultLoad": "0" }, () => {
+            browser.storage.local.set({ "defaultLoad": "0" }).then(() => {
                 setFirstSettings();
             });
         }
@@ -53,7 +54,7 @@ function checkFirstLoad() {
 
 function setFirstSettings(func) {
     // Set default settings values
-    chrome.storage.local.set({
+    browser.storage.local.set({
         "pageShadowEnabled": "false",
         "theme": "1",
         "pageLumEnabled": "false",
@@ -92,7 +93,7 @@ function setFirstSettings(func) {
 
 // Migrate deprecated settings
 function migrateSettings() {
-    chrome.storage.local.get(null, result => {
+    browser.storage.local.get(null).then(result => {
         // Migrate old custom theme settings
         if(result.customThemeBg != undefined || result.customThemeTexts != undefined || result.customThemeLinks != undefined || result.customThemeLinksVisited != undefined || result.customThemeFont != undefined || result.customCSSCode != undefined) {
             let customThemeBg = defaultBGColorCustomTheme;

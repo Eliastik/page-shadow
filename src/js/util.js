@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
+import browser from "webextension-polyfill";
 
 // Global configuration of the extension
 const extensionVersion = "2.7";
@@ -165,7 +166,7 @@ function in_array_website(needle, haystack) {
 }
 
 function disableEnableToggle(type, checked, url, func) {
-    chrome.storage.local.get(["sitesInterditPageShadow", "whiteList"], result => {
+    browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]).then(result => {
         let disabledWebsites = "";
         const domain = url.hostname;
         const href = url.href;
@@ -265,7 +266,7 @@ function commentAllLines(string) {
 
 // Callback function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not
 function pageShadowAllowed(url, func) {
-    chrome.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"], result => {
+    browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]).then(result => {
         if(result.globallyEnable !== "false") {
             let forbiddenWebsites;
 
@@ -290,7 +291,7 @@ function pageShadowAllowed(url, func) {
 }
 
 function getUImessage(id) {
-    return chrome.i18n.getMessage(id);
+    return browser.i18n.getMessage(id);
 }
 
 function customTheme(nb, style, disableCustomCSS, lnkCssElement) {
@@ -299,7 +300,7 @@ function customTheme(nb, style, disableCustomCSS, lnkCssElement) {
 
     let customThemes, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme, fontTheme;
 
-    chrome.storage.local.get("customThemes", result => {
+    browser.storage.local.get("customThemes").then(result => {
         if(result.customThemes != undefined && result.customThemes[nb] != undefined) {
             customThemes = result.customThemes[nb];
         } else {
@@ -410,7 +411,7 @@ function checkNumber(number, min, max) {
 }
 
 function getAutoEnableSavedData(func) {
-    chrome.storage.local.get(["autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat"], result => {
+    browser.storage.local.get(["autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat"]).then(result => {
         let autoEnable = result.autoEnable || "false";
         let format = result.autoEnableHourFormat || defaultAutoEnableHourFormat;
         let hourEnable = result.hourEnable || defaultHourEnable;
@@ -516,7 +517,7 @@ function checkChangedStorageData(key, object) {
 
 function getBrowser() {
     if(typeof chrome !== "undefined") {
-        if(typeof browser !== "undefined") {
+        if(typeof window.browser !== "undefined") {
             return "Firefox";
         } else {
             return "Chrome";
@@ -540,7 +541,7 @@ function loadPresetSelect(selectId, i18next) {
         presetSelected = 1;
     }
 
-    chrome.storage.local.get("presets", data => {
+    browser.storage.local.get("presets").then(data => {
         try {
             let presets;
             if(data.presets == null || typeof(data.presets) == "undefined") {
@@ -584,7 +585,7 @@ function loadPresetSelect(selectId, i18next) {
 }
 
 function presetsEnabled(func) {
-    chrome.storage.local.get("presets", data => {
+    browser.storage.local.get("presets").then(data => {
         try {
             let presets;
 
@@ -624,7 +625,7 @@ function loadPreset(nb, func) {
         return func("error");
     }
 
-    chrome.storage.local.get("presets", data => {
+    browser.storage.local.get("presets").then(data => {
         try {
             let presets;
 
@@ -664,8 +665,8 @@ function savePreset(nb, name, func) {
         return func("error");
     }
 
-    chrome.storage.local.get("presets", dataPreset => {
-        chrome.storage.local.get(settingsToSavePresets, data => {
+    browser.storage.local.get("presets").then(dataPreset => {
+        browser.storage.local.get(settingsToSavePresets).then(data => {
             try {
                 let presets;
 
@@ -702,7 +703,7 @@ function deletePreset(nb, func) {
         return func("error");
     }
 
-    chrome.storage.local.get("presets", dataPreset => {
+    browser.storage.local.get("presets").then(dataPreset => {
         try {
             let presets;
 

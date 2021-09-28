@@ -25,19 +25,19 @@ let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
 
 function setPopup() {
-    if(typeof(chrome.browserAction) !== "undefined" && typeof(chrome.browserAction.setPopup) !== "undefined") {
-        chrome.browserAction.setPopup({
+    if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setPopup) !== "undefined") {
+        browser.browserAction.setPopup({
             popup: "../extension.html"
         });
-    } else if(typeof(chrome.browserAction) !== "undefined" && typeof(chrome.browserAction.onClicked) !== "undefined" && typeof(chrome.tabs) !== "undefined" && typeof(chrome.tabs.create) !== "undefined") {
+    } else if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.onClicked) !== "undefined" && typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.create) !== "undefined") {
         // For Firefox for Android
-        chrome.browserAction.onClicked.addListener(tab => {
+        browser.browserAction.onClicked.addListener(tab => {
             if(typeof(tab.id) !== "undefined") {
-                chrome.tabs.create({
+                browser.tabs.create({
                     url: "../extension.html?tabId="+ tab.id
                 });
             } else {
-                chrome.tabs.create({
+                browser.tabs.create({
                     url: "../extension.html"
                 });
             }
@@ -46,43 +46,43 @@ function setPopup() {
 }
 
 function createContextMenu(id, type, title, contexts, checked) {
-    if(typeof(chrome.contextMenus) !== "undefined" && typeof(chrome.contextMenus.create) !== "undefined") {
-        chrome.contextMenus.create({
+    if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.create) !== "undefined") {
+        browser.contextMenus.create({
             id: id,
             type: type,
             title: title,
             contexts: contexts,
             checked: checked
         }, () => {
-            if(chrome.runtime.lastError) return; // ignore the error messages
+            if(browser.runtime.lastError) return; // ignore the error messages
         });
     }
 }
 
 // eslint-disable-next-line no-unused-vars
 function updateContextMenu(id, type, title, contexts, checked) {
-    if(typeof(chrome.contextMenus) !== "undefined" && typeof(chrome.contextMenus.update) !== "undefined") {
-        chrome.contextMenus.update(id, {
+    if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.update) !== "undefined") {
+        browser.contextMenus.update(id, {
             type: type,
             title: title,
             contexts: contexts,
             checked: checked
-        }, () => {
-            if(chrome.runtime.lastError) return; // ignore the error messages
+        }).then(() => {
+            if(browser.runtime.lastError) return; // ignore the error messages
         });
     }
 }
 
 function deleteContextMenu(id) {
-    if(typeof(chrome.contextMenus) !== "undefined" && typeof(chrome.contextMenus.remove) !== "undefined") {
-        chrome.contextMenus.remove(id);
+    if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.remove) !== "undefined") {
+        browser.contextMenus.remove(id);
     }
 }
 
 function menu() {
     function createMenu() {
-        if(typeof(chrome.storage) !== "undefined" && typeof(chrome.storage.local) !== "undefined") {
-            chrome.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"], result => {
+        if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.local) !== "undefined") {
+            browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]).then(result => {
                 let sitesInterdits;
 
                 if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
@@ -91,8 +91,8 @@ function menu() {
                     sitesInterdits = result.sitesInterditPageShadow.split("\n");
                 }
 
-                if(typeof(chrome.tabs) !== "undefined" && typeof(chrome.tabs.query) !== "undefined") {
-                    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.query) !== "undefined") {
+                    browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
                         const tabUrl = tabs[0].url;
 
                         const url = new URL(tabUrl);
@@ -141,7 +141,7 @@ function menu() {
     }
 
     function createMenuOthers() {
-        chrome.storage.local.get(["globallyEnable"], result => {
+        browser.storage.local.get(["globallyEnable"]).then(result => {
             if(result.globallyEnable == "false") {
                 createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], true);
             } else {
@@ -162,8 +162,8 @@ function menu() {
         });
     }
 
-    if(typeof(chrome.contextMenus) !== "undefined" && typeof(chrome.contextMenus.removeAll) !== "undefined") {
-        chrome.contextMenus.removeAll(() => {
+    if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.removeAll) !== "undefined") {
+        browser.contextMenus.removeAll().then(() => {
             createMenu();
         });
     } else {
@@ -176,45 +176,45 @@ function updateMenu() {
 }
 
 function updateBadge() {
-    if(typeof(chrome.tabs) !== "undefined" && typeof(chrome.tabs.query) !== "undefined") {
-        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+    if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.query) !== "undefined") {
+        browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
             pageShadowAllowed(tabs[0].url, enabled => {
-                if(typeof(chrome.browserAction) !== "undefined" && typeof(chrome.browserAction.setBadgeText) !== "undefined") {
-                    chrome.browserAction.setBadgeText({
+                if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeText) !== "undefined") {
+                    browser.browserAction.setBadgeText({
                         text: " "
                     });
                 }
 
-                if(typeof(chrome.browserAction) !== "undefined" && typeof(chrome.browserAction.setBadgeBackgroundColor) !== "undefined") {
+                if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeBackgroundColor) !== "undefined") {
                     if(enabled) {
-                        chrome.browserAction.setBadgeBackgroundColor({
+                        browser.browserAction.setBadgeBackgroundColor({
                             color: "#2ecc71"
                         });
                     } else {
-                        chrome.browserAction.setBadgeBackgroundColor({
+                        browser.browserAction.setBadgeBackgroundColor({
                             color: "#e74c3c"
                         });
                     }
                 }
 
-                if(typeof(chrome.browserAction) !== "undefined" && typeof(chrome.browserAction.setTitle) !== "undefined") {
+                if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setTitle) !== "undefined") {
                     if(!enabled) {
-                        chrome.browserAction.setTitle({
+                        browser.browserAction.setTitle({
                             title: "Page Shadow (" + getUImessage("pageShadowDisabled") + ")"
                         });
                     } else {
-                        chrome.browserAction.setTitle({
+                        browser.browserAction.setTitle({
                             title: "Page Shadow"
                         });
                     }
                 }
 
-                if(typeof(chrome.tabs.sendMessage) !== "undefined") {
-                    chrome.tabs.sendMessage(tabs[0].id, {
+                if(typeof(browser.tabs.sendMessage) !== "undefined") {
+                    browser.tabs.sendMessage(tabs[0].id, {
                         type: "websiteUrlUpdated",
                         enabled: enabled
-                    }, () => {
-                        if(chrome.runtime.lastError) return; // ignore the error messages
+                    }).then(() => {
+                        if(browser.runtime.lastError) return; // ignore the error messages
                     });
                 }
             });
@@ -239,7 +239,7 @@ function checkAutoEnable() {
 }
 
 function checkAutoUpdateFilters() {
-    chrome.storage.local.get("filtersSettings", result => {
+    browser.storage.local.get("filtersSettings").then(result => {
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
         const lastUpdate = filters.lastUpdated;
         const updateInterval = filters.updateInterval;
@@ -253,8 +253,8 @@ function checkAutoUpdateFilters() {
 }
 
 function autoEnable(changed) {
-    if(typeof(chrome.storage) !== "undefined" && typeof(chrome.storage.local) !== "undefined") {
-        chrome.storage.local.get("autoEnable", result => {
+    if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.local) !== "undefined") {
+        browser.storage.local.get("autoEnable").then(result => {
             if(result.autoEnable == "true") {
                 autoEnableActivated = true;
             } else {
@@ -269,29 +269,29 @@ function autoEnable(changed) {
     }
 }
 
-if(typeof(chrome.storage) !== "undefined" && typeof(chrome.storage.onChanged) !== "undefined") {
-    chrome.storage.onChanged.addListener(() => {
+if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) !== "undefined") {
+    browser.storage.onChanged.addListener(() => {
         menu();
         updateBadge();
     });
 }
 
-if(typeof(chrome.tabs) !== "undefined" && typeof(chrome.tabs.onActivated) !== "undefined") {
-    chrome.tabs.onActivated.addListener(() => {
+if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onActivated) !== "undefined") {
+    browser.tabs.onActivated.addListener(() => {
         menu();
         updateBadge();
     });
 }
 
-if(typeof(chrome.tabs) !== "undefined" && typeof(chrome.tabs.onUpdated) !== "undefined") {
-    chrome.tabs.onUpdated.addListener(() => {
+if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onUpdated) !== "undefined") {
+    browser.tabs.onUpdated.addListener(() => {
         menu();
         updateBadge();
     });
 }
 
-if(typeof(chrome.storage) !== "undefined" && typeof(chrome.storage.onChanged) !== "undefined") {
-    chrome.storage.onChanged.addListener(changes => {
+if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) !== "undefined") {
+    browser.storage.onChanged.addListener(changes => {
         autoEnable(changes);
     });
 }
@@ -357,8 +357,8 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
     });
 }
 
-if(typeof(chrome.contextMenus) !== "undefined" && typeof(chrome.contextMenus.onClicked) !== "undefined") {
-    chrome.contextMenus.onClicked.addListener((info, tab) => {
+if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.onClicked) !== "undefined") {
+    browser.contextMenus.onClicked.addListener((info, tab) => {
         disableEnableToggle(info.menuItemId, info.checked && !info.wasChecked, new URL(tab.url), () => {
             if(info.menuItemId.substring(0, 11) == "load-preset") {
                 const nbPreset = info.menuItemId.substr(12, info.menuItemId.length - 11);
@@ -370,11 +370,11 @@ if(typeof(chrome.contextMenus) !== "undefined" && typeof(chrome.contextMenus.onC
     });
 }
 
-if(typeof(chrome.commands) !== "undefined" && typeof(chrome.commands.onCommand) !== "undefined") {
-    chrome.commands.onCommand.addListener(command => {
+if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand) !== "undefined") {
+    browser.commands.onCommand.addListener(command => {
         switch(command) {
         case "enableDisable":
-            chrome.storage.local.get("globallyEnable", result => {
+            browser.storage.local.get("globallyEnable").then(result => {
                 if(result.globallyEnable == "false") {
                     setSettingItem("globallyEnable", "true");
                 } else {

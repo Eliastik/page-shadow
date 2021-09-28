@@ -18,6 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
 import { defaultFilters } from "./util.js";
+import browser from "webextension-polyfill";
 
 let rules = [];
 
@@ -25,7 +26,7 @@ function openFiltersFiles() {
     const files = {};
 
     return new Promise(resolve => {
-        chrome.storage.local.get(["filtersSettings", "customFilter"], result => {
+        browser.storage.local.get(["filtersSettings", "customFilter"]).then(result => {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
             const customFilter = result.customFilter != null ? result.customFilter : "";
 
@@ -44,7 +45,7 @@ function openFiltersFiles() {
 
 function updateFilter(idFilter) {
     return new Promise(resolve => {
-        chrome.storage.local.get("filtersSettings", async(result) => {
+        browser.storage.local.get("filtersSettings").then(async(result) => {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
             const filterToUpdate = filters.filters[idFilter];
     
@@ -88,7 +89,7 @@ function updateFilter(idFilter) {
 
 async function updateAllFilters(autoUpdate) {
     return new Promise(resolve => {
-        chrome.storage.local.get("filtersSettings", async(result) => {
+        browser.storage.local.get("filtersSettings").then(async(result) => {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
             const nbFilters = filters.filters.length;
 
@@ -114,7 +115,7 @@ async function updateAllFilters(autoUpdate) {
 
 async function cleanAllFilters() {
     return new Promise(resolve => {
-        chrome.storage.local.get("filtersSettings", async(result) => {
+        browser.storage.local.get("filtersSettings").then(async(result) => {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
             const nbFilters = filters.filters.length;
 
@@ -132,7 +133,7 @@ async function cleanAllFilters() {
 
 async function updateOneFilter(idFilter) {
     return new Promise(resolve => {
-        chrome.storage.local.get("filtersSettings", async(result) => {
+        browser.storage.local.get("filtersSettings").then(async(result) => {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
             filters.filters[idFilter] = await updateFilter(idFilter);
             setSettingItem("filtersSettings", filters);
@@ -148,7 +149,7 @@ async function updateOneFilter(idFilter) {
 
 async function toggleFilter(idFilter, enable) {
     return new Promise(resolve => {
-        chrome.storage.local.get("filtersSettings", result => {
+        browser.storage.local.get("filtersSettings").then(result => {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
             filters.filters[idFilter].enabled = enable;
             setSettingItem("filtersSettings", filters);
@@ -160,7 +161,7 @@ async function toggleFilter(idFilter, enable) {
 
 async function toggleAutoUpdate(enabled) {
     return new Promise(resolve => {
-        chrome.storage.local.get("filtersSettings", result => {
+        browser.storage.local.get("filtersSettings").then(result => {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
             filters.enableAutoUpdate = enabled;
             setSettingItem("filtersSettings", filters);
@@ -257,7 +258,7 @@ async function addFilter(address) {
             return reject("Empty error");
         }
 
-        chrome.storage.local.get("filtersSettings", async(result) => {
+        browser.storage.local.get("filtersSettings").then(async(result) => {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
 
             if(filters && filters.filters) {
@@ -312,7 +313,7 @@ async function addFilter(address) {
 
 async function removeFilter(idFilter) {
     return new Promise(resolve => {
-        chrome.storage.local.get("filtersSettings", result => {
+        browser.storage.local.get("filtersSettings").then(result => {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
 
             if(filters && filters.filters) {
@@ -328,7 +329,7 @@ async function removeFilter(idFilter) {
 
 async function getCustomFilter() {
     return new Promise(resolve => {
-        chrome.storage.local.get("customFilter", result => {
+        browser.storage.local.get("customFilter").then(result => {
             const customFilterFilter = result.customFilter != null ? result.customFilter : "";
             resolve(customFilterFilter);
         });
@@ -337,7 +338,7 @@ async function getCustomFilter() {
 
 async function updateCustomFilter(text) {
     return new Promise(resolve => {
-        chrome.storage.local.get(["filtersSettings", "customFilter"], result => {
+        browser.storage.local.get(["filtersSettings", "customFilter"]).then(result => {
             const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
 
             if(filters && filters.filters) {

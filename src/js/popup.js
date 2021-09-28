@@ -24,6 +24,7 @@ import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
 import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots } from "./util.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
+import browser from "webextension-polyfill";
 
 window.$ = $;
 window.jQuery = $;
@@ -91,25 +92,25 @@ $(document).ready(() => {
     });
 
     $("#linkAdvSettings").click(() => {
-        chrome.tabs.create({
+        browser.tabs.create({
             url: "options.html"
         });
     });
 
     $("#linkAdvSettings2").click(() => {
-        chrome.tabs.create({
+        browser.tabs.create({
             url: "options.html#customTheme"
         });
     });
 
     $("#linkTestExtension").click(() => {
-        chrome.tabs.create({
+        browser.tabs.create({
             url: "pageTest.html"
         });
     });
 
     $("#settingsPresets").click(() => {
-        chrome.tabs.create({
+        browser.tabs.create({
             url: "options.html#presets"
         });
     });
@@ -146,7 +147,7 @@ $(document).ready(() => {
 
     function checkEnable() {
         function check(url) {
-            chrome.storage.local.get(["sitesInterditPageShadow", "whiteList"], result => {
+            browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]).then(result => {
                 let sitesInterdits;
 
                 if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == "undefined" || result.sitesInterditPageShadow.trim() == "") {
@@ -206,15 +207,15 @@ $(document).ready(() => {
 
         if(matches && matches.length === 2) {
             const tabId = parseInt(matches[1]);
-            chrome.tabs.get(tabId, (tabinfos) => {
-                if(!chrome.runtime.lastError) {
+            browser.tabs.get(tabId).then((tabinfos) => {
+                if(!browser.runtime.lastError) {
                     const url = new URL(tabinfos.url);
                     check(url);
                 }
             });
         } else {
-            chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-                if(!chrome.runtime.lastError) {
+            browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
+                if(!browser.runtime.lastError) {
                     const url = new URL(tabs[0].url);
                     check(url);
                 }
@@ -227,16 +228,16 @@ $(document).ready(() => {
 
         if(matches && matches.length === 2) {
             const tabId = parseInt(matches[1]);
-            chrome.tabs.get(tabId, (tabinfos) => {
-                if(!chrome.runtime.lastError) {
+            browser.tabs.get(tabId).then((tabinfos) => {
+                if(!browser.runtime.lastError) {
                     const url = new URL(tabinfos.url);
                     disableEnableToggle(type, checked, url);
                     checkEnable();
                 }
             });
         } else {
-            chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-                if(!chrome.runtime.lastError) {
+            browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
+                if(!browser.runtime.lastError) {
                     const url = new URL(tabs[0].url);
                     disableEnableToggle(type, checked, url);
                     checkEnable();
@@ -247,14 +248,14 @@ $(document).ready(() => {
 
     checkEnable();
 
-    if(typeof(chrome.tabs.onActivated) !== "undefined") {
-        chrome.tabs.onActivated.addListener(() => {
+    if(typeof(browser.tabs.onActivated) !== "undefined") {
+        browser.tabs.onActivated.addListener(() => {
             checkEnable();
         });
     }
 
-    if(typeof(chrome.tabs.onUpdated) !== "undefined") {
-        chrome.tabs.onUpdated.addListener(() => {
+    if(typeof(browser.tabs.onUpdated) !== "undefined") {
+        browser.tabs.onUpdated.addListener(() => {
             checkEnable();
         });
     }
@@ -276,7 +277,7 @@ $(document).ready(() => {
     });
 
     checkContrastMode = function() {
-        chrome.storage.local.get(["theme", "pageShadowEnabled", "disableImgBgColor"], result => {
+        browser.storage.local.get(["theme", "pageShadowEnabled", "disableImgBgColor"]).then(result => {
             // append the list of themes in the select
             $("#themeSelect").text("");
 
@@ -341,7 +342,7 @@ $(document).ready(() => {
         setSettingItem("theme", $(this).val());
 
         if($(this).val().trim().startsWith("custom")) {
-            chrome.storage.local.get("customThemeInfoDisable", result => {
+            browser.storage.local.get("customThemeInfoDisable").then(result => {
                 if(typeof result.customThemeInfoDisable == undefined || result.customThemeInfoDisable !== "true") {
                     $("#customThemeInfos").modal("show");
                 }
@@ -358,7 +359,7 @@ $(document).ready(() => {
     });
 
     function checkCustomTheme() {
-        chrome.storage.local.get("theme", result => {
+        browser.storage.local.get("theme").then(result => {
             if(result.theme != undefined && typeof(result.theme) == "string" && result.theme.startsWith("custom")) {
                 customTheme(result.theme.replace("custom", ""), style, true, lnkCustomTheme);
             }
@@ -366,7 +367,7 @@ $(document).ready(() => {
     }
 
     function checkColorInvert() {
-        chrome.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor"], (result) => {
+        browser.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor"]).then(result => {
             if(result.colorInvert == "true") {
                 // Convert old settings to new settings
                 setSettingItem("colorInvert", "false");
@@ -478,7 +479,7 @@ $(document).ready(() => {
     });
 
     function checkAutoEnable() {
-        chrome.storage.local.get("autoEnable", result => {
+        browser.storage.local.get("autoEnable").then(result => {
             if(result.autoEnable == "true" && $("#autoEnable").is(":checked") == false) {
                 $("#autoEnable").prop("checked", true);
             } else if(result.autoEnable !== "true" && $("#autoEnable").is(":checked") == true) {
@@ -578,7 +579,7 @@ $(document).ready(() => {
     function saveSettingsAutoEnable() {
         const data = getAutoEnableFormData();
 
-        chrome.storage.local.set({
+        browser.storage.local.set({
             "autoEnableHourFormat": data[0],
             "hourEnable": data[1],
             "minuteEnable": data[2],
@@ -633,7 +634,7 @@ $(document).ready(() => {
     setInterval(() => { infoAutoEnable(); }, 1000);
 
     function checkLiveSettings() {
-        chrome.storage.local.get("liveSettings", result => {
+        browser.storage.local.get("liveSettings").then(result => {
             if(result.liveSettings == "true" && $("#liveSettings").is(":checked") == false) {
                 $("#liveSettings").prop("checked", true);
             } else if(result.liveSettings !== "true" && $("#liveSettings").is(":checked") == true) {
@@ -651,7 +652,7 @@ $(document).ready(() => {
     });
 
     function checkBrightness() {
-        chrome.storage.local.get(["pageLumEnabled", "nightModeEnabled", "pourcentageLum"], result => {
+        browser.storage.local.get(["pageLumEnabled", "nightModeEnabled", "pourcentageLum"]).then(result => {
             if(result.pageLumEnabled == "true") {
                 if(result.nightModeEnabled == "true") {
                     $("#checkNighMode").attr("checked", "checked");
@@ -700,7 +701,7 @@ $(document).ready(() => {
     });
 
     function checkNightMode() {
-        chrome.storage.local.get(["nightModeEnabled", "colorTemp"], result => {
+        browser.storage.local.get(["nightModeEnabled", "colorTemp"]).then(result => {
             if(result.nightModeEnabled == "true") {
                 if(result.colorTemp != undefined) {
                     $("#tempSelect").val(result.colorTemp);
@@ -738,7 +739,7 @@ $(document).ready(() => {
     });
 
     function checkGlobalEnable() {
-        chrome.storage.local.get("globallyEnable", (result) => {
+        browser.storage.local.get("globallyEnable").then(result => {
             if(result.globallyEnable == "false") {
                 $("#pageShadowGlobalSwitch").prop("checked", false);
             } else {
@@ -782,7 +783,7 @@ $(document).ready(() => {
     });
 
     function displaySettings() {
-        chrome.storage.local.get(["theme", "colorTemp", "pourcentageLum"], result => {
+        browser.storage.local.get(["theme", "colorTemp", "pourcentageLum"]).then(result => {
             checkContrastMode();
             checkColorInvert();
             checkLiveSettings();
@@ -813,8 +814,8 @@ $(document).ready(() => {
 
     displaySettings();
 
-    if(typeof(chrome.storage.onChanged) !== "undefined") {
-        chrome.storage.onChanged.addListener(() => {
+    if(typeof(browser.storage.onChanged) !== "undefined") {
+        browser.storage.onChanged.addListener(() => {
             displaySettings();
         });
     }

@@ -74,7 +74,7 @@ import browser from "webextension-polyfill";
     }
 
     function customThemeApply() {
-        chrome.storage.local.get("theme", result => {
+        browser.storage.local.get("theme").then(result => {
             if(result.theme != undefined && typeof(result.theme) == "string" && result.theme.startsWith("custom")) {
                 customTheme(result.theme.replace("custom", ""), style, false, lnkCustomTheme);
             }
@@ -586,7 +586,7 @@ import browser from "webextension-polyfill";
         if(runningInIframe) {
             typeProcess = type;
 
-            chrome.runtime.sendMessage({
+            browser.runtime.sendMessage({
                 "type": "isEnabledForThisPage"
             });
         } else {
@@ -598,7 +598,7 @@ import browser from "webextension-polyfill";
 
     function process(allowed, type) {
         if(allowed) {
-            chrome.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor"], result => {
+            browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor"]).then(result => {
                 precEnabled = true;
 
                 const pageShadowEnabled = result.pageShadowEnabled;
@@ -661,8 +661,8 @@ import browser from "webextension-polyfill";
     main("start");
 
     // Execute Page Shadow on the page when the settings have been changed:
-    chrome.storage.onChanged.addListener(() => {
-        chrome.storage.local.get("liveSettings", result => {
+    browser.storage.onChanged.addListener(() => {
+        browser.storage.local.get("liveSettings").then(result => {
             if(result.liveSettings !== "false") {
                 main("reset", "all");
             }
