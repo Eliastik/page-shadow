@@ -418,15 +418,17 @@ import browser from "webextension-polyfill";
                         }
                     } else if(mutation.type == "attributes") {
                         mutationElementsBackgrounds(mutation.target, mutation.attributeName, mutation.oldValue);
+                        doProcessFilters(filtersCache, mutation.target);
                     }
                 });
             });
 
             mut_backgrounds.observe(document.body, {
-                "attributes": false,
+                "attributes": true,
                 "subtree": true,
                 "childList": true,
-                "characterData": false
+                "characterData": false,
+                "attributeFilter": ["class"]
             });
         }
     }
