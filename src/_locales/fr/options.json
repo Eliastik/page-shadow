@@ -113,7 +113,8 @@
             "previewLinkVisited": "Un lien visité.",
             "collapseCustomCSS": "Code CSS personnalisé…",
             "customCSSHelp": "Vous pouvez entrer ci-dessous un code CSS personnalisé qui sera chargé en même temps que le thème personnalisé.",
-            "customCSSHelpExpUsers": "Pour les utilisateurs expérimentés uniquement."
+            "customCSSHelpExpUsers": "Pour les utilisateurs expérimentés uniquement.",
+            "fontNotCompatible": "Ce paramètre est incompatible avec votre navigateur web."
         },
         "archive": {
             "title": "Archivage, restauration des paramètres et pré-réglages",

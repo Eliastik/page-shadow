@@ -71,7 +71,7 @@ function translateContent() {
         $("#themeSelect").append("<option value=\"" + i + "\">" + i18next.t("container.customTheme", { count: i }) + "</option>");
     }
 
-    if(getBrowser() != "Chrome") {
+    if(getBrowser() != "Chrome" && getBrowser() != "Firefox") {
         $("#keyboardShortcuts").tooltip({
             trigger: "focus",
             container: "body",
@@ -80,6 +80,12 @@ function translateContent() {
         });
 
         $("#keyboardShortcuts").attr("data-original-title", i18next.t("container.keyboardShortcutsInfos"));
+    }
+
+    if(getBrowser() == "Firefox") {
+        $("#customThemeHelp").attr("data-original-title", i18next.t("modal.customTheme.fontNotCompatible"));
+    } else {
+        $("#customThemeHelp").attr("data-original-title", i18next.t("modal.customTheme.fontHelp"));
     }
 
     displaySettings();
@@ -947,6 +953,14 @@ $(document).ready(() => {
                 url: "chrome://extensions/configureCommands"
             });
         });
+    } else if(getBrowser() == "Firefox") {
+        $("#keyboardShortcuts").click(() => {
+            browser.tabs.create({
+                url: "https://support.mozilla.org/" + i18next.language + "/kb/manage-extension-shortcuts-firefox"
+            });
+        });
+
+        $("#customThemeFont").attr("disabled", "disabled");
     }
 
     // Hash

@@ -22,7 +22,7 @@ github.com|disableContrastFor|.blob-code-addition,.blob-code-deletion,.blob-code
 *google.*|disableBackgroundStylingFor|.e4xoPb *,g-scrolling-carousel *,.wXeWr *,.rGhul *,.related-question-pair *,g-img *
 *google.*|disableTextColorStylingFor|.AonJHf,.AonJHf *
 # Google: fix link color
-*google.*|disableTextColorStylingFor|a h3
+*google.*|disableTextColorStylingFor|a h3,a.fl span
 *disqus.*|disableBackgroundStylingFor|.recommend-image-wrapper .overlay,.recommend-image-wrapper
 # Jira
 *atlassian.net|disableElementInvertFor|span[role='img']

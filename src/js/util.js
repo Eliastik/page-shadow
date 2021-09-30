@@ -518,12 +518,12 @@ function checkChangedStorageData(key, object) {
 }
 
 function getBrowser() {
-    if(typeof chrome !== "undefined") {
-        if(typeof window.browser !== "undefined") {
-            return "Firefox";
-        } else {
-            return "Chrome";
-        }
+    const isFirefox = navigator.userAgent.split(" ").find(element => element.toLowerCase().startsWith("firefox")) != null;
+
+    if(isFirefox) {
+        return "Firefox";
+    } else {
+        return "Chrome";
     }
 }
 
