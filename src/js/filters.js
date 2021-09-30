@@ -361,4 +361,6 @@ function getRules() {
     return rules;
 }
 
+cacheFilters();
+
 export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules };
