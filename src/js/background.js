@@ -178,47 +178,56 @@ function updateMenu() {
 
 function updateBadge() {
     if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.query) !== "undefined") {
-        browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
-            pageShadowAllowed(tabs[0].url).then(enabled => {
-                if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeText) !== "undefined") {
-                    browser.browserAction.setBadgeText({
-                        text: " "
-                    });
-                }
+        browser.tabs.query({ active: true }).then(tabs => {
+            for(const tab of tabs) {
+                if(!tab || tab.url.trim() == "") continue;
 
-                if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeBackgroundColor) !== "undefined") {
-                    if(enabled) {
-                        browser.browserAction.setBadgeBackgroundColor({
-                            color: "#2ecc71"
-                        });
-                    } else {
-                        browser.browserAction.setBadgeBackgroundColor({
-                            color: "#e74c3c"
+                pageShadowAllowed(tab.url).then(enabled => {
+                    if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeText) !== "undefined") {
+                        browser.browserAction.setBadgeText({
+                            text: " ",
+                            tabId: tab.id
                         });
                     }
-                }
-
-                if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setTitle) !== "undefined") {
-                    if(!enabled) {
-                        browser.browserAction.setTitle({
-                            title: "Page Shadow (" + getUImessage("pageShadowDisabled") + ")"
-                        });
-                    } else {
-                        browser.browserAction.setTitle({
-                            title: "Page Shadow"
+    
+                    if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeBackgroundColor) !== "undefined") {
+                        if(enabled) {
+                            browser.browserAction.setBadgeBackgroundColor({
+                                color: "#2ecc71",
+                                tabId: tab.id
+                            });
+                        } else {
+                            browser.browserAction.setBadgeBackgroundColor({
+                                color: "#e74c3c",
+                                tabId: tab.id
+                            });
+                        }
+                    }
+    
+                    if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setTitle) !== "undefined") {
+                        if(!enabled) {
+                            browser.browserAction.setTitle({
+                                title: "Page Shadow (" + getUImessage("pageShadowDisabled") + ")",
+                                tabId: tab.id
+                            });
+                        } else {
+                            browser.browserAction.setTitle({
+                                title: "Page Shadow",
+                                tabId: tab.id
+                            });
+                        }
+                    }
+    
+                    if(typeof(browser.tabs.sendMessage) !== "undefined") {
+                        browser.tabs.sendMessage(tab.id, {
+                            type: "websiteUrlUpdated",
+                            enabled: enabled
+                        }).catch(() => {
+                            if(browser.runtime.lastError) return; // ignore the error messages
                         });
                     }
-                }
-
-                if(typeof(browser.tabs.sendMessage) !== "undefined") {
-                    browser.tabs.sendMessage(tabs[0].id, {
-                        type: "websiteUrlUpdated",
-                        enabled: enabled
-                    }).catch(() => {
-                        if(browser.runtime.lastError) return; // ignore the error messages
-                    });
-                }
-            });
+                });
+            }
         });
     }
 }
