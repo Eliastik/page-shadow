@@ -79,6 +79,14 @@ gulp.task("compile-js", () => {
                         use: ["style-loader", "css-loader"],
                     }
                 ]
+            },
+            optimization: {
+                splitChunks: {
+                    chunks(chunk) {
+                        return chunk.name !== "background" && chunk.name !== "content";
+                    },
+                    name: "shared"
+                }
             }
         }))
         .pipe(gulp.dest("./build/global/js/"));
@@ -131,7 +139,7 @@ gulp.task("build-dev", gulp.series("clean", "copy-global", "compile-less", "comp
 
 gulp.task("default", gulp.series("build-dev"));
 
-gulp.task("build-prod", gulp.series("set-prod-mode", "clean", "copy-global", "compile-less", "compile-js", "compress-css", "copyChrome", "copyEdge", "copyFirefox", "copyFirefoxContentCSS", "build"));
+gulp.task("build-prod", gulp.series("set-prod-mode", "clean", "copy-global", "compile-less", "compile-js", "compress-css", "copyChrome", "copyEdge", "copyFirefox", "copyFirefoxContentCSS", "build", "clean-directories"));
 
 gulp.task("build-prod-no-css-compress", gulp.series("set-prod-mode", "clean", "copy-global", "compile-less", "compile-js", "copyChrome", "copyEdge", "copyFirefox", "copyFirefoxContentCSS", "build", "clean-directories"));
 
