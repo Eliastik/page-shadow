@@ -25,15 +25,15 @@
     "gulp-rename": "^2.0.0",
     "gulp-zip": "^5.1.0",
     "style-loader": "^3.2.1",
-    "webpack": "^5.55.0",
+    "webpack": "^5.56.0",
     "webpack-cli": "^4.8.0",
     "webpack-stream": "^7.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
     "bootstrap-slider": "^11.0.2",
-    "codemirror": "^5.63.0",
-    "i18next": "^21.1.1",
+    "codemirror": "^5.63.1",
+    "i18next": "^21.2.3",
     "i18next-browser-languagedetector": "^6.1.2",
     "i18next-xhr-backend": "^3.2.2",
     "jquery": "^3.6.0",
