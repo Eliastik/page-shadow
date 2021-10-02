@@ -9,6 +9,8 @@ const crx      = require("@crxs/gulp-crx");
 const fs       = require("fs");
 const webpack  = require("webpack-stream");
 const rename   = require("gulp-rename");
+const compiler = require("webpack");
+const eslint   = require("eslint-webpack-plugin");
 
 let currentMode = "development";
 
@@ -87,8 +89,12 @@ gulp.task("compile-js", () => {
                     },
                     name: "shared"
                 }
-            }
-        }))
+            },
+            plugins: [new eslint()]
+        }, compiler))
+        .on("error", err => {
+            console.error(err);
+        })
         .pipe(gulp.dest("./build/global/js/"));
 });
 
@@ -133,6 +139,10 @@ gulp.task("build", () => {
             codebase: codebase,
         }))
         .pipe(gulp.dest("./build"));
+});
+
+gulp.task("watch", () => {
+    gulp.watch(["src/js/*.js", "src/css/*.css", "src/css/*.less", "src/locales/**/*.json", "src/filters/*.txt", "src/*.html", "src/*.txt"], gulp.series("build-dev"));
 });
 
 gulp.task("build-dev", gulp.series("clean", "copy-global", "compile-less", "compile-js", "copyChrome", "copyEdge", "copyFirefox", "copyFirefoxContentCSS", "build", "clean-directories"));
