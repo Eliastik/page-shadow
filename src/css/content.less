@@ -78,7 +78,7 @@
     .pageShadowContrastBlack@{name} *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
         background-color: @bgcolor !important;
     }
-    .pageShadowContrastBlack@{name} *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
+    .pageShadowContrastBlack@{name} *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling), .pageShadowContrastBlack@{name} *.pageShadowIsShadowRootElement {
         color: @txtcolor !important;
     }
     .pageShadowContrastBlack@{name} :not(.pageShadowInvertImageColor) svg:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {

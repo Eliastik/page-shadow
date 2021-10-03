@@ -34,7 +34,7 @@ import browser from "webextension-polyfill";
     let mut_contrast, mut_backgrounds, mut_brightness, mut_invert;
     let typeProcess = "";
 
-    function assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) {
+    function contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) {
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
             if(theme != undefined) {
                 if(theme == "1") {
@@ -166,9 +166,9 @@ import browser from "webextension-polyfill";
 
             if(type == 2 || type == 3 || type == "color") {
                 const hasBackgroundColor = computedStyle.getPropertyValue("background-image").substr(0, 4) !== "url(" && computedStyle.getPropertyValue("background-color") !== "" && computedStyle.getPropertyValue("background-color").substr(0, 4) !== "none";
-                const hasClassColor = elements[i].classList.contains("pageShadowHasBackgroundColor");
+                const hasClass = elements[i].classList.contains("pageShadowHasBackgroundColor");
 
-                if(hasBackgroundColor && !hasClassColor) {
+                if(hasBackgroundColor && !hasClass) {
                     elements[i].classList.add("pageShadowHasBackgroundColor");
                 }
             }
@@ -210,7 +210,7 @@ import browser from "webextension-polyfill";
         }
     }
 
-    function luminositePage(enabled, pourcentage, nightmode, colorTemp) {
+    function brightnessPage(enabled, pourcentage, nightmode, colorTemp) {
         elLum.setAttribute("class", "");
 
         if(enabled == "true" && !runningInIframe) {
@@ -274,7 +274,7 @@ import browser from "webextension-polyfill";
     }
 
     function applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) {
-        if(document.body) return assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors);
+        if(document.body) return contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors);
         timeOutAP = setTimeout(() => applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors), 50);
     }
 
@@ -478,11 +478,15 @@ import browser from "webextension-polyfill";
         filters.forEach(filter => {
             if(matchWebsite(domain, filter.website) || matchWebsite(url, filter.website)) {
                 const selector = filter.filter;
+                const filterTypes = filter.type.split(",");
+
                 let elements = (element ? [element] : document.querySelectorAll(selector));
 
                 if(element) {
-                    if(element.matches && !element.matches(selector)) {
-                        elements = [];
+                    if(!filterTypes.includes("disableShadowRootsCustomStyle")) {
+                        if(element.matches && !element.matches(selector)) {
+                            elements = [];
+                        }
                     }
 
                     if(element.getElementsByTagName) {
@@ -500,8 +504,6 @@ import browser from "webextension-polyfill";
 
                 elements.forEach(element => {
                     if(element && element.classList) {
-                        const filterTypes = filter.type.split(",");
-
                         filterTypes.forEach(filterType => {
                             switch(filterType) {
                             case "disableContrastFor":
@@ -528,12 +530,32 @@ import browser from "webextension-polyfill";
                             case "disableElementInvertFor":
                                 if(!element.classList.contains("pageShadowDisableElementInvert")) element.classList.add("pageShadowDisableElementInvert");
                                 break;
+                            case "disableShadowRootsCustomStyle":
+                                if(element.shadowRoot != null) processShadowRoot(element);
+                                break;
                             }
                         });
                     }
                 });
             }
         });
+    }
+
+    function processShadowRoot(element) {
+        if(element.shadowRoot != null) {
+            const elements = element.shadowRoot.querySelectorAll("*");
+
+            elements.forEach(element => {
+                const hasClass = element.classList.contains("pageShadowIsShadowRootElement");
+    
+                if(!hasClass) {
+                    element.classList.add("pageShadowIsShadowRootElement");
+                    element.style.color = "inherit";
+                }
+
+                processShadowRoot(element);
+            });
+        }
     }
 
     function main(type, mutation) {
@@ -622,11 +644,11 @@ import browser from "webextension-polyfill";
                 }
 
                 if(type == "onlyContrast") {
-                    assombrirPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, result.disableImgBgColor, invertBgColors);
+                    contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, result.disableImgBgColor, invertBgColors);
                 } else if(type == "onlyInvert") {
                     invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors);
                 } else if(type == "onlyBrightness") {
-                    luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, colorTemp);
+                    brightnessPage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, colorTemp);
                 } else if(pageShadowEnabled == "true") {
                     applyAP(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, result.disableImgBgColor, invertBgColors);
                 } else {
@@ -634,7 +656,7 @@ import browser from "webextension-polyfill";
                 }
 
                 if(type !== "onlyContrast" && type !== "onlyInvert" && type !== "onlyBrightness") {
-                    luminositePage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, colorTemp);
+                    brightnessPage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, colorTemp);
                 }
 
                 if(pageShadowEnabled == "true" || colorInvert == "true") {

@@ -32,3 +32,5 @@ web.dev|disableContrastFor|web-navigation-drawer,web-navigation-drawer *,web-sna
 medium.com|disableContrastFor|div[data-test-id="post-sidebar"],div[data-test-id="post-sidebar"] .n,div[data-test-id="post-sidebar"] > div,div[data-test-id="post-sidebar"] > div > div
 # Wiktionnaire
 fr.wiktionary.org|disableContrastFor|.mw-notification-area-overlay
+morioh.com|disableBackgroundStylingFor|body div div[aria-live="assertive"]
+bugs.chromium.org|disableShadowRootsCustomStyle|body *
