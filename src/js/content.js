@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, customTheme, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue } from "./util.js";
+import { pageShadowAllowed, customTheme, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, getSettings } from "./util.js";
 import browser from "webextension-polyfill";
 
 (function(){
@@ -422,18 +422,22 @@ import browser from "webextension-polyfill";
                 "characterData": false
             });
         } else if(type == "backgrounds") {
-            mut_backgrounds = new MutationObserver(mutations => {
-                mutations.forEach(mutation => {
-                    if(mutation.type == "childList") {
-                        for(let i = 0; i < mutation.addedNodes.length; i++) {
-                            mutationElementsBackgrounds(mutation.addedNodes[i], null, null);
-                            doProcessFilters(filtersCache, mutation.addedNodes[i]);
+            mut_backgrounds = new MutationObserver(async(mutations) => {
+                const settings = await getSettings();
+
+                if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") {
+                    mutations.forEach(mutation => {
+                        if(mutation.type == "childList") {
+                            for(let i = 0; i < mutation.addedNodes.length; i++) {
+                                mutationElementsBackgrounds(mutation.addedNodes[i], null, null);
+                                doProcessFilters(filtersCache, mutation.addedNodes[i]);
+                            }
+                        } else if(mutation.type == "attributes") {
+                            mutationElementsBackgrounds(mutation.target, mutation.attributeName, mutation.oldValue);
+                            doProcessFilters(filtersCache, mutation.target);
                         }
-                    } else if(mutation.type == "attributes") {
-                        mutationElementsBackgrounds(mutation.target, mutation.attributeName, mutation.oldValue);
-                        doProcessFilters(filtersCache, mutation.target);
-                    }
-                });
+                    });
+                }
             });
 
             mut_backgrounds.observe(document.body, {
@@ -477,13 +481,14 @@ import browser from "webextension-polyfill";
         element.classList.remove("pageShadowDisableStyling");
     }
 
-    function updateFilters() {
+    async function updateFilters() {
+        const settings = await getSettings();
         if(filtersCache == null) {
             browser.runtime.sendMessage({
                 "type": "getFiltersForThisWebsite"
             });
         } else {
-            doProcessFilters(filtersCache);
+            if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") doProcessFilters(filtersCache);
         }
     }
 
@@ -634,62 +639,43 @@ import browser from "webextension-polyfill";
             });
         }
     }
-
-    function process(allowed, type) {
+   
+    async function process(allowed, type) {
         if(allowed) {
-            browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor"]).then(result => {
-                precEnabled = true;
+            const settings = await getSettings();
+            precEnabled = true;
 
-                const pageShadowEnabled = result.pageShadowEnabled;
-                const theme = result.theme;
-                const colorTemp = result.colorTemp;
-                const invertEntirePage = result.invertEntirePage;
-                let invertImageColors = result.invertImageColors;
-                const invertVideoColors = result.invertVideoColors;
-                const invertBgColors = result.invertBgColor;
-                let colorInvert;
+            if(type == TYPE_ONLY_CONTRAST) {
+                contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.colorTemp, settings.invertImageColors, settings.invertEntirePage, settings.disableImgBgColor, settings.invertBgColor);
+            } else if(type == TYPE_ONLY_INVERT) {
+                invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor);
+            } else if(type == TYPE_ONLY_BRIGHTNESS) {
+                brightnessPage(settings.pageLumEnabled, settings.pourcentageLum, settings.nightModeEnabled, settings.colorTemp);
+            } else if(settings.pageShadowEnabled == "true") {
+                waitAndApplyContrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.colorTemp, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor);
+            } else {
+                waitAndApplyInvertColors(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor);
+            }
 
-                if(result.colorInvert == "true") {
-                    colorInvert = "true";
-                    invertImageColors = "true";
-                } else if(result.invertPageColors == "true") {
-                    colorInvert = "true";
+            if(type !== TYPE_ONLY_CONTRAST && type !== TYPE_ONLY_INVERT && type !== TYPE_ONLY_BRIGHTNESS) {
+                brightnessPage(settings.pageLumEnabled, settings.pourcentageLum, settings.nightModeEnabled, settings.colorTemp);
+            }
+
+            if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") {
+                if(type == "start") {
+                    applyDetectBackground(TYPE_LOADING, "*", 1, 1);
                 } else {
-                    colorInvert = "false";
+                    applyDetectBackground(null, "*", 2, 1);
                 }
+            }
 
-                if(type == TYPE_ONLY_CONTRAST) {
-                    contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, result.disableImgBgColor, invertBgColors);
-                } else if(type == TYPE_ONLY_INVERT) {
-                    invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors);
-                } else if(type == TYPE_ONLY_BRIGHTNESS) {
-                    brightnessPage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, colorTemp);
-                } else if(pageShadowEnabled == "true") {
-                    waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, result.disableImgBgColor, invertBgColors);
-                } else {
-                    waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors);
-                }
-
-                if(type !== TYPE_ONLY_CONTRAST && type !== TYPE_ONLY_INVERT && type !== TYPE_ONLY_BRIGHTNESS) {
-                    brightnessPage(result.pageLumEnabled, result.pourcentageLum, result.nightModeEnabled, colorTemp);
-                }
-
-                if(pageShadowEnabled == "true" || colorInvert == "true") {
-                    if(type == "start") {
-                        applyDetectBackground(TYPE_LOADING, "*", 1, 1);
-                    } else {
-                        applyDetectBackground(null, "*", 2, 1);
-                    }
-                }
-
-                if(document.readyState == "complete") {
+            if(document.readyState == "complete") {
+                updateFilters();
+            } else {
+                window.addEventListener("load", () => {
                     updateFilters();
-                } else {
-                    window.addEventListener("load", () => {
-                        updateFilters();
-                    });
-                }
-            });
+                });
+            }
         } else {
             precEnabled = false;
         }
@@ -709,13 +695,14 @@ import browser from "webextension-polyfill";
     });
 
     // Message/response handling
-    browser.runtime.onMessage.addListener(message => {
+    browser.runtime.onMessage.addListener(async(message) => {
         if(message) {
             switch(message.type) {
             case "getFiltersResponse": {
                 if(message.filters) {
                     filtersCache = message.filters;
-                    doProcessFilters(message.filters);
+                    const settings = await getSettings();
+                    if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") doProcessFilters(message.filters);
                 }
                 break;
             }

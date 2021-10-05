@@ -731,4 +731,45 @@ function deletePreset(nb) {
     });
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, extensionVersion, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, deletePreset, customFilterGuideURL };
+async function getSettings() {
+    return new Promise(resolve => {
+        browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor"]).then(result => {
+            const pageShadowEnabled = result.pageShadowEnabled;
+            const theme = result.theme;
+            const colorTemp = result.colorTemp;
+            const invertEntirePage = result.invertEntirePage;
+            let invertImageColors = result.invertImageColors;
+            const invertVideoColors = result.invertVideoColors;
+            const invertBgColor = result.invertBgColor;
+            let colorInvert;
+
+            if(result.colorInvert == "true") {
+                colorInvert = "true";
+                invertImageColors = "true";
+            } else if(result.invertPageColors == "true") {
+                colorInvert = "true";
+            } else {
+                colorInvert = "false";
+            }
+
+            resolve({
+                pageShadowEnabled: pageShadowEnabled,
+                theme: theme,
+                pageLumEnabled: result.pageLumEnabled,
+                pourcentageLum: result.pourcentageLum,
+                nightModeEnabled: result.nightModeEnabled,
+                colorInvert: colorInvert,
+                invertPageColors: result.invertPageColors,
+                invertImageColors: invertImageColors,
+                invertEntirePage: invertEntirePage,
+                colorTemp: colorTemp,
+                globallyEnable: result.globallyEnable,
+                invertVideoColors: invertVideoColors,
+                disableImgBgColor: result.disableImgBgColor,
+                invertBgColor: invertBgColor
+            });
+        });
+    });
+}
+
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, extensionVersion, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, deletePreset, customFilterGuideURL, getSettings };
