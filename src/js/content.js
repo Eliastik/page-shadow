@@ -42,9 +42,10 @@ import browser from "webextension-polyfill";
     const TYPE_ONLY_INVERT = "onlyInvert";
     const TYPE_ONLY_BRIGHTNESS = "onlyBrightness";
     const TYPE_ONLY_RESET = "onlyreset";
-    const TYPE_CONTRAST = "contrast";
-    const TYPE_INVERT = "invert";
-    const TYPE_BRIGHTNESS = "brightness";
+    const MUTATION_TYPE_CONTRAST = "contrast";
+    const MUTATION_TYPE_INVERT = "invert";
+    const MUTATION_TYPE_BRIGHTNESS = "brightness";
+    const MUTATION_TYPE_BACKGROUNDS = "backgrounds";
     const TYPE_LOADING = "loading";
     const TYPE_START = "start";
 
@@ -75,10 +76,10 @@ import browser from "webextension-polyfill";
         invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors);
 
         if(document.readyState == "complete" || document.readyState == "interactive") {
-            mutationObserve(TYPE_CONTRAST);
+            mutationObserve(MUTATION_TYPE_CONTRAST);
         } else {
             window.addEventListener("load", () => {
-                mutationObserve(TYPE_CONTRAST);
+                mutationObserve(MUTATION_TYPE_CONTRAST);
             });
         }
 
@@ -139,10 +140,10 @@ import browser from "webextension-polyfill";
             }
 
             if(document.readyState == "complete" || document.readyState == "interactive") {
-                mutationObserve(TYPE_INVERT);
+                mutationObserve(MUTATION_TYPE_INVERT);
             } else {
                 window.addEventListener("load", () => {
-                    mutationObserve(TYPE_INVERT);
+                    mutationObserve(MUTATION_TYPE_INVERT);
                 });
             }
         }
@@ -160,7 +161,7 @@ import browser from "webextension-polyfill";
         }
 
         document.body.classList.add("pageShadowBackgroundDetected");
-        mutationObserve("backgrounds");
+        mutationObserve(MUTATION_TYPE_BACKGROUNDS);
         backgroundDetected = true;
     }
 
@@ -190,7 +191,7 @@ import browser from "webextension-polyfill";
             document.onreadystatechange = function() {
                 // when the page is entirely loaded
                 if(document.readyState === "complete") {
-                    setTimeout(() => waitAndApplyDetectBackground(elements), 1500); // detect for all the elements of the page after 1500 ms
+                    setTimeout(() => waitAndApplyDetectBackground(elements), 250); // detect for all the elements of the page after 250 ms
                 }
             };
         } else {
@@ -234,10 +235,10 @@ import browser from "webextension-polyfill";
             waitAndApplyBrightnessPage(elementBrightness, elementBrightnessWrapper);
 
             if(document.readyState == "complete" || document.readyState == "interactive") {
-                mutationObserve(TYPE_BRIGHTNESS);
+                mutationObserve(MUTATION_TYPE_BRIGHTNESS);
             } else {
                 window.addEventListener("load", () => {
-                    mutationObserve(TYPE_BRIGHTNESS);
+                    mutationObserve(MUTATION_TYPE_BRIGHTNESS);
                 });
             }
         }
@@ -281,7 +282,7 @@ import browser from "webextension-polyfill";
     }
 
     function mutationObserve(type) {
-        if(type == TYPE_CONTRAST) {
+        if(type == MUTATION_TYPE_CONTRAST) {
             if(typeof mut_contrast !== "undefined") mut_contrast.disconnect();
 
             mut_contrast = new MutationObserver(mutations => {
@@ -308,13 +309,13 @@ import browser from "webextension-polyfill";
                 });
 
                 if(!containsPageContrast) {
-                    setTimeout(() => main(TYPE_ONLY_CONTRAST, TYPE_CONTRAST), 1);
+                    setTimeout(() => main(TYPE_ONLY_CONTRAST, MUTATION_TYPE_CONTRAST), 1);
                 } else {
                     if(document.readyState == "complete" || document.readyState == "interactive") {
-                        mutationObserve(TYPE_CONTRAST);
+                        mutationObserve(MUTATION_TYPE_CONTRAST);
                     } else {
                         window.addEventListener("load", () => {
-                            mutationObserve(TYPE_CONTRAST);
+                            mutationObserve(MUTATION_TYPE_CONTRAST);
                         });
                     }
                 }
@@ -328,7 +329,7 @@ import browser from "webextension-polyfill";
                 "attributeOldValue": true,
                 "attributeFilter": ["class"]
             });
-        } else if(type == TYPE_INVERT) {
+        } else if(type == MUTATION_TYPE_INVERT) {
             if(typeof mut_invert !== "undefined") mut_invert.disconnect();
 
             mut_invert = new MutationObserver(mutations => {
@@ -336,10 +337,10 @@ import browser from "webextension-polyfill";
 
                 function reMutObserveInvert() {
                     if(document.readyState == "complete" || document.readyState == "interactive") {
-                        mutationObserve(TYPE_INVERT);
+                        mutationObserve(MUTATION_TYPE_INVERT);
                     } else {
                         window.addEventListener("load", () => {
-                            mutationObserve(TYPE_INVERT);
+                            mutationObserve(MUTATION_TYPE_INVERT);
                         });
                     }
                 }
@@ -349,11 +350,11 @@ import browser from "webextension-polyfill";
                         const classList = document.body.classList;
 
                         if(mutation.oldValue.indexOf("pageShadowInvertImageColor") !== -1 && !classList.contains("pageShadowInvertImageColor")) {
-                            setTimeout(() => main(TYPE_ONLY_INVERT, TYPE_INVERT), 1);
+                            setTimeout(() => main(TYPE_ONLY_INVERT, MUTATION_TYPE_INVERT), 1);
                         } else if(mutation.oldValue.indexOf("pageShadowInvertVideoColor") !== -1 && !classList.contains("pageShadowInvertVideoColor")) {
-                            setTimeout(() => main(TYPE_ONLY_INVERT, TYPE_INVERT), 1);
+                            setTimeout(() => main(TYPE_ONLY_INVERT, MUTATION_TYPE_INVERT), 1);
                         } else if(mutation.oldValue.indexOf("pageShadowInvertBgColor") !== -1 && !classList.contains("pageShadowInvertBgColor")) {
-                            setTimeout(() => main(TYPE_ONLY_INVERT, TYPE_INVERT), 1);
+                            setTimeout(() => main(TYPE_ONLY_INVERT, MUTATION_TYPE_INVERT), 1);
                         } else {
                             reMutObserveInvert();
                         }
@@ -371,7 +372,7 @@ import browser from "webextension-polyfill";
                 "attributeOldValue": true,
                 "attributeFilter": ["class"]
             });
-        } else if(type == TYPE_BRIGHTNESS) {
+        } else if(type == MUTATION_TYPE_BRIGHTNESS) {
             if(typeof mut_brightness !== "undefined") mut_brightness.disconnect();
 
             mut_brightness = new MutationObserver(mutations => {
@@ -381,13 +382,13 @@ import browser from "webextension-polyfill";
 
                 mutations.forEach(mutation => {
                     if((!document.body.contains(brightness) && !document.body.contains(nightmode)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
-                        setTimeout(() => main(TYPE_ONLY_BRIGHTNESS, TYPE_BRIGHTNESS), 1);
+                        setTimeout(() => main(TYPE_ONLY_BRIGHTNESS, MUTATION_TYPE_BRIGHTNESS), 1);
                     } else {
                         if(document.readyState == "complete" || document.readyState == "interactive") {
-                            mutationObserve(TYPE_BRIGHTNESS);
+                            mutationObserve(MUTATION_TYPE_BRIGHTNESS);
                         } else {
                             window.addEventListener("load", () => {
-                                mutationObserve(TYPE_BRIGHTNESS);
+                                mutationObserve(MUTATION_TYPE_BRIGHTNESS);
                             });
                         }
                     }
@@ -400,7 +401,7 @@ import browser from "webextension-polyfill";
                 "childList": true,
                 "characterData": false
             });
-        } else if(type == "backgrounds") {
+        } else if(type == MUTATION_TYPE_BACKGROUNDS) {
             mut_backgrounds = new MutationObserver(async(mutations) => {
                 const settings = await getSettings();
 
@@ -553,9 +554,9 @@ import browser from "webextension-polyfill";
         if(typeof timeOutAP !== "undefined") clearTimeout(timeOutAP);
         if(typeof timeOutIC !== "undefined") clearTimeout(timeOutIC);
         if(typeof timeOutBI !== "undefined") clearTimeout(timeOutBI);
-        if(typeof mut_contrast !== "undefined" && (mutation == TYPE_CONTRAST || mutation == TYPE_ALL)) mut_contrast.disconnect();
-        if(typeof mut_invert !== "undefined" && (mutation == TYPE_INVERT || mutation == TYPE_ALL)) mut_invert.disconnect();
-        if(typeof mut_brightness !== "undefined" && (mutation == TYPE_BRIGHTNESS || mutation == TYPE_ALL)) mut_brightness.disconnect();
+        if(typeof mut_contrast !== "undefined" && (mutation == MUTATION_TYPE_CONTRAST || mutation == TYPE_ALL)) mut_contrast.disconnect();
+        if(typeof mut_invert !== "undefined" && (mutation == MUTATION_TYPE_INVERT || mutation == TYPE_ALL)) mut_invert.disconnect();
+        if(typeof mut_brightness !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS || mutation == TYPE_ALL)) mut_brightness.disconnect();
         if(typeof lnkCustomTheme !== "undefined") lnkCustomTheme.setAttribute("href", "");
 
         if(started && (type == TYPE_RESET || type == TYPE_ONLY_RESET)) {
