@@ -23,7 +23,7 @@ import browser from "webextension-polyfill";
     const style = document.createElement("style");
     style.type = "text/css";
     const lnkCustomTheme = document.createElement("link");
-    let backgroundDetected = 0;
+    let backgroundDetected = false;
     let timeOutLum, timeOutAP, timeOutIC, timeOutBI;
     const elementBrightnessWrapper = document.createElement("div");
     const elementBrightness = document.createElement("div");
@@ -46,6 +46,7 @@ import browser from "webextension-polyfill";
     const TYPE_INVERT = "invert";
     const TYPE_BRIGHTNESS = "brightness";
     const TYPE_LOADING = "loading";
+    const TYPE_START = "start";
 
     function contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) {
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
@@ -151,74 +152,52 @@ import browser from "webextension-polyfill";
         }
     }
 
-    function detectBackground(tagName, add, type) {
-        const elements = document.body.getElementsByTagName(tagName);
-        let computedStyle = null;
+    function detectBackground(tagName) {
+        const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
 
-        if(backgroundDetected <= 0) {
-            document.body.classList.add("pageShadowBackgroundDetected");
+        for(let i = 0, len = elements.length; i < len; i++) {
+            detectBackgroundForElement(elements[i]);
         }
 
-        for(let i = 0; i < elements.length; i++) {
-            elements[i].classList.add("pageShadowDisableStyling");
-            computedStyle = window.getComputedStyle(elements[i], null);
-
-            if(type == 1 || type == 3 || type == "image" || typeof type === "undefined") {
-                const hasBackgroundImg = computedStyle.getPropertyValue("background").substr(0, 4) == "url(" || computedStyle.getPropertyValue("background-image").substr(0, 4) == "url(";
-                const hasClassImg = elements[i].classList.contains("pageShadowHasBackgroundImg");
-                const hasElementHidden = elements[i].contains(elements[i].querySelector("canvas")) || elements[i].contains(elements[i].querySelector("video"));
-
-                if(hasBackgroundImg && !hasClassImg) {
-                    elements[i].classList.add("pageShadowHasBackgroundImg");
-                }
-
-                if(hasElementHidden) {
-                    elements[i].classList.add("pageShadowHasHiddenElement");
-                }
-            }
-
-            if(type == 2 || type == 3 || type == "color") {
-                const hasBackgroundColor = computedStyle.getPropertyValue("background-image").substr(0, 4) !== "url(" && computedStyle.getPropertyValue("background-color") !== "" && computedStyle.getPropertyValue("background-color").substr(0, 4) !== "none";
-                const hasClass = elements[i].classList.contains("pageShadowHasBackgroundColor");
-
-                if(hasBackgroundColor && !hasClass) {
-                    elements[i].classList.add("pageShadowHasBackgroundColor");
-                }
-            }
-
-            elements[i].classList.remove("pageShadowDisableStyling");
-        }
-
-        if(backgroundDetected <= 0) {
-            mutationObserve("backgrounds");
-        }
-
-        if(typeof add !== "undefined") {
-            backgroundDetected += add;
-        }
+        document.body.classList.add("pageShadowBackgroundDetected");
+        mutationObserve("backgrounds");
+        backgroundDetected = true;
     }
 
-    function applyDetectBackground(type, element, add, detectType) {
-        if(backgroundDetected > 2) {
-            return false;
+    function detectBackgroundForElement(element) {
+        element.classList.add("pageShadowDisableStyling");
+
+        const computedStyle = window.getComputedStyle(element, null);
+        const hasBackgroundImg = computedStyle.getPropertyValue("background").trim().substr(0, 4).toLowerCase() == "url(" || computedStyle.getPropertyValue("background-image").trim().substr(0, 4).toLowerCase() == "url(";
+        const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
+        const hasElementHidden = element.contains(element.querySelector("canvas")) || element.contains(element.querySelector("video"));
+
+        if(hasBackgroundImg && !hasClassImg) {
+            element.classList.add("pageShadowHasBackgroundImg");
         }
+
+        if(hasElementHidden) {
+            element.classList.add("pageShadowHasHiddenElement");
+        }
+
+        element.classList.remove("pageShadowDisableStyling");
+    }
+
+    function applyDetectBackground(type, elements) {
+        if(backgroundDetected) return false;
 
         if(type == TYPE_LOADING) {
             document.onreadystatechange = function() {
-                // when the DOM is ready
-                if(document.readyState === "interactive") {
-                    setTimeout(() => waitAndApplyDetectBackground(element, add, detectType), 1); // detect for all the elements of the page
-                }
                 // when the page is entirely loaded
                 if(document.readyState === "complete") {
-                    setTimeout(() => waitAndApplyDetectBackground(element, add, detectType), 1500); // detect for all the elements of the page after 1500 ms
+                    setTimeout(() => waitAndApplyDetectBackground(elements), 1500); // detect for all the elements of the page after 1500 ms
                 }
             };
         } else {
             if(document.readyState === "complete") {
-                setTimeout(() => waitAndApplyDetectBackground(element, add, detectType), 1); // detect for all the elements of the page
+                setTimeout(() => waitAndApplyDetectBackground(elements), 1); // detect for all the elements of the page
             } else {
-                applyDetectBackground(TYPE_LOADING, element, add, detectType);
+                applyDetectBackground(TYPE_LOADING, elements);
             }
         }
     }
@@ -296,9 +275,9 @@ import browser from "webextension-polyfill";
         timeOutIC = setTimeout(() => waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors), 50);
     }
 
-    function waitAndApplyDetectBackground(tagName, add, type) {
-        if(document.body) return detectBackground(tagName, add, type);
-        timeOutBI = setTimeout(() => waitAndApplyDetectBackground(tagName, add, type), 50);
+    function waitAndApplyDetectBackground(tagName) {
+        if(document.body) return detectBackground(tagName);
+        timeOutBI = setTimeout(() => waitAndApplyDetectBackground(tagName), 50);
     }
 
     function mutationObserve(type) {
@@ -463,22 +442,7 @@ import browser from "webextension-polyfill";
             return false;
         }
 
-        element.classList.add("pageShadowDisableStyling");
-
-        const computedStyle = window.getComputedStyle(element, null);
-        const hasBackgroundImg = computedStyle.getPropertyValue("background").trim().substr(0, 4).toLowerCase() == "url(" || computedStyle.getPropertyValue("background-image").trim().substr(0, 4).toLowerCase() == "url(";
-        const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
-        const hasElementHidden = element.contains(element.querySelector("canvas")) || element.contains(element.querySelector("video"));
-
-        if(hasBackgroundImg && !hasClassImg) {
-            element.classList.add("pageShadowHasBackgroundImg");
-        }
-
-        if(hasElementHidden) {
-            element.classList.add("pageShadowHasHiddenElement");
-        }
-
-        element.classList.remove("pageShadowDisableStyling");
+        detectBackgroundForElement(element);
     }
 
     async function updateFilters() {
@@ -662,10 +626,10 @@ import browser from "webextension-polyfill";
             }
 
             if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") {
-                if(type == "start") {
-                    applyDetectBackground(TYPE_LOADING, "*", 1, 1);
+                if(type == TYPE_START) {
+                    applyDetectBackground(TYPE_LOADING, "*");
                 } else {
-                    applyDetectBackground(null, "*", 2, 1);
+                    applyDetectBackground(null, "*");
                 }
             }
 
@@ -683,7 +647,7 @@ import browser from "webextension-polyfill";
         started = true;
     }
 
-    main("start");
+    main(TYPE_START);
 
     // Execute Page Shadow on the page when the settings have been changed:
     browser.storage.onChanged.addListener(() => {
