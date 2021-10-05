@@ -33,6 +33,7 @@ import browser from "webextension-polyfill";
     let filtersCache = null;
     let mut_contrast, mut_backgrounds, mut_brightness, mut_invert;
     let typeProcess = "";
+    let precUrl;
 
     // Contants
     const TYPE_RESET = "reset";
@@ -571,6 +572,8 @@ import browser from "webextension-polyfill";
     }
 
     function main(type, mutation) {
+        precUrl = window.location.href;
+
         if(type == TYPE_RESET || type == TYPE_ONLY_RESET) {
             mutation = TYPE_ALL;
         }
@@ -724,7 +727,13 @@ import browser from "webextension-polyfill";
             }
             case "websiteUrlUpdated": { // Execute when the page URL changes in Single Page Applications
                 const enabled = started && ((message.enabled && !precEnabled) || (!message.enabled && precEnabled));
-                filtersCache = null;
+                const urlUpdated = precUrl != window.location.href;
+
+                if(urlUpdated) {
+                    filtersCache = null;
+                    precUrl = window.location.href;
+                    if(!enabled) updateFilters();
+                }
 
                 if(enabled) {
                     main(TYPE_RESET, TYPE_ALL);

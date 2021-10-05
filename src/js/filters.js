@@ -173,15 +173,25 @@ async function toggleAutoUpdate(enabled) {
 
 function parseLine(line) {
     if(line.length > 0) {
+        const isRegexp = line.trim().startsWith("/");
+        let website;
+
+        if(isRegexp) {
+            const lineSplitted = line.split("/");
+            const regexp = lineSplitted[1];
+            website = "/" + regexp + "/";
+            line = lineSplitted[2];
+        }
+        
         const parts = line.split("|");
         const lineTrimmed = line.trim();
         const isComment = lineTrimmed[0] == "#";
+
+        if(!isRegexp) website = parts[0];
+        const type = parts[1];
+        const filter = parts[2];
     
         if(parts.length > 0 && !isComment) {
-            const website = parts[0];
-            const type = parts[1];
-            const filter = parts[2];
-    
             return { "website": website, "type": type, "filter": filter };
         }
     }
