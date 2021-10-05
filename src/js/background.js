@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, nbPresets, defaultFilters } from "./util.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
-import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules } from "./filters.js";
+import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite } from "./filters.js";
 import browser from "webextension-polyfill";
 
 let autoEnableActivated = false;
@@ -358,7 +358,9 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                             "updateCustomFilterFinished" : "updateCustomFilterAndCloseFinished", result: result });
                     });
                 } else if(message && message.type == "getAllFilters") {
-                    resolve({ type: "getAllFiltersResponse", filters: getRules() });
+                    resolve({ type: "getFiltersResponse", filters: getRules() });
+                } else if(message && message.type == "getFiltersForThisWebsite") {
+                    resolve({ type: "getFiltersResponse", filters: getRulesForWebsite(sender.url) });
                 }
             }
         }).then(result => {

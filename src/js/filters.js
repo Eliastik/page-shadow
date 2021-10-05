@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
-import { defaultFilters } from "./util.js";
+import { defaultFilters, matchWebsite } from "./util.js";
 import browser from "webextension-polyfill";
 
 let rules = [];
@@ -361,6 +361,22 @@ function getRules() {
     return rules;
 }
 
+function getRulesForWebsite(url) {
+    const websuteUrl_tmp = new URL(url);
+    const domain = websuteUrl_tmp.hostname;
+    const rulesForWebsite = [];
+
+    for(let i = 0, len = rules.length; i < len; i++) {
+        const rule = rules[i];
+
+        if(matchWebsite(domain, rule.website) || matchWebsite(url, rule.website)) {
+            rulesForWebsite.push(rule);
+        }
+    }
+
+    return rulesForWebsite;
+}
+
 cacheFilters();
 
-export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules };
+export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite };
