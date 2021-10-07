@@ -12,6 +12,8 @@ www.jeuxvideo.com|disableBackgroundStylingFor|#js-video-footer,.sideLatestPublic
 www.jeuxvideo.com|disableBackgroundStylingFor|#js-video-footer *
 *youtube.*|disableBackgroundStylingFor|ytd-rich-item-renderer,ytd-rich-item-renderer *
 *youtube.*|disableBackgroundStylingFor|#search,#player,#player *,ytd-watch-next-secondary-results-renderer,ytd-watch-next-secondary-results-renderer *
+*youtube.*|disableBackgroundStylingFor|ytd-guide-entry-renderer,ytd-guide-entry-renderer *
+*youtube.*|disableBackgroundStylingFor|.ytd-searchbox-spt
 fr.wikipedia.org|disableBackgroundStylingFor|#mw-sidebar-button,#p-personal,#p-personal *,#accueil_2017_bandeau .colonnes,#accueil_2017_bandeau .colonnes *
 *.wikipedia.org|disableBackgroundStylingFor|#wikiEditor-ui-top,#wikiEditor-ui-top *
 # Github: fix code addition/deletion background color
@@ -20,8 +22,9 @@ github.com|disableContrastFor|.blob-code-addition,.blob-code-deletion,.blob-code
 *google.*|disableBackgroundStylingFor|.e4xoPb,g-scrolling-carousel,.wXeWr,.rGhul,.related-question-pair,g-img,div[jsname="Cpkphb"],#top-nav
 # Google: fix "related questions"
 *google.*|disableBackgroundStylingFor|.e4xoPb *,g-scrolling-carousel *,.wXeWr *,.rGhul *,.related-question-pair *,g-img *
-*google.*|disableTextColorStylingFor|.AonJHf,.AonJHf *
 # Google: fix link color
+*google.*|disableTextColorStylingFor|.AonJHf,.AonJHf *
+*google.*|forceCustomLinkColorFor|div[role="heading"]
 *google.*|disableTextColorStylingFor|a h3,a.fl span
 *disqus.*|disableBackgroundStylingFor|.recommend-image-wrapper .overlay,.recommend-image-wrapper
 # Jira

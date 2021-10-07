@@ -95,6 +95,7 @@ function menu() {
                     browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
                         if(!tabs) return;
                         const tabUrl = tabs[0].url;
+                        if(!tabUrl || tabUrl.trim() == "") return;
 
                         const url = new URL(tabUrl);
                         const domain = url.hostname;

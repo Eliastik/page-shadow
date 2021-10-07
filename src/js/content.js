@@ -514,6 +514,15 @@ import browser from "webextension-polyfill";
                         case "disableElementInvertFor":
                             if(!element.classList.contains("pageShadowDisableElementInvert")) element.classList.add("pageShadowDisableElementInvert");
                             break;
+                        case "forceCustomLinkColorFor":
+                            if(!element.classList.contains("pageShadowForceCustomLinkColor")) element.classList.add("pageShadowForceCustomLinkColor");
+                            break;
+                        case "forceCustomBackgroundColorFor":
+                            if(!element.classList.contains("pageShadowForceCustomBackgroundColor")) element.classList.add("pageShadowForceCustomBackgroundColor");
+                            break;
+                        case "forceCustomTextColorFor":
+                            if(!element.classList.contains("pageShadowForceCustomTextColor")) element.classList.add("pageShadowForceCustomTextColor");
+                            break;
                         case "disableShadowRootsCustomStyle":
                             if(element.shadowRoot != null) processShadowRoot(element);
                             break;

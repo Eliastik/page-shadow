@@ -31,12 +31,14 @@ function openFiltersFiles() {
             const customFilter = result.customFilter != null ? result.customFilter : "";
 
             filters.filters.forEach(filter => {
-                if(filter.content != null && filter.enabled) {
-                    files[filter.sourceUrl] = filter.content;
+                if(filter.enabled) {
+                    if(filter.customFilter) {
+                        files["customFilter"] = customFilter;
+                    } else if(filter.content != null) {
+                        files[filter.sourceUrl] = filter.content;
+                    }
                 }
             });
-
-            files["customFilter"] = customFilter;
 
             resolve(files);
         });
