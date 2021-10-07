@@ -365,7 +365,11 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 }
             }
         }).then(result => {
-            browser.tabs.sendMessage(sender.tab.id, result);
+            if(typeof(browser.tabs.sendMessage) !== "undefined") {
+                browser.tabs.sendMessage(sender.tab.id, result, {
+                    frameId: sender.frameId
+                });
+            }
         });
     });
 }
