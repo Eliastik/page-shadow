@@ -82,10 +82,10 @@ function translateContent() {
         $("#keyboardShortcuts").attr("data-original-title", i18next.t("container.keyboardShortcutsInfos"));
     }
 
-    if(getBrowser() == "Firefox") {
-        $("#customThemeHelp").attr("data-original-title", i18next.t("modal.customTheme.fontNotCompatible"));
-    } else {
-        $("#customThemeHelp").attr("data-original-title", i18next.t("modal.customTheme.fontHelp"));
+    $("#customThemeHelp").attr("data-original-title", i18next.t("modal.customTheme.fontHelp"));
+
+    if(getBrowser() == "Firefox" && navigator.platform.toLowerCase().startsWith("linux")) {
+        $("#firefoxLinuxBugFonts").show();
     }
 
     displaySettings();
@@ -959,8 +959,6 @@ $(document).ready(() => {
                 url: "https://support.mozilla.org/" + i18next.language + "/kb/manage-extension-shortcuts-firefox"
             });
         });
-
-        $("#customThemeFont").attr("disabled", "disabled");
     }
 
     // Hash

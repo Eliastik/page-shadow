@@ -115,7 +115,8 @@
             "collapseCustomCSS": "Custom CSS code…",
             "customCSSHelp": "You can enter a custom CSS code below that will be loaded along with the custom theme.",
             "customCSSHelpExpUsers": "For experienced users only.",
-            "fontNotCompatible": "This setting is not compatible with your web browser."
+            "fontNotCompatible": "This setting is not compatible with your web browser.",
+            "firefoxLinuxBugFonts": "This setting may not work on your system."
         },
         "archive": {
             "title": "Backup, restoring settings and presets",
