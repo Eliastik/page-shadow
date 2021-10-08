@@ -458,18 +458,27 @@ import browser from "webextension-polyfill";
     }
 
     function doProcessFilters(filters, element) {
-        if(!filters) return;
+        if(!filters || !element) return;
         
-        filters.forEach(filter => {
+        for(const filter of filters) {
             const selector = filter.filter;
             const filterTypes = filter.type.split(",");
+            let elements;
 
-            let elements = (element ? [element] : document.querySelectorAll(selector));
+            try {
+                elements = (element ? [element] : document.body.querySelectorAll(selector));
+            } catch(e) {
+                continue; // Continue to next filter if selector is not valid
+            }
 
             if(element) {
                 if(!filterTypes.includes("disableShadowRootsCustomStyle")) {
-                    if(element.matches && !element.matches(selector)) {
-                        elements = [];
+                    try {
+                        if(element.matches && !element.matches(selector)) {
+                            elements = [];
+                        }
+                    } catch(e) {
+                        continue;
                     }
                 }
 
@@ -477,16 +486,24 @@ import browser from "webextension-polyfill";
                     const elementChildrens = element.getElementsByTagName("*");
 
                     if(elementChildrens && elementChildrens.length > 0) {
-                        for(const childrenElement of elementChildrens) {
-                            if(childrenElement.matches && childrenElement.matches(selector)) {
-                                elements.push(childrenElement);
+                        for(let i = 0, len = elementChildrens.length; i < len; i++) {
+                            const childrenElement = elementChildrens[i];
+
+                            try {
+                                if(childrenElement.matches && childrenElement.matches(selector)) {
+                                    elements.push(childrenElement);
+                                }
+                            } catch(e) {
+                                break;
                             }
                         }
                     }
                 }
             }
 
-            elements.forEach(element => {
+            for(let i = 0, len = elements.length; i < len; i++) {
+                const element = elements[i];
+
                 if(element && element.classList) {
                     filterTypes.forEach(filterType => {
                         switch(filterType) {
@@ -529,8 +546,8 @@ import browser from "webextension-polyfill";
                         }
                     });
                 }
-            });
-        });
+            }
+        }
     }
 
     function processShadowRoot(element) {
