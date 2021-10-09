@@ -587,6 +587,12 @@ function restoreSettings(object) {
                         }
                     }
                 }
+                
+                $("#updateAllFilters").attr("disabled", "disabled");
+                
+                browser.runtime.sendMessage({
+                    "type": "updateAllFilters"
+                });
     
                 return resolve(true);
             });
