@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, customTheme, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, getSettings } from "./util.js";
+import { pageShadowAllowed, customTheme, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, getSettings, getCurrentURL } from "./util.js";
 import browser from "webextension-polyfill";
 
 (function(){
@@ -403,7 +403,7 @@ import browser from "webextension-polyfill";
             });
         } else if(type == MUTATION_TYPE_BACKGROUNDS) {
             mut_backgrounds = new MutationObserver(async(mutations) => {
-                const settings = await getSettings();
+                const settings = await getSettings(getCurrentURL());
 
                 if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") {
                     mutations.forEach(mutation => {
@@ -447,7 +447,7 @@ import browser from "webextension-polyfill";
     }
 
     async function updateFilters() {
-        const settings = await getSettings();
+        const settings = await getSettings(getCurrentURL());
         if(filtersCache == null) {
             browser.runtime.sendMessage({
                 "type": "getFiltersForThisWebsite"
@@ -568,7 +568,7 @@ import browser from "webextension-polyfill";
     }
 
     function main(type, mutation) {
-        precUrl = window.location.href;
+        precUrl = getCurrentURL();
 
         if(type == TYPE_RESET || type == TYPE_ONLY_RESET) {
             mutation = TYPE_ALL;
@@ -625,7 +625,7 @@ import browser from "webextension-polyfill";
                 "type": "isEnabledForThisPage"
             });
         } else {
-            pageShadowAllowed(window.location.href).then(allowed => {
+            pageShadowAllowed(getCurrentURL()).then(allowed => {
                 process(allowed, type);
             });
         }
@@ -633,7 +633,7 @@ import browser from "webextension-polyfill";
    
     async function process(allowed, type) {
         if(allowed) {
-            const settings = await getSettings();
+            const settings = await getSettings(getCurrentURL());
             precEnabled = true;
 
             if(type == TYPE_ONLY_CONTRAST) {
@@ -692,7 +692,7 @@ import browser from "webextension-polyfill";
             case "getFiltersResponse": {
                 if(message.filters) {
                     filtersCache = message.filters;
-                    const settings = await getSettings();
+                    const settings = await getSettings(getCurrentURL());
                     if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") doProcessFilters(message.filters);
                 }
                 break;
@@ -705,11 +705,11 @@ import browser from "webextension-polyfill";
             }
             case "websiteUrlUpdated": { // Execute when the page URL changes in Single Page Applications
                 const enabled = started && ((message.enabled && !precEnabled) || (!message.enabled && precEnabled));
-                const urlUpdated = precUrl != window.location.href;
+                const urlUpdated = precUrl != getCurrentURL();
 
                 if(urlUpdated) {
                     filtersCache = null;
-                    precUrl = window.location.href;
+                    precUrl = getCurrentURL();
                     if(!enabled) updateFilters();
                 }
 

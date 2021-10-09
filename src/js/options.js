@@ -26,7 +26,7 @@ import "codemirror/mode/css/css.js";
 import "codemirror/addon/display/autorefresh.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, extensionVersion, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, deletePreset, customFilterGuideURL } from "./util.js";
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, extensionVersion, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, deletePreset, customFilterGuideURL, getPresetData } from "./util.js";
 import { setSettingItem, setFirstSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import browser from "webextension-polyfill";
@@ -770,7 +770,7 @@ function createPreset() {
     $("#savePresetError").hide();
     $("#savePresetSuccess").hide();
 
-    savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val()).then(result => {
+    savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val(), $("#savePresetWebsite").val(), $("#checkSaveNewSettingsPreset").prop("checked")).then(result => {
         if(result == "success") {
             $("#savePresetSuccess").fadeIn(500);
         } else {
@@ -780,6 +780,25 @@ function createPreset() {
         loadPresetSelect("loadPresetSelect", i18next);
         loadPresetSelect("savePresetSelect", i18next);
         loadPresetSelect("deletePresetSelect", i18next);
+    });
+}
+
+function displayPresetSettings(id) {
+    getPresetData(id).then(data => {
+        $("#savePresetTitle").val("");
+        $("#savePresetWebsite").val("");
+        $("#checkSaveNewSettingsPreset").prop("checked", false);
+        $("#checkSaveNewSettingsPreset").removeAttr("disabled");
+
+        if(data && data != "error" && Object.keys(data).length > 0) {
+            if(data.name) $("#savePresetTitle").val(data.name);
+            if(data.websiteListToApply) $("#savePresetWebsite").val(data.websiteListToApply);
+            $("#presetCreateEditBtn").text(i18next.t("modal.edit"));
+        } else {
+            $("#checkSaveNewSettingsPreset").prop("checked", true);
+            $("#checkSaveNewSettingsPreset").attr("disabled", "disabled");
+            $("#presetCreateEditBtn").text(i18next.t("modal.create"));
+        }
     });
 }
 
@@ -1156,6 +1175,42 @@ $(document).ready(() => {
     $("#closeAndSaveCustomFilter").click(() => {
         $("#closeAndSaveCustomFilter").attr("disabled", "disabled");
         saveCustomFilter(true);
+    });
+
+    $("#savePresetSelect").on("change", () => {
+        displayPresetSettings($("#savePresetSelect").val());
+    });
+
+    $("#syntaxBtn").click(() => {
+        $("#syntaxText").html(i18next.t("modal.syntax.content", {
+            excluded: i18next.t("modal.syntax.excluded"),
+            excluded2: i18next.t("modal.syntax.excluded2"),
+            bloqued: i18next.t("modal.syntax.bloqued"),
+        }));
+        $("#syntax").modal("show");
+    });
+
+    $("#syntaxBtnPresets").click(() => {
+        $("#archive").modal("hide");
+
+        const handlerSyntaxHidden = () => {
+            $("#archive").modal("show");
+            $("#syntax").off("hidden.bs.modal", handlerSyntaxHidden);
+        };
+
+        const handlerArchiveHidden = () => {
+            $("#archive").off("hidden.bs.modal", handlerArchiveHidden);
+            $("#syntaxText").html(i18next.t("modal.syntax.content", {
+                excluded: i18next.t("modal.syntax.detected"),
+                excluded2: i18next.t("modal.syntax.detected2"),
+                bloqued: i18next.t("modal.syntax.detected3"),
+            }));
+
+            $("#syntax").modal("show");
+            $("#syntax").on("hidden.bs.modal", handlerSyntaxHidden);
+        };
+
+        $("#archive").on("hidden.bs.modal", handlerArchiveHidden);
     });
 });
 

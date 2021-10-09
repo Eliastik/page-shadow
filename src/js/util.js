@@ -281,12 +281,10 @@ function pageShadowAllowed(url) {
     return new Promise(resolve => {
         browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]).then(result => {
             if(result.globallyEnable !== "false") {
-                let forbiddenWebsites;
+                let forbiddenWebsites = [];
     
                 if(result.sitesInterditPageShadow !== undefined && result.sitesInterditPageShadow !== "") {
                     forbiddenWebsites = result.sitesInterditPageShadow.trim().split("\n");
-                } else {
-                    forbiddenWebsites = "";
                 }
     
                 const websuteUrl_tmp = new URL(url);
@@ -674,7 +672,34 @@ function loadPreset(nb) {
     });
 }
 
-function savePreset(nb, name) {
+function getPresetData(nb) {
+    return new Promise(resolve => {
+        if(nb < 1 || nb > nbPresets) {
+            return resolve("error");
+        }
+
+        browser.storage.local.get("presets").then(data => {
+            try {
+                let presets;
+
+                if(data.presets == null || typeof(data.presets) == "undefined") {
+                    setSettingItem("presets", defaultPresets);
+                } else {
+                    presets = data.presets;
+                }
+
+                const namePreset = nb;
+                const preset = presets[namePreset];
+
+                resolve(preset);
+            } catch(e) {
+                resolve("error");
+            }
+        });
+    });
+}
+
+function savePreset(nb, name, websiteListToApply, saveNewSettings) {
     return new Promise(resolve => {
         if(nb < 1 || nb > nbPresets) {
             return resolve("error");
@@ -694,11 +719,14 @@ function savePreset(nb, name) {
                     const namePreset = nb;
                     const preset = presets;
                     preset[namePreset]["name"] = name.substring(0, 50);
+                    preset[namePreset]["websiteListToApply"] = websiteListToApply;
 
-                    for(const key in data) {
-                        if(typeof(key) === "string") {
-                            if(Object.prototype.hasOwnProperty.call(data, key) && settingsToSavePresets.indexOf(key) !== -1) {
-                                preset[namePreset][key] = data[key];
+                    if(saveNewSettings) {
+                        for(const key in data) {
+                            if(typeof(key) === "string") {
+                                if(Object.prototype.hasOwnProperty.call(data, key) && settingsToSavePresets.indexOf(key) !== -1) {
+                                    preset[namePreset][key] = data[key];
+                                }
                             }
                         }
                     }
@@ -743,22 +771,75 @@ function deletePreset(nb) {
     });
 }
 
-async function getSettings() {
-    return new Promise(resolve => {
-        browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor"]).then(result => {
-            const pageShadowEnabled = result.pageShadowEnabled;
-            const theme = result.theme;
-            const colorTemp = result.colorTemp;
-            const invertEntirePage = result.invertEntirePage;
-            let invertImageColors = result.invertImageColors;
-            const invertVideoColors = result.invertVideoColors;
-            const invertBgColor = result.invertBgColor;
-            let colorInvert;
+function getCurrentURL() {
+    return window.location.href;
+}
 
-            if(result.colorInvert == "true") {
+async function presetEnabledForWebsite(url) {
+    if(url && url.trim() != "") {
+        for(let i = 1; i <= nbPresets; i++) {
+            const presetData = await getPresetData(i);
+            const websiteSettings = presetData.websiteListToApply;
+            let websiteList = [];
+
+            if(websiteSettings !== undefined && websiteSettings !== "") {
+                websiteList = websiteSettings.trim().split("\n");
+            }
+
+            const websuteUrl_tmp = new URL(url);
+            const domain = websuteUrl_tmp.hostname;
+
+            if(in_array_website(domain, websiteList) || in_array_website(url, websiteList)) {
+                return i;
+            }
+        }
+    }
+
+    return -1;
+}
+
+async function getSettings(url) {
+    return new Promise(resolve => {
+        browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor"]).then(async(result) => {
+            let pageShadowEnabled = result.pageShadowEnabled;
+            let theme = result.theme;
+            let colorTemp = result.colorTemp;
+            let invertEntirePage = result.invertEntirePage;
+            let invertImageColors = result.invertImageColors;
+            let invertVideoColors = result.invertVideoColors;
+            let invertBgColor = result.invertBgColor;
+            let pageLumEnabled = result.pageLumEnabled;
+            let pourcentageLum = result.pourcentageLum;
+            let nightModeEnabled = result.nightModeEnabled;
+            let invertPageColors = result.invertPageColors;
+            let disableImgBgColor = result.invertPageColors;
+            let colorInvert = result.colorInvert;
+
+            // Automatically enable preset ?
+            const presetEnabledId = await presetEnabledForWebsite(url);
+
+            if(presetEnabledId > 0) {
+                const presetData = await getPresetData(presetEnabledId);
+
+                pageShadowEnabled = presetData.pageShadowEnabled;
+                theme = presetData.theme;
+                colorTemp = presetData.colorTemp;
+                invertEntirePage = presetData.invertEntirePage;
+                invertImageColors = presetData.invertImageColors;
+                invertVideoColors = presetData.invertVideoColors;
+                invertBgColor = presetData.invertBgColor;
+                pageLumEnabled = presetData.pageLumEnabled;
+                pourcentageLum = presetData.pourcentageLum;
+                nightModeEnabled = presetData.nightModeEnabled;
+                invertPageColors = presetData.invertPageColors;
+                disableImgBgColor = presetData.invertPageColors;
+                colorInvert = presetData.colorInvert;
+            }
+
+            if(colorInvert == "true") {
                 colorInvert = "true";
                 invertImageColors = "true";
-            } else if(result.invertPageColors == "true") {
+            } else if(invertPageColors == "true") {
                 colorInvert = "true";
             } else {
                 colorInvert = "false";
@@ -767,21 +848,21 @@ async function getSettings() {
             resolve({
                 pageShadowEnabled: pageShadowEnabled,
                 theme: theme,
-                pageLumEnabled: result.pageLumEnabled,
-                pourcentageLum: result.pourcentageLum,
-                nightModeEnabled: result.nightModeEnabled,
+                pageLumEnabled: pageLumEnabled,
+                pourcentageLum: pourcentageLum,
+                nightModeEnabled: nightModeEnabled,
                 colorInvert: colorInvert,
-                invertPageColors: result.invertPageColors,
+                invertPageColors: invertPageColors,
                 invertImageColors: invertImageColors,
                 invertEntirePage: invertEntirePage,
                 colorTemp: colorTemp,
                 globallyEnable: result.globallyEnable,
                 invertVideoColors: invertVideoColors,
-                disableImgBgColor: result.disableImgBgColor,
+                disableImgBgColor: disableImgBgColor,
                 invertBgColor: invertBgColor
             });
         });
     });
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, extensionVersion, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, deletePreset, customFilterGuideURL, getSettings };
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, extensionVersion, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, deletePreset, customFilterGuideURL, getSettings, getPresetData, getCurrentURL, presetEnabledForWebsite };

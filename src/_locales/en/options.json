@@ -35,7 +35,13 @@
     "modal": {
         "syntax": {
             "title": "Syntax of the list",
-            "content": "<ul><li>You can enter domains (for example <strong>www.google.com</strong>). In this case, only this exact domain will be excluded and not its subdomains.</li><li>You can enter entire URLs (for example <strong>https://www.google.com/maps</strong>). In this case, only this exact address will be excluded.</li><li>You can use the wildcard <strong>*</strong> that replaces 0, 1 or more characters : <strong>https://www.google.fr/maps*</strong> will block all URLs that begin with this occurrence (for example https://www.google.com/maps/blabla but not https://www.google.com/blabla).</li><li>You can use the wildcard <strong>*</strong> many times and where you want. <strong>*.google.*</strong> will block all Google subdomains and top-level domains (for example google.com, google.fr, www.google.com, …).</li><li>You can also use regular expressions (starting and ending with <strong>/</strong>).<br />Example: <strong>/(.*).google.(.*)/</strong></li><li>You can comment on a line by putting a <strong>#</strong> character at the beginning of this one.</li><li>Any invalid entries will be ignored without warning.</li>"
+            "content": "<ul><li>You can enter domains (for example <strong>www.google.com</strong>). In this case, only this exact domain will be {{excluded}} and not its subdomains.</li><li>You can enter entire URLs (for example <strong>https://www.google.com/maps</strong>). In this case, only this exact address will be {{excluded2}}.</li><li>You can use the wildcard <strong>*</strong> that replaces 0, 1 or more characters : <strong>https://www.google.fr/maps*</strong> will {{bloqued}} all URLs that begin with this occurrence (for example https://www.google.com/maps/blabla but not https://www.google.com/blabla).</li><li>You can use the wildcard <strong>*</strong> many times and where you want. <strong>*.google.*</strong> will {{bloqued}} all Google subdomains and top-level domains (for example google.com, google.fr, www.google.com, …).</li><li>You can also use regular expressions (starting and ending with <strong>/</strong>).<br />Example: <strong>/(.*).google.(.*)/</strong></li><li>You can comment on a line by putting a <strong>#</strong> character at the beginning of this one.</li><li>Any invalid entries will be ignored without warning.</li>",
+            "excluded": "excluded",
+            "excluded2": "excluded",
+            "bloqued": "block",
+            "detected": "detected",
+            "detected2": "detected",
+            "detected3": "detect"
         },
         "about": {
             "title": "About Page Shadow",
@@ -140,7 +146,7 @@
             "descriptionPreset": "Here you can create and load presets so you can restore them instantly later. The settings which can be saved in presets correspond to those displayed in the extension menu. 5 preset slots are available.",
             "warningPreset": "Warning, before loading a preset, save your current settings in another slot because they will be overwritten!",
             "loadPreset": "Load a preset",
-            "savePreset": "Create a preset",
+            "savePreset": "Create/edit a preset",
             "deletePreset": "Delete a preset",
             "loadPresetLabel": "Choose a preset:",
             "presetTitle": "Preset ",
@@ -154,7 +160,7 @@
             "savePresetSuccess": "Preset created successfully",
             "deletePresetSuccess": "Preset deleted successfully",
             "infoLoadPreset": "Here, you can load a preset.",
-            "infoSavePreset": "The preset will be created with the current settings as displayed in the extension menu.",
+            "infoSavePreset": "The preset will be created/edited with the current settings as displayed in the extension menu. If you are editing an existing preset, select the \"Save the new settings\" checkbox to update the saved settings.",
             "infoDeletePreset": "Warning, the deletion is definitive!",
             "cloud": "Cloud backup",
             "descriptionCloudBackup": "Here you can archive all your settings in the Cloud of the provider of your web browser (Google account, Firefox Sync for example). This will allow you to restore all your settings on all browsers connected to the same account as this one. This function depends on your browser. If you are not connected to any account, the archive will be local.",
@@ -167,7 +173,9 @@
             "restoreCloudSuccess": "Data restoration completed successfully.",
             "archiveCloudNotCompatible": "This feature is not compatible with your web browser.",
             "infoCloudLastArchive": "Archive date:",
-            "dateCloudLastArchive": "{{date}} at {{hour}} with the device {{device}}"
+            "dateCloudLastArchive": "{{date}} at {{hour}} with the device {{device}}",
+            "savePresetWebsite": "List of website/pages where to automatically enable the preset:",
+            "checkSaveNewSettingsPreset": "Save the new settings"
         },
         "saved": {
             "title": "Information",
@@ -233,6 +241,7 @@
         "delete": "Delete",
         "cancel": "Cancel",
         "closeAndSave": "Close and save",
-        "closeWithoutSave": "Close without saving"
+        "closeWithoutSave": "Close without saving",
+        "edit": "Edit"
     }
 }

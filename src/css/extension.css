@@ -180,6 +180,9 @@ hr.nmt {
 .well-nmb {
     margin-bottom: 0;
 }
+.well-lmb {
+    margin-bottom: 8px;
+}
 #tempSelectDiv {
     display: inline-block;
 }
@@ -362,9 +365,15 @@ div.navbar-right {
 .tooltip.show {
     opacity: .9;
 }
-#filterInfos .modal-body * {
+#filterInfos .modal-body *, #syntax .modal-body li, #about .panel-group li {
     user-select: text;
     cursor: text;
+}
+#syntaxBtnPresets {
+    margin-top: 8px;
+}
+#presetAutoEnabledForThisWebsite {
+    display: none;
 }
 @-webkit-keyframes fadein {
     from { bottom: 0; opacity: 0; }

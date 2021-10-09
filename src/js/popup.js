@@ -21,7 +21,7 @@ import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
-import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots } from "./util.js";
+import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, presetEnabledForWebsite } from "./util.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import browser from "webextension-polyfill";
@@ -203,6 +203,17 @@ $(document).ready(() => {
             });
         }
 
+        async function checkPresetAutoEnabled(url) {
+            const presetEnabledId = await presetEnabledForWebsite(url);
+
+            if(presetEnabledId > 0) {
+                $("#presetAutoEnabledForThisWebsite").show();
+                $("#presetAutoEnabledForThisWebsite").text(i18next.t("container.presetAutoEnabledForThisWebsite", { count: presetEnabledId }));
+            } else {
+                $("#presetAutoEnabledForThisWebsite").hide();
+            }
+        }
+
         const matches = window.location.search.match(/[?&]tabId=([^&]+)/);
 
         if(matches && matches.length === 2) {
@@ -211,6 +222,7 @@ $(document).ready(() => {
                 if(!browser.runtime.lastError) {
                     const url = new URL(tabinfos.url);
                     check(url);
+                    checkPresetAutoEnabled(tabinfos.url);
                 }
             });
         } else {
@@ -218,6 +230,7 @@ $(document).ready(() => {
                 if(!browser.runtime.lastError) {
                     const url = new URL(tabs[0].url);
                     check(url);
+                    checkPresetAutoEnabled(tabs[0].url);
                 }
             });
         }
