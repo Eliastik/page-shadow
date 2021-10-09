@@ -209,7 +209,17 @@
             "save": "Save",
             "cancel": "Cancel modifications",
             "guide": "Syntax guide",
-            "saved": "Saved!"
+            "saved": "Saved!",
+            "filterInfosLabel": "Advanced filter informations",
+            "filterName": "Filter name:",
+            "filterSource": "Filter source:",
+            "filterHome": "Filter homepage:",
+            "filterDescription": "Filter description:",
+            "filterUpdateInterval": "Automatic update interval:",
+            "filterUpdateIntervalDays": "{{count}} days",
+            "filterUpdateIntervalDays_one": "{{count}} day",
+            "filterUpdateIntervalDays_other": "{{count}} days",
+            "filterDescriptionEmpty": "(Empty)"
         },
         "close": "Close",
         "ok": "OK",

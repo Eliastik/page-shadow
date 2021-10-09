@@ -66,11 +66,13 @@ function updateFilter(idFilter) {
                             const sourcename = metadata["sourcename"];
                             const homepage = metadata["homepage"];
                             const expires = metadata["expires"];
+                            const description = metadata["description"];
                             
                             if(name != null) filterToUpdate.filterName = name;
                             if(sourcename != null) filterToUpdate.sourceName = sourcename;
                             if(homepage != null) filterToUpdate.homepage = homepage;
                             if(expires != null) filterToUpdate.expiresIn = expires;
+                            if(description != null) filterToUpdate.description = description;
                             
                             filterToUpdate.content = text;
                             filterToUpdate.hasError = false;
@@ -291,6 +293,7 @@ async function addFilter(address) {
                             const name = metadata["name"];
                             const sourcename = metadata["sourcename"];
                             const homepage = metadata["homepage"];
+                            const description = metadata["description"];
     
                             if(name != null && sourcename != null) {
                                 filters.filters.push({
@@ -303,7 +306,8 @@ async function addFilter(address) {
                                     "local": false,
                                     "homepage": homepage,
                                     "builtIn": false,
-                                    "content": null
+                                    "content": null,
+                                    "description": description
                                 });
                             }
     

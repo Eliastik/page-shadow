@@ -58,6 +58,7 @@ const defaultFilters = {
             "homepage": "",
             "builtIn": true,
             "expiresIn": 0, // days
+            "description": "",
             "content": null
         },
         {
@@ -71,6 +72,7 @@ const defaultFilters = {
             "homepage": "https://www.eliastiksofts.com/page-shadow/",
             "builtIn": true,
             "expiresIn": 4, // days
+            "description": "",
             "content": null
         },
         {
@@ -84,6 +86,7 @@ const defaultFilters = {
             "homepage": "https://www.eliastiksofts.com/page-shadow/",
             "builtIn": true,
             "expiresIn": 4, // days
+            "description": "",
             "content": null
         },
         {
@@ -98,6 +101,7 @@ const defaultFilters = {
             "homepage": "",
             "builtIn": true,
             "expiresIn": 0,
+            "description": "",
             "content": null
         }
     ],

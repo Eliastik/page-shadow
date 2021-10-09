@@ -303,7 +303,7 @@ function displayFilters() {
                 buttonSee.appendChild(iconSee);
 
                 buttonSee.addEventListener("click", () => {
-                    displayDetailsFilters(index);
+                    displayDetailsFilter(index);
                 });
 
                 buttonContainer.appendChild(buttonSee);
@@ -327,6 +327,20 @@ function displayFilters() {
 
                     buttonContainer.appendChild(buttonHome);
                 }
+                
+                const buttonInfos = document.createElement("button");
+                buttonInfos.setAttribute("class", "btn btn-sm btn-default");
+                buttonInfos.setAttribute("data-toggle", "tooltip");
+                buttonInfos.setAttribute("title", i18next.t("modal.filters.filterInfosLabel"));
+                const iconInfos = document.createElement("i");
+                iconInfos.setAttribute("class", "fa fa-info-circle fa-fw");
+                buttonInfos.appendChild(iconInfos);
+
+                buttonInfos.addEventListener("click", () => {
+                    displayInfosFilter(index);
+                });
+
+                buttonContainer.appendChild(buttonInfos);
 
                 if(!filter.builtIn) {
                     const buttonDelete = document.createElement("button");
@@ -391,7 +405,7 @@ function displayFilters() {
     });
 }
 
-function displayDetailsFilters(idFilter) {
+function displayDetailsFilter(idFilter) {
     window.codeMirrorFilterData.getDoc().setValue("");
     $("#filterDetails").modal("show");
 
@@ -402,8 +416,28 @@ function displayDetailsFilters(idFilter) {
             const filter = filters.filters[idFilter];
 
             if(filter) {
-                $("#detailsFilterAddress").val(filter.sourceUrl);
                 window.codeMirrorFilterData.getDoc().setValue(filter.content);
+            }
+        }
+    });
+}
+
+function displayInfosFilter(idFilter) {
+    $("#filterInfos").modal("show");
+
+    browser.storage.local.get("filtersSettings").then(result => {
+        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+
+        if(filters) {
+            const filter = filters.filters[idFilter];
+
+            if(filter) {
+                $("#detailsFilterAddress").text(filter.sourceUrl);
+                $("#detailsFilterName").text(filter.filterName);
+                $("#detailsFilterSource").text(filter.sourceName);
+                $("#detailsFilterHome").text(filter.homepage);
+                $("#detailsFilterDescription").text(filter.description && filter.description.trim() != "" ? filter.description : i18next.t("modal.filters.filterDescriptionEmpty"));
+                $("#detailsFilterUpdateInterval").text(i18next.t("modal.filters.filterUpdateIntervalDays", { count: filter.expiresIn }));
             }
         }
     });
@@ -1066,7 +1100,15 @@ $(document).ready(() => {
         $("#filters").modal("show");
     });
     
+    $("#filterInfos").on("hidden.bs.modal", () => {
+        $("#filters").modal("show");
+    });
+    
     $("#filterDetails").on("show.bs.modal", () => {
+        $("#filters").modal("hide");
+    });
+    
+    $("#filterInfos").on("show.bs.modal", () => {
         $("#filters").modal("hide");
     });
     

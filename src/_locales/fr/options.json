@@ -208,7 +208,17 @@
             "save": "Sauvegarder",
             "cancel": "Annuler les modifications",
             "guide": "Guide de la syntaxe",
-            "saved": "Sauvegardé !"
+            "saved": "Sauvegardé !",
+            "filterInfosLabel": "Informations avancées du filtre",
+            "filterName": "Nom du filtre :",
+            "filterSource": "Source du filtre :",
+            "filterHome": "Page d'accueil du filtre :",
+            "filterDescription": "Description du filtre :",
+            "filterUpdateInterval": "Intervalle de mise à jour automatique :",
+            "filterUpdateIntervalDays": "{{count}} jours",
+            "filterUpdateIntervalDays_one": "{{count}} jour",
+            "filterUpdateIntervalDays_other": "{{count}} jours",
+            "filterDescriptionEmpty": "(Vide)"
         },
         "close": "Fermer",
         "ok": "OK",

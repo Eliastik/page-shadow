@@ -38,3 +38,4 @@ fr.wiktionary.org|disableContrastFor|.mw-notification-area-overlay
 morioh.com|disableBackgroundStylingFor|body div div[aria-live="assertive"]
 bugs.chromium.org|disableShadowRootsCustomStyle|body *
 *regex101.com*|disableContrastFor|.CodeMirror-show-whitespace,.CodeMirror-show-whitespace *
+*i18next.com*|disableContrastFor|.reset-3c756112--backdrop-1322b68a--hidden-247382c3--sheetBackdrop-457fd54f,.reset-3c756112--backdrop-1322b68a--hidden-247382c3--sheetBackdrop-457fd54f *,.reset-3c756112--backdrop-1322b68a--hidden-247382c3--overlay-29559ab8,.reset-3c756112--backdrop-1322b68a--hidden-247382c3--overlay-29559ab8 *
