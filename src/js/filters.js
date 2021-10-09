@@ -67,12 +67,16 @@ function updateFilter(idFilter) {
                             const homepage = metadata["homepage"];
                             const expires = metadata["expires"];
                             const description = metadata["description"];
+                            const version = metadata["version"];
+                            const license = metadata["license"];
                             
                             if(name != null) filterToUpdate.filterName = name;
                             if(sourcename != null) filterToUpdate.sourceName = sourcename;
                             if(homepage != null) filterToUpdate.homepage = homepage;
                             if(expires != null) filterToUpdate.expiresIn = expires;
                             if(description != null) filterToUpdate.description = description;
+                            if(version != null) filterToUpdate.version = version;
+                            if(license != null) filterToUpdate.license = license;
                             
                             filterToUpdate.content = text;
                             filterToUpdate.hasError = false;
@@ -293,7 +297,10 @@ async function addFilter(address) {
                             const name = metadata["name"];
                             const sourcename = metadata["sourcename"];
                             const homepage = metadata["homepage"];
+                            const expires = metadata["expires"];
                             const description = metadata["description"];
+                            const version = metadata["version"];
+                            const license = metadata["license"];
     
                             if(name != null && sourcename != null) {
                                 filters.filters.push({
@@ -307,7 +314,10 @@ async function addFilter(address) {
                                     "homepage": homepage,
                                     "builtIn": false,
                                     "content": null,
-                                    "description": description
+                                    "description": description,
+                                    "expiresIn": expires,
+                                    "version": version,
+                                    "license": license
                                 });
                             }
     

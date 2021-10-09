@@ -59,6 +59,8 @@ const defaultFilters = {
             "builtIn": true,
             "expiresIn": 0, // days
             "description": "",
+            "version": "0",
+            "license": "",
             "content": null
         },
         {
@@ -73,6 +75,8 @@ const defaultFilters = {
             "builtIn": true,
             "expiresIn": 4, // days
             "description": "",
+            "version": "0",
+            "license": "",
             "content": null
         },
         {
@@ -87,6 +91,8 @@ const defaultFilters = {
             "builtIn": true,
             "expiresIn": 4, // days
             "description": "",
+            "version": "0",
+            "license": "",
             "content": null
         },
         {
@@ -102,6 +108,8 @@ const defaultFilters = {
             "builtIn": true,
             "expiresIn": 0,
             "description": "",
+            "version": "0",
+            "license": "",
             "content": null
         }
     ],

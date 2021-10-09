@@ -433,11 +433,13 @@ function displayInfosFilter(idFilter) {
 
             if(filter) {
                 $("#detailsFilterAddress").text(filter.sourceUrl);
-                $("#detailsFilterName").text(filter.filterName);
-                $("#detailsFilterSource").text(filter.sourceName);
-                $("#detailsFilterHome").text(filter.homepage);
+                $("#detailsFilterName").text(filter.filterName && filter.filterName.trim() != "" ? filter.filterName : i18next.t("modal.filters.filterDescriptionEmpty"));
+                $("#detailsFilterSource").text(filter.sourceName && filter.sourceName.trim() != "" ? filter.sourceName : i18next.t("modal.filters.filterDescriptionEmpty"));
+                $("#detailsFilterHome").text(filter.homepage && filter.homepage.trim() != "" ? filter.homepage : i18next.t("modal.filters.filterDescriptionEmpty"));
                 $("#detailsFilterDescription").text(filter.description && filter.description.trim() != "" ? filter.description : i18next.t("modal.filters.filterDescriptionEmpty"));
-                $("#detailsFilterUpdateInterval").text(i18next.t("modal.filters.filterUpdateIntervalDays", { count: filter.expiresIn }));
+                $("#detailsFilterUpdateInterval").text(i18next.t("modal.filters.filterUpdateIntervalDays", { count: "" + (filter.expiresIn ? filter.expiresIn : "0") }));
+                $("#detailsFilterVersion").text(filter.version && filter.version.trim() != "" ? filter.version : "0");
+                $("#detailsFilterLicense").text(filter.license && filter.license.trim() != "" ? filter.license : i18next.t("modal.filters.licenseEmpty"));
             }
         }
     });

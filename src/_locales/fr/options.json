@@ -218,7 +218,10 @@
             "filterUpdateIntervalDays": "{{count}} jours",
             "filterUpdateIntervalDays_one": "{{count}} jour",
             "filterUpdateIntervalDays_other": "{{count}} jours",
-            "filterDescriptionEmpty": "(Vide)"
+            "filterDescriptionEmpty": "(Vide)",
+            "version": "Version :",
+            "license": "Licence :",
+            "licenseEmpty": "(Non renseigné)"
         },
         "close": "Fermer",
         "ok": "OK",

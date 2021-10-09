@@ -219,7 +219,10 @@
             "filterUpdateIntervalDays": "{{count}} days",
             "filterUpdateIntervalDays_one": "{{count}} day",
             "filterUpdateIntervalDays_other": "{{count}} days",
-            "filterDescriptionEmpty": "(Empty)"
+            "filterDescriptionEmpty": "(Empty)",
+            "version": "Version:",
+            "license": "License:",
+            "licenseEmpty": "(Not specified)"
         },
         "close": "Close",
         "ok": "OK",
