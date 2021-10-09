@@ -216,7 +216,6 @@
             "filterHome": "Filter homepage:",
             "filterDescription": "Filter description:",
             "filterUpdateInterval": "Automatic update interval:",
-            "filterUpdateIntervalDays": "{{count}} days",
             "filterUpdateIntervalDays_one": "{{count}} day",
             "filterUpdateIntervalDays_other": "{{count}} days",
             "filterDescriptionEmpty": "(Empty)",

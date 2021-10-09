@@ -215,7 +215,6 @@
             "filterHome": "Page d'accueil du filtre :",
             "filterDescription": "Description du filtre :",
             "filterUpdateInterval": "Intervalle de mise à jour automatique :",
-            "filterUpdateIntervalDays": "{{count}} jours",
             "filterUpdateIntervalDays_one": "{{count}} jour",
             "filterUpdateIntervalDays_other": "{{count}} jours",
             "filterDescriptionEmpty": "(Vide)",

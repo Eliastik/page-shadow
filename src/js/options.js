@@ -437,7 +437,7 @@ function displayInfosFilter(idFilter) {
                 $("#detailsFilterSource").text(filter.sourceName && filter.sourceName.trim() != "" ? filter.sourceName : i18next.t("modal.filters.filterDescriptionEmpty"));
                 $("#detailsFilterHome").text(filter.homepage && filter.homepage.trim() != "" ? filter.homepage : i18next.t("modal.filters.filterDescriptionEmpty"));
                 $("#detailsFilterDescription").text(filter.description && filter.description.trim() != "" ? filter.description : i18next.t("modal.filters.filterDescriptionEmpty"));
-                $("#detailsFilterUpdateInterval").text(i18next.t("modal.filters.filterUpdateIntervalDays", { count: "" + (filter.expiresIn ? filter.expiresIn : "0") }));
+                $("#detailsFilterUpdateInterval").text(i18next.t("modal.filters.filterUpdateIntervalDays", { count: filter.expiresIn ? parseInt(filter.expiresIn) : 0 }));
                 $("#detailsFilterVersion").text(filter.version && filter.version.trim() != "" ? filter.version : "0");
                 $("#detailsFilterLicense").text(filter.license && filter.license.trim() != "" ? filter.license : i18next.t("modal.filters.licenseEmpty"));
             }
@@ -587,7 +587,7 @@ function restoreSettings(object) {
                         }
                     }
                 }
-                
+
                 $("#updateAllFilters").attr("disabled", "disabled");
                 
                 browser.runtime.sendMessage({
