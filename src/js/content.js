@@ -532,6 +532,9 @@ import browser from "webextension-polyfill";
                         case "disableElementInvertFor":
                             if(!element.classList.contains("pageShadowDisableElementInvert")) element.classList.add("pageShadowDisableElementInvert");
                             break;
+                        case "hasBackgroundImg":
+                            if(!element.classList.contains("pageShadowHasBackgroundImg")) element.classList.add("pageShadowHasBackgroundImg");
+                            break;
                         case "forceCustomLinkColorFor":
                             if(!element.classList.contains("pageShadowForceCustomLinkColor")) element.classList.add("pageShadowForceCustomLinkColor");
                             break;
