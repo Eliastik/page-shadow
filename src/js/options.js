@@ -440,6 +440,11 @@ function displayInfosFilter(idFilter) {
                 $("#detailsFilterUpdateInterval").text(i18next.t("modal.filters.filterUpdateIntervalDays", { count: filter.expiresIn ? parseInt(filter.expiresIn) : 0 }));
                 $("#detailsFilterVersion").text(filter.version && filter.version.trim() != "" ? filter.version : "0");
                 $("#detailsFilterLicense").text(filter.license && filter.license.trim() != "" ? filter.license : i18next.t("modal.filters.licenseEmpty"));
+
+                browser.runtime.sendMessage({
+                    "type": "getNumberOfRules",
+                    "idFilter": idFilter
+                });
             }
         }
     });
@@ -1232,6 +1237,10 @@ browser.runtime.onMessage.addListener(message => {
         }
         case "updateFilterFinished": {
             if(!message.result) displayFilters();
+            break;
+        }
+        case "getNumberOfRulesResponse": {
+            $("#detailsFilterRulesCount").text(message.count);
             break;
         }
         case "addFilterFinished":

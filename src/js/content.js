@@ -704,7 +704,6 @@ import browser from "webextension-polyfill";
             case "isEnabledForThisPageResponse": {
                 if(message.enabled) {
                     currentSettings = message.settings;
-                    console.log(currentSettings);
                     process(true, typeProcess);
                 }
                 break;

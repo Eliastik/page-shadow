@@ -48,22 +48,6 @@ const defaultCustomThemes = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
 const defaultFilters = {
     "filters": [
         {
-            "filterName": "Filtre intégré/Built-in filter",
-            "sourceName": "Page Shadow",
-            "sourceUrl": "/filters/standard.txt",
-            "lastUpdated": 0,
-            "enabled": true,
-            "hasError": false,
-            "local": true,
-            "homepage": "",
-            "builtIn": true,
-            "expiresIn": 0, // days
-            "description": "",
-            "version": "0",
-            "license": "",
-            "content": null
-        },
-        {
             "filterName": "Filtre par défaut/Default filter",
             "sourceName": "Eliastik's Softs",
             "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/standard.txt",
@@ -73,7 +57,7 @@ const defaultFilters = {
             "local": false,
             "homepage": "https://www.eliastiksofts.com/page-shadow/",
             "builtIn": true,
-            "expiresIn": 4, // days
+            "expiresIn": 1, // days
             "description": "",
             "version": "0",
             "license": "",
@@ -89,7 +73,7 @@ const defaultFilters = {
             "local": false,
             "homepage": "https://www.eliastiksofts.com/page-shadow/",
             "builtIn": true,
-            "expiresIn": 4, // days
+            "expiresIn": 1, // days
             "description": "",
             "version": "0",
             "license": "",

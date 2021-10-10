@@ -228,7 +228,8 @@
             "filterDescriptionEmpty": "(Vide)",
             "version": "Version :",
             "license": "Licence :",
-            "licenseEmpty": "(Non renseigné)"
+            "licenseEmpty": "(Non renseigné)",
+            "rulesCount": "Nombre de règles de filtre :"
         },
         "close": "Fermer",
         "ok": "OK",

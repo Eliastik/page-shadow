@@ -62,25 +62,29 @@ function updateFilter(idFilter) {
                             const text = await data.text();
                             const metadata = extractMetadata(text);
 
-                            const name = metadata["name"];
-                            const sourcename = metadata["sourcename"];
-                            const homepage = metadata["homepage"];
-                            const expires = metadata["expires"];
-                            const description = metadata["description"];
-                            const version = metadata["version"];
-                            const license = metadata["license"];
-                            
-                            if(name != null) filterToUpdate.filterName = name;
-                            if(sourcename != null) filterToUpdate.sourceName = sourcename;
-                            if(homepage != null) filterToUpdate.homepage = homepage;
-                            if(expires != null) filterToUpdate.expiresIn = expires;
-                            if(description != null) filterToUpdate.description = description;
-                            if(version != null) filterToUpdate.version = version;
-                            if(license != null) filterToUpdate.license = license;
-                            
-                            filterToUpdate.content = text;
-                            filterToUpdate.hasError = false;
-                            filterToUpdate.lastUpdated = Date.now();
+                            if(metadata) {
+                                const name = metadata["name"];
+                                const sourcename = metadata["sourcename"];
+                                const homepage = metadata["homepage"];
+                                const expires = metadata["expires"];
+                                const description = metadata["description"];
+                                const version = metadata["version"];
+                                const license = metadata["license"];
+                                
+                                if(name != null) filterToUpdate.filterName = name;
+                                if(sourcename != null) filterToUpdate.sourceName = sourcename;
+                                if(homepage != null) filterToUpdate.homepage = homepage;
+                                if(expires != null) filterToUpdate.expiresIn = expires;
+                                if(description != null) filterToUpdate.description = description;
+                                if(version != null) filterToUpdate.version = version;
+                                if(license != null) filterToUpdate.license = license;
+                                
+                                filterToUpdate.content = text;
+                                filterToUpdate.hasError = false;
+                                filterToUpdate.lastUpdated = Date.now();
+                            } else {
+                                filterToUpdate.hasError = true;
+                            }
                         } catch(error2) {
                             filterToUpdate.hasError = true;
                         }
@@ -207,20 +211,27 @@ function parseLine(line) {
     return null;
 }
 
+function parseFilter(filterContent) {
+    const currentRules = [];
+    const lines = filterContent.split("\n");
+
+    for(const line of lines) {
+        const parsed = parseLine(line);
+
+        if(parsed) {
+            currentRules.push(parsed);
+        }
+    }
+
+    return currentRules;
+}
+
 async function cacheFilters() {
     rules = [];
     const data = await openFiltersFiles();
     
     for(const key of Object.keys(data)) {
-        const lines = data[key].split("\n");
-
-        for(const line of lines) {
-            const parsed = parseLine(line);
-
-            if(parsed) {
-                rules.push(parsed);
-            }
-        }
+        rules.push(...parseFilter(data[key]));
     }
 }
 
@@ -388,21 +399,46 @@ function getRules() {
 }
 
 function getRulesForWebsite(url) {
-    const websuteUrl_tmp = new URL(url);
-    const domain = websuteUrl_tmp.hostname;
     const rulesForWebsite = [];
 
-    for(let i = 0, len = rules.length; i < len; i++) {
-        const rule = rules[i];
-
-        if(matchWebsite(domain, rule.website) || matchWebsite(url, rule.website)) {
-            rulesForWebsite.push(rule);
+    if(url && url.trim() != "") {
+        const websuteUrl_tmp = new URL(url);
+        const domain = websuteUrl_tmp.hostname;
+    
+        for(let i = 0, len = rules.length; i < len; i++) {
+            const rule = rules[i];
+    
+            if(matchWebsite(domain, rule.website) || matchWebsite(url, rule.website)) {
+                rulesForWebsite.push(rule);
+            }
         }
     }
 
     return rulesForWebsite;
 }
 
+async function getNumberOfRulesFor(filterId) {
+    let ruleCount = 0;
+
+    return new Promise(resolve => {
+        browser.storage.local.get("filtersSettings").then(result => {
+            const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+
+            filters.filters.forEach((filter, index) => {
+                if(index == filterId) {
+                    const filterRules = parseFilter(filter.content);
+
+                    if(filterRules) {
+                        ruleCount = filterRules.length;
+                    }
+                }
+            });
+
+            resolve(ruleCount);
+        });
+    });
+}
+
 cacheFilters();
 
-export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite };
+export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor };

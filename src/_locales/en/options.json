@@ -229,7 +229,8 @@
             "filterDescriptionEmpty": "(Empty)",
             "version": "Version:",
             "license": "License:",
-            "licenseEmpty": "(Not specified)"
+            "licenseEmpty": "(Not specified)",
+            "rulesCount": "Number of filter rules:"
         },
         "close": "Close",
         "ok": "OK",
