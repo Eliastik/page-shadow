@@ -30,12 +30,13 @@ window.$ = $;
 window.jQuery = $;
 
 let checkContrastMode;
+let checkPresetAutoEnabled;
 let i18nextLoaded = false;
 let selectedPreset = 1;
 
 init_i18next("popup").then(() => translateContent());
 
-function translateContent() {
+async function translateContent() {
     jqueryI18next.init(i18next, $, {
         handleName: "localize",
         selectorAttr: "data-i18n"
@@ -45,6 +46,7 @@ function translateContent() {
     $(".modal").localize();
     $("footer").localize();
     checkContrastMode();
+    checkPresetAutoEnabled(await getCurrentURL());
     loadPresetSelect("loadPresetSelect", i18next);
     $("#loadPresetSelect").val(selectedPreset).change();
     i18nextLoaded = true;
@@ -53,6 +55,27 @@ function translateContent() {
 i18next.on("languageChanged", () => {
     translateContent();
 });
+
+async function getCurrentURL() {
+    return new Promise(resolve => {
+        const matches = window.location.search.match(/[?&]tabId=([^&]+)/);
+    
+        if(matches && matches.length === 2) {
+            const tabId = parseInt(matches[1]);
+            browser.tabs.get(tabId).then((tabinfos) => {
+                if(!browser.runtime.lastError) {
+                    resolve(tabinfos.url);
+                }
+            });
+        } else {
+            browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
+                if(!browser.runtime.lastError) {
+                    resolve(tabs[0].url);
+                }
+            });
+        }
+    });
+}
 
 $(document).ready(() => {
     const elLumB = document.createElement("div");
@@ -145,7 +168,20 @@ $(document).ready(() => {
         }
     }
 
-    function checkEnable() {
+    checkPresetAutoEnabled = async function(url) {
+        const presetEnabledId = await presetEnabledForWebsite(url);
+
+        if(presetEnabledId > 0) {
+            $("#loadPresetSelect").tooltip({
+                title: i18next.t("container.presetAutoEnabledForThisWebsite", { count: presetEnabledId }),
+                placement: "bottom"
+            });
+            $("#loadPresetSelect").tooltip("show");
+            $("#loadPresetSelect").val(presetEnabledId);
+        }
+    };
+
+    async function checkEnable() {
         function check(url) {
             browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]).then(result => {
                 let sitesInterdits;
@@ -203,60 +239,14 @@ $(document).ready(() => {
             });
         }
 
-        async function checkPresetAutoEnabled(url) {
-            const presetEnabledId = await presetEnabledForWebsite(url);
-
-            if(presetEnabledId > 0) {
-                $("#presetAutoEnabledForThisWebsite").show();
-                $("#presetAutoEnabledForThisWebsite").text(i18next.t("container.presetAutoEnabledForThisWebsite", { count: presetEnabledId }));
-            } else {
-                $("#presetAutoEnabledForThisWebsite").hide();
-            }
-        }
-
-        const matches = window.location.search.match(/[?&]tabId=([^&]+)/);
-
-        if(matches && matches.length === 2) {
-            const tabId = parseInt(matches[1]);
-            browser.tabs.get(tabId).then((tabinfos) => {
-                if(!browser.runtime.lastError) {
-                    const url = new URL(tabinfos.url);
-                    check(url);
-                    checkPresetAutoEnabled(tabinfos.url);
-                }
-            });
-        } else {
-            browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
-                if(!browser.runtime.lastError) {
-                    const url = new URL(tabs[0].url);
-                    check(url);
-                    checkPresetAutoEnabled(tabs[0].url);
-                }
-            });
-        }
+        const url = new URL(await getCurrentURL());
+        check(url);
     }
 
-    function disablePageShadow(type, checked) {
-        const matches = window.location.search.match(/[?&]tabId=([^&]+)/);
-
-        if(matches && matches.length === 2) {
-            const tabId = parseInt(matches[1]);
-            browser.tabs.get(tabId).then((tabinfos) => {
-                if(!browser.runtime.lastError) {
-                    const url = new URL(tabinfos.url);
-                    disableEnableToggle(type, checked, url);
-                    checkEnable();
-                }
-            });
-        } else {
-            browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
-                if(!browser.runtime.lastError) {
-                    const url = new URL(tabs[0].url);
-                    disableEnableToggle(type, checked, url);
-                    checkEnable();
-                }
-            });
-        }
+    async function disablePageShadow(type, checked) {
+        const url = new URL(await getCurrentURL());
+        disableEnableToggle(type, checked, url);
+        checkEnable();
     }
 
     checkEnable();

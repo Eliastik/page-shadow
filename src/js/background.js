@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, nbPresets, defaultFilters } from "./util.js";
+import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, nbPresets, defaultFilters, getSettings } from "./util.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
 import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite } from "./filters.js";
 import browser from "webextension-polyfill";
@@ -312,8 +312,11 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
         new Promise(resolve => {
             if(message) {
                 if(message.type == "isEnabledForThisPage") {
-                    pageShadowAllowed(sender.tab.url).then(enabled => {
-                        resolve({ type: "isEnabledForThisPageResponse", enabled: enabled });
+                    const url = sender.tab.url;
+
+                    pageShadowAllowed(url).then(async(enabled) => {
+                        const settings = await getSettings(url);
+                        resolve({ type: "isEnabledForThisPageResponse", enabled: enabled, settings: settings });
                     });
                 } else if(message.type == "updateAllFilters") {
                     updateAllFilters().then(result => {

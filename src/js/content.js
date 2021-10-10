@@ -34,6 +34,7 @@ import browser from "webextension-polyfill";
     let mut_contrast, mut_backgrounds, mut_brightness, mut_invert;
     let typeProcess = "";
     let precUrl;
+    let currentSettings = null;
 
     // Contants
     const TYPE_RESET = "reset";
@@ -403,7 +404,7 @@ import browser from "webextension-polyfill";
             });
         } else if(type == MUTATION_TYPE_BACKGROUNDS) {
             mut_backgrounds = new MutationObserver(async(mutations) => {
-                const settings = await getSettings(getCurrentURL());
+                const settings = currentSettings || await getSettings(getCurrentURL());
 
                 if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") {
                     mutations.forEach(mutation => {
@@ -447,7 +448,7 @@ import browser from "webextension-polyfill";
     }
 
     async function updateFilters() {
-        const settings = await getSettings(getCurrentURL());
+        const settings = currentSettings || await getSettings(getCurrentURL());
         if(filtersCache == null) {
             browser.runtime.sendMessage({
                 "type": "getFiltersForThisWebsite"
@@ -633,7 +634,7 @@ import browser from "webextension-polyfill";
    
     async function process(allowed, type) {
         if(allowed) {
-            const settings = await getSettings(getCurrentURL());
+            const settings = currentSettings || await getSettings(getCurrentURL());
             precEnabled = true;
 
             if(type == TYPE_ONLY_CONTRAST) {
@@ -692,13 +693,15 @@ import browser from "webextension-polyfill";
             case "getFiltersResponse": {
                 if(message.filters) {
                     filtersCache = message.filters;
-                    const settings = await getSettings(getCurrentURL());
+                    const settings = currentSettings || await getSettings(getCurrentURL());
                     if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") doProcessFilters(message.filters);
                 }
                 break;
             }
             case "isEnabledForThisPageResponse": {
                 if(message.enabled) {
+                    currentSettings = message.settings;
+                    console.log(currentSettings);
                     process(true, typeProcess);
                 }
                 break;
