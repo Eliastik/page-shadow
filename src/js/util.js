@@ -796,7 +796,7 @@ async function getSettings(url) {
             let pourcentageLum = result.pourcentageLum;
             let nightModeEnabled = result.nightModeEnabled;
             let invertPageColors = result.invertPageColors;
-            let disableImgBgColor = result.invertPageColors;
+            let disableImgBgColor = result.disableImgBgColor;
             let colorInvert = result.colorInvert;
 
             // Automatically enable preset ?
@@ -816,7 +816,7 @@ async function getSettings(url) {
                 pourcentageLum = presetData.pourcentageLum;
                 nightModeEnabled = presetData.nightModeEnabled;
                 invertPageColors = presetData.invertPageColors;
-                disableImgBgColor = presetData.invertPageColors;
+                disableImgBgColor = presetData.disableImgBgColor;
                 colorInvert = presetData.colorInvert;
             }
 
