@@ -24,7 +24,7 @@ import browser from "webextension-polyfill";
     style.type = "text/css";
     const lnkCustomTheme = document.createElement("link");
     let backgroundDetected = false;
-    let timeOutLum, timeOutAP, timeOutIC, timeOutBI;
+    let timeoutApplyBrightness, timeoutApplyContrast, timeoutApplyInvertColors, timeoutApplyDetectBackgrounds;
     const elementBrightnessWrapper = document.createElement("div");
     const elementBrightness = document.createElement("div");
     let precEnabled = false;
@@ -84,8 +84,8 @@ import browser from "webextension-polyfill";
             });
         }
 
-        if(typeof timeOutAP !== "undefined") {
-            clearTimeout(timeOutAP);
+        if(typeof timeoutApplyContrast !== "undefined") {
+            clearTimeout(timeoutApplyContrast);
         }
     }
 
@@ -99,43 +99,40 @@ import browser from "webextension-polyfill";
 
     function invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors) {
         document.body.classList.remove("pageShadowInvertImageColor");
-        document.getElementsByTagName("html")[0].classList.remove("pageShadowInvertEntirePage");
         document.body.classList.remove("pageShadowInvertVideoColor");
         document.body.classList.remove("pageShadowInvertBgColor");
+        document.getElementsByTagName("html")[0].classList.remove("pageShadowInvertEntirePage");
         document.getElementsByTagName("html")[0].classList.remove("pageShadowBackground");
 
         if(enabled !== null && enabled == "true") {
             if(invertEntirePage !== null && invertEntirePage == "true") {
+                document.body.classList.add("pageShadowInvertImageColor");
+                document.body.classList.add("pageShadowInvertVideoColor");
+                document.body.classList.add("pageShadowInvertBgColor");
                 document.getElementsByTagName("html")[0].classList.add("pageShadowInvertEntirePage");
                 document.getElementsByTagName("html")[0].classList.add("pageShadowBackground");
 
-                if(invertImageColors !== null && invertImageColors == "true") {
+                if(invertImageColors != null && invertImageColors == "true") {
                     document.body.classList.remove("pageShadowInvertImageColor");
-                } else {
-                    document.body.classList.add("pageShadowInvertImageColor");
                 }
 
-                if(invertBgColors !== "false") {
+                if(invertBgColors != null && invertBgColors == "true") {
                     document.body.classList.remove("pageShadowInvertBgColor");
-                } else {
-                    document.body.classList.add("pageShadowInvertBgColor");
                 }
 
-                if(invertVideoColors !== null && invertVideoColors == "true") {
+                if(invertVideoColors != null && invertVideoColors == "true") {
                     document.body.classList.remove("pageShadowInvertVideoColor");
-                } else {
-                    document.body.classList.add("pageShadowInvertVideoColor");
                 }
             } else {
-                if(invertImageColors !== null && invertImageColors == "true") {
+                if(invertImageColors != null && invertImageColors == "true") {
                     document.body.classList.add("pageShadowInvertImageColor");
                 }
 
-                if(invertBgColors !== "false") {
+                if(invertBgColors != null && invertBgColors != "false") {
                     document.body.classList.add("pageShadowInvertBgColor");
                 }
 
-                if(invertVideoColors !== null && invertVideoColors == "true") {
+                if(invertVideoColors != null && invertVideoColors == "true") {
                     document.body.classList.add("pageShadowInvertVideoColor");
                 }
             }
@@ -149,8 +146,8 @@ import browser from "webextension-polyfill";
             }
         }
 
-        if(typeof timeOutIC !== "undefined") {
-            clearTimeout(timeOutIC);
+        if(typeof timeoutApplyInvertColors !== "undefined") {
+            clearTimeout(timeoutApplyInvertColors);
         }
     }
 
@@ -188,16 +185,16 @@ import browser from "webextension-polyfill";
     function applyDetectBackground(type, elements) {
         if(backgroundDetected) return false;
 
-        if(type == TYPE_LOADING) {
-            document.onreadystatechange = function() {
-                // when the page is entirely loaded
-                if(document.readyState === "complete") {
-                    setTimeout(() => waitAndApplyDetectBackground(elements), 250); // detect for all the elements of the page after 250 ms
-                }
-            };
+        if(document.readyState === "complete") {
+            setTimeout(() => waitAndApplyDetectBackgrounds(elements), 1); // detect for all the elements of the page
         } else {
-            if(document.readyState === "complete") {
-                setTimeout(() => waitAndApplyDetectBackground(elements), 1); // detect for all the elements of the page
+            if(type == TYPE_LOADING) {
+                window.addEventListener("load", () => {
+                    // when the page is entirely loaded
+                    if(document.readyState === "complete") {
+                        setTimeout(() => waitAndApplyDetectBackgrounds(elements), 250); // detect for all the elements of the page after 250 ms
+                    }
+                });
             } else {
                 applyDetectBackground(TYPE_LOADING, elements);
             }
@@ -257,29 +254,31 @@ import browser from "webextension-polyfill";
         document.body.appendChild(elementWrapper);
         elementWrapper.appendChild(elementBrightness);
 
-        if(typeof timeOutLum !== "undefined") {
-            clearTimeout(timeOutLum);
+        if(typeof timeoutApplyBrightness !== "undefined") {
+            clearTimeout(timeoutApplyBrightness);
         }
     }
 
     function waitAndApplyBrightnessPage(element, wrapper) {
         if(document.body) return appendBrightnessElement(element, wrapper);
-        timeOutLum = setTimeout(() => waitAndApplyBrightnessPage(element, wrapper), 50);
+        timeoutApplyBrightness = setTimeout(() => waitAndApplyBrightnessPage(element, wrapper), 50);
     }
 
     function waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors) {
         if(document.body) return contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors);
-        timeOutAP = setTimeout(() => waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors), 50);
+        timeoutApplyContrast = setTimeout(() => waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors), 50);
     }
 
     function waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors) {
         if(document.body) return invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors);
-        timeOutIC = setTimeout(() => waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors), 50);
+        timeoutApplyInvertColors = setTimeout(() => waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors), 50);
     }
 
-    function waitAndApplyDetectBackground(tagName) {
-        if(document.body) return detectBackground(tagName);
-        timeOutBI = setTimeout(() => waitAndApplyDetectBackground(tagName), 50);
+    function waitAndApplyDetectBackgrounds(tagName) {
+        if(document.body) {
+            return detectBackground(tagName);
+        }
+        timeoutApplyDetectBackgrounds = setTimeout(() => waitAndApplyDetectBackgrounds(tagName), 50);
     }
 
     function mutationObserve(type) {
@@ -426,7 +425,7 @@ import browser from "webextension-polyfill";
                 "subtree": true,
                 "childList": true,
                 "characterData": false,
-                "attributeFilter": ["class"]
+                "attributeFilter": ["class", "style"]
             });
         }
     }
@@ -580,10 +579,10 @@ import browser from "webextension-polyfill";
 
         if(mutation == null) mutation = "none";
 
-        if(typeof timeOutLum !== "undefined") clearTimeout(timeOutLum);
-        if(typeof timeOutAP !== "undefined") clearTimeout(timeOutAP);
-        if(typeof timeOutIC !== "undefined") clearTimeout(timeOutIC);
-        if(typeof timeOutBI !== "undefined") clearTimeout(timeOutBI);
+        if(typeof timeoutApplyBrightness !== "undefined") clearTimeout(timeoutApplyBrightness);
+        if(typeof timeoutApplyContrast !== "undefined") clearTimeout(timeoutApplyContrast);
+        if(typeof timeoutApplyInvertColors !== "undefined") clearTimeout(timeoutApplyInvertColors);
+        if(typeof timeoutApplyDetectBackgrounds !== "undefined") clearTimeout(timeoutApplyDetectBackgrounds);
         if(typeof mut_contrast !== "undefined" && (mutation == MUTATION_TYPE_CONTRAST || mutation == TYPE_ALL)) mut_contrast.disconnect();
         if(typeof mut_invert !== "undefined" && (mutation == MUTATION_TYPE_INVERT || mutation == TYPE_ALL)) mut_invert.disconnect();
         if(typeof mut_brightness !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS || mutation == TYPE_ALL)) mut_brightness.disconnect();
@@ -719,6 +718,7 @@ import browser from "webextension-polyfill";
                 }
 
                 if(enabled) {
+                    backgroundDetected = false;
                     main(TYPE_RESET, TYPE_ALL);
                 }
                 break;
