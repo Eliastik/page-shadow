@@ -301,6 +301,14 @@ if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onUpdated) !== "u
     });
 }
 
+if(typeof(browser.windows) !== "undefined" && typeof(browser.windows.onFocusChanged) !== "undefined") {
+    browser.windows.onFocusChanged.addListener(windowId => {
+        if(windowId != browser.windows.WINDOW_ID_NONE) {
+            menu();
+        }
+    });
+}
+
 if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) !== "undefined") {
     browser.storage.onChanged.addListener(changes => {
         autoEnable(changes);
