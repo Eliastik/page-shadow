@@ -230,7 +230,8 @@
             "version": "Version:",
             "license": "License:",
             "licenseEmpty": "(Not specified)",
-            "rulesCount": "Number of filter rules:"
+            "rulesCount": "Number of filter rules:",
+            "resetDefaultFilters": "Reset default filters"
         },
         "close": "Close",
         "ok": "OK",

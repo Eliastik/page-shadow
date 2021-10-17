@@ -369,6 +369,10 @@ div.navbar-right {
     user-select: text;
     cursor: text;
 }
+#filterInfos .modal-body #detailsFilterAddress, #filterInfos .modal-body #detailsFilterHome {
+    word-wrap: break-word;
+    word-break: break-all;
+}
 #syntaxBtnPresets {
     margin-top: 8px;
 }

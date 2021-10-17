@@ -229,7 +229,8 @@
             "version": "Version :",
             "license": "Licence :",
             "licenseEmpty": "(Non renseigné)",
-            "rulesCount": "Nombre de règles de filtre :"
+            "rulesCount": "Nombre de règles de filtre :",
+            "resetDefaultFilters": "Réinstaller les filtres par défaut"
         },
         "close": "Fermer",
         "ok": "OK",

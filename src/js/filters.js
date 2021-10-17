@@ -439,6 +439,28 @@ async function getNumberOfRulesFor(filterId) {
     });
 }
 
+async function reinstallDefaultFilters() {
+    const newFilters = [];
+
+    return new Promise(resolve => {
+        browser.storage.local.get("filtersSettings").then(result => {
+            const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+
+            for(const filter of defaultFilters.filters) {
+                newFilters.push(filter);
+            }
+
+            for(const filter of filters.filters) {
+                if(!filter.builtIn) newFilters.push(filter);
+            }
+            
+            filters.filters = newFilters;
+            setSettingItem("filtersSettings", filters);
+            resolve(true);
+        });
+    });
+}
+
 cacheFilters();
 
-export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor };
+export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor, reinstallDefaultFilters };

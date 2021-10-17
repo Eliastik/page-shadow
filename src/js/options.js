@@ -1161,6 +1161,14 @@ $(document).ready(() => {
         });
     });
 
+    $("#resetDefaultFiltersBtn").click(() => {
+        $("#resetDefaultFiltersBtn").attr("disabled", "disabled");
+
+        browser.runtime.sendMessage({
+            "type": "reinstallDefaultFilters"
+        });
+    });
+
     $("#customFilterSave").click(() => {
         $("#customFilterSave").attr("disabled", "disabled");
         saveCustomFilter();
@@ -1241,6 +1249,10 @@ browser.runtime.onMessage.addListener(message => {
         }
         case "getNumberOfRulesResponse": {
             $("#detailsFilterRulesCount").text(message.count);
+            break;
+        }
+        case "reinstallDefaultFiltersResponse": {
+            if(message.result) $("#resetDefaultFiltersBtn").removeAttr("disabled");
             break;
         }
         case "addFilterFinished":

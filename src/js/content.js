@@ -275,9 +275,7 @@ import browser from "webextension-polyfill";
     }
 
     function waitAndApplyDetectBackgrounds(tagName) {
-        if(document.body) {
-            return detectBackground(tagName);
-        }
+        if(document.body) return detectBackground(tagName);
         timeoutApplyDetectBackgrounds = setTimeout(() => waitAndApplyDetectBackgrounds(tagName), 50);
     }
 
