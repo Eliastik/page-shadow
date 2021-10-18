@@ -227,12 +227,14 @@ function parseFilter(filterContent) {
 }
 
 async function cacheFilters() {
-    rules = [];
+    const newRules = [];
     const data = await openFiltersFiles();
     
     for(const key of Object.keys(data)) {
-        rules.push(...parseFilter(data[key]));
+        newRules.push(...parseFilter(data[key]));
     }
+
+    rules = newRules;
 }
 
 function extractMetadataLine(line) {

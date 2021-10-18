@@ -401,21 +401,17 @@ import browser from "webextension-polyfill";
             });
         } else if(type == MUTATION_TYPE_BACKGROUNDS) {
             mut_backgrounds = new MutationObserver(async(mutations) => {
-                const settings = currentSettings || await getSettings(getCurrentURL());
-
-                if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") {
-                    mutations.forEach(mutation => {
-                        if(mutation.type == "childList") {
-                            for(let i = 0; i < mutation.addedNodes.length; i++) {
-                                mutationElementsBackgrounds(mutation.addedNodes[i], null, null);
-                                doProcessFilters(filtersCache, mutation.addedNodes[i]);
-                            }
-                        } else if(mutation.type == "attributes") {
-                            mutationElementsBackgrounds(mutation.target, mutation.attributeName, mutation.oldValue);
-                            doProcessFilters(filtersCache, mutation.target);
+                mutations.forEach(mutation => {
+                    if(mutation.type == "childList") {
+                        for(let i = 0; i < mutation.addedNodes.length; i++) {
+                            mutationElementsBackgrounds(mutation.addedNodes[i], null, null);
+                            doProcessFilters(filtersCache, mutation.addedNodes[i]);
                         }
-                    });
-                }
+                    } else if(mutation.type == "attributes") {
+                        mutationElementsBackgrounds(mutation.target, mutation.attributeName, mutation.oldValue);
+                        doProcessFilters(filtersCache, mutation.target);
+                    }
+                });
             });
 
             mut_backgrounds.observe(document.body, {
@@ -710,13 +706,13 @@ import browser from "webextension-polyfill";
                 const urlUpdated = precUrl != getCurrentURL();
 
                 if(urlUpdated) {
+                    backgroundDetected = false;
                     filtersCache = null;
                     precUrl = getCurrentURL();
                     if(!enabled) updateFilters();
                 }
 
                 if(enabled) {
-                    backgroundDetected = false;
                     main(TYPE_RESET, TYPE_ALL);
                 }
                 break;
