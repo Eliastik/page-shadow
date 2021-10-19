@@ -406,7 +406,7 @@ import browser from "webextension-polyfill";
             mut_backgrounds = new MutationObserver(async(mutations) => {
                 mutations.forEach(mutation => {
                     if(mutation.type == "childList") {
-                        for(let i = 0; i < mutation.addedNodes.length; i++) {
+                        for(let i = 0, len = mutation.addedNodes.length; i < len; i++) {
                             if(!performanceModeEnabled) mutationElementsBackgrounds(mutation.addedNodes[i], null, null);
                             doProcessFilters(filtersCache, mutation.addedNodes[i]);
                         }
