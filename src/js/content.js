@@ -35,6 +35,7 @@ import browser from "webextension-polyfill";
     let typeProcess = "";
     let precUrl;
     let currentSettings = null;
+    let performanceModeEnabled = false;
 
     // Contants
     const TYPE_RESET = "reset";
@@ -152,10 +153,12 @@ import browser from "webextension-polyfill";
     }
 
     function detectBackground(tagName) {
-        const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
-
-        for(let i = 0, len = elements.length; i < len; i++) {
-            detectBackgroundForElement(elements[i]);
+        if(!performanceModeEnabled) {
+            const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
+    
+            for(let i = 0, len = elements.length; i < len; i++) {
+                detectBackgroundForElement(elements[i]);
+            }
         }
 
         document.body.classList.add("pageShadowBackgroundDetected");
@@ -404,11 +407,11 @@ import browser from "webextension-polyfill";
                 mutations.forEach(mutation => {
                     if(mutation.type == "childList") {
                         for(let i = 0; i < mutation.addedNodes.length; i++) {
-                            mutationElementsBackgrounds(mutation.addedNodes[i], null, null);
+                            if(!performanceModeEnabled) mutationElementsBackgrounds(mutation.addedNodes[i], null, null);
                             doProcessFilters(filtersCache, mutation.addedNodes[i]);
                         }
                     } else if(mutation.type == "attributes") {
-                        mutationElementsBackgrounds(mutation.target, mutation.attributeName, mutation.oldValue);
+                        if(!performanceModeEnabled) mutationElementsBackgrounds(mutation.target, mutation.attributeName, mutation.oldValue);
                         doProcessFilters(filtersCache, mutation.target);
                     }
                 });
@@ -615,17 +618,11 @@ import browser from "webextension-polyfill";
             }
         }
 
-        if(runningInIframe) {
-            typeProcess = type;
+        typeProcess = type;
 
-            browser.runtime.sendMessage({
-                "type": "isEnabledForThisPage"
-            });
-        } else {
-            pageShadowAllowed(getCurrentURL()).then(allowed => {
-                process(allowed, type);
-            });
-        }
+        browser.runtime.sendMessage({
+            "type": "isPerformanceModeEnabledForThisPage"
+        });
     }
    
     async function process(allowed, type) {
@@ -698,6 +695,20 @@ import browser from "webextension-polyfill";
                 if(message.enabled) {
                     currentSettings = message.settings;
                     process(true, typeProcess);
+                }
+                break;
+            }
+            case "isPerformanceModeEnabledForThisPageResponse": {
+                performanceModeEnabled = message.enabled;
+
+                if(runningInIframe) {
+                    browser.runtime.sendMessage({
+                        "type": "isEnabledForThisPage"
+                    });
+                } else {
+                    pageShadowAllowed(getCurrentURL()).then(allowed => {
+                        process(allowed, typeProcess);
+                    });
                 }
                 break;
             }

@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, nbPresets, defaultFilters, getSettings } from "./util.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
-import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor, reinstallDefaultFilters } from "./filters.js";
+import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor, reinstallDefaultFilters, isPerformanceModeEnabledFor } from "./filters.js";
 import browser from "webextension-polyfill";
 
 let autoEnableActivated = false;
@@ -319,9 +319,9 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
     browser.runtime.onMessage.addListener((message, sender) => {
         new Promise(resolve => {
             if(message) {
-                if(message.type == "isEnabledForThisPage") {
-                    const url = sender.tab.url;
+                const url = sender.tab.url;
 
+                if(message.type == "isEnabledForThisPage") {
                     pageShadowAllowed(url).then(async(enabled) => {
                         const settings = await getSettings(url);
                         resolve({ type: "isEnabledForThisPageResponse", enabled: enabled, settings: settings });
@@ -381,6 +381,8 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     getNumberOfRulesFor(message.idFilter).then(count => {
                         resolve({ type: "getNumberOfRulesResponse", count: count });
                     });
+                } else if(message.type == "isPerformanceModeEnabledForThisPage") {
+                    resolve({ type: "isPerformanceModeEnabledForThisPageResponse", enabled: isPerformanceModeEnabledFor(url) });
                 }
             }
         }).then(result => {

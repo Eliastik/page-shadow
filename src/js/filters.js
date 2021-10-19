@@ -21,6 +21,7 @@ import { defaultFilters, matchWebsite } from "./util.js";
 import browser from "webextension-polyfill";
 
 let rules = [];
+let performanceModeWebsites = [];
 
 function openFiltersFiles() {
     const files = {};
@@ -228,13 +229,23 @@ function parseFilter(filterContent) {
 
 async function cacheFilters() {
     const newRules = [];
+    const newRulesPerformanceMode = [];
     const data = await openFiltersFiles();
     
     for(const key of Object.keys(data)) {
-        newRules.push(...parseFilter(data[key]));
+        const parsed = parseFilter(data[key]);
+
+        for(const rule of parsed) {
+            if(rule.type == "enablePerformanceMode") {
+                newRulesPerformanceMode.push(rule.website);
+            } else {
+                newRules.push(rule);
+            }
+        }
     }
 
     rules = newRules;
+    performanceModeWebsites = newRulesPerformanceMode;
 }
 
 function extractMetadataLine(line) {
@@ -463,6 +474,23 @@ async function reinstallDefaultFilters() {
     });
 }
 
+function isPerformanceModeEnabledFor(url) {
+    if(url && url.trim() != "") {
+        const websuteUrl_tmp = new URL(url);
+        const domain = websuteUrl_tmp.hostname;
+    
+        for(let i = 0, len = performanceModeWebsites.length; i < len; i++) {
+            const urlRule = performanceModeWebsites[i];
+    
+            if(matchWebsite(domain, urlRule) || matchWebsite(url, urlRule)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 cacheFilters();
 
-export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor, reinstallDefaultFilters };
+export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor, reinstallDefaultFilters, isPerformanceModeEnabledFor };
