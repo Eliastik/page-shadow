@@ -22,6 +22,7 @@ import browser from "webextension-polyfill";
 
 let rules = [];
 let performanceModeWebsites = [];
+let performanceModeWebsitesDisabled = [];
 
 function openFiltersFiles() {
     const files = {};
@@ -230,6 +231,7 @@ function parseFilter(filterContent) {
 async function cacheFilters() {
     const newRules = [];
     const newRulesPerformanceMode = [];
+    const newRulesPerformanceModeDisabled = [];
     const data = await openFiltersFiles();
     
     for(const key of Object.keys(data)) {
@@ -238,6 +240,8 @@ async function cacheFilters() {
         for(const rule of parsed) {
             if(rule.type == "enablePerformanceMode") {
                 newRulesPerformanceMode.push(rule.website);
+            } else if(rule.type == "disablePerformanceMode") {
+                newRulesPerformanceModeDisabled.push(rule.website);
             } else {
                 newRules.push(rule);
             }
@@ -246,6 +250,7 @@ async function cacheFilters() {
 
     rules = newRules;
     performanceModeWebsites = newRulesPerformanceMode;
+    performanceModeWebsitesDisabled = newRulesPerformanceModeDisabled;
 }
 
 function extractMetadataLine(line) {
@@ -478,6 +483,14 @@ function isPerformanceModeEnabledFor(url) {
     if(url && url.trim() != "") {
         const websuteUrl_tmp = new URL(url);
         const domain = websuteUrl_tmp.hostname;
+    
+        for(let i = 0, len = performanceModeWebsitesDisabled.length; i < len; i++) {
+            const urlRule = performanceModeWebsitesDisabled[i];
+    
+            if(matchWebsite(domain, urlRule) || matchWebsite(url, urlRule)) {
+                return false;
+            }
+        }
     
         for(let i = 0, len = performanceModeWebsites.length; i < len; i++) {
             const urlRule = performanceModeWebsites[i];
