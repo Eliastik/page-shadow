@@ -67,6 +67,11 @@
         "savedMessage": "Paramètres sauvegardés !",
         "ok": "OK"
     },
+    "modalUpdated": {
+        "title": "Mise à jour de l'extension",
+        "message": "Page Shadow vient d'être mis à jour vers la version {{version}} en date du {{date}} !",
+        "whatsNew": "Quoi de neuf ?"
+    },
     "footer": {
         "advancedSettings": "Paramètres avancés",
         "testExtension": "Tester l'extension",

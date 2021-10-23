@@ -21,7 +21,7 @@ import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
-import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, presetEnabledForWebsite } from "./util.js";
+import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, presetEnabledForWebsite, extensionVersion, versionDate } from "./util.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import browser from "webextension-polyfill";
@@ -49,6 +49,7 @@ async function translateContent() {
     checkPresetAutoEnabled(await getCurrentURL());
     loadPresetSelect("loadPresetSelect", i18next);
     $("#loadPresetSelect").val(selectedPreset).change();
+    $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));
     i18nextLoaded = true;
 }
 
@@ -785,8 +786,14 @@ $(document).ready(() => {
         selectedPreset = $("#loadPresetSelect").val();
     });
 
+    $("#whatsNew").click(() => {
+        browser.tabs.create({
+            url: "options.html#aboutLatestVersion"
+        });
+    });
+
     function displaySettings() {
-        browser.storage.local.get(["theme", "colorTemp", "pourcentageLum"]).then(result => {
+        browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad"]).then(result => {
             checkContrastMode();
             checkColorInvert();
             checkLiveSettings();
@@ -811,6 +818,15 @@ $(document).ready(() => {
             if(i18nextLoaded) {
                 loadPresetSelect("loadPresetSelect", i18next);
                 $("#loadPresetSelect").val(selectedPreset).change();
+            }
+
+            const updateNotification = result.updateNotification || {};
+
+            if(updateNotification[extensionVersion] != true && result.defaultLoad == "0") {
+                updateNotification[extensionVersion] = true;
+                $("#updated").modal("show");
+                $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));
+                setSettingItem("updateNotification", updateNotification);
             }
         });
     }

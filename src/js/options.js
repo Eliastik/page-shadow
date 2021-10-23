@@ -1037,6 +1037,8 @@ $(document).ready(() => {
             $("#archiveTab").removeClass("active");
             $("#presetTabLink").addClass("active");
             $("#presetTab").addClass("active");
+        } else if(window.location.hash == "#aboutLatestVersion") {
+            $("#about").modal("show");
         }
     }
 

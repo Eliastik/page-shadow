@@ -67,6 +67,11 @@
         "savedMessage": "Settings saved!",
         "ok": "OK"
     },
+    "modalUpdated": {
+        "title": "Extension updated",
+        "message": "Page Shadow has just been updated to version {{version}} dated {{date}}!",
+        "whatsNew": "What's new?"
+    },
     "footer": {
         "advancedSettings": "Advanced settings",
         "testExtension": "Test the extension",

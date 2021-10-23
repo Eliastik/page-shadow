@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { settingNames, brightnessDefaultValue, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, defaultPresets, defaultCustomThemes, defaultFilters, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode } from "./util.js";
+import { settingNames, brightnessDefaultValue, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, defaultPresets, defaultCustomThemes, defaultFilters, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, extensionVersion } from "./util.js";
 import browser from "webextension-polyfill";
 
 function setSettingItem(name, value) {
@@ -54,6 +54,9 @@ function checkFirstLoad() {
 
 function setFirstSettings() {
     return new Promise(resolve => {
+        const updateNotification = {};
+        updateNotification[extensionVersion] = true;
+        
         // Set default settings values
         browser.storage.local.set({
             "pageShadowEnabled": "false",
@@ -86,7 +89,8 @@ function setFirstSettings() {
             "customThemes": defaultCustomThemes,
             "filtersSettings": defaultFilters,
             "customFilter": "",
-            "defaultLoad": "0"
+            "defaultLoad": "0",
+            "updateNotification": updateNotification
         }).then(() => {
             resolve();
         });
