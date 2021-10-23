@@ -204,7 +204,7 @@ import browser from "webextension-polyfill";
         }
     }
 
-    function brightnessPage(enabled, pourcentage, nightmode, colorTemp) {
+    function brightnessPage(enabled, percentage, nightmode, colorTemp) {
         elementBrightness.setAttribute("class", "");
 
         if(enabled == "true" && !runningInIframe) {
@@ -227,10 +227,10 @@ import browser from "webextension-polyfill";
                 elementBrightness.setAttribute("id", "pageShadowLuminositeDiv");
             }
 
-            if(pourcentage / 100 > maxBrightnessPercentage || pourcentage / 100 < minBrightnessPercentage || typeof pourcentage === "undefined" || pourcentage == null) {
+            if(percentage / 100 > maxBrightnessPercentage || percentage / 100 < minBrightnessPercentage || typeof percentage === "undefined" || percentage == null) {
                 elementBrightness.style.opacity = brightnessDefaultValue;
             } else {
-                elementBrightness.style.opacity = pourcentage / 100;
+                elementBrightness.style.opacity = percentage / 100;
             }
 
             waitAndApplyBrightnessPage(elementBrightness, elementBrightnessWrapper);
@@ -631,7 +631,7 @@ import browser from "webextension-polyfill";
             precEnabled = true;
 
             if(type == TYPE_ONLY_CONTRAST) {
-                contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.colorTemp, settings.invertImageColors, settings.invertEntirePage, settings.disableImgBgColor, settings.invertBgColor);
+                contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.colorTemp, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor);
             } else if(type == TYPE_ONLY_INVERT) {
                 invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor);
             } else if(type == TYPE_ONLY_BRIGHTNESS) {
