@@ -156,7 +156,7 @@
             "restorePresetSuccess": "Chargement effectué avec succès",
             "savePresetSelect": "Choisissez un slot :",
             "savePresetTitle": "Nom du pré-réglage (50 carac. max) :",
-            "savePresetSuccess": "Pré-réglage créé avec succès",
+            "savePresetSuccess": "Pré-réglage créé/modifié avec succès",
             "deletePresetSuccess": "Pré-réglage supprimé avec succès",
             "infoLoadPreset": "Ici, vous pouvez charger un pré-réglage.",
             "infoSavePreset": "Le pré-réglage sera créé/modifié avec les réglages actuels tels qu'affichés dans le menu de l'extension. Si vous modifiez un réglage existant, cochez la case « Sauvegarder les nouveaux réglages » pour mettre à jour les réglages sauvegardés.",
