@@ -407,7 +407,12 @@ function displayFilters() {
 
 function displayDetailsFilter(idFilter) {
     window.codeMirrorFilterData.getDoc().setValue("");
-    $("#filterDetails").modal("show");
+    $("#filters").modal("hide");
+
+    $("#filters").on("hidden.bs.modal", () => {
+        $("#filterDetails").modal("show");
+        $("#filters").off("hidden.bs.modal");
+    });
 
     browser.storage.local.get("filtersSettings").then(result => {
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
@@ -423,7 +428,12 @@ function displayDetailsFilter(idFilter) {
 }
 
 function displayInfosFilter(idFilter) {
-    $("#filterInfos").modal("show");
+    $("#filters").modal("hide");
+
+    $("#filters").on("hidden.bs.modal", () => {
+        $("#filterInfos").modal("show");
+        $("#filters").off("hidden.bs.modal");
+    });
 
     browser.storage.local.get("filtersSettings").then(result => {
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
@@ -451,12 +461,18 @@ function displayInfosFilter(idFilter) {
 }
 
 async function displayPresetInfos(nb) {
-    $("#presetInfos").modal("show");
+    $("#archive").modal("hide");
+
+    $("#archive").on("hidden.bs.modal", () => {
+        $("#presetInfos").modal("show");
+        $("#archive").off("hidden.bs.modal");
+    });
 
     const presetData = await getPresetData(nb);
 
     if(presetData) {
         const modalBody = document.querySelector("#presetInfos .modal-body");
+        modalBody.textContent = "";
 
         for(const setting of settingsToSavePresets) {
             if(setting == "colorInvert") continue;
@@ -496,8 +512,14 @@ async function displayPresetInfos(nb) {
 }
 
 function displayFilterEdit() {
+    $("#filters").modal("hide");
+
+    $("#filters").on("hidden.bs.modal", () => {
+        $("#editFilter").modal("show");
+        $("#filters").off("hidden.bs.modal");
+    });
+
     window.codeMirrorEditFilter.getDoc().setValue("");
-    $("#editFilter").modal("show");
 
     browser.storage.local.get("customFilter").then(result => {
         const filter = result.customFilter != null ? result.customFilter : "";
@@ -1185,28 +1207,12 @@ $(document).ready(() => {
         $("#filters").modal("show");
     });
     
-    $("#filterDetails").on("show.bs.modal", () => {
-        $("#filters").modal("hide");
-    });
-    
-    $("#filterInfos").on("show.bs.modal", () => {
-        $("#filters").modal("hide");
-    });
-    
-    $("#editFilter").on("show.bs.modal", () => {
-        $("#filters").modal("hide");
-    });
-    
     $("#editFilter").on("hidden.bs.modal", () => {
         $("#filters").modal("show");
     });
     
     $("#presetInfos").on("hidden.bs.modal", () => {
         $("#archive").modal("show");
-    });
-    
-    $("#presetInfos").on("show.bs.modal", () => {
-        $("#archive").modal("hide");
     });
 
     $("#enableFilterAutoUpdate").on("change", () => {
