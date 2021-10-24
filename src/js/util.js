@@ -558,18 +558,18 @@ async function loadPresetSelect(selectId, i18next) {
 
     let optionTitle = "";
 
-    for(let i = 0; i < nbPresets; i++) {
-        const preset = await getPresetData(i + 1);
+    for(let i = 1; i <= nbPresets; i++) {
+        const preset = await getPresetData(i);
 
         if(!preset || !Object.prototype.hasOwnProperty.call(preset, "name")) {
-            optionTitle = optionTitle + "<option value=\"" + (i + 1) + "\">" + i18next.t("modal.archive.presetTitle") + (i + 1) + " : " + i18next.t("modal.archive.presetEmpty") + "</option>";
+            optionTitle = optionTitle + "<option value=\"" + i + "\">" + i18next.t("modal.archive.presetTitle") + i + " : " + i18next.t("modal.archive.presetEmpty") + "</option>";
         } else {
             if(preset["name"].trim() == "") {
-                optionTitle = optionTitle + "<option value=\"" + (i + 1) + "\">" + i18next.t("modal.archive.presetTitle") + (i + 1) + " : " + i18next.t("modal.archive.presetTitleEmpty") + "</option>";
+                optionTitle = optionTitle + "<option value=\"" + i+ "\">" + i18next.t("modal.archive.presetTitle") + i + " : " + i18next.t("modal.archive.presetTitleEmpty") + "</option>";
             } else {
                 const element = document.createElement("div");
                 element.textContent = preset["name"].substring(0, 50);
-                optionTitle = optionTitle + "<option value=\"" + (i + 1) + "\">" + i18next.t("modal.archive.presetTitle") + (i + 1)  + " : " + element.innerHTML + "</option>";
+                optionTitle = optionTitle + "<option value=\"" + i + "\">" + i18next.t("modal.archive.presetTitle") + i  + " : " + element.innerHTML + "</option>";
             }
         }
     }
@@ -594,16 +594,13 @@ function presetsEnabled() {
                 }
     
                 const listPreset = [];
-                let numPreset = 1;
     
-                for(const name in presets) {
-                    if(Object.prototype.hasOwnProperty.call(presets, name)) {
-                        if(Object.prototype.hasOwnProperty.call(presets[name], "name")) {
-                            listPreset.push(numPreset);
+                for(let i = 1; i <= nbPresets; i++) {
+                    if(presets[i]) {
+                        if(Object.prototype.hasOwnProperty.call(presets[i], "name")) {
+                            listPreset.push(i);
                         }
                     }
-    
-                    numPreset++;
                 }
     
                 resolve(listPreset);

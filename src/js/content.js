@@ -58,7 +58,7 @@ import browser from "webextension-polyfill";
                     document.body.classList.add("pageShadowContrastBlack");
                     document.getElementsByTagName("html")[0].classList.add("pageShadowBackgroundContrast");
                 } else if(theme.startsWith("custom")) {
-                    customThemeApply();
+                    customThemeApply(theme);
                     document.body.classList.add("pageShadowContrastBlackCustom");
                     document.getElementsByTagName("html")[0].classList.add("pageShadowBackgroundCustom");
                 } else {
@@ -90,12 +90,10 @@ import browser from "webextension-polyfill";
         }
     }
 
-    function customThemeApply() {
-        browser.storage.local.get("theme").then(result => {
-            if(result.theme != undefined && typeof(result.theme) == "string" && result.theme.startsWith("custom")) {
-                customTheme(result.theme.replace("custom", ""), style, false, lnkCustomTheme);
-            }
-        });
+    function customThemeApply(theme) {
+        if(theme != undefined && typeof(theme) == "string" && theme.startsWith("custom")) {
+            customTheme(theme.replace("custom", ""), style, false, lnkCustomTheme);
+        }
     }
 
     function invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors) {

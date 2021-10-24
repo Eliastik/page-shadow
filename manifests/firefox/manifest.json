@@ -88,6 +88,21 @@
         },
         "enablePresetFive": {
             "description": "__MSG_enablePresetFive__"
+        },
+        "enablePresetSix": {
+            "description": "__MSG_enablePresetSix__"
+        },
+        "enablePresetSeven": {
+            "description": "__MSG_enablePresetSeven__"
+        },
+        "enablePresetEight": {
+            "description": "__MSG_enablePresetEight__"
+        },
+        "enablePresetNine": {
+            "description": "__MSG_enablePresetNine__"
+        },
+        "enablePresetTen": {
+            "description": "__MSG_enablePresetTen__"
         }
     }
 }

@@ -49,5 +49,20 @@
     },
     "enablePresetFive": {
         "message": "Charger le pré-réglage n°5"
+    },
+    "enablePresetSix": {
+        "message": "Charger le pré-réglage n°6"
+    },
+    "enablePresetSeven": {
+        "message": "Charger le pré-réglage n°7"
+    },
+    "enablePresetEight": {
+        "message": "Charger le pré-réglage n°8"
+    },
+    "enablePresetNine": {
+        "message": "Charger le pré-réglage n°9"
+    },
+    "enablePresetTen": {
+        "message": "Charger le pré-réglage n°10"
     }
 }

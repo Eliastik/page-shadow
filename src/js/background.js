@@ -435,6 +435,21 @@ if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand
         case "enablePresetFive":
             loadPreset(5);
             break;
+        case "enablePresetSix":
+            loadPreset(6);
+            break;
+        case "enablePresetSeven":
+            loadPreset(7);
+            break;
+        case "enablePresetEight":
+            loadPreset(8);
+            break;
+        case "enablePresetNine":
+            loadPreset(9);
+            break;
+        case "enablePresetTen":
+            loadPreset(10);
+            break;
         }
     });
 }
