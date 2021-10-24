@@ -192,7 +192,7 @@
             "invertBgColor": "Inverser les couleurs des images d'arrière-plan :",
             "autoEnable": "Activation automatique selon l'heure :",
             "disableImgBgColor": "Désactiver la coloration de l'arrière-plan des images :",
-            "presetInfosLabel": "Détails du pré-réglage :",
+            "presetInfosLabel": "Détails du pré-réglage",
             "enabled": "Activé",
             "disabled": "Désactivé",
             "customTheme": "Thème personnalisé n°{{count}}",

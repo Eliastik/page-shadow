@@ -183,6 +183,18 @@ hr.nmt {
 .well-lmb {
     margin-bottom: 8px;
 }
+.well-presets-auto {
+    padding: 0 !important;
+    display: block;
+    margin-bottom: 8px;
+    margin-top: 0 !important;
+}
+.well-presets-auto .list-inline {
+    margin-bottom: 0 !important;
+}
+.input-group-select-presets .btn {
+    margin-bottom: 0 !important;
+}
 #tempSelectDiv {
     display: inline-block;
 }

@@ -21,7 +21,7 @@ import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
-import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, presetEnabledForWebsite, extensionVersion, versionDate } from "./util.js";
+import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, presetsEnabledForWebsite, extensionVersion, versionDate, disableEnablePreset } from "./util.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import browser from "webextension-polyfill";
@@ -170,84 +170,120 @@ $(document).ready(() => {
     }
 
     checkPresetAutoEnabled = async function(url) {
-        const presetEnabledId = await presetEnabledForWebsite(url);
+        const presetsEnabled = await presetsEnabledForWebsite(url);
 
-        if(presetEnabledId > 0) {
-            $("#loadPresetSelect").tooltip({
-                title: i18next.t("container.presetAutoEnabledForThisWebsite", { count: presetEnabledId }),
-                placement: "bottom"
-            });
-            $("#loadPresetSelect").tooltip("show");
-            $("#loadPresetSelect").val(presetEnabledId);
+        if(presetsEnabled && presetsEnabled.length > 0) {
+            const presetEnabled = presetsEnabled[0];
+
+            if(presetEnabled && presetEnabled.presetNb > 0) {
+                selectedPreset = presetEnabled.presetNb;
+                $("#loadPresetSelect").val(presetEnabled.presetNb);
+                checkAutoEnablePreset(presetEnabled.presetNb);
+            }
         }
     };
 
     async function checkEnable() {
-        function check(url) {
-            browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]).then(result => {
-                let sitesInterdits;
-
-                if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == "undefined" || result.sitesInterditPageShadow.trim() == "") {
-                    sitesInterdits = "";
-                } else {
-                    sitesInterdits = result.sitesInterditPageShadow.split("\n");
-                }
-
-                const domain = url.hostname;
-                const href = url.href;
-
-                if(result.whiteList == "true") {
-                    if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
-                        $("#disableWebsite-li").hide();
-                        $("#enableWebsite-li").show();
-                    } else {
-                        $("#disableWebsite-li").show();
-                        $("#enableWebsite-li").hide();
-                    }
-
-                    if(in_array_website(href, sitesInterdits) || in_array_website(domain, sitesInterdits)) {
-                        $("#disableWebpage-li").hide();
-                        $("#enableWebpage-li").show();
-
-                        if(in_array_website(domain, sitesInterdits)) {
-                            $("#disableWebpage-li").hide();
-                            $("#enableWebpage-li").hide();
-                        } else if(in_array_website(href, sitesInterdits)) {
-                            $("#disableWebsite-li").hide();
-                            $("#enableWebsite-li").hide();
-                        }
-                    } else {
-                        $("#disableWebpage-li").show();
-                        $("#enableWebpage-li").hide();
-                    }
-                } else {
-                    if(in_array_website(domain, sitesInterdits)) {
-                        $("#disableWebsite-li").show();
-                        $("#enableWebsite-li").hide();
-                    } else {
-                        $("#disableWebsite-li").hide();
-                        $("#enableWebsite-li").show();
-                    }
-
-                    if(in_array_website(href, sitesInterdits)) {
-                        $("#disableWebpage-li").show();
-                        $("#enableWebpage-li").hide();
-                    } else {
-                        $("#disableWebpage-li").hide();
-                        $("#enableWebpage-li").show();
-                    }
-                }
-            });
-        }
-
         const url = new URL(await getCurrentURL());
-        check(url);
+
+        browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]).then(result => {
+            let sitesInterdits;
+
+            if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == "undefined" || result.sitesInterditPageShadow.trim() == "") {
+                sitesInterdits = "";
+            } else {
+                sitesInterdits = result.sitesInterditPageShadow.split("\n");
+            }
+
+            const domain = url.hostname;
+            const href = url.href;
+
+            if(result.whiteList == "true") {
+                if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
+                    $("#disableWebsite-li").hide();
+                    $("#enableWebsite-li").show();
+                } else {
+                    $("#disableWebsite-li").show();
+                    $("#enableWebsite-li").hide();
+                }
+
+                if(in_array_website(href, sitesInterdits) || in_array_website(domain, sitesInterdits)) {
+                    $("#disableWebpage-li").hide();
+                    $("#enableWebpage-li").show();
+
+                    if(in_array_website(domain, sitesInterdits)) {
+                        $("#disableWebpage-li").hide();
+                        $("#enableWebpage-li").hide();
+                    } else if(in_array_website(href, sitesInterdits)) {
+                        $("#disableWebsite-li").hide();
+                        $("#enableWebsite-li").hide();
+                    }
+                } else {
+                    $("#disableWebpage-li").show();
+                    $("#enableWebpage-li").hide();
+                }
+            } else {
+                if(in_array_website(domain, sitesInterdits)) {
+                    $("#disableWebsite-li").show();
+                    $("#enableWebsite-li").hide();
+                } else {
+                    $("#disableWebsite-li").hide();
+                    $("#enableWebsite-li").show();
+                }
+
+                if(in_array_website(href, sitesInterdits)) {
+                    $("#disableWebpage-li").show();
+                    $("#enableWebpage-li").hide();
+                } else {
+                    $("#disableWebpage-li").hide();
+                    $("#enableWebpage-li").show();
+                }
+            }
+        });
+    }
+
+    async function checkAutoEnablePreset(nb) {
+        const url = await getCurrentURL();
+        const presetsAutoEnabled = await presetsEnabledForWebsite(url);
+
+        $("#enableWebsitePreset-li").hide();
+        $("#disableWebsitePreset-li").show();
+        $("#enableWebpagePreset-li").hide();
+        $("#disableWebpagePreset-li").show();
+
+        if(presetsAutoEnabled && presetsAutoEnabled.length > 0) {
+            for(const presetEnabled of presetsAutoEnabled) {
+                if(presetEnabled && presetEnabled.presetNb > 0 && presetEnabled.presetNb == nb) {
+                    if(presetEnabled.autoEnabledWebsite) {
+                        $("#enableWebsitePreset-li").show();
+                        $("#disableWebsitePreset-li").hide();
+                    } else {
+                        $("#enableWebsitePreset-li").hide();
+                        $("#disableWebsitePreset-li").show();
+                    }
+                    
+                    if(presetEnabled.autoEnabledPage) {
+                        $("#enableWebpagePreset-li").show();
+                        $("#disableWebpagePreset-li").hide();
+                    } else {
+                        $("#enableWebpagePreset-li").hide();
+                        $("#disableWebpagePreset-li").show();
+                    }
+                }
+            }
+        }
     }
 
     async function disablePageShadow(type, checked) {
         const url = new URL(await getCurrentURL());
         disableEnableToggle(type, checked, url);
         checkEnable();
+    }
+
+    async function togglePreset(type, id, checked) {
+        const url = new URL(await getCurrentURL());
+        await disableEnablePreset(type, id, checked, url);
+        checkAutoEnablePreset(id);
     }
 
     checkEnable();
@@ -278,6 +314,22 @@ $(document).ready(() => {
 
     $("#enableWebpage").click(() => {
         disablePageShadow("disable-webpage", true);
+    });
+
+    $("#disableWebsitePreset").click(() => {
+        togglePreset("toggle-website", selectedPreset, true);
+    });
+
+    $("#enableWebsitePreset").click(() => {
+        togglePreset("toggle-website", selectedPreset, false);
+    });
+
+    $("#disableWebpagePreset").click(() => {
+        togglePreset("toggle-webpage", selectedPreset, true);
+    });
+
+    $("#enableWebpagePreset").click(() => {
+        togglePreset("toggle-webpage", selectedPreset, false);
     });
 
     checkContrastMode = function() {
@@ -784,6 +836,7 @@ $(document).ready(() => {
 
     $("#loadPresetSelect").change(() => {
         selectedPreset = $("#loadPresetSelect").val();
+        checkAutoEnablePreset(selectedPreset);
     });
 
     $("#whatsNew").click(() => {

@@ -776,7 +776,9 @@ function getCurrentURL() {
     return window.location.href;
 }
 
-async function presetEnabledForWebsite(url) {
+async function presetsEnabledForWebsite(url) {
+    const presetListEnabled = [];
+
     if(url && url.trim() != "") {
         for(let i = 1; i <= nbPresets; i++) {
             const presetData = await getPresetData(i);
@@ -789,14 +791,20 @@ async function presetEnabledForWebsite(url) {
 
             const websuteUrl_tmp = new URL(url);
             const domain = websuteUrl_tmp.hostname;
+            const autoEnabledWebsite = in_array_website(domain, websiteList);
+            const autoEnabledPage = in_array_website(url, websiteList);
 
-            if(in_array_website(domain, websiteList) || in_array_website(url, websiteList)) {
-                return i;
+            if(autoEnabledWebsite || autoEnabledPage) {
+                presetListEnabled.push({
+                    presetNb: i,
+                    autoEnabledWebsite: autoEnabledWebsite,
+                    autoEnabledPage: autoEnabledPage
+                });
             }
         }
     }
 
-    return -1;
+    return presetListEnabled;
 }
 
 async function getSettings(url) {
@@ -817,24 +825,28 @@ async function getSettings(url) {
             let colorInvert = result.colorInvert;
 
             // Automatically enable preset ?
-            const presetEnabledId = await presetEnabledForWebsite(url);
+            const presetsEnabled = await presetsEnabledForWebsite(url);
 
-            if(presetEnabledId > 0) {
-                const presetData = await getPresetData(presetEnabledId);
+            if(presetsEnabled && presetsEnabled.length > 0) {
+                const presetEnabled = presetsEnabled[0];
 
-                pageShadowEnabled = presetData.pageShadowEnabled;
-                theme = presetData.theme;
-                colorTemp = presetData.colorTemp;
-                invertEntirePage = presetData.invertEntirePage;
-                invertImageColors = presetData.invertImageColors;
-                invertVideoColors = presetData.invertVideoColors;
-                invertBgColor = presetData.invertBgColor;
-                pageLumEnabled = presetData.pageLumEnabled;
-                pourcentageLum = presetData.pourcentageLum;
-                nightModeEnabled = presetData.nightModeEnabled;
-                invertPageColors = presetData.invertPageColors;
-                disableImgBgColor = presetData.disableImgBgColor;
-                colorInvert = presetData.colorInvert;
+                if(presetEnabled && presetEnabled.presetNb > 0) {
+                    const presetData = await getPresetData(presetEnabled.presetNb);
+    
+                    pageShadowEnabled = presetData.pageShadowEnabled;
+                    theme = presetData.theme;
+                    colorTemp = presetData.colorTemp;
+                    invertEntirePage = presetData.invertEntirePage;
+                    invertImageColors = presetData.invertImageColors;
+                    invertVideoColors = presetData.invertVideoColors;
+                    invertBgColor = presetData.invertBgColor;
+                    pageLumEnabled = presetData.pageLumEnabled;
+                    pourcentageLum = presetData.pourcentageLum;
+                    nightModeEnabled = presetData.nightModeEnabled;
+                    invertPageColors = presetData.invertPageColors;
+                    disableImgBgColor = presetData.disableImgBgColor;
+                    colorInvert = presetData.colorInvert;
+                }
             }
 
             if(colorInvert == "true") {
@@ -866,4 +878,55 @@ async function getSettings(url) {
     });
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, extensionVersion, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, deletePreset, customFilterGuideURL, getSettings, getPresetData, getCurrentURL, presetEnabledForWebsite, versionDate };
+async function disableEnablePreset(type, nb, checked, url) {
+    if(nb < 1 || nb > nbPresets) {
+        return "error";
+    }
+
+    const preset = await getPresetData(nb);
+    if(!preset) return "error";
+
+    try {
+        const domain = url.hostname;
+        const href = url.href;
+        let match = domain;
+        let websitesPagesArray;
+
+        const websiteListToApply = preset["websiteListToApply"];
+
+        if(websiteListToApply == undefined && websiteListToApply !== "") {
+            websitesPagesArray = [];
+        } else {
+            websitesPagesArray = websiteListToApply.split("\n");
+        }
+
+        switch(type) {
+        case "toggle-website":
+            match = domain;
+            break;
+        case "toggle-webpage":
+            match = href;
+            break;
+        }
+    
+        let disabledWebsitesNew;
+        
+        if(checked) {
+            websitesPagesArray.push(match);
+            websitesPagesArray = removeA(websitesPagesArray, "").join("\n");
+            disabledWebsitesNew = websitesPagesArray;
+        } else {
+            disabledWebsitesNew = removeA(websitesPagesArray, match);
+            disabledWebsitesNew = commentMatched(disabledWebsitesNew, match);
+            disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
+        }
+
+        await savePreset(nb, preset.name, disabledWebsitesNew, false);
+
+        return "success";
+    } catch(e) {
+        return "error";
+    }
+}
+
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, extensionVersion, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, deletePreset, customFilterGuideURL, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, versionDate, disableEnablePreset };

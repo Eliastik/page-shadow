@@ -46,11 +46,20 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
         <div class="container popup">
             <div class="form-horizontal">
                 <div class="col">
-                    <div class="input-group">
+                    <div class="input-group input-group-select-presets">
                         <select id="loadPresetSelect" style="width: 100%;"></select>
                         <span class="input-group-btn">
                             <button class="btn btn-xs btn-preset btn-success" id="loadPresetValid" type="button" data-toggle="tooltip" data-i18n="[data-original-title]container.loadPreset"><i class="fa fa-fw fa-upload"></i></button><button class="btn btn-xs btn-preset btn-primary" id="settingsPresets" type="button" data-toggle="tooltip" data-i18n="[data-original-title]container.settingsPresets"><i class="fa fa-fw fa-cog"></i></button>
                         </span>
+                    </div>
+                    <div class="input-group well well-presets-auto">
+                        <ul class="list-inline m6">
+                            <li class="list-inline-item" data-i18n="container.autoEnablePresetFor"></li>
+                            <li class="list-inline-item" id="enableWebsitePreset-li"><a href="#" id="enableWebsitePreset"><i class="fa fa-check-square-o" aria-hidden="true"></i> <span data-i18n="container.enableWebsitePreset"></span></a></li>
+                            <li class="list-inline-item" id="disableWebsitePreset-li" style="display: none;"><a href="#" id="disableWebsitePreset"><i class="fa fa-square-o" aria-hidden="true"></i> <span data-i18n="container.enableWebsitePreset"></span></a></li>
+                            <li class="list-inline-item" id="enableWebpagePreset-li"><a href="#" id="enableWebpagePreset"><i class="fa fa-check-square-o" aria-hidden="true"></i> <span data-i18n="container.enableWebpagePreset"></span></a></li>
+                            <li class="list-inline-item" id="disableWebpagePreset-li" style="display: none;"><a href="#" id="disableWebpagePreset"><i class="fa fa-square-o" aria-hidden="true"></i> <span data-i18n="container.enableWebpagePreset"></span></a></li>
+                        </ul>
                     </div>
                 </div>
                 <div>
