@@ -143,7 +143,7 @@
             "restoreErrorArchive": "This file is not an archive of Page Shadow settings. Make sure you have selected the correct file.",
             "restoreSuccess": "Data restoration completed successfully.",
             "preset": "Presets",
-            "descriptionPreset": "Here you can create and load presets so you can restore them instantly later. The settings which can be saved in presets correspond to those displayed in the extension menu. 5 preset slots are available.",
+            "descriptionPreset": "Here you can create and load presets so you can restore them instantly later. The settings which can be saved in presets correspond to those displayed in the extension menu. 10 preset slots are available.",
             "warningPreset": "Warning, before loading a preset, save your current settings in another slot because they will be overwritten!",
             "loadPreset": "Load a preset",
             "savePreset": "Create/edit a preset",
