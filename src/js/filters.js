@@ -215,13 +215,16 @@ function parseLine(line) {
 
 function parseFilter(filterContent) {
     const currentRules = [];
-    const lines = filterContent.split("\n");
 
-    for(const line of lines) {
-        const parsed = parseLine(line);
-
-        if(parsed) {
-            currentRules.push(parsed);
+    if(filterContent) {
+        const lines = filterContent.split("\n");
+    
+        for(const line of lines) {
+            const parsed = parseLine(line);
+    
+            if(parsed) {
+                currentRules.push(parsed);
+            }
         }
     }
 

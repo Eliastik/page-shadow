@@ -26,7 +26,7 @@ import "codemirror/mode/css/css.js";
 import "codemirror/addon/display/autorefresh.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, extensionVersion, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, deletePreset, customFilterGuideURL, getPresetData } from "./util.js";
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, extensionVersion, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, deletePreset, customFilterGuideURL, getPresetData, settingsToSavePresets, colorTemperaturesAvailable } from "./util.js";
 import { setSettingItem, setFirstSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import browser from "webextension-polyfill";
@@ -450,6 +450,51 @@ function displayInfosFilter(idFilter) {
     });
 }
 
+async function displayPresetInfos(nb) {
+    $("#presetInfos").modal("show");
+
+    const presetData = await getPresetData(nb);
+
+    if(presetData) {
+        const modalBody = document.querySelector("#presetInfos .modal-body");
+
+        for(const setting of settingsToSavePresets) {
+            if(setting == "colorInvert") continue;
+            const row = document.createElement("div");
+            row.setAttribute("class", "row border-bottom");
+
+            const label = document.createElement("label");
+            label.setAttribute("class", "col-lg-4 col-sm-4 control-label bold");
+            label.textContent = i18next.t("modal.presets." + setting);
+
+            const divCol = document.createElement("div");
+            divCol.setAttribute("class", "col-lg-8 col-sm-8");
+            const span = document.createElement("span");
+
+            const value = presetData[setting];
+
+            if(value == "true" || value == "false") {
+                span.textContent = value == "true" ? i18next.t("modal.presets.enabled") : i18next.t("modal.presets.disabled");
+            } else if(setting == "pourcentageLum") {
+                span.textContent = value + "%";
+            } else if(setting == "theme" && value.startsWith("custom")) {
+                span.textContent = i18next.t("modal.presets.customTheme", { count: value.split("custom")[1] });
+            } else if(setting == "theme") {
+                span.textContent = i18next.t("modal.presets.themeNumber", { count: value });
+            } else if(setting == "colorTemp") {
+                span.textContent = colorTemperaturesAvailable[presetData[setting] - 1] + "K";
+            } else {
+                span.textContent = presetData[setting];
+            }
+
+            row.appendChild(label);
+            divCol.appendChild(span);
+            row.appendChild(divCol);
+            modalBody.appendChild(row);
+        }
+    }
+}
+
 function displayFilterEdit() {
     window.codeMirrorEditFilter.getDoc().setValue("");
     $("#editFilter").modal("show");
@@ -794,6 +839,7 @@ function displayPresetSettings(id) {
         $("#savePresetWebsite").val("");
         $("#checkSaveNewSettingsPreset").prop("checked", false);
         $("#checkSaveNewSettingsPreset").removeAttr("disabled");
+        $("#presetInfosBtn").removeAttr("disabled");
 
         if(data && data != "error" && Object.keys(data).length > 0) {
             if(data.name) $("#savePresetTitle").val(data.name);
@@ -802,6 +848,7 @@ function displayPresetSettings(id) {
         } else {
             $("#checkSaveNewSettingsPreset").prop("checked", true);
             $("#checkSaveNewSettingsPreset").attr("disabled", "disabled");
+            $("#presetInfosBtn").attr("disabled", "disabled");
             $("#presetCreateEditBtn").text(i18next.t("modal.create"));
         }
     });
@@ -1153,6 +1200,14 @@ $(document).ready(() => {
     $("#editFilter").on("hidden.bs.modal", () => {
         $("#filters").modal("show");
     });
+    
+    $("#presetInfos").on("hidden.bs.modal", () => {
+        $("#archive").modal("show");
+    });
+    
+    $("#presetInfos").on("show.bs.modal", () => {
+        $("#archive").modal("hide");
+    });
 
     $("#enableFilterAutoUpdate").on("change", () => {
         $("#enableFilterAutoUpdate").attr("disabled", "disabled");
@@ -1179,6 +1234,10 @@ $(document).ready(() => {
 
     $("#customFilterCancel").click(() => {
         displayFilterEdit();
+    });
+
+    $("#presetInfosBtn").click(() => {
+        displayPresetInfos($("#savePresetSelect").val());
     });
 
     $("#customFilterGuide").click(() => {

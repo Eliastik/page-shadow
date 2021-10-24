@@ -40,8 +40,8 @@
             "excluded2": "exclue",
             "bloqued": "bloquera",
             "detected": "détecté",
-            "detected2": "detectée",
-            "detected3": "detectera"
+            "detected2": "détectée",
+            "detected3": "détectera"
         },
         "about": {
             "title": "À propos de Page Shadow",
@@ -175,6 +175,28 @@
             "dateCloudLastArchive": "le {{date}} à {{hour}} avec l'appareil {{device}}",
             "savePresetWebsite": "Liste des sites/pages où activer automatiquement le pré-réglage :",
             "checkSaveNewSettingsPreset": "Sauvegarder les nouveaux réglages"
+        },
+        "presets": {
+            "pageShadowEnabled": "Augmenter le contraste",
+            "theme": "Thème",
+            "pageLumEnabled": "Baisser la luminosité",
+            "pourcentageLum": "Pourcentage de baisse de la luminosité",
+            "nightModeEnabled": "Mode nuit",
+            "liveSettings": "Application en temps réel des modifications des paramètres",
+            "colorTemp": "Température de couleur du mode nuit",
+            "colorInvert": "Inverser les couleurs",
+            "invertPageColors": "Inverser les couleurs",
+            "invertImageColors": "Inverser les couleurs des images",
+            "invertEntirePage": "Inverser les couleurs de la page entière",
+            "invertVideoColors": "Inverser les couleurs des vidéos",
+            "invertBgColor": "Inverser les couleurs des images d'arrière-plan",
+            "autoEnable": "Activation automatique selon l'heure",
+            "disableImgBgColor": "Désactiver la coloration de l'arrière-plan des images",
+            "presetInfosLabel": "Détails du pré-réglage",
+            "enabled": "Activé",
+            "disabled": "Désactivé",
+            "customTheme": "Thème personnalisé n°{{count}}",
+            "themeNumber": "Thème n°{{count}}"
         },
         "saved": {
             "title": "Information",

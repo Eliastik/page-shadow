@@ -177,6 +177,28 @@
             "savePresetWebsite": "List of website/pages where to automatically enable the preset:",
             "checkSaveNewSettingsPreset": "Save the new settings"
         },
+        "presets": {
+            "pageShadowEnabled": "Increase contrast",
+            "theme": "Theme",
+            "pageLumEnabled": "Decrease page brightness",
+            "pourcentageLum": "Percentage of brightness decrease",
+            "nightModeEnabled": "Night mode",
+            "liveSettings": "Real time application of setting changes",
+            "colorTemp": "Night mode color temperature",
+            "colorInvert": "Invert colors",
+            "invertPageColors": "Invert colors",
+            "invertImageColors": "Invert images colors",
+            "invertEntirePage": "Invert entire page colors",
+            "invertVideoColors": "Invert videos colors",
+            "invertBgColor": "Invert background images colors",
+            "autoEnable": "Automatic activation according to time",
+            "disableImgBgColor": "Disable background coloring of images",
+            "presetInfosLabel": "Preset details",
+            "enabled": "Enabled",
+            "disabled": "Disabled",
+            "customTheme": "Custom theme {{count}}",
+            "themeNumber": "Theme {{count}}"
+        },
         "saved": {
             "title": "Information",
             "message": "Settings saved!"

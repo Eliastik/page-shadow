@@ -379,6 +379,12 @@ div.navbar-right {
 #presetAutoEnabledForThisWebsite {
     display: none;
 }
+.border-bottom:not(:last-child) {
+    border-bottom: 1px solid lightgray;
+}
+a.btn[disabled] {
+    pointer-events: none;
+}
 @-webkit-keyframes fadein {
     from { bottom: 0; opacity: 0; }
     to { bottom: 30px; opacity: 0.9; }
