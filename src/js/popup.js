@@ -46,8 +46,8 @@ async function translateContent() {
     $(".modal").localize();
     $("footer").localize();
     checkContrastMode();
-    checkPresetAutoEnabled(await getCurrentURL());
     await loadPresetSelect("loadPresetSelect", i18next);
+    checkPresetAutoEnabled(await getCurrentURL());
     $("#loadPresetSelect").val(selectedPreset).change();
     $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));
     i18nextLoaded = true;
