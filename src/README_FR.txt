@@ -1,8 +1,8 @@
-# Page Shadow :
+# Page Shadow
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.7 (16/08/2019)
+* Version actuelle : 2.8 (24/10/2021)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -21,6 +21,35 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.8 (24/10/2021) :
+* Ajout de la fonctionnalité Filtres, accessible dans les Paramètres avancés. Les filtres permettent, à partir de règles, d'améliorer l'affichage des sites web lorsque les options suivantes sont activées : Augmenter le contraste ou Inverser les couleurs. Cette avancée améliore considérablement l'affichage de certains sites web lorsque Page Shadow est activé. Cette fonctionnalité permet également d'améliorer les performances de Page Shadow sur certains sites web. Ces filtres sont quotidiennement mis à jour à partir de sources Internet. Les listes fournies par défaut sont téléchargées depuis le site web eliastiksofts.com (site web du développeur de l'extension). Il est également possible de définir des règles personnalisées. Vous n'avez rien à faire de plus de votre côté pour profiter de la fonctionnalité, elle est opérationnelle dès l'installation/mise à jour de l'extension. Les filtres sont mis à jour automatiquement ;
+* Ajout de la possibilité de définir une liste de sites/pages où activer automatiquement un pré-réglage : il est possible de définir cette liste à l'aide de cases à cocher disponibles dans le menu de l'extension, ou en définissant une liste manuellement (la syntaxe est la même que la fonctionnalité permettant de désactiver un site/une page, et supporte les expressions régulières et les jokers) ;
+* Il est désormais possible d'appliquer les pré-réglages à l'aide de raccourcis clavier (à paramétrer manuellement) ;
+* Le nombre maximum de pré-réglages enregistrables est passé de 5 à 10 ;
+* Il est désormais possible de voir les paramètres stockés dans les pré-réglages dans les Paramètres avancés ;
+* Affichage d'une notification lorsque l'extension a été mise à jour ;
+* Corrections de nombreux bugs, amélioration des performances et autres ajustements :
+    - Correction de la fonctionnalité Inverser les couleurs des pages entières : sur certains sites, un fond blanc pouvait être visible lorsque la page était défilée ;
+    - Correction de la détection de la désactivation/activation d'une page web sur certains sites basés sur le modèle SPA (Single Page Application) ;
+    - L'extension est désormais opérationnelle pour les cadres (iframes). Les cadres utilisent les paramètres du site web parent ;
+    - Correction de l'application de la traduction de certains éléments/textes qui n'était pas opérationnelle dans certains cas ;
+    - Correction de l'archivage des paramètres avec Firefox : le nom du fichier téléchargé est désormais correct (extension .json) ;
+    - Sur Firefox, le lien des Paramètres avancés Gérer les raccourcis clavier renvoi vers l'aide du site de Firefox ;
+    - Correction de l'icône de statut représentant si Page Shadow est activé pour la page actuelle lorsque plusieurs fenêtres sont ouvertes ;
+    - Correction du menu clic-droit lorsque plusieurs fenêtres sont ouvertes ;
+    - Correction de la fonction Augmenter le contraste pour les sites web utilisant la fonctionnalité Shadow Roots (en lien avec la fonctionnalité Filtres) ;
+    - Meilleure détection des images d'arrière-plan ;
+    - Optimisation des performances de la détection des images d'arrière-plan ;
+    - Optimisation de la taille de l'extension. La version 2.8 est plus légère que la version 2.7 malgré les nouvelles fonctionnalités ajoutées.
+* Améliorations techniques :
+    - Migration de l'extension vers JavaScript ES6, utilisation de Babel et Webpack. Optimisation de la taille des scripts JavaScript ;
+    - Utilisation de l'API browser au lieu de l'API chrome, utilisation de webextension-polyfill ;
+    - Utilisation des Promise au lieu de callbacks ;
+    - Utilisation de npm pour gérer la plupart des dépendances ;
+    - Mise à jour des dépendances ;
+    - Ajout de la permission unlimitedStorage ;
+    - Nettoyage du code.
 
 ### Version 2.7 (16/08/2019) :
 * Ajout de la possibilité de créer plusieurs thèmes personnalisés au lieu d'un seul auparavant ;
@@ -198,7 +227,7 @@ npm install
 Puis pour compiler :
 
 * Mode dev (pas de compression): `gulp` ou `gulp build-dev`
-* Mode prod (compression): `gulp build-prod` ou `gulp build-prod-no-js-compress` (compresse uniquement les fichiers css) or `build-prod-no-css-compress` (compresse uniquement les fichiers js)
+* Mode prod (compression): `gulp build-prod` ou `build-prod-no-css-compress` (compresse uniquement les fichiers js)
 
 Les fichiers d'extension compilés seront créés dans le dossier "build".
 
@@ -213,7 +242,7 @@ Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `gul
 
 ### Licence :
 
-Copyright (C) 2015-2019 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
 
 Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le
 modifier suivant les termes de la GNU General Public License telle que
@@ -232,11 +261,7 @@ que ce programme ; si ce n'est pas le cas, consultez <http://www.gnu.org/license
 
 - Source Sans Pro (version 2.020), SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL ) : https://github.com/adobe-fonts/source-sans-pro/blob/master/LICENSE.txt
 - Font Awesome, SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL )
-- Jquery, MIT license ( https://tldrlegal.com/license/mit-license ) ;
 - Bootstrap (CSS et Javascript), MIT license ( https://github.com/twbs/bootstrap/blob/v4-dev/LICENSE ) ;
     - Thème : Paper par Bootswatch (modifié) - https://bootswatch.com/paper/
-- i18next, MIT license ( https://github.com/i18next/i18next/blob/master/LICENSE ) ;
-- Bootstrap Slider, MIT license ( https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md ) ;
-- Colpick, MIT license/GPL 2.0 ( https://github.com/mrgrain/colpick/blob/master/LICENSE ) ;
-- CodeMirror, MIT license ( https://github.com/codemirror/CodeMirror/blob/master/LICENSE ) ;
 - Cette extension utilise une photo venant de ce site : http://littlevisuals.co , domaine public ( https://creativecommons.org/publicdomain/zero/1.0/ ).
+- Voir les dépendances dans le fichier package.json

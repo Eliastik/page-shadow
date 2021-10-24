@@ -20,8 +20,8 @@ import { setSettingItem } from "./storage.js";
 import browser from "webextension-polyfill";
 
 // Global configuration of the extension
-const extensionVersion = "2.7";
-const versionDate = new Date(2019, 7, 16);
+const extensionVersion = "2.8";
+const versionDate = new Date(2021, 9, 24);
 const nbThemes = 15; // nb of themes for the function Increase the contrast (used globally in the extension)
 const colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"]; // color temperatures available for the function Night Mode (used globally in the extension)
 const minBrightnessPercentage = 0; // the minimum percentage of brightness

@@ -1,10 +1,10 @@
 # Page Shadow :
 ## English :
 
-![Screenshot](screen.png)
+<img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen.png" width="300" alt="Page Shadow" />
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.7 (16/08/2019)
+* Latest version: 2.8 (10/24/2021)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -23,6 +23,35 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.8 (10/24/2021) :
+* Added the Filters feature, accessible in Advanced Settings. Filters allow, based on rules, to improve the display of websites when the following options are enabled: Increase page contrast or Invert colors. This advance significantly improves the display of some websites when Page Shadow is enabled. This feature can also improve the performance of Page Shadow on some websites. These filters are updated daily from Internet sources. The lists provided by default are downloaded from the eliastiksofts.com website (the extension developer's website). It's also possible to define custom rules. You don't have to do anything more on your side to take advantage of the feature, it's operational as soon as the extension is installed/updated. Filters are updated automatically;
+* Addition of the possibility of defining a list of sites/pages where to automatically enable a preset: it's possible to define this list using checkboxes available in the extension menu, or by defining a list manually (the syntax is the same as the feature to disable a website/a page, and supports regular expressions and wildcards);
+* It's now possible to apply the presets using keyboard shortcuts (to be configured manually);
+* The maximum number of storable presets has been increased from 5 to 10;
+* It's now possible to see the settings stored in the presets in the Advanced settings;
+* A notification is displayed when the extension has been updated;
+* Many bug fixes, performance improvements and other minor fixes:
+    - Fixed the function Invert the colors of entire pages: on some sites, a white background could be visible when the page was scrolled;
+    - Fixed the detection of the disabling/activation of a web page on certain sites based on the SPA (Single Page Application) model;
+    - The extension is now operational for frames (iframes). Frames use the settings from the parent website;
+    - Fixed the application of the translation of certain elements/texts which was not operational in certain cases;
+    - Fixed the archiving of the settings with Firefox: the name of the downloaded file is now correct (.json extension);
+    - On Firefox, the link Manage keyboard shortcuts in Advanced settings links to an help page on the Firefox website;
+    - Fixed the status icon representing if Page Shadow is enabled for the current page when multiple windows are open;
+    - Fixed the right-click menu when several windows are open;
+    - Fixed the Increase page contrast function for websites using the Shadow Roots feature (in connection with the Filters feature);
+    - Better detection of background images;
+    - Performance optimization of background image detection;
+    - Optimization of the extension size. Version 2.8 is lighter than version 2.7 despite the new features added.
+* Technical improvements:
+    - Migration of the extension to JavaScript ES6, use of Babel and Webpack. Optimization of the size of JavaScript scripts;
+    - Use of browser API instead of chrome API, use of webextension-polyfill;
+    - Use of Promises instead of callbacks;
+    - Use of npm to manage most of the dependencies;
+    - Updated dependencies;
+    - Added unlimitedStorage permission;
+    - Code cleaning.
 
 ### Version 2.7 (16/08/2019) :
 * Added the ability to create multiple custom themes instead of just one before;
@@ -214,7 +243,7 @@ Then if you want to clean the build directory, run the command `gulp clean-build
 
 ### Licence :
 
-Copyright (C) 2015-2019 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -233,21 +262,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 - Source Sans Pro (version 2.020), SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL ) : https://github.com/adobe-fonts/source-sans-pro/blob/master/LICENSE.txt
 - Font Awesome, SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL )
-- Jquery, MIT license ( https://tldrlegal.com/license/mit-license ) ;
 - Bootstrap (CSS and Javascript), MIT license ( https://github.com/twbs/bootstrap/blob/v4-dev/LICENSE ) ;
     - Theme: Paper by Bootswatch (modified) - https://bootswatch.com/paper/
-- i18next, MIT license ( https://github.com/i18next/i18next/blob/master/LICENSE ) ;
-- Bootstrap Slider, MIT license ( https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md ) ;
-- Colpick, MIT license/GPL 2.0 ( https://github.com/mrgrain/colpick/blob/master/LICENSE ) ;
-- CodeMirror, MIT license ( https://github.com/codemirror/CodeMirror/blob/master/LICENSE ) ;
 - This extension uses a picture from this site: http://littlevisuals.co , Public domain ( https://creativecommons.org/publicdomain/zero/1.0/ ).
+- See package.json dependencies
 
 ## Français :
 
-![Screenshot](screen_fr.png)
+<img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen_fr.png" width="300" alt="Page Shadow" />
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.7 (16/08/2019)
+* Version actuelle : 2.8 (24/10/2021)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -266,6 +291,35 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.8 (24/10/2021) :
+* Ajout de la fonctionnalité Filtres, accessible dans les Paramètres avancés. Les filtres permettent, à partir de règles, d'améliorer l'affichage des sites web lorsque les options suivantes sont activées : Augmenter le contraste ou Inverser les couleurs. Cette avancée améliore considérablement l'affichage de certains sites web lorsque Page Shadow est activé. Cette fonctionnalité permet également d'améliorer les performances de Page Shadow sur certains sites web. Ces filtres sont quotidiennement mis à jour à partir de sources Internet. Les listes fournies par défaut sont téléchargées depuis le site web eliastiksofts.com (site web du développeur de l'extension). Il est également possible de définir des règles personnalisées. Vous n'avez rien à faire de plus de votre côté pour profiter de la fonctionnalité, elle est opérationnelle dès l'installation/mise à jour de l'extension. Les filtres sont mis à jour automatiquement ;
+* Ajout de la possibilité de définir une liste de sites/pages où activer automatiquement un pré-réglage : il est possible de définir cette liste à l'aide de cases à cocher disponibles dans le menu de l'extension, ou en définissant une liste manuellement (la syntaxe est la même que la fonctionnalité permettant de désactiver un site/une page, et supporte les expressions régulières et les jokers) ;
+* Il est désormais possible d'appliquer les pré-réglages à l'aide de raccourcis clavier (à paramétrer manuellement) ;
+* Le nombre maximum de pré-réglages enregistrables est passé de 5 à 10 ;
+* Il est désormais possible de voir les paramètres stockés dans les pré-réglages dans les Paramètres avancés ;
+* Affichage d'une notification lorsque l'extension a été mise à jour ;
+* Corrections de nombreux bugs, amélioration des performances et autres ajustements :
+    - Correction de la fonctionnalité Inverser les couleurs des pages entières : sur certains sites, un fond blanc pouvait être visible lorsque la page était défilée ;
+    - Correction de la détection de la désactivation/activation d'une page web sur certains sites basés sur le modèle SPA (Single Page Application) ;
+    - L'extension est désormais opérationnelle pour les cadres (iframes). Les cadres utilisent les paramètres du site web parent ;
+    - Correction de l'application de la traduction de certains éléments/textes qui n'était pas opérationnelle dans certains cas ;
+    - Correction de l'archivage des paramètres avec Firefox : le nom du fichier téléchargé est désormais correct (extension .json) ;
+    - Sur Firefox, le lien des Paramètres avancés Gérer les raccourcis clavier renvoi vers l'aide du site de Firefox ;
+    - Correction de l'icône de statut représentant si Page Shadow est activé pour la page actuelle lorsque plusieurs fenêtres sont ouvertes ;
+    - Correction du menu clic-droit lorsque plusieurs fenêtres sont ouvertes ;
+    - Correction de la fonction Augmenter le contraste pour les sites web utilisant la fonctionnalité Shadow Roots (en lien avec la fonctionnalité Filtres) ;
+    - Meilleure détection des images d'arrière-plan ;
+    - Optimisation des performances de la détection des images d'arrière-plan ;
+    - Optimisation de la taille de l'extension. La version 2.8 est plus légère que la version 2.7 malgré les nouvelles fonctionnalités ajoutées.
+* Améliorations techniques :
+    - Migration de l'extension vers JavaScript ES6, utilisation de Babel et Webpack. Optimisation de la taille des scripts JavaScript ;
+    - Utilisation de l'API browser au lieu de l'API chrome, utilisation de webextension-polyfill ;
+    - Utilisation des Promise au lieu de callbacks ;
+    - Utilisation de npm pour gérer la plupart des dépendances ;
+    - Mise à jour des dépendances ;
+    - Ajout de la permission unlimitedStorage ;
+    - Nettoyage du code.
 
 ### Version 2.7 (16/08/2019) :
 * Ajout de la possibilité de créer plusieurs thèmes personnalisés au lieu d'un seul auparavant ;
@@ -458,7 +512,7 @@ Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `gul
 
 ### Licence :
 
-Copyright (C) 2015-2019 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
 
 Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le
 modifier suivant les termes de la GNU General Public License telle que
@@ -477,11 +531,7 @@ que ce programme ; si ce n'est pas le cas, consultez <http://www.gnu.org/license
 
 - Source Sans Pro (version 2.020), SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL ) : https://github.com/adobe-fonts/source-sans-pro/blob/master/LICENSE.txt
 - Font Awesome, SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL )
-- Jquery, MIT license ( https://tldrlegal.com/license/mit-license ) ;
 - Bootstrap (CSS et Javascript), MIT license ( https://github.com/twbs/bootstrap/blob/v4-dev/LICENSE ) ;
     - Thème : Paper par Bootswatch (modifié) - https://bootswatch.com/paper/
-- i18next, MIT license ( https://github.com/i18next/i18next/blob/master/LICENSE ) ;
-- Bootstrap Slider, MIT license ( https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md ) ;
-- Colpick, MIT license/GPL 2.0 ( https://github.com/mrgrain/colpick/blob/master/LICENSE ) ;
-- CodeMirror, MIT license ( https://github.com/codemirror/CodeMirror/blob/master/LICENSE ) ;
 - Cette extension utilise une photo venant de ce site : http://littlevisuals.co , domaine public ( https://creativecommons.org/publicdomain/zero/1.0/ ).
+- Voir les dépendances dans le fichier package.json

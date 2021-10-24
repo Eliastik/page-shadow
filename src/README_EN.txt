@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.7 (16/08/2019)
+* Latest version: 2.8 (10/24/2021)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -21,6 +21,35 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.8 (10/24/2021) :
+* Added the Filters feature, accessible in Advanced Settings. Filters allow, based on rules, to improve the display of websites when the following options are enabled: Increase page contrast or Invert colors. This advance significantly improves the display of some websites when Page Shadow is enabled. This feature can also improve the performance of Page Shadow on some websites. These filters are updated daily from Internet sources. The lists provided by default are downloaded from the eliastiksofts.com website (the extension developer's website). It's also possible to define custom rules. You don't have to do anything more on your side to take advantage of the feature, it's operational as soon as the extension is installed/updated. Filters are updated automatically;
+* Addition of the possibility of defining a list of sites/pages where to automatically enable a preset: it's possible to define this list using checkboxes available in the extension menu, or by defining a list manually (the syntax is the same as the feature to disable a website/a page, and supports regular expressions and wildcards);
+* It's now possible to apply the presets using keyboard shortcuts (to be configured manually);
+* The maximum number of storable presets has been increased from 5 to 10;
+* It's now possible to see the settings stored in the presets in the Advanced settings;
+* A notification is displayed when the extension has been updated;
+* Many bug fixes, performance improvements and other minor fixes:
+    - Fixed the function Invert the colors of entire pages: on some sites, a white background could be visible when the page was scrolled;
+    - Fixed the detection of the disabling/activation of a web page on certain sites based on the SPA (Single Page Application) model;
+    - The extension is now operational for frames (iframes). Frames use the settings from the parent website;
+    - Fixed the application of the translation of certain elements/texts which was not operational in certain cases;
+    - Fixed the archiving of the settings with Firefox: the name of the downloaded file is now correct (.json extension);
+    - On Firefox, the link Manage keyboard shortcuts in Advanced settings links to an help page on the Firefox website;
+    - Fixed the status icon representing if Page Shadow is enabled for the current page when multiple windows are open;
+    - Fixed the right-click menu when several windows are open;
+    - Fixed the Increase page contrast function for websites using the Shadow Roots feature (in connection with the Filters feature);
+    - Better detection of background images;
+    - Performance optimization of background image detection;
+    - Optimization of the extension size. Version 2.8 is lighter than version 2.7 despite the new features added.
+* Technical improvements:
+    - Migration of the extension to JavaScript ES6, use of Babel and Webpack. Optimization of the size of JavaScript scripts;
+    - Use of browser API instead of chrome API, use of webextension-polyfill;
+    - Use of Promises instead of callbacks;
+    - Use of npm to manage most of the dependencies;
+    - Updated dependencies;
+    - Added unlimitedStorage permission;
+    - Code cleaning.
 
 ### Version 2.7 (16/08/2019) :
 * Added the ability to create multiple custom themes instead of just one before;
@@ -197,7 +226,7 @@ npm install
 Then to compile:
 
 * Dev mode (no compression): `gulp` or `gulp build-dev`
-* Prod mode (compression): `gulp build-prod` or `gulp build-prod-no-js-compress` (only compress css files) or `build-prod-no-css-compress` (only compress js files)
+* Prod mode (compression): `gulp build-prod` or `build-prod-no-css-compress` (only compress js files)
 
 The extension files compiled will be created in the sub-directory "build".
 
@@ -212,7 +241,7 @@ Then if you want to clean the build directory, run the command `gulp clean-build
 
 ### Licence :
 
-Copyright (C) 2015-2019 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -231,11 +260,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 - Source Sans Pro (version 2.020), SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL ) : https://github.com/adobe-fonts/source-sans-pro/blob/master/LICENSE.txt
 - Font Awesome, SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL )
-- Jquery, MIT license ( https://tldrlegal.com/license/mit-license ) ;
 - Bootstrap (CSS and Javascript), MIT license ( https://github.com/twbs/bootstrap/blob/v4-dev/LICENSE ) ;
     - Theme: Paper by Bootswatch (modified) - https://bootswatch.com/paper/
-- i18next, MIT license ( https://github.com/i18next/i18next/blob/master/LICENSE ) ;
-- Bootstrap Slider, MIT license ( https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md ) ;
-- Colpick, MIT license/GPL 2.0 ( https://github.com/mrgrain/colpick/blob/master/LICENSE ) ;
-- CodeMirror, MIT license ( https://github.com/codemirror/CodeMirror/blob/master/LICENSE ) ;
 - This extension uses a picture from this site: http://littlevisuals.co , Public domain ( https://creativecommons.org/publicdomain/zero/1.0/ ).
+- See package.json dependencies
