@@ -104,14 +104,14 @@ function resetSettings() {
     $("i[data-toggle=\"tooltip\"]").tooltip("hide");
 
     browser.storage.local.clear().then(() => {
-        setFirstSettings().then(() => {
+        setFirstSettings().then(async() => {
             $("#textareaAssomPage").val("");
             $("#checkWhiteList").prop("checked", false);
             init_i18next("options").then(() => translateContent());
             $("#reset").modal("show");
-            loadPresetSelect("loadPresetSelect", i18next);
-            loadPresetSelect("savePresetSelect", i18next);
-            loadPresetSelect("deletePresetSelect", i18next);
+            await loadPresetSelect("loadPresetSelect", i18next);
+            await loadPresetSelect("savePresetSelect", i18next);
+            await loadPresetSelect("deletePresetSelect", i18next);
             localStorage.clear();
         });
     });

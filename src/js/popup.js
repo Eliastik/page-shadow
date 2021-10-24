@@ -47,7 +47,7 @@ async function translateContent() {
     $("footer").localize();
     checkContrastMode();
     checkPresetAutoEnabled(await getCurrentURL());
-    loadPresetSelect("loadPresetSelect", i18next);
+    await loadPresetSelect("loadPresetSelect", i18next);
     $("#loadPresetSelect").val(selectedPreset).change();
     $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));
     i18nextLoaded = true;
@@ -859,7 +859,7 @@ $(document).ready(() => {
     });
 
     function displaySettings() {
-        browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad"]).then(result => {
+        browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad"]).then(async(result) => {
             checkContrastMode();
             checkColorInvert();
             checkLiveSettings();
@@ -882,7 +882,7 @@ $(document).ready(() => {
             }
 
             if(i18nextLoaded) {
-                loadPresetSelect("loadPresetSelect", i18next);
+                await loadPresetSelect("loadPresetSelect", i18next);
                 $("#loadPresetSelect").val(selectedPreset).change();
             }
 

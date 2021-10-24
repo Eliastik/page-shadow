@@ -42,10 +42,10 @@ const defaultMinuteDisable = "0";
 const defaultHourDisableFormat = "AM";
 const settingNames = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "sitesInterditPageShadow", "liveSettings", "whiteList", "colorTemp", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "globallyEnable", "customThemeInfoDisable", "autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat", "disableImgBgColor", "defaultLoad", "presets", "customThemes", "filtersSettings", "customFilter", "updateNotification"];
 const settingsToSavePresets = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "liveSettings", "colorTemp", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "autoEnable", "disableImgBgColor"];
-const nbPresets = 5;
-const defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
+const nbPresets = 10;
+const defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}};
 const nbCustomThemesSlots = 5;
-const defaultCustomThemes = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
+const defaultCustomThemes = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}};
 const defaultFilters = {
     "filters": [
         {
@@ -547,54 +547,37 @@ function downloadData(data, name) {
     a.dispatchEvent(new MouseEvent("click"));
 }
 
-function loadPresetSelect(selectId, i18next) {
+async function loadPresetSelect(selectId, i18next) {
     let presetSelected = document.getElementById(selectId).value;
 
     if(!presetSelected) {
         presetSelected = 1;
     }
 
-    browser.storage.local.get("presets").then(data => {
-        try {
-            let presets;
-            if(data.presets == null || typeof(data.presets) == "undefined") {
-                setSettingItem("presets", defaultPresets);
-                presets = defaultPresets;
+    document.getElementById(selectId).innerHTML = "";
+
+    let optionTitle = "";
+
+    for(let i = 0; i < nbPresets; i++) {
+        const preset = await getPresetData(i + 1);
+
+        if(!preset || !Object.prototype.hasOwnProperty.call(preset, "name")) {
+            optionTitle = optionTitle + "<option value=\"" + (i + 1) + "\">" + i18next.t("modal.archive.presetTitle") + (i + 1) + " : " + i18next.t("modal.archive.presetEmpty") + "</option>";
+        } else {
+            if(preset["name"].trim() == "") {
+                optionTitle = optionTitle + "<option value=\"" + (i + 1) + "\">" + i18next.t("modal.archive.presetTitle") + (i + 1) + " : " + i18next.t("modal.archive.presetTitleEmpty") + "</option>";
             } else {
-                presets = data.presets;
+                const element = document.createElement("div");
+                element.textContent = preset["name"].substring(0, 50);
+                optionTitle = optionTitle + "<option value=\"" + (i + 1) + "\">" + i18next.t("modal.archive.presetTitle") + (i + 1)  + " : " + element.innerHTML + "</option>";
             }
-
-            document.getElementById(selectId).innerHTML = "";
-
-            let nbValue = 1;
-            let optionTitle = "";
-
-            for(const name in presets) {
-                if(Object.prototype.hasOwnProperty.call(presets, name)) {
-                    if(!Object.prototype.hasOwnProperty.call(presets[name], "name")) {
-                        optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue + " : " + i18next.t("modal.archive.presetEmpty") + "</option>";
-                    } else {
-                        if(presets[name]["name"].trim() == "") {
-                            optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue + " : " + i18next.t("modal.archive.presetTitleEmpty") + "</option>";
-                        } else {
-                            const element = document.createElement("div");
-                            element.textContent = presets[name]["name"].substring(0, 50);
-                            optionTitle = optionTitle + "<option value=\"" + nbValue + "\">" + i18next.t("modal.archive.presetTitle") + nbValue  + " : " + element.innerHTML + "</option>";
-                        }
-                    }
-
-                    nbValue++;
-                }
-            }
-
-            document.getElementById(selectId).innerHTML = optionTitle;
-            document.getElementById(selectId).value = presetSelected;
-            document.getElementById(selectId).dispatchEvent(new Event("change"));
-            document.getElementById(selectId).onchange();
-        } catch(e) {
-            return false;
         }
-    });
+    }
+
+    document.getElementById(selectId).innerHTML = optionTitle;
+    document.getElementById(selectId).value = presetSelected;
+    document.getElementById(selectId).dispatchEvent(new Event("change"));
+    if(document.getElementById(selectId).onchange) document.getElementById(selectId).onchange();
 }
 
 function presetsEnabled() {
@@ -719,8 +702,9 @@ function savePreset(nb, name, websiteListToApply, saveNewSettings) {
 
                     const namePreset = nb;
                     const preset = presets;
-                    preset[namePreset]["name"] = name.substring(0, 50);
-                    preset[namePreset]["websiteListToApply"] = websiteListToApply;
+                    if(!preset[namePreset]) preset[namePreset] = {};
+                    preset[namePreset].name = name.substring(0, 50);
+                    preset[namePreset].websiteListToApply = websiteListToApply;
 
                     if(saveNewSettings) {
                         for(const key in data) {
@@ -782,24 +766,27 @@ async function presetsEnabledForWebsite(url) {
     if(url && url.trim() != "") {
         for(let i = 1; i <= nbPresets; i++) {
             const presetData = await getPresetData(i);
-            const websiteSettings = presetData.websiteListToApply;
-            let websiteList = [];
 
-            if(websiteSettings !== undefined && websiteSettings !== "") {
-                websiteList = websiteSettings.trim().split("\n");
-            }
-
-            const websuteUrl_tmp = new URL(url);
-            const domain = websuteUrl_tmp.hostname;
-            const autoEnabledWebsite = in_array_website(domain, websiteList);
-            const autoEnabledPage = in_array_website(url, websiteList);
-
-            if(autoEnabledWebsite || autoEnabledPage) {
-                presetListEnabled.push({
-                    presetNb: i,
-                    autoEnabledWebsite: autoEnabledWebsite,
-                    autoEnabledPage: autoEnabledPage
-                });
+            if(presetData) {
+                const websiteSettings = presetData.websiteListToApply;
+                let websiteList = [];
+    
+                if(websiteSettings !== undefined && websiteSettings !== "") {
+                    websiteList = websiteSettings.trim().split("\n");
+                }
+    
+                const websuteUrl_tmp = new URL(url);
+                const domain = websuteUrl_tmp.hostname;
+                const autoEnabledWebsite = in_array_website(domain, websiteList);
+                const autoEnabledPage = in_array_website(url, websiteList);
+    
+                if(autoEnabledWebsite || autoEnabledPage) {
+                    presetListEnabled.push({
+                        presetNb: i,
+                        autoEnabledWebsite: autoEnabledWebsite,
+                        autoEnabledPage: autoEnabledPage
+                    });
+                }
             }
         }
     }
