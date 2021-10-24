@@ -201,6 +201,13 @@ hr.nmt {
 .btn, button {
     margin-bottom: 8px !important;
 }
+.list-inline-item[disabled] a {
+    pointer-events: none !important;
+    color: gray !important;
+}
+.list-inline-item[disabled] {
+    cursor: not-allowed;
+}
 .colorpicker {
     background-image: url(../img/points.png);
     background-position: center center;

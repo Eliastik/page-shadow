@@ -21,7 +21,7 @@ import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
-import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, presetsEnabledForWebsite, extensionVersion, versionDate, disableEnablePreset } from "./util.js";
+import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, presetsEnabledForWebsite, extensionVersion, versionDate, disableEnablePreset, getPresetData } from "./util.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import browser from "webextension-polyfill";
@@ -245,11 +245,24 @@ $(document).ready(() => {
     async function checkAutoEnablePreset(nb) {
         const url = await getCurrentURL();
         const presetsAutoEnabled = await presetsEnabledForWebsite(url);
+        const currentPreset = await getPresetData(nb);
 
         $("#enableWebsitePreset-li").hide();
         $("#disableWebsitePreset-li").show();
         $("#enableWebpagePreset-li").hide();
         $("#disableWebpagePreset-li").show();
+
+        if(!currentPreset || Object.keys(currentPreset).length <= 0) {
+            $("#enableWebsitePreset-li").attr("disabled", "disabled");
+            $("#disableWebsitePreset-li").attr("disabled", "disabled");
+            $("#enableWebpagePreset-li").attr("disabled", "disabled");
+            $("#disableWebpagePreset-li").attr("disabled", "disabled");
+        } else {
+            $("#enableWebsitePreset-li").removeAttr("disabled");
+            $("#disableWebsitePreset-li").removeAttr("disabled");
+            $("#enableWebpagePreset-li").removeAttr("disabled");
+            $("#disableWebpagePreset-li").removeAttr("disabled");
+        }
 
         if(presetsAutoEnabled && presetsAutoEnabled.length > 0) {
             for(const presetEnabled of presetsAutoEnabled) {
