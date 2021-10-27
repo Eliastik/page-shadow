@@ -6,7 +6,7 @@ An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksoft
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
-This is the source code for the extension Page Shadow, compatible with Chrome/Chromium, Firefox, Opera and Microsoft Edge. This extension uses the WebExtensions technology via the Chrome API (more infos : https://developer.mozilla.org/fr/Add-ons/WebExtensions ).
+This is the source code for the extension Page Shadow, compatible with Chrome/Chromium, Firefox, Opera and Microsoft Edge. This extension uses the WebExtensions technology via the Browser API (more infos : https://developer.mozilla.org/fr/Add-ons/WebExtensions ).
 
 Page Shadow is an extension designed to render a web page more readable in a dark environment. It allows you to increase page contrast, decrease page brightness, invert images colors, or activate a night mode (apply an orange filter on the page to reduce the blue light emitted by the screen).
 
@@ -217,9 +217,8 @@ Git clone the repository and cd to the project directory (or download it directl
 git clone https://github.com/Eliastik/page-shadow.git
 cd page-shadow
 ````
-The compilation need the following npm packages (which will be created in the project directory): gulp (local), fs, gulp-clean, gulp-clean-css, gulp-crx-pack, gulp-minify, gulp-zip and gulp-less.
 
-To install these packages, run the following command:
+To install the depedencies, run the following command:
 ````
 npm install
 ````
