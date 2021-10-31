@@ -16,7 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, customTheme, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, getSettings, getCurrentURL } from "./util.js";
+import { pageShadowAllowed, customTheme, getSettings, getCurrentURL } from "./util.js";
+import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue } from "./constants.js";
 import browser from "webextension-polyfill";
 
 (function(){

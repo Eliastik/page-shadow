@@ -17,7 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
-import { defaultFilters, matchWebsite, regexpDetectionPattern } from "./util.js";
+import { matchWebsite } from "./util.js";
+import { defaultFilters, regexpDetectionPattern } from "./constants.js";
 import browser from "webextension-polyfill";
 
 let rules = [];

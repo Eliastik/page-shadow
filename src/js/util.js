@@ -18,109 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
 import browser from "webextension-polyfill";
-
-// Global configuration of the extension
-const extensionVersion = "2.8";
-const versionDate = new Date(2021, 9, 24);
-const nbThemes = 15; // nb of themes for the function Increase the contrast (used globally in the extension)
-const colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"]; // color temperatures available for the function Night Mode (used globally in the extension)
-const minBrightnessPercentage = 0; // the minimum percentage of brightness
-const maxBrightnessPercentage = 0.9; // the maximum percentage of brightness
-const brightnessDefaultValue = 0.15; // the default percentage value of brightness
-const defaultBGColorCustomTheme = "000000";
-const defaultTextsColorCustomTheme = "FFFFFF";
-const defaultLinksColorCustomTheme = "1E90FF";
-const defaultVisitedLinksColorCustomTheme = "FF00FF";
-const defaultFontCustomTheme = "";
-const defaultCustomCSSCode = "/* Example - Add a blue border around the page:\nbody {\n\tborder: 2px solid blue;\n} */";
-const defaultAutoEnableHourFormat = "24";
-const defaultHourEnable = "20";
-const defaultMinuteEnable = "0";
-const defaultHourEnableFormat = "PM";
-const defaultHourDisable = "7";
-const defaultMinuteDisable = "0";
-const defaultHourDisableFormat = "AM";
-const settingNames = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "sitesInterditPageShadow", "liveSettings", "whiteList", "colorTemp", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "globallyEnable", "customThemeInfoDisable", "autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat", "disableImgBgColor", "defaultLoad", "presets", "customThemes", "filtersSettings", "customFilter", "updateNotification"];
-const settingsToSavePresets = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "liveSettings", "colorTemp", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "autoEnable", "disableImgBgColor"];
-const nbPresets = 10;
-const defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}};
-const nbCustomThemesSlots = 5;
-const defaultCustomThemes = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}};
-const defaultFilters = {
-    "filters": [
-        {
-            "filterName": "Filtre par défaut/Default filter",
-            "sourceName": "Eliastik's Softs",
-            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/standard.txt",
-            "lastUpdated": 0,
-            "enabled": true,
-            "hasError": false,
-            "local": false,
-            "homepage": "https://www.eliastiksofts.com/page-shadow/",
-            "builtIn": true,
-            "expiresIn": 1, // days
-            "description": "",
-            "version": "0",
-            "license": "",
-            "content": null
-        },
-        {
-            "filterName": "Filtre pour la fonction Inverser les couleurs/Filter for the feature Invert colors",
-            "sourceName": "Eliastik's Softs",
-            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/invert.txt",
-            "lastUpdated": 0,
-            "enabled": true,
-            "hasError": false,
-            "local": false,
-            "homepage": "https://www.eliastiksofts.com/page-shadow/",
-            "builtIn": true,
-            "expiresIn": 1, // days
-            "description": "",
-            "version": "0",
-            "license": "",
-            "content": null
-        },
-        {
-            "filterName": "Mode performance/Performance mode",
-            "sourceName": "Eliastik's Softs",
-            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/performance.txt",
-            "lastUpdated": 0,
-            "enabled": true,
-            "hasError": false,
-            "local": false,
-            "homepage": "https://www.eliastiksofts.com/page-shadow/",
-            "builtIn": true,
-            "expiresIn": 1, // days
-            "description": "",
-            "version": "0",
-            "license": "",
-            "content": null
-        },
-        {
-            "filterName": "Mon filtre/My filter",
-            "sourceName": "Page Shadow",
-            "sourceUrl": "",
-            "lastUpdated": 0,
-            "enabled": true,
-            "hasError": false,
-            "customFilter": true,
-            "local": false,
-            "homepage": "",
-            "builtIn": true,
-            "expiresIn": 0,
-            "description": "",
-            "version": "0",
-            "license": "",
-            "content": null
-        }
-    ],
-    "lastUpdated": 0,
-    "updateInterval": 24 * 60 * 60 * 1000,
-    "enableAutoUpdate": true
-};
-const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/";
-const regexpDetectionPattern = /^\/(.*)(?<!\\)(.*)\//;
-// End of the global configuration of the extension
+import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes } from "./constants.js";
 
 function in_array(needle, haystack) {
     for(const key in haystack) {
@@ -914,4 +812,4 @@ async function disableEnablePreset(type, nb, checked, url) {
     }
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, extensionVersion, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, deletePreset, customFilterGuideURL, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, versionDate, disableEnablePreset, regexpDetectionPattern };
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset };
