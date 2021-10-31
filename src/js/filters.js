@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
-import { defaultFilters, matchWebsite } from "./util.js";
+import { defaultFilters, matchWebsite, regexpDetectionPattern } from "./util.js";
 import browser from "webextension-polyfill";
 
 let rules = [];
@@ -187,14 +187,14 @@ async function toggleAutoUpdate(enabled) {
 
 function parseLine(line) {
     if(line.length > 0) {
-        const isRegexp = line.trim().startsWith("/");
+        const isRegexp = line.trim().match(regexpDetectionPattern);
         let website;
 
         if(isRegexp) {
-            const lineSplitted = line.split("/");
+            const lineSplitted = line.split(regexpDetectionPattern);
             const regexp = lineSplitted[1];
             website = "/" + regexp + "/";
-            line = lineSplitted[2];
+            line = lineSplitted[3];
         }
         
         const parts = line.split("|");
