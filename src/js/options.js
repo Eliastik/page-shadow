@@ -759,12 +759,15 @@ async function archiveCloudSettings() {
             const deviceSettings = {};
             deviceSettings["deviceBackup"] = window.navigator.platform;
 
-            browser.storage.sync.set(newSetting);
-            browser.storage.sync.set(dateSettings);
-            browser.storage.sync.set(deviceSettings);
-
-            $("#archiveCloudSuccess").fadeIn(500);
-            displaySettings("sync");
+            Promise.all([browser.storage.sync.set(newSetting), browser.storage.sync.set(dateSettings), browser.storage.sync.set(deviceSettings)])
+                .then(() => {
+                    $("#archiveCloudSuccess").fadeIn(500);
+                    displaySettings("sync");
+                })
+                .catch(() => {
+                    $("#archiveCloudError").fadeIn(500);
+                    displaySettings("sync");
+                });
         } catch(e) {
             $("#archiveCloudError").fadeIn(500);
             $("#archiveCloudBtn").removeClass("disabled");
