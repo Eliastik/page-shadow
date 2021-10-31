@@ -199,7 +199,8 @@
             "enabled": "Enabled",
             "disabled": "Disabled",
             "customTheme": "Custom theme {{count}}",
-            "themeNumber": "Theme {{count}}"
+            "themeNumber": "Theme {{count}}",
+            "undefined": "(Not defined)"
         },
         "saved": {
             "title": "Information",

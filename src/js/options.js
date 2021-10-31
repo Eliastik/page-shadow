@@ -489,12 +489,15 @@ async function displayPresetInfos(nb) {
 
             const value = presetData[setting];
 
-            if(value == "true" || value == "false") {
+            if(!value) {
+                span.textContent = i18next.t("modal.presets.undefined");
+            } else if(value == "true" || value == "false") {
                 span.textContent = value == "true" ? i18next.t("modal.presets.enabled") : i18next.t("modal.presets.disabled");
             } else if(setting == "pourcentageLum") {
                 span.textContent = value + "%";
             } else if(setting == "theme" && value.startsWith("custom")) {
-                span.textContent = i18next.t("modal.presets.customTheme", { count: value.split("custom")[1] });
+                const customThemeId = value.split("custom")[1];
+                span.textContent = i18next.t("modal.presets.customTheme", { count: customThemeId ? customThemeId : 1 });
             } else if(setting == "theme") {
                 span.textContent = i18next.t("modal.presets.themeNumber", { count: value });
             } else if(setting == "colorTemp") {

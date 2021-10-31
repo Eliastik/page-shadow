@@ -198,7 +198,8 @@
             "enabled": "Activé",
             "disabled": "Désactivé",
             "customTheme": "Thème personnalisé n°{{count}}",
-            "themeNumber": "Thème n°{{count}}"
+            "themeNumber": "Thème n°{{count}}",
+            "undefined": "(Non défini)"
         },
         "saved": {
             "title": "Information",
