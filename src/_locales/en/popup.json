@@ -36,7 +36,8 @@
         "presetAutoEnabledForThisWebsite": "Preset n°{{count}} automatically enabled for this website/page, overriding the settings below.",
         "autoEnablePresetFor": "Auto enable preset for:",
         "enableWebsitePreset": "This website",
-        "enableWebpagePreset": "This page"
+        "enableWebpagePreset": "This page",
+        "updatePresetSettings": "Update the preset with current settings"
     },
     "modal": {
         "customThemeTitle": "Information",
@@ -50,7 +51,9 @@
             "presetTitleEmpty": "Untitled",
             "restorePresetError": "An error has occurred",
             "restorePresetEmpty": "Cannot load this preset because it is empty",
-            "restorePresetSuccess": "Loading done successfully"
+            "restorePresetSuccess": "Loading done successfully",
+            "updatePresetSuccess": "Preset update done successfully",
+            "updatePresetError": "An error has occurred when updating the preset"
         }
     },
     "modalAutoEnable": {

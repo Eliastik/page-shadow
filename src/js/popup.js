@@ -21,7 +21,7 @@ import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
-import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, presetsEnabledForWebsite, extensionVersion, versionDate, disableEnablePreset, getPresetData } from "./util.js";
+import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, presetsEnabledForWebsite, extensionVersion, versionDate, disableEnablePreset, getPresetData, savePreset } from "./util.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import browser from "webextension-polyfill";
@@ -257,11 +257,15 @@ $(document).ready(() => {
             $("#disableWebsitePreset-li").attr("disabled", "disabled");
             $("#enableWebpagePreset-li").attr("disabled", "disabled");
             $("#disableWebpagePreset-li").attr("disabled", "disabled");
+            $("#updatePresetSettings").attr("disabled", "disabled");
+            $("#loadPresetValid").attr("disabled", "disabled");
         } else {
             $("#enableWebsitePreset-li").removeAttr("disabled");
             $("#disableWebsitePreset-li").removeAttr("disabled");
             $("#enableWebpagePreset-li").removeAttr("disabled");
             $("#disableWebpagePreset-li").removeAttr("disabled");
+            $("#updatePresetSettings").removeAttr("disabled");
+            $("#loadPresetValid").removeAttr("disabled");
         }
 
         if(presetsAutoEnabled && presetsAutoEnabled.length > 0) {
@@ -845,6 +849,30 @@ $(document).ready(() => {
                 }
             });
         });
+    });
+
+    $("#updatePresetSettings").click(async() => {
+        $("#infoPreset").removeClass("show");
+        const presetId = parseInt($("#loadPresetSelect").val());
+        const presetData = await getPresetData(presetId);
+
+        if(presetData && presetData != "error") {
+            savePreset(presetId, presetData.name, presetData.websiteListToApply, true).then(result => {
+                if(result == "success") {
+                    $("#infoPreset").text(i18next.t("modal.archive.updatePresetSuccess"));
+                } else {
+                    $("#infoPreset").text(i18next.t("modal.archive.updatePresetError"));
+                }
+    
+                $("#infoPreset").addClass("show");
+    
+                $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", (e) => {
+                    if(e.originalEvent.animationName === "fadeout") {
+                        $("#infoPreset").removeClass("show");
+                    }
+                });
+            });
+        }
     });
 
     $("#loadPresetSelect").change(() => {

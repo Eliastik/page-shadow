@@ -36,7 +36,8 @@
         "presetAutoEnabledForThisWebsite": "Pré-réglage n°{{count}} automatiquement activé pour ce site/page, remplaçant les paramètres ci-dessous.",
         "autoEnablePresetFor": "Auto activ. du pré-régl. pour :",
         "enableWebsitePreset": "Ce site",
-        "enableWebpagePreset": "Cette page"
+        "enableWebpagePreset": "Cette page",
+        "updatePresetSettings": "Mettre à jour le pré-réglage avec les paramètres actuels"
     },
     "modal": {
         "customThemeTitle": "Information",
@@ -50,7 +51,9 @@
             "presetTitleEmpty": "Sans titre",
             "restorePresetError": "Une erreur est survenue",
             "restorePresetEmpty": "Impossible de charger ce pré-réglage car il est vide",
-            "restorePresetSuccess": "Chargement effectué avec succès"
+            "restorePresetSuccess": "Chargement effectué avec succès",
+            "updatePresetSuccess": "Mise à jour du pré-réglage effectué avec succès",
+            "updatePresetError": "Une erreur est survenue lors de la mise à jour du pré-réglage"
         }
     },
     "modalAutoEnable": {
