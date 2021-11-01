@@ -42,113 +42,110 @@ function removeSettingItem(name) {
     }
 }
 
-function checkFirstLoad() {
-    browser.storage.local.get("defaultLoad").then(result => {
-        if(result.defaultLoad == undefined) {
-            browser.storage.local.set({ "defaultLoad": "0" }).then(() => {
-                setFirstSettings();
-            });
-        }
-    });
+async function checkFirstLoad() {
+    const result = await browser.storage.local.get("defaultLoad");
+
+    if(result.defaultLoad == undefined) {
+        await browser.storage.local.set({ "defaultLoad": "0" });
+        setFirstSettings();
+    }
 }
 
-function setFirstSettings() {
-    return new Promise(resolve => {
-        const updateNotification = {};
-        updateNotification[extensionVersion] = true;
-        
-        // Set default settings values
-        browser.storage.local.set({
-            "pageShadowEnabled": "false",
-            "theme": "1",
-            "pageLumEnabled": "false",
-            "pourcentageLum": (brightnessDefaultValue * 100).toString(),
-            "nightModeEnabled": "false",
-            "sitesInterditPageShadow": "",
-            "liveSettings": "true",
-            "whiteList": "false",
-            "colorTemp": "5",
-            "colorInvert": "false",
-            "invertPageColors": "false",
-            "invertImageColors": "true",
-            "invertEntirePage": "false",
-            "invertVideoColors": "false",
-            "invertBgColor": "true",
-            "globallyEnable": "true",
-            "customThemeInfoDisable": "false",
-            "autoEnable": "false",
-            "autoEnableHourFormat": defaultAutoEnableHourFormat,
-            "hourEnable": defaultHourEnable,
-            "minuteEnable": defaultMinuteEnable,
-            "hourEnableFormat": defaultHourEnableFormat,
-            "hourDisable": defaultHourDisable,
-            "minuteDisable": defaultMinuteDisable,
-            "hourDisableFormat": defaultHourDisableFormat,
-            "disableImgBgColor": "false",
-            "presets": defaultPresets,
-            "customThemes": defaultCustomThemes,
-            "filtersSettings": defaultFilters,
-            "customFilter": "",
-            "defaultLoad": "0",
-            "updateNotification": updateNotification
-        }).then(() => {
-            resolve();
-        });
+async function setFirstSettings() {
+    const updateNotification = {};
+    updateNotification[extensionVersion] = true;
+    
+    // Set default settings values
+    await browser.storage.local.set({
+        "pageShadowEnabled": "false",
+        "theme": "1",
+        "pageLumEnabled": "false",
+        "pourcentageLum": (brightnessDefaultValue * 100).toString(),
+        "nightModeEnabled": "false",
+        "sitesInterditPageShadow": "",
+        "liveSettings": "true",
+        "whiteList": "false",
+        "colorTemp": "5",
+        "colorInvert": "false",
+        "invertPageColors": "false",
+        "invertImageColors": "true",
+        "invertEntirePage": "false",
+        "invertVideoColors": "false",
+        "invertBgColor": "true",
+        "globallyEnable": "true",
+        "customThemeInfoDisable": "false",
+        "autoEnable": "false",
+        "autoEnableHourFormat": defaultAutoEnableHourFormat,
+        "hourEnable": defaultHourEnable,
+        "minuteEnable": defaultMinuteEnable,
+        "hourEnableFormat": defaultHourEnableFormat,
+        "hourDisable": defaultHourDisable,
+        "minuteDisable": defaultMinuteDisable,
+        "hourDisableFormat": defaultHourDisableFormat,
+        "disableImgBgColor": "false",
+        "presets": defaultPresets,
+        "customThemes": defaultCustomThemes,
+        "filtersSettings": defaultFilters,
+        "customFilter": "",
+        "defaultLoad": "0",
+        "updateNotification": updateNotification
     });
+
+    return true;
 }
 
 // Migrate deprecated settings
-function migrateSettings() {
-    browser.storage.local.get(null).then(result => {
-        // Migrate old custom theme settings
-        if(result.customThemeBg != undefined || result.customThemeTexts != undefined || result.customThemeLinks != undefined || result.customThemeLinksVisited != undefined || result.customThemeFont != undefined || result.customCSSCode != undefined) {
-            let customThemeBg = defaultBGColorCustomTheme;
-            let customThemeTexts = defaultTextsColorCustomTheme;
-            let customThemeLinks = defaultLinksColorCustomTheme;
-            let customThemeLinksVisited = defaultVisitedLinksColorCustomTheme;
-            let customThemeFont = defaultFontCustomTheme;
-            let customCSSCode = defaultCustomCSSCode;
-            let customThemes = defaultCustomThemes;
+async function migrateSettings() {
+    const result = await browser.storage.local.get(null);
+    
+    // Migrate old custom theme settings
+    if(result.customThemeBg != undefined || result.customThemeTexts != undefined || result.customThemeLinks != undefined || result.customThemeLinksVisited != undefined || result.customThemeFont != undefined || result.customCSSCode != undefined) {
+        let customThemeBg = defaultBGColorCustomTheme;
+        let customThemeTexts = defaultTextsColorCustomTheme;
+        let customThemeLinks = defaultLinksColorCustomTheme;
+        let customThemeLinksVisited = defaultVisitedLinksColorCustomTheme;
+        let customThemeFont = defaultFontCustomTheme;
+        let customCSSCode = defaultCustomCSSCode;
+        let customThemes = defaultCustomThemes;
 
-            if(result.customThemeBg != undefined) {
-                customThemeBg = result.customThemeBg;
-            }
-
-            if(result.customThemeTexts != undefined) {
-                customThemeTexts = result.customThemeTexts;
-            }
-
-            if(result.customThemeLinks != undefined) {
-                customThemeLinks = result.customThemeLinks;
-            }
-
-            if(result.customThemeLinksVisited != undefined) {
-                customThemeLinksVisited = result.customThemeLinksVisited;
-            }
-
-            if(result.customThemeFont != undefined) {
-                customThemeFont = result.customThemeFont;
-            }
-
-            if(result.customCSSCode != undefined) {
-                customCSSCode = result.customCSSCode;
-            }
-
-            if(result.customThemes != undefined && result.customThemes != undefined) {
-                customThemes = result.customThemes;
-            }
-
-            customThemes["1"]["customThemeBg"] = customThemeBg;
-            customThemes["1"]["customThemeTexts"] = customThemeTexts;
-            customThemes["1"]["customThemeLinks"] = customThemeLinks;
-            customThemes["1"]["customThemeLinksVisited"] = customThemeLinksVisited;
-            customThemes["1"]["customThemeFont"] = customThemeFont;
-            customThemes["1"]["customCSSCode"] = customCSSCode;
-
-            setSettingItem("customThemes", customThemes);
-            removeSettingItem(["customThemeBg", "customThemeTexts", "customThemeLinks", "customThemeLinksVisited", "customThemeFont", "customCSSCode"]);
+        if(result.customThemeBg != undefined) {
+            customThemeBg = result.customThemeBg;
         }
-    });
+
+        if(result.customThemeTexts != undefined) {
+            customThemeTexts = result.customThemeTexts;
+        }
+
+        if(result.customThemeLinks != undefined) {
+            customThemeLinks = result.customThemeLinks;
+        }
+
+        if(result.customThemeLinksVisited != undefined) {
+            customThemeLinksVisited = result.customThemeLinksVisited;
+        }
+
+        if(result.customThemeFont != undefined) {
+            customThemeFont = result.customThemeFont;
+        }
+
+        if(result.customCSSCode != undefined) {
+            customCSSCode = result.customCSSCode;
+        }
+
+        if(result.customThemes != undefined && result.customThemes != undefined) {
+            customThemes = result.customThemes;
+        }
+
+        customThemes["1"]["customThemeBg"] = customThemeBg;
+        customThemes["1"]["customThemeTexts"] = customThemeTexts;
+        customThemes["1"]["customThemeLinks"] = customThemeLinks;
+        customThemes["1"]["customThemeLinksVisited"] = customThemeLinksVisited;
+        customThemes["1"]["customThemeFont"] = customThemeFont;
+        customThemes["1"]["customCSSCode"] = customCSSCode;
+
+        setSettingItem("customThemes", customThemes);
+        removeSettingItem(["customThemeBg", "customThemeTexts", "customThemeLinks", "customThemeLinksVisited", "customThemeFont", "customCSSCode"]);
+    }
 }
 
 export { setSettingItem, removeSettingItem, checkFirstLoad, setFirstSettings, migrateSettings };

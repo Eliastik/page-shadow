@@ -80,95 +80,92 @@ function deleteContextMenu(id) {
     }
 }
 
-function menu() {
-    function createMenu() {
+async function menu() {
+    async function createMenu() {
         if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.local) !== "undefined") {
-            browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]).then(result => {
-                let sitesInterdits;
+            const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]);
+            let sitesInterdits;
 
-                if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
-                    sitesInterdits = "";
-                } else {
-                    sitesInterdits = result.sitesInterditPageShadow.split("\n");
-                }
+            if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
+                sitesInterdits = "";
+            } else {
+                sitesInterdits = result.sitesInterditPageShadow.split("\n");
+            }
 
-                if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.query) !== "undefined") {
-                    browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
-                        if(!tabs) return;
-                        const tabUrl = tabs[0].url;
-                        if(!tabUrl || tabUrl.trim() == "") return;
+            if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.query) !== "undefined") {
+                const tabs = await browser.tabs.query({active: true, currentWindow: true});
+                if(!tabs) return;
+                const tabUrl = tabs[0].url;
+                if(!tabUrl || tabUrl.trim() == "") return;
 
-                        const url = new URL(tabUrl);
-                        const domain = url.hostname;
-                        const href = url.href;
+                const url = new URL(tabUrl);
+                const domain = url.hostname;
+                const href = url.href;
 
-                        if(result.whiteList == "true") {
-                            if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
-                                createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
-                            } else {
-                                createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
-                            }
+                if(result.whiteList == "true") {
+                    if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
+                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
+                    } else {
+                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
+                    }
 
-                            if(in_array_website(href, sitesInterdits) || in_array_website(domain, sitesInterdits)) {
-                                createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
+                    if(in_array_website(href, sitesInterdits) || in_array_website(domain, sitesInterdits)) {
+                        createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
 
-                                if(in_array_website(domain, sitesInterdits)) {
-                                    deleteContextMenu("disable-webpage");
-                                } else if(in_array_website(href, sitesInterdits)) {
-                                    deleteContextMenu("disable-website");
-                                }
-                            } else {
-                                createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
-                            }
-                        } else {
-                            if(in_array_website(domain, sitesInterdits)) {
-                                createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
-                            } else {
-                                createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
-                            }
-
-                            if(in_array_website(href, sitesInterdits)) {
-                                createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
-                            } else {
-                                createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
-                            }
+                        if(in_array_website(domain, sitesInterdits)) {
+                            deleteContextMenu("disable-webpage");
+                        } else if(in_array_website(href, sitesInterdits)) {
+                            deleteContextMenu("disable-website");
                         }
-
-                        createMenuOthers();
-                    });
+                    } else {
+                        createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
+                    }
                 } else {
-                    createMenuOthers();
+                    if(in_array_website(domain, sitesInterdits)) {
+                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
+                    } else {
+                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
+                    }
+
+                    if(in_array_website(href, sitesInterdits)) {
+                        createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
+                    } else {
+                        createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
+                    }
                 }
-            });
+
+                createMenuOthers();
+            } else {
+                createMenuOthers();
+            }
         }
     }
 
-    function createMenuOthers() {
-        browser.storage.local.get(["globallyEnable"]).then(result => {
-            if(result.globallyEnable == "false") {
-                createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], true);
-            } else {
-                createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], false);
-            }
+    async function createMenuOthers() {
+        const data = await browser.storage.local.get(["globallyEnable"]);
 
-            presetsEnabled().then(resultat => {
-                if(resultat !== false && Array.isArray(resultat) && resultat.length > 0) {
-                    createContextMenu("separator-presets", "separator", null, ["all"], false);
+        if(data.globallyEnable == "false") {
+            createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], true);
+        } else {
+            createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], false);
+        }
 
-                    for(let i = 0; i < resultat.length; i++) {
-                        if(resultat[i] <= nbPresets) {
-                            createContextMenu("load-preset-" + resultat[i], "normal", getUImessage("loadPreset") + resultat[i], ["all"], false);
-                        }
-                    }
+        const result = await presetsEnabled();
+
+        if(result !== false && Array.isArray(result) && result.length > 0) {
+            createContextMenu("separator-presets", "separator", null, ["all"], false);
+
+            for(let i = 0; i < result.length; i++) {
+                if(result[i] <= nbPresets) {
+                    createContextMenu("load-preset-" + result[i], "normal", getUImessage("loadPreset") + result[i], ["all"], false);
                 }
-            });
-        });
+            }
+        }
     }
 
     if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.removeAll) !== "undefined") {
-        browser.contextMenus.removeAll().then(() => {
-            createMenu();
-        });
+        await browser.contextMenus.removeAll();
+        createMenu();
     } else {
         createMenu();
     }
@@ -178,106 +175,103 @@ function updateMenu() {
     menu();
 }
 
-function updateBadge() {
+async function updateBadge() {
     if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.query) !== "undefined") {
-        browser.tabs.query({ active: true }).then(tabs => {
-            for(const tab of tabs) {
-                if(!tab || tab.url.trim() == "") continue;
+        const tabs = await browser.tabs.query({ active: true });
 
-                pageShadowAllowed(tab.url).then(enabled => {
-                    if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeText) !== "undefined") {
-                        browser.browserAction.setBadgeText({
-                            text: " ",
-                            tabId: tab.id
-                        });
-                    }
-    
-                    if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeBackgroundColor) !== "undefined") {
-                        if(enabled) {
-                            browser.browserAction.setBadgeBackgroundColor({
-                                color: "#2ecc71",
-                                tabId: tab.id
-                            });
-                        } else {
-                            browser.browserAction.setBadgeBackgroundColor({
-                                color: "#e74c3c",
-                                tabId: tab.id
-                            });
-                        }
-                    }
-    
-                    if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setTitle) !== "undefined") {
-                        if(!enabled) {
-                            browser.browserAction.setTitle({
-                                title: "Page Shadow (" + getUImessage("pageShadowDisabled") + ")",
-                                tabId: tab.id
-                            });
-                        } else {
-                            browser.browserAction.setTitle({
-                                title: "Page Shadow",
-                                tabId: tab.id
-                            });
-                        }
-                    }
-    
-                    if(typeof(browser.tabs.sendMessage) !== "undefined") {
-                        browser.tabs.sendMessage(tab.id, {
-                            type: "websiteUrlUpdated",
-                            enabled: enabled
-                        }).catch(() => {
-                            if(browser.runtime.lastError) return; // ignore the error messages
-                        });
-                    }
+        for(const tab of tabs) {
+            if(!tab || tab.url.trim() == "") continue;
+
+            const enabled = await pageShadowAllowed(tab.url);
+            if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeText) !== "undefined") {
+                browser.browserAction.setBadgeText({
+                    text: " ",
+                    tabId: tab.id
                 });
             }
-        });
-    }
-}
 
-function checkAutoEnable() {
-    if(autoEnableActivated) {
-        getAutoEnableSavedData().then(data => {
-            const enabled = checkAutoEnableStartup(data[6], data[4], data[7], data[5]);
-
-            if(enabled && !lastAutoEnableDetected || enabled && lastAutoEnableDetected == null) {
-                setSettingItem("globallyEnable", "true");
-                lastAutoEnableDetected = true;
-            } else if(!enabled && lastAutoEnableDetected || !enabled && lastAutoEnableDetected == null) {
-                setSettingItem("globallyEnable", "false");
-                lastAutoEnableDetected = false;
+            if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeBackgroundColor) !== "undefined") {
+                if(enabled) {
+                    browser.browserAction.setBadgeBackgroundColor({
+                        color: "#2ecc71",
+                        tabId: tab.id
+                    });
+                } else {
+                    browser.browserAction.setBadgeBackgroundColor({
+                        color: "#e74c3c",
+                        tabId: tab.id
+                    });
+                }
             }
-        });
-    }
-}
 
-function checkAutoUpdateFilters() {
-    browser.storage.local.get("filtersSettings").then(result => {
-        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
-        const lastUpdate = filters.lastUpdated;
-        const updateInterval = filters.updateInterval;
-        const enableAutoUpdate = filters.enableAutoUpdate;
-        const currentDate = Date.now();
+            if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setTitle) !== "undefined") {
+                if(!enabled) {
+                    browser.browserAction.setTitle({
+                        title: "Page Shadow (" + getUImessage("pageShadowDisabled") + ")",
+                        tabId: tab.id
+                    });
+                } else {
+                    browser.browserAction.setTitle({
+                        title: "Page Shadow",
+                        tabId: tab.id
+                    });
+                }
+            }
 
-        if(enableAutoUpdate && updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
-            updateAllFilters(true);
+            if(typeof(browser.tabs.sendMessage) !== "undefined") {
+                browser.tabs.sendMessage(tab.id, {
+                    type: "websiteUrlUpdated",
+                    enabled: enabled
+                }).catch(() => {
+                    if(browser.runtime.lastError) return; // ignore the error messages
+                });
+            }
         }
-    });
+    }
 }
 
-function autoEnable(changed) {
-    if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.local) !== "undefined") {
-        browser.storage.local.get("autoEnable").then(result => {
-            if(result.autoEnable == "true") {
-                autoEnableActivated = true;
-            } else {
-                autoEnableActivated = false;
-            }
+async function checkAutoEnable() {
+    if(autoEnableActivated) {
+        const data = await getAutoEnableSavedData();
+        const enabled = checkAutoEnableStartup(data[6], data[4], data[7], data[5]);
 
-            if(typeof(changed) === "undefined" || changed == null || checkChangedStorageData(["hourEnable", "minuteEnable", "hourDisable", "minuteDisable"], changed)) {
-                lastAutoEnableDetected = null;
-                checkAutoEnable();
-            }
-        });
+        if(enabled && !lastAutoEnableDetected || enabled && lastAutoEnableDetected == null) {
+            setSettingItem("globallyEnable", "true");
+            lastAutoEnableDetected = true;
+        } else if(!enabled && lastAutoEnableDetected || !enabled && lastAutoEnableDetected == null) {
+            setSettingItem("globallyEnable", "false");
+            lastAutoEnableDetected = false;
+        }
+    }
+}
+
+async function checkAutoUpdateFilters() {
+    const result = await browser.storage.local.get("filtersSettings");
+    const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+    const lastUpdate = filters.lastUpdated;
+    const updateInterval = filters.updateInterval;
+    const enableAutoUpdate = filters.enableAutoUpdate;
+    const currentDate = Date.now();
+
+    if(enableAutoUpdate && updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
+        updateAllFilters(true);
+    }
+}
+
+async function autoEnable(changed) {
+    if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.local) !== "undefined") {
+        const result = await browser.storage.local.get("autoEnable");
+
+        if(result.autoEnable == "true") {
+            autoEnableActivated = true;
+        } else {
+            autoEnableActivated = false;
+        }
+
+        if(typeof(changed) === "undefined" || changed == null || checkChangedStorageData(["hourEnable", "minuteEnable", "hourDisable", "minuteDisable"], changed)) {
+            lastAutoEnableDetected = null;
+            checkAutoEnable();
+        }
     }
 }
 
@@ -397,30 +391,31 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
 }
 
 if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.onClicked) !== "undefined") {
-    browser.contextMenus.onClicked.addListener((info, tab) => {
-        disableEnableToggle(info.menuItemId, info.checked && !info.wasChecked, new URL(tab.url)).then(() => {
-            if(info.menuItemId.substring(0, 11) == "load-preset") {
-                const nbPreset = info.menuItemId.substr(12, info.menuItemId.length - 11);
-                loadPreset(nbPreset);
-            }
+    browser.contextMenus.onClicked.addListener(async(info, tab) => {
+        await disableEnableToggle(info.menuItemId, info.checked && !info.wasChecked, new URL(tab.url));
 
-            updateMenu();
-        });
+        if(info.menuItemId.substring(0, 11) == "load-preset") {
+            const nbPreset = info.menuItemId.substr(12, info.menuItemId.length - 11);
+            loadPreset(nbPreset);
+        }
+
+        updateMenu();
     });
 }
 
 if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand) !== "undefined") {
-    browser.commands.onCommand.addListener(command => {
+    browser.commands.onCommand.addListener(async(command) => {
         switch(command) {
-        case "enableDisable":
-            browser.storage.local.get("globallyEnable").then(result => {
-                if(result.globallyEnable == "false") {
-                    setSettingItem("globallyEnable", "true");
-                } else {
-                    setSettingItem("globallyEnable", "false");
-                }
-            });
+        case "enableDisable": {
+            const result = await browser.storage.local.get("globallyEnable");
+
+            if(result.globallyEnable == "false") {
+                setSettingItem("globallyEnable", "true");
+            } else {
+                setSettingItem("globallyEnable", "false");
+            }
             break;
+        }
         case "enablePresetOne":
             loadPreset(1);
             break;

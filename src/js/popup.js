@@ -59,24 +59,22 @@ i18next.on("languageChanged", () => {
 });
 
 async function getCurrentURL() {
-    return new Promise(resolve => {
-        const matches = window.location.search.match(/[?&]tabId=([^&]+)/);
-    
-        if(matches && matches.length === 2) {
-            const tabId = parseInt(matches[1]);
-            browser.tabs.get(tabId).then((tabinfos) => {
-                if(!browser.runtime.lastError) {
-                    resolve(tabinfos.url);
-                }
-            });
-        } else {
-            browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
-                if(!browser.runtime.lastError) {
-                    resolve(tabs[0].url);
-                }
-            });
+    const matches = window.location.search.match(/[?&]tabId=([^&]+)/);
+
+    if(matches && matches.length === 2) {
+        const tabId = parseInt(matches[1]);
+        const tabInfos = await browser.tabs.get(tabId);
+        
+        if(!browser.runtime.lastError) {
+            return tabInfos.url;
         }
-    });
+    } else {
+        const tabs = await browser.tabs.query({active: true, currentWindow: true});
+
+        if(!browser.runtime.lastError) {
+            return tabs[0].url;
+        }
+    }
 }
 
 $(document).ready(() => {
@@ -187,60 +185,59 @@ $(document).ready(() => {
     async function checkEnable() {
         const url = new URL(await getCurrentURL());
 
-        browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]).then(result => {
-            let sitesInterdits;
+        const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
+        let sitesInterdits;
 
-            if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == "undefined" || result.sitesInterditPageShadow.trim() == "") {
-                sitesInterdits = "";
+        if(result.sitesInterditPageShadow == null || typeof(result.sitesInterditPageShadow) == "undefined" || result.sitesInterditPageShadow.trim() == "") {
+            sitesInterdits = "";
+        } else {
+            sitesInterdits = result.sitesInterditPageShadow.split("\n");
+        }
+
+        const domain = url.hostname;
+        const href = url.href;
+
+        if(result.whiteList == "true") {
+            if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
+                $("#disableWebsite-li").hide();
+                $("#enableWebsite-li").show();
             } else {
-                sitesInterdits = result.sitesInterditPageShadow.split("\n");
+                $("#disableWebsite-li").show();
+                $("#enableWebsite-li").hide();
             }
 
-            const domain = url.hostname;
-            const href = url.href;
+            if(in_array_website(href, sitesInterdits) || in_array_website(domain, sitesInterdits)) {
+                $("#disableWebpage-li").hide();
+                $("#enableWebpage-li").show();
 
-            if(result.whiteList == "true") {
-                if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
-                    $("#disableWebsite-li").hide();
-                    $("#enableWebsite-li").show();
-                } else {
-                    $("#disableWebsite-li").show();
-                    $("#enableWebsite-li").hide();
-                }
-
-                if(in_array_website(href, sitesInterdits) || in_array_website(domain, sitesInterdits)) {
-                    $("#disableWebpage-li").hide();
-                    $("#enableWebpage-li").show();
-
-                    if(in_array_website(domain, sitesInterdits)) {
-                        $("#disableWebpage-li").hide();
-                        $("#enableWebpage-li").hide();
-                    } else if(in_array_website(href, sitesInterdits)) {
-                        $("#disableWebsite-li").hide();
-                        $("#enableWebsite-li").hide();
-                    }
-                } else {
-                    $("#disableWebpage-li").show();
-                    $("#enableWebpage-li").hide();
-                }
-            } else {
                 if(in_array_website(domain, sitesInterdits)) {
-                    $("#disableWebsite-li").show();
-                    $("#enableWebsite-li").hide();
-                } else {
-                    $("#disableWebsite-li").hide();
-                    $("#enableWebsite-li").show();
-                }
-
-                if(in_array_website(href, sitesInterdits)) {
-                    $("#disableWebpage-li").show();
-                    $("#enableWebpage-li").hide();
-                } else {
                     $("#disableWebpage-li").hide();
-                    $("#enableWebpage-li").show();
+                    $("#enableWebpage-li").hide();
+                } else if(in_array_website(href, sitesInterdits)) {
+                    $("#disableWebsite-li").hide();
+                    $("#enableWebsite-li").hide();
                 }
+            } else {
+                $("#disableWebpage-li").show();
+                $("#enableWebpage-li").hide();
             }
-        });
+        } else {
+            if(in_array_website(domain, sitesInterdits)) {
+                $("#disableWebsite-li").show();
+                $("#enableWebsite-li").hide();
+            } else {
+                $("#disableWebsite-li").hide();
+                $("#enableWebsite-li").show();
+            }
+
+            if(in_array_website(href, sitesInterdits)) {
+                $("#disableWebpage-li").show();
+                $("#enableWebpage-li").hide();
+            } else {
+                $("#disableWebpage-li").hide();
+                $("#enableWebpage-li").show();
+            }
+        }
     }
 
     async function checkAutoEnablePreset(nb) {
@@ -350,50 +347,49 @@ $(document).ready(() => {
         togglePreset("toggle-webpage", selectedPreset, false);
     });
 
-    checkContrastMode = function() {
-        browser.storage.local.get(["theme", "pageShadowEnabled", "disableImgBgColor"]).then(result => {
-            // append the list of themes in the select
-            $("#themeSelect").text("");
+    checkContrastMode = async function() {
+        const result = await browser.storage.local.get(["theme", "pageShadowEnabled", "disableImgBgColor"]);
+        // append the list of themes in the select
+        $("#themeSelect").text("");
 
-            for(let i = 1; i <= nbCustomThemesSlots; i++) {
-                $("#themeSelect").append("<option value=\"custom" + i + "\">" + i18next.t("container.customTheme", { count: i }) + "</option>");
-            }
+        for(let i = 1; i <= nbCustomThemesSlots; i++) {
+            $("#themeSelect").append("<option value=\"custom" + i + "\">" + i18next.t("container.customTheme", { count: i }) + "</option>");
+        }
 
-            for(let i = 1; i <= nbThemes; i++) {
-                $("#themeSelect").append("<option value=\"" + i + "\">" + i18next.t("container.theme", { count: i }) + "</option>");
-            }
+        for(let i = 1; i <= nbThemes; i++) {
+            $("#themeSelect").append("<option value=\"" + i + "\">" + i18next.t("container.theme", { count: i }) + "</option>");
+        }
 
-            if(result.theme != undefined) {
-                if(result.theme == "custom") {
-                    $("#themeSelect").val("custom1");
-                    previewTheme("custom1");
-                } else {
-                    $("#themeSelect").val(result.theme);
-                    previewTheme(result.theme);
-                }
+        if(result.theme != undefined) {
+            if(result.theme == "custom") {
+                $("#themeSelect").val("custom1");
+                previewTheme("custom1");
             } else {
-                $("#themeSelect").val("1");
-                previewTheme("1");
+                $("#themeSelect").val(result.theme);
+                previewTheme(result.theme);
             }
+        } else {
+            $("#themeSelect").val("1");
+            previewTheme("1");
+        }
 
-            if(result.pageShadowEnabled == "true") {
-                $("#themeDiv").stop().fadeIn();
-                if($("#checkAssomPage").is(":checked") == false) {
-                    $("#checkAssomPage").prop("checked", true);
-                }
-            } else {
-                $("#themeDiv").stop().fadeOut();
-                if($("#checkAssomPage").is(":checked") == true) {
-                    $("#checkAssomPage").prop("checked", false);
-                }
+        if(result.pageShadowEnabled == "true") {
+            $("#themeDiv").stop().fadeIn();
+            if($("#checkAssomPage").is(":checked") == false) {
+                $("#checkAssomPage").prop("checked", true);
             }
+        } else {
+            $("#themeDiv").stop().fadeOut();
+            if($("#checkAssomPage").is(":checked") == true) {
+                $("#checkAssomPage").prop("checked", false);
+            }
+        }
 
-            if(result.disableImgBgColor == "true" && $("#checkDisableImgBgColor").is(":checked") == true) {
-                $("#checkDisableImgBgColor").prop("checked", false);
-            } else if(result.disableImgBgColor !== "true" && $("#checkDisableImgBgColor").is(":checked") == false) {
-                $("#checkDisableImgBgColor").prop("checked", true);
-            }
-        });
+        if(result.disableImgBgColor == "true" && $("#checkDisableImgBgColor").is(":checked") == true) {
+            $("#checkDisableImgBgColor").prop("checked", false);
+        } else if(result.disableImgBgColor !== "true" && $("#checkDisableImgBgColor").is(":checked") == false) {
+            $("#checkDisableImgBgColor").prop("checked", true);
+        }
     };
 
     $("#checkAssomPage").change(function() {
@@ -412,15 +408,15 @@ $(document).ready(() => {
         }
     });
 
-    $("#themeSelect").change(function() {
+    $("#themeSelect").change(async function() {
         setSettingItem("theme", $(this).val());
 
         if($(this).val().trim().startsWith("custom")) {
-            browser.storage.local.get("customThemeInfoDisable").then(result => {
-                if(typeof result.customThemeInfoDisable == undefined || result.customThemeInfoDisable !== "true") {
-                    $("#customThemeInfos").modal("show");
-                }
-            });
+            const result = await browser.storage.local.get("customThemeInfoDisable");
+
+            if(typeof result.customThemeInfoDisable == undefined || result.customThemeInfoDisable !== "true") {
+                $("#customThemeInfos").modal("show");
+            }
         }
     });
 
@@ -432,80 +428,80 @@ $(document).ready(() => {
         }
     });
 
-    function checkCustomTheme() {
-        browser.storage.local.get("theme").then(result => {
-            if(result.theme != undefined && typeof(result.theme) == "string" && result.theme.startsWith("custom")) {
-                customTheme(result.theme.replace("custom", ""), style, true, lnkCustomTheme);
-            }
-        });
+    async function checkCustomTheme() {
+        const result = await browser.storage.local.get("theme");
+
+        if(result.theme != undefined && typeof(result.theme) == "string" && result.theme.startsWith("custom")) {
+            customTheme(result.theme.replace("custom", ""), style, true, lnkCustomTheme);
+        }
     }
 
-    function checkColorInvert() {
-        browser.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor"]).then(result => {
-            if(result.colorInvert == "true") {
-                // Convert old settings to new settings
-                setSettingItem("colorInvert", "false");
-                setSettingItem("invertPageColors", "true");
-                setSettingItem("invertImageColors", "true");
-                setSettingItem("invertVideoColors", "true");
-                setSettingItem("invertBgColor", "true");
-                checkColorInvert();
-            } else if(result.invertPageColors == "true") {
-                $("#invertPageColorsDiv").stop().fadeIn();
+    async function checkColorInvert() {
+        const result = await browser.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor"]);
 
-                if($("#checkColorInvert").is(":checked") == false) {
-                    $("#checkColorInvert").prop("checked", true);
-                }
+        if(result.colorInvert == "true") {
+            // Convert old settings to new settings
+            setSettingItem("colorInvert", "false");
+            setSettingItem("invertPageColors", "true");
+            setSettingItem("invertImageColors", "true");
+            setSettingItem("invertVideoColors", "true");
+            setSettingItem("invertBgColor", "true");
+            checkColorInvert();
+        } else if(result.invertPageColors == "true") {
+            $("#invertPageColorsDiv").stop().fadeIn();
 
-                if(result.invertImageColors == "true" && $("#checkImageInvert").is(":checked") == false) {
-                    $("#checkImageInvert").prop("checked", true);
-                } else if(result.invertImageColors == "false" && $("#checkImageInvert").is(":checked") == true) {
+            if($("#checkColorInvert").is(":checked") == false) {
+                $("#checkColorInvert").prop("checked", true);
+            }
+
+            if(result.invertImageColors == "true" && $("#checkImageInvert").is(":checked") == false) {
+                $("#checkImageInvert").prop("checked", true);
+            } else if(result.invertImageColors == "false" && $("#checkImageInvert").is(":checked") == true) {
+                $("#checkImageInvert").prop("checked", false);
+            }
+
+            if(result.invertBgColor == "false" && $("#checkBgColorInvert").is(":checked") == true) {
+                $("#checkBgColorInvert").prop("checked", false);
+            } else if(result.invertBgColor !== "false" && $("#checkBgColorInvert").is(":checked") == false) {
+                $("#checkBgColorInvert").prop("checked", true);
+            }
+
+            if(result.invertVideoColors == "true" && $("#checkVideoInvert").is(":checked") == false) {
+                $("#checkVideoInvert").prop("checked", true);
+            } else if(result.invertVideoColors == "false" && $("#checkVideoInvert").is(":checked") == true) {
+                $("#checkVideoInvert").prop("checked", false);
+            }
+        } else {
+            $("#invertPageColorsDiv").stop().fadeOut();
+
+            if($("#checkColorInvert").is(":checked") == true) {
+                $("#checkColorInvert").prop("checked", false);
+            }
+
+            if(result.invertImageColors !== "true") {
+                if($("#checkImageInvert").is(":checked") == true) {
                     $("#checkImageInvert").prop("checked", false);
                 }
+            }
 
-                if(result.invertBgColor == "false" && $("#checkBgColorInvert").is(":checked") == true) {
+            if(result.invertBgColor == "false") {
+                if($("#checkBgColorInvert").is(":checked") == true) {
                     $("#checkBgColorInvert").prop("checked", false);
-                } else if(result.invertBgColor !== "false" && $("#checkBgColorInvert").is(":checked") == false) {
-                    $("#checkBgColorInvert").prop("checked", true);
                 }
+            }
 
-                if(result.invertVideoColors == "true" && $("#checkVideoInvert").is(":checked") == false) {
-                    $("#checkVideoInvert").prop("checked", true);
-                } else if(result.invertVideoColors == "false" && $("#checkVideoInvert").is(":checked") == true) {
+            if(result.invertVideoColors !== "true") {
+                if($("#checkVideoInvert").is(":checked") == true) {
                     $("#checkVideoInvert").prop("checked", false);
                 }
-            } else {
-                $("#invertPageColorsDiv").stop().fadeOut();
-
-                if($("#checkColorInvert").is(":checked") == true) {
-                    $("#checkColorInvert").prop("checked", false);
-                }
-
-                if(result.invertImageColors !== "true") {
-                    if($("#checkImageInvert").is(":checked") == true) {
-                        $("#checkImageInvert").prop("checked", false);
-                    }
-                }
-
-                if(result.invertBgColor == "false") {
-                    if($("#checkBgColorInvert").is(":checked") == true) {
-                        $("#checkBgColorInvert").prop("checked", false);
-                    }
-                }
-
-                if(result.invertVideoColors !== "true") {
-                    if($("#checkVideoInvert").is(":checked") == true) {
-                        $("#checkVideoInvert").prop("checked", false);
-                    }
-                }
             }
+        }
 
-            if(result.invertEntirePage == "true" && $("#checkEntirePageInvert").is(":checked") == false) {
-                $("#checkEntirePageInvert").prop("checked", true);
-            } else if(result.invertEntirePage !== "true" && $("#checkEntirePageInvert").is(":checked") == true) {
-                $("#checkEntirePageInvert").prop("checked", false);
-            }
-        });
+        if(result.invertEntirePage == "true" && $("#checkEntirePageInvert").is(":checked") == false) {
+            $("#checkEntirePageInvert").prop("checked", true);
+        } else if(result.invertEntirePage !== "true" && $("#checkEntirePageInvert").is(":checked") == true) {
+            $("#checkEntirePageInvert").prop("checked", false);
+        }
     }
 
     $("#checkColorInvert").change(function() {
@@ -552,14 +548,14 @@ $(document).ready(() => {
         }
     });
 
-    function checkAutoEnable() {
-        browser.storage.local.get("autoEnable").then(result => {
-            if(result.autoEnable == "true" && $("#autoEnable").is(":checked") == false) {
-                $("#autoEnable").prop("checked", true);
-            } else if(result.autoEnable !== "true" && $("#autoEnable").is(":checked") == true) {
-                $("#autoEnable").prop("checked", false);
-            }
-        });
+    async function checkAutoEnable() {
+        const result = await browser.storage.local.get("autoEnable");
+
+        if(result.autoEnable == "true" && $("#autoEnable").is(":checked") == false) {
+            $("#autoEnable").prop("checked", true);
+        } else if(result.autoEnable !== "true" && $("#autoEnable").is(":checked") == true) {
+            $("#autoEnable").prop("checked", false);
+        }
     }
 
     $("#autoEnable").change(function() {
@@ -571,44 +567,43 @@ $(document).ready(() => {
         }
     });
 
-    function checkSettingsAutoEnable() {
+    async function checkSettingsAutoEnable() {
         $("#hourEnableFormat").hide();
         $("#hourDisableFormat").hide();
 
-        getAutoEnableSavedData().then(data => {
-            const format = data[1];
-            const hourEnableFormat = data[2];
-            const hourDisableFormat = data[3];
-            const minuteEnable = data[4];
-            const minuteDisable =  data[5];
-            const hourEnable = data[6];
-            const hourDisable = data[7];
+        const data = await getAutoEnableSavedData();
+        const format = data[1];
+        const hourEnableFormat = data[2];
+        const hourDisableFormat = data[3];
+        const minuteEnable = data[4];
+        const minuteDisable =  data[5];
+        const hourEnable = data[6];
+        const hourDisable = data[7];
 
-            if(format == "12") {
-                $("#autoEnableHourFormat").val("12");
-                $("#hourEnableFormat").show();
-                $("#hourDisableFormat").show();
-                $("#hourEnable").val(hourToPeriodFormat(hourEnable, 12, null)[1]);
-                $("#hourEnable").attr("max", 12);
-                $("#minuteEnable").val(minuteEnable);
-                $("#hourDisable").val(hourToPeriodFormat(hourDisable, 12, null)[1]);
-                $("#hourDisable").attr("max", 12);
-                $("#minuteDisable").val(minuteDisable);
-            } else if(format == "24") {
-                $("#autoEnableHourFormat").val("24");
-                $("#hourEnable").val(hourEnable);
-                $("#hourEnable").attr("max", 23);
-                $("#minuteEnable").val(minuteEnable);
-                $("#hourDisable").val(hourDisable);
-                $("#hourDisable").attr("max", 23);
-                $("#minuteDisable").val(minuteDisable);
-            }
+        if(format == "12") {
+            $("#autoEnableHourFormat").val("12");
+            $("#hourEnableFormat").show();
+            $("#hourDisableFormat").show();
+            $("#hourEnable").val(hourToPeriodFormat(hourEnable, 12, null)[1]);
+            $("#hourEnable").attr("max", 12);
+            $("#minuteEnable").val(minuteEnable);
+            $("#hourDisable").val(hourToPeriodFormat(hourDisable, 12, null)[1]);
+            $("#hourDisable").attr("max", 12);
+            $("#minuteDisable").val(minuteDisable);
+        } else if(format == "24") {
+            $("#autoEnableHourFormat").val("24");
+            $("#hourEnable").val(hourEnable);
+            $("#hourEnable").attr("max", 23);
+            $("#minuteEnable").val(minuteEnable);
+            $("#hourDisable").val(hourDisable);
+            $("#hourDisable").attr("max", 23);
+            $("#minuteDisable").val(minuteDisable);
+        }
 
-            $("#hourEnableFormat").val(hourEnableFormat);
-            $("#hourDisableFormat").val(hourDisableFormat);
+        $("#hourEnableFormat").val(hourEnableFormat);
+        $("#hourDisableFormat").val(hourDisableFormat);
 
-            infoAutoEnable();
-        });
+        infoAutoEnable();
     }
 
     function changeFormat() {
@@ -707,14 +702,14 @@ $(document).ready(() => {
 
     setInterval(() => { infoAutoEnable(); }, 1000);
 
-    function checkLiveSettings() {
-        browser.storage.local.get("liveSettings").then(result => {
-            if(result.liveSettings == "true" && $("#liveSettings").is(":checked") == false) {
-                $("#liveSettings").prop("checked", true);
-            } else if(result.liveSettings !== "true" && $("#liveSettings").is(":checked") == true) {
-                $("#liveSettings").prop("checked", false);
-            }
-        });
+    async function checkLiveSettings() {
+        const result = await browser.storage.local.get("liveSettings");
+
+        if(result.liveSettings == "true" && $("#liveSettings").is(":checked") == false) {
+            $("#liveSettings").prop("checked", true);
+        } else if(result.liveSettings !== "true" && $("#liveSettings").is(":checked") == true) {
+            $("#liveSettings").prop("checked", false);
+        }
     }
 
     $("#liveSettings").change(function() {
@@ -725,39 +720,39 @@ $(document).ready(() => {
         }
     });
 
-    function checkBrightness() {
-        browser.storage.local.get(["pageLumEnabled", "nightModeEnabled", "pourcentageLum"]).then(result => {
-            if(result.pageLumEnabled == "true") {
-                if(result.nightModeEnabled == "true") {
-                    $("#checkNighMode").attr("checked", "checked");
-                    elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
-                } else {
-                    elLumB.setAttribute("id", "pageShadowLuminositeDiv");
-                }
+    async function checkBrightness() {
+        const result = await browser.storage.local.get(["pageLumEnabled", "nightModeEnabled", "pourcentageLum"]);
 
-                if(result.pourcentageLum / 100 > maxBrightnessPercentage || result.pourcentageLum / 100 < minBrightnessPercentage || typeof result.pourcentageLum === "undefined" || result.pourcentageLum == null) {
-                    elLumB.style.opacity = brightnessDefaultValue;
-                    sliderLuminosite.setValue(brightnessDefaultValue * 100);
-                } else {
-                    elLumB.style.opacity = result.pourcentageLum / 100;
-                }
-
-                elLumB.style.display = "block";
-                $("#sliderLuminositeDiv").stop().fadeIn();
-
-                if($("#checkLuminositePage").is(":checked") == false) {
-                    $("#checkLuminositePage").prop("checked", true);
-                }
-
-                checkNightMode();
+        if(result.pageLumEnabled == "true") {
+            if(result.nightModeEnabled == "true") {
+                $("#checkNighMode").attr("checked", "checked");
+                elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
             } else {
-                $("#sliderLuminositeDiv").stop().fadeOut();
-                elLumB.style.display = "none";
-                if($("#checkLuminositePage").is(":checked") == true) {
-                    $("#checkLuminositePage").prop("checked", false);
-                }
+                elLumB.setAttribute("id", "pageShadowLuminositeDiv");
             }
-        });
+
+            if(result.pourcentageLum / 100 > maxBrightnessPercentage || result.pourcentageLum / 100 < minBrightnessPercentage || typeof result.pourcentageLum === "undefined" || result.pourcentageLum == null) {
+                elLumB.style.opacity = brightnessDefaultValue;
+                sliderLuminosite.setValue(brightnessDefaultValue * 100);
+            } else {
+                elLumB.style.opacity = result.pourcentageLum / 100;
+            }
+
+            elLumB.style.display = "block";
+            $("#sliderLuminositeDiv").stop().fadeIn();
+
+            if($("#checkLuminositePage").is(":checked") == false) {
+                $("#checkLuminositePage").prop("checked", true);
+            }
+
+            checkNightMode();
+        } else {
+            $("#sliderLuminositeDiv").stop().fadeOut();
+            elLumB.style.display = "none";
+            if($("#checkLuminositePage").is(":checked") == true) {
+                $("#checkLuminositePage").prop("checked", false);
+            }
+        }
     }
 
     $("#checkLuminositePage").change(function() {
@@ -774,30 +769,30 @@ $(document).ready(() => {
         setSettingItem("pourcentageLum", sliderLumValue);
     });
 
-    function checkNightMode() {
-        browser.storage.local.get(["nightModeEnabled", "colorTemp"]).then(result => {
-            if(result.nightModeEnabled == "true") {
-                if(result.colorTemp != undefined) {
-                    $("#tempSelect").val(result.colorTemp);
-                    previewTemp(result.colorTemp);
-                } else {
-                    $("#tempSelect").val("5");
-                    previewTemp("5");
-                }
+    async function checkNightMode() {
+        const result = await browser.storage.local.get(["nightModeEnabled", "colorTemp"]);
 
-                $("#tempSelectDiv").stop().fadeIn();
-                elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
-                if($("#checkNighMode").is(":checked") == false) {
-                    $("#checkNighMode").prop("checked", true);
-                }
+        if(result.nightModeEnabled == "true") {
+            if(result.colorTemp != undefined) {
+                $("#tempSelect").val(result.colorTemp);
+                previewTemp(result.colorTemp);
             } else {
-                $("#tempSelectDiv").stop().fadeOut();
-                elLumB.setAttribute("id", "pageShadowLuminositeDiv");
-                if($("#checkNighMode").is(":checked") == true) {
-                    $("#checkNighMode").prop("checked", false);
-                }
+                $("#tempSelect").val("5");
+                previewTemp("5");
             }
-        });
+
+            $("#tempSelectDiv").stop().fadeIn();
+            elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
+            if($("#checkNighMode").is(":checked") == false) {
+                $("#checkNighMode").prop("checked", true);
+            }
+        } else {
+            $("#tempSelectDiv").stop().fadeOut();
+            elLumB.setAttribute("id", "pageShadowLuminositeDiv");
+            if($("#checkNighMode").is(":checked") == true) {
+                $("#checkNighMode").prop("checked", false);
+            }
+        }
     }
 
     $( "#checkNighMode" ).change(function() {
@@ -812,14 +807,14 @@ $(document).ready(() => {
         setSettingItem("colorTemp", $(this).val());
     });
 
-    function checkGlobalEnable() {
-        browser.storage.local.get("globallyEnable").then(result => {
-            if(result.globallyEnable == "false") {
-                $("#pageShadowGlobalSwitch").prop("checked", false);
-            } else {
-                $("#pageShadowGlobalSwitch").prop("checked", true);
-            }
-        });
+    async function checkGlobalEnable() {
+        const result = await browser.storage.local.get("globallyEnable");
+
+        if(result.globallyEnable == "false") {
+            $("#pageShadowGlobalSwitch").prop("checked", false);
+        } else {
+            $("#pageShadowGlobalSwitch").prop("checked", true);
+        }
     }
 
     $("#pageShadowGlobalSwitch").change(function() {
@@ -830,25 +825,25 @@ $(document).ready(() => {
         }
     });
 
-    $("#loadPresetValid").click(() => {
+    $("#loadPresetValid").click(async() => {
         $("#infoPreset").removeClass("show");
 
-        loadPreset(parseInt($("#loadPresetSelect").val())).then(result => {
-            if(result == "success") {
-                $("#infoPreset").text(i18next.t("modal.archive.restorePresetSuccess"));
-            } else if(result == "empty") {
-                $("#infoPreset").text(i18next.t("modal.archive.restorePresetEmpty"));
-            } else {
-                $("#infoPreset").text(i18next.t("modal.archive.restorePresetError"));
+        const result = await loadPreset(parseInt($("#loadPresetSelect").val()));
+
+        if(result == "success") {
+            $("#infoPreset").text(i18next.t("modal.archive.restorePresetSuccess"));
+        } else if(result == "empty") {
+            $("#infoPreset").text(i18next.t("modal.archive.restorePresetEmpty"));
+        } else {
+            $("#infoPreset").text(i18next.t("modal.archive.restorePresetError"));
+        }
+
+        $("#infoPreset").addClass("show");
+
+        $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", (e) => {
+            if(e.originalEvent.animationName === "fadeout") {
+                $("#infoPreset").removeClass("show");
             }
-
-            $("#infoPreset").addClass("show");
-
-            $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", (e) => {
-                if(e.originalEvent.animationName === "fadeout") {
-                    $("#infoPreset").removeClass("show");
-                }
-            });
         });
     });
 
@@ -858,20 +853,20 @@ $(document).ready(() => {
         const presetData = await getPresetData(presetId);
 
         if(presetData && presetData != "error") {
-            savePreset(presetId, presetData.name, presetData.websiteListToApply, true).then(result => {
-                if(result == "success") {
-                    $("#infoPreset").text(i18next.t("modal.archive.updatePresetSuccess"));
-                } else {
-                    $("#infoPreset").text(i18next.t("modal.archive.updatePresetError"));
+            const result = await savePreset(presetId, presetData.name, presetData.websiteListToApply, true);
+
+            if(result == "success") {
+                $("#infoPreset").text(i18next.t("modal.archive.updatePresetSuccess"));
+            } else {
+                $("#infoPreset").text(i18next.t("modal.archive.updatePresetError"));
+            }
+
+            $("#infoPreset").addClass("show");
+
+            $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", (e) => {
+                if(e.originalEvent.animationName === "fadeout") {
+                    $("#infoPreset").removeClass("show");
                 }
-    
-                $("#infoPreset").addClass("show");
-    
-                $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", (e) => {
-                    if(e.originalEvent.animationName === "fadeout") {
-                        $("#infoPreset").removeClass("show");
-                    }
-                });
             });
         }
     });
@@ -887,43 +882,42 @@ $(document).ready(() => {
         });
     });
 
-    function displaySettings() {
-        browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad"]).then(async(result) => {
-            checkContrastMode();
-            checkColorInvert();
-            checkLiveSettings();
-            checkBrightness();
-            checkEnable();
-            checkCustomTheme();
-            checkAutoEnable();
-            checkGlobalEnable();
+    async function displaySettings() {
+        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad"]);
+        checkContrastMode();
+        checkColorInvert();
+        checkLiveSettings();
+        checkBrightness();
+        checkEnable();
+        checkCustomTheme();
+        checkAutoEnable();
+        checkGlobalEnable();
 
-            if(typeof result.pourcentageLum !== "undefined" && result.pourcentageLum !== null && result.pourcentageLum / 100 <= maxBrightnessPercentage && result.pourcentageLum / 100 >= minBrightnessPercentage && brightnessChangedFromThisPage == false) {
-                sliderLuminosite.setValue(result.pourcentageLum);
-                brightnessChangedFromThisPage = false;
-            } else if(brightnessChangedFromThisPage == false) {
-                sliderLuminosite.setValue(brightnessDefaultValue * 100);
-                brightnessChangedFromThisPage = false;
-            }
+        if(typeof result.pourcentageLum !== "undefined" && result.pourcentageLum !== null && result.pourcentageLum / 100 <= maxBrightnessPercentage && result.pourcentageLum / 100 >= minBrightnessPercentage && brightnessChangedFromThisPage == false) {
+            sliderLuminosite.setValue(result.pourcentageLum);
+            brightnessChangedFromThisPage = false;
+        } else if(brightnessChangedFromThisPage == false) {
+            sliderLuminosite.setValue(brightnessDefaultValue * 100);
+            brightnessChangedFromThisPage = false;
+        }
 
-            if(($("#autoEnableSettings").data("bs.modal") || {}).isShown !== true) {
-                checkSettingsAutoEnable();
-            }
+        if(($("#autoEnableSettings").data("bs.modal") || {}).isShown !== true) {
+            checkSettingsAutoEnable();
+        }
 
-            if(i18nextLoaded) {
-                await loadPresetSelect("loadPresetSelect", i18next);
-                $("#loadPresetSelect").val(selectedPreset).change();
-            }
+        if(i18nextLoaded) {
+            await loadPresetSelect("loadPresetSelect", i18next);
+            $("#loadPresetSelect").val(selectedPreset).change();
+        }
 
-            const updateNotification = result.updateNotification || {};
+        const updateNotification = result.updateNotification || {};
 
-            if(updateNotification[extensionVersion] != true && result.defaultLoad == "0") {
-                updateNotification[extensionVersion] = true;
-                $("#updated").modal("show");
-                $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));
-                setSettingItem("updateNotification", updateNotification);
-            }
-        });
+        if(updateNotification[extensionVersion] != true && result.defaultLoad == "0") {
+            updateNotification[extensionVersion] = true;
+            $("#updated").modal("show");
+            $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));
+            setSettingItem("updateNotification", updateNotification);
+        }
     }
 
     displaySettings();

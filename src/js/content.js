@@ -670,12 +670,12 @@ import browser from "webextension-polyfill";
     main(TYPE_START);
 
     // Execute Page Shadow on the page when the settings have been changed:
-    browser.storage.onChanged.addListener(() => {
-        browser.storage.local.get("liveSettings").then(result => {
-            if(result.liveSettings !== "false") {
-                main(TYPE_RESET, TYPE_ALL);
-            }
-        });
+    browser.storage.onChanged.addListener(async() => {
+        const result = await browser.storage.local.get("liveSettings");
+
+        if(result.liveSettings !== "false") {
+            main(TYPE_RESET, TYPE_ALL);
+        }
     });
 
     // Message/response handling
@@ -705,9 +705,8 @@ import browser from "webextension-polyfill";
                         "type": "isEnabledForThisPage"
                     });
                 } else {
-                    pageShadowAllowed(getCurrentURL()).then(allowed => {
-                        process(allowed, typeProcess);
-                    });
+                    const allowed = await pageShadowAllowed(getCurrentURL());
+                    process(allowed, typeProcess);
                 }
                 break;
             }

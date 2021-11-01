@@ -77,58 +77,56 @@ function in_array_website(needle, haystack) {
     return false;
 }
 
-function disableEnableToggle(type, checked, url) {
-    return new Promise(resolve => {
-        browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]).then(result => {
-            let disabledWebsites = "";
-            const domain = url.hostname;
-            const href = url.href;
-            let match = domain;
-            let disabledWebsitesArray;
-    
-            if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
-                disabledWebsitesArray = [];
-            } else {
-                disabledWebsites = result.sitesInterditPageShadow;
-                disabledWebsitesArray = disabledWebsites.split("\n");
-            }
-    
-            switch(type) {
-            case "disable-website":
-                match = domain;
-                break;
-            case "disable-webpage":
-                match = href;
-                break;
-            case "disable-globally":
-                if(checked) {
-                    setSettingItem("globallyEnable", "false");
-                } else {
-                    setSettingItem("globallyEnable", "true");
-                }
-                break;
-            }
-    
-            if(type == "disable-website" || type == "disable-webpage") {
-                let disabledWebsitesNew;
-    
-                if((checked && result.whiteList == "true") || (!checked && result.whiteList != "true")) {
-                    disabledWebsitesNew = removeA(disabledWebsitesArray, match);
-                    disabledWebsitesNew = commentMatched(disabledWebsitesNew, match);
-                    disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
-    
-                    setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
-                } else if((!checked && result.whiteList == "true") || (checked && result.whiteList != "true")) {
-                    disabledWebsitesArray.push(match);
-                    disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
-    
-                    setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
-                }
-            }
-    
-            resolve();
-        });
-    });
+async function disableEnableToggle(type, checked, url) {
+    const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
+
+    let disabledWebsites = "";
+    const domain = url.hostname;
+    const href = url.href;
+    let match = domain;
+    let disabledWebsitesArray;
+
+    if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
+        disabledWebsitesArray = [];
+    } else {
+        disabledWebsites = result.sitesInterditPageShadow;
+        disabledWebsitesArray = disabledWebsites.split("\n");
+    }
+
+    switch(type) {
+    case "disable-website":
+        match = domain;
+        break;
+    case "disable-webpage":
+        match = href;
+        break;
+    case "disable-globally":
+        if(checked) {
+            setSettingItem("globallyEnable", "false");
+        } else {
+            setSettingItem("globallyEnable", "true");
+        }
+        break;
+    }
+
+    if(type == "disable-website" || type == "disable-webpage") {
+        let disabledWebsitesNew;
+
+        if((checked && result.whiteList == "true") || (!checked && result.whiteList != "true")) {
+            disabledWebsitesNew = removeA(disabledWebsitesArray, match);
+            disabledWebsitesNew = commentMatched(disabledWebsitesNew, match);
+            disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
+
+            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
+        } else if((!checked && result.whiteList == "true") || (checked && result.whiteList != "true")) {
+            disabledWebsitesArray.push(match);
+            disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
+
+            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
+        }
+    }
+
+    return true;
 }
 
 function removeA(arr) {
@@ -177,113 +175,111 @@ function commentAllLines(string) {
 }
 
 // Callback function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not
-function pageShadowAllowed(url) {
-    return new Promise(resolve => {
-        browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]).then(result => {
-            if(result.globallyEnable !== "false") {
-                let forbiddenWebsites = [];
+async function pageShadowAllowed(url) {
+    const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]);
     
-                if(result.sitesInterditPageShadow !== undefined && result.sitesInterditPageShadow !== "") {
-                    forbiddenWebsites = result.sitesInterditPageShadow.trim().split("\n");
-                }
+    if(result.globallyEnable !== "false") {
+        let forbiddenWebsites = [];
+
+        if(result.sitesInterditPageShadow !== undefined && result.sitesInterditPageShadow !== "") {
+            forbiddenWebsites = result.sitesInterditPageShadow.trim().split("\n");
+        }
+
+        const websuteUrl_tmp = new URL(url);
+        const domain = websuteUrl_tmp.hostname;
+
+        if((result.whiteList == "true" && (in_array_website(domain, forbiddenWebsites) || in_array_website(url, forbiddenWebsites))) || (result.whiteList !== "true" && !in_array_website(domain, forbiddenWebsites) && !in_array_website(url, forbiddenWebsites))) {
+            return true;
+        }
+    }
     
-                const websuteUrl_tmp = new URL(url);
-                const domain = websuteUrl_tmp.hostname;
-    
-                if((result.whiteList == "true" && (in_array_website(domain, forbiddenWebsites) || in_array_website(url, forbiddenWebsites))) || (result.whiteList !== "true" && !in_array_website(domain, forbiddenWebsites) && !in_array_website(url, forbiddenWebsites))) {
-                    return resolve(true);
-                }
-            }
-            
-            return resolve(false);
-        });
-    });
+    return false;
 }
 
 function getUImessage(id) {
     return browser.i18n.getMessage(id);
 }
 
-function customTheme(nb, style, disableCustomCSS, lnkCssElement) {
+async function customTheme(nb, style, disableCustomCSS, lnkCssElement) {
     disableCustomCSS = disableCustomCSS == undefined ? false : disableCustomCSS;
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
     let customThemes, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme, fontTheme;
 
-    browser.storage.local.get("customThemes").then(result => {
-        if(result.customThemes != undefined && result.customThemes[nb] != undefined) {
-            customThemes = result.customThemes[nb];
-        } else {
-            customThemes = defaultCustomThemes[nb];
+    const result = await browser.storage.local.get("customThemes");
+
+    if(result.customThemes != undefined && result.customThemes[nb] != undefined) {
+        customThemes = result.customThemes[nb];
+    } else {
+        customThemes = defaultCustomThemes[nb];
+    }
+
+    if(customThemes["customThemeBg"] != undefined) {
+        backgroundTheme = customThemes["customThemeBg"];
+    } else {
+        backgroundTheme = defaultBGColorCustomTheme;
+    }
+
+    if(customThemes["customThemeTexts"] != undefined) {
+        textsColorTheme = customThemes["customThemeTexts"];
+    } else {
+        textsColorTheme = defaultTextsColorCustomTheme;
+    }
+
+    if(customThemes["customThemeLinks"] != undefined) {
+        linksColorTheme = customThemes["customThemeLinks"];
+    } else {
+        linksColorTheme = defaultLinksColorCustomTheme;
+    }
+
+    if(customThemes["customThemeLinksVisited"] != undefined) {
+        linksVisitedColorTheme = customThemes["customThemeLinksVisited"];
+    } else {
+        linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
+    }
+
+    if(customThemes["customThemeFont"] != undefined && customThemes["customThemeFont"].trim() != "") {
+        fontTheme = "\"" + customThemes["customThemeFont"] + "\"";
+    } else {
+        fontTheme = defaultFontCustomTheme;
+    }
+
+    if(document.getElementsByTagName("head")[0].contains(style)) { // remove style element
+        document.getElementsByTagName("head")[0].removeChild(style);
+    }
+
+    // Append style element
+    document.getElementsByTagName("head")[0].appendChild(style);
+
+    if(style.cssRules) { // Remove all rules
+        for(let i = 0; i < style.cssRules.length; i++) {
+            style.sheet.deleteRule(i);
         }
+    }
 
-        if(customThemes["customThemeBg"] != undefined) {
-            backgroundTheme = customThemes["customThemeBg"];
-        } else {
-            backgroundTheme = defaultBGColorCustomTheme;
-        }
+    // Create rules
+    style.sheet.insertRule("html.pageShadowBackgroundCustom:not(.pageShadowDisableBackgroundStyling) { background: #"+ backgroundTheme +" !important; }", 0);
+    style.sheet.insertRule(".pageShadowContrastBlackCustom:not(.pageShadowDisableBackgroundStyling) { background: #"+ backgroundTheme +" !important; background-image: url(); }", 0);
+    style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg), .pageShadowContrastBlackCustom *.pageShadowForceCustomBackgroundColor { background-color: #"+ backgroundTheme +" !important; }", 0);
+    style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling), .pageShadowContrastBlackCustom *.pageShadowForceCustomTextColor { color: #"+ textsColorTheme +" !important; }", 0);
+    style.sheet.insertRule(".pageShadowContrastBlackCustom input:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling) { border: 1px solid #"+ textsColorTheme +" !important; }", 0);
+    style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(.pageShadowElementDisabled):not(.pageShadowDisableFontFamilyStyling) { font-family: " + fontTheme + " !important; }", 0);
+    style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) { color: #"+ textsColorTheme +" !important; }", 0);
+    style.sheet.insertRule(".pageShadowContrastBlackCustom a:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowDisableLinkStyling), .pageShadowContrastBlackCustom *.pageShadowForceCustomLinkColor { color: #"+ linksColorTheme +" !important; }", 0);
+    style.sheet.insertRule(".pageShadowContrastBlackCustom a:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowDisableLinkStyling) { background-color: transparent !important; }", 0);
+    style.sheet.insertRule(".pageShadowContrastBlackCustom img, .pageShadowContrastBlackCustom video, .pageShadowContrastBlackCustom canvas { filter: invert(0%); }", 0);
+    style.sheet.insertRule(".pageShadowContrastBlackCustom.pageShadowBackgroundDetected * > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling), .pageShadowContrastBlackCustom *.pageShadowForceCustomBackgroundColor { background: #"+ backgroundTheme +" !important; }", 0);
+    style.sheet.insertRule(".pageShadowContrastBlackCustom a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling), .pageShadowContrastBlackCustom #pageShadowLinkVisited:not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling), .pageShadowContrastBlackCustom *:visited.pageShadowForceCustomLinkColor { color: #"+ linksVisitedColorTheme +" !important; }", 0);
 
-        if(customThemes["customThemeTexts"] != undefined) {
-            textsColorTheme = customThemes["customThemeTexts"];
-        } else {
-            textsColorTheme = defaultTextsColorCustomTheme;
-        }
-
-        if(customThemes["customThemeLinks"] != undefined) {
-            linksColorTheme = customThemes["customThemeLinks"];
-        } else {
-            linksColorTheme = defaultLinksColorCustomTheme;
-        }
-
-        if(customThemes["customThemeLinksVisited"] != undefined) {
-            linksVisitedColorTheme = customThemes["customThemeLinksVisited"];
-        } else {
-            linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
-        }
-
-        if(customThemes["customThemeFont"] != undefined && customThemes["customThemeFont"].trim() != "") {
-            fontTheme = "\"" + customThemes["customThemeFont"] + "\"";
-        } else {
-            fontTheme = defaultFontCustomTheme;
-        }
-
-        if(document.getElementsByTagName("head")[0].contains(style)) { // remove style element
-            document.getElementsByTagName("head")[0].removeChild(style);
-        }
-
-        // Append style element
-        document.getElementsByTagName("head")[0].appendChild(style);
-
-        if(style.cssRules) { // Remove all rules
-            for(let i = 0; i < style.cssRules.length; i++) {
-                style.sheet.deleteRule(i);
-            }
-        }
-
-        // Create rules
-        style.sheet.insertRule("html.pageShadowBackgroundCustom:not(.pageShadowDisableBackgroundStyling) { background: #"+ backgroundTheme +" !important; }", 0);
-        style.sheet.insertRule(".pageShadowContrastBlackCustom:not(.pageShadowDisableBackgroundStyling) { background: #"+ backgroundTheme +" !important; background-image: url(); }", 0);
-        style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg), .pageShadowContrastBlackCustom *.pageShadowForceCustomBackgroundColor { background-color: #"+ backgroundTheme +" !important; }", 0);
-        style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling), .pageShadowContrastBlackCustom *.pageShadowForceCustomTextColor { color: #"+ textsColorTheme +" !important; }", 0);
-        style.sheet.insertRule(".pageShadowContrastBlackCustom input:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling) { border: 1px solid #"+ textsColorTheme +" !important; }", 0);
-        style.sheet.insertRule(".pageShadowContrastBlackCustom *:not(.pageShadowElementDisabled):not(.pageShadowDisableFontFamilyStyling) { font-family: " + fontTheme + " !important; }", 0);
-        style.sheet.insertRule(".pageShadowContrastBlackCustom :not(.pageShadowInvertImageColor) svg:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) { color: #"+ textsColorTheme +" !important; }", 0);
-        style.sheet.insertRule(".pageShadowContrastBlackCustom a:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowDisableLinkStyling), .pageShadowContrastBlackCustom *.pageShadowForceCustomLinkColor { color: #"+ linksColorTheme +" !important; }", 0);
-        style.sheet.insertRule(".pageShadowContrastBlackCustom a:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowDisableLinkStyling) { background-color: transparent !important; }", 0);
-        style.sheet.insertRule(".pageShadowContrastBlackCustom img, .pageShadowContrastBlackCustom video, .pageShadowContrastBlackCustom canvas { filter: invert(0%); }", 0);
-        style.sheet.insertRule(".pageShadowContrastBlackCustom.pageShadowBackgroundDetected * > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling), .pageShadowContrastBlackCustom *.pageShadowForceCustomBackgroundColor { background: #"+ backgroundTheme +" !important; }", 0);
-        style.sheet.insertRule(".pageShadowContrastBlackCustom a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling), .pageShadowContrastBlackCustom #pageShadowLinkVisited:not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling), .pageShadowContrastBlackCustom *:visited.pageShadowForceCustomLinkColor { color: #"+ linksVisitedColorTheme +" !important; }", 0);
-
-        // Custom CSS
-        if(!disableCustomCSS && customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
-            lnkCssElement.setAttribute("rel", "stylesheet");
-            lnkCssElement.setAttribute("type", "text/css");
-            lnkCssElement.setAttribute("id", "pageShadowCustomCSS");
-            lnkCssElement.setAttribute("name", "pageShadowCustomCSS");
-            lnkCssElement.setAttribute("href", "data:text/css;charset=UTF-8," + encodeURIComponent(customThemes["customCSSCode"]));
-            document.getElementsByTagName("head")[0].appendChild(lnkCssElement);
-        }
-    });
+    // Custom CSS
+    if(!disableCustomCSS && customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
+        lnkCssElement.setAttribute("rel", "stylesheet");
+        lnkCssElement.setAttribute("type", "text/css");
+        lnkCssElement.setAttribute("id", "pageShadowCustomCSS");
+        lnkCssElement.setAttribute("name", "pageShadowCustomCSS");
+        lnkCssElement.setAttribute("href", "data:text/css;charset=UTF-8," + encodeURIComponent(customThemes["customCSSCode"]));
+        document.getElementsByTagName("head")[0].appendChild(lnkCssElement);
+    }
 }
 
 function hourToPeriodFormat(value, convertTo, format) {
@@ -320,31 +316,29 @@ function checkNumber(number, min, max) {
     return true;
 }
 
-function getAutoEnableSavedData() {
-    return new Promise(resolve => {
-        browser.storage.local.get(["autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat"]).then(result => {
-            let autoEnable = result.autoEnable || "false";
-            let format = result.autoEnableHourFormat || defaultAutoEnableHourFormat;
-            let hourEnable = result.hourEnable || defaultHourEnable;
-            let minuteEnable = result.minuteEnable || defaultMinuteEnable;
-            let hourEnableFormat = result.hourEnableFormat || defaultHourEnableFormat;
-            let hourDisable = result.hourDisable || defaultHourDisable;
-            let minuteDisable = result.minuteDisable || defaultMinuteDisable;
-            let hourDisableFormat = result.hourDisableFormat || defaultHourDisableFormat;
+async function getAutoEnableSavedData() {
+    const result = await browser.storage.local.get(["autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat"]);
     
-            // Checking
-            autoEnable = autoEnable == "true" || autoEnable == "false" ? autoEnable : "false";
-            format = format == "24" || format == "12" ? format : defaultAutoEnableHourFormat;
-            hourEnableFormat = hourEnableFormat == "PM" || hourEnableFormat == "AM" ? hourEnableFormat : defaultHourEnableFormat;
-            hourDisableFormat = hourDisableFormat == "PM" || hourDisableFormat == "AM" ? hourDisableFormat : defaultHourDisableFormat;
-            minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
-            minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : defaultMinuteDisable;
-            hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
-            hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
-    
-            resolve([autoEnable, format, hourEnableFormat, hourDisableFormat, minuteEnable, minuteDisable, hourEnable, hourDisable]);
-        });
-    });
+    let autoEnable = result.autoEnable || "false";
+    let format = result.autoEnableHourFormat || defaultAutoEnableHourFormat;
+    let hourEnable = result.hourEnable || defaultHourEnable;
+    let minuteEnable = result.minuteEnable || defaultMinuteEnable;
+    let hourEnableFormat = result.hourEnableFormat || defaultHourEnableFormat;
+    let hourDisable = result.hourDisable || defaultHourDisable;
+    let minuteDisable = result.minuteDisable || defaultMinuteDisable;
+    let hourDisableFormat = result.hourDisableFormat || defaultHourDisableFormat;
+
+    // Checking
+    autoEnable = autoEnable == "true" || autoEnable == "false" ? autoEnable : "false";
+    format = format == "24" || format == "12" ? format : defaultAutoEnableHourFormat;
+    hourEnableFormat = hourEnableFormat == "PM" || hourEnableFormat == "AM" ? hourEnableFormat : defaultHourEnableFormat;
+    hourDisableFormat = hourDisableFormat == "PM" || hourDisableFormat == "AM" ? hourDisableFormat : defaultHourDisableFormat;
+    minuteEnable = checkNumber(minuteEnable, 0, 59) ? minuteEnable : defaultMinuteEnable;
+    minuteDisable = checkNumber(minuteDisable, 0, 59) ? minuteDisable : defaultMinuteDisable;
+    hourEnable = checkNumber(hourEnable, 0, 23) ? hourEnable : defaultHourEnable;
+    hourDisable = checkNumber(hourDisable, 0, 23) ? hourDisable : defaultHourDisable;
+
+    return [autoEnable, format, hourEnableFormat, hourDisableFormat, minuteEnable, minuteDisable, hourEnable, hourDisable];
 }
 
 function getAutoEnableFormData() {
@@ -479,177 +473,162 @@ async function loadPresetSelect(selectId, i18next) {
     if(document.getElementById(selectId).onchange) document.getElementById(selectId).onchange();
 }
 
-function presetsEnabled() {
-    return new Promise((resolve, reject) => {
-        browser.storage.local.get("presets").then(data => {
-            try {
-                let presets;
-    
-                if(data.presets == null || typeof(data.presets) == "undefined") {
-                    setSettingItem("presets", defaultPresets);
-                    presets = defaultPresets;
-                } else {
-                    presets = data.presets;
-                }
-    
-                const listPreset = [];
-    
-                for(let i = 1; i <= nbPresets; i++) {
-                    if(presets[i]) {
-                        if(Object.prototype.hasOwnProperty.call(presets[i], "name")) {
-                            listPreset.push(i);
-                        }
-                    }
-                }
-    
-                resolve(listPreset);
-            } catch(e) {
-                reject();
-            }
-        });
-    });
-}
+async function presetsEnabled() {
+    const data = await browser.storage.local.get("presets");
 
-function loadPreset(nb) {
-    return new Promise(resolve => {
-        if(nb < 1 || nb > nbPresets) {
-            return resolve("error");
+    try {
+        let presets;
+
+        if(data.presets == null || typeof(data.presets) == "undefined") {
+            setSettingItem("presets", defaultPresets);
+            presets = defaultPresets;
+        } else {
+            presets = data.presets;
         }
 
-        browser.storage.local.get("presets").then(data => {
-            try {
-                let presets;
+        const listPreset = [];
 
-                if(data.presets == null || typeof(data.presets) == "undefined") {
-                    setSettingItem("presets", defaultPresets);
-                    return resolve("empty");
-                } else {
-                    presets = data.presets;
+        for(let i = 1; i <= nbPresets; i++) {
+            if(presets[i]) {
+                if(Object.prototype.hasOwnProperty.call(presets[i], "name")) {
+                    listPreset.push(i);
                 }
-
-                const namePreset = nb;
-                const preset = presets[namePreset];
-                let settingsRestored = 0;
-
-                for(const key in preset) {
-                    if(typeof(key) === "string") {
-                        if(Object.prototype.hasOwnProperty.call(preset, key) && settingsToSavePresets.indexOf(key) !== -1) {
-                            setSettingItem(key, preset[key]);
-                            settingsRestored++;
-                        }
-                    }
-                }
-
-                if(settingsRestored > 0) {
-                    resolve("success");
-                } else {
-                    resolve("empty");
-                }
-            } catch(e) {
-                resolve("error");
             }
-        });
-    });
-}
-
-function getPresetData(nb) {
-    return new Promise(resolve => {
-        if(nb < 1 || nb > nbPresets) {
-            return resolve("error");
         }
 
-        browser.storage.local.get("presets").then(data => {
-            try {
-                let presets;
-
-                if(data.presets == null || typeof(data.presets) == "undefined") {
-                    setSettingItem("presets", defaultPresets);
-                } else {
-                    presets = data.presets;
-                }
-
-                const namePreset = nb;
-                const preset = presets[namePreset];
-
-                resolve(preset);
-            } catch(e) {
-                resolve("error");
-            }
-        });
-    });
+        return listPreset;
+    } catch(e) {
+        throw "";
+    }
 }
 
-function savePreset(nb, name, websiteListToApply, saveNewSettings) {
-    return new Promise(resolve => {
-        if(nb < 1 || nb > nbPresets) {
-            return resolve("error");
+async function loadPreset(nb) {
+    if(nb < 1 || nb > nbPresets) {
+        return "error";
+    }
+
+    const data = await browser.storage.local.get("presets");
+    
+    try {
+        let presets;
+
+        if(data.presets == null || typeof(data.presets) == "undefined") {
+            setSettingItem("presets", defaultPresets);
+            return "empty";
+        } else {
+            presets = data.presets;
         }
 
-        browser.storage.local.get("presets").then(dataPreset => {
-            browser.storage.local.get(settingsToSavePresets).then(data => {
-                try {
-                    let presets;
+        const namePreset = nb;
+        const preset = presets[namePreset];
+        let settingsRestored = 0;
 
-                    if(dataPreset.presets == null || typeof(dataPreset.presets) == "undefined") {
-                        presets = defaultPresets;
-                    } else {
-                        presets = dataPreset.presets;
-                    }
-
-                    const namePreset = nb;
-                    const preset = presets;
-                    if(!preset[namePreset]) preset[namePreset] = {};
-                    preset[namePreset].name = name.substring(0, 50);
-                    preset[namePreset].websiteListToApply = websiteListToApply;
-
-                    if(saveNewSettings) {
-                        for(const key in data) {
-                            if(typeof(key) === "string") {
-                                if(Object.prototype.hasOwnProperty.call(data, key) && settingsToSavePresets.indexOf(key) !== -1) {
-                                    preset[namePreset][key] = data[key];
-                                }
-                            }
-                        }
-                    }
-
-                    setSettingItem("presets", preset);
-
-                    return resolve("success");
-                } catch(e) {
-                    return resolve("error");
+        for(const key in preset) {
+            if(typeof(key) === "string") {
+                if(Object.prototype.hasOwnProperty.call(preset, key) && settingsToSavePresets.indexOf(key) !== -1) {
+                    setSettingItem(key, preset[key]);
+                    settingsRestored++;
                 }
-            });
-        });
-    });
+            }
+        }
+
+        if(settingsRestored > 0) {
+            return "success";
+        } else {
+            return "empty";
+        }
+    } catch(e) {
+        return "error";
+    }
 }
 
-function deletePreset(nb) {
-    return new Promise(resolve => {
-        if(nb < 1 || nb > nbPresets) {
-            return resolve("error");
+async function getPresetData(nb) {
+    if(nb < 1 || nb > nbPresets) {
+        return "error";
+    }
+
+    const data = await browser.storage.local.get("presets");
+
+    try {
+        let presets;
+
+        if(data.presets == null || typeof(data.presets) == "undefined") {
+            setSettingItem("presets", defaultPresets);
+        } else {
+            presets = data.presets;
         }
 
-        browser.storage.local.get("presets").then(dataPreset => {
-            try {
-                let presets;
+        const namePreset = nb;
+        const preset = presets[namePreset];
 
-                if(dataPreset.presets == null || typeof(dataPreset.presets) == "undefined") {
-                    presets = defaultPresets;
-                } else {
-                    presets = dataPreset.presets;
+        return preset;
+    } catch(e) {
+        return "error";
+    }
+}
+
+async function savePreset(nb, name, websiteListToApply, saveNewSettings) {
+    const dataPreset = await browser.storage.local.get("presets");
+    const data = await browser.storage.local.get(settingsToSavePresets);
+
+    try {
+        let presets;
+
+        if(dataPreset.presets == null || typeof(dataPreset.presets) == "undefined") {
+            presets = defaultPresets;
+        } else {
+            presets = dataPreset.presets;
+        }
+
+        const namePreset = nb;
+        const preset = presets;
+        if(!preset[namePreset]) preset[namePreset] = {};
+        preset[namePreset].name = name.substring(0, 50);
+        preset[namePreset].websiteListToApply = websiteListToApply;
+
+        if(saveNewSettings) {
+            for(const key in data) {
+                if(typeof(key) === "string") {
+                    if(Object.prototype.hasOwnProperty.call(data, key) && settingsToSavePresets.indexOf(key) !== -1) {
+                        preset[namePreset][key] = data[key];
+                    }
                 }
-
-                const preset = presets;
-                preset[nb] = {};
-
-                setSettingItem("presets", preset);
-
-                return resolve("success");
-            } catch(e) {
-                return resolve("error");
             }
-        });
-    });
+        }
+
+        setSettingItem("presets", preset);
+
+        return "success";
+    } catch(e) {
+        return "error";
+    }
+}
+
+async function deletePreset(nb) {
+    if(nb < 1 || nb > nbPresets) {
+        return "error";
+    }
+
+    const dataPreset = await browser.storage.local.get("presets");
+
+    try {
+        let presets;
+
+        if(dataPreset.presets == null || typeof(dataPreset.presets) == "undefined") {
+            presets = defaultPresets;
+        } else {
+            presets = dataPreset.presets;
+        }
+
+        const preset = presets;
+        preset[nb] = {};
+
+        setSettingItem("presets", preset);
+
+        return "success";
+    } catch(e) {
+        return "error";
+    }
 }
 
 function getCurrentURL() {
@@ -691,74 +670,71 @@ async function presetsEnabledForWebsite(url) {
 }
 
 async function getSettings(url) {
-    return new Promise(resolve => {
-        browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor"]).then(async(result) => {
-            let pageShadowEnabled = result.pageShadowEnabled;
-            let theme = result.theme;
-            let colorTemp = result.colorTemp;
-            let invertEntirePage = result.invertEntirePage;
-            let invertImageColors = result.invertImageColors;
-            let invertVideoColors = result.invertVideoColors;
-            let invertBgColor = result.invertBgColor;
-            let pageLumEnabled = result.pageLumEnabled;
-            let pourcentageLum = result.pourcentageLum;
-            let nightModeEnabled = result.nightModeEnabled;
-            let invertPageColors = result.invertPageColors;
-            let disableImgBgColor = result.disableImgBgColor;
-            let colorInvert = result.colorInvert;
+    const result = await browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor"]);
+    let pageShadowEnabled = result.pageShadowEnabled;
+    let theme = result.theme;
+    let colorTemp = result.colorTemp;
+    let invertEntirePage = result.invertEntirePage;
+    let invertImageColors = result.invertImageColors;
+    let invertVideoColors = result.invertVideoColors;
+    let invertBgColor = result.invertBgColor;
+    let pageLumEnabled = result.pageLumEnabled;
+    let pourcentageLum = result.pourcentageLum;
+    let nightModeEnabled = result.nightModeEnabled;
+    let invertPageColors = result.invertPageColors;
+    let disableImgBgColor = result.disableImgBgColor;
+    let colorInvert = result.colorInvert;
 
-            // Automatically enable preset ?
-            const presetsEnabled = await presetsEnabledForWebsite(url);
+    // Automatically enable preset ?
+    const presetsEnabled = await presetsEnabledForWebsite(url);
 
-            if(presetsEnabled && presetsEnabled.length > 0) {
-                const presetEnabled = presetsEnabled[0];
+    if(presetsEnabled && presetsEnabled.length > 0) {
+        const presetEnabled = presetsEnabled[0];
 
-                if(presetEnabled && presetEnabled.presetNb > 0) {
-                    const presetData = await getPresetData(presetEnabled.presetNb);
-    
-                    pageShadowEnabled = presetData.pageShadowEnabled;
-                    theme = presetData.theme;
-                    colorTemp = presetData.colorTemp;
-                    invertEntirePage = presetData.invertEntirePage;
-                    invertImageColors = presetData.invertImageColors;
-                    invertVideoColors = presetData.invertVideoColors;
-                    invertBgColor = presetData.invertBgColor;
-                    pageLumEnabled = presetData.pageLumEnabled;
-                    pourcentageLum = presetData.pourcentageLum;
-                    nightModeEnabled = presetData.nightModeEnabled;
-                    invertPageColors = presetData.invertPageColors;
-                    disableImgBgColor = presetData.disableImgBgColor;
-                    colorInvert = presetData.colorInvert;
-                }
-            }
+        if(presetEnabled && presetEnabled.presetNb > 0) {
+            const presetData = await getPresetData(presetEnabled.presetNb);
 
-            if(colorInvert == "true") {
-                colorInvert = "true";
-                invertImageColors = "true";
-            } else if(invertPageColors == "true") {
-                colorInvert = "true";
-            } else {
-                colorInvert = "false";
-            }
+            pageShadowEnabled = presetData.pageShadowEnabled;
+            theme = presetData.theme;
+            colorTemp = presetData.colorTemp;
+            invertEntirePage = presetData.invertEntirePage;
+            invertImageColors = presetData.invertImageColors;
+            invertVideoColors = presetData.invertVideoColors;
+            invertBgColor = presetData.invertBgColor;
+            pageLumEnabled = presetData.pageLumEnabled;
+            pourcentageLum = presetData.pourcentageLum;
+            nightModeEnabled = presetData.nightModeEnabled;
+            invertPageColors = presetData.invertPageColors;
+            disableImgBgColor = presetData.disableImgBgColor;
+            colorInvert = presetData.colorInvert;
+        }
+    }
 
-            resolve({
-                pageShadowEnabled: pageShadowEnabled,
-                theme: theme,
-                pageLumEnabled: pageLumEnabled,
-                pourcentageLum: pourcentageLum,
-                nightModeEnabled: nightModeEnabled,
-                colorInvert: colorInvert,
-                invertPageColors: invertPageColors,
-                invertImageColors: invertImageColors,
-                invertEntirePage: invertEntirePage,
-                colorTemp: colorTemp,
-                globallyEnable: result.globallyEnable,
-                invertVideoColors: invertVideoColors,
-                disableImgBgColor: disableImgBgColor,
-                invertBgColor: invertBgColor
-            });
-        });
-    });
+    if(colorInvert == "true") {
+        colorInvert = "true";
+        invertImageColors = "true";
+    } else if(invertPageColors == "true") {
+        colorInvert = "true";
+    } else {
+        colorInvert = "false";
+    }
+
+    return {
+        pageShadowEnabled: pageShadowEnabled,
+        theme: theme,
+        pageLumEnabled: pageLumEnabled,
+        pourcentageLum: pourcentageLum,
+        nightModeEnabled: nightModeEnabled,
+        colorInvert: colorInvert,
+        invertPageColors: invertPageColors,
+        invertImageColors: invertImageColors,
+        invertEntirePage: invertEntirePage,
+        colorTemp: colorTemp,
+        globallyEnable: result.globallyEnable,
+        invertVideoColors: invertVideoColors,
+        disableImgBgColor: disableImgBgColor,
+        invertBgColor: invertBgColor
+    };
 }
 
 async function disableEnablePreset(type, nb, checked, url) {
