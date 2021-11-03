@@ -44,6 +44,9 @@ module.exports = {
         ],
         "prefer-arrow-callback": [
             "error"
+        ],
+        "no-trailing-spaces": [
+            "warn"
         ]
     },
     parser: "@babel/eslint-parser"

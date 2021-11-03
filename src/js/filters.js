@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
 import { matchWebsite } from "./util.js";
-import { defaultFilters, regexpDetectionPattern } from "./constants.js";
+import { defaultFilters, regexpDetectionPattern, availableFilterRulesType } from "./constants.js";
 import browser from "webextension-polyfill";
 
 let rules = [];
@@ -69,7 +69,7 @@ async function updateFilter(idFilter) {
                         const description = metadata["description"];
                         const version = metadata["version"];
                         const license = metadata["license"];
-                        
+
                         if(name != null) filterToUpdate.filterName = name;
                         if(sourcename != null) filterToUpdate.sourceName = sourcename;
                         if(homepage != null) filterToUpdate.homepage = homepage;
@@ -77,7 +77,7 @@ async function updateFilter(idFilter) {
                         if(description != null) filterToUpdate.description = description;
                         if(version != null) filterToUpdate.version = version;
                         if(license != null) filterToUpdate.license = license;
-                        
+
                         filterToUpdate.content = text;
                         filterToUpdate.hasError = false;
                         filterToUpdate.lastUpdated = Date.now();
@@ -116,7 +116,7 @@ async function updateAllFilters(autoUpdate) {
     filters.lastUpdated = Date.now();
     setSettingItem("filtersSettings", filters);
     cacheFilters();
-    
+
     return true;
 }
 
@@ -132,7 +132,7 @@ async function cleanAllFilters() {
 
     setSettingItem("filtersSettings", filters);
     cacheFilters();
-    
+
     return true;
 }
 
@@ -181,7 +181,7 @@ function parseLine(line) {
             website = "/" + regexp + "/";
             line = lineSplitted[3];
         }
-        
+
         const parts = line.split("|");
         const lineTrimmed = line.trim();
         const isComment = lineTrimmed[0] == "#";
@@ -189,9 +189,13 @@ function parseLine(line) {
         if(!isRegexp) website = parts[0];
         const type = parts[1];
         const filter = parts[2];
-    
-        if(parts.length > 0 && !isComment) {
-            return { "website": website, "type": type, "filter": filter };
+
+        if(type && filter) {
+            const filtersRecognized = !filter.split(",").some(filter => availableFilterRulesType.includes(filter)); // Test if the filter types (rules) are recognized
+
+            if(parts.length > 0 && !isComment && filtersRecognized) {
+                return { "website": website, "type": type, "filter": filter };
+            }
         }
     }
 
@@ -203,10 +207,10 @@ function parseFilter(filterContent) {
 
     if(filterContent) {
         const lines = filterContent.split("\n");
-    
+
         for(const line of lines) {
             const parsed = parseLine(line);
-    
+
             if(parsed) {
                 currentRules.push(parsed);
             }
@@ -221,7 +225,7 @@ async function cacheFilters() {
     const newRulesPerformanceMode = [];
     const newRulesPerformanceModeDisabled = [];
     const data = await openFiltersFiles();
-    
+
     for(const key of Object.keys(data)) {
         const parsed = parseFilter(data[key]);
 
@@ -276,7 +280,7 @@ function extractMetadata(text) {
 
         for(const line of lines) {
             const parsed = extractMetadataLine(line);
-    
+
             if(parsed && Object.keys(parsed).length > 0) {
                 const key = Object.keys(parsed)[0];
                 data[key] = parsed[key];
@@ -340,14 +344,14 @@ async function addFilter(address) {
                     setSettingItem("filtersSettings", filters);
                     return true;
                 }
-                
+
                 throw "Parsing error";
             }
         } catch(e) {
             throw "Fetch error";
         }
     }
-    
+
     throw "Unknown error";
 }
 
@@ -399,10 +403,10 @@ function getRulesForWebsite(url) {
     if(url && url.trim() != "") {
         const websuteUrl_tmp = new URL(url);
         const domain = websuteUrl_tmp.hostname;
-    
+
         for(let i = 0, len = rules.length; i < len; i++) {
             const rule = rules[i];
-    
+
             if(matchWebsite(domain, rule.website) || matchWebsite(url, rule.website)) {
                 rulesForWebsite.push(rule);
             }
@@ -444,10 +448,12 @@ async function reinstallDefaultFilters() {
     for(const filter of filters.filters) {
         if(!filter.builtIn) newFilters.push(filter);
     }
-    
+
     filters.filters = newFilters;
+
     setSettingItem("filtersSettings", filters);
-    
+    cacheFilters();
+
     return true;
 }
 
@@ -455,18 +461,18 @@ function isPerformanceModeEnabledFor(url) {
     if(url && url.trim() != "") {
         const websuteUrl_tmp = new URL(url);
         const domain = websuteUrl_tmp.hostname;
-    
+
         for(let i = 0, len = performanceModeWebsitesDisabled.length; i < len; i++) {
             const urlRule = performanceModeWebsitesDisabled[i];
-    
+
             if(matchWebsite(domain, urlRule) || matchWebsite(url, urlRule)) {
                 return false;
             }
         }
-    
+
         for(let i = 0, len = performanceModeWebsites.length; i < len; i++) {
             const urlRule = performanceModeWebsites[i];
-    
+
             if(matchWebsite(domain, urlRule) || matchWebsite(url, urlRule)) {
                 return true;
             }
@@ -476,6 +482,14 @@ function isPerformanceModeEnabledFor(url) {
     return false;
 }
 
+function getNumberOfTotalRules() {
+    return rules.length + performanceModeWebsites.length + performanceModeWebsitesDisabled.length;
+}
+
+async function getFiltersSize() {
+    return await browser.storage.local.getBytesInUse(["filtersSettings", "customFilter"]);
+}
+
 cacheFilters();
 
-export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor, reinstallDefaultFilters, isPerformanceModeEnabledFor };
+export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor, reinstallDefaultFilters, isPerformanceModeEnabledFor, getNumberOfTotalRules, getFiltersSize };

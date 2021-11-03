@@ -460,6 +460,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                             <li role="presentation" id="restoreTabLink"><a href="#restoreTab" aria-controls="restoreTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-repeat" aria-hidden="true"></i> <span data-i18n="modal.archive.restore"></span></a></li>
                             <li role="presentation" id="presetTabLink"><a href="#presetTab" aria-controls="presetTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-wrench" aria-hidden="true"></i> <span data-i18n="modal.archive.preset"></span></a></li>
                             <li role="presentation" id="cloudBackupLink"><a href="#cloudBackupTab" aria-controls="cloudBackupTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-cloud" aria-hidden="true"></i> <span data-i18n="modal.archive.cloud"></span></a></li>
+                            <li role="presentation" id="infosStorage"><a href="#infosStorageTab" aria-controls="infosStorageTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.infosStorage"></span></a></li>
                         </ul>
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="archiveTab">
@@ -567,6 +568,20 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                     <p id="restoreCloudSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreCloudSuccess"></span></p>
                                 </div>
                             </div>
+                            <div role="tabpanel" class="tab-pane" id="infosStorageTab">
+                                <div class="row border-bottom">
+                                    <label class="col-lg-4 col-sm-4 control-label bold" data-i18n="modal.archive.infosLocalStorage"></label>
+                                    <div class="col-lg-8 col-sm-8">
+                                        <span id="infosLocalStorage"></span>
+                                    </div>
+                                </div>
+                                <div class="row border-bottom">
+                                    <label class="col-lg-4 col-sm-4 control-label bold" data-i18n="modal.archive.infosCloudStorage"></label>
+                                    <div class="col-lg-8 col-sm-8">
+                                        <span id="infosCloudStorage"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -603,6 +618,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                         <button class="btn btn-sm btn-primary" id="updateAllFilters"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.updateAll"></span></button> &nbsp; 
                         <button class="btn btn-sm btn-default" id="cleanAllFilters"><i class="fa fa-trash fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.cleanAll"></span></button> &nbsp; 
                         <input type="checkbox" id="enableFilterAutoUpdate"></input> <label for="enableFilterAutoUpdate" data-i18n="modal.filters.enableFilterAutoUpdate"></label>
+                        <p class="well well-sm well-lmb"><span id="filtersCount"></span> / <span id="filtersStorageSize"></span></p>
                         <ul class="list-group" id="filtersList"></ul>
                         <button class="btn btn-sm btn-primary" id="addFilterSourceBtnOpen" data-dismiss="modal" data-toggle="modal" data-target="#addFilterSource"><i class="fa fa-plus fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.addFilter"></span></button>
                         <button class="btn btn-sm btn-danger" id="resetDefaultFiltersBtn"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.resetDefaultFilters"></span></button>

@@ -54,7 +54,7 @@ async function checkFirstLoad() {
 async function setFirstSettings() {
     const updateNotification = {};
     updateNotification[extensionVersion] = true;
-    
+
     // Set default settings values
     await browser.storage.local.set({
         "pageShadowEnabled": "false",
@@ -97,7 +97,7 @@ async function setFirstSettings() {
 // Migrate deprecated settings
 async function migrateSettings() {
     const result = await browser.storage.local.get(null);
-    
+
     // Migrate old custom theme settings
     if(result.customThemeBg != undefined || result.customThemeTexts != undefined || result.customThemeLinks != undefined || result.customThemeLinksVisited != undefined || result.customThemeFont != undefined || result.customCSSCode != undefined) {
         let customThemeBg = defaultBGColorCustomTheme;

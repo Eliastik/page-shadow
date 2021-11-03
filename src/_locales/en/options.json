@@ -177,7 +177,10 @@
             "infoCloudLastArchive": "Archive date:",
             "dateCloudLastArchive": "{{date}} at {{hour}} with the device {{device}}",
             "savePresetWebsite": "List of website/pages where to automatically enable the preset:",
-            "checkSaveNewSettingsPreset": "Save the new settings"
+            "checkSaveNewSettingsPreset": "Save the new settings",
+            "infosStorage": "Storage infos",
+            "infosLocalStorage": "Local storage used:",
+            "infosCloudStorage": "Cloud storage used:"
         },
         "presets": {
             "pageShadowEnabled": "Increase contrast:",
@@ -256,7 +259,10 @@
             "license": "License:",
             "licenseEmpty": "(Not specified)",
             "rulesCount": "Number of filter rules:",
-            "resetDefaultFilters": "Reset default filters"
+            "resetDefaultFilters": "Reset default filters",
+            "filtersCount_one": "{{count}} total filter rule",
+            "filtersCount_other": "{{count}} total filter rules",
+            "filtersStorageSize": "{{count}} {{unit}} of storage used"
         },
         "close": "Close",
         "ok": "OK",
@@ -270,5 +276,11 @@
         "closeAndSave": "Close and save",
         "closeWithoutSave": "Close without saving",
         "edit": "Edit"
+    },
+    "unit": {
+        "gigabyte": "GB",
+        "megabyte": "MB",
+        "kilobyte": "kB",
+        "byte": "B"
     }
 }

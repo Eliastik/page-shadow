@@ -177,7 +177,7 @@ function commentAllLines(string) {
 // Callback function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not
 async function pageShadowAllowed(url) {
     const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]);
-    
+
     if(result.globallyEnable !== "false") {
         let forbiddenWebsites = [];
 
@@ -192,7 +192,7 @@ async function pageShadowAllowed(url) {
             return true;
         }
     }
-    
+
     return false;
 }
 
@@ -318,7 +318,7 @@ function checkNumber(number, min, max) {
 
 async function getAutoEnableSavedData() {
     const result = await browser.storage.local.get(["autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat"]);
-    
+
     let autoEnable = result.autoEnable || "false";
     let format = result.autoEnableHourFormat || defaultAutoEnableHourFormat;
     let hourEnable = result.hourEnable || defaultHourEnable;
@@ -423,9 +423,15 @@ function checkChangedStorageData(key, object) {
 
 function getBrowser() {
     const isFirefox = navigator.userAgent.split(" ").find(element => element.toLowerCase().startsWith("firefox")) != null;
+    const isEdge = navigator.userAgent.split(" ").find(element => element.toLowerCase().startsWith("edg/")) != null;
+    const isOpera = navigator.userAgent.split(" ").find(element => element.toLowerCase().startsWith("opera")) != null;
 
     if(isFirefox) {
         return "Firefox";
+    } else if(isEdge) {
+        return "Edge";
+    } else if(isOpera) {
+        return "Opera";
     } else {
         return "Chrome";
     }
@@ -508,7 +514,7 @@ async function loadPreset(nb) {
     }
 
     const data = await browser.storage.local.get("presets");
-    
+
     try {
         let presets;
 
@@ -645,16 +651,16 @@ async function presetsEnabledForWebsite(url) {
             if(presetData) {
                 const websiteSettings = presetData.websiteListToApply;
                 let websiteList = [];
-    
+
                 if(websiteSettings !== undefined && websiteSettings !== "") {
                     websiteList = websiteSettings.trim().split("\n");
                 }
-    
+
                 const websuteUrl_tmp = new URL(url);
                 const domain = websuteUrl_tmp.hostname;
                 const autoEnabledWebsite = in_array_website(domain, websiteList);
                 const autoEnabledPage = in_array_website(url, websiteList);
-    
+
                 if(autoEnabledWebsite || autoEnabledPage) {
                     presetListEnabled.push({
                         presetNb: i,
@@ -767,9 +773,9 @@ async function disableEnablePreset(type, nb, checked, url) {
             match = href;
             break;
         }
-    
+
         let disabledWebsitesNew;
-        
+
         if(checked) {
             websitesPagesArray.push(match);
             websitesPagesArray = removeA(websitesPagesArray, "").join("\n");
@@ -788,4 +794,27 @@ async function disableEnablePreset(type, nb, checked, url) {
     }
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset };
+function convertBytes(size) {
+    const result = {
+        size: 0,
+        unit: "byte"
+    };
+
+    if(size >= 1000000000) {
+        result.size = (size / 1000000000).toFixed(2).replace(".", ",");
+        result.unit = "gigabyte";
+    } else if(size >= 1000000) {
+        result.size = (size / 1000000).toFixed(2).replace(".", ",");
+        result.unit = "megabyte";
+    } else if(size >= 1000) {
+        result.size = (size / 1000).toFixed(2).replace(".", ",");
+        result.unit = "kilobyte";
+    } else {
+        result.size = size;
+        result.unit = "byte";
+    }
+
+    return result;
+}
+
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes };

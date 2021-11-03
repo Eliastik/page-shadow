@@ -26,7 +26,7 @@ import "codemirror/mode/css/css.js";
 import "codemirror/addon/display/autorefresh.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData } from "./util.js";
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes } from "./util.js";
 import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL } from "./constants.js";
 import { setSettingItem, setFirstSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
@@ -72,7 +72,7 @@ function translateContent() {
         $("#themeSelect").append("<option value=\"" + i + "\">" + i18next.t("container.customTheme", { count: i }) + "</option>");
     }
 
-    if(getBrowser() != "Chrome" && getBrowser() != "Firefox") {
+    if(getBrowser() != "Chrome" && getBrowser() != "Firefox" && getBrowser() != "Edge" && getBrowser() != "Opera") {
         $("#keyboardShortcuts").tooltip({
             trigger: "focus",
             container: "body",
@@ -148,6 +148,14 @@ async function displaySettings(areaName) {
         $("#restoreCloudBtn").addClass("disabled");
         $("#infoCloudLastArchive").hide();
     }
+
+    const size = await browser.storage.local.getBytesInUse(null);
+    const converted = convertBytes(size);
+    $("#infosLocalStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
+
+    const sizeCloud = await browser.storage.sync.getBytesInUse(null);
+    const convertedCloud = convertBytes(sizeCloud);
+    $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }));
 
     if(areaName != "sync") {
         displayTheme($("#themeSelect").val());
@@ -327,7 +335,7 @@ async function displayFilters() {
 
                 buttonContainer.appendChild(buttonHome);
             }
-            
+
             const buttonInfos = document.createElement("button");
             buttonInfos.setAttribute("class", "btn btn-sm btn-default");
             buttonInfos.setAttribute("data-toggle", "tooltip");
@@ -396,12 +404,20 @@ async function displayFilters() {
 
             buttonContainer.appendChild(buttonEdit);
         }
-        
+
         element.appendChild(buttonContainer);
         document.getElementById("filtersList").appendChild(element);
     });
 
     $("[data-toggle=\"tooltip\"]").tooltip();
+
+    browser.runtime.sendMessage({
+        "type": "getNumberOfTotalRules"
+    });
+
+    browser.runtime.sendMessage({
+        "type": "getFiltersSize"
+    });
 }
 
 async function displayDetailsFilter(idFilter) {
@@ -592,7 +608,7 @@ async function getSettingsToArchive() {
 
         // Remove filter content
         const filters = data["filtersSettings"];
-        
+
         filters.filters.forEach(filter => {
             filter.content = null;
             filter.lastUpdated = 0;
@@ -656,7 +672,7 @@ async function restoreSettings(object) {
     }
 
     $("#updateAllFilters").attr("disabled", "disabled");
-    
+
     browser.runtime.sendMessage({
         "type": "updateAllFilters"
     });
@@ -689,7 +705,7 @@ function restoreSettingsFile(event) {
             $("#checkWhiteList").prop("checked", false);
 
             const result = await restoreSettings(obj);
-            
+
             if(result) {
                 $("#restoreSuccess").fadeIn(500);
                 loadPresetSelect("loadPresetSelect", i18next);
@@ -1074,10 +1090,16 @@ $(document).ready(() => {
     loadPresetSelect("savePresetSelect", i18next);
     loadPresetSelect("deletePresetSelect", i18next);
 
-    if(getBrowser() == "Chrome") {
+    if(getBrowser() == "Chrome" || getBrowser() == "Opera") {
         $("#keyboardShortcuts").click(() => {
             browser.tabs.create({
                 url: "chrome://extensions/configureCommands"
+            });
+        });
+    } else if(getBrowser() == "Edge") {
+        $("#keyboardShortcuts").click(() => {
+            browser.tabs.create({
+                url: "edge://extensions/shortcuts"
             });
         });
     } else if(getBrowser() == "Firefox") {
@@ -1148,7 +1170,7 @@ $(document).ready(() => {
 
     $("#updateAllFilters").click(() => {
         $("#updateAllFilters").attr("disabled", "disabled");
-        
+
         browser.runtime.sendMessage({
             "type": "updateAllFilters"
         });
@@ -1156,7 +1178,7 @@ $(document).ready(() => {
 
     $("#cleanAllFilters").click(() => {
         $("#cleanAllFilters").attr("disabled", "disabled");
-        
+
         browser.runtime.sendMessage({
             "type": "cleanAllFilters"
         });
@@ -1180,29 +1202,29 @@ $(document).ready(() => {
         $("#addFilterErrorUnknown").hide();
         $("#addFilterErrorAlreadyAdded").hide();
         $("#addFilterErrorEmpty").hide();
-        
+
         browser.runtime.sendMessage({
             "type": "addFilter",
             "address": $("#filterAddress").val()
         });
     });
-        
+
     $("#addFilterSource").on("hidden.bs.modal", () => {
         $("#filters").modal("show");
     });
-    
+
     $("#filterDetails").on("hidden.bs.modal", () => {
         $("#filters").modal("show");
     });
-    
+
     $("#filterInfos").on("hidden.bs.modal", () => {
         $("#filters").modal("show");
     });
-    
+
     $("#editFilter").on("hidden.bs.modal", () => {
         $("#filters").modal("show");
     });
-    
+
     $("#presetInfos").on("hidden.bs.modal", () => {
         $("#archive").modal("show");
     });
@@ -1227,7 +1249,7 @@ $(document).ready(() => {
     $("#customFilterSave").click(() => {
         $("#customFilterSave").attr("disabled", "disabled");
         saveCustomFilter();
-        
+
     });
 
     $("#customFilterCancel").click(() => {
@@ -1308,6 +1330,16 @@ browser.runtime.onMessage.addListener(message => {
         }
         case "getNumberOfRulesResponse": {
             $("#detailsFilterRulesCount").text(message.count);
+            break;
+        }
+        case "getNumberOfTotalRulesResponse": {
+            $("#filtersCount").text(i18next.t("modal.filters.filtersCount", { count: message.count }));
+            break;
+        }
+        case "getFiltersSizeResponse": {
+            const converted = convertBytes(message.size);
+
+            $("#filtersStorageSize").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
             break;
         }
         case "reinstallDefaultFiltersResponse": {

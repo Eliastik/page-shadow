@@ -163,7 +163,7 @@
             "infoLoadPreset": "Ici, vous pouvez charger un pré-réglage.",
             "infoSavePreset": "Le pré-réglage sera créé/modifié avec les réglages actuels tels qu'affichés dans le menu de l'extension. Si vous modifiez un réglage existant, cochez la case « Sauvegarder les nouveaux réglages » pour mettre à jour les réglages sauvegardés.",
             "infoDeletePreset": "Attention, la suppression est définitive !",
-            "cloud": "Archive Cloud",
+            "cloud": "Cloud",
             "descriptionCloudBackup": "Vous pouvez ici faire une archive de tous vos paramètres dans le Cloud du fournisseur de votre navigateur web (compte Google, Firefox Sync par exemple). Cela vous permettra de récupérer tous vos paramètres sur tous les navigateurs connectés au même compte que celui-ci. Cette fonction dépend de votre navigateur. Si vous n'êtes connecté à aucun compte, l'archive se fera en local.",
             "warningCloudBackup": "Attention en restaurant vos paramètres à partir d'une archive Cloud, tous vos paramètres actuels seront remplacés !",
             "archiveCloudBtn": "Archiver les données",
@@ -176,7 +176,10 @@
             "infoCloudLastArchive": "Date de l'archive :",
             "dateCloudLastArchive": "le {{date}} à {{hour}} avec l'appareil {{device}}",
             "savePresetWebsite": "Liste des sites/pages où activer automatiquement le pré-réglage :",
-            "checkSaveNewSettingsPreset": "Sauvegarder les nouveaux réglages"
+            "checkSaveNewSettingsPreset": "Sauvegarder les nouveaux réglages",
+            "infosStorage": "Infos sur le stockage",
+            "infosLocalStorage": "Stockage local utilisé :",
+            "infosCloudStorage": "Stockage cloud utilisé :"
         },
         "presets": {
             "pageShadowEnabled": "Augmenter le contraste :",
@@ -255,7 +258,10 @@
             "license": "Licence :",
             "licenseEmpty": "(Non renseigné)",
             "rulesCount": "Nombre de règles de filtre :",
-            "resetDefaultFilters": "Réinstaller les filtres par défaut"
+            "resetDefaultFilters": "Réinstaller les filtres par défaut",
+            "filtersCount_one": "{{count}} règle de filtre au total",
+            "filtersCount_other": "{{count}} règles de filtre au total",
+            "filtersStorageSize": "{{count}} {{unit}} de stockage utilisé"
         },
         "close": "Fermer",
         "ok": "OK",
@@ -269,5 +275,11 @@
         "closeAndSave": "Fermer et sauvegarder",
         "closeWithoutSave": "Fermer sans sauvegarder",
         "edit": "Éditer"
+    },
+    "unit": {
+        "gigabyte": "Go",
+        "megabyte": "Mo",
+        "kilobyte": "Ko",
+        "byte": "o"
     }
 }

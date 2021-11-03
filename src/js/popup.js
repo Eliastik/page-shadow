@@ -64,7 +64,7 @@ async function getCurrentURL() {
     if(matches && matches.length === 2) {
         const tabId = parseInt(matches[1]);
         const tabInfos = await browser.tabs.get(tabId);
-        
+
         if(!browser.runtime.lastError) {
             return tabInfos.url;
         }
@@ -276,7 +276,7 @@ $(document).ready(() => {
                         $("#enableWebsitePreset-li").hide();
                         $("#disableWebsitePreset-li").show();
                     }
-                    
+
                     if(presetEnabled.autoEnabledPage) {
                         $("#enableWebpagePreset-li").show();
                         $("#disableWebpagePreset-li").hide();
