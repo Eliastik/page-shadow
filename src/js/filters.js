@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
-import { matchWebsite } from "./util.js";
+import { matchWebsite, getSizeObject } from "./util.js";
 import { defaultFilters, regexpDetectionPattern, availableFilterRulesType } from "./constants.js";
 import browser from "webextension-polyfill";
 
@@ -487,7 +487,11 @@ function getNumberOfTotalRules() {
 }
 
 async function getFiltersSize() {
-    return await browser.storage.local.getBytesInUse(["filtersSettings", "customFilter"]);
+    if(browser.storage.local.getBytesInUse != undefined) {
+        return await browser.storage.local.getBytesInUse(["filtersSettings", "customFilter"]);
+    } else {
+        return getSizeObject(await browser.storage.local.get(["filtersSettings", "customFilter"]));
+    }
 }
 
 cacheFilters();

@@ -46,7 +46,7 @@ async function translateContent() {
     $(".container").localize();
     $(".modal").localize();
     $("footer").localize();
-    checkContrastMode();
+    if(checkContrastMode) checkContrastMode();
     await loadPresetSelect("loadPresetSelect", i18next);
     checkPresetAutoEnabled(await getCurrentURL());
     $("#loadPresetSelect").val(selectedPreset).change();
