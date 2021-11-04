@@ -295,6 +295,12 @@ async function displayFilters() {
             }
         }
 
+        if(filter.customFilter) {
+            const customFilterCount = document.createElement("div");
+            customFilterCount.setAttribute("id", "customFilterCount");
+            texts.appendChild(customFilterCount);
+        }
+
         element.appendChild(texts);
 
         const buttonContainer = document.createElement("div");
@@ -417,6 +423,10 @@ async function displayFilters() {
 
     browser.runtime.sendMessage({
         "type": "getFiltersSize"
+    });
+
+    browser.runtime.sendMessage({
+        "type": "getNumberOfCustomFilterRules"
     });
 }
 
@@ -1334,6 +1344,10 @@ browser.runtime.onMessage.addListener(message => {
         }
         case "getNumberOfTotalRulesResponse": {
             $("#filtersCount").text(i18next.t("modal.filters.filtersCount", { count: message.count }));
+            break;
+        }
+        case "getNumberOfCustomFilterRulesResponse": {
+            $("#customFilterCount").text(i18next.t("modal.filters.filtersCount", { count: message.count }));
             break;
         }
         case "getFiltersSizeResponse": {
