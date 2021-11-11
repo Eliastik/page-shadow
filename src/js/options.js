@@ -755,8 +755,23 @@ async function archiveCloudSettings() {
 
         try {
             const dataStr = await getSettingsToArchive();
-            const newSetting = {};
-            newSetting["pageShadowStorageBackup"] = dataStr;
+            const dataObj = JSON.parse(dataStr);
+
+            for(const key in dataObj) {
+                if(typeof(key) === "string") {
+                    if(Object.prototype.hasOwnProperty.call(dataObj, key)) {
+                        const settingToSave = {};
+                        settingToSave[key] = dataObj[key];
+                        try {
+                            await browser.storage.sync.set(settingToSave);
+                        } catch(e) {
+                            $("#archiveCloudError").fadeIn(500);
+                            displaySettings("sync");
+                            return;
+                        }
+                    }
+                }
+            }
 
             const dateSettings = {};
             dateSettings["dateLastBackup"] = Date.now().toString();
@@ -764,7 +779,7 @@ async function archiveCloudSettings() {
             const deviceSettings = {};
             deviceSettings["deviceBackup"] = window.navigator.platform;
 
-            Promise.all([browser.storage.sync.set(newSetting), browser.storage.sync.set(dateSettings), browser.storage.sync.set(deviceSettings)])
+            Promise.all([browser.storage.sync.set(dateSettings), browser.storage.sync.set(deviceSettings), browser.storage.sync.remove("pageShadowStorageBackup")])
                 .then(() => {
                     $("#archiveCloudSuccess").fadeIn(500);
                     displaySettings("sync");
@@ -791,7 +806,7 @@ async function isArchiveCloudAvailable() {
     }
 
     const data = await browser.storage.sync.get(["dateLastBackup", "pageShadowStorageBackup", "deviceBackup"]);
-    if(data.dateLastBackup && data.pageShadowStorageBackup && data.deviceBackup) {
+    if(data.dateLastBackup && data.deviceBackup) {
         return {
             "available": true,
             "date": data.dateLastBackup,
@@ -815,11 +830,15 @@ async function restoreCloudSettings() {
         $("#archiveCloudBtn").addClass("disabled");
         $("#restoreCloudBtn").addClass("disabled");
 
-        const data = await browser.storage.sync.get("pageShadowStorageBackup");
+        const dataSync = await browser.storage.sync.get(null);
 
-        if(data.pageShadowStorageBackup != undefined) {
+        if(dataSync != undefined) {
             try {
-                const dataObj = JSON.parse(data.pageShadowStorageBackup);
+                let dataObj = dataSync;
+
+                if(dataSync.pageShadowStorageBackup) {
+                    dataObj = JSON.parse(dataSync.pageShadowStorageBackup);
+                }
 
                 $("#textareaAssomPage").val("");
                 $("#checkWhiteList").prop("checked", false);
