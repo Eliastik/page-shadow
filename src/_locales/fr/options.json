@@ -261,7 +261,8 @@
             "resetDefaultFilters": "Réinstaller les filtres par défaut",
             "filtersCount_one": "{{count}} règle de filtre au total",
             "filtersCount_other": "{{count}} règles de filtre au total",
-            "filtersStorageSize": "{{count}} {{unit}} de stockage utilisé"
+            "filtersStorageSize": "{{count}} {{unit}} de stockage utilisé",
+            "filtersStorageMaxSize": "{{count}} {{unit}} au maximum"
         },
         "close": "Fermer",
         "ok": "OK",

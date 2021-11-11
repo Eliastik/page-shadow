@@ -262,7 +262,8 @@
             "resetDefaultFilters": "Reset default filters",
             "filtersCount_one": "{{count}} total filter rule",
             "filtersCount_other": "{{count}} total filter rules",
-            "filtersStorageSize": "{{count}} {{unit}} of storage used"
+            "filtersStorageSize": "{{count}} {{unit}} of storage used",
+            "filtersStorageMaxSize": "{{count}} {{unit}} maximum"
         },
         "close": "Close",
         "ok": "OK",
