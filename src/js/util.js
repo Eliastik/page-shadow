@@ -637,10 +637,6 @@ async function deletePreset(nb) {
     }
 }
 
-function getCurrentURL() {
-    return window.location.href;
-}
-
 async function presetsEnabledForWebsite(url) {
     const presetListEnabled = [];
 
@@ -827,4 +823,20 @@ function getSizeObject(object) {
     ).length;
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject };
+function normalizeURL(url) {
+    if(url) {
+        const urlNormalized = url.split("#:~:text=");
+
+        if(urlNormalized.length > 0) {
+            return urlNormalized[0];
+        }
+    }
+
+    return url;
+}
+
+function getCurrentURL() {
+    return normalizeURL(window.location.href);
+}
+
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL };

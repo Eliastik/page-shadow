@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings } from "./util.js";
+import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL } from "./util.js";
 import { defaultFilters, nbPresets } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
 import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor, reinstallDefaultFilters, isPerformanceModeEnabledFor, getNumberOfTotalRules, getFiltersSize } from "./filters.js";
@@ -98,7 +98,7 @@ async function menu() {
                 const tabUrl = tabs[0].url;
                 if(!tabUrl || tabUrl.trim() == "") return;
 
-                const url = new URL(tabUrl);
+                const url = new URL(normalizeURL(tabUrl));
                 const domain = url.hostname;
                 const href = url.href;
 
@@ -182,7 +182,7 @@ async function updateBadge() {
         for(const tab of tabs) {
             if(!tab || tab.url.trim() == "") continue;
 
-            const enabled = await pageShadowAllowed(tab.url);
+            const enabled = await pageShadowAllowed(normalizeURL(tab.url));
             if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeText) !== "undefined") {
                 browser.browserAction.setBadgeText({
                     text: " ",
@@ -314,7 +314,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
     browser.runtime.onMessage.addListener((message, sender) => {
         new Promise(resolve => {
             if(message) {
-                const url = sender.tab.url;
+                const url = normalizeURL(sender.tab.url);
 
                 if(message.type == "isEnabledForThisPage") {
                     pageShadowAllowed(url).then(async(enabled) => {
@@ -367,7 +367,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 } else if(message.type == "getAllFilters") {
                     resolve({ type: "getFiltersResponse", filters: getRules() });
                 } else if(message.type == "getFiltersForThisWebsite") {
-                    resolve({ type: "getFiltersResponse", filters: getRulesForWebsite(sender.url) });
+                    resolve({ type: "getFiltersResponse", filters: getRulesForWebsite(url) });
                 } else if(message.type == "reinstallDefaultFilters") {
                     reinstallDefaultFilters().then(result => {
                         resolve({ type: "reinstallDefaultFiltersResponse", result: result });
@@ -402,7 +402,8 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
 
 if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.onClicked) !== "undefined") {
     browser.contextMenus.onClicked.addListener(async(info, tab) => {
-        await disableEnableToggle(info.menuItemId, info.checked && !info.wasChecked, new URL(tab.url));
+        const url = normalizeURL(tab.url);
+        await disableEnableToggle(info.menuItemId, info.checked && !info.wasChecked, new URL(url));
 
         if(info.menuItemId.substring(0, 11) == "load-preset") {
             const nbPreset = info.menuItemId.substr(12, info.menuItemId.length - 11);
