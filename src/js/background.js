@@ -384,6 +384,10 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     getFiltersSize().then(size => {
                         resolve({ type: "getFiltersSizeResponse", size: size });
                     });
+                } else if(message.type == "getNumberOfCustomFilterRules") {
+                    getNumberOfRulesFor("customFilter").then(count => {
+                        resolve({ type: "getNumberOfCustomFilterRulesResponse", count: count });
+                    });
                 }
             }
         }).then(result => {

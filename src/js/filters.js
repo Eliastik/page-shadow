@@ -191,9 +191,9 @@ function parseLine(line) {
         const filter = parts[2];
 
         if(type && filter) {
-            const filtersRecognized = !filter.split(",").some(filter => availableFilterRulesType.includes(filter)); // Test if the filter types (rules) are recognized
+            const filtersTypeRecognized = type.split(",").some(filterType => availableFilterRulesType.includes(filterType)); // Test if the filter types (rules) are recognized
 
-            if(parts.length > 0 && !isComment && filtersRecognized) {
+            if(parts.length > 0 && !isComment && filtersTypeRecognized) {
                 return { "website": website, "type": type, "filter": filter };
             }
         }
@@ -419,18 +419,27 @@ function getRulesForWebsite(url) {
 async function getNumberOfRulesFor(filterId) {
     let ruleCount = 0;
 
-    const result = await browser.storage.local.get("filtersSettings");
-    const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+    if(filterId != "customFilter") {
+        const result = await browser.storage.local.get("filtersSettings");
+        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
 
-    filters.filters.forEach((filter, index) => {
-        if(index == filterId) {
-            const filterRules = parseFilter(filter.content);
+        filters.filters.forEach((filter, index) => {
+            if(index == filterId) {
+                const filterRules = parseFilter(filter.content);
 
-            if(filterRules) {
-                ruleCount = filterRules.length;
+                if(filterRules) {
+                    ruleCount = filterRules.length;
+                }
             }
+        });
+    } else {
+        const result = await browser.storage.local.get("customFilter");
+        const filterRules = parseFilter(result.customFilter);
+
+        if(filterRules) {
+            ruleCount = filterRules.length;
         }
-    });
+    }
 
     return ruleCount;
 }
