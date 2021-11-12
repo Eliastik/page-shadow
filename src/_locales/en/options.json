@@ -265,7 +265,19 @@
             "filtersStorageSize": "{{count}} {{unit}} of storage used",
             "filtersStorageMaxSize": "{{count}} {{unit}} maximum",
             "filtersWithErrorCount_one": "{{count}} filter rule with error",
-            "filtersWithErrorCount_other": "{{count}} filter rules with error"
+            "filtersWithErrorCount_other": "{{count}} filter rules with error",
+            "seeErrorDetails": "See error details",
+            "filterErrorsLabel": "Filter errors",
+            "errorType": {
+                "no_type": "No filter rule entered",
+                "no_filter": "No parameter (CSS selector) entered for the filter",
+                "wrong_css_selector": "Incorrect CSS selector",
+                "unknown_type": "Unknown filter rule",
+                "incorrect_regexp": "The regular expression for the selection of website/webpage is incorrect"
+            },
+            "errorLine": "Error found at line n°{{count}}",
+            "errorLineDetails": "Part of the rule with error:",
+            "errorLineMessage": "Complete error message:"
         },
         "close": "Close",
         "ok": "OK",

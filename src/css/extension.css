@@ -384,7 +384,7 @@ div.navbar-right {
 .tooltip.show {
     opacity: .9;
 }
-#filterInfos .modal-body *, #syntax .modal-body li, #about .panel-group li {
+#filterInfos .modal-body *, #syntax .modal-body li, #about .panel-group li, #filterErrors .modal-body * {
     user-select: text;
     cursor: text;
 }
@@ -403,6 +403,13 @@ div.navbar-right {
 }
 a.btn[disabled] {
     pointer-events: none;
+}
+.ml-2 {
+    margin-left: 8px;
+}
+.filterErrorDetail {
+    font-family: monospace;
+    margin-left: 8px;
 }
 @-webkit-keyframes fadein {
     from { bottom: 0; opacity: 0; }

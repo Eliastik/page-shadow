@@ -264,7 +264,19 @@
             "filtersStorageSize": "{{count}} {{unit}} de stockage utilisé",
             "filtersStorageMaxSize": "{{count}} {{unit}} au maximum",
             "filtersWithErrorCount_one": "{{count}} règle de filtre en erreur",
-            "filtersWithErrorCount_other": "{{count}} règles de filtre en erreur"
+            "filtersWithErrorCount_other": "{{count}} règles de filtre en erreur",
+            "seeErrorDetails": "Voir le détail des erreurs",
+            "filterErrorsLabel": "Erreurs du filtre",
+            "errorType": {
+                "no_type": "Aucune règle de filtre renseignée",
+                "no_filter": "Aucun paramètre (sélecteur CSS) renseigné pour le filtre",
+                "wrong_css_selector": "Sélecteur CSS incorrect",
+                "unknown_type": "Règle de filtre inconnue",
+                "incorrect_regexp": "Expression régulière de sélection du site web/page web incorrecte"
+            },
+            "errorLine": "Erreur trouvée à la ligne n°{{count}}",
+            "errorLineDetails": "Partie de la règle incriminée :",
+            "errorLineMessage": "Message d'erreur complet :"
         },
         "close": "Fermer",
         "ok": "OK",

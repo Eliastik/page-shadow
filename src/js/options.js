@@ -301,10 +301,33 @@ async function displayFilters() {
             customFilterCount.setAttribute("id", "customFilterCount");
             texts.appendChild(customFilterCount);
 
-            const errorFilterCount = document.createElement("div");
+            const divErrorFilterCount = document.createElement("div");
+            const errorFilterCount = document.createElement("span");
             errorFilterCount.setAttribute("id", "errorFilterCount");
             errorFilterCount.style.color = "red";
-            texts.appendChild(errorFilterCount);
+
+            const buttonSeeErrors = document.createElement("button");
+            buttonSeeErrors.setAttribute("class", "btn btn-sm btn-link ml-2");
+            buttonSeeErrors.setAttribute("id", "buttonSeeErrorsCustomFilter");
+            buttonSeeErrors.setAttribute("data-toggle", "tooltip");
+            buttonSeeErrors.setAttribute("title", i18next.t("modal.filters.seeErrorDetails"));
+
+            buttonSeeErrors.addEventListener("click", () => {
+                buttonSeeErrors.setAttribute("disabled", "disabled");
+
+                browser.runtime.sendMessage({
+                    "type": "getRulesErrors",
+                    "idFilter": "customFilter"
+                });
+            });
+
+            const iconSeeErrors = document.createElement("i");
+            iconSeeErrors.setAttribute("class", "fa fa-search");
+            buttonSeeErrors.appendChild(iconSeeErrors);
+
+            divErrorFilterCount.appendChild(errorFilterCount);
+            divErrorFilterCount.appendChild(buttonSeeErrors);
+            texts.appendChild(divErrorFilterCount);
         }
 
         element.appendChild(texts);
@@ -542,6 +565,63 @@ async function displayPresetInfos(nb) {
             row.appendChild(label);
             divCol.appendChild(span);
             row.appendChild(divCol);
+            modalBody.appendChild(row);
+        }
+    }
+}
+
+async function displayFilterErrors(data) {
+    $("#filters").modal("hide");
+
+    $("#filters").on("hidden.bs.modal", () => {
+        $("#filterErrors").modal("show");
+        $("#filters").off("hidden.bs.modal");
+    });
+
+    console.log(data);
+    if(data) {
+        const modalBody = document.querySelector("#filterErrors .modal-body");
+        modalBody.textContent = "";
+
+        for(const element of data) {
+            const row = document.createElement("div");
+            row.setAttribute("class", "border-bottom");
+
+            const label = document.createElement("label");
+            label.setAttribute("class", "control-label bold");
+            label.textContent = i18next.t("modal.filters.errorType." + element.type.toLowerCase());
+            row.appendChild(label);
+
+            const labelLine = document.createElement("div");
+            labelLine.textContent = i18next.t("modal.filters.errorLine", { count: element.line });
+            row.appendChild(labelLine);
+
+            if(element.linePart) {
+                const divPart = document.createElement("div");
+                const spanPart = document.createElement("span");
+                spanPart.textContent = i18next.t("modal.filters.errorLineDetails");
+                const spanPartDetails = document.createElement("span");
+                spanPartDetails.setAttribute("class", "filterErrorDetail");
+                spanPartDetails.textContent = element.linePart;
+
+                divPart.appendChild(spanPart);
+                divPart.appendChild(spanPartDetails);
+                row.appendChild(divPart);
+            }
+
+            if(element.message) {
+                const divMessage = document.createElement("div");
+                const spanMessage = document.createElement("span");
+                spanMessage.textContent = i18next.t("modal.filters.errorLineMessage");
+                const spanMessageDetails = document.createElement("span");
+                spanMessageDetails.setAttribute("class", "filterErrorDetail");
+                spanMessageDetails.textContent = element.message;
+
+                divMessage.appendChild(spanMessage);
+                divMessage.appendChild(spanMessageDetails);
+                row.appendChild(divMessage);
+            }
+
             modalBody.appendChild(row);
         }
     }
@@ -1264,6 +1344,10 @@ $(document).ready(() => {
         $("#filters").modal("show");
     });
 
+    $("#filterErrors").on("hidden.bs.modal", () => {
+        $("#filters").modal("show");
+    });
+
     $("#presetInfos").on("hidden.bs.modal", () => {
         $("#archive").modal("show");
     });
@@ -1381,9 +1465,17 @@ browser.runtime.onMessage.addListener(message => {
         }
         case "getRulesErrorCustomFilterResponse": {
             $("#errorFilterCount").text("");
+            $("#buttonSeeErrorsCustomFilter").hide();
+
             if(message.data && message.data.length > 0) {
                 $("#errorFilterCount").text(i18next.t("modal.filters.filtersWithErrorCount", { count: message.data.length }));
+                $("#buttonSeeErrorsCustomFilter").show();
             }
+            break;
+        }
+        case "getRulesErrorsResponse": {
+            $("#buttonSeeErrorsCustomFilter").removeAttr("disabled");
+            displayFilterErrors(message.data);
             break;
         }
         case "getFiltersSizeResponse": {
