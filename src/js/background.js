@@ -19,7 +19,7 @@
 import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL } from "./util.js";
 import { defaultFilters, nbPresets } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
-import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor, reinstallDefaultFilters, isPerformanceModeEnabledFor, getNumberOfTotalRules, getFiltersSize } from "./filters.js";
+import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor, reinstallDefaultFilters, isPerformanceModeEnabledFor, getNumberOfTotalRules, getFiltersSize, getRulesErrorCustomFilter } from "./filters.js";
 import browser from "webextension-polyfill";
 
 let autoEnableActivated = false;
@@ -387,6 +387,10 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 } else if(message.type == "getNumberOfCustomFilterRules") {
                     getNumberOfRulesFor("customFilter").then(count => {
                         resolve({ type: "getNumberOfCustomFilterRulesResponse", count: count });
+                    });
+                } else if(message.type == "getRulesErrorCustomFilter") {
+                    getRulesErrorCustomFilter().then(data => {
+                        resolve({ type: "getRulesErrorCustomFilterResponse", data: data });
                     });
                 }
             }

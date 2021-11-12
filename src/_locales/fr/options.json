@@ -262,7 +262,9 @@
             "filtersCount_one": "{{count}} règle de filtre au total",
             "filtersCount_other": "{{count}} règles de filtre au total",
             "filtersStorageSize": "{{count}} {{unit}} de stockage utilisé",
-            "filtersStorageMaxSize": "{{count}} {{unit}} au maximum"
+            "filtersStorageMaxSize": "{{count}} {{unit}} au maximum",
+            "filtersWithErrorCount_one": "{{count}} règle de filtre en erreur",
+            "filtersWithErrorCount_other": "{{count}} règles de filtre en erreur"
         },
         "close": "Fermer",
         "ok": "OK",

@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
 import { matchWebsite, getSizeObject } from "./util.js";
-import { defaultFilters, regexpDetectionPattern, availableFilterRulesType } from "./constants.js";
+import { defaultFilters, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes } from "./constants.js";
 import browser from "webextension-polyfill";
 
 let rules = [];
@@ -170,7 +170,24 @@ async function toggleAutoUpdate(enabled) {
     return true;
 }
 
+function testRegexp(regexp) {
+    try {
+        "test".match(regexp);
+    } catch(e) {
+        return {
+            "error": true,
+            "cause": e.message
+        };
+    }
+
+    return {
+        "error": false
+    };
+}
+
 function parseLine(line) {
+    let errorType = "";
+
     if(line.length > 0) {
         const isRegexp = line.trim().match(regexpDetectionPattern);
         let website;
@@ -180,6 +197,15 @@ function parseLine(line) {
             const regexp = lineSplitted[1];
             website = "/" + regexp + "/";
             line = lineSplitted[3];
+            const regexpTest = testRegexp(regexp);
+
+            if(regexpTest.error) {
+                return {
+                    "error": true,
+                    "type": filterSyntaxErrorTypes.INCORRECT_REGEXP,
+                    "message": regexpTest.cause
+                };
+            }
         }
 
         const parts = line.split("|");
@@ -195,15 +221,28 @@ function parseLine(line) {
 
             if(parts.length > 0 && !isComment && filtersTypeRecognized) {
                 return { "website": website, "type": type, "filter": filter };
+            } else {
+                if(!filtersTypeRecognized) {
+                    errorType = filterSyntaxErrorTypes.UNKNOWN_TYPE;
+                } else if(parts.length <= 0) {
+                    errorType = filterSyntaxErrorTypes.NO_TYPE;
+                }
+            }
+        } else {
+            if(!type) {
+                errorType = filterSyntaxErrorTypes.NO_TYPE;
+            } else if(!filter) {
+                errorType = filterSyntaxErrorTypes.NO_FILTER;
             }
         }
     }
 
-    return null;
+    return { "error": true, "type": errorType, "message": "" };
 }
 
 function parseFilter(filterContent) {
     const currentRules = [];
+    const errorRules = [];
 
     if(filterContent) {
         const lines = filterContent.split("\n");
@@ -212,12 +251,19 @@ function parseFilter(filterContent) {
             const parsed = parseLine(line);
 
             if(parsed) {
-                currentRules.push(parsed);
+                if(!parsed.error) {
+                    currentRules.push(parsed);
+                } else {
+                    errorRules.push(parsed);
+                }
             }
         }
     }
 
-    return currentRules;
+    return {
+        "rules": currentRules,
+        "rulesWithError": errorRules
+    };
 }
 
 async function cacheFilters() {
@@ -227,7 +273,7 @@ async function cacheFilters() {
     const data = await openFiltersFiles();
 
     for(const key of Object.keys(data)) {
-        const parsed = parseFilter(data[key]);
+        const parsed = parseFilter(data[key]).rules;
 
         for(const rule of parsed) {
             if(rule.type == "enablePerformanceMode") {
@@ -425,7 +471,7 @@ async function getNumberOfRulesFor(filterId) {
 
         filters.filters.forEach((filter, index) => {
             if(index == filterId) {
-                const filterRules = parseFilter(filter.content);
+                const filterRules = parseFilter(filter.content).rules;
 
                 if(filterRules) {
                     ruleCount = filterRules.length;
@@ -434,7 +480,7 @@ async function getNumberOfRulesFor(filterId) {
         });
     } else {
         const result = await browser.storage.local.get("customFilter");
-        const filterRules = parseFilter(result.customFilter);
+        const filterRules = parseFilter(result.customFilter).rules;
 
         if(filterRules) {
             ruleCount = filterRules.length;
@@ -442,6 +488,17 @@ async function getNumberOfRulesFor(filterId) {
     }
 
     return ruleCount;
+}
+
+async function getRulesErrorCustomFilter() {
+    const result = await browser.storage.local.get("customFilter");
+    const filterRules = parseFilter(result.customFilter);
+
+    if(filterRules) {
+        return filterRules.rulesWithError;
+    }
+
+    return [];
 }
 
 async function reinstallDefaultFilters() {
@@ -505,4 +562,4 @@ async function getFiltersSize() {
 
 cacheFilters();
 
-export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor, reinstallDefaultFilters, isPerformanceModeEnabledFor, getNumberOfTotalRules, getFiltersSize };
+export { openFiltersFiles, updateFilter, updateAllFilters, updateOneFilter, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor, reinstallDefaultFilters, isPerformanceModeEnabledFor, getNumberOfTotalRules, getFiltersSize, getRulesErrorCustomFilter };

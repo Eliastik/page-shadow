@@ -300,6 +300,11 @@ async function displayFilters() {
             const customFilterCount = document.createElement("div");
             customFilterCount.setAttribute("id", "customFilterCount");
             texts.appendChild(customFilterCount);
+
+            const errorFilterCount = document.createElement("div");
+            errorFilterCount.setAttribute("id", "errorFilterCount");
+            errorFilterCount.style.color = "red";
+            texts.appendChild(errorFilterCount);
         }
 
         element.appendChild(texts);
@@ -428,6 +433,10 @@ async function displayFilters() {
 
     browser.runtime.sendMessage({
         "type": "getNumberOfCustomFilterRules"
+    });
+
+    browser.runtime.sendMessage({
+        "type": "getRulesErrorCustomFilter"
     });
 }
 
@@ -1368,6 +1377,13 @@ browser.runtime.onMessage.addListener(message => {
         }
         case "getNumberOfCustomFilterRulesResponse": {
             $("#customFilterCount").text(i18next.t("modal.filters.filtersCount", { count: message.count }));
+            break;
+        }
+        case "getRulesErrorCustomFilterResponse": {
+            $("#errorFilterCount").text("");
+            if(message.data && message.data.length > 0) {
+                $("#errorFilterCount").text(i18next.t("modal.filters.filtersWithErrorCount", { count: message.data.length }));
+            }
             break;
         }
         case "getFiltersSizeResponse": {
