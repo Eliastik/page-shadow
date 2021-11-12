@@ -384,7 +384,7 @@ div.navbar-right {
 .tooltip.show {
     opacity: .9;
 }
-#filterInfos .modal-body *, #syntax .modal-body li, #about .panel-group li, #filterErrors .modal-body * {
+#filterInfos .modal-body *:not(button), #syntax .modal-body li, #about .panel-group li, #filterErrors .modal-body * {
     user-select: text;
     cursor: text;
 }

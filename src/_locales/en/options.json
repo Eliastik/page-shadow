@@ -273,11 +273,13 @@
                 "no_filter": "No parameter (CSS selector) entered for the filter",
                 "wrong_css_selector": "Incorrect CSS selector",
                 "unknown_type": "Unknown filter rule",
-                "incorrect_regexp": "The regular expression for the selection of website/webpage is incorrect"
+                "incorrect_regexp": "The regular expression for the selection of website/webpage is incorrect",
+                "empty": "Empty line"
             },
             "errorLine": "Error found at line n°{{count}}",
             "errorLineDetails": "Part of the rule with error:",
-            "errorLineMessage": "Complete error message:"
+            "errorLineMessage": "Complete error message:",
+            "errorCount":  "Number of filter rules with errors:"
         },
         "close": "Close",
         "ok": "OK",

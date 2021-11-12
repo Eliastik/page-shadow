@@ -303,7 +303,7 @@ async function displayFilters() {
 
             const divErrorFilterCount = document.createElement("div");
             const errorFilterCount = document.createElement("span");
-            errorFilterCount.setAttribute("id", "errorFilterCount");
+            errorFilterCount.setAttribute("id", "errorFilterCountCustom");
             errorFilterCount.style.color = "red";
 
             const buttonSeeErrors = document.createElement("button");
@@ -492,6 +492,11 @@ async function displayInfosFilter(idFilter) {
         $("#filters").off("hidden.bs.modal");
     });
 
+    $("#filterInfos").on("hidden.bs.modal", () => {
+        $("#filters").modal("show");
+        $("#filterInfos").off("hidden.bs.modal");
+    });
+
     const result = await browser.storage.local.get("filtersSettings");
     const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
 
@@ -511,6 +516,18 @@ async function displayInfosFilter(idFilter) {
             browser.runtime.sendMessage({
                 "type": "getNumberOfRules",
                 "idFilter": idFilter
+            });
+
+            browser.runtime.sendMessage({
+                "type": "getFilterRuleNumberErrors",
+                "idFilter": idFilter
+            });
+
+            $("#buttonSeeErrorsFilter").click(() => {
+                browser.runtime.sendMessage({
+                    "type": "getRulesErrors",
+                    "idFilter": idFilter
+                });
             });
         }
     }
@@ -570,15 +587,39 @@ async function displayPresetInfos(nb) {
     }
 }
 
-async function displayFilterErrors(data) {
-    $("#filters").modal("hide");
+async function displayFilterErrors(data, filterType) {
+    if(filterType == "custom") {
+        $("#filters").modal("hide");
 
-    $("#filters").on("hidden.bs.modal", () => {
-        $("#filterErrors").modal("show");
-        $("#filters").off("hidden.bs.modal");
-    });
+        $("#filters").on("hidden.bs.modal", () => {
+            $("#filterErrors").modal("show");
+            $("#filters").off("hidden.bs.modal");
+        });
 
-    console.log(data);
+        $("#filterErrors").on("hidden.bs.modal", () => {
+            $("#filters").modal("show");
+            $("#filterErrors").off("hidden.bs.modal");
+        });
+    } else {
+        $("#filterInfos").off("hidden.bs.modal");
+        $("#filterInfos").modal("hide");
+
+        $("#filterInfos").on("hidden.bs.modal", () => {
+            $("#filterErrors").modal("show");
+            $("#filterInfos").off("hidden.bs.modal");
+        });
+
+        $("#filterErrors").on("hidden.bs.modal", () => {
+            $("#filterInfos").modal("show");
+            $("#filterErrors").off("hidden.bs.modal");
+
+            $("#filterInfos").on("hidden.bs.modal", () => {
+                $("#filters").modal("show");
+                $("#filterInfos").off("hidden.bs.modal");
+            });
+        });
+    }
+
     if(data) {
         const modalBody = document.querySelector("#filterErrors .modal-body");
         modalBody.textContent = "";
@@ -1336,15 +1377,7 @@ $(document).ready(() => {
         $("#filters").modal("show");
     });
 
-    $("#filterInfos").on("hidden.bs.modal", () => {
-        $("#filters").modal("show");
-    });
-
     $("#editFilter").on("hidden.bs.modal", () => {
-        $("#filters").modal("show");
-    });
-
-    $("#filterErrors").on("hidden.bs.modal", () => {
         $("#filters").modal("show");
     });
 
@@ -1464,18 +1497,34 @@ browser.runtime.onMessage.addListener(message => {
             break;
         }
         case "getRulesErrorCustomFilterResponse": {
-            $("#errorFilterCount").text("");
+            $("#errorFilterCountCustom").text("");
             $("#buttonSeeErrorsCustomFilter").hide();
 
             if(message.data && message.data.length > 0) {
-                $("#errorFilterCount").text(i18next.t("modal.filters.filtersWithErrorCount", { count: message.data.length }));
+                $("#errorFilterCountCustom").text(i18next.t("modal.filters.filtersWithErrorCount", { count: message.data.length }));
                 $("#buttonSeeErrorsCustomFilter").show();
             }
             break;
         }
+        case "getFilterRuleNumberErrorsResponse": {
+            if(message.data) {
+                $("#errorFilterCount").text(i18next.t("modal.filters.filtersWithErrorCount", { count: message.data.length }));
+                $("#buttonSeeErrorsFilter").attr("disabled", "disabled");
+
+                if(message.data.length > 0) {
+                    $("#buttonSeeErrorsFilter").removeAttr("disabled");
+                }
+            }
+            break;
+        }
         case "getRulesErrorsResponse": {
-            $("#buttonSeeErrorsCustomFilter").removeAttr("disabled");
-            displayFilterErrors(message.data);
+            if(message.typeFilter == "custom") {
+                $("#buttonSeeErrorsCustomFilter").removeAttr("disabled");
+            } else {
+                $("#buttonSeeErrorsFilter").removeAttr("disabled");
+            }
+
+            displayFilterErrors(message.data, message.typeFilter);
             break;
         }
         case "getFiltersSizeResponse": {

@@ -203,7 +203,7 @@ function testSelector(selector) {
 }
 
 function parseLine(line) {
-    let errorType = "";
+    let errorType = filterSyntaxErrorTypes.EMPTY;
     let errorPart = "";
 
     if(line.length > 0) {
@@ -230,6 +230,10 @@ function parseLine(line) {
         const parts = line.split("|");
         const lineTrimmed = line.trim();
         const isComment = lineTrimmed[0] == "#";
+
+        if(isComment) {
+            return null;
+        }
 
         if(!isRegexp) website = parts[0];
         const type = parts[1];
@@ -288,8 +292,10 @@ function parseFilter(filterContent) {
                 if(!parsed.error) {
                     currentRules.push(parsed);
                 } else {
-                    parsed.line = lineIndex;
-                    errorRules.push(parsed);
+                    if(!(parsed.type == filterSyntaxErrorTypes.EMPTY && lineIndex >= lines.length)) {
+                        parsed.line = lineIndex;
+                        errorRules.push(parsed);
+                    }
                 }
             }
 

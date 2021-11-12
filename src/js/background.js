@@ -394,7 +394,11 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     });
                 } else if(message.type == "getRulesErrors") {
                     getRulesErrors(message.idFilter).then(data => {
-                        resolve({ type: "getRulesErrorsResponse", data: data });
+                        resolve({ type: "getRulesErrorsResponse", data: data, typeFilter: message.idFilter == "customFilter" ? "custom" : "normal" });
+                    });
+                } else if(message.type == "getFilterRuleNumberErrors") {
+                    getRulesErrors(message.idFilter).then(data => {
+                        resolve({ type: "getFilterRuleNumberErrorsResponse", data: data });
                     });
                 }
             }

@@ -123,7 +123,8 @@ const filterSyntaxErrorTypes = {
     "NO_FILTER": "NO_FILTER",
     "UNKNOWN_TYPE": "UNKNOWN_TYPE",
     "INCORRECT_REGEXP": "INCORRECT_REGEXP",
-    "WRONG_CSS_SELECTOR": "WRONG_CSS_SELECTOR"
+    "WRONG_CSS_SELECTOR": "WRONG_CSS_SELECTOR",
+    "EMPTY": "EMPTY"
 };
 
 export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, filterRulesTypeWithoutSelector };

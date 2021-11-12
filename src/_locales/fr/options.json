@@ -272,11 +272,13 @@
                 "no_filter": "Aucun paramètre (sélecteur CSS) renseigné pour le filtre",
                 "wrong_css_selector": "Sélecteur CSS incorrect",
                 "unknown_type": "Règle de filtre inconnue",
-                "incorrect_regexp": "Expression régulière de sélection du site web/page web incorrecte"
+                "incorrect_regexp": "Expression régulière de sélection du site web/page web incorrecte",
+                "empty": "Ligne vide"
             },
             "errorLine": "Erreur trouvée à la ligne n°{{count}}",
             "errorLineDetails": "Partie de la règle incriminée :",
-            "errorLineMessage": "Message d'erreur complet :"
+            "errorLineMessage": "Message d'erreur complet :",
+            "errorCount":  "Nombre de règles de filtre en erreur :"
         },
         "close": "Fermer",
         "ok": "OK",
