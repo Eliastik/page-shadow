@@ -19,11 +19,14 @@
 import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL } from "./util.js";
 import { defaultFilters, nbPresets } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
-import { updateOneFilter, updateAllFilters, toggleFilter, cleanAllFilters, addFilter, removeFilter, toggleAutoUpdate, getCustomFilter, updateCustomFilter, getRules, getRulesForWebsite, getNumberOfRulesFor, reinstallDefaultFilters, isPerformanceModeEnabledFor, getNumberOfTotalRules, getFiltersSize, getRulesErrors } from "./filters.js";
+import Filter from "./filters.js";
 import browser from "webextension-polyfill";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
+
+const filters = new Filter();
+filters.cacheFilters();
 
 function setPopup() {
     if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setPopup) !== "undefined") {
@@ -247,14 +250,14 @@ async function checkAutoEnable() {
 
 async function checkAutoUpdateFilters() {
     const result = await browser.storage.local.get("filtersSettings");
-    const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
-    const lastUpdate = filters.lastUpdated;
-    const updateInterval = filters.updateInterval;
-    const enableAutoUpdate = filters.enableAutoUpdate;
+    const filterResults = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+    const lastUpdate = filterResults.lastUpdated;
+    const updateInterval = filterResults.updateInterval;
+    const enableAutoUpdate = filterResults.enableAutoUpdate;
     const currentDate = Date.now();
 
     if(enableAutoUpdate && updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
-        updateAllFilters(true);
+        filters.updateAllFilters(true);
     }
 }
 
@@ -322,82 +325,82 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                         resolve({ type: "isEnabledForThisPageResponse", enabled: enabled, settings: settings });
                     });
                 } else if(message.type == "updateAllFilters") {
-                    updateAllFilters().then(result => {
+                    filters.updateAllFilters().then(result => {
                         resolve({ type: "updateAllFiltersFinished", result: result });
                     });
                 } else if(message.type == "updateFilter") {
-                    updateOneFilter(message.filterId).then(result => {
+                    filters.updateOneFilter(message.filterId).then(result => {
                         resolve({ type: "updateFilterFinished", result: result, filterId: message.filterId });
                     });
                 } else if(message.type == "disableFilter") {
-                    toggleFilter(message.filterId, false).then(result => {
+                    filters.toggleFilter(message.filterId, false).then(result => {
                         resolve({ type: "disabledFilter", result: result, filterId: message.filterId });
                     });
                 } else if(message.type == "enableFilter") {
-                    toggleFilter(message.filterId, true).then(result => {
+                    filters.toggleFilter(message.filterId, true).then(result => {
                         resolve({ type: "enabledFilter", result: result, filterId: message.filterId });
                     });
                 } else if(message.type == "cleanAllFilters") {
-                    cleanAllFilters().then(result => {
+                    filters.cleanAllFilters().then(result => {
                         resolve({ type: "cleanAllFiltersFinished", result: result });
                     });
                 } else if(message.type == "addFilter") {
-                    addFilter(message.address).then(result => {
+                    filters.addFilter(message.address).then(result => {
                         resolve({ type: "addFilterFinished", result: result });
                     }).catch(error => {
                         resolve({ type: "addFilterError", error: error });
                     });
                 } else if(message.type == "removeFilter") {
-                    removeFilter(message.filterId).then(result => {
+                    filters.removeFilter(message.filterId).then(result => {
                         resolve({ type: "addFilterFinished", result: result, filterId: message.filterId });
                     });
                 } else if(message.type == "toggleAutoUpdate") {
-                    toggleAutoUpdate(message.enabled).then(result => {
+                    filters.toggleAutoUpdate(message.enabled).then(result => {
                         resolve({ type: "toggleAutoUpdateFinished", result: result });
                     });
                 } else if(message.type == "getCustomFilter") {
-                    getCustomFilter().then(result => {
+                    filters.getCustomFilter().then(result => {
                         resolve({ type: "getCustomFilterFinished", result: result });
                     });
                 } else if(message.type == "updateCustomFilter" || message.type == "updateCustomFilterAndClose") {
-                    updateCustomFilter(message.text).then(result => {
+                    filters.updateCustomFilter(message.text).then(result => {
                         resolve({ type: message.type == "updateCustomFilter" ?
                             "updateCustomFilterFinished" : "updateCustomFilterAndCloseFinished", result: result });
                     });
                 } else if(message.type == "getAllFilters") {
-                    resolve({ type: "getFiltersResponse", filters: getRules() });
+                    resolve({ type: "getFiltersResponse", filters: filters.getRules() });
                 } else if(message.type == "getFiltersForThisWebsite") {
-                    resolve({ type: "getFiltersResponse", filters: getRulesForWebsite(url) });
+                    resolve({ type: "getFiltersResponse", filters: filters.getRulesForWebsite(url) });
                 } else if(message.type == "reinstallDefaultFilters") {
-                    reinstallDefaultFilters().then(result => {
+                    filters.reinstallDefaultFilters().then(result => {
                         resolve({ type: "reinstallDefaultFiltersResponse", result: result });
                     });
                 } else if(message.type == "getNumberOfRules") {
-                    getNumberOfRulesFor(message.idFilter).then(count => {
+                    filters.getNumberOfRulesFor(message.idFilter).then(count => {
                         resolve({ type: "getNumberOfRulesResponse", count: count });
                     });
                 } else if(message.type == "isPerformanceModeEnabledForThisPage") {
-                    resolve({ type: "isPerformanceModeEnabledForThisPageResponse", enabled: isPerformanceModeEnabledFor(url) });
+                    resolve({ type: "isPerformanceModeEnabledForThisPageResponse", enabled: filters.isPerformanceModeEnabledFor(url) });
                 } else if(message.type == "getNumberOfTotalRules") {
-                    resolve({ type: "getNumberOfTotalRulesResponse", count: getNumberOfTotalRules() });
+                    resolve({ type: "getNumberOfTotalRulesResponse", count: filters.getNumberOfTotalRules() });
                 } else if(message.type == "getFiltersSize") {
-                    getFiltersSize().then(size => {
+                    filters.getFiltersSize().then(size => {
                         resolve({ type: "getFiltersSizeResponse", size: size });
                     });
                 } else if(message.type == "getNumberOfCustomFilterRules") {
-                    getNumberOfRulesFor("customFilter").then(count => {
+                    filters.getNumberOfRulesFor("customFilter").then(count => {
                         resolve({ type: "getNumberOfCustomFilterRulesResponse", count: count });
                     });
                 } else if(message.type == "getRulesErrorCustomFilter") {
-                    getRulesErrors("customFilter").then(data => {
+                    filters.getRulesErrors("customFilter").then(data => {
                         resolve({ type: "getRulesErrorCustomFilterResponse", data: data });
                     });
                 } else if(message.type == "getRulesErrors") {
-                    getRulesErrors(message.idFilter).then(data => {
+                    filters.getRulesErrors(message.idFilter).then(data => {
                         resolve({ type: "getRulesErrorsResponse", data: data, typeFilter: message.idFilter == "customFilter" ? "custom" : "normal" });
                     });
                 } else if(message.type == "getFilterRuleNumberErrors") {
-                    getRulesErrors(message.idFilter).then(data => {
+                    filters.getRulesErrors(message.idFilter).then(data => {
                         resolve({ type: "getFilterRuleNumberErrorsResponse", data: data });
                     });
                 }
