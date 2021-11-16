@@ -129,9 +129,6 @@ gulp.task("build", () => {
     gulp.src("build/edge/**/**/*")
         .pipe(zip(distFileName + " Edge" +".zip"))
         .pipe(gulp.dest("./build"));
-    gulp.src("build/chrome/**/**/*")
-        .pipe(zip(distFileName + " Opera" +".zip"))
-        .pipe(gulp.dest("./build"));
     return gulp.src("./build/chrome/")
         .pipe(crx({
             privateKey: fs.readFileSync("./key/key.pem", "utf8"),
