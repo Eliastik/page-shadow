@@ -154,7 +154,7 @@ import browser from "webextension-polyfill";
     function detectBackground(tagName) {
         if(!performanceModeEnabled) {
             const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
-    
+
             for(let i = 0, len = elements.length; i < len; i++) {
                 detectBackgroundForElement(elements[i]);
             }
@@ -165,20 +165,36 @@ import browser from "webextension-polyfill";
         backgroundDetected = true;
     }
 
+    function elementHasTransparentBackground(backgroundColor, hasBackgroundImg) {
+        if(!backgroundColor) return true;
+
+        const isRgbaColor = backgroundColor.trim().startsWith("rgba");
+        const isWhiteRgbaColor = backgroundColor.trim().startsWith("rgba(0, 0, 0");
+        const alpha = isRgbaColor ? parseFloat(backgroundColor.split(",")[3]) : -1;
+
+        return (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "" || isWhiteRgbaColor || (isRgbaColor && alpha < 0.1)) && !hasBackgroundImg;
+    }
+
     function detectBackgroundForElement(element) {
+        if(!element) return;
         element.classList.add("pageShadowDisableStyling");
 
         const computedStyle = window.getComputedStyle(element, null);
-        const hasBackgroundImg = computedStyle.getPropertyValue("background").trim().substr(0, 4).toLowerCase() == "url(" || computedStyle.getPropertyValue("background-image").trim().substr(0, 4).toLowerCase() == "url(";
+        const background = computedStyle.getPropertyValue("background");
+        const backgroundColor = computedStyle.getPropertyValue("background-color");
+        const backgroundImage = computedStyle.getPropertyValue("background-image");
+
+        const hasBackgroundImg = background.trim().substr(0, 4).toLowerCase().includes("url(") || backgroundImage.trim().substr(0, 4).toLowerCase() == "url(";
+        const hasTransparentBackground = elementHasTransparentBackground(backgroundColor, hasBackgroundImg);
         const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
-        const hasElementHidden = element.contains(element.querySelector("canvas")) || element.contains(element.querySelector("video"));
+        const hasTransparentBackgroundClass = element.classList.contains("pageShadowDisableBackgroundStyling");
 
         if(hasBackgroundImg && !hasClassImg) {
             element.classList.add("pageShadowHasBackgroundImg");
         }
 
-        if(hasElementHidden) {
-            element.classList.add("pageShadowHasHiddenElement");
+        if(hasTransparentBackground && !hasTransparentBackgroundClass) {
+            element.classList.add("pageShadowDisableBackgroundStyling");
         }
 
         element.classList.remove("pageShadowDisableStyling");
@@ -455,7 +471,7 @@ import browser from "webextension-polyfill";
 
     function doProcessFilters(filters, element) {
         if(!filters || !element) return;
-        
+
         for(const filter of filters) {
             const selector = filter.filter;
             const filterTypes = filter.type.split(",");
@@ -555,7 +571,7 @@ import browser from "webextension-polyfill";
 
             elements.forEach(element => {
                 const hasClass = element.classList.contains("pageShadowIsShadowRootElement");
-    
+
                 if(!hasClass) {
                     element.classList.add("pageShadowIsShadowRootElement");
                     element.style.color = "inherit";
@@ -623,7 +639,7 @@ import browser from "webextension-polyfill";
             "type": "isPerformanceModeEnabledForThisPage"
         });
     }
-   
+
     async function process(allowed, type) {
         if(allowed) {
             const settings = currentSettings || await getSettings(getCurrentURL());

@@ -21,18 +21,18 @@ import { matchWebsite, getSizeObject } from "./util.js";
 import { defaultFilters, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, filterRulesTypeWithoutSelector } from "./constants.js";
 import browser from "webextension-polyfill";
 
-export default class Filter {
+export default class FilterProcessor {
     rules = [];
     performanceModeWebsites = [];
     performanceModeWebsitesDisabled = [];
     static instance = null;
 
     constructor() { // Filter class is a Singleton
-        if(!Filter.instance) {
-            Filter.instance = this;
+        if(!FilterProcessor.instance) {
+            FilterProcessor.instance = this;
         }
 
-        return Filter.instance;
+        return FilterProcessor.instance;
     }
 
     async openFiltersFiles() {
@@ -278,8 +278,10 @@ export default class Filter {
             } else {
                 if(!type) {
                     errorType = filterSyntaxErrorTypes.NO_TYPE;
+                    errorPart = website + "|(here)";
                 } else if(!filter) {
                     errorType = filterSyntaxErrorTypes.NO_FILTER;
+                    errorPart = website + "|" + type + "|(here)";
                 }
             }
         }
