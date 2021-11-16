@@ -37,6 +37,7 @@ import browser from "webextension-polyfill";
     let precUrl;
     let currentSettings = null;
     let performanceModeEnabled = false;
+    let autoDetectTransparentBackgroundEnabled = true;
 
     // Contants
     const TYPE_RESET = "reset";
@@ -185,7 +186,6 @@ import browser from "webextension-polyfill";
         const backgroundImage = computedStyle.getPropertyValue("background-image");
 
         const hasBackgroundImg = background.trim().substr(0, 4).toLowerCase().includes("url(") || backgroundImage.trim().substr(0, 4).toLowerCase() == "url(";
-        const hasTransparentBackground = elementHasTransparentBackground(backgroundColor, hasBackgroundImg);
         const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
         const hasTransparentBackgroundClass = element.classList.contains("pageShadowDisableBackgroundStyling");
 
@@ -193,8 +193,12 @@ import browser from "webextension-polyfill";
             element.classList.add("pageShadowHasBackgroundImg");
         }
 
-        if(hasTransparentBackground && !hasTransparentBackgroundClass) {
-            element.classList.add("pageShadowDisableBackgroundStyling");
+        if(autoDetectTransparentBackgroundEnabled) {
+            const hasTransparentBackground = elementHasTransparentBackground(backgroundColor, hasBackgroundImg);
+
+            if(hasTransparentBackground && !hasTransparentBackgroundClass) {
+                element.classList.add("pageShadowDisableBackgroundStyling");
+            }
         }
 
         element.classList.remove("pageShadowDisableStyling");
@@ -636,7 +640,7 @@ import browser from "webextension-polyfill";
         typeProcess = type;
 
         browser.runtime.sendMessage({
-            "type": "isPerformanceModeEnabledForThisPage"
+            "type": "getSpecialRules"
         });
     }
 
@@ -713,8 +717,15 @@ import browser from "webextension-polyfill";
                 }
                 break;
             }
-            case "isPerformanceModeEnabledForThisPageResponse": {
-                performanceModeEnabled = message.enabled;
+            case "getSpecialRulesResponse": {
+                const specialRules = message.filters;
+
+                specialRules.forEach(rule => {
+                    if(rule.type == "enablePerformanceMode") performanceModeEnabled = true;
+                    if(rule.type == "disablePerformanceMode") performanceModeEnabled = false;
+                    if(rule.type == "disableTransparentBackgroundAutoDetect") autoDetectTransparentBackgroundEnabled = false;
+                    if(rule.type == "enableTransparentBackgroundAutoDetect") autoDetectTransparentBackgroundEnabled = true;
+                });
 
                 if(runningInIframe) {
                     browser.runtime.sendMessage({

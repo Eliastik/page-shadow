@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL } from "./util.js";
-import { defaultFilters, nbPresets } from "./constants.js";
+import { defaultFilters, nbPresets, ruleCategory } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
 import Filter from "./filters.js";
 import browser from "webextension-polyfill";
@@ -370,7 +370,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 } else if(message.type == "getAllFilters") {
                     resolve({ type: "getFiltersResponse", filters: filters.getRules() });
                 } else if(message.type == "getFiltersForThisWebsite") {
-                    resolve({ type: "getFiltersResponse", filters: filters.getRulesForWebsite(url) });
+                    resolve({ type: "getFiltersResponse", filters: filters.getRulesForWebsite(url, ruleCategory.STANDARD_RULES) });
                 } else if(message.type == "reinstallDefaultFilters") {
                     filters.reinstallDefaultFilters().then(result => {
                         resolve({ type: "reinstallDefaultFiltersResponse", result: result });
@@ -379,8 +379,8 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     filters.getNumberOfRulesFor(message.idFilter).then(count => {
                         resolve({ type: "getNumberOfRulesResponse", count: count });
                     });
-                } else if(message.type == "isPerformanceModeEnabledForThisPage") {
-                    resolve({ type: "isPerformanceModeEnabledForThisPageResponse", enabled: filters.isPerformanceModeEnabledFor(url) });
+                } else if(message.type == "getSpecialRules") {
+                    resolve({ type: "getSpecialRulesResponse", filters: filters.getRulesForWebsite(url, ruleCategory.SPECIAL_RULES) });
                 } else if(message.type == "getNumberOfTotalRules") {
                     resolve({ type: "getNumberOfTotalRulesResponse", count: filters.getNumberOfTotalRules() });
                 } else if(message.type == "getFiltersSize") {

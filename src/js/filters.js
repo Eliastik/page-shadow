@@ -18,13 +18,12 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
 import { matchWebsite, getSizeObject } from "./util.js";
-import { defaultFilters, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, filterRulesTypeWithoutSelector } from "./constants.js";
+import { defaultFilters, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory } from "./constants.js";
 import browser from "webextension-polyfill";
 
 export default class FilterProcessor {
     rules = [];
-    performanceModeWebsites = [];
-    performanceModeWebsitesDisabled = [];
+    specialRules = []; // Special rules contains rules for adjusting Page Shadow internal processing (performance mode, etc.)
     static instance = null;
 
     constructor() { // Filter class is a Singleton
@@ -212,6 +211,10 @@ export default class FilterProcessor {
         };
     }
 
+    isSpecialRule(ruleType) {
+        return !ruleType.split(",").some(filterType => availableFilterRulesType.includes(filterType) && !specialFilterRules.includes(filterType));
+    }
+
     parseLine(line) {
         let errorType = filterSyntaxErrorTypes.EMPTY;
         let errorPart = "";
@@ -251,7 +254,7 @@ export default class FilterProcessor {
 
             if(type && filter) {
                 const filtersTypeRecognized = type.split(",").some(filterType => availableFilterRulesType.includes(filterType)); // Test if the filter types (rules) are recognized
-                const isFilterListWithoutCSSSelector = !type.split(",").some(filterType => availableFilterRulesType.includes(filterType) && !filterRulesTypeWithoutSelector.includes(filterType));
+                const isFilterListWithoutCSSSelector = this.isSpecialRule(type);
 
                 if(!isFilterListWithoutCSSSelector) {
                     const isSelectorCorrect = this.testSelector(filter);
@@ -323,18 +326,15 @@ export default class FilterProcessor {
 
     async cacheFilters() {
         const newRules = [];
-        const newRulesPerformanceMode = [];
-        const newRulesPerformanceModeDisabled = [];
+        const newSpecialRules = [];
         const data = await this.openFiltersFiles();
 
         for(const key of Object.keys(data)) {
             const parsed = this.parseFilter(data[key]).rules;
 
             for(const rule of parsed) {
-                if(rule.type == "enablePerformanceMode") {
-                    newRulesPerformanceMode.push(rule.website);
-                } else if(rule.type == "disablePerformanceMode") {
-                    newRulesPerformanceModeDisabled.push(rule.website);
+                if(this.isSpecialRule(rule.type)) {
+                    newSpecialRules.push(rule);
                 } else {
                     newRules.push(rule);
                 }
@@ -342,8 +342,7 @@ export default class FilterProcessor {
         }
 
         this.rules = newRules;
-        this.performanceModeWebsites = newRulesPerformanceMode;
-        this.performanceModeWebsitesDisabled = newRulesPerformanceModeDisabled;
+        this.specialRules = newSpecialRules;
     }
 
     extractMetadataLine(line) {
@@ -498,15 +497,16 @@ export default class FilterProcessor {
         return this.rules;
     }
 
-    getRulesForWebsite(url) {
+    getRulesForWebsite(url, type) {
         const rulesForWebsite = [];
+        const rulesToCheck = type == ruleCategory.SPECIAL_RULES ? this.specialRules : this.rules;
 
         if(url && url.trim() != "") {
             const websuteUrl_tmp = new URL(url);
             const domain = websuteUrl_tmp.hostname;
 
-            for(let i = 0, len = this.rules.length; i < len; i++) {
-                const rule = this.rules[i];
+            for(let i = 0, len = rulesToCheck.length; i < len; i++) {
+                const rule = rulesToCheck[i];
 
                 if(matchWebsite(domain, rule.website) || matchWebsite(url, rule.website)) {
                     rulesForWebsite.push(rule);
@@ -595,33 +595,8 @@ export default class FilterProcessor {
         return true;
     }
 
-    isPerformanceModeEnabledFor(url) {
-        if(url && url.trim() != "") {
-            const websuteUrl_tmp = new URL(url);
-            const domain = websuteUrl_tmp.hostname;
-
-            for(let i = 0, len = this.performanceModeWebsitesDisabled.length; i < len; i++) {
-                const urlRule = this.performanceModeWebsitesDisabled[i];
-
-                if(matchWebsite(domain, urlRule) || matchWebsite(url, urlRule)) {
-                    return false;
-                }
-            }
-
-            for(let i = 0, len = this.performanceModeWebsites.length; i < len; i++) {
-                const urlRule = this.performanceModeWebsites[i];
-
-                if(matchWebsite(domain, urlRule) || matchWebsite(url, urlRule)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     getNumberOfTotalRules() {
-        return this.rules.length + this.performanceModeWebsites.length + this.performanceModeWebsitesDisabled.length;
+        return this.rules.length + this.specialRules.length;
     }
 
     async getFiltersSize() {
