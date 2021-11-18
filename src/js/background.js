@@ -391,9 +391,9 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     filters.getNumberOfRulesFor("customFilter").then(count => {
                         resolve({ type: "getNumberOfCustomFilterRulesResponse", count: count });
                     });
-                } else if(message.type == "getRulesErrorCustomFilter") {
+                } else if(message.type == "getRulesErrorsForCustomEdit" || message.type == "getRulesErrorCustomFilter") {
                     filters.getRulesErrors("customFilter").then(data => {
-                        resolve({ type: "getRulesErrorCustomFilterResponse", data: data });
+                        resolve({ type: message.type + "Response", data: data });
                     });
                 } else if(message.type == "getRulesErrors") {
                     filters.getRulesErrors(message.idFilter).then(data => {

@@ -278,7 +278,8 @@
             "errorLine": "Erreur trouvée à la ligne n°{{count}}",
             "errorLineDetails": "Partie de la règle incriminée :",
             "errorLineMessage": "Message d'erreur complet :",
-            "errorCount":  "Nombre de règles de filtre en erreur :"
+            "errorCount":  "Nombre de règles de filtre en erreur :",
+            "customThemeEditErrorDetected": "Des erreurs ont été détectées dans votre filtre"
         },
         "close": "Fermer",
         "ok": "OK",

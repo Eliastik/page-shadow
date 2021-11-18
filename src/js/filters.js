@@ -281,10 +281,10 @@ export default class FilterProcessor {
             } else {
                 if(!type) {
                     errorType = filterSyntaxErrorTypes.NO_TYPE;
-                    errorPart = website + "|(here)";
+                    errorPart = website + "|???";
                 } else if(!filter) {
                     errorType = filterSyntaxErrorTypes.NO_FILTER;
-                    errorPart = website + "|" + type + "|(here)";
+                    errorPart = website + "|" + type + "|???";
                 }
             }
         }

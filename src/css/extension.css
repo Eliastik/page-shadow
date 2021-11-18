@@ -395,8 +395,18 @@ div.navbar-right {
 #syntaxBtnPresets {
     margin-top: 8px;
 }
-#presetAutoEnabledForThisWebsite {
+#presetAutoEnabledForThisWebsite, #customThemeEditErrorDetected, #customThemeEditErrorDetails {
     display: none;
+}
+#customThemeEditErrorDetected {
+    color: red;
+    margin-top: 8px;
+}
+#customThemeEditErrorDetails {
+    max-height: 150px;
+    overflow: auto;
+    border: 1px solid lightgray;
+    padding: 8px;
 }
 .border-bottom:not(:last-child) {
     border-bottom: 1px solid lightgray;

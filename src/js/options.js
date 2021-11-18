@@ -621,8 +621,13 @@ async function displayFilterErrors(data, filterType) {
     }
 
     if(data) {
-        const modalBody = document.querySelector("#filterErrors .modal-body");
-        modalBody.textContent = "";
+        displayFilterErrorsOnElement(data, document.querySelector("#filterErrors .modal-body"));
+    }
+}
+
+function displayFilterErrorsOnElement(data, domElement) {
+    if(domElement) {
+        domElement.textContent = "";
 
         for(const element of data) {
             const row = document.createElement("div");
@@ -663,7 +668,7 @@ async function displayFilterErrors(data, filterType) {
                 row.appendChild(divMessage);
             }
 
-            modalBody.appendChild(row);
+            domElement.appendChild(row);
         }
     }
 }
@@ -683,6 +688,11 @@ async function displayFilterEdit() {
 
     if(filter) {
         window.codeMirrorEditFilter.getDoc().setValue(filter);
+
+        browser.runtime.sendMessage({
+            "type": "getRulesErrorsForCustomEdit",
+            "idFilter": "customFilter"
+        });
     }
 }
 
@@ -1462,6 +1472,10 @@ $(document).ready(() => {
 
         $("#archive").on("hidden.bs.modal", handlerArchiveHidden);
     });
+
+    $("#buttonSeeErrorsCustomFilterEdit").click(() => {
+        $("#customThemeEditErrorDetails").toggle();
+    });
 });
 
 // Message/response handling
@@ -1525,6 +1539,19 @@ browser.runtime.onMessage.addListener(message => {
             }
 
             displayFilterErrors(message.data, message.typeFilter);
+
+            break;
+        }
+        case "getRulesErrorsForCustomEditResponse": {
+            displayFilterErrorsOnElement(message.data, document.querySelector("#customThemeEditErrorDetails"));
+
+            if(Object.keys(message.data).length > 0) {
+                $("#customThemeEditErrorDetected").show();
+            } else {
+                $("#customThemeEditErrorDetected").hide();
+                $("#customThemeEditErrorDetails").hide();
+            }
+
             break;
         }
         case "getFiltersSizeResponse": {
@@ -1579,11 +1606,21 @@ browser.runtime.onMessage.addListener(message => {
             $("#customFilterSave").attr("data-original-title", i18next.t("modal.filters.saved"));
             $("#customFilterSave").tooltip("enable");
             $("#customFilterSave").tooltip("show");
+
+            browser.runtime.sendMessage({
+                "type": "getRulesErrorsForCustomEdit",
+                "idFilter": "customFilter"
+            });
             break;
         }
         case "updateCustomFilterAndCloseFinished": {
             $("#closeAndSaveCustomFilter").removeAttr("disabled", "disabled");
             $("#editFilter").modal("hide");
+
+            browser.runtime.sendMessage({
+                "type": "getRulesErrorsForCustomEdit",
+                "idFilter": "customFilter"
+            });
             break;
         }
         }
