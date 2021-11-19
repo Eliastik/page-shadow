@@ -17,17 +17,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { pageShadowAllowed, customTheme, getSettings, getCurrentURL } from "./util.js";
-import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue } from "./constants.js";
+import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, opacityDetectedAsTransparentThresholdDefault } from "./constants.js";
 import browser from "webextension-polyfill";
 
 (function(){
     const style = document.createElement("style");
     style.type = "text/css";
     const lnkCustomTheme = document.createElement("link");
-    let backgroundDetected = false;
-    let timeoutApplyBrightness, timeoutApplyContrast, timeoutApplyInvertColors, timeoutApplyDetectBackgrounds;
     const elementBrightnessWrapper = document.createElement("div");
     const elementBrightness = document.createElement("div");
+
+    let timeoutApplyBrightness, timeoutApplyContrast, timeoutApplyInvertColors, timeoutApplyDetectBackgrounds;
+    let backgroundDetected = false;
     let precEnabled = false;
     let started = false;
     const runningInIframe = window !== window.top;
@@ -38,6 +39,8 @@ import browser from "webextension-polyfill";
     let currentSettings = null;
     let performanceModeEnabled = false;
     let autoDetectTransparentBackgroundEnabled = true;
+    let enableMutationObserversForSubChilds = true;
+    let opacityDetectedAsTransparentThreshold = opacityDetectedAsTransparentThresholdDefault;
 
     // Contants
     const TYPE_RESET = "reset";
@@ -173,7 +176,7 @@ import browser from "webextension-polyfill";
         const isWhiteRgbaColor = backgroundColor.trim().startsWith("rgba(0, 0, 0");
         const alpha = isRgbaColor ? parseFloat(backgroundColor.split(",")[3]) : -1;
 
-        return (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "" || isWhiteRgbaColor || (isRgbaColor && alpha < 0.1)) && !hasBackgroundImg;
+        return (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "" || isWhiteRgbaColor || (isRgbaColor && alpha < opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg;
     }
 
     function detectBackgroundForElement(element) {
@@ -460,6 +463,19 @@ import browser from "webextension-polyfill";
         }
 
         detectBackgroundForElement(element);
+
+        // Detect element childrens
+        if(!attribute && enableMutationObserversForSubChilds) {
+            if(element.getElementsByTagName) {
+                const elementChildrens = element.getElementsByTagName("*");
+
+                if(elementChildrens && elementChildrens.length > 0) {
+                    for(let i = 0, len = elementChildrens.length; i < len; i++) {
+                        detectBackgroundForElement(elementChildrens[i]);
+                    }
+                }
+            }
+        }
     }
 
     async function updateFilters() {
@@ -723,8 +739,11 @@ import browser from "webextension-polyfill";
                 specialRules.forEach(rule => {
                     if(rule.type == "enablePerformanceMode") performanceModeEnabled = true;
                     if(rule.type == "disablePerformanceMode") performanceModeEnabled = false;
-                    if(rule.type == "disableTransparentBackgroundAutoDetect") autoDetectTransparentBackgroundEnabled = false;
                     if(rule.type == "enableTransparentBackgroundAutoDetect") autoDetectTransparentBackgroundEnabled = true;
+                    if(rule.type == "disableTransparentBackgroundAutoDetect") autoDetectTransparentBackgroundEnabled = false;
+                    if(rule.type == "enableMutationObserversForSubChilds") enableMutationObserversForSubChilds = true;
+                    if(rule.type == "disableMutationObserversForSubChilds") enableMutationObserversForSubChilds = false;
+                    if(rule.type == "opacityDetectedAsTransparentThreshold") opacityDetectedAsTransparentThreshold = rule.filter;
                 });
 
                 if(runningInIframe) {
