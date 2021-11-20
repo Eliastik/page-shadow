@@ -671,6 +671,21 @@ async function presetsEnabledForWebsite(url) {
     return presetListEnabled;
 }
 
+function getPriorityPresetEnabledForWebsite(presetsEnabled) {
+    // Priority : a preset auto enabled for a page has a higher priority than a preset auto enabled for a webiste
+    let presetEnabled = presetsEnabled[0];
+
+    for(let i = 0, len = presetsEnabled.length; i < len; i++) {
+        const preset = presetsEnabled[i];
+
+        if((preset.autoEnabledWebsite && !presetEnabled.autoEnabledPage && !presetEnabled.autoEnabledWebsite) || preset.autoEnabledPage) {
+            presetEnabled = preset;
+        }
+    }
+
+    return presetEnabled;
+}
+
 async function getSettings(url) {
     const result = await browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor"]);
     let pageShadowEnabled = result.pageShadowEnabled;
@@ -691,7 +706,7 @@ async function getSettings(url) {
     const presetsEnabled = await presetsEnabledForWebsite(url);
 
     if(presetsEnabled && presetsEnabled.length > 0) {
-        const presetEnabled = presetsEnabled[0];
+        const presetEnabled = getPriorityPresetEnabledForWebsite(presetsEnabled);
 
         if(presetEnabled && presetEnabled.presetNb > 0) {
             const presetData = await getPresetData(presetEnabled.presetNb);
@@ -839,4 +854,4 @@ function getCurrentURL() {
     return normalizeURL(window.location.href);
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL };
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite };
