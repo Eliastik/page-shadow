@@ -37,7 +37,8 @@
         "autoEnablePresetFor": "Auto activ. du pré-régl. pour :",
         "enableWebsitePreset": "Ce site",
         "enableWebpagePreset": "Cette page",
-        "updatePresetSettings": "Mettre à jour le pré-réglage avec les paramètres actuels"
+        "updatePresetSettings": "Mettre à jour le pré-réglage avec les paramètres actuels",
+        "createPreset": "Créer le pré-réglage"
     },
     "modal": {
         "customThemeTitle": "Information",
@@ -53,7 +54,9 @@
             "restorePresetEmpty": "Impossible de charger ce pré-réglage car il est vide",
             "restorePresetSuccess": "Chargement effectué avec succès",
             "updatePresetSuccess": "Mise à jour du pré-réglage effectué avec succès",
-            "updatePresetError": "Une erreur est survenue lors de la mise à jour du pré-réglage"
+            "updatePresetError": "Une erreur est survenue lors de la mise à jour du pré-réglage",
+            "createPresetSuccess": "Création du pré-réglage effectuée avec succès",
+            "createPresetError": "Une erreur est survenue lors de la création du pré-réglage"
         }
     },
     "modalAutoEnable": {
@@ -77,6 +80,12 @@
         "title": "Mise à jour de l'extension",
         "message": "Page Shadow vient d'être mis à jour vers la version {{version}} en date du {{date}} !",
         "whatsNew": "Quoi de neuf ?"
+    },
+    "createPresetModal": {
+        "title": "Créer le pré-réglage",
+        "modalTitle": "Titre :",
+        "infoLead": "Le pré-réglage sera créé avec les paramètres actuels tels qu'affichés dans ce menu.",
+        "infoAdvanced": "Plus de paramètres sont disponibles lors de la création/édition d'un pré-réglage dans les Paramètres avancés"
     },
     "footer": {
         "advancedSettings": "Paramètres avancés",

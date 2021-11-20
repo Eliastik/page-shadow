@@ -256,6 +256,9 @@ $(document).ready(() => {
             $("#enableWebpagePreset-li").attr("disabled", "disabled");
             $("#disableWebpagePreset-li").attr("disabled", "disabled");
             $("#updatePresetSettings").attr("disabled", "disabled");
+            $("#updatePresetSettings").hide();
+            $("#createPreset").removeAttr("disabled");
+            $("#createPreset").show();
             $("#loadPresetValid").attr("disabled", "disabled");
         } else {
             $("#enableWebsitePreset-li").removeAttr("disabled");
@@ -263,6 +266,9 @@ $(document).ready(() => {
             $("#enableWebpagePreset-li").removeAttr("disabled");
             $("#disableWebpagePreset-li").removeAttr("disabled");
             $("#updatePresetSettings").removeAttr("disabled");
+            $("#updatePresetSettings").show();
+            $("#createPreset").attr("disabled", "disabled");
+            $("#createPreset").hide();
             $("#loadPresetValid").removeAttr("disabled");
         }
 
@@ -879,6 +885,40 @@ $(document).ready(() => {
     $("#whatsNew").click(() => {
         browser.tabs.create({
             url: "options.html#aboutLatestVersion"
+        });
+    });
+
+    $("#createPreset").click(() => {
+        $("#createPresetModalTitle").val("");
+        $("#createPresetModal").modal("show");
+    });
+
+    $("#createPresetModalAdvancedLink").click(() => {
+        browser.tabs.create({
+            url: "options.html#presets"
+        });
+    });
+
+    $("#createPresetModalValidate").click(async() => {
+        $("#infoPreset").removeClass("show");
+        const presetId = parseInt($("#loadPresetSelect").val());
+        const presetTitle  = $("#createPresetModalTitle").val();
+
+        const result = await savePreset(presetId, presetTitle, "", true);
+
+        if(result == "success") {
+            $("#infoPreset").text(i18next.t("modal.archive.createPresetSuccess"));
+        } else {
+            $("#infoPreset").text(i18next.t("modal.archive.createPresetError"));
+        }
+
+        $("#createPresetModal").modal("hide");
+        $("#infoPreset").addClass("show");
+
+        $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", (e) => {
+            if(e.originalEvent.animationName === "fadeout") {
+                $("#infoPreset").removeClass("show");
+            }
         });
     });
 

@@ -37,7 +37,8 @@
         "autoEnablePresetFor": "Auto enable preset for:",
         "enableWebsitePreset": "This website",
         "enableWebpagePreset": "This page",
-        "updatePresetSettings": "Update the preset with current settings"
+        "updatePresetSettings": "Update the preset with current settings",
+        "createPreset": "Create preset"
     },
     "modal": {
         "customThemeTitle": "Information",
@@ -52,8 +53,10 @@
             "restorePresetError": "An error has occurred",
             "restorePresetEmpty": "Cannot load this preset because it is empty",
             "restorePresetSuccess": "Loading done successfully",
-            "updatePresetSuccess": "Preset update done successfully",
-            "updatePresetError": "An error has occurred when updating the preset"
+            "updatePresetSuccess": "Preset updated successfully",
+            "updatePresetError": "An error has occurred when updating the preset",
+            "createPresetSuccess": "Preset created successfully",
+            "createPresetError": "An error has occurred when creating the preset"
         }
     },
     "modalAutoEnable": {
@@ -77,6 +80,12 @@
         "title": "Extension updated",
         "message": "Page Shadow has just been updated to version {{version}} dated {{date}}!",
         "whatsNew": "What's new?"
+    },
+    "createPresetModal": {
+        "title": "Create preset",
+        "modalTitle": "Title:",
+        "infoLead": "The preset will be created with the current settings as displayed in this menu.",
+        "infoAdvanced": "More settings are available when creating/editing a preset in the Advanced settings"
     },
     "footer": {
         "advancedSettings": "Advanced settings",

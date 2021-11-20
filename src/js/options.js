@@ -163,6 +163,10 @@ async function displaySettings(areaName) {
         $("#restoreDataButton").removeClass("disabled");
         displayFilters();
     }
+
+    loadPresetSelect("loadPresetSelect", i18next);
+    loadPresetSelect("savePresetSelect", i18next);
+    loadPresetSelect("deletePresetSelect", i18next);
 }
 
 async function displayTheme(nb, defaultSettings) {
@@ -859,9 +863,6 @@ function restoreSettingsFile(event) {
 
             if(result) {
                 $("#restoreSuccess").fadeIn(500);
-                loadPresetSelect("loadPresetSelect", i18next);
-                loadPresetSelect("savePresetSelect", i18next);
-                loadPresetSelect("deletePresetSelect", i18next);
             } else {
                 $("#restoreErrorArchive").fadeIn(500);
                 displaySettings("local");
@@ -998,9 +999,6 @@ async function restoreCloudSettings() {
 
                 if(result) {
                     $("#restoreCloudSuccess").fadeIn(500);
-                    loadPresetSelect("loadPresetSelect", i18next);
-                    loadPresetSelect("savePresetSelect", i18next);
-                    loadPresetSelect("deletePresetSelect", i18next);
                 } else {
                     $("#restoreCloudError").fadeIn(500);
                     displaySettings("sync");
@@ -1027,10 +1025,6 @@ async function createPreset() {
     } else {
         $("#savePresetError").fadeIn(500);
     }
-
-    loadPresetSelect("loadPresetSelect", i18next);
-    loadPresetSelect("savePresetSelect", i18next);
-    loadPresetSelect("deletePresetSelect", i18next);
 }
 
 async function displayPresetSettings(id) {
@@ -1256,10 +1250,6 @@ $(document).ready(() => {
 
     displaySettings("local");
 
-    loadPresetSelect("loadPresetSelect", i18next);
-    loadPresetSelect("savePresetSelect", i18next);
-    loadPresetSelect("deletePresetSelect", i18next);
-
     if(getBrowser() == "Chrome" || getBrowser() == "Opera") {
         $("#keyboardShortcuts").click(() => {
             browser.tabs.create({
@@ -1332,10 +1322,6 @@ $(document).ready(() => {
         } else {
             $("#deletePresetError").fadeIn(500);
         }
-
-        loadPresetSelect("loadPresetSelect", i18next);
-        loadPresetSelect("savePresetSelect", i18next);
-        loadPresetSelect("deletePresetSelect", i18next);
     });
 
     $("#updateAllFilters").click(() => {

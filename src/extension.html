@@ -49,7 +49,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     <div class="input-group input-group-select-presets">
                         <select id="loadPresetSelect" style="width: 100%;"></select>
                         <span class="input-group-btn">
-                            <button class="btn btn-xs btn-preset btn-info" id="updatePresetSettings" type="button" data-toggle="tooltip" data-i18n="[data-original-title]container.updatePresetSettings"><i class="fa fa-fw fa-refresh"></i></button><button class="btn btn-xs btn-preset btn-success" id="loadPresetValid" type="button" data-toggle="tooltip" data-i18n="[data-original-title]container.loadPreset"><i class="fa fa-fw fa-upload"></i></button><button class="btn btn-xs btn-preset btn-primary" id="settingsPresets" type="button" data-toggle="tooltip" data-i18n="[data-original-title]container.settingsPresets"><i class="fa fa-fw fa-cog"></i></button>
+                            <button class="btn btn-xs btn-preset btn-info" id="updatePresetSettings" type="button" data-toggle="tooltip" data-i18n="[data-original-title]container.updatePresetSettings"><i class="fa fa-fw fa-refresh"></i></button><button class="btn btn-xs btn-preset btn-info" id="createPreset" type="button" data-toggle="tooltip" data-i18n="[data-original-title]container.createPreset"><i class="fa fa-fw fa-plus"></i></button><button class="btn btn-xs btn-preset btn-success" id="loadPresetValid" type="button" data-toggle="tooltip" data-i18n="[data-original-title]container.loadPreset"><i class="fa fa-fw fa-upload"></i></button><button class="btn btn-xs btn-preset btn-primary" id="settingsPresets" type="button" data-toggle="tooltip" data-i18n="[data-original-title]container.settingsPresets"><i class="fa fa-fw fa-cog"></i></button>
                         </span>
                     </div>
                     <div class="input-group well well-presets-auto">
@@ -212,6 +212,32 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
                         <button type="button" class="btn btn-primary" id="whatsNew"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modalUpdated.whatsNew"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="createPresetModal" tabindex="-1" role="dialog" aria-labelledby="createPresetModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="createPresetModalLabel"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="createPresetModal.title"></span></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p data-i18n="createPresetModal.infoLead"></p>
+                        <div class="form-horizontal" id="formAutoEnable">
+                            <div class="form-group">
+                                <label for="createPresetModalTitle" class="col-lg-5 col-sm-5 col-xs-5 control-label bold" data-i18n="createPresetModal.modalTitle"></label>
+                                <div class="col-lg-7 col-sm-7 col-xs-7">
+                                    <input type="text" id="createPresetModalTitle" style="width: 100%;" />
+                                </div>
+                            </div>
+                        </div>
+                        <p><a href="#" id="createPresetModalAdvancedLink" data-i18n="createPresetModal.infoAdvanced"></a></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="createPresetModalValidate" data-dismiss="modal"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modalAutoEnable.validate"></span></button>
+                        <button type="button" class="btn btn-danger" id="createPresetModalCancel" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modalAutoEnable.cancel"></span></button>
                     </div>
                 </div>
             </div>
