@@ -319,10 +319,10 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
             if(message) {
                 const url = normalizeURL(sender.tab.url);
 
-                if(message.type == "isEnabledForThisPage") {
+                if(message.type == "isEnabledForThisPage" || message.type == "applySettingsChanged") {
                     pageShadowAllowed(url).then(async(enabled) => {
                         const settings = await getSettings(url);
-                        resolve({ type: "isEnabledForThisPageResponse", enabled: enabled, settings: settings });
+                        resolve({ type: message.type + "Response", enabled: enabled, settings: settings });
                     });
                 } else if(message.type == "updateAllFilters") {
                     filters.updateAllFilters().then(result => {

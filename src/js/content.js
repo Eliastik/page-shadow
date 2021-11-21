@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, customTheme, getSettings, getCurrentURL } from "./util.js";
+import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged } from "./util.js";
 import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, opacityDetectedAsTransparentThresholdDefault } from "./constants.js";
 import browser from "webextension-polyfill";
 
@@ -37,6 +37,7 @@ import browser from "webextension-polyfill";
     let typeProcess = "";
     let precUrl;
     let currentSettings = null;
+    let newSettingsToApply = null;
     let performanceModeEnabled = false;
     let autoDetectTransparentBackgroundEnabled = true;
     let enableMutationObserversForSubChilds = true;
@@ -479,7 +480,7 @@ import browser from "webextension-polyfill";
     }
 
     async function updateFilters() {
-        const settings = currentSettings || await getSettings(getCurrentURL());
+        const settings = newSettingsToApply || await getSettings(getCurrentURL());
         if(filtersCache == null) {
             browser.runtime.sendMessage({
                 "type": "getFiltersForThisWebsite"
@@ -662,7 +663,8 @@ import browser from "webextension-polyfill";
 
     async function process(allowed, type) {
         if(allowed) {
-            const settings = currentSettings || await getSettings(getCurrentURL());
+            const settings = newSettingsToApply || await getSettings(getCurrentURL());
+            currentSettings = settings;
             precEnabled = true;
 
             if(type == TYPE_ONLY_CONTRAST) {
@@ -705,13 +707,8 @@ import browser from "webextension-polyfill";
 
     main(TYPE_START);
 
-    // Execute Page Shadow on the page when the settings have been changed:
-    browser.storage.onChanged.addListener(async() => {
-        const result = await browser.storage.local.get("liveSettings");
-
-        if(result.liveSettings !== "false") {
-            main(TYPE_RESET, TYPE_ALL);
-        }
+    browser.storage.onChanged.addListener(() => {
+        applyIfSettingsChanged();
     });
 
     // Message/response handling
@@ -721,16 +718,23 @@ import browser from "webextension-polyfill";
             case "getFiltersResponse": {
                 if(message.filters) {
                     filtersCache = message.filters;
-                    const settings = currentSettings || await getSettings(getCurrentURL());
+                    const settings = newSettingsToApply || await getSettings(getCurrentURL());
                     if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") doProcessFilters(message.filters);
+                }
+                break;
+            }
+            case "applySettingsChangedResponse": {
+                if(hasSettingsChanged(currentSettings, message.settings)) {
+                    main(TYPE_RESET, TYPE_ALL);
                 }
                 break;
             }
             case "isEnabledForThisPageResponse": {
                 if(message.enabled) {
-                    currentSettings = message.settings;
-                    process(true, typeProcess);
+                    newSettingsToApply = message.settings;
                 }
+
+                process(message.enabled, typeProcess);
                 break;
             }
             case "getSpecialRulesResponse": {
@@ -757,22 +761,42 @@ import browser from "webextension-polyfill";
                 break;
             }
             case "websiteUrlUpdated": { // Execute when the page URL changes in Single Page Applications
-                const enabled = started && ((message.enabled && !precEnabled) || (!message.enabled && precEnabled));
+                const changed = started && ((message.enabled && !precEnabled) || (!message.enabled && precEnabled));
                 const urlUpdated = precUrl != getCurrentURL();
+
+                precEnabled = message.enabled;
 
                 if(urlUpdated) {
                     backgroundDetected = false;
                     filtersCache = null;
                     precUrl = getCurrentURL();
-                    if(!enabled) updateFilters();
+                    if(changed) updateFilters();
                 }
 
-                if(enabled) {
-                    main(TYPE_RESET, TYPE_ALL);
+                if(changed) {
+                    applyIfSettingsChanged(true);
                 }
+
                 break;
             }
             }
         }
     });
+
+    async function applyIfSettingsChanged(statusChanged) {
+        if(statusChanged) return main(TYPE_RESET, TYPE_ALL);
+        const result = await browser.storage.local.get("liveSettings");
+
+        if(result.liveSettings !== "false") {
+            if(runningInIframe) {
+                browser.runtime.sendMessage({
+                    "type": "applySettingsChanged"
+                });
+            } else {
+                if(hasSettingsChanged(currentSettings, await getSettings(getCurrentURL()))) {
+                    main(TYPE_RESET, TYPE_ALL);
+                }
+            }
+        }
+    }
 }());

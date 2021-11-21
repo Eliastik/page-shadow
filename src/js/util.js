@@ -754,6 +754,16 @@ async function getSettings(url) {
     };
 }
 
+function hasSettingsChanged(currentSettings, newSettings) {
+    if(currentSettings == null) return true;
+
+    for(const settingKey of Object.keys(currentSettings)) {
+        if(currentSettings[settingKey] !== newSettings[settingKey]) return true;
+    }
+
+    return false;
+}
+
 async function disableEnablePreset(type, nb, checked, url) {
     if(nb < 1 || nb > nbPresets) {
         return "error";
@@ -854,4 +864,4 @@ function getCurrentURL() {
     return normalizeURL(window.location.href);
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite };
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged };
