@@ -708,7 +708,7 @@ import browser from "webextension-polyfill";
     main(TYPE_START);
 
     browser.storage.onChanged.addListener(() => {
-        applyIfSettingsChanged();
+        applyIfSettingsChanged(false, true);
     });
 
     // Message/response handling
@@ -764,8 +764,6 @@ import browser from "webextension-polyfill";
                 const changed = started && ((message.enabled && !precEnabled) || (!message.enabled && precEnabled));
                 const urlUpdated = precUrl != getCurrentURL();
 
-                precEnabled = message.enabled;
-
                 if(urlUpdated) {
                     backgroundDetected = false;
                     filtersCache = null;
@@ -774,7 +772,7 @@ import browser from "webextension-polyfill";
                 }
 
                 if(changed) {
-                    applyIfSettingsChanged(true);
+                    applyIfSettingsChanged(true, message.storageChanged, message.enabled);
                 }
 
                 break;
@@ -783,17 +781,25 @@ import browser from "webextension-polyfill";
         }
     });
 
-    async function applyIfSettingsChanged(statusChanged) {
-        if(statusChanged) return main(TYPE_RESET, TYPE_ALL);
+    async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled) {
         const result = await browser.storage.local.get("liveSettings");
+        const isLiveSettings = result.liveSettings !== "false";
 
-        if(result.liveSettings !== "false") {
+        if(statusChanged && ((!isLiveSettings && !storageChanged) || isLiveSettings)) {
+            precEnabled = isEnabled;
+            return main(TYPE_RESET, TYPE_ALL);
+        }
+
+        if(isLiveSettings && storageChanged) {
             if(runningInIframe) {
+                precEnabled = isEnabled;
+
                 browser.runtime.sendMessage({
                     "type": "applySettingsChanged"
                 });
             } else {
                 if(hasSettingsChanged(currentSettings, await getSettings(getCurrentURL()))) {
+                    precEnabled = isEnabled;
                     main(TYPE_RESET, TYPE_ALL);
                 }
             }

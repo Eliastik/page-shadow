@@ -178,7 +178,7 @@ function updateMenu() {
     menu();
 }
 
-async function updateBadge() {
+async function updateBadge(storageChanged) {
     if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.query) !== "undefined") {
         const tabs = await browser.tabs.query({ active: true });
 
@@ -224,7 +224,8 @@ async function updateBadge() {
             if(typeof(browser.tabs.sendMessage) !== "undefined") {
                 browser.tabs.sendMessage(tab.id, {
                     type: "websiteUrlUpdated",
-                    enabled: enabled
+                    enabled,
+                    storageChanged
                 }).catch(() => {
                     if(browser.runtime.lastError) return; // ignore the error messages
                 });
@@ -281,21 +282,21 @@ async function autoEnable(changed) {
 if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) !== "undefined") {
     browser.storage.onChanged.addListener(() => {
         menu();
-        updateBadge();
+        updateBadge(true);
     });
 }
 
 if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onActivated) !== "undefined") {
     browser.tabs.onActivated.addListener(() => {
         menu();
-        updateBadge();
+        updateBadge(false);
     });
 }
 
 if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onUpdated) !== "undefined") {
     browser.tabs.onUpdated.addListener(() => {
         menu();
-        updateBadge();
+        updateBadge(false);
     });
 }
 
@@ -478,7 +479,7 @@ if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand
 
 setPopup();
 menu();
-updateBadge();
+updateBadge(false);
 autoEnable();
 checkFirstLoad();
 migrateSettings();
