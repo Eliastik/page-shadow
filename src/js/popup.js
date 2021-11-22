@@ -771,7 +771,13 @@ $(document).ready(() => {
 
     $("#sliderLuminosite").change(() => {
         const sliderLumValue = sliderLuminosite.getValue();
+        elLumB.style.opacity = sliderLumValue / 100;
+    });
+
+    $("#sliderLuminosite").on("slideStop", () => {
+        const sliderLumValue = sliderLuminosite.getValue();
         brightnessChangedFromThisPage = true;
+        elLumB.style.opacity = sliderLumValue / 100;
         setSettingItem("pourcentageLum", sliderLumValue);
     });
 
