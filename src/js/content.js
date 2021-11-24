@@ -170,14 +170,15 @@ import browser from "webextension-polyfill";
         backgroundDetected = true;
     }
 
-    function elementHasTransparentBackground(backgroundColor, hasBackgroundImg) {
+    function elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
         if(!backgroundColor) return true;
 
         const isRgbaColor = backgroundColor.trim().startsWith("rgba");
         const isWhiteRgbaColor = backgroundColor.trim().startsWith("rgba(0, 0, 0");
         const alpha = isRgbaColor ? parseFloat(backgroundColor.split(",")[3]) : -1;
+        const hasLinearGradient = backgroundImage.trim().startsWith("linear-gradient(");
 
-        return (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "" || isWhiteRgbaColor || (isRgbaColor && alpha < opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg;
+        return (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "" || isWhiteRgbaColor || (isRgbaColor && alpha < opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasLinearGradient;
     }
 
     function detectBackgroundForElement(element) {
@@ -198,10 +199,10 @@ import browser from "webextension-polyfill";
         }
 
         if(autoDetectTransparentBackgroundEnabled) {
-            const hasTransparentBackground = elementHasTransparentBackground(backgroundColor, hasBackgroundImg);
+            const hasTransparentBackground = elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg);
 
             if(hasTransparentBackground && !hasTransparentBackgroundClass) {
-                element.classList.add("pageShadowDisableBackgroundStyling");
+                element.classList.add("pageShadowHasTransparentBackground");
             }
         }
 
