@@ -672,6 +672,19 @@ function displayFilterErrorsOnElement(data, domElement) {
                 row.appendChild(divMessage);
             }
 
+            if(element.errorCode) {
+                const divCode = document.createElement("div");
+                const spanCode = document.createElement("span");
+                spanCode.textContent = i18next.t("modal.filters.errorCode");
+                const spanCodeDetails = document.createElement("span");
+                spanCodeDetails.setAttribute("class", "filterErrorDetail");
+                spanCodeDetails.textContent = element.errorCode;
+
+                divCode.appendChild(spanCode);
+                divCode.appendChild(spanCodeDetails);
+                row.appendChild(divCode);
+            }
+
             domElement.appendChild(row);
         }
     }

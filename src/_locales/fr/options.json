@@ -279,7 +279,8 @@
             "errorLineDetails": "Partie de la règle incriminée :",
             "errorLineMessage": "Message d'erreur complet :",
             "errorCount":  "Nombre de règles de filtre en erreur :",
-            "customThemeEditErrorDetected": "Des erreurs ont été détectées dans votre filtre"
+            "customThemeEditErrorDetected": "Des erreurs ont été détectées dans votre filtre",
+            "errorCode": "Code de l'erreur :"
         },
         "close": "Fermer",
         "ok": "OK",

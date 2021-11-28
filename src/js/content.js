@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged } from "./util.js";
-import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, opacityDetectedAsTransparentThresholdDefault } from "./constants.js";
+import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, inlineTagName, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
 import browser from "webextension-polyfill";
 
 (function(){
@@ -26,22 +26,19 @@ import browser from "webextension-polyfill";
     const lnkCustomTheme = document.createElement("link");
     const elementBrightnessWrapper = document.createElement("div");
     const elementBrightness = document.createElement("div");
+    const websiteSpecialFiltersConfig = defaultWebsiteSpecialFiltersConfig;
+    const runningInIframe = window !== window.top;
 
     let timeoutApplyBrightness, timeoutApplyContrast, timeoutApplyInvertColors, timeoutApplyDetectBackgrounds;
     let backgroundDetected = false;
     let precEnabled = false;
     let started = false;
-    const runningInIframe = window !== window.top;
     let filtersCache = null;
     let mut_contrast, mut_backgrounds, mut_brightness, mut_invert;
     let typeProcess = "";
     let precUrl;
     let currentSettings = null;
     let newSettingsToApply = null;
-    let performanceModeEnabled = false;
-    let autoDetectTransparentBackgroundEnabled = true;
-    let enableMutationObserversForSubChilds = true;
-    let opacityDetectedAsTransparentThreshold = opacityDetectedAsTransparentThresholdDefault;
 
     // Contants
     const TYPE_RESET = "reset";
@@ -157,7 +154,7 @@ import browser from "webextension-polyfill";
     }
 
     function detectBackground(tagName) {
-        if(!performanceModeEnabled) {
+        if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
             const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
 
             for(let i = 0, len = elements.length; i < len; i++) {
@@ -170,15 +167,16 @@ import browser from "webextension-polyfill";
         backgroundDetected = true;
     }
 
-    function elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
+    function elementHasTransparentBackground(backgroundColor, backgroundImage, tagName, hasBackgroundImg) {
         if(!backgroundColor) return true;
 
         const isRgbaColor = backgroundColor.trim().startsWith("rgba");
         const isWhiteRgbaColor = backgroundColor.trim().startsWith("rgba(0, 0, 0");
         const alpha = isRgbaColor ? parseFloat(backgroundColor.split(",")[3]) : -1;
         const hasLinearGradient = backgroundImage.trim().startsWith("linear-gradient(");
+        const isElementInline = !websiteSpecialFiltersConfig.forceTransparentBackgroundDetectionForInlineElements && tagName && inlineTagName.test(tagName.toLowerCase());
 
-        return (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "" || isWhiteRgbaColor || (isRgbaColor && alpha < opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasLinearGradient;
+        return (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "" || isWhiteRgbaColor || (isRgbaColor && alpha < websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasLinearGradient && !isElementInline;
     }
 
     function detectBackgroundForElement(element) {
@@ -198,8 +196,8 @@ import browser from "webextension-polyfill";
             element.classList.add("pageShadowHasBackgroundImg");
         }
 
-        if(autoDetectTransparentBackgroundEnabled) {
-            const hasTransparentBackground = elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg);
+        if(websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled) {
+            const hasTransparentBackground = elementHasTransparentBackground(backgroundColor, backgroundImage, element.tagName, hasBackgroundImg);
 
             if(hasTransparentBackground && !hasTransparentBackgroundClass) {
                 element.classList.add("pageShadowHasTransparentBackground");
@@ -431,11 +429,11 @@ import browser from "webextension-polyfill";
                 mutations.forEach(mutation => {
                     if(mutation.type == "childList") {
                         for(let i = 0, len = mutation.addedNodes.length; i < len; i++) {
-                            if(!performanceModeEnabled) mutationElementsBackgrounds(mutation.addedNodes[i], null, null);
+                            if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationElementsBackgrounds(mutation.addedNodes[i], null, null);
                             doProcessFilters(filtersCache, mutation.addedNodes[i]);
                         }
                     } else if(mutation.type == "attributes") {
-                        if(!performanceModeEnabled) mutationElementsBackgrounds(mutation.target, mutation.attributeName, mutation.oldValue);
+                        if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationElementsBackgrounds(mutation.target, mutation.attributeName, mutation.oldValue);
                         doProcessFilters(filtersCache, mutation.target);
                     }
                 });
@@ -467,7 +465,7 @@ import browser from "webextension-polyfill";
         detectBackgroundForElement(element);
 
         // Detect element childrens
-        if(!attribute && enableMutationObserversForSubChilds) {
+        if(!attribute && websiteSpecialFiltersConfig.enableMutationObserversForSubChilds) {
             if(element.getElementsByTagName) {
                 const elementChildrens = element.getElementsByTagName("*");
 
@@ -742,13 +740,15 @@ import browser from "webextension-polyfill";
                 const specialRules = message.filters;
 
                 specialRules.forEach(rule => {
-                    if(rule.type == "enablePerformanceMode") performanceModeEnabled = true;
-                    if(rule.type == "disablePerformanceMode") performanceModeEnabled = false;
-                    if(rule.type == "enableTransparentBackgroundAutoDetect") autoDetectTransparentBackgroundEnabled = true;
-                    if(rule.type == "disableTransparentBackgroundAutoDetect") autoDetectTransparentBackgroundEnabled = false;
-                    if(rule.type == "enableMutationObserversForSubChilds") enableMutationObserversForSubChilds = true;
-                    if(rule.type == "disableMutationObserversForSubChilds") enableMutationObserversForSubChilds = false;
-                    if(rule.type == "opacityDetectedAsTransparentThreshold") opacityDetectedAsTransparentThreshold = rule.filter;
+                    if(rule.type == "enablePerformanceMode") websiteSpecialFiltersConfig.performanceModeEnabled = true;
+                    if(rule.type == "disablePerformanceMode") websiteSpecialFiltersConfig.performanceModeEnabled = false;
+                    if(rule.type == "enableTransparentBackgroundAutoDetect") websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled = true;
+                    if(rule.type == "disableTransparentBackgroundAutoDetect") websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled = false;
+                    if(rule.type == "enableMutationObserversForSubChilds") websiteSpecialFiltersConfig.enableMutationObserversForSubChilds = true;
+                    if(rule.type == "disableMutationObserversForSubChilds") websiteSpecialFiltersConfig.enableMutationObserversForSubChilds = false;
+                    if(rule.type == "opacityDetectedAsTransparentThreshold") websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold = rule.filter;
+                    if(rule.type == "enableTransparentBackgroundDetectionForInlineElements") websiteSpecialFiltersConfig.forceTransparentBackgroundDetectionForInlineElements = true;
+                    if(rule.type == "disableTransparentBackgroundDetectionForInlineElements") websiteSpecialFiltersConfig.forceTransparentBackgroundDetectionForInlineElements = false;
                 });
 
                 if(runningInIframe) {

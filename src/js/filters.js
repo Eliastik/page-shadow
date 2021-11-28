@@ -218,6 +218,7 @@ export default class FilterProcessor {
     parseLine(line) {
         let errorType = filterSyntaxErrorTypes.EMPTY;
         let errorPart = "";
+        let errorCode = "EMPTY";
 
         if(line.length > 0) {
             const isRegexp = line.trim().match(regexpDetectionPattern);
@@ -235,7 +236,8 @@ export default class FilterProcessor {
                         "error": true,
                         "type": filterSyntaxErrorTypes.INCORRECT_REGEXP,
                         "message": regexpTest.cause,
-                        "linePart": website
+                        "linePart": website,
+                        "errorCode": "INCORRECT_REGEXP"
                     };
                 }
             }
@@ -252,18 +254,28 @@ export default class FilterProcessor {
             const type = parts[1];
             const filter = parts[2];
 
-            if(type && filter) {
+            if(type) {
                 const filtersTypeRecognized = type.split(",").some(filterType => availableFilterRulesType.includes(filterType)); // Test if the filter types (rules) are recognized
                 const isFilterListWithoutCSSSelector = this.isSpecialRule(type);
 
                 if(!isFilterListWithoutCSSSelector) {
-                    const isSelectorCorrect = this.testSelector(filter);
+                    if(filter) {
+                        const isSelectorCorrect = this.testSelector(filter);
 
-                    if(isSelectorCorrect && isSelectorCorrect.error) {
+                        if(isSelectorCorrect && isSelectorCorrect.error) {
+                            return {
+                                "error": true,
+                                "type": filterSyntaxErrorTypes.WRONG_CSS_SELECTOR,
+                                "linePart": filter,
+                                "errorCode": "WRONG_CSS_SELECTOR"
+                            };
+                        }
+                    } else {
                         return {
                             "error": true,
-                            "type": filterSyntaxErrorTypes.WRONG_CSS_SELECTOR,
-                            "linePart": filter
+                            "type": filterSyntaxErrorTypes.NO_FILTER,
+                            "linePart": website + "|" + type + "|???",
+                            "errorCode": "NO_FILTER"
                         };
                     }
                 }
@@ -274,22 +286,21 @@ export default class FilterProcessor {
                     if(!filtersTypeRecognized) {
                         errorType = filterSyntaxErrorTypes.UNKNOWN_TYPE;
                         errorPart = type;
+                        errorCode = "UNKNOWN_TYPE";
                     } else if(parts.length <= 0) {
                         errorType = filterSyntaxErrorTypes.NO_TYPE;
+                        errorPart = website + "|???";
+                        errorCode = "NO_TYPE";
                     }
                 }
             } else {
-                if(!type) {
-                    errorType = filterSyntaxErrorTypes.NO_TYPE;
-                    errorPart = website + "|???";
-                } else if(!filter) {
-                    errorType = filterSyntaxErrorTypes.NO_FILTER;
-                    errorPart = website + "|" + type + "|???";
-                }
+                errorType = filterSyntaxErrorTypes.NO_TYPE;
+                errorPart = website + "|???";
+                errorCode = "NO_TYPE";
             }
         }
 
-        return { "error": true, "type": errorType, "message": "", "linePart": errorPart };
+        return { "error": true, "type": errorType, "message": "", "linePart": errorPart, "errorCode": errorCode };
     }
 
     parseFilter(filterContent) {
