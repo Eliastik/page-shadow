@@ -585,28 +585,10 @@ export default class FilterProcessor {
     }
 
     async reinstallDefaultFilters() {
-        const newFilters = [];
-
-        const result = await browser.storage.local.get("filtersSettings");
-        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
-
-        for(const filter of defaultFilters.filters) {
-            newFilters.push(filter);
-        }
-
-        for(const filter of filters.filters) {
-            if(!filter.builtIn) newFilters.push(filter);
-        }
-
-        filters.filters = newFilters;
-
-        setSettingItem("filtersSettings", filters);
-        this.cacheFilters();
-
-        return true;
+        return this.updateDefaultFilters(true);
     }
 
-    async updateDefaultFilters() {
+    async updateDefaultFilters(updateAllFilters) {
         const newFilters = [];
         let filterUpdated = false;
 
@@ -618,14 +600,14 @@ export default class FilterProcessor {
                 let defaultFilterFound = false;
 
                 for(const filter of filters.filters) {
-                    if(defaultFilter.sourceUrl == filter.sourceUrl  && filter.builtIn) {
+                    if(defaultFilter.sourceUrl == filter.sourceUrl  && filter.builtIn && !updateAllFilters) {
                         newFilters.push(filter);
                         defaultFilterFound = true;
                         break;
                     }
                 }
 
-                if(!defaultFilterFound) {
+                if(!defaultFilterFound || updateAllFilters) {
                     newFilters.push(defaultFilter);
                     filterUpdated = true;
                 }
