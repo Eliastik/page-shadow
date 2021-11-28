@@ -95,7 +95,7 @@ async function setFirstSettings() {
 }
 
 // Migrate deprecated settings
-async function migrateSettings() {
+async function migrateSettings(filters) {
     const result = await browser.storage.local.get(null);
 
     // Migrate old custom theme settings
@@ -145,6 +145,11 @@ async function migrateSettings() {
 
         setSettingItem("customThemes", customThemes);
         removeSettingItem(["customThemeBg", "customThemeTexts", "customThemeLinks", "customThemeLinksVisited", "customThemeFont", "customCSSCode"]);
+    }
+
+    // Migrate default filters
+    if(result.updateNotification && !result.updateNotification[extensionVersion]) {
+        filters.updateDefaultFilters();
     }
 }
 

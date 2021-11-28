@@ -482,7 +482,7 @@ menu();
 updateBadge(false);
 autoEnable();
 checkFirstLoad();
-migrateSettings();
+migrateSettings(filters);
 setInterval(() => {
     checkAutoEnable();
     checkAutoUpdateFilters();

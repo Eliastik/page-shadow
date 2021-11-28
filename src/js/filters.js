@@ -606,6 +606,43 @@ export default class FilterProcessor {
         return true;
     }
 
+    async updateDefaultFilters() {
+        const newFilters = [];
+        let filterUpdated = false;
+
+        const result = await browser.storage.local.get("filtersSettings");
+        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+
+        for(const defaultFilter of defaultFilters.filters) {
+            if(defaultFilter.builtIn) {
+                let defaultFilterFound = false;
+
+                for(const filter of filters.filters) {
+                    if(defaultFilter.sourceUrl == filter.sourceUrl  && filter.builtIn) {
+                        newFilters.push(filter);
+                        defaultFilterFound = true;
+                        break;
+                    }
+                }
+
+                if(!defaultFilterFound) {
+                    newFilters.push(defaultFilter);
+                    filterUpdated = true;
+                }
+            }
+        }
+
+        filters.filters = newFilters;
+
+        setSettingItem("filtersSettings", filters);
+
+        if(filterUpdated) {
+            this.updateAllFilters(false);
+        }
+
+        return true;
+    }
+
     getNumberOfTotalRules() {
         return this.rules.length + this.specialRules.length;
     }
