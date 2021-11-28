@@ -173,10 +173,11 @@ import browser from "webextension-polyfill";
         const isRgbaColor = backgroundColor.trim().startsWith("rgba");
         const isWhiteRgbaColor = backgroundColor.trim().startsWith("rgba(0, 0, 0");
         const alpha = isRgbaColor ? parseFloat(backgroundColor.split(",")[3]) : -1;
-        const hasLinearGradient = backgroundImage.trim().startsWith("linear-gradient(");
+        const hasBackgroundImageValue = backgroundImage && (backgroundImage.trim().toLowerCase() != "none" && backgroundImage.trim() != "");
+        const hasNoBackgroundColorValue = backgroundColor && (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "");
         const isElementInline = !websiteSpecialFiltersConfig.forceTransparentBackgroundDetectionForInlineElements && tagName && inlineTagName.test(tagName.toLowerCase());
 
-        return (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "" || isWhiteRgbaColor || (isRgbaColor && alpha < websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasLinearGradient && !isElementInline;
+        return (hasNoBackgroundColorValue || isWhiteRgbaColor || (isRgbaColor && alpha < websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasBackgroundImageValue && !isElementInline;
     }
 
     function detectBackgroundForElement(element) {
