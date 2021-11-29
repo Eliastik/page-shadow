@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged } from "./util.js";
-import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, inlineTagName, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
+import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
 import browser from "webextension-polyfill";
 
 (function(){
@@ -167,7 +167,7 @@ import browser from "webextension-polyfill";
         backgroundDetected = true;
     }
 
-    function elementHasTransparentBackground(backgroundColor, backgroundImage, tagName, hasBackgroundImg) {
+    function elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
         if(!backgroundColor) return true;
 
         const isRgbaColor = backgroundColor.trim().startsWith("rgba");
@@ -175,9 +175,8 @@ import browser from "webextension-polyfill";
         const alpha = isRgbaColor ? parseFloat(backgroundColor.split(",")[3]) : -1;
         const hasBackgroundImageValue = backgroundImage && (backgroundImage.trim().toLowerCase() != "none" && backgroundImage.trim() != "");
         const hasNoBackgroundColorValue = backgroundColor && (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "");
-        const isElementInline = !websiteSpecialFiltersConfig.forceTransparentBackgroundDetectionForInlineElements && tagName && inlineTagName.test(tagName.toLowerCase());
 
-        return (hasNoBackgroundColorValue || isWhiteRgbaColor || (isRgbaColor && alpha < websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasBackgroundImageValue && !isElementInline;
+        return (hasNoBackgroundColorValue || isWhiteRgbaColor || (isRgbaColor && alpha < websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasBackgroundImageValue;
     }
 
     function detectBackgroundForElement(element) {
@@ -198,7 +197,7 @@ import browser from "webextension-polyfill";
         }
 
         if(websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled) {
-            const hasTransparentBackground = elementHasTransparentBackground(backgroundColor, backgroundImage, element.tagName, hasBackgroundImg);
+            const hasTransparentBackground = elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg);
 
             if(hasTransparentBackground && !hasTransparentBackgroundClass) {
                 element.classList.add("pageShadowHasTransparentBackground");
