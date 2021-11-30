@@ -28,6 +28,7 @@ import browser from "webextension-polyfill";
     const elementBrightness = document.createElement("div");
     const websiteSpecialFiltersConfig = defaultWebsiteSpecialFiltersConfig;
     const runningInIframe = window !== window.top;
+    const backgroundDetectionAlreadyProcessedNodes = [];
 
     let timeoutApplyBrightness, timeoutApplyContrast, timeoutApplyInvertColors, timeoutApplyDetectBackgrounds;
     let backgroundDetected = false;
@@ -181,6 +182,12 @@ import browser from "webextension-polyfill";
 
     function detectBackgroundForElement(element) {
         if(!element) return;
+
+        if(element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected") || element.classList.contains("pageShadowHasBackgroundImg") || element.classList.contains("pageShadowHasTransparentBackground")
+            || backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1) {
+            return;
+        }
+
         element.classList.add("pageShadowDisableStyling");
 
         const computedStyle = window.getComputedStyle(element, null);
@@ -190,7 +197,7 @@ import browser from "webextension-polyfill";
 
         const hasBackgroundImg = background.trim().substr(0, 4).toLowerCase().includes("url(") || backgroundImage.trim().substr(0, 4).toLowerCase() == "url(";
         const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
-        const hasTransparentBackgroundClass = element.classList.contains("pageShadowDisableBackgroundStyling");
+        const hasTransparentBackgroundClass = element.classList.contains("pageShadowHasTransparentBackground");
 
         if(hasBackgroundImg && !hasClassImg) {
             element.classList.add("pageShadowHasBackgroundImg");
@@ -204,6 +211,7 @@ import browser from "webextension-polyfill";
             }
         }
 
+        backgroundDetectionAlreadyProcessedNodes.push(element);
         element.classList.remove("pageShadowDisableStyling");
     }
 
@@ -444,23 +452,27 @@ import browser from "webextension-polyfill";
                 "subtree": true,
                 "childList": true,
                 "characterData": false,
-                "attributeFilter": ["class", "style"]
+                "attributeFilter": ["class", "style"],
+                "attributeOldValue": true
             });
         }
     }
 
     function mutationElementsBackgrounds(element, attribute, attributeOldValue) {
-        if(typeof(element.classList) === "undefined" || element.classList == null || attribute == "class") {
+        if(!element || !element.classList || element == document.body) {
             return false;
         }
 
-        if(element.classList.contains("pageShadowHasBackgroundImg") || element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected")) {
+        if((attribute && !websiteSpecialFiltersConfig.enableMutationObserverAttributes) || (attribute == "class" && !websiteSpecialFiltersConfig.enableMutationObserverClass)) {
             return false;
         }
 
-        if(attributeOldValue !== null && attributeOldValue.indexOf("pageShadowDisableStyling") !== -1) {
+        if(attribute == "class" && (attributeOldValue !== null && (attributeOldValue.indexOf("pageShadowDisableStyling") !== -1
+            || attributeOldValue.indexOf("pageShadowHasTransparentBackground") !== -1 || attributeOldValue.indexOf("pageShadowHasBackgroundImg") !== -1))) {
             return false;
         }
+
+        document.body.classList.remove("pageShadowBackgroundDetected");
 
         detectBackgroundForElement(element);
 
@@ -476,6 +488,8 @@ import browser from "webextension-polyfill";
                 }
             }
         }
+
+        document.body.classList.add("pageShadowBackgroundDetected");
     }
 
     async function updateFilters() {
@@ -749,6 +763,10 @@ import browser from "webextension-polyfill";
                     if(rule.type == "opacityDetectedAsTransparentThreshold") websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold = rule.filter;
                     if(rule.type == "enableTransparentBackgroundDetectionForInlineElements") websiteSpecialFiltersConfig.forceTransparentBackgroundDetectionForInlineElements = true;
                     if(rule.type == "disableTransparentBackgroundDetectionForInlineElements") websiteSpecialFiltersConfig.forceTransparentBackgroundDetectionForInlineElements = false;
+                    if(rule.type == "enableMutationObserverAttributes") websiteSpecialFiltersConfig.enableMutationObserverAttributes = true;
+                    if(rule.type == "disableMutationObserverAttributes") websiteSpecialFiltersConfig.enableMutationObserverAttributes = false;
+                    if(rule.type == "enableMutationObserverClass") websiteSpecialFiltersConfig.enableMutationObserverClass = true;
+                    if(rule.type == "disableMutationObserverClass") websiteSpecialFiltersConfig.enableMutationObserverClass = false;
                 });
 
                 if(runningInIframe) {

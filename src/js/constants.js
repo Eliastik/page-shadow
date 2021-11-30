@@ -117,8 +117,8 @@ const defaultFilters = {
 const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/";
 const regexpDetectionPattern = /^\/(.*)(?<!\\)(.*)\//;
 const opacityDetectedAsTransparentThresholdDefault = 0.1;
-const availableFilterRulesType = ["disableContrastFor", "forceTransparentBackground", "disableBackgroundStylingFor", "disableTextColorStylingFor", "disableInputBorderStylingFor", "disableLinkStylingFor", "disableFontFamilyStylingFor", "disableElementInvertFor", "hasBackgroundImg", "forceCustomLinkColorFor", "forceCustomBackgroundColorFor", "forceCustomTextColorFor", "disableShadowRootsCustomStyle", "enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableTransparentBackgroundDetectionForInlineElements", "disableTransparentBackgroundDetectionForInlineElements"];
-const specialFilterRules = ["enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableTransparentBackgroundDetectionForInlineElements", "disableTransparentBackgroundDetectionForInlineElements"];
+const availableFilterRulesType = ["disableContrastFor", "forceTransparentBackground", "disableBackgroundStylingFor", "disableTextColorStylingFor", "disableInputBorderStylingFor", "disableLinkStylingFor", "disableFontFamilyStylingFor", "disableElementInvertFor", "hasBackgroundImg", "forceCustomLinkColorFor", "forceCustomBackgroundColorFor", "forceCustomTextColorFor", "disableShadowRootsCustomStyle", "enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableTransparentBackgroundDetectionForInlineElements", "disableTransparentBackgroundDetectionForInlineElements", "enableMutationObserverAttributes", "enableMutationObserverClass", "disableMutationObserverAttributes", "disableMutationObserverClass"];
+const specialFilterRules = ["enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableTransparentBackgroundDetectionForInlineElements", "disableTransparentBackgroundDetectionForInlineElements", "enableMutationObserverAttributes", "enableMutationObserverClass", "disableMutationObserverAttributes", "disableMutationObserverClass"];
 const ruleCategory = {
     STANDARD_RULES: "STANDARD_RULES",
     SPECIAL_RULES: "SPECIAL_RULES"
@@ -136,7 +136,9 @@ const defaultWebsiteSpecialFiltersConfig = {
     autoDetectTransparentBackgroundEnabled: true,
     enableMutationObserversForSubChilds: true,
     opacityDetectedAsTransparentThreshold: opacityDetectedAsTransparentThresholdDefault,
-    forceTransparentBackgroundDetectionForInlineElements: false
+    forceTransparentBackgroundDetectionForInlineElements: false,
+    enableMutationObserverAttributes: true,
+    enableMutationObserverClass: true
 };
 
 export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig };
