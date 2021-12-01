@@ -117,8 +117,8 @@ const defaultFilters = {
 const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/";
 const regexpDetectionPattern = /^\/(.*)(?<!\\)(.*)\//;
 const opacityDetectedAsTransparentThresholdDefault = 0.1;
-const availableFilterRulesType = ["disableContrastFor", "forceTransparentBackground", "disableBackgroundStylingFor", "disableTextColorStylingFor", "disableInputBorderStylingFor", "disableLinkStylingFor", "disableFontFamilyStylingFor", "disableElementInvertFor", "hasBackgroundImg", "forceCustomLinkColorFor", "forceCustomBackgroundColorFor", "forceCustomTextColorFor", "disableShadowRootsCustomStyle", "enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableTransparentBackgroundDetectionForInlineElements", "disableTransparentBackgroundDetectionForInlineElements", "enableMutationObserverAttributes", "enableMutationObserverClass", "disableMutationObserverAttributes", "disableMutationObserverClass"];
-const specialFilterRules = ["enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableTransparentBackgroundDetectionForInlineElements", "disableTransparentBackgroundDetectionForInlineElements", "enableMutationObserverAttributes", "enableMutationObserverClass", "disableMutationObserverAttributes", "disableMutationObserverClass"];
+const availableFilterRulesType = ["disableContrastFor", "forceTransparentBackground", "disableBackgroundStylingFor", "disableTextColorStylingFor", "disableInputBorderStylingFor", "disableLinkStylingFor", "disableFontFamilyStylingFor", "disableElementInvertFor", "hasBackgroundImg", "forceCustomLinkColorFor", "forceCustomBackgroundColorFor", "forceCustomTextColorFor", "disableShadowRootsCustomStyle", "enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "disableMutationObserverAttributes", "disableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverStyle"];
+const specialFilterRules = ["enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverAttributes", "disableMutationObserverClass", "disableMutationObserverStyle"];
 const ruleCategory = {
     STANDARD_RULES: "STANDARD_RULES",
     SPECIAL_RULES: "SPECIAL_RULES"
@@ -136,8 +136,8 @@ const defaultWebsiteSpecialFiltersConfig = {
     autoDetectTransparentBackgroundEnabled: true,
     enableMutationObserversForSubChilds: true,
     opacityDetectedAsTransparentThreshold: opacityDetectedAsTransparentThresholdDefault,
-    forceTransparentBackgroundDetectionForInlineElements: false,
-    enableMutationObserverAttributes: false,
+    enableMutationObserverAttributes: true,
+    enableMutationObserverStyle: true,
     enableMutationObserverClass: false
 };
 

@@ -463,7 +463,8 @@ import browser from "webextension-polyfill";
             return false;
         }
 
-        if((attribute && !websiteSpecialFiltersConfig.enableMutationObserverAttributes) || (attribute == "class" && !websiteSpecialFiltersConfig.enableMutationObserverClass)) {
+        if(attribute && (!websiteSpecialFiltersConfig.enableMutationObserverAttributes || (attribute.toLowerCase() == "class" && !websiteSpecialFiltersConfig.enableMutationObserverClass)
+            || (attribute.toLowerCase() == "style" && !websiteSpecialFiltersConfig.enableMutationObserverStyle))) {
             return false;
         }
 
@@ -761,12 +762,12 @@ import browser from "webextension-polyfill";
                     if(rule.type == "enableMutationObserversForSubChilds") websiteSpecialFiltersConfig.enableMutationObserversForSubChilds = true;
                     if(rule.type == "disableMutationObserversForSubChilds") websiteSpecialFiltersConfig.enableMutationObserversForSubChilds = false;
                     if(rule.type == "opacityDetectedAsTransparentThreshold") websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold = rule.filter;
-                    if(rule.type == "enableTransparentBackgroundDetectionForInlineElements") websiteSpecialFiltersConfig.forceTransparentBackgroundDetectionForInlineElements = true;
-                    if(rule.type == "disableTransparentBackgroundDetectionForInlineElements") websiteSpecialFiltersConfig.forceTransparentBackgroundDetectionForInlineElements = false;
                     if(rule.type == "enableMutationObserverAttributes") websiteSpecialFiltersConfig.enableMutationObserverAttributes = true;
                     if(rule.type == "disableMutationObserverAttributes") websiteSpecialFiltersConfig.enableMutationObserverAttributes = false;
                     if(rule.type == "enableMutationObserverClass") websiteSpecialFiltersConfig.enableMutationObserverClass = true;
                     if(rule.type == "disableMutationObserverClass") websiteSpecialFiltersConfig.enableMutationObserverClass = false;
+                    if(rule.type == "enableMutationObserverStyle") websiteSpecialFiltersConfig.enableMutationObserverStyle = true;
+                    if(rule.type == "disableMutationObserverStyle") websiteSpecialFiltersConfig.enableMutationObserverStyle = false;
                 });
 
                 if(runningInIframe) {

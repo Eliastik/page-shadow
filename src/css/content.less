@@ -90,8 +90,8 @@
     .pageShadowContrastBlack@{name} select:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
         color: @selectxtcolor !important;
     }
-    .pageShadowContrastBlack@{name} input:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling) {
-        border: 1px solid @txtcolor !important;
+    .pageShadowContrastBlack@{name} input:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling), .pageShadowContrastBlack@{name} textarea:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling) {
+        border-color: @txtcolor !important;
     }
     .pageShadowContrastBlack@{name} ins:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
         background-color: @insbgcolor !important;
