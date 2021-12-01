@@ -137,8 +137,8 @@ const defaultWebsiteSpecialFiltersConfig = {
     enableMutationObserversForSubChilds: true,
     opacityDetectedAsTransparentThreshold: opacityDetectedAsTransparentThresholdDefault,
     forceTransparentBackgroundDetectionForInlineElements: false,
-    enableMutationObserverAttributes: true,
-    enableMutationObserverClass: true
+    enableMutationObserverAttributes: false,
+    enableMutationObserverClass: false
 };
 
 export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig };
