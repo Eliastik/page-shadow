@@ -505,7 +505,7 @@ import browser from "webextension-polyfill";
     }
 
     function doProcessFilters(filters, element) {
-        if(!filters || !element) return;
+        if(!filters) return;
 
         for(const filter of filters) {
             const selector = filter.filter;
@@ -786,9 +786,9 @@ import browser from "webextension-polyfill";
 
                 if(urlUpdated) {
                     backgroundDetected = false;
-                    filtersCache = null;
                     precUrl = getCurrentURL();
-                    if(changed) updateFilters();
+                    filtersCache = null;
+                    updateFilters();
                 }
 
                 if(changed) {
