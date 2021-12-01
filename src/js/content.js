@@ -738,7 +738,10 @@ import browser from "webextension-polyfill";
                 break;
             }
             case "applySettingsChangedResponse": {
-                if(hasSettingsChanged(currentSettings, message.settings)) {
+                const changed = hasEnabledStateChanged(message.enabled);
+
+                if(changed || hasSettingsChanged(currentSettings, message.settings)) {
+                    precEnabled = message.enabled;
                     main(TYPE_RESET, TYPE_ALL);
                 }
                 break;
@@ -781,7 +784,7 @@ import browser from "webextension-polyfill";
                 break;
             }
             case "websiteUrlUpdated": { // Execute when the page URL changes in Single Page Applications
-                const changed = started && ((message.enabled && !precEnabled) || (!message.enabled && precEnabled));
+                const changed = hasEnabledStateChanged(message.enabled);
                 const urlUpdated = precUrl != getCurrentURL();
 
                 if(urlUpdated) {
@@ -801,6 +804,10 @@ import browser from "webextension-polyfill";
         }
     });
 
+    function hasEnabledStateChanged(isEnabled) {
+        return started && ((isEnabled&& !precEnabled) || (!isEnabled && precEnabled));
+    }
+
     async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled) {
         const result = await browser.storage.local.get("liveSettings");
         const isLiveSettings = result.liveSettings !== "false";
@@ -812,8 +819,6 @@ import browser from "webextension-polyfill";
 
         if(isLiveSettings && storageChanged) {
             if(runningInIframe) {
-                precEnabled = isEnabled;
-
                 browser.runtime.sendMessage({
                     "type": "applySettingsChanged"
                 });
