@@ -19,16 +19,15 @@
 import { availableFilterRulesType } from "./constants.js";
 
 export default function registerCodemirrorFilterMode(CodeMirror) {
-    console.log("/(" + availableFilterRulesType.join("|") + ")/");
     CodeMirror.defineSimpleMode("filtermode", {
-        "start": [
-            {regex: /\s*#!(.*)/, token: "meta", next: "start", sol: true},
-            {regex: /\s*#(.*)/, token: "comment", next: "start", sol: true},
-            {regex: /^((.*)\/(?:[^\\]|\\.)*?\/)(\|)/, token: ["operator", null, "string"], sol: true},
-            {regex: /(.*?[^|])?(\|)/, token: ["atom", "string"], sol: true},
-            {regex: "/" + availableFilterRulesType.join("|") + "/", token: "keyword"},
-            {regex: /(\|)(.*)/, token: ["string", "variable"]},
-            {regex: /(.*)/, token: "empty", next: "start", sol: true}
+        start: [
+            {regex: /\s*#!(.*)/, token: "meta", next: "start", sol: true}, // Match metadata
+            {regex: /\s*#(.*)/, token: "comment", next: "start", sol: true}, // Match comments
+            {regex: /^((.*)\/(?:[^\\]|\\.)*?\/)(\|)/, token: ["operator", null, "string"], sol: true}, // Match regular expressions (for website/webpage)
+            {regex: /(.*?[^|])?(\|)/, token: ["atom", "string"], sol: true}, // Match website/webpage and first pipe character (|)
+            {regex: "/|" + availableFilterRulesType.join("|") + "/", token: "keyword"}, // Match rule
+            {regex: /(\|)(.*)/, token: ["string", "variable"]}, // Match second pipe character and CSS selector
+            {regex: /(.*)/, token: "empty", next: "start", sol: true} // Match other
         ],
         meta: {
             lineComment: "#"
