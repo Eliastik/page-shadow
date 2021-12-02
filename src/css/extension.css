@@ -395,18 +395,21 @@ div.navbar-right {
 #syntaxBtnPresets {
     margin-top: 8px;
 }
-#presetAutoEnabledForThisWebsite, #customThemeEditErrorDetected, #customThemeEditErrorDetails {
+#presetAutoEnabledForThisWebsite, #customFilterEditErrorDetected, #customFilterEditErrorDetails {
     display: none;
 }
-#customThemeEditErrorDetected {
+#customFilterEditErrorDetected {
     color: red;
     margin-top: 8px;
 }
-#customThemeEditErrorDetails {
+#customFilterEditErrorDetails {
     max-height: 150px;
     overflow: auto;
     border: 1px solid lightgray;
     padding: 8px;
+}
+.CodeMirror-hints {
+    z-index: 9999 !important;
 }
 .border-bottom:not(:last-child) {
     border-bottom: 1px solid lightgray;

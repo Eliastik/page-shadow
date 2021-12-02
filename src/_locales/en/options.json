@@ -120,8 +120,8 @@
             "previewText": "A text.",
             "previewLink": "A link.",
             "previewLinkVisited": "A visited link.",
-            "collapseCustomCSS": "Custom CSS code…",
-            "customCSSHelp": "You can enter a custom CSS code below that will be loaded along with the custom theme.",
+            "collapseCustomCSS": "Custom CSS stylesheet…",
+            "customCSSHelp": "You can write a custom CSS stylesheet below that will be loaded along with the custom theme.",
             "customCSSHelpExpUsers": "For experienced users only.",
             "fontNotCompatible": "This setting is not compatible with your web browser.",
             "firefoxLinuxBugFonts": "This setting may not work on your system."
@@ -280,7 +280,7 @@
             "errorLineDetails": "Part of the rule with error:",
             "errorLineMessage": "Complete error message:",
             "errorCount":  "Number of filter rules with errors:",
-            "customThemeEditErrorDetected": "Error detected in your filter",
+            "customFilterEditErrorDetected": "Error detected in your filter",
             "errorCode": "Error code:"
         },
         "close": "Close",

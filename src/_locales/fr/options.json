@@ -119,8 +119,8 @@
             "previewText": "Un texte.",
             "previewLink": "Un lien.",
             "previewLinkVisited": "Un lien visité.",
-            "collapseCustomCSS": "Code CSS personnalisé…",
-            "customCSSHelp": "Vous pouvez entrer ci-dessous un code CSS personnalisé qui sera chargé en même temps que le thème personnalisé.",
+            "collapseCustomCSS": "Feuille de style CSS personnalisée…",
+            "customCSSHelp": "Vous pouvez écrire ci-dessous une feuille de style CSS personnalisée qui sera chargée en même temps que le thème personnalisé.",
             "customCSSHelpExpUsers": "Pour les utilisateurs expérimentés uniquement.",
             "fontNotCompatible": "Ce paramètre est incompatible avec votre navigateur web.",
             "firefoxLinuxBugFonts": "Il est possible que ce paramètre ne soit pas fonctionnel sur votre système."
@@ -279,7 +279,7 @@
             "errorLineDetails": "Partie de la règle incriminée :",
             "errorLineMessage": "Message d'erreur complet :",
             "errorCount":  "Nombre de règles de filtre en erreur :",
-            "customThemeEditErrorDetected": "Des erreurs ont été détectées dans votre filtre",
+            "customFilterEditErrorDetected": "Des erreurs ont été détectées dans votre filtre",
             "errorCode": "Code de l'erreur :"
         },
         "close": "Fermer",

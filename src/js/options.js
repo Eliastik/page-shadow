@@ -23,12 +23,17 @@ import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/mode/css/css.js";
-import "codemirror/addon/mode/simple";
-import "codemirror/addon/display/autorefresh.js";
+import "codemirror/addon/mode/simple.js";
+import "codemirror/addon/selection/active-line.js";
+import "codemirror/addon/edit/matchbrackets.js";
+import "codemirror/addon/scroll/simplescrollbars.js";
+import "codemirror/addon/scroll/simplescrollbars.css";
+import "codemirror/addon/hint/show-hint.js";
+import "codemirror/addon/hint/show-hint.css";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
 import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject } from "./util.js";
-import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL } from "./constants.js";
+import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, availableFilterRulesType } from "./constants.js";
 import { setSettingItem, setFirstSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./filter.codemirror.mode";
@@ -470,13 +475,18 @@ async function displayFilters() {
 }
 
 async function displayDetailsFilter(idFilter) {
-    window.codeMirrorFilterData.getDoc().setValue("");
     $("#filters").modal("hide");
+
+    $("#filterDetails").on("shown.bs.modal", () => {
+        window.codeMirrorFilterData.refresh();
+    });
 
     $("#filters").on("hidden.bs.modal", () => {
         $("#filterDetails").modal("show");
         $("#filters").off("hidden.bs.modal");
     });
+
+    window.codeMirrorFilterData.getDoc().setValue("");
 
     const result = await browser.storage.local.get("filtersSettings");
     const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
@@ -695,6 +705,10 @@ function displayFilterErrorsOnElement(data, domElement) {
 async function displayFilterEdit() {
     $("#filters").modal("hide");
 
+    $("#editFilter").on("shown.bs.modal", () => {
+        window.codeMirrorEditFilter.refresh();
+    });
+
     $("#filters").on("hidden.bs.modal", () => {
         $("#editFilter").modal("show");
         $("#filters").off("hidden.bs.modal");
@@ -802,6 +816,7 @@ async function archiveSettings() {
         const filename = "page-shadow-backupdata-" + dateString + ".json";
 
         window.codeMirrorJSONArchive.getDoc().setValue(dataStr);
+        setTimeout(() => window.codeMirrorJSONArchive.refresh(), 50);
         $("#archiveSuggestedName").val(filename);
         $("#helpArchive").show();
         $("#archiveDataButton").removeClass("disabled");
@@ -1238,31 +1253,88 @@ $(document).ready(() => {
         lineNumbers: true,
         mode: "css",
         theme: "material",
-        autoRefresh: true
+        styleActiveLine: true,
+        matchBrackets: true,
+        scrollbarStyle: "overlay"
     });
 
     window.codeMirrorJSONArchive = CodeMirror.fromTextArea(document.getElementById("codeMirrorJSONArchiveTextarea"), {
         lineNumbers: true,
         theme: "material",
-        autoRefresh: true,
-        readOnly: true
+        readOnly: true,
+        scrollbarStyle: "overlay"
     });
 
     window.codeMirrorFilterData = CodeMirror.fromTextArea(document.getElementById("codeMirrorFilterData"), {
         lineNumbers: true,
         theme: "material",
         mode: "filtermode",
-        autoRefresh: true,
+        styleActiveLine: true,
         readOnly: true,
-        lineWrapping: true
+        lineWrapping: true,
+        scrollbarStyle: "overlay"
     });
+
+    function filtersHint(editor, keywords, getToken) {
+        const Pos = CodeMirror.Pos;
+
+        const cur = editor.getCursor();
+        const token = getToken(editor, cur);
+        const suggestions = [];
+
+        const fullText = editor.getValue();
+        const line = cur.line;
+        const end = cur.ch;
+        let currentLine = fullText.split("\n")[line];
+        currentLine = currentLine.substr(0, end);
+        let start = currentLine.indexOf("|");
+
+        if (start === -1) {
+            start = 0;
+        }
+
+        const currentWord = currentLine.substr(start, end - start);
+        const wordSplit = currentWord.split("|");
+
+        if(wordSplit && wordSplit.length == 2) { // Autocomplete for rule types
+            const str = wordSplit[1];
+
+            if(str) {
+                if(str.trim() == "") {
+                    suggestions.push(...keywords);
+                } else {
+                    suggestions.push(...keywords.filter(keyword => {
+                        if(keyword.startsWith(str)) return true;
+                        return false;
+                    }));
+                }
+            } else {
+                suggestions.push(...keywords);
+            }
+        }
+
+        return {list: suggestions,
+            from: Pos(cur.line, start + 1),
+            to: Pos(cur.line, token.end)};
+    }
+
+    CodeMirror.registerHelper("hint", "filtermode", editor => filtersHint(editor, availableFilterRulesType, (e, cur) => {return e.getTokenAt(cur);}));
 
     window.codeMirrorEditFilter = CodeMirror.fromTextArea(document.getElementById("codeMirrorEditFilter"), {
         lineNumbers: true,
         theme: "material",
         mode: "filtermode",
-        autoRefresh: true,
-        lineWrapping: true
+        styleActiveLine: true,
+        lineWrapping: true,
+        scrollbarStyle: "overlay",
+        extraKeys: {"Ctrl-Space": "autocomplete"}
+    });
+
+
+    window.codeMirrorEditFilter.on("keyup", (cm, event) => {
+        if(!cm.state.completionActive && event.keyCode != 13) {        /*Enter - do not open autocomplete list just after item has been selected in it*/
+            CodeMirror.commands.autocomplete(cm, null, { completeSingle: false });
+        }
     });
 
     window.codeMirrorJSONArchive.setSize(null, 50);
@@ -1400,6 +1472,10 @@ $(document).ready(() => {
         $("#archive").modal("show");
     });
 
+    $("#customTheme").on("shown.bs.modal", () => {
+        window.codeMirrorUserCss.refresh();
+    });
+
     $("#enableFilterAutoUpdate").on("change", () => {
         $("#enableFilterAutoUpdate").attr("disabled", "disabled");
 
@@ -1479,7 +1555,7 @@ $(document).ready(() => {
     });
 
     $("#buttonSeeErrorsCustomFilterEdit").click(() => {
-        $("#customThemeEditErrorDetails").toggle();
+        $("#customFilterEditErrorDetails").toggle();
     });
 });
 
@@ -1548,13 +1624,13 @@ browser.runtime.onMessage.addListener(message => {
             break;
         }
         case "getRulesErrorsForCustomEditResponse": {
-            displayFilterErrorsOnElement(message.data, document.querySelector("#customThemeEditErrorDetails"));
+            displayFilterErrorsOnElement(message.data, document.querySelector("#customFilterEditErrorDetails"));
 
             if(Object.keys(message.data).length > 0) {
-                $("#customThemeEditErrorDetected").show();
+                $("#customFilterEditErrorDetected").show();
             } else {
-                $("#customThemeEditErrorDetected").hide();
-                $("#customThemeEditErrorDetails").hide();
+                $("#customFilterEditErrorDetected").hide();
+                $("#customFilterEditErrorDetails").hide();
             }
 
             break;
