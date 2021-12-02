@@ -23,6 +23,7 @@ import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/mode/css/css.js";
+import "codemirror/addon/mode/simple";
 import "codemirror/addon/display/autorefresh.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
@@ -30,6 +31,7 @@ import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset
 import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL } from "./constants.js";
 import { setSettingItem, setFirstSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
+import registerCodemirrorFilterMode from "./filter.codemirror.mode";
 import browser from "webextension-polyfill";
 
 window.$ = $;
@@ -1230,6 +1232,8 @@ $(document).ready(() => {
         this.select();
     });
 
+    registerCodemirrorFilterMode(CodeMirror);
+
     window.codeMirrorUserCss = CodeMirror.fromTextArea(document.getElementById("codeMirrorUserCSSTextarea"), {
         lineNumbers: true,
         mode: "css",
@@ -1247,6 +1251,7 @@ $(document).ready(() => {
     window.codeMirrorFilterData = CodeMirror.fromTextArea(document.getElementById("codeMirrorFilterData"), {
         lineNumbers: true,
         theme: "material",
+        mode: "filtermode",
         autoRefresh: true,
         readOnly: true,
         lineWrapping: true
@@ -1255,6 +1260,7 @@ $(document).ready(() => {
     window.codeMirrorEditFilter = CodeMirror.fromTextArea(document.getElementById("codeMirrorEditFilter"), {
         lineNumbers: true,
         theme: "material",
+        mode: "filtermode",
         autoRefresh: true,
         lineWrapping: true
     });
