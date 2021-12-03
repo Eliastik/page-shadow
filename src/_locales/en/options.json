@@ -173,6 +173,7 @@
             "archiveCloudBtn": "Archive the data",
             "restoreCloudBtn": "Restore the data",
             "archiveCloudError": "An error occurred while archiving the data.",
+            "archiveCloudErrorQuota": "An error occurred while archiving the data. Your settings exceed the maximum storage quota provided by cloud archiving (see the Storage infos tab).",
             "restoreCloudError": "An error occurred while restoring the archive.",
             "archiveCloudSuccess": "Archiving of data done successfully.",
             "restoreCloudSuccess": "Data restoration completed successfully.",

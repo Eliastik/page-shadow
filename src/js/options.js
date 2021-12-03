@@ -929,6 +929,8 @@ function restoreSettingsFile(event) {
     $("#restoreErrorArchive").hide();
     $("#restoreDataButton").addClass("disabled");
 
+    const oldTextareadValue = $("#textareaAssomPage").val();
+
     if (typeof FileReader !== "undefined") {
         const reader = new FileReader();
         reader.onload = async(event) => {
@@ -951,12 +953,14 @@ function restoreSettingsFile(event) {
                 $("#restoreSuccess").fadeIn(500);
             } else {
                 $("#restoreErrorArchive").fadeIn(500);
+                $("#textareaAssomPage").val(oldTextareadValue);
                 displaySettings("local", true);
             }
         };
 
         reader.onerror = function() {
             $("#restoreError").fadeIn(500);
+            $("#textareaAssomPage").val(oldTextareadValue);
             displaySettings("local", true);
         };
 
@@ -969,11 +973,13 @@ function restoreSettingsFile(event) {
                 reader.readAsText(event.target.files[0]);
             } else {
                 $("#restoreErrorFilesize").fadeIn(500);
+                $("#textareaAssomPage").val(oldTextareadValue);
                 displaySettings("local", true);
                 return false;
             }
         } else {
             $("#restoreErrorExtension").fadeIn(500);
+            $("#textareaAssomPage").val(oldTextareadValue);
             displaySettings("local", true);
             return false;
         }
@@ -988,6 +994,7 @@ async function archiveCloudSettings() {
         $("#restoreCloudError").hide();
         $("#archiveCloudSuccess").hide();
         $("#restoreCloudSuccess").hide();
+        $("#archiveCloudErrorQuota").hide();
         $("#archiveCloudBtn").addClass("disabled");
         $("#restoreCloudBtn").addClass("disabled");
 
@@ -1003,7 +1010,11 @@ async function archiveCloudSettings() {
                         try {
                             await browser.storage.sync.set(settingToSave);
                         } catch(e) {
-                            $("#archiveCloudError").fadeIn(500);
+                            if(e && e.message.indexOf("QUOTA_BYTES_PER_ITEM") != -1) {
+                                $("#archiveCloudErrorQuota").fadeIn(500);
+                            } else {
+                                $("#archiveCloudError").fadeIn(500);
+                            }
                             displaySettings("sync", true);
                             return;
                         }
@@ -1069,6 +1080,7 @@ async function restoreCloudSettings() {
         $("#restoreCloudBtn").addClass("disabled");
 
         const dataSync = await browser.storage.sync.get(null);
+        const oldTextareadValue = $("#textareaAssomPage").val();
 
         if(dataSync != undefined) {
             try {
@@ -1087,14 +1099,17 @@ async function restoreCloudSettings() {
                     $("#restoreCloudSuccess").fadeIn(500);
                 } else {
                     $("#restoreCloudError").fadeIn(500);
+                    $("#textareaAssomPage").val(oldTextareadValue);
                     displaySettings("sync", true);
                 }
             } catch(e) {
                 $("#restoreCloudError").fadeIn(500);
+                $("#textareaAssomPage").val(oldTextareadValue);
                 displaySettings("sync", true);
             }
         } else {
             $("#restoreCloudError").fadeIn(500);
+            $("#textareaAssomPage").val(oldTextareadValue);
             displaySettings("sync", true);
         }
     }
