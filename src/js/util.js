@@ -475,8 +475,6 @@ async function loadPresetSelect(selectId, i18next) {
 
     document.getElementById(selectId).innerHTML = optionTitle;
     document.getElementById(selectId).value = presetSelected;
-    document.getElementById(selectId).dispatchEvent(new Event("change"));
-    if(document.getElementById(selectId).onchange) document.getElementById(selectId).onchange();
 }
 
 async function presetsEnabled() {

@@ -30,10 +30,11 @@ import "codemirror/addon/scroll/simplescrollbars.js";
 import "codemirror/addon/scroll/simplescrollbars.css";
 import "codemirror/addon/hint/show-hint.js";
 import "codemirror/addon/hint/show-hint.css";
+import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
 import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject } from "./util.js";
-import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, availableFilterRulesType } from "./constants.js";
+import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL } from "./constants.js";
 import { setSettingItem, setFirstSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./filter.codemirror.mode";
@@ -48,6 +49,9 @@ window.codeMirrorFilterData = null;
 window.codeMirrorEditFilter = null;
 
 let filterSavedTimeout;
+let currentSelectedTheme = 1;
+let currentSelectedPresetEdit = 1;
+let changingLanguage = false;
 
 init_i18next("options").then(() => translateContent());
 
@@ -66,9 +70,6 @@ function translateContent() {
         selectorAttr: "data-i18n"
     });
     listTranslations(i18next.languages);
-    loadPresetSelect("loadPresetSelect", i18next);
-    loadPresetSelect("savePresetSelect", i18next);
-    loadPresetSelect("deletePresetSelect", i18next);
     $("nav").localize();
     $(".container").localize();
     $(".modal").localize();
@@ -96,10 +97,22 @@ function translateContent() {
         $("#firefoxLinuxBugFonts").show();
     }
 
-    displaySettings();
+    displaySettings(null, changingLanguage);
 }
 
-function changeLng(lng) {
+async function changeLng(lng) {
+    /*if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+        if(!confirm(i18next.t("modal.presets.notifyPresetChangedNotSavedInfoChangeLanguage"))) {
+            return;
+        }
+    }
+
+    if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+        if(!confirm(i18next.t("modal.themes.notifyThemeChangedNotSavedInfoLanguage"))) {
+            return;
+        }
+    }*/
+
     i18next.changeLanguage(lng);
 }
 
@@ -121,10 +134,11 @@ async function resetSettings() {
     await loadPresetSelect("loadPresetSelect", i18next);
     await loadPresetSelect("savePresetSelect", i18next);
     await loadPresetSelect("deletePresetSelect", i18next);
+    displayPresetSettings(currentSelectedPresetEdit);
     localStorage.clear();
 }
 
-async function displaySettings(areaName) {
+async function displaySettings(areaName, dontDisplayThemeAndPresets) {
     const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
 
     if(areaName != "sync") {
@@ -166,14 +180,18 @@ async function displaySettings(areaName) {
     $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
 
     if(areaName != "sync") {
-        displayTheme($("#themeSelect").val());
+        if(!dontDisplayThemeAndPresets) displayTheme($("#themeSelect").val());
         $("#restoreDataButton").removeClass("disabled");
         displayFilters();
     }
 
-    loadPresetSelect("loadPresetSelect", i18next);
-    loadPresetSelect("savePresetSelect", i18next);
-    loadPresetSelect("deletePresetSelect", i18next);
+    await loadPresetSelect("loadPresetSelect", i18next);
+    await loadPresetSelect("savePresetSelect", i18next);
+    await loadPresetSelect("deletePresetSelect", i18next);
+    if(!dontDisplayThemeAndPresets) displayPresetSettings(currentSelectedPresetEdit);
+
+    $("#savePresetSelect").val(currentSelectedPresetEdit);
+    $("#themeSelect").val(currentSelectedTheme);
 }
 
 async function displayTheme(nb, defaultSettings) {
@@ -550,11 +568,18 @@ async function displayInfosFilter(idFilter) {
 }
 
 async function displayPresetInfos(nb) {
+    $("#archive").off("hidden.bs.modal");
     $("#archive").modal("hide");
 
     $("#archive").on("hidden.bs.modal", () => {
         $("#presetInfos").modal("show");
         $("#archive").off("hidden.bs.modal");
+
+        $("#archive").on("hidden.bs.modal", async() => {
+            if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+                alert(i18next.t("modal.presets.notifyPresetChangedNotSavedInfo"));
+            }
+        });
     });
 
     const presetData = await getPresetData(nb);
@@ -759,7 +784,36 @@ async function saveThemeSettings(nb) {
     setSettingItem("customThemes", customThemes);
 }
 
+async function notifyChangedThemeNotSaved(nb) {
+    nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
+
+    const result = await browser.storage.local.get("customThemes");
+    let customThemes = JSON.parse(JSON.stringify(defaultCustomThemes));
+
+    if(result.customThemes != undefined) {
+        customThemes = result.customThemes;
+    }
+
+    window.codeMirrorUserCss.save();
+
+    if(customThemes[nb]["customThemeBg"] == null) customThemes[nb]["customThemeBg"] = defaultBGColorCustomTheme;
+    if(customThemes[nb]["customThemeTexts"] == null) customThemes[nb]["customThemeTexts"] = defaultTextsColorCustomTheme;
+    if(customThemes[nb]["customThemeLinks"] == null) customThemes[nb]["customThemeLinks"] = defaultLinksColorCustomTheme;
+    if(customThemes[nb]["customThemeLinksVisited"] == null) customThemes[nb]["customThemeLinksVisited"] = defaultVisitedLinksColorCustomTheme;
+    if(customThemes[nb]["customThemeFont"] == null) customThemes[nb]["customThemeFont"] = defaultFontCustomTheme;
+    if(customThemes[nb]["customCSSCode"] == null) customThemes[nb]["customCSSCode"] = defaultCustomCSSCode;
+
+    return customThemes[nb]["customThemeBg"].toLowerCase() != $("#colorpicker1").attr("value").toLowerCase() ||
+    customThemes[nb]["customThemeTexts"].toLowerCase() != $("#colorpicker2").attr("value").toLowerCase() ||
+    customThemes[nb]["customThemeLinks"].toLowerCase() != $("#colorpicker3").attr("value").toLowerCase() ||
+    customThemes[nb]["customThemeLinksVisited"].toLowerCase() != $("#colorpicker4").attr("value").toLowerCase() ||
+    customThemes[nb]["customThemeFont"].toLowerCase() != $("#customThemeFont").val().toLowerCase() ||
+    customThemes[nb]["customCSSCode"] != $("#codeMirrorUserCSSTextarea").val();
+}
+
 async function saveSettings() {
+    changingLanguage = true;
+
     setSettingItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
 
     const result = await browser.storage.local.get(["whiteList", "sitesInterditPageShadow"]);
@@ -781,7 +835,9 @@ async function saveSettings() {
     $("span[data-toggle=\"tooltip\"]").tooltip("hide");
     $("i[data-toggle=\"tooltip\"]").tooltip("hide");
     $("#saved").modal("show");
-    displaySettings("local");
+    displaySettings("local", true);
+
+    changingLanguage = false;
 }
 
 async function getSettingsToArchive() {
@@ -882,7 +938,7 @@ function restoreSettingsFile(event) {
                 obj = JSON.parse(event.target.result);
             } catch(e) {
                 $("#restoreError").fadeIn(500);
-                displaySettings("local");
+                displaySettings("local", true);
                 return false;
             }
 
@@ -895,13 +951,13 @@ function restoreSettingsFile(event) {
                 $("#restoreSuccess").fadeIn(500);
             } else {
                 $("#restoreErrorArchive").fadeIn(500);
-                displaySettings("local");
+                displaySettings("local", true);
             }
         };
 
         reader.onerror = function() {
             $("#restoreError").fadeIn(500);
-            displaySettings("local");
+            displaySettings("local", true);
         };
 
         const fileExtension = event.target.files[0].name.split(".").pop().toLowerCase();
@@ -913,12 +969,12 @@ function restoreSettingsFile(event) {
                 reader.readAsText(event.target.files[0]);
             } else {
                 $("#restoreErrorFilesize").fadeIn(500);
-                displaySettings("local");
+                displaySettings("local", true);
                 return false;
             }
         } else {
             $("#restoreErrorExtension").fadeIn(500);
-            displaySettings("local");
+            displaySettings("local", true);
             return false;
         }
     } else {
@@ -948,7 +1004,7 @@ async function archiveCloudSettings() {
                             await browser.storage.sync.set(settingToSave);
                         } catch(e) {
                             $("#archiveCloudError").fadeIn(500);
-                            displaySettings("sync");
+                            displaySettings("sync", true);
                             return;
                         }
                     }
@@ -968,7 +1024,7 @@ async function archiveCloudSettings() {
                 })
                 .catch(() => {
                     $("#archiveCloudError").fadeIn(500);
-                    displaySettings("sync");
+                    displaySettings("sync", true);
                 });
         } catch(e) {
             $("#archiveCloudError").fadeIn(500);
@@ -1031,15 +1087,15 @@ async function restoreCloudSettings() {
                     $("#restoreCloudSuccess").fadeIn(500);
                 } else {
                     $("#restoreCloudError").fadeIn(500);
-                    displaySettings("sync");
+                    displaySettings("sync", true);
                 }
             } catch(e) {
                 $("#restoreCloudError").fadeIn(500);
-                displaySettings("sync");
+                displaySettings("sync", true);
             }
         } else {
             $("#restoreCloudError").fadeIn(500);
-            displaySettings("sync");
+            displaySettings("sync", true);
         }
     }
 }
@@ -1055,6 +1111,18 @@ async function createPreset() {
     } else {
         $("#savePresetError").fadeIn(500);
     }
+}
+
+async function notifyChangedPresetNotSaved(nb) {
+    const data = await getPresetData(nb);
+    console.log(data, nb);
+
+    if(data && Object.keys(data).length > 0) {
+        return data["name"] != $("#savePresetTitle").val() ||
+            data["websiteListToApply"] != $("#savePresetWebsite").val();
+    }
+
+    return $("#savePresetTitle").val().trim() != "" || $("#savePresetWebsite").val().trim() != "";
 }
 
 async function displayPresetSettings(id) {
@@ -1085,7 +1153,15 @@ $(document).ready(() => {
         saveSettings();
     });
 
-    $("#themeSelect").change(() => {
+    $("#themeSelect").change(async() => {
+        if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+            if(!confirm(i18next.t("modal.customTheme.notifyThemeChangedNotSaved"))) {
+                $("#themeSelect").val(currentSelectedTheme);
+                return;
+            }
+        }
+
+        currentSelectedTheme = $("#themeSelect").val();
         displayTheme($("#themeSelect").val());
     });
 
@@ -1169,7 +1245,7 @@ $(document).ready(() => {
 
     if(typeof(browser.storage.onChanged) !== "undefined") {
         browser.storage.onChanged.addListener((changes, areaName) => {
-            displaySettings(areaName);
+            displaySettings(areaName, changingLanguage);
         });
     }
 
@@ -1255,7 +1331,8 @@ $(document).ready(() => {
         theme: "material",
         styleActiveLine: true,
         matchBrackets: true,
-        scrollbarStyle: "overlay"
+        scrollbarStyle: "overlay",
+        extraKeys: {"Ctrl-Space": "autocomplete"}
     });
 
     window.codeMirrorJSONArchive = CodeMirror.fromTextArea(document.getElementById("codeMirrorJSONArchiveTextarea"), {
@@ -1275,51 +1352,6 @@ $(document).ready(() => {
         scrollbarStyle: "overlay"
     });
 
-    function filtersHint(editor, keywords, getToken) {
-        const Pos = CodeMirror.Pos;
-
-        const cur = editor.getCursor();
-        const token = getToken(editor, cur);
-        const suggestions = [];
-
-        const fullText = editor.getValue();
-        const line = cur.line;
-        const end = cur.ch;
-        let currentLine = fullText.split("\n")[line];
-        currentLine = currentLine.substr(0, end);
-        let start = currentLine.indexOf("|");
-
-        if (start === -1) {
-            start = 0;
-        }
-
-        const currentWord = currentLine.substr(start, end - start);
-        const wordSplit = currentWord.split("|");
-
-        if(wordSplit && wordSplit.length == 2) { // Autocomplete for rule types
-            const str = wordSplit[1];
-
-            if(str) {
-                if(str.trim() == "") {
-                    suggestions.push(...keywords);
-                } else {
-                    suggestions.push(...keywords.filter(keyword => {
-                        if(keyword.startsWith(str)) return true;
-                        return false;
-                    }));
-                }
-            } else {
-                suggestions.push(...keywords);
-            }
-        }
-
-        return {list: suggestions,
-            from: Pos(cur.line, start + 1),
-            to: Pos(cur.line, token.end)};
-    }
-
-    CodeMirror.registerHelper("hint", "filtermode", editor => filtersHint(editor, availableFilterRulesType, (e, cur) => {return e.getTokenAt(cur);}));
-
     window.codeMirrorEditFilter = CodeMirror.fromTextArea(document.getElementById("codeMirrorEditFilter"), {
         lineNumbers: true,
         theme: "material",
@@ -1332,7 +1364,7 @@ $(document).ready(() => {
 
 
     window.codeMirrorEditFilter.on("keyup", (cm, event) => {
-        if(!cm.state.completionActive && event.keyCode != 13) {        /*Enter - do not open autocomplete list just after item has been selected in it*/
+        if(!cm.state.completionActive && event.keyCode != 13) {
             CodeMirror.commands.autocomplete(cm, null, { completeSingle: false });
         }
     });
@@ -1476,6 +1508,18 @@ $(document).ready(() => {
         window.codeMirrorUserCss.refresh();
     });
 
+    $("#customTheme").on("hidden.bs.modal", async() => {
+        if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+            alert(i18next.t("modal.customTheme.notifyThemeChangedNotSavedInfo"));
+        }
+    });
+
+    $("#archive").on("hidden.bs.modal", async() => {
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            alert(i18next.t("modal.presets.notifyPresetChangedNotSavedInfo"));
+        }
+    });
+
     $("#enableFilterAutoUpdate").on("change", () => {
         $("#enableFilterAutoUpdate").attr("disabled", "disabled");
 
@@ -1518,7 +1562,15 @@ $(document).ready(() => {
         saveCustomFilter(true);
     });
 
-    $("#savePresetSelect").on("change", () => {
+    $("#savePresetSelect").on("change", async() => {
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            if(!confirm(i18next.t("modal.presets.notifyPresetChangedNotSaved"))) {
+                $("#savePresetSelect").val(currentSelectedPresetEdit);
+                return;
+            }
+        }
+
+        currentSelectedPresetEdit = $("#savePresetSelect").val();
         displayPresetSettings($("#savePresetSelect").val());
     });
 
@@ -1532,6 +1584,7 @@ $(document).ready(() => {
     });
 
     $("#syntaxBtnPresets").click(() => {
+        $("#archive").off("hidden.bs.modal");
         $("#archive").modal("hide");
 
         const handlerSyntaxHidden = () => {
@@ -1539,7 +1592,7 @@ $(document).ready(() => {
             $("#syntax").off("hidden.bs.modal", handlerSyntaxHidden);
         };
 
-        const handlerArchiveHidden = () => {
+        const handlerArchiveHidden = async() => {
             $("#archive").off("hidden.bs.modal", handlerArchiveHidden);
             $("#syntaxText").html(i18next.t("modal.syntax.content", {
                 excluded: i18next.t("modal.syntax.detected"),
@@ -1549,6 +1602,12 @@ $(document).ready(() => {
 
             $("#syntax").modal("show");
             $("#syntax").on("hidden.bs.modal", handlerSyntaxHidden);
+
+            $("#archive").on("hidden.bs.modal", async() => {
+                if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+                    alert(i18next.t("modal.presets.notifyPresetChangedNotSavedInfo"));
+                }
+            });
         };
 
         $("#archive").on("hidden.bs.modal", handlerArchiveHidden);
@@ -1707,3 +1766,7 @@ browser.runtime.onMessage.addListener(message => {
         }
     }
 });
+
+window.onbeforeunload = () => {
+    return "";
+};

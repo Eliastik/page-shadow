@@ -122,8 +122,11 @@
             "collapseCustomCSS": "Feuille de style CSS personnalisée…",
             "customCSSHelp": "Vous pouvez écrire ci-dessous une feuille de style CSS personnalisée qui sera chargée en même temps que le thème personnalisé.",
             "customCSSHelpExpUsers": "Pour les utilisateurs expérimentés uniquement.",
+            "customCSSHelpSuggestions": "Appuyez sur Ctrl+Espace pour afficher des suggestions lorsque vous écrivez votre feuille de style.",
             "fontNotCompatible": "Ce paramètre est incompatible avec votre navigateur web.",
-            "firefoxLinuxBugFonts": "Il est possible que ce paramètre ne soit pas fonctionnel sur votre système."
+            "firefoxLinuxBugFonts": "Il est possible que ce paramètre ne soit pas fonctionnel sur votre système.",
+            "notifyThemeChangedNotSaved": "Vous n'avez pas enregistré les modifications apportées au thème. Voulez-vous vraiment continuer ? Dans ce cas, vous perdrez vos modifications.",
+            "notifyThemeChangedNotSavedInfo": "Attention, vous n'avez pas enregistré les modifications apportées au thème. Ouvrez à nouveau la fenêtre des Thèmes personnalisés si vous souhaitez enregistrer vos modifications."
         },
         "archive": {
             "title": "Archivage, restauration des paramètres et pré-réglages",
@@ -202,7 +205,9 @@
             "disabled": "Désactivé",
             "customTheme": "Thème personnalisé n°{{count}}",
             "themeNumber": "Thème n°{{count}}",
-            "undefined": "(Non défini)"
+            "undefined": "(Non défini)",
+            "notifyPresetChangedNotSaved": "Vous n'avez pas enregistré les modifications apportées au pré-réglage. Voulez-vous vraiment continuer ? Dans ce cas, vous perdrez vos modifications.",
+            "notifyPresetChangedNotSavedInfo": "Attention, vous n'avez pas enregistré les modifications apportées au pré-réglage. Ouvrez à nouveau la fenêtre Archives et pré-réglages si vous souhaitez enregistrer vos modifications."
         },
         "saved": {
             "title": "Information",
