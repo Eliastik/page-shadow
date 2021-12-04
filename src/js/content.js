@@ -569,11 +569,17 @@ import browser from "webextension-polyfill";
                         case "disableInputBorderStylingFor":
                             if(!element.classList.contains("pageShadowDisableInputBorderStyling")) element.classList.add("pageShadowDisableInputBorderStyling");
                             break;
+                        case "forceInputBorderStylingFor":
+                            if(!element.classList.contains("pageShadowForceInputBorderStyling")) element.classList.add("pageShadowForceInputBorderStyling");
+                            break;
                         case "disableLinkStylingFor":
                             if(!element.classList.contains("pageShadowDisableLinkStyling")) element.classList.add("pageShadowDisableLinkStyling");
                             break;
                         case "disableFontFamilyStylingFor":
                             if(!element.classList.contains("pageShadowDisableFontFamilyStyling")) element.classList.add("pageShadowDisableFontFamilyStyling");
+                            break;
+                        case "forceFontFamilyStylingFor":
+                            if(!element.classList.contains("pageShadowForceFontFamilyStyling")) element.classList.add("pageShadowForceFontFamilyStyling");
                             break;
                         case "disableElementInvertFor":
                             if(!element.classList.contains("pageShadowDisableElementInvert")) element.classList.add("pageShadowDisableElementInvert");
@@ -589,6 +595,12 @@ import browser from "webextension-polyfill";
                             break;
                         case "forceCustomTextColorFor":
                             if(!element.classList.contains("pageShadowForceCustomTextColor")) element.classList.add("pageShadowForceCustomTextColor");
+                            break;
+                        case "forceCustomVisitedLinkColor":
+                            if(!element.classList.contains("pageShadowForceCustomVisitedLinkColor")) element.classList.add("pageShadowForceCustomVisitedLinkColor");
+                            break;
+                        case "disableCustomVisitedLinkColor":
+                            if(!element.classList.contains("pageShadowDisableCustomVisitedLinkColor")) element.classList.add("pageShadowDisableCustomVisitedLinkColor");
                             break;
                         case "disableShadowRootsCustomStyle":
                             if(element.shadowRoot != null) processShadowRoot(element);
