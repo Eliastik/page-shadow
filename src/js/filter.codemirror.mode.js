@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/ */
-import { availableFilterRulesType, regexpDetectionPattern } from "./constants.js";
+import { availableFilterRulesType, specialFilterRules, regexpDetectionPattern } from "./constants.js";
 
 function filtersHint(CodeMirror, editor, keywords, getToken) {
     const Pos = CodeMirror.Pos;
@@ -69,7 +69,8 @@ export default function registerCodemirrorFilterMode(CodeMirror) {
                 {regex: /\s*#(.*)/, token: "comment", next: "start", sol: true}, // Match comments
                 {regex: regexpDetectionPattern, token: ["operator", null, "string"], sol: true}, // Match regular expressions (for website/webpage)
                 {regex: /(.*?[^|])?(\|)/, token: ["atom", "string"], sol: true}, // Match website/webpage and first pipe character (|)
-                {regex: "/|" + availableFilterRulesType.join("|") + "|/", token: "keyword"}, // Match rule
+                {regex: "/|" + availableFilterRulesType.filter(rule => specialFilterRules.indexOf(rule) == -1).join("|") + "|/", token: "keyword"}, // Match rule
+                {regex: "/|" + specialFilterRules.join("|") + "|/", token: "def"}, // Match rule
                 {regex: /(\|)(.*)/, token: ["string", "variable"]}, // Match second pipe character and CSS selector
                 {regex: /(.*)/, token: "comment", next: "start", sol: true} // Match other
             ],
