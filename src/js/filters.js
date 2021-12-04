@@ -252,10 +252,11 @@ export default class FilterProcessor {
             }
 
             if(!isRegexp) website = parts[0];
-            const type = parts[1];
+            let type = parts[1];
             const filter = parts[2];
 
             if(type) {
+                type = type.trim();
                 const filtersTypeRecognized = type.split(",").some(filterType => availableFilterRulesType.includes(filterType)); // Test if the filter types (rules) are recognized
                 const isFilterListWithoutCSSSelector = this.isSpecialRule(type);
 

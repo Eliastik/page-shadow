@@ -602,6 +602,15 @@ import browser from "webextension-polyfill";
                         case "disableCustomVisitedLinkColor":
                             if(!element.classList.contains("pageShadowDisableCustomVisitedLinkColor")) element.classList.add("pageShadowDisableCustomVisitedLinkColor");
                             break;
+                        case "forceCustomLinkColorAsBackground":
+                            if(!element.classList.contains("pageShadowForceCustomLinkColorAsBackground")) element.classList.add("pageShadowForceCustomLinkColorAsBackground");
+                            break;
+                        case "forceCustomTextColorAsBackground":
+                            if(!element.classList.contains("pageShadowForceCustomTextColorAsBackground")) element.classList.add("pageShadowForceCustomTextColorAsBackground");
+                            break;
+                        case "forceCustomLinkVisitedColorAsBackground":
+                            if(!element.classList.contains("pageShadowForceCustomLinkVisitedColorAsBackground")) element.classList.add("pageShadowForceCustomLinkVisitedColorAsBackground");
+                            break;
                         case "disableShadowRootsCustomStyle":
                             if(element.shadowRoot != null) processShadowRoot(element);
                             break;
