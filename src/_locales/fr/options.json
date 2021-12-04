@@ -279,7 +279,8 @@
                 "wrong_css_selector": "Sélecteur CSS incorrect",
                 "unknown_type": "Règle de filtre inconnue",
                 "incorrect_regexp": "Expression régulière de sélection du site web/page web incorrecte",
-                "empty": "Ligne vide"
+                "empty": "Ligne vide",
+                "unknown": "Erreur inconnue"
             },
             "errorLine": "Erreur trouvée à la ligne n°{{count}}",
             "errorLineDetails": "Partie de la règle incriminée :",

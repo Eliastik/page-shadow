@@ -280,7 +280,8 @@
                 "wrong_css_selector": "Incorrect CSS selector",
                 "unknown_type": "Unknown filter rule",
                 "incorrect_regexp": "The regular expression for the selection of website/webpage is incorrect",
-                "empty": "Empty line"
+                "empty": "Empty line",
+                "unknown": "Unknown error"
             },
             "errorLine": "Error found at line n°{{count}}",
             "errorLineDetails": "Part of the rule with error:",

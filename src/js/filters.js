@@ -227,8 +227,8 @@ export default class FilterProcessor {
             if(isRegexp) {
                 const lineSplitted = line.split(regexpDetectionPattern);
                 const regexp = lineSplitted[1];
-                website = "/" + regexp + "/";
-                line = lineSplitted[3];
+                website = regexp;
+                line = lineSplitted[3] + "" + lineSplitted[4];
                 const regexpTest = this.testRegexp(regexp);
 
                 if(regexpTest.error) {
@@ -242,6 +242,7 @@ export default class FilterProcessor {
                 }
             }
 
+            if(!line) return { "error": true, "type": filterSyntaxErrorTypes.UNKNOWN, "message": "", "errorCode": "UNKNOWN" };
             const parts = line.split("|");
             const lineTrimmed = line.trim();
             const isComment = lineTrimmed[0] == "#";
