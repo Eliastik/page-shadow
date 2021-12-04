@@ -719,22 +719,22 @@ import browser from "webextension-polyfill";
 
             if(type !== TYPE_ONLY_CONTRAST && type !== TYPE_ONLY_INVERT && type !== TYPE_ONLY_BRIGHTNESS) {
                 brightnessPage(settings.pageLumEnabled, settings.pourcentageLum, settings.nightModeEnabled, settings.colorTemp);
-            }
 
-            if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") {
-                if(type == TYPE_START) {
-                    applyDetectBackground(TYPE_LOADING, "*");
-                } else {
-                    applyDetectBackground(null, "*");
+                if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") {
+                    if(type == TYPE_START) {
+                        applyDetectBackground(TYPE_LOADING, "*");
+                    } else {
+                        applyDetectBackground(null, "*");
+                    }
                 }
-            }
 
-            if(document.readyState == "complete") {
-                updateFilters();
-            } else {
-                window.addEventListener("load", () => {
+                if(document.readyState == "complete") {
                     updateFilters();
-                });
+                } else {
+                    window.addEventListener("load", () => {
+                        updateFilters();
+                    });
+                }
             }
         } else {
             precEnabled = false;
