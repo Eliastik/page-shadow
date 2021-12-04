@@ -1010,7 +1010,7 @@ async function archiveCloudSettings() {
                         try {
                             await browser.storage.sync.set(settingToSave);
                         } catch(e) {
-                            if(e && e.message.indexOf("QUOTA_BYTES_PER_ITEM") != -1) {
+                            if(e && (e.message.indexOf("QUOTA_BYTES_PER_ITEM") != -1 || e.message.indexOf("QuotaExceededError") != -1)) {
                                 $("#archiveCloudErrorQuota").fadeIn(500);
                             } else {
                                 $("#archiveCloudError").fadeIn(500);
@@ -1076,6 +1076,7 @@ async function restoreCloudSettings() {
         $("#restoreCloudError").hide();
         $("#archiveCloudSuccess").hide();
         $("#restoreCloudSuccess").hide();
+        $("#archiveCloudErrorQuota").hide();
         $("#archiveCloudBtn").addClass("disabled");
         $("#restoreCloudBtn").addClass("disabled");
 
@@ -1130,7 +1131,6 @@ async function createPreset() {
 
 async function notifyChangedPresetNotSaved(nb) {
     const data = await getPresetData(nb);
-    console.log(data, nb);
 
     if(data && Object.keys(data).length > 0) {
         return data["name"] != $("#savePresetTitle").val() ||

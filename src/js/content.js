@@ -28,7 +28,7 @@ import browser from "webextension-polyfill";
     const elementBrightness = document.createElement("div");
     const websiteSpecialFiltersConfig = defaultWebsiteSpecialFiltersConfig;
     const runningInIframe = window !== window.top;
-    const backgroundDetectionAlreadyProcessedNodes = [];
+    let backgroundDetectionAlreadyProcessedNodes = [];
 
     let timeoutApplyBrightness, timeoutApplyContrast, timeoutApplyInvertColors, timeoutApplyDetectBackgrounds;
     let backgroundDetected = false;
@@ -181,10 +181,7 @@ import browser from "webextension-polyfill";
     }
 
     function detectBackgroundForElement(element) {
-        if(!element) return;
-
-        if(element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected") || element.classList.contains("pageShadowHasBackgroundImg") || element.classList.contains("pageShadowHasTransparentBackground")
-            || backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1) {
+        if(!element || element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected") || backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1) {
             return;
         }
 
@@ -468,9 +465,15 @@ import browser from "webextension-polyfill";
             return false;
         }
 
-        if(attribute == "class" && (attributeOldValue !== null && (attributeOldValue.indexOf("pageShadowDisableStyling") !== -1
-            || attributeOldValue.indexOf("pageShadowHasTransparentBackground") !== -1 || attributeOldValue.indexOf("pageShadowHasBackgroundImg") !== -1))) {
-            return false;
+        if(attribute == "class" && attributeOldValue !== null) {
+            if(attributeOldValue.indexOf("pageShadowDisableStyling") !== -1) {
+                return false;
+            }
+
+            if((attributeOldValue.indexOf("pageShadowHasTransparentBackground") !== -1 && !element.classList.contains("pageShadowHasTransparentBackground")) ||
+                (attributeOldValue.indexOf("pageShadowHasBackgroundImg") !== -1 && !element.classList.contains("pageShadowHasBackgroundImg"))) {
+                backgroundDetectionAlreadyProcessedNodes = backgroundDetectionAlreadyProcessedNodes.filter(node => node != element);
+            }
         }
 
         document.body.classList.remove("pageShadowBackgroundDetected");
