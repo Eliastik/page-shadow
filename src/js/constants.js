@@ -47,7 +47,7 @@ const defaultFilters = {
         {
             "filterName": "Filtre par défaut/Default filter",
             "sourceName": "Eliastik's Softs",
-            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/standard.2.8.1.txt",
+            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/standard.2.9.txt",
             "lastUpdated": 0,
             "enabled": true,
             "hasError": false,
