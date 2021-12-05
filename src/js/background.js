@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL } from "./util.js";
+import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle } from "./util.js";
 import { defaultFilters, nbPresets, ruleCategory } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
 import Filter from "./filters.js";
@@ -24,6 +24,8 @@ import browser from "webextension-polyfill";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
+let globalPageShadowStyleCache = null;
+let globalPageShadowStyleShadowRootsCache = null;
 
 const filters = new Filter();
 filters.cacheFilters();
@@ -403,6 +405,20 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 } else if(message.type == "getFilterRuleNumberErrors") {
                     filters.getRulesErrors(message.idFilter).then(data => {
                         resolve({ type: "getFilterRuleNumberErrorsResponse", data: data });
+                    });
+                } else if(message.type == "getGlobalPageShadowStyle" || message.type == "getGlobalShadowRootPageShadowStyle") {
+                    if(globalPageShadowStyleCache && globalPageShadowStyleShadowRootsCache) {
+                        resolve({ type: message.type + "Response", data: message.type == "getGlobalShadowRootPageShadowStyle" ? globalPageShadowStyleShadowRootsCache : globalPageShadowStyleCache });
+                    }
+
+                    fetch("/css/content.css").then(response => {
+                        if(response) {
+                            response.text().then(text => {
+                                globalPageShadowStyleCache = text;
+                                globalPageShadowStyleShadowRootsCache = processShadowRootStyle(text);
+                                resolve({ type: message.type + "Response", data: message.type == "getGlobalShadowRootPageShadowStyle" ? globalPageShadowStyleShadowRootsCache : globalPageShadowStyleCache });
+                            });
+                        }
                     });
                 }
             }
