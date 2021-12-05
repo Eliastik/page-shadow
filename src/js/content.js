@@ -633,6 +633,33 @@ import browser from "webextension-polyfill";
                         case "forceCustomLinkVisitedColorAsBackground":
                             if(!element.classList.contains("pageShadowForceCustomLinkVisitedColorAsBackground")) element.classList.add("pageShadowForceCustomLinkVisitedColorAsBackground");
                             break;
+                        case "enablePseudoElementsStyling":
+                            if(!element.classList.contains("pageShadowEnablePseudoElementStyling")) element.classList.add("pageShadowEnablePseudoElementStyling");
+                            break;
+                        case "forceDisableDefaultBackgroundColor": {
+                            if(!element.classList.contains("pageShadowforceDisableDefaultBackgroundColor")) {
+                                const oldStyleAttribute = element.getAttribute("style");
+                                element.setAttribute("style", (oldStyleAttribute ? oldStyleAttribute : "") + "background-color: none !important");
+                                element.classList.add("pageShadowforceDisableDefaultBackgroundColor");
+                            }
+                            break;
+                        }
+                        case "forceDisableDefaultBackground": {
+                            if(!element.classList.contains("pageShadowforceDisableDefaultBackground")) {
+                                const oldStyleAttribute = element.getAttribute("style");
+                                element.setAttribute("style", (oldStyleAttribute ? oldStyleAttribute : "") + "background: none !important");
+                                element.classList.add("pageShadowforceDisableDefaultBackground");
+                            }
+                            break;
+                        }
+                        case "forceDisableDefaultFontColor": {
+                            if(!element.classList.contains("pageShadowforceDisableDefaultFontColor")) {
+                                const oldStyleAttribute = element.getAttribute("style");
+                                element.setAttribute("style", (oldStyleAttribute ? oldStyleAttribute : "") + "color: none !important");
+                                element.classList.add("pageShadowforceDisableDefaultFontColor");
+                            }
+                            break;
+                        }
                         case "disableShadowRootsCustomStyle":
                         case "overrideShadowRootsCustomStyle":
                             if(element.shadowRoot != null) processShadowRoot(element);

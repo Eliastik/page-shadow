@@ -35,7 +35,7 @@
     },
     "options_page": "options.html",
     "permissions": [
-        "storage", "contextMenus", "tabs", "unlimitedStorage"
+        "storage", "contextMenus", "tabs", "<all_urls>", "unlimitedStorage"
     ],
     "content_scripts": [
         {
@@ -52,6 +52,7 @@
                 "file:///*/*"
             ],
             "run_at": "document_start",
+            "match_about_blank": true,
             "all_frames": true
         }
     ],

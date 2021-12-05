@@ -103,15 +103,19 @@ async function menu() {
                 const tabUrl = tabs[0].url;
                 if(!tabUrl || tabUrl.trim() == "") return;
 
-                const url = new URL(normalizeURL(tabUrl));
+                const url_str = normalizeURL(tabUrl);
+                const url = new URL(url_str);
                 const domain = url.hostname;
                 const href = url.href;
+                const isFileURL = url_str.startsWith("file:///") || url_str.startsWith("about:");
 
                 if(result.whiteList == "true") {
-                    if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
-                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
-                    } else {
-                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
+                    if(!isFileURL) {
+                        if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
+                            createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
+                        } else {
+                            createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
+                        }
                     }
 
                     if(in_array_website(href, sitesInterdits) || in_array_website(domain, sitesInterdits)) {
@@ -126,10 +130,12 @@ async function menu() {
                         createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
                     }
                 } else {
-                    if(in_array_website(domain, sitesInterdits)) {
-                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
-                    } else {
-                        createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
+                    if(!isFileURL) {
+                        if(in_array_website(domain, sitesInterdits)) {
+                            createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
+                        } else {
+                            createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
+                        }
                     }
 
                     if(in_array_website(href, sitesInterdits)) {
@@ -320,6 +326,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
     browser.runtime.onMessage.addListener((message, sender) => {
         new Promise(resolve => {
             if(message) {
+                if(!sender.tab) return;
                 const url = normalizeURL(sender.tab.url);
 
                 if(message.type == "isEnabledForThisPage" || message.type == "applySettingsChanged") {

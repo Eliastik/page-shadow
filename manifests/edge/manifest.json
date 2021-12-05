@@ -31,7 +31,7 @@
     },
     "options_page": "options.html",
     "permissions": [
-        "storage", "contextMenus", "tabs", "unlimitedStorage"
+        "storage", "contextMenus", "tabs", "<all_urls>", "unlimitedStorage"
     ],
     "content_scripts": [
         {

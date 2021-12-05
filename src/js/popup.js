@@ -183,7 +183,9 @@ $(document).ready(() => {
     };
 
     async function checkEnable() {
-        const url = new URL(await getCurrentURL());
+        const url_str = await getCurrentURL();
+        const url = new URL(url_str);
+        const isFileURL = url_str.startsWith("file:///") || url_str.startsWith("about:");
 
         const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
         let sitesInterdits;
@@ -196,6 +198,9 @@ $(document).ready(() => {
 
         const domain = url.hostname;
         const href = url.href;
+
+        $("#disableWebsite-li").removeAttr("disabled");
+        $("#enableWebsite-li").removeAttr("disabled");
 
         if(result.whiteList == "true") {
             if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
@@ -238,10 +243,16 @@ $(document).ready(() => {
                 $("#enableWebpage-li").show();
             }
         }
+
+        if(isFileURL) {
+            $("#disableWebsite-li").attr("disabled", "disabled");
+            $("#enableWebsite-li").attr("disabled", "disabled");
+        }
     }
 
     async function checkAutoEnablePreset(nb) {
         const url = await getCurrentURL();
+        const isFileURL = url.startsWith("file:///") || url.startsWith("about:");
         const presetsAutoEnabled = await presetsEnabledForWebsite(url);
         const currentPreset = await getPresetData(nb);
 
@@ -249,6 +260,9 @@ $(document).ready(() => {
         $("#disableWebsitePreset-li").show();
         $("#enableWebpagePreset-li").hide();
         $("#disableWebpagePreset-li").show();
+
+        $("#enableWebsitePreset-li").removeAttr("disabled");
+        $("#disableWebsitePreset-li").removeAttr("disabled");
 
         if(!currentPreset || Object.keys(currentPreset).length <= 0) {
             $("#enableWebsitePreset-li").attr("disabled", "disabled");
@@ -292,6 +306,11 @@ $(document).ready(() => {
                     }
                 }
             }
+        }
+
+        if(isFileURL) {
+            $("#enableWebsitePreset-li").attr("disabled", "disabled");
+            $("#disableWebsitePreset-li").attr("disabled", "disabled");
         }
     }
 
