@@ -614,6 +614,9 @@ import browser from "webextension-polyfill";
                         case "forceCustomLinkVisitedColorAsBackground":
                             if(!element.classList.contains("pageShadowForceCustomLinkVisitedColorAsBackground")) element.classList.add("pageShadowForceCustomLinkVisitedColorAsBackground");
                             break;
+                        case "enablePseudoElementsStyling":
+                            if(!element.classList.contains("pageShadowEnablePseudoElementStyling")) element.classList.add("pageShadowEnablePseudoElementStyling");
+                            break;
                         case "forceDisableDefaultBackgroundColor": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultBackgroundColor")) {
                                 const oldStyleAttribute = element.getAttribute("style");
