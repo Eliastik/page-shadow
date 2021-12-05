@@ -43,9 +43,12 @@ function strict_in_array(needle, haystack) {
 function matchWebsite(needle, rule) {
     if(!rule.trim().startsWith("#")) {
         if(!rule.trim().startsWith("/") && !rule.trim().endsWith("/") && rule.indexOf("*") != -1) {
-            rule = rule.replaceAll("*", "(.*)");
+            rule = rule.replace(/[.+?^${}()|[\]\\]/g, "\\$&"); // Escape string for regex
+            rule = rule.replaceAll(/(?<!\\)\*/g, "(.*)");
+            rule = rule.replace(/\\\\\*/g, "\\*");
             rule = "/" + rule + "/";
         }
+
 
         if(rule.trim().startsWith("/") && rule.trim().endsWith("/")) {
             try {
