@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged } from "./util.js";
-import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
+import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, processRules } from "./util.js";
+import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors } from "./constants.js";
 import browser from "webextension-polyfill";
 
 (function(){
@@ -35,7 +35,6 @@ import browser from "webextension-polyfill";
     let precEnabled = false;
     let started = false;
     let filtersCache = null;
-    let contentCSSCache = null;
     let mut_contrast, mut_backgrounds, mut_brightness, mut_invert;
     let typeProcess = "";
     let precUrl;
@@ -94,6 +93,10 @@ import browser from "webextension-polyfill";
             }
         }
 
+        if(customElement) {
+            elementToApply.classList.add("pageShadowBackgroundDetected");
+        }
+
         if(!customElement && typeof timeoutApplyContrast !== "undefined") {
             clearTimeout(timeoutApplyContrast);
         }
@@ -101,7 +104,7 @@ import browser from "webextension-polyfill";
 
     function customThemeApply(theme) {
         if(theme != undefined && typeof(theme) == "string" && theme.startsWith("custom")) {
-            customTheme(theme.replace("custom", ""), style, false, lnkCustomTheme);
+            customTheme(theme.replace("custom", ""), style, false, lnkCustomTheme, false);
         }
     }
 
@@ -673,41 +676,31 @@ import browser from "webextension-polyfill";
 
     async function processShadowRoot(element) {
         if(element) {
-            if(contentCSSCache == null) {
-                browser.runtime.onMessage.addListener(message => {
-                    if(message && message.type == "getGlobalShadowRootPageShadowStyleResponse") {
-                        contentCSSCache = message.data;
-                        if(contentCSSCache != null) processShadowRoot(element);
-                    }
-                });
+            if(element.shadowRoot != null) {
+                const currentCSSStyle = element.shadowRoot.querySelector(".pageShadowCSSShadowRoot");
 
-                browser.runtime.sendMessage({
-                    "type": "getGlobalShadowRootPageShadowStyle"
-                });
-            } else {
-                if(element.shadowRoot != null) {
-                    const hasCSSStyle = element.querySelector(".pageShadowCSSShadowRoot");
+                if(currentCSSStyle) {
+                    element.shadowRoot.removeChild(currentCSSStyle);
+                }
 
-                    if(!hasCSSStyle) {
-                        const styleTag = document.createElement("style");
-                        styleTag.classList.add("pageShadowCSSShadowRoot");
-                        styleTag.innerHTML = contentCSSCache;
-                        element.appendChild(styleTag);
+                if(precEnabled && currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") {
+                    const currentTheme = currentSettings.theme;
+                    const styleTag = document.createElement("style");
+                    styleTag.classList.add("pageShadowCSSShadowRoot");
+                    element.shadowRoot.appendChild(styleTag);
 
-                        const styleTag2 = document.createElement("style");
-                        styleTag2.classList.add("pageShadowCSSShadowRoot");
-                        styleTag2.innerHTML = contentCSSCache;
-                        element.shadowRoot.appendChild(styleTag2);
-
-                        process(precEnabled, null, element);
-
-                        const elements = element.shadowRoot.querySelectorAll("*");
-
-                        elements.forEach(element => {
-                            processShadowRoot(element);
-                        });
+                    if(currentTheme.startsWith("custom")) {
+                        customTheme(currentSettings.theme.replace("custom", ""), styleTag, false, null, true);
+                    } else {
+                        processRules(styleTag, defaultThemesBackgrounds[currentTheme - 1].replace("#", ""), defaultThemesLinkColors[currentTheme - 1].replace("#", ""), defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", ""), defaultThemesTextColors[currentTheme - 1].replace("#", ""), null, true);
                     }
                 }
+
+                const elements = element.shadowRoot.querySelectorAll("*");
+
+                elements.forEach(element => {
+                    processShadowRoot(element);
+                });
             }
         }
     }
