@@ -29,6 +29,7 @@ import browser from "webextension-polyfill";
     const websiteSpecialFiltersConfig = defaultWebsiteSpecialFiltersConfig;
     const runningInIframe = window !== window.top;
     let backgroundDetectionAlreadyProcessedNodes = [];
+    let processedShadowRoots = [];
 
     let timeoutApplyBrightness, timeoutApplyContrast, timeoutApplyInvertColors, timeoutApplyDetectBackgrounds;
     let backgroundDetected = false;
@@ -712,8 +713,26 @@ import browser from "webextension-polyfill";
                 } else {
                     processRules(styleTag, defaultThemesBackgrounds[currentTheme - 1].replace("#", ""), defaultThemesLinkColors[currentTheme - 1].replace("#", ""), defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", ""), defaultThemesTextColors[currentTheme - 1].replace("#", ""), null, true);
                 }
+
+                processedShadowRoots.push(element.shadowRoot);
             }
         }
+    }
+
+    function resetShadowRoots() {
+        for(let i = 0, len = processedShadowRoots.length; i < len; i++) {
+            const shadowRoot = processedShadowRoots[i];
+
+            if(shadowRoot) {
+                const currentCSSStyle = shadowRoot.querySelector(".pageShadowCSSShadowRoot");
+
+                if(currentCSSStyle) {
+                    shadowRoot.removeChild(currentCSSStyle);
+                }
+            }
+        }
+
+        processedShadowRoots = [];
     }
 
     function main(type, mutation) {
@@ -761,6 +780,8 @@ import browser from "webextension-polyfill";
             if(document.getElementById("pageShadowLuminositeDivNightMode") != null && document.body.contains(elementBrightnessWrapper)) {
                 elementBrightnessWrapper.removeChild(document.getElementById("pageShadowLuminositeDivNightMode"));
             }
+
+            resetShadowRoots();
 
             if(type == TYPE_ONLY_RESET) {
                 return;
