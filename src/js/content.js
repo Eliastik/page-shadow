@@ -200,7 +200,11 @@ import browser from "webextension-polyfill";
 
     function detectBackgroundForElement(element) {
         if(element && element.shadowRoot != null && websiteSpecialFiltersConfig.enableShadowRootStyleOverride) {
-            processShadowRoot(element);
+            if(websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay > 0) {
+                setTimeout(() => processShadowRoot(element), websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
+            } else {
+                processShadowRoot(element);
+            }
         }
 
         if(!element || element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected") || backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1) {
@@ -674,33 +678,40 @@ import browser from "webextension-polyfill";
         }
     }
 
-    async function processShadowRoot(element) {
-        if(element) {
-            if(element.shadowRoot != null) {
-                const currentCSSStyle = element.shadowRoot.querySelector(".pageShadowCSSShadowRoot");
+    function processShadowRoot(currentElement) {
+        if(currentElement) {
+            if(currentElement.shadowRoot != null) {
+                processOneShadowRoot(currentElement);
+                const elementChildrens = currentElement.shadowRoot.querySelectorAll("*");
 
-                if(currentCSSStyle) {
-                    element.shadowRoot.removeChild(currentCSSStyle);
-                }
-
-                if(precEnabled && currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") {
-                    const currentTheme = currentSettings.theme;
-                    const styleTag = document.createElement("style");
-                    styleTag.classList.add("pageShadowCSSShadowRoot");
-                    element.shadowRoot.appendChild(styleTag);
-
-                    if(currentTheme.startsWith("custom")) {
-                        customTheme(currentSettings.theme.replace("custom", ""), styleTag, false, null, true);
-                    } else {
-                        processRules(styleTag, defaultThemesBackgrounds[currentTheme - 1].replace("#", ""), defaultThemesLinkColors[currentTheme - 1].replace("#", ""), defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", ""), defaultThemesTextColors[currentTheme - 1].replace("#", ""), null, true);
+                if(elementChildrens && elementChildrens.length > 0) {
+                    for(let i = 0, len = elementChildrens.length; i < len; i++) {
+                        processShadowRoot(elementChildrens[i]);
                     }
                 }
+            }
+        }
+    }
 
-                const elements = element.shadowRoot.querySelectorAll("*");
+    function processOneShadowRoot(element) {
+        if(element.shadowRoot) {
+            const currentCSSStyle = element.shadowRoot.querySelector(".pageShadowCSSShadowRoot");
 
-                elements.forEach(element => {
-                    processShadowRoot(element);
-                });
+            if(currentCSSStyle) {
+                element.shadowRoot.removeChild(currentCSSStyle);
+            }
+
+            if(precEnabled && currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") {
+                const currentTheme = currentSettings.theme;
+                const styleTag = document.createElement("style");
+                styleTag.classList.add("pageShadowCSSShadowRoot");
+                element.shadowRoot.appendChild(styleTag);
+
+                if(currentTheme.startsWith("custom")) {
+                    customTheme(currentSettings.theme.replace("custom", ""), styleTag, false, null, true);
+                } else {
+                    processRules(styleTag, defaultThemesBackgrounds[currentTheme - 1].replace("#", ""), defaultThemesLinkColors[currentTheme - 1].replace("#", ""), defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", ""), defaultThemesTextColors[currentTheme - 1].replace("#", ""), null, true);
+                }
             }
         }
     }
@@ -861,6 +872,7 @@ import browser from "webextension-polyfill";
                     if(rule.type == "disableMutationObserverStyle") websiteSpecialFiltersConfig.enableMutationObserverStyle = false;
                     if(rule.type == "enableShadowRootStyleOverride") websiteSpecialFiltersConfig.enableShadowRootStyleOverride = true;
                     if(rule.type == "disableShadowRootStyleOverride") websiteSpecialFiltersConfig.enableShadowRootStyleOverride = false;
+                    if(rule.type == "shadowRootStyleOverrideDelay") websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay = rule.filter;
                 });
 
                 if(runningInIframe) {
