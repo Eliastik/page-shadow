@@ -644,6 +644,15 @@ import browser from "webextension-polyfill";
                         case "enablePseudoElementsStyling":
                             if(!element.classList.contains("pageShadowEnablePseudoElementStyling")) element.classList.add("pageShadowEnablePseudoElementStyling");
                             break;
+                        case "invertElementAsImage":
+                            if(!element.classList.contains("pageShadowInvertElementAsImage")) element.classList.add("pageShadowInvertElementAsImage");
+                            break;
+                        case "invertElementAsVideo":
+                            if(!element.classList.contains("pageShadowInvertElementAsVideo")) element.classList.add("pageShadowInvertElementAsVideo");
+                            break;
+                        case "invertElementAsBackground":
+                            if(!element.classList.contains("pageShadowInvertElementAsBackground")) element.classList.add("pageShadowInvertElementAsBackground");
+                            break;
                         case "forceDisableDefaultBackgroundColor": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultBackgroundColor")) {
                                 const oldStyleAttribute = element.getAttribute("style");

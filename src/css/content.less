@@ -264,28 +264,35 @@ html.pageShadowInvertEntirePage div#pageShadowLuminositeDiv, html.pageShadowInve
     -o-filter: invert(100%) !important;
     -webkit-filter: invert(100%) !important;
 }
-body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) img, body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) svg {
+body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) img:not(.pageShadowDisableElementInvert), body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) svg:not(.pageShadowDisableElementInvert), body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) .pageShadowInvertElementAsImage:not(.pageShadowDisableElementInvert) {
     filter: invert(100%) !important;
     -moz-filter: invert(100%) !important;
     -o-filter: invert(100%) !important;
     -webkit-filter: invert(100%) !important;
     background-color: transparent !important;
 }
-body.pageShadowInvertBgColor .pageShadowHasBackgroundImg, body.pageShadowInvertBgColor .pageShadowDisableElementInvert {
+body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert), body.pageShadowInvertBgColor :not(.pageShadowDisableElementInvert) .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert) {
     filter: invert(100%) !important;
     -moz-filter: invert(100%) !important;
     -o-filter: invert(100%) !important;
     -webkit-filter: invert(100%) !important;
     background-color: transparent !important;
 }
-body.pageShadowInvertBgColor .pageShadowHasBackgroundImg > *, body.pageShadowInvertBgColor .pageShadowDisableElementInvert > * {
+html.pageShadowInvertEntirePage .pageShadowDisableElementInvert {
     filter: invert(100%) !important;
     -moz-filter: invert(100%) !important;
     -o-filter: invert(100%) !important;
     -webkit-filter: invert(100%) !important;
     background-color: transparent !important;
 }
-body.pageShadowInvertVideoColor video, body.pageShadowInvertVideoColor canvas {
+body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert) > *, body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert) > * {
+    filter: invert(100%) !important;
+    -moz-filter: invert(100%) !important;
+    -o-filter: invert(100%) !important;
+    -webkit-filter: invert(100%) !important;
+    background-color: transparent !important;
+}
+body.pageShadowInvertVideoColor :not(.pageShadowDisableElementInvert) video:not(.pageShadowDisableElementInvert), body.pageShadowInvertVideoColor :not(.pageShadowDisableElementInvert) canvas:not(.pageShadowDisableElementInvert), body.pageShadowInvertVideoColor :not(.pageShadowDisableElementInvert) .pageShadowInvertElementAsVideo:not(.pageShadowDisableElementInvert) {
     filter: invert(100%) !important;
     -moz-filter: invert(100%) !important;
     -o-filter: invert(100%) !important;
