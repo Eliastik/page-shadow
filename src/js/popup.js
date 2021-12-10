@@ -462,7 +462,7 @@ $(document).ready(() => {
     }
 
     async function checkColorInvert() {
-        const result = await browser.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor"]);
+        const result = await browser.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "selectiveInvert"]);
 
         if(result.colorInvert == "true") {
             // Convert old settings to new settings
@@ -496,6 +496,12 @@ $(document).ready(() => {
             } else if(result.invertVideoColors == "false" && $("#checkVideoInvert").is(":checked") == true) {
                 $("#checkVideoInvert").prop("checked", false);
             }
+
+            if(result.selectiveInvert == "true" && $("#checkSelectiveInvert").is(":checked") == false) {
+                $("#checkSelectiveInvert").prop("checked", true);
+            } else if(result.selectiveInvert == "false" && $("#checkSelectiveInvert").is(":checked") == true) {
+                $("#checkSelectiveInvert").prop("checked", false);
+            }
         } else {
             $("#invertPageColorsDiv").stop().fadeOut();
 
@@ -518,6 +524,12 @@ $(document).ready(() => {
             if(result.invertVideoColors !== "true") {
                 if($("#checkVideoInvert").is(":checked") == true) {
                     $("#checkVideoInvert").prop("checked", false);
+                }
+            }
+
+            if(result.selectiveInvert !== "true") {
+                if($("#checkSelectiveInvert").is(":checked") == true) {
+                    $("#checkSelectiveInvert").prop("checked", false);
                 }
             }
         }
@@ -570,6 +582,15 @@ $(document).ready(() => {
         }
         else {
             setSettingItem("invertVideoColors", "false");
+        }
+    });
+
+    $("#checkSelectiveInvert").change(function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("selectiveInvert", "true");
+        }
+        else {
+            setSettingItem("selectiveInvert", "false");
         }
     });
 

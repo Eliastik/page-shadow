@@ -71,6 +71,7 @@ async function setFirstSettings() {
         "invertImageColors": "true",
         "invertEntirePage": "false",
         "invertVideoColors": "false",
+        "selectiveInvert": "false",
         "invertBgColor": "true",
         "globallyEnable": "true",
         "customThemeInfoDisable": "false",

@@ -201,6 +201,7 @@
             "invertBgColor": "Inverser les couleurs des images d'arrière-plan :",
             "autoEnable": "Activation automatique selon l'heure :",
             "disableImgBgColor": "Désactiver la coloration de l'arrière-plan des images :",
+            "selectiveInvert": "Inversion sélective :",
             "presetInfosLabel": "Détails du pré-réglage",
             "enabled": "Activé",
             "disabled": "Désactivé",

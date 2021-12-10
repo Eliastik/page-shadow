@@ -721,7 +721,7 @@ function getPriorityPresetEnabledForWebsite(presetsEnabled) {
 }
 
 async function getSettings(url) {
-    const result = await browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor"]);
+    const result = await browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor", "selectiveInvert"]);
     let pageShadowEnabled = result.pageShadowEnabled;
     let theme = result.theme;
     let colorTemp = result.colorTemp;
@@ -735,6 +735,7 @@ async function getSettings(url) {
     let invertPageColors = result.invertPageColors;
     let disableImgBgColor = result.disableImgBgColor;
     let colorInvert = result.colorInvert;
+    let selectiveInvert = result.selectiveInvert;
 
     // Automatically enable preset ?
     const presetsEnabled = await presetsEnabledForWebsite(url);
@@ -758,6 +759,7 @@ async function getSettings(url) {
             invertPageColors = presetData.invertPageColors;
             disableImgBgColor = presetData.disableImgBgColor;
             colorInvert = presetData.colorInvert;
+            selectiveInvert = presetData.selectiveInvert;
         }
     }
 
@@ -784,7 +786,8 @@ async function getSettings(url) {
         globallyEnable: result.globallyEnable,
         invertVideoColors: invertVideoColors,
         disableImgBgColor: disableImgBgColor,
-        invertBgColor: invertBgColor
+        invertBgColor: invertBgColor,
+        selectiveInvert: selectiveInvert
     };
 }
 

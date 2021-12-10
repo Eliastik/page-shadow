@@ -56,7 +56,7 @@ import browser from "webextension-polyfill";
     const TYPE_LOADING = "loading";
     const TYPE_START = "start";
 
-    function contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement) {
+    function contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert) {
         const elementToApply = customElement ? customElement : document.body;
 
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
@@ -82,7 +82,7 @@ import browser from "webextension-polyfill";
             }
         }
 
-        invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement);
+        invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert);
 
         if(!customElement) {
             if(document.readyState == "complete" || document.readyState == "interactive") {
@@ -109,12 +109,13 @@ import browser from "webextension-polyfill";
         }
     }
 
-    function invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement) {
+    function invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert) {
         const elementToApply = customElement ? customElement : document.body;
 
         elementToApply.classList.remove("pageShadowInvertImageColor");
         elementToApply.classList.remove("pageShadowInvertVideoColor");
         elementToApply.classList.remove("pageShadowInvertBgColor");
+        elementToApply.classList.remove("pageShadowEnableSelectiveInvert");
 
         if(!customElement) {
             document.getElementsByTagName("html")[0].classList.remove("pageShadowInvertEntirePage");
@@ -154,6 +155,10 @@ import browser from "webextension-polyfill";
 
                 if(invertVideoColors != null && invertVideoColors == "true") {
                     elementToApply.classList.add("pageShadowInvertVideoColor");
+                }
+
+                if(selectiveInvert != null && selectiveInvert == "true") {
+                    elementToApply.classList.add("pageShadowEnableSelectiveInvert");
                 }
             }
 
@@ -321,14 +326,14 @@ import browser from "webextension-polyfill";
         timeoutApplyBrightness = setTimeout(() => waitAndApplyBrightnessPage(element, wrapper), 50);
     }
 
-    function waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement) {
-        if(document.body) return contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement);
-        timeoutApplyContrast = setTimeout(() => waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement), 50);
+    function waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert) {
+        if(document.body) return contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert);
+        timeoutApplyContrast = setTimeout(() => waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert), 50);
     }
 
-    function waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement) {
-        if(document.body) return invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement);
-        timeoutApplyInvertColors = setTimeout(() => waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement), 50);
+    function waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert) {
+        if(document.body) return invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert);
+        timeoutApplyInvertColors = setTimeout(() => waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert), 50);
     }
 
     function waitAndApplyDetectBackgrounds(tagName) {
@@ -653,6 +658,15 @@ import browser from "webextension-polyfill";
                         case "invertElementAsBackground":
                             if(!element.classList.contains("pageShadowInvertElementAsBackground")) element.classList.add("pageShadowInvertElementAsBackground");
                             break;
+                        case "enableSelectiveInvert":
+                            if(!element.classList.contains("pageShadowSelectiveInvert")) element.classList.add("pageShadowSelectiveInvert");
+                            break;
+                        case "enablePseudoElementSelectiveInvert":
+                            if(!element.classList.contains("pageShadowSelectiveInvertPseudoElement")) element.classList.add("pageShadowSelectiveInvertPseudoElement");
+                            break;
+                        case "invertPseudoElement":
+                            if(!element.classList.contains("pageShadowInvertPseudoElement")) element.classList.add("pageShadowInvertPseudoElement");
+                            break;
                         case "forceDisableDefaultBackgroundColor": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultBackgroundColor")) {
                                 const oldStyleAttribute = element.getAttribute("style");
@@ -811,15 +825,15 @@ import browser from "webextension-polyfill";
             if(!customElement) precEnabled = true;
 
             if(type == TYPE_ONLY_CONTRAST) {
-                contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.colorTemp, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor);
+                contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.colorTemp, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, null, settings.selectiveInvert);
             } else if(type == TYPE_ONLY_INVERT) {
-                invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor);
+                invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, null, settings.selectiveInvert);
             } else if(type == TYPE_ONLY_BRIGHTNESS) {
                 brightnessPage(settings.pageLumEnabled, settings.pourcentageLum, settings.nightModeEnabled, settings.colorTemp);
             } else if(settings.pageShadowEnabled == "true") {
-                waitAndApplyContrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.colorTemp, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, customElement);
+                waitAndApplyContrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.colorTemp, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, customElement, settings.selectiveInvert);
             } else {
-                waitAndApplyInvertColors(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, customElement);
+                waitAndApplyInvertColors(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, customElement, settings.selectiveInvert);
             }
 
             if(type !== TYPE_ONLY_CONTRAST && type !== TYPE_ONLY_INVERT && type !== TYPE_ONLY_BRIGHTNESS && !customElement) {

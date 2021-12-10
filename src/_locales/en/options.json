@@ -202,6 +202,7 @@
             "invertBgColor": "Invert background images colors:",
             "autoEnable": "Automatic activation according to time:",
             "disableImgBgColor": "Disable background coloring of images:",
+            "selectiveInvert": "Selective invert:",
             "presetInfosLabel": "Preset details",
             "enabled": "Enabled",
             "disabled": "Disabled",

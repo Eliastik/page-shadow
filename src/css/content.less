@@ -264,14 +264,21 @@ html.pageShadowInvertEntirePage div#pageShadowLuminositeDiv, html.pageShadowInve
     -o-filter: invert(100%) !important;
     -webkit-filter: invert(100%) !important;
 }
-body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) img:not(.pageShadowDisableElementInvert), body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) svg:not(.pageShadowDisableElementInvert), body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) .pageShadowInvertElementAsImage:not(.pageShadowDisableElementInvert) {
+body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) img:not(.pageShadowDisableElementInvert), body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) svg:not(.pageShadowDisableElementInvert), body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsImage:not(.pageShadowDisableElementInvert) {
     filter: invert(100%) !important;
     -moz-filter: invert(100%) !important;
     -o-filter: invert(100%) !important;
     -webkit-filter: invert(100%) !important;
     background-color: transparent !important;
 }
-body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert), body.pageShadowInvertBgColor :not(.pageShadowDisableElementInvert) .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert) {
+body.pageShadowEnableSelectiveInvert :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) .pageShadowSelectiveInvertPseudoElement:not(.pageShadowDisableElementInvert):before, body.pageShadowEnableSelectiveInvert :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) .pageShadowSelectiveInvertPseudoElement:not(.pageShadowDisableElementInvert):after, body.pageShadowInvertBgColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertPseudoElement:not(.pageShadowDisableElementInvert):before, body.pageShadowInvertBgColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertPseudoElement:not(.pageShadowDisableElementInvert):after {
+    filter: invert(100%) !important;
+    -moz-filter: invert(100%) !important;
+    -o-filter: invert(100%) !important;
+    -webkit-filter: invert(100%) !important;
+    background-color: transparent !important;
+}
+body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert), body.pageShadowInvertBgColor :not(.pageShadowDisableElementInvert) .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert), body.pageShadowEnableSelectiveInvert *:not(.pageShadowDisableElementInvert) > .pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert) {
     filter: invert(100%) !important;
     -moz-filter: invert(100%) !important;
     -o-filter: invert(100%) !important;
@@ -285,7 +292,7 @@ html.pageShadowInvertEntirePage .pageShadowDisableElementInvert {
     -webkit-filter: invert(100%) !important;
     background-color: transparent !important;
 }
-body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert) > *, body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert) > * {
+body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert) > *, body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert) > *, body.pageShadowEnableSelectiveInvert *:not(.pageShadowDisableElementInvert) > .pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert) > * {
     filter: invert(100%) !important;
     -moz-filter: invert(100%) !important;
     -o-filter: invert(100%) !important;
