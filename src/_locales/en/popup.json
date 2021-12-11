@@ -22,7 +22,7 @@
         "bgColorInvert": "Backgrounds",
         "videoInvert": "Videos",
         "selectiveInvert": "Selective",
-        "selectiveInvertHelp": "Automatically invert certain elements so that they display correctly on a dark theme of the Increase page contrast feature. Based on the Filters functionality. Doesn't work when Invert entire page feature is enabled.",
+        "selectiveInvertHelp": "Automatically invert certain elements so that they display correctly on a dark theme of the Increase page contrast feature. Based on the Filters functionality.",
         "tileEntirePageInvert": "Invert the colors of the entire page.",
         "brightness": "Decrease page brightness",
         "titleBrightness": "Decrease the page brightness. You can choose the percentage of brightness decrease.",

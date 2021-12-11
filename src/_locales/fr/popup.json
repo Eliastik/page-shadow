@@ -22,7 +22,7 @@
         "bgColorInvert": "Arr.-plans",
         "videoInvert": "Vidéos",
         "selectiveInvert": "Sélectif",
-        "selectiveInvertHelp": "Inverse automatiquement certains éléments pour qu'ils s'affichent correctement sur un thème sombre de la fonction Augmenter le contraste de la page. Se base sur la fonctionnalité des filtres. Non fonctionnel lorsque la fonctionnalité Inverser la page entière est activée.",
+        "selectiveInvertHelp": "Inverse automatiquement certains éléments pour qu'ils s'affichent correctement sur un thème sombre de la fonction Augmenter le contraste de la page. Se base sur la fonctionnalité des filtres.",
         "tileEntirePageInvert": "Inverse les couleurs de la page entière.",
         "brightness": "Baisser la luminosité de la page",
         "titleBrightness": "Baisse la luminosité de la page. C'est vous qui choisissez le pourcentage de baisse de luminosité de la page.",

@@ -127,6 +127,7 @@ import browser from "webextension-polyfill";
                 elementToApply.classList.add("pageShadowInvertImageColor");
                 elementToApply.classList.add("pageShadowInvertVideoColor");
                 elementToApply.classList.add("pageShadowInvertBgColor");
+                elementToApply.classList.add("pageShadowEnableSelectiveInvert");
 
                 if(!customElement) {
                     document.getElementsByTagName("html")[0].classList.add("pageShadowInvertEntirePage");
@@ -143,6 +144,10 @@ import browser from "webextension-polyfill";
 
                 if(invertVideoColors != null && invertVideoColors == "true") {
                     elementToApply.classList.remove("pageShadowInvertVideoColor");
+                }
+
+                if(selectiveInvert != null && selectiveInvert == "true") {
+                    elementToApply.classList.remove("pageShadowEnableSelectiveInvert");
                 }
             } else {
                 if(invertImageColors != null && invertImageColors == "true") {
