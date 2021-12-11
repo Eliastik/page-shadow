@@ -383,7 +383,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 } else if(message.type == "getAllFilters") {
                     resolve({ type: "getFiltersResponse", filters: filters.getRules() });
                 } else if(message.type == "getFiltersForThisWebsite") {
-                    resolve({ type: "getFiltersResponse", filters: filters.getRulesForWebsite(url, ruleCategory.STANDARD_RULES) });
+                    resolve({ type: "getFiltersResponse", filters: filters.getRulesForWebsite(url, ruleCategory.STANDARD_RULES), specialFilters: filters.getRulesForWebsite(url, ruleCategory.SPECIAL_RULES) });
                 } else if(message.type == "reinstallDefaultFilters") {
                     filters.reinstallDefaultFilters().then(result => {
                         resolve({ type: "reinstallDefaultFiltersResponse", result: result });
