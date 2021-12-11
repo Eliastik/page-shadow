@@ -193,7 +193,9 @@ async function updateBadge(storageChanged) {
         for(const tab of tabs) {
             if(!tab || tab.url.trim() == "") continue;
 
-            const enabled = await pageShadowAllowed(normalizeURL(tab.url));
+            const url = tab.url;
+            const enabled = await pageShadowAllowed(normalizeURL(url));
+
             if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeText) !== "undefined") {
                 browser.browserAction.setBadgeText({
                     text: " ",
@@ -233,7 +235,8 @@ async function updateBadge(storageChanged) {
                 browser.tabs.sendMessage(tab.id, {
                     type: "websiteUrlUpdated",
                     enabled,
-                    storageChanged
+                    storageChanged,
+                    settings: await getSettings(url)
                 }).catch(() => {
                     if(browser.runtime.lastError) return; // ignore the error messages
                 });

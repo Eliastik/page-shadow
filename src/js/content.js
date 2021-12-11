@@ -935,13 +935,14 @@ import browser from "webextension-polyfill";
                 break;
             }
             case "websiteUrlUpdated": { // Execute when the page URL changes in Single Page Applications
-                const changed = hasEnabledStateChanged(message.enabled);
+                let changed = hasEnabledStateChanged(message.enabled);
                 const urlUpdated = precUrl != getCurrentURL();
 
                 if(urlUpdated) {
                     backgroundDetected = false;
                     precUrl = getCurrentURL();
                     filtersCache = null;
+                    if(hasSettingsChanged(currentSettings, message.settings)) changed = true;
                     updateFilters();
                 }
 
