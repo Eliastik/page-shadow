@@ -413,11 +413,10 @@ import browser from "webextension-polyfill";
                     if(mutation.type == "attributes" && mutation.attributeName == "class") {
                         const classList = document.body.classList;
 
-                        if(mutation.oldValue.indexOf("pageShadowInvertImageColor") !== -1 && !classList.contains("pageShadowInvertImageColor")) {
-                            setTimeout(() => main(TYPE_ONLY_INVERT, MUTATION_TYPE_INVERT), 1);
-                        } else if(mutation.oldValue.indexOf("pageShadowInvertVideoColor") !== -1 && !classList.contains("pageShadowInvertVideoColor")) {
-                            setTimeout(() => main(TYPE_ONLY_INVERT, MUTATION_TYPE_INVERT), 1);
-                        } else if(mutation.oldValue.indexOf("pageShadowInvertBgColor") !== -1 && !classList.contains("pageShadowInvertBgColor")) {
+                        if((mutation.oldValue.indexOf("pageShadowInvertImageColor") !== -1 && !classList.contains("pageShadowInvertImageColor"))
+                            || (mutation.oldValue.indexOf("pageShadowInvertVideoColor") !== -1 && !classList.contains("pageShadowInvertVideoColor"))
+                            || (mutation.oldValue.indexOf("pageShadowInvertBgColor") !== -1 && !classList.contains("pageShadowInvertBgColor"))
+                            || (mutation.oldValue.indexOf("pageShadowEnableSelectiveInvert") !== -1 && !classList.contains("pageShadowEnableSelectiveInvert"))) {
                             setTimeout(() => main(TYPE_ONLY_INVERT, MUTATION_TYPE_INVERT), 1);
                         } else {
                             reMutObserveInvert();
@@ -811,6 +810,7 @@ import browser from "webextension-polyfill";
             document.body.classList.remove("pageShadowContrastBlackCustom");
             document.body.classList.remove("pageShadowDisableImgBgColor");
             document.body.classList.remove("pageShadowInvertBgColor");
+            document.body.classList.remove("pageShadowEnableSelectiveInvert");
 
             for(let i = 1; i <= nbThemes; i++) {
                 if(i == 1) {
