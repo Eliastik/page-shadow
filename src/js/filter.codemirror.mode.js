@@ -67,7 +67,7 @@ export default function registerCodemirrorFilterMode(CodeMirror) {
             start: [
                 {regex: /\s*#!(.*)/, token: "meta", next: "start", sol: true}, // Match metadata
                 {regex: /\s*#(.*)/, token: "comment", next: "start", sol: true}, // Match comments
-                {regex: regexpDetectionPatternHighlight, token: ["operator", null, "string"], sol: true}, // Match regular expressions (for website/webpage)
+                {regex: regexpDetectionPatternHighlight, token: ["operator", "string"], sol: true}, // Match regular expressions (for website/webpage)
                 {regex: /(.*?[^|])?(\|)/, token: ["atom", "string"], sol: true}, // Match website/webpage and first pipe character (|)
                 {regex: "/|" + availableFilterRulesType.filter(rule => specialFilterRules.indexOf(rule) == -1).join("|") + "|/", token: "keyword"}, // Match rule
                 {regex: "/|" + specialFilterRules.join("|") + "|/", token: "def"}, // Match rule

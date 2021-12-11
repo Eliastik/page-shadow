@@ -101,18 +101,6 @@ function translateContent() {
 }
 
 async function changeLng(lng) {
-    /*if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
-        if(!confirm(i18next.t("modal.presets.notifyPresetChangedNotSavedInfoChangeLanguage"))) {
-            return;
-        }
-    }
-
-    if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
-        if(!confirm(i18next.t("modal.themes.notifyThemeChangedNotSavedInfoLanguage"))) {
-            return;
-        }
-    }*/
-
     i18next.changeLanguage(lng);
 }
 
@@ -557,7 +545,7 @@ async function displayInfosFilter(idFilter) {
                 "idFilter": idFilter
             });
 
-            $("#buttonSeeErrorsFilter").click(() => {
+            $("#buttonSeeErrorsFilter").on("click", () => {
                 browser.runtime.sendMessage({
                     "type": "getRulesErrors",
                     "idFilter": idFilter
@@ -1164,11 +1152,11 @@ async function displayPresetSettings(id) {
 $(document).ready(() => {
     let savedTimeout;
 
-    $("#validerButton").click(() => {
+    $("#validerButton").on("click", () => {
         saveSettings();
     });
 
-    $("#themeSelect").change(async() => {
+    $("#themeSelect").on("change", async() => {
         if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
             if(!confirm(i18next.t("modal.customTheme.notifyThemeChangedNotSaved"))) {
                 $("#themeSelect").val(currentSelectedTheme);
@@ -1180,7 +1168,7 @@ $(document).ready(() => {
         displayTheme($("#themeSelect").val());
     });
 
-    $("#customThemeSave").click(() => {
+    $("#customThemeSave").on("click", () => {
         saveThemeSettings($("#themeSelect").val());
 
         clearTimeout(savedTimeout);
@@ -1195,47 +1183,47 @@ $(document).ready(() => {
         $("#customThemeSave").tooltip("show");
     });
 
-    $("#customThemeCancel").click(() => {
+    $("#customThemeCancel").on("click", () => {
         displayTheme($("#themeSelect").val());
     });
 
-    $("#customThemeReset").click(() => {
+    $("#customThemeReset").on("click", () => {
         displayTheme($("#themeSelect").val(), true);
     });
 
-    $("#aboutDialogBtn").click(() => {
+    $("#aboutDialogBtn").on("click", () => {
         $("span[data-toggle=\"tooltip\"]").tooltip("hide");
         $("i[data-toggle=\"tooltip\"]").tooltip("hide");
     });
 
-    $("#resetConfirmBtn").click(() => {
+    $("#resetConfirmBtn").on("click", () => {
         $("span[data-toggle=\"tooltip\"]").tooltip("hide");
         $("i[data-toggle=\"tooltip\"]").tooltip("hide");
     });
 
-    $("#loadPresetBtn").click(() => {
+    $("#loadPresetBtn").on("click", () => {
         $("#loadPreset").show();
         $("#savePreset").hide();
         $("#deletePreset").hide();
     });
 
-    $("#savePresetBtn").click(() => {
+    $("#savePresetBtn").on("click", () => {
         $("#loadPreset").hide();
         $("#savePreset").show();
         $("#deletePreset").hide();
     });
 
-    $("#deletePresetBtn").click(() => {
+    $("#deletePresetBtn").on("click", () => {
         $("#loadPreset").hide();
         $("#savePreset").hide();
         $("#deletePreset").show();
     });
 
-    $("#archiveCloudBtn").click(() => {
+    $("#archiveCloudBtn").on("click", () => {
         archiveCloudSettings();
     });
 
-    $("#restoreCloudBtn").click(() => {
+    $("#restoreCloudBtn").on("click", () => {
         restoreCloudSettings();
     });
 
@@ -1251,7 +1239,7 @@ $(document).ready(() => {
         placement: "auto top"
     });
 
-    $("#confirmReset").click(() => {
+    $("#confirmReset").on("click", () => {
         resetSettings();
     });
 
@@ -1312,15 +1300,15 @@ $(document).ready(() => {
         }
     });
 
-    $("#archiveDataButton").click(() => {
+    $("#archiveDataButton").on("click", () => {
         archiveSettings();
     });
 
-    $("#restoreDataButton").click(() => {
+    $("#restoreDataButton").on("click", () => {
         $("#inputFileJSON").trigger("click");
     });
 
-    $("#inputFileJSON").change(function(event) {
+    $("#inputFileJSON").on("change", function(event) {
         restoreSettingsFile(event);
         $(this).val("");
     });
@@ -1333,7 +1321,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#archiveSuggestedName").click(function() {
+    $("#archiveSuggestedName").on("click", function() {
         this.focus();
         this.select();
     });
@@ -1379,7 +1367,7 @@ $(document).ready(() => {
 
 
     window.codeMirrorEditFilter.on("keyup", (cm, event) => {
-        if(!cm.state.completionActive && event.keyCode != 13) {
+        if(!cm.state.completionActive && event.key != "Enter") {
             CodeMirror.commands.autocomplete(cm, null, { completeSingle: false });
         }
     });
@@ -1389,19 +1377,19 @@ $(document).ready(() => {
     displaySettings("local");
 
     if(getBrowser() == "Chrome" || getBrowser() == "Opera") {
-        $("#keyboardShortcuts").click(() => {
+        $("#keyboardShortcuts").on("click", () => {
             browser.tabs.create({
                 url: "chrome://extensions/configureCommands"
             });
         });
     } else if(getBrowser() == "Edge") {
-        $("#keyboardShortcuts").click(() => {
+        $("#keyboardShortcuts").on("click", () => {
             browser.tabs.create({
                 url: "edge://extensions/shortcuts"
             });
         });
     } else if(getBrowser() == "Firefox") {
-        $("#keyboardShortcuts").click(() => {
+        $("#keyboardShortcuts").on("click", () => {
             browser.tabs.create({
                 url: "https://support.mozilla.org/" + i18next.language + "/kb/manage-extension-shortcuts-firefox"
             });
@@ -1423,7 +1411,7 @@ $(document).ready(() => {
         }
     }
 
-    $("#loadPresetValid").click(async() => {
+    $("#loadPresetValid").on("click", async() => {
         $("#restorePresetSuccess").hide();
         $("#restorePresetEmpty").hide();
         $("#restorePresetError").hide();
@@ -1439,17 +1427,17 @@ $(document).ready(() => {
         }
     });
 
-    $("#savePresetValid").click(() => {
+    $("#savePresetValid").on("click", () => {
         createPreset();
     });
 
-    $("#savePresetTitle").keyup((e) => {
-        if(e.keyCode === 13) {
+    $("#savePresetTitle").on("keyup", (e) => {
+        if(e.key === "Enter") {
             createPreset();
         }
     });
 
-    $("#deletePresetValid").click(async() => {
+    $("#deletePresetValid").on("click", async() => {
         $("#deletePresetError").hide();
         $("#deletePresetSuccess").hide();
 
@@ -1462,7 +1450,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#updateAllFilters").click(() => {
+    $("#updateAllFilters").on("click", () => {
         $("#updateAllFilters").attr("disabled", "disabled");
 
         browser.runtime.sendMessage({
@@ -1470,7 +1458,7 @@ $(document).ready(() => {
         });
     });
 
-    $("#cleanAllFilters").click(() => {
+    $("#cleanAllFilters").on("click", () => {
         $("#cleanAllFilters").attr("disabled", "disabled");
 
         browser.runtime.sendMessage({
@@ -1478,7 +1466,7 @@ $(document).ready(() => {
         });
     });
 
-    $("#addFilterSourceBtnOpen").click(() => {
+    $("#addFilterSourceBtnOpen").on("click", () => {
         $("#addFilterErrorFetch").hide();
         $("#addFilterErrorParsing").hide();
         $("#addFilterErrorUnknown").hide();
@@ -1487,7 +1475,7 @@ $(document).ready(() => {
         $("#filterAddress").val("");
     });
 
-    $("#addFilterBtn").click(() => {
+    $("#addFilterBtn").on("click", () => {
         $("#addFilterBtn").attr("disabled", "disabled");
         $("#filterAddress").attr("disabled", "disabled");
         $("#addFilterCancelBtn").attr("disabled", "disabled");
@@ -1544,7 +1532,7 @@ $(document).ready(() => {
         });
     });
 
-    $("#resetDefaultFiltersBtn").click(() => {
+    $("#resetDefaultFiltersBtn").on("click", () => {
         $("#resetDefaultFiltersBtn").attr("disabled", "disabled");
 
         browser.runtime.sendMessage({
@@ -1552,27 +1540,27 @@ $(document).ready(() => {
         });
     });
 
-    $("#customFilterSave").click(() => {
+    $("#customFilterSave").on("click", () => {
         $("#customFilterSave").attr("disabled", "disabled");
         saveCustomFilter();
 
     });
 
-    $("#customFilterCancel").click(() => {
+    $("#customFilterCancel").on("click", () => {
         displayFilterEdit();
     });
 
-    $("#presetInfosBtn").click(() => {
+    $("#presetInfosBtn").on("click", () => {
         displayPresetInfos($("#savePresetSelect").val());
     });
 
-    $("#customFilterGuide").click(() => {
+    $("#customFilterGuide").on("click", () => {
         browser.tabs.create({
             url: customFilterGuideURL
         });
     });
 
-    $("#closeAndSaveCustomFilter").click(() => {
+    $("#closeAndSaveCustomFilter").on("click", () => {
         $("#closeAndSaveCustomFilter").attr("disabled", "disabled");
         saveCustomFilter(true);
     });
@@ -1589,7 +1577,7 @@ $(document).ready(() => {
         displayPresetSettings($("#savePresetSelect").val());
     });
 
-    $("#syntaxBtn").click(() => {
+    $("#syntaxBtn").on("click", () => {
         $("#syntaxText").html(i18next.t("modal.syntax.content", {
             excluded: i18next.t("modal.syntax.excluded"),
             excluded2: i18next.t("modal.syntax.excluded2"),
@@ -1598,7 +1586,7 @@ $(document).ready(() => {
         $("#syntax").modal("show");
     });
 
-    $("#syntaxBtnPresets").click(() => {
+    $("#syntaxBtnPresets").on("click", () => {
         $("#archive").off("hidden.bs.modal");
         $("#archive").modal("hide");
 
@@ -1628,7 +1616,7 @@ $(document).ready(() => {
         $("#archive").on("hidden.bs.modal", handlerArchiveHidden);
     });
 
-    $("#buttonSeeErrorsCustomFilterEdit").click(() => {
+    $("#buttonSeeErrorsCustomFilterEdit").on("click", () => {
         $("#customFilterEditErrorDetails").toggle();
     });
 });

@@ -22,7 +22,6 @@ import browser from "webextension-polyfill";
 
 (function(){
     const style = document.createElement("style");
-    style.type = "text/css";
     const lnkCustomTheme = document.createElement("link");
     const elementBrightnessWrapper = document.createElement("div");
     const elementBrightness = document.createElement("div");
@@ -535,6 +534,7 @@ import browser from "webextension-polyfill";
 
     async function updateFilters() {
         const settings = newSettingsToApply || await getSettings(getCurrentURL());
+
         if(filtersCache == null) {
             browser.runtime.sendMessage({
                 "type": "getFiltersForThisWebsite"
@@ -827,6 +827,7 @@ import browser from "webextension-polyfill";
         if(allowed) {
             const settings = newSettingsToApply || await getSettings(getCurrentURL());
             currentSettings = settings;
+
             if(!customElement) precEnabled = true;
 
             if(type == TYPE_ONLY_CONTRAST) {

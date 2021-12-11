@@ -49,7 +49,7 @@ async function translateContent() {
     if(checkContrastMode) checkContrastMode();
     await loadPresetSelect("loadPresetSelect", i18next);
     checkPresetAutoEnabled(await getCurrentURL());
-    $("#loadPresetSelect").val(selectedPreset).change();
+    $("#loadPresetSelect").val(selectedPreset).trigger("change");
     $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));
     i18nextLoaded = true;
 }
@@ -82,7 +82,6 @@ $(document).ready(() => {
     elLumB.style.display = "none";
     document.body.appendChild(elLumB);
     const style = document.createElement("style");
-    style.type = "text/css";
     const lnkCustomTheme = document.createElement("link");
     let brightnessChangedFromThisPage = false;
 
@@ -114,25 +113,25 @@ $(document).ready(() => {
         }
     });
 
-    $("#linkAdvSettings").click(() => {
+    $("#linkAdvSettings").on("click", () => {
         browser.tabs.create({
             url: "options.html"
         });
     });
 
-    $("#linkAdvSettings2").click(() => {
+    $("#linkAdvSettings2").on("click", () => {
         browser.tabs.create({
             url: "options.html#customTheme"
         });
     });
 
-    $("#linkTestExtension").click(() => {
+    $("#linkTestExtension").on("click", () => {
         browser.tabs.create({
             url: "pageTest.html"
         });
     });
 
-    $("#settingsPresets").click(() => {
+    $("#settingsPresets").on("click", () => {
         browser.tabs.create({
             url: "options.html#presets"
         });
@@ -340,35 +339,35 @@ $(document).ready(() => {
         });
     }
 
-    $("#disableWebsite").click(() => {
+    $("#disableWebsite").on("click", () => {
         disablePageShadow("disable-website", false);
     });
 
-    $("#enableWebsite").click(() => {
+    $("#enableWebsite").on("click", () => {
         disablePageShadow("disable-website", true);
     });
 
-    $("#disableWebpage").click(() => {
+    $("#disableWebpage").on("click", () => {
         disablePageShadow("disable-webpage", false);
     });
 
-    $("#enableWebpage").click(() => {
+    $("#enableWebpage").on("click", () => {
         disablePageShadow("disable-webpage", true);
     });
 
-    $("#disableWebsitePreset").click(() => {
+    $("#disableWebsitePreset").on("click", () => {
         togglePreset("toggle-website", selectedPreset, true);
     });
 
-    $("#enableWebsitePreset").click(() => {
+    $("#enableWebsitePreset").on("click", () => {
         togglePreset("toggle-website", selectedPreset, false);
     });
 
-    $("#disableWebpagePreset").click(() => {
+    $("#disableWebpagePreset").on("click", () => {
         togglePreset("toggle-webpage", selectedPreset, true);
     });
 
-    $("#enableWebpagePreset").click(() => {
+    $("#enableWebpagePreset").on("click", () => {
         togglePreset("toggle-webpage", selectedPreset, false);
     });
 
@@ -417,7 +416,7 @@ $(document).ready(() => {
         }
     };
 
-    $("#checkAssomPage").change(function() {
+    $("#checkAssomPage").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("pageShadowEnabled", "true");
         } else {
@@ -425,7 +424,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkDisableImgBgColor").change(function() {
+    $("#checkDisableImgBgColor").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("disableImgBgColor", "false");
         } else {
@@ -433,7 +432,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#themeSelect").change(async function() {
+    $("#themeSelect").on("change", async function() {
         setSettingItem("theme", $(this).val());
 
         if($(this).val().trim().startsWith("custom")) {
@@ -445,7 +444,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#customThemeInfoDisable").change(function() {
+    $("#customThemeInfoDisable").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("customThemeInfoDisable", "true");
         } else {
@@ -541,7 +540,7 @@ $(document).ready(() => {
         }
     }
 
-    $("#checkColorInvert").change(function() {
+    $("#checkColorInvert").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("invertPageColors", "true");
         } else {
@@ -549,7 +548,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkEntirePageInvert").change(function() {
+    $("#checkEntirePageInvert").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("invertEntirePage", "true");
         }
@@ -558,7 +557,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkImageInvert").change(function() {
+    $("#checkImageInvert").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("invertImageColors", "true");
         }
@@ -567,7 +566,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkBgColorInvert").change(function() {
+    $("#checkBgColorInvert").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("invertBgColor", "true");
         }
@@ -576,7 +575,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkVideoInvert").change(function() {
+    $("#checkVideoInvert").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("invertVideoColors", "true");
         }
@@ -585,7 +584,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkSelectiveInvert").change(function() {
+    $("#checkSelectiveInvert").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("selectiveInvert", "true");
         }
@@ -604,7 +603,7 @@ $(document).ready(() => {
         }
     }
 
-    $("#autoEnable").change(function() {
+    $("#autoEnable").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("autoEnable", "true");
             $("#autoEnableSettings").modal("show");
@@ -722,11 +721,11 @@ $(document).ready(() => {
         }
     }
 
-    $("#saveSettingsAutoEnable").click(() => {
+    $("#saveSettingsAutoEnable").on("click", () => {
         saveSettingsAutoEnable();
     });
 
-    $("#cancelSettingsAutoEnable").click(() => {
+    $("#cancelSettingsAutoEnable").on("click", () => {
         checkSettingsAutoEnable();
     });
 
@@ -734,7 +733,7 @@ $(document).ready(() => {
         checkSettingsAutoEnable();
     });
 
-    $("#autoEnableHourFormat").change(() => {
+    $("#autoEnableHourFormat").on("change", () => {
         changeFormat();
     });
 
@@ -742,7 +741,7 @@ $(document).ready(() => {
         infoAutoEnable();
     });
 
-    $("#hourEnableFormat, #hourDisableFormat").change(() => {
+    $("#hourEnableFormat, #hourDisableFormat").on("change", () => {
         infoAutoEnable();
     });
 
@@ -758,7 +757,7 @@ $(document).ready(() => {
         }
     }
 
-    $("#liveSettings").change(function() {
+    $("#liveSettings").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("liveSettings", "true");
         } else {
@@ -801,7 +800,7 @@ $(document).ready(() => {
         }
     }
 
-    $("#checkLuminositePage").change(function() {
+    $("#checkLuminositePage").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("pageLumEnabled", "true");
         } else {
@@ -809,7 +808,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#sliderLuminosite").change(() => {
+    $("#sliderLuminosite").on("change", () => {
         const sliderLumValue = sliderLuminosite.getValue();
         elLumB.style.opacity = sliderLumValue / 100;
     });
@@ -847,7 +846,7 @@ $(document).ready(() => {
         }
     }
 
-    $( "#checkNighMode" ).change(function() {
+    $( "#checkNighMode" ).on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("nightModeEnabled", "true");
         } else {
@@ -855,7 +854,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#tempSelect").change(function() {
+    $("#tempSelect").on("change", function() {
         setSettingItem("colorTemp", $(this).val());
     });
 
@@ -869,7 +868,7 @@ $(document).ready(() => {
         }
     }
 
-    $("#pageShadowGlobalSwitch").change(function() {
+    $("#pageShadowGlobalSwitch").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("globallyEnable", "true");
         } else {
@@ -877,7 +876,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#loadPresetValid").click(async() => {
+    $("#loadPresetValid").on("click", async() => {
         $("#infoPreset").removeClass("show");
 
         const result = await loadPreset(parseInt($("#loadPresetSelect").val()));
@@ -899,7 +898,7 @@ $(document).ready(() => {
         });
     });
 
-    $("#updatePresetSettings").click(async() => {
+    $("#updatePresetSettings").on("click", async() => {
         $("#infoPreset").removeClass("show");
         const presetId = parseInt($("#loadPresetSelect").val());
         const presetData = await getPresetData(presetId);
@@ -923,29 +922,29 @@ $(document).ready(() => {
         }
     });
 
-    $("#loadPresetSelect").change(() => {
+    $("#loadPresetSelect").on("change", () => {
         selectedPreset = $("#loadPresetSelect").val();
         checkAutoEnablePreset(selectedPreset);
     });
 
-    $("#whatsNew").click(() => {
+    $("#whatsNew").on("click", () => {
         browser.tabs.create({
             url: "options.html#aboutLatestVersion"
         });
     });
 
-    $("#createPreset").click(() => {
+    $("#createPreset").on("click", () => {
         $("#createPresetModalTitle").val("");
         $("#createPresetModal").modal("show");
     });
 
-    $("#createPresetModalAdvancedLink").click(() => {
+    $("#createPresetModalAdvancedLink").on("click", () => {
         browser.tabs.create({
             url: "options.html#presets"
         });
     });
 
-    $("#createPresetModalValidate").click(async() => {
+    async function createPreset() {
         $("#infoPreset").removeClass("show");
         const presetId = parseInt($("#loadPresetSelect").val());
         const presetTitle  = $("#createPresetModalTitle").val();
@@ -966,6 +965,16 @@ $(document).ready(() => {
                 $("#infoPreset").removeClass("show");
             }
         });
+    }
+
+    $("#createPresetModalValidate").on("click", async() => {
+        createPreset();
+    });
+
+    $("#createPresetModalTitle").on("keyup", (e) => {
+        if(e.key === "Enter") {
+            createPreset();
+        }
     });
 
     async function displaySettings() {
@@ -993,7 +1002,7 @@ $(document).ready(() => {
 
         if(i18nextLoaded) {
             await loadPresetSelect("loadPresetSelect", i18next);
-            $("#loadPresetSelect").val(selectedPreset).change();
+            $("#loadPresetSelect").val(selectedPreset).trigger("change");
         }
 
         const updateNotification = result.updateNotification || {};
