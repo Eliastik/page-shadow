@@ -17,6 +17,7 @@
         "titleImg": "Une photo",
         "title3": "Un bloc jaune",
         "title4": "Une image d'arrière-plan (via CSS)",
+        "title5": "Un bloc transparent",
         "formTitle": "Un formulaire",
         "inputValue": "Un champ de formulaire",
         "option1": "Une option",
@@ -25,6 +26,7 @@
         "othersTitle": "Autres éléments",
         "del": "Élément de suppression",
         "ins": "Élément d'insertion",
-        "mark": "Élément de marquage"
+        "mark": "Élément de marquage",
+        "testBackground": "Ceci est un test de la détection automatique des éléments transparents par Page Shadow. Si vous voyez ce message, c'est que cette détection ne fonctionne pas correctement."
     }
 }

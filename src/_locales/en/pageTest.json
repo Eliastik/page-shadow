@@ -17,6 +17,7 @@
         "titleImg": "A picture",
         "title3": "A yellow block",
         "title4": "A background image (via CSS)",
+        "title5": "A transparent block",
         "formTitle": "A form",
         "inputValue": "A form field",
         "option1": "An option",
@@ -25,6 +26,7 @@
         "othersTitle": "Others elements",
         "del": "Deletion element",
         "ins": "Insertion element",
-        "mark": "Mark element"
+        "mark": "Mark element",
+        "testBackground": "This is a test of the automatic detection of transparent elements by Page Shadow. If you see this message, this detection is not working properly."
     }
 }

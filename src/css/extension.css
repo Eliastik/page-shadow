@@ -424,6 +424,19 @@ a.btn[disabled] {
     font-family: monospace;
     margin-left: 8px;
 }
+.full-div-transparent-background-test3 {
+    position: absolute;
+    top: 0;
+    width: 90%;
+    height: 90%;
+    pointer-events: none;
+}
+body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-test,.full-div-transparent-background-test2,.full-div-transparent-background-test3 {
+    display: none !important;
+}
+.full-div-transparent-background-test.pageShadowHasTransparentBackground,.full-div-transparent-background-test2.pageShadowHasTransparentBackground,.full-div-transparent-background-test3.pageShadowHasTransparentBackground {
+    display: none !important;
+}
 @-webkit-keyframes fadein {
     from { bottom: 0; opacity: 0; }
     to { bottom: 30px; opacity: 0.9; }
