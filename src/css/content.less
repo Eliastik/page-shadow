@@ -115,7 +115,7 @@
     .pageShadowContrastBlack@{name} input:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling), .pageShadowContrastBlack@{name} textarea:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling) {
         border-color: @txtcolor !important;
     }
-    .pageShadowContrastBlack@{name} input.pageShadowForceInputBorderStyling, .pageShadowContrastBlack@{name} textarea.pageShadowForceInputBorderStyling {
+    .pageShadowContrastBlack@{name} input.pageShadowForceInputBorderStyling:not(.pageShadowDisableInputBorderStyling), .pageShadowContrastBlack@{name} textarea.pageShadowForceInputBorderStyling:not(.pageShadowDisableInputBorderStyling) {
         border: 1px solid @txtcolor !important;
     }
     .pageShadowContrastBlack@{name} ins:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
@@ -309,6 +309,12 @@ html.pageShadowInvertEntirePage .pageShadowDisableElementInvert {
     -moz-filter: invert(100%) !important;
     -o-filter: invert(100%) !important;
     -webkit-filter: invert(100%) !important;
+}
+html.pageShadowInvertEntirePage .pageShadowDisableElementInvert * {
+    filter: invert(0%) !important;
+    -moz-filter: invert(0%) !important;
+    -o-filter: invert(0%) !important;
+    -webkit-filter: invert(0%) !important;
 }
 body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert) > *, body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert) > *, body.pageShadowEnableSelectiveInvert *:not(.pageShadowDisableElementInvert) > .pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert):not(img):not(svg):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo) > * {
     filter: invert(100%) !important;
