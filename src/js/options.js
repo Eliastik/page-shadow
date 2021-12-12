@@ -1121,8 +1121,10 @@ async function notifyChangedPresetNotSaved(nb) {
     const data = await getPresetData(nb);
 
     if(data && Object.keys(data).length > 0) {
-        return data["name"] != $("#savePresetTitle").val() ||
-            data["websiteListToApply"] != $("#savePresetWebsite").val();
+        const name = typeof(data["name"]) === "undefined" ? "" : data["name"];
+        const websiteListToApply = typeof(data["websiteListToApply"]) === "undefined" ? "" : data["websiteListToApply"];
+
+        return name != $("#savePresetTitle").val() || websiteListToApply != $("#savePresetWebsite").val();
     }
 
     return $("#savePresetTitle").val().trim() != "" || $("#savePresetWebsite").val().trim() != "";
