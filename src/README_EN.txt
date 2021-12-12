@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.8 (10/24/2021)
+* Latest version: 2.9 (12/12/2021)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -21,6 +21,52 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.9 (12/12/2021):
+* Added the ability to create a preset and update a preset with current settings directly in the extension menu;
+* Added the "Selective" setting for the Invert the colors function: this setting, based on the filters feature, allows you to invert the colors of a small number of elements which may be displayed incorrectly on a dark theme of the Increase page contrast function;
+* Improved display of the Increase page contrast function on most websites:
+    - Transparent backgrounds are now automatically detected (they were previously colored which could hide certain elements of websites), without going through the filters feature;
+    - Fixed detection of background images;
+    - Fixed the application of the function on websites using the "Shadow Roots" feature (used for example on bugs.chromium.org);
+    - The replacement of the border of the form fields isn't enabled by default (to be activated via the filters)
+* Presets enabled for a webpage now have a higher priority than those enabled for the whole website;
+* Improved Filters feature (advanced settings):
+    - More data is displayed in the filter settings: total number of filters and storage space taken by the filters;
+    - The custom filter editor now has an auto-completion system;
+    - The filters display and the custom filter editor now have an adapted syntax highlighting;
+    - Filters in error are now displayed with a clear error message and the error detection line, which allows you to quickly view the errors;
+    - Distinction between standard rule and special rule (which govern the internal functioning of the extension);
+    - Added new filter rules.
+* When changing custom themes or presets in advanced settings, Page Shadow warns you if changes to settings have not been saved;
+* Performance improvement:
+    - The settings are now applied in real time only if they have actually changed. In previous versions, the settings were refreshed if a global setting was changed (even if it didn't directly influence a given website). This improves performance;
+    - Performance improvement when the percentage of brightness reduction was changed when the Apply the settings in real time function was enabled;
+    - Improved performance of "Mutation observers"
+* Bugfixes:
+    - Fixed filter rules that were not applied in rare cases;
+    - Fiex the presets automatically enabled per page for dynamic SPA applications: the setting was not applied when browsing between pages;
+    - Fixed display of presets created with old versions of Page Shadow (<2.8): in some cases, the display could be incorrect;
+    - Fixed Cloud archiving: in some cases, archiving could not be performed but no error was displayed;
+    - Fixed Cloud archiving when the Cloud storage quota was exceeded;
+    - Fixed Cloud archiving: settings are splitted into several items to avoid a quota per item overrun error;
+    - Fixed a bug with the disabling of Page Shadow on certain websites accessed from Google on Chrome: in the event that Google highlighted a text in the page, the Page Shadow disabling feature for the page didn't work ("#:~:text=" was added at the end of the URL by Google);
+    - Fixed the change of disabled/enabled state for a website when the Apply the settings in real time function was disabled: the change is no longer applied in this case;
+    - Fixed the treatment of regular expressions in filters;
+    - Fixed application of parent page state (enabled/disabled) for iframes;
+    - Fixed a bug with the wildcards for the features allowing to disable/enable Page Shadow for a website/webpage, to enable/disable a preset for a website/webpage as well as for filters;
+        - It is now possible to escape a wildcard with a backslash (\)
+    - Page Shadow is now applied to "about:blank" pages
+* Technical improvements:
+    - Improved mutation observer: detection of the mutation of the attributes "style" and "class" is now more precise, the sub-elements of elements modified or added to the page are now treated;
+        - These improvements can be configured per site/webpage via new special filter rules;
+    - Conversion of Promises to async/await, which simplifies the code;
+    - The constants have been separated into a new file (constants.js);
+    - Filters feature now in a FilterProcessor class;
+    - The Opera version is no longer built, the Chromium version running natively on Opera;
+    - Added <all_urls> permission for Chromium based browsers (like Firefox version);
+    - Fixed calls to "deprecated" functions;
+    - Updated dependencies.
 
 ### Version 2.8 (10/24/2021) :
 * Added the Filters feature, accessible in Advanced Settings. Filters allow, based on rules, to improve the display of websites when the following options are enabled: Increase page contrast or Invert colors. This advance significantly improves the display of some websites when Page Shadow is enabled. This feature can also improve the performance of Page Shadow on some websites. These filters are updated daily from Internet sources. The lists provided by default are downloaded from the eliastiksofts.com website (the extension developer's website). It's also possible to define custom rules. You don't have to do anything more on your side to take advantage of the feature, it's operational as soon as the extension is installed/updated. Filters are updated automatically;
