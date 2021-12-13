@@ -616,6 +616,12 @@ export default class FilterProcessor {
             }
         }
 
+        if(filters) {
+            for(const customFilter of filters.filters) {
+                if(!customFilter.builtIn) newFilters.push(customFilter);
+            }
+        }
+
         filters.filters = newFilters;
 
         setSettingItem("filtersSettings", filters);
