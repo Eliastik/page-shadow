@@ -200,12 +200,12 @@ import browser from "webextension-polyfill";
         if(!backgroundColor) return true;
 
         const isRgbaColor = backgroundColor.trim().startsWith("rgba");
-        const isWhiteRgbaColor = backgroundColor.trim().startsWith("rgba(0, 0, 0");
+        const isTransparentColor = backgroundColor.trim().startsWith("rgba(0, 0, 0, 0)");
         const alpha = isRgbaColor ? parseFloat(backgroundColor.split(",")[3]) : -1;
         const hasBackgroundImageValue = backgroundImage && (backgroundImage.trim().toLowerCase() != "none" && backgroundImage.trim() != "");
         const hasNoBackgroundColorValue = backgroundColor && (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "");
 
-        return (hasNoBackgroundColorValue || isWhiteRgbaColor || (isRgbaColor && alpha <= websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasBackgroundImageValue;
+        return (hasNoBackgroundColorValue || isTransparentColor || (isRgbaColor && alpha <= websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasBackgroundImageValue;
     }
 
     function detectBackgroundForElement(element) {
