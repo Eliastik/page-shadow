@@ -330,11 +330,12 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
         new Promise(resolve => {
             if(message) {
                 if(!sender.tab) return;
-                const url = normalizeURL(sender.tab.url);
+                const tabURL = normalizeURL(sender.tab.url);
+                const pageURL = normalizeURL(sender.url);
 
                 if(message.type == "isEnabledForThisPage" || message.type == "applySettingsChanged") {
-                    pageShadowAllowed(url).then(async(enabled) => {
-                        const settings = await getSettings(url);
+                    pageShadowAllowed(tabURL).then(async(enabled) => {
+                        const settings = await getSettings(tabURL);
                         resolve({ type: message.type + "Response", enabled: enabled, settings: settings });
                     });
                 } else if(message.type == "updateAllFilters") {
@@ -383,7 +384,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 } else if(message.type == "getAllFilters") {
                     resolve({ type: "getFiltersResponse", filters: filters.getRules() });
                 } else if(message.type == "getFiltersForThisWebsite") {
-                    resolve({ type: "getFiltersResponse", filters: filters.getRulesForWebsite(url, ruleCategory.STANDARD_RULES), specialFilters: filters.getRulesForWebsite(url, ruleCategory.SPECIAL_RULES) });
+                    resolve({ type: "getFiltersResponse", filters: filters.getRulesForWebsite(pageURL, ruleCategory.STANDARD_RULES), specialFilters: filters.getRulesForWebsite(pageURL, ruleCategory.SPECIAL_RULES) });
                 } else if(message.type == "reinstallDefaultFilters") {
                     filters.reinstallDefaultFilters().then(result => {
                         resolve({ type: "reinstallDefaultFiltersResponse", result: result });
@@ -393,7 +394,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                         resolve({ type: "getNumberOfRulesResponse", count: count });
                     });
                 } else if(message.type == "getSpecialRules") {
-                    resolve({ type: "getSpecialRulesResponse", filters: filters.getRulesForWebsite(url, ruleCategory.SPECIAL_RULES) });
+                    resolve({ type: "getSpecialRulesResponse", filters: filters.getRulesForWebsite(pageURL, ruleCategory.SPECIAL_RULES) });
                 } else if(message.type == "getNumberOfTotalRules") {
                     resolve({ type: "getNumberOfTotalRulesResponse", count: filters.getNumberOfTotalRules() });
                 } else if(message.type == "getFiltersSize") {
