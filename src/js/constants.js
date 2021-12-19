@@ -93,6 +93,22 @@ const defaultFilters = {
             "content": null
         },
         {
+            "filterName": "Mode performance ultra/Ultra performance mode",
+            "sourceName": "Eliastik's Softs",
+            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/ultra.performance.txt",
+            "lastUpdated": 0,
+            "enabled": false,
+            "hasError": false,
+            "local": false,
+            "homepage": "https://www.eliastiksofts.com/page-shadow/",
+            "builtIn": true,
+            "expiresIn": 1, // days
+            "description": "",
+            "version": "0",
+            "license": "",
+            "content": null
+        },
+        {
             "filterName": "Mon filtre/My filter",
             "sourceName": "Page Shadow",
             "sourceUrl": "",
