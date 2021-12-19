@@ -189,16 +189,18 @@ import SafeTimer from "./safeTimer.js";
         if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
             const detectBackgroundTimer = new SafeTimer(() => {
                 document.body.classList.add("pageShadowDisableStyling");
-                const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
 
-                for(let i = 0, len = elements.length; i < len; i++) {
+                const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
+                let i = elements.length;
+
+                while(i--) {
                     detectBackgroundForElement(elements[i]);
                 }
 
                 document.body.classList.remove("pageShadowDisableStyling");
                 document.body.classList.add("pageShadowBackgroundDetected");
-                backgroundDetected = true;
 
+                backgroundDetected = true;
                 detectBackgroundTimer.clear();
             });
 
@@ -540,16 +542,21 @@ import SafeTimer from "./safeTimer.js";
             return;
         }
 
-        document.body.classList.remove("pageShadowBackgroundDetected");
-        document.body.classList.add("pageShadowDisableStyling");
+        if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
+            document.body.classList.remove("pageShadowBackgroundDetected");
+            document.body.classList.add("pageShadowDisableStyling");
+        }
 
         for(const node of addedNodes) {
             if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationForElement(node, null, null);
             doProcessFilters(filtersCache, node);
         }
 
-        document.body.classList.add("pageShadowBackgroundDetected");
-        document.body.classList.remove("pageShadowDisableStyling");
+
+        if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
+            document.body.classList.add("pageShadowBackgroundDetected");
+            document.body.classList.remove("pageShadowDisableStyling");
+        }
     }
 
     function mutationForElement(element, attribute, attributeOldValue) {

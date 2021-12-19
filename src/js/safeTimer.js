@@ -30,12 +30,6 @@ export default class SafeTimer {
                 });
             }
 
-            if(!this.timeoutId) {
-                this.timeoutId = setTimeout(() => {
-                    this.onTimeout();
-                }, 1000);
-            }
-
             return;
         }
 
@@ -47,12 +41,12 @@ export default class SafeTimer {
     }
 
     clear() {
-        if(!this.requestAnimationId) {
+        if(this.requestAnimationId) {
             cancelAnimationFrame(this.requestAnimationId);
             this.requestAnimationId = null;
         }
 
-        if(!this.timeoutid) {
+        if(this.timeoutid) {
             clearTimeout(this.timeoutid);
             this.timeoutid = null;
         }
@@ -64,22 +58,7 @@ export default class SafeTimer {
     }
 
     onRequestAnimationFrame() {
-        if(!this.timeoutid){
-            clearTimeout(this.timeoutid);
-            this.timeoutid = null;
-        }
-
         this.requestAnimationId = null;
-        this.callback();
-    }
-
-    onTimeout() {
-        if(!this.requestAnimationId) {
-            cancelAnimationFrame(this.requestAnimationId);
-            this.requestAnimationId = null;
-        }
-
-        this.timeoutid = null;
         this.callback();
     }
 }
