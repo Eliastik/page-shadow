@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, processRules } from "./util.js";
-import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors } from "./constants.js";
+import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, ignoredElementsContentScript } from "./constants.js";
 import browser from "webextension-polyfill";
 
 (function(){
@@ -217,7 +217,7 @@ import browser from "webextension-polyfill";
             }
         }
 
-        if(!element || element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected") || backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1) {
+        if(!element || element == document.body || element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected") || backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1 || ignoredElementsContentScript.includes(element.localName)) {
             return;
         }
 
@@ -485,13 +485,14 @@ import browser from "webextension-polyfill";
                 "childList": true,
                 "characterData": false,
                 "attributeFilter": ["class", "style"],
-                "attributeOldValue": true
+                "attributeOldValue": true,
+                "characterDataOldValue": false
             });
         }
     }
 
     function mutationElementsBackgrounds(element, attribute, attributeOldValue) {
-        if(!element || !element.classList || element == document.body) {
+        if(!element || !element.classList || element == document.body || ignoredElementsContentScript.includes(element.localName)) {
             return false;
         }
 
