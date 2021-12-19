@@ -19,6 +19,7 @@
 import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, processRules } from "./util.js";
 import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, ignoredElementsContentScript } from "./constants.js";
 import browser from "webextension-polyfill";
+import SafeTimer from "./safeTimer.js";
 
 (function(){
     const style = document.createElement("style");
@@ -40,6 +41,8 @@ import browser from "webextension-polyfill";
     let precUrl;
     let currentSettings = null;
     let newSettingsToApply = null;
+    let safeTimerMutationBackgrounds = null;
+    let mutationObserverAddedNodes = [];
 
     // Contants
     const TYPE_RESET = "reset";
@@ -184,16 +187,28 @@ import browser from "webextension-polyfill";
 
     function detectBackground(tagName) {
         if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
-            const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
+            const detectBackgroundTimer = new SafeTimer(() => {
+                document.body.classList.add("pageShadowDisableStyling");
+                const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
 
-            for(let i = 0, len = elements.length; i < len; i++) {
-                detectBackgroundForElement(elements[i]);
-            }
+                for(let i = 0, len = elements.length; i < len; i++) {
+                    detectBackgroundForElement(elements[i]);
+                }
+
+                document.body.classList.remove("pageShadowDisableStyling");
+                document.body.classList.add("pageShadowBackgroundDetected");
+                backgroundDetected = true;
+
+                detectBackgroundTimer.clear();
+            });
+
+            detectBackgroundTimer.start();
+        } else {
+            document.body.classList.add("pageShadowBackgroundDetected");
+            backgroundDetected = true;
         }
 
-        document.body.classList.add("pageShadowBackgroundDetected");
         mutationObserve(MUTATION_TYPE_BACKGROUNDS);
-        backgroundDetected = true;
     }
 
     function elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
@@ -221,8 +236,6 @@ import browser from "webextension-polyfill";
             return;
         }
 
-        element.classList.add("pageShadowDisableStyling");
-
         const computedStyle = window.getComputedStyle(element, null);
         const background = computedStyle.getPropertyValue("background");
         const backgroundColor = computedStyle.getPropertyValue("background-color");
@@ -245,7 +258,6 @@ import browser from "webextension-polyfill";
         }
 
         backgroundDetectionAlreadyProcessedNodes.push(element);
-        element.classList.remove("pageShadowDisableStyling");
     }
 
     function applyDetectBackground(type, elements) {
@@ -465,18 +477,27 @@ import browser from "webextension-polyfill";
                 "characterData": false
             });
         } else if(type == MUTATION_TYPE_BACKGROUNDS) {
-            mut_backgrounds = new MutationObserver(async(mutations) => {
-                mutations.forEach(mutation => {
+            mut_backgrounds = new MutationObserver(mutations => {
+                let i = mutations.length;
+
+                while(i--) {
+                    const mutation = mutations[i];
+
                     if(mutation.type == "childList") {
-                        for(let i = 0, len = mutation.addedNodes.length; i < len; i++) {
-                            if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationElementsBackgrounds(mutation.addedNodes[i], null, null);
-                            doProcessFilters(filtersCache, mutation.addedNodes[i]);
+                        const nodeList = mutation.addedNodes;
+
+                        if(nodeList.length > 0) {
+                            mutationObserverAddedNodes.push(nodeList);
+                        }
+
+                        if(mutationObserverAddedNodes.length > 0) {
+                            safeTimerMutationBackgrounds.start(mutationObserverAddedNodes.length < 100 ? 1 : undefined);
                         }
                     } else if(mutation.type == "attributes") {
-                        if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationElementsBackgrounds(mutation.target, mutation.attributeName, mutation.oldValue);
+                        if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
                         doProcessFilters(filtersCache, mutation.target);
                     }
-                });
+                }
             });
 
             mut_backgrounds.observe(document.body, {
@@ -488,11 +509,51 @@ import browser from "webextension-polyfill";
                 "attributeOldValue": true,
                 "characterDataOldValue": false
             });
+
+            safeTimerMutationBackgrounds = new SafeTimer(mutationElementsBackgrounds);
         }
     }
 
-    function mutationElementsBackgrounds(element, attribute, attributeOldValue) {
-        if(!element || !element.classList || element == document.body || ignoredElementsContentScript.includes(element.localName)) {
+    function mutationElementsBackgrounds() {
+        let i = mutationObserverAddedNodes.length;
+        const addedNodes = [];
+
+        while(i--) {
+            const nodeList = mutationObserverAddedNodes[i];
+
+            let k = nodeList.length;
+
+            while(k--) {
+                const node = nodeList[k];
+
+                if(!node || !node.classList || node == document.body || ignoredElementsContentScript.includes(node.localName) || node.nodeType != 1) {
+                    continue;
+                }
+
+                addedNodes.push(node);
+            }
+        }
+
+        mutationObserverAddedNodes = [];
+
+        if(addedNodes.length <= 0) {
+            return;
+        }
+
+        document.body.classList.remove("pageShadowBackgroundDetected");
+        document.body.classList.add("pageShadowDisableStyling");
+
+        for(const node of addedNodes) {
+            if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationForElement(node, null, null);
+            doProcessFilters(filtersCache, node);
+        }
+
+        document.body.classList.add("pageShadowBackgroundDetected");
+        document.body.classList.remove("pageShadowDisableStyling");
+    }
+
+    function mutationForElement(element, attribute, attributeOldValue) {
+        if(!element || !element.classList || element == document.body || ignoredElementsContentScript.includes(element.localName) || element.nodeType != 1) {
             return false;
         }
 
@@ -512,7 +573,10 @@ import browser from "webextension-polyfill";
             }
         }
 
-        document.body.classList.remove("pageShadowBackgroundDetected");
+        if(attribute) {
+            document.body.classList.remove("pageShadowBackgroundDetected");
+            document.body.classList.add("pageShadowDisableStyling");
+        }
 
         detectBackgroundForElement(element);
 
@@ -522,14 +586,19 @@ import browser from "webextension-polyfill";
                 const elementChildrens = element.getElementsByTagName("*");
 
                 if(elementChildrens && elementChildrens.length > 0) {
-                    for(let i = 0, len = elementChildrens.length; i < len; i++) {
+                    let i = elementChildrens.length;
+
+                    while(i--) {
                         detectBackgroundForElement(elementChildrens[i]);
                     }
                 }
             }
         }
 
-        document.body.classList.add("pageShadowBackgroundDetected");
+        if(attribute) {
+            document.body.classList.add("pageShadowBackgroundDetected");
+            document.body.classList.remove("pageShadowDisableStyling");
+        }
     }
 
     async function updateFilters() {
