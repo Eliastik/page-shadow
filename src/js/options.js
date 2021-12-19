@@ -380,8 +380,10 @@ async function displayFilters() {
                 buttonHome.appendChild(iconHome);
 
                 buttonHome.addEventListener("click", () => {
-                    browser.tabs.create({
-                        url: filter.homepage
+                    browser.runtime.sendMessage({
+                        type: "openTab",
+                        url: filter.homepage,
+                        part: ""
                     });
                 });
 
@@ -1380,20 +1382,26 @@ $(document).ready(() => {
 
     if(getBrowser() == "Chrome" || getBrowser() == "Opera") {
         $("#keyboardShortcuts").on("click", () => {
-            browser.tabs.create({
-                url: "chrome://extensions/configureCommands"
+            browser.runtime.sendMessage({
+                type: "openTab",
+                url: "chrome://extensions/configureCommands",
+                part: ""
             });
         });
     } else if(getBrowser() == "Edge") {
         $("#keyboardShortcuts").on("click", () => {
-            browser.tabs.create({
-                url: "edge://extensions/shortcuts"
+            browser.runtime.sendMessage({
+                type: "openTab",
+                url: "edge://extensions/shortcuts",
+                part: ""
             });
         });
     } else if(getBrowser() == "Firefox") {
         $("#keyboardShortcuts").on("click", () => {
-            browser.tabs.create({
-                url: "https://support.mozilla.org/" + i18next.language + "/kb/manage-extension-shortcuts-firefox"
+            browser.runtime.sendMessage({
+                type: "openTab",
+                url: "https://support.mozilla.org/" + i18next.language + "/kb/manage-extension-shortcuts-firefox",
+                part: ""
             });
         });
     }

@@ -329,6 +329,10 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
     browser.runtime.onMessage.addListener((message, sender) => {
         new Promise(resolve => {
             if(message) {
+                if(message.type == "openTab") {
+                    openTab(message.url, message.part);
+                }
+
                 if(!sender.tab) return;
                 const tabURL = normalizeURL(sender.tab.url);
                 const pageURL = normalizeURL(sender.url);
@@ -502,6 +506,28 @@ if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand
             break;
         }
     });
+}
+
+async function openTab(url, part) {
+    const tabs = await browser.tabs.query({ url: url });
+    const completeURL = url + "" + (part ? "#" + part : "");
+
+    if(tabs.length === 0) {
+        browser.tabs.create({
+            url: completeURL
+        });
+    } else {
+        let tab = tabs[0];
+
+        const updateDetails = { active: true };
+
+        if(!tab.url.startsWith(url)) {
+            updateDetails.url = completeURL;
+        }
+
+        tab = await browser.tabs.update(tab.id, updateDetails);
+        browser.windows.update(tab.windowId, { focused: true });
+    }
 }
 
 setPopup();

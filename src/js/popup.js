@@ -114,26 +114,34 @@ $(document).ready(() => {
     });
 
     $("#linkAdvSettings").on("click", () => {
-        browser.tabs.create({
-            url: "options.html"
+        browser.runtime.sendMessage({
+            type: "openTab",
+            url: browser.runtime.getURL("options.html"),
+            part: ""
         });
     });
 
     $("#linkAdvSettings2").on("click", () => {
-        browser.tabs.create({
-            url: "options.html#customTheme"
+        browser.runtime.sendMessage({
+            type: "openTab",
+            url: browser.runtime.getURL("options.html"),
+            part: "customTheme"
         });
     });
 
     $("#linkTestExtension").on("click", () => {
-        browser.tabs.create({
-            url: "pageTest.html"
+        browser.runtime.sendMessage({
+            type: "openTab",
+            url: browser.runtime.getURL("pageTest.html"),
+            part: "customTheme"
         });
     });
 
     $("#settingsPresets").on("click", () => {
-        browser.tabs.create({
-            url: "options.html#presets"
+        browser.runtime.sendMessage({
+            type: "openTab",
+            url: browser.runtime.getURL("options.html"),
+            part: "presets"
         });
     });
 
@@ -928,8 +936,10 @@ $(document).ready(() => {
     });
 
     $("#whatsNew").on("click", () => {
-        browser.tabs.create({
-            url: "options.html#aboutLatestVersion"
+        browser.runtime.sendMessage({
+            type: "openTab",
+            url: browser.runtime.getURL("options.html"),
+            part: "aboutLatestVersion"
         });
     });
 
@@ -939,8 +949,10 @@ $(document).ready(() => {
     });
 
     $("#createPresetModalAdvancedLink").on("click", () => {
-        browser.tabs.create({
-            url: "options.html#presets"
+        browser.runtime.sendMessage({
+            type: "openTab",
+            url: browser.runtime.getURL("options.html"),
+            part: "presets"
         });
     });
 
