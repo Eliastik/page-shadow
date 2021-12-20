@@ -1153,6 +1153,22 @@ async function displayPresetSettings(id) {
     }
 }
 
+function addFilter() {
+    $("#addFilterBtn").attr("disabled", "disabled");
+    $("#filterAddress").attr("disabled", "disabled");
+    $("#addFilterCancelBtn").attr("disabled", "disabled");
+    $("#addFilterErrorFetch").hide();
+    $("#addFilterErrorParsing").hide();
+    $("#addFilterErrorUnknown").hide();
+    $("#addFilterErrorAlreadyAdded").hide();
+    $("#addFilterErrorEmpty").hide();
+
+    browser.runtime.sendMessage({
+        "type": "addFilter",
+        "address": $("#filterAddress").val()
+    });
+}
+
 $(document).ready(() => {
     let savedTimeout;
 
@@ -1486,19 +1502,13 @@ $(document).ready(() => {
     });
 
     $("#addFilterBtn").on("click", () => {
-        $("#addFilterBtn").attr("disabled", "disabled");
-        $("#filterAddress").attr("disabled", "disabled");
-        $("#addFilterCancelBtn").attr("disabled", "disabled");
-        $("#addFilterErrorFetch").hide();
-        $("#addFilterErrorParsing").hide();
-        $("#addFilterErrorUnknown").hide();
-        $("#addFilterErrorAlreadyAdded").hide();
-        $("#addFilterErrorEmpty").hide();
+        addFilter();
+    });
 
-        browser.runtime.sendMessage({
-            "type": "addFilter",
-            "address": $("#filterAddress").val()
-        });
+    $("#filterAddress").on("keyup", (e) => {
+        if(e.key === "Enter") {
+            addFilter();
+        }
     });
 
     $("#addFilterSource").on("hidden.bs.modal", () => {
