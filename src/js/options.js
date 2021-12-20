@@ -1257,7 +1257,7 @@ $(document).ready(() => {
     }
 
     $("#colorpicker1").colpick({
-        layout:"hex",
+        layout: "full",
         submit: false,
         color: "000000",
         appendTo: $("#customTheme"),
@@ -1269,7 +1269,7 @@ $(document).ready(() => {
     });
 
     $("#colorpicker2").colpick({
-        layout:"hex",
+        layout: "full",
         submit: false,
         color: "FFFFFF",
         appendTo: $("#customTheme"),
@@ -1281,7 +1281,7 @@ $(document).ready(() => {
     });
 
     $("#colorpicker3").colpick({
-        layout:"hex",
+        layout: "full",
         submit: false,
         color: "1E90FF",
         appendTo: $("#customTheme"),
@@ -1293,7 +1293,7 @@ $(document).ready(() => {
     });
 
     $("#colorpicker4").colpick({
-        layout:"hex",
+        layout: "full",
         submit: false,
         color: "800080",
         appendTo: $("#customTheme"),
