@@ -867,8 +867,6 @@ import SafeTimer from "./safeTimer.js";
             mutation = TYPE_ALL;
         }
 
-        if(mutation == null) mutation = "none";
-
         if(typeof timeoutApplyBrightness !== "undefined") clearTimeout(timeoutApplyBrightness);
         if(typeof timeoutApplyContrast !== "undefined") clearTimeout(timeoutApplyContrast);
         if(typeof timeoutApplyInvertColors !== "undefined") clearTimeout(timeoutApplyInvertColors);
@@ -879,23 +877,24 @@ import SafeTimer from "./safeTimer.js";
         if(typeof lnkCustomTheme !== "undefined") lnkCustomTheme.setAttribute("href", "");
 
         if(started && (type == TYPE_RESET || type == TYPE_ONLY_RESET)) {
-            document.body.classList.remove("pageShadowInvertImageColor");
-            document.getElementsByTagName("html")[0].classList.remove("pageShadowInvertEntirePage");
-            document.body.classList.remove("pageShadowInvertVideoColor");
-            document.getElementsByTagName("html")[0].classList.remove("pageShadowBackground");
-            document.getElementsByTagName("html")[0].classList.remove("pageShadowBackgroundCustom");
-            document.body.classList.remove("pageShadowContrastBlackCustom");
-            document.body.classList.remove("pageShadowDisableImgBgColor");
-            document.body.classList.remove("pageShadowInvertBgColor");
-            document.body.classList.remove("pageShadowEnableSelectiveInvert");
+            document.body.classList.remove("pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowContrastBlackCustom", "pageShadowDisableImgBgColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert");
+            document.getElementsByTagName("html")[0].classList.remove("pageShadowInvertEntirePage", "pageShadowBackground", "pageShadowBackgroundCustom");
 
             for(let i = 1; i <= nbThemes; i++) {
+                let classToRemove = "";
+
                 if(i == 1) {
-                    document.body.classList.remove("pageShadowContrastBlack");
-                    document.getElementsByTagName("html")[0].classList.remove("pageShadowBackgroundContrast");
+                    classToRemove = "pageShadowContrastBlack";
                 } else {
-                    document.body.classList.remove("pageShadowContrastBlack" + i);
-                    document.getElementsByTagName("html")[0].classList.remove("pageShadowBackgroundContrast" + i);
+                    classToRemove = "pageShadowContrastBlack" + i;
+                }
+
+                if(document.body.classList.contains(classToRemove)) {
+                    document.body.classList.remove(classToRemove);
+                }
+
+                if(document.getElementsByTagName("html")[0].classList.contains(classToRemove)) {
+                    document.getElementsByTagName("html")[0].classList.remove(classToRemove);
                 }
             }
 
@@ -944,10 +943,8 @@ import SafeTimer from "./safeTimer.js";
                 brightnessPage(settings.pageLumEnabled, settings.pourcentageLum, settings.nightModeEnabled, settings.colorTemp);
 
                 if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") {
-                    if(type == TYPE_START) {
+                    if(type == TYPE_START || !backgroundDetected) {
                         applyDetectBackground(TYPE_LOADING, "*");
-                    } else {
-                        applyDetectBackground(null, "*");
                     }
                 }
 
@@ -1038,7 +1035,7 @@ import SafeTimer from "./safeTimer.js";
     });
 
     function hasEnabledStateChanged(isEnabled) {
-        return started && ((isEnabled&& !precEnabled) || (!isEnabled && precEnabled));
+        return started && ((isEnabled && !precEnabled) || (!isEnabled && precEnabled));
     }
 
     async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled) {
