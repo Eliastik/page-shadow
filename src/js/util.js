@@ -898,7 +898,15 @@ function normalizeURL(url) {
 }
 
 function getCurrentURL() {
-    return normalizeURL(window.opener ? window.opener.location.href : window.location.href);
+    let url = "";
+
+    try {
+        url = window.opener ? window.opener.location.href : window.location.href;
+    } catch(e) {
+        url = window.location.href;
+    }
+
+    return normalizeURL(url);
 }
 
 function processShadowRootStyle(style) {
