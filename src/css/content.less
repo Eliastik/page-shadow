@@ -205,7 +205,7 @@
 .loopColorTemps(1);
 
 .colorTemps(@colortempname, @colortemp) {
-    div#pageShadowLuminositeDivNightMode.k@{colortempname} {
+    div#pageShadowBrightnessNightMode.k@{colortempname} {
         background-color: @colortemp !important;
     }
 }
@@ -258,7 +258,7 @@ html.pageShadowInvertEntirePage {
     -o-filter: invert(100%) !important;
     -webkit-filter: invert(100%) !important;
 }
-html.pageShadowInvertEntirePage div#pageShadowLuminositeDiv, html.pageShadowInvertEntirePage div#pageShadowLuminositeDivNightMode, html.pageShadowInvertEntirePage iframe, html.pageShadowInvertEntirePage frame {
+html.pageShadowInvertEntirePage div#pageShadowBrightness, html.pageShadowInvertEntirePage div#pageShadowBrightnessNightMode, html.pageShadowInvertEntirePage iframe, html.pageShadowInvertEntirePage frame {
     filter: invert(100%) !important;
     -moz-filter: invert(100%) !important;
     -o-filter: invert(100%) !important;
@@ -348,7 +348,7 @@ html:not(.pageShadowInvertEntirePage) body.pageShadowEnableSelectiveInvert :not(
 }
 
 /* Brightness */
-div#pageShadowLuminositeDiv {
+div#pageShadowBrightness {
     position: fixed;
     top: 0;
     left: 0;
@@ -361,7 +361,7 @@ div#pageShadowLuminositeDiv {
     padding: 0 !important;
     pointer-events: none;
 }
-div#pageShadowLuminositeDivNightMode {
+div#pageShadowBrightnessNightMode {
     position: fixed;
     top: 0;
     left: 0;

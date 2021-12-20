@@ -287,7 +287,7 @@ import SafeTimer from "./safeTimer.js";
         if(enabled == "true" && !runningInIframe) {
             elementBrightness.style.display = "block";
             if(nightmode == "true") {
-                elementBrightness.setAttribute("id", "pageShadowLuminositeDivNightMode");
+                elementBrightness.setAttribute("id", "pageShadowBrightnessNightMode");
                 elementBrightness.setAttribute("class", "");
 
                 let tempColor = "2000";
@@ -301,7 +301,7 @@ import SafeTimer from "./safeTimer.js";
                     elementBrightness.setAttribute("class", "k2000");
                 }
             } else {
-                elementBrightness.setAttribute("id", "pageShadowLuminositeDiv");
+                elementBrightness.setAttribute("id", "pageShadowBrightness");
             }
 
             if(percentage / 100 > maxBrightnessPercentage || percentage / 100 < minBrightnessPercentage || typeof percentage === "undefined" || percentage == null) {
@@ -323,12 +323,12 @@ import SafeTimer from "./safeTimer.js";
     }
 
     function appendBrightnessElement(elementBrightness, elementWrapper) {
-        if(document.getElementById("pageShadowLuminositeDiv") !== null && document.body.contains(elementWrapper)) {
-            elementWrapper.removeChild(document.getElementById("pageShadowLuminositeDiv"));
+        if(document.getElementById("pageShadowBrightness") !== null && document.body.contains(elementWrapper)) {
+            elementWrapper.removeChild(document.getElementById("pageShadowBrightness"));
         }
 
-        if(document.getElementById("pageShadowLuminositeDivNightMode") !== null && document.body.contains(elementWrapper)) {
-            elementWrapper.removeChild(document.getElementById("pageShadowLuminositeDivNightMode"));
+        if(document.getElementById("pageShadowBrightnessNightMode") !== null && document.body.contains(elementWrapper)) {
+            elementWrapper.removeChild(document.getElementById("pageShadowBrightnessNightMode"));
         }
 
         document.body.appendChild(elementWrapper);
@@ -454,8 +454,8 @@ import SafeTimer from "./safeTimer.js";
 
             mut_brightness = new MutationObserver(mutations => {
                 mut_brightness.disconnect();
-                const brightness = document.getElementById("pageShadowLuminositeDiv");
-                const nightmode = document.getElementById("pageShadowLuminositeDivNightMode");
+                const brightness = document.getElementById("pageShadowBrightness");
+                const nightmode = document.getElementById("pageShadowBrightnessNightMode");
 
                 mutations.forEach(mutation => {
                     if((!document.body.contains(brightness) && !document.body.contains(nightmode)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
@@ -899,12 +899,12 @@ import SafeTimer from "./safeTimer.js";
                 }
             }
 
-            if(document.getElementById("pageShadowLuminositeDiv") != null && document.body.contains(elementBrightnessWrapper)) {
-                elementBrightnessWrapper.removeChild(document.getElementById("pageShadowLuminositeDiv"));
+            if(document.getElementById("pageShadowBrightness") != null && document.body.contains(elementBrightnessWrapper)) {
+                elementBrightnessWrapper.removeChild(document.getElementById("pageShadowBrightness"));
             }
 
-            if(document.getElementById("pageShadowLuminositeDivNightMode") != null && document.body.contains(elementBrightnessWrapper)) {
-                elementBrightnessWrapper.removeChild(document.getElementById("pageShadowLuminositeDivNightMode"));
+            if(document.getElementById("pageShadowBrightnessNightMode") != null && document.body.contains(elementBrightnessWrapper)) {
+                elementBrightnessWrapper.removeChild(document.getElementById("pageShadowBrightnessNightMode"));
             }
 
             resetShadowRoots();

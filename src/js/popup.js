@@ -162,16 +162,16 @@ $(document).ready(() => {
     }
 
     function previewTemp(temp) {
-        $("#pageShadowLuminositeDivNightMode").attr("class", "");
+        $("#pageShadowBrightnessNightMode").attr("class", "");
         let tempColor = "2000";
 
         if(temp != undefined) {
             const tempIndex = parseInt(temp);
             tempColor = colorTemperaturesAvailable[tempIndex - 1];
 
-            $("#pageShadowLuminositeDivNightMode").addClass("k" + tempColor);
+            $("#pageShadowBrightnessNightMode").addClass("k" + tempColor);
         } else {
-            $("#pageShadowLuminositeDivNightMode").addClass("k2000");
+            $("#pageShadowBrightnessNightMode").addClass("k2000");
         }
     }
 
@@ -779,9 +779,9 @@ $(document).ready(() => {
         if(result.pageLumEnabled == "true") {
             if(result.nightModeEnabled == "true") {
                 $("#checkNighMode").attr("checked", "checked");
-                elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
+                elLumB.setAttribute("id", "pageShadowBrightnessNightMode");
             } else {
-                elLumB.setAttribute("id", "pageShadowLuminositeDiv");
+                elLumB.setAttribute("id", "pageShadowBrightness");
             }
 
             if(result.pourcentageLum / 100 > maxBrightnessPercentage || result.pourcentageLum / 100 < minBrightnessPercentage || typeof result.pourcentageLum === "undefined" || result.pourcentageLum == null) {
@@ -841,13 +841,13 @@ $(document).ready(() => {
             }
 
             $("#tempSelectDiv").stop().fadeIn();
-            elLumB.setAttribute("id", "pageShadowLuminositeDivNightMode");
+            elLumB.setAttribute("id", "pageShadowBrightnessNightMode");
             if($("#checkNighMode").is(":checked") == false) {
                 $("#checkNighMode").prop("checked", true);
             }
         } else {
             $("#tempSelectDiv").stop().fadeOut();
-            elLumB.setAttribute("id", "pageShadowLuminositeDiv");
+            elLumB.setAttribute("id", "pageShadowBrightness");
             if($("#checkNighMode").is(":checked") == true) {
                 $("#checkNighMode").prop("checked", false);
             }
