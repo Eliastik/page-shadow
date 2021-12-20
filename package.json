@@ -35,8 +35,8 @@
   "dependencies": {
     "@babel/runtime": "^7.16.5",
     "bootstrap-slider": "^11.0.2",
-    "codemirror": "^5.64.0",
-    "i18next": "^21.6.0",
+    "codemirror": "^5.65.0",
+    "i18next": "^21.6.3",
     "i18next-browser-languagedetector": "^6.1.2",
     "i18next-xhr-backend": "^3.2.2",
     "jquery": "^3.6.0",
