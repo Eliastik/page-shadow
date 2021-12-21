@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, processRules } from "./util.js";
+import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, processRules, removeClass, addClass } from "./util.js";
 import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, ignoredElementsContentScript } from "./constants.js";
 import browser from "webextension-polyfill";
 import SafeTimer from "./safeTimer.js";
@@ -64,23 +64,23 @@ import SafeTimer from "./safeTimer.js";
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
             if(theme != undefined) {
                 if(theme == "1") {
-                    elementToApply.classList.add("pageShadowContrastBlack");
-                    if(!customElement) document.getElementsByTagName("html")[0].classList.add("pageShadowBackgroundContrast");
+                    addClass(elementToApply, "pageShadowContrastBlack");
+                    if(!customElement) addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundContrast");
                 } else if(theme.startsWith("custom")) {
                     if(!customElement) customThemeApply(theme);
-                    elementToApply.classList.add("pageShadowContrastBlackCustom");
-                    if(!customElement) document.getElementsByTagName("html")[0].classList.add("pageShadowBackgroundCustom");
+                    addClass(elementToApply, "pageShadowContrastBlackCustom");
+                    if(!customElement) addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundCustom");
                 } else {
-                    elementToApply.classList.add("pageShadowContrastBlack" + theme);
-                    if(!customElement) document.getElementsByTagName("html")[0].classList.add("pageShadowBackgroundContrast" + theme);
+                    addClass(elementToApply, "pageShadowContrastBlack" + theme);
+                    if(!customElement) addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundContrast" + theme);
                 }
             } else {
-                elementToApply.classList.add("pageShadowContrastBlack");
-                if(!customElement) document.getElementsByTagName("html")[0].classList.add("pageShadowBackgroundContrast");
+                addClass(elementToApply, "pageShadowContrastBlack");
+                if(!customElement) addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundContrast");
             }
 
             if(disableImgBgColor != undefined && disableImgBgColor == "true") {
-                elementToApply.classList.add("pageShadowDisableImgBgColor");
+                addClass(elementToApply, "pageShadowDisableImgBgColor");
             }
         }
 
@@ -97,7 +97,7 @@ import SafeTimer from "./safeTimer.js";
         }
 
         if(customElement) {
-            elementToApply.classList.add("pageShadowBackgroundDetected");
+            addClass(elementToApply, "pageShadowBackgroundDetected");
         }
 
         if(!customElement && typeof timeoutApplyContrast !== "undefined") {
@@ -113,59 +113,50 @@ import SafeTimer from "./safeTimer.js";
 
     function invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert) {
         const elementToApply = customElement ? customElement : document.body;
-
-        elementToApply.classList.remove("pageShadowInvertImageColor");
-        elementToApply.classList.remove("pageShadowInvertVideoColor");
-        elementToApply.classList.remove("pageShadowInvertBgColor");
-        elementToApply.classList.remove("pageShadowEnableSelectiveInvert");
+        removeClass(elementToApply, "pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert");
 
         if(!customElement) {
-            document.getElementsByTagName("html")[0].classList.remove("pageShadowInvertEntirePage");
-            document.getElementsByTagName("html")[0].classList.remove("pageShadowBackground");
+            removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
         }
 
         if(enabled !== null && enabled == "true") {
             if(invertEntirePage !== null && invertEntirePage == "true") {
-                elementToApply.classList.add("pageShadowInvertImageColor");
-                elementToApply.classList.add("pageShadowInvertVideoColor");
-                elementToApply.classList.add("pageShadowInvertBgColor");
-                elementToApply.classList.add("pageShadowEnableSelectiveInvert");
+                addClass(elementToApply, "pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert");
 
                 if(!customElement) {
-                    document.getElementsByTagName("html")[0].classList.add("pageShadowInvertEntirePage");
-                    document.getElementsByTagName("html")[0].classList.add("pageShadowBackground");
+                    addClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
                 }
 
                 if(invertImageColors != null && invertImageColors == "true") {
-                    elementToApply.classList.remove("pageShadowInvertImageColor");
+                    removeClass(elementToApply, "pageShadowInvertImageColor");
                 }
 
                 if(invertBgColors != null && invertBgColors == "true") {
-                    elementToApply.classList.remove("pageShadowInvertBgColor");
+                    removeClass(elementToApply, "pageShadowInvertBgColor");
                 }
 
                 if(invertVideoColors != null && invertVideoColors == "true") {
-                    elementToApply.classList.remove("pageShadowInvertVideoColor");
+                    removeClass(elementToApply, "pageShadowInvertVideoColor");
                 }
 
                 if(selectiveInvert != null && selectiveInvert == "true") {
-                    elementToApply.classList.remove("pageShadowEnableSelectiveInvert");
+                    removeClass(elementToApply, "pageShadowEnableSelectiveInvert");
                 }
             } else {
                 if(invertImageColors != null && invertImageColors == "true") {
-                    elementToApply.classList.add("pageShadowInvertImageColor");
+                    addClass(elementToApply, "pageShadowInvertImageColor");
                 }
 
                 if(invertBgColors != null && invertBgColors != "false") {
-                    elementToApply.classList.add("pageShadowInvertBgColor");
+                    addClass(elementToApply, "pageShadowInvertBgColor");
                 }
 
                 if(invertVideoColors != null && invertVideoColors == "true") {
-                    elementToApply.classList.add("pageShadowInvertVideoColor");
+                    addClass(elementToApply, "pageShadowInvertVideoColor");
                 }
 
                 if(selectiveInvert != null && selectiveInvert == "true") {
-                    elementToApply.classList.add("pageShadowEnableSelectiveInvert");
+                    addClass(elementToApply, "pageShadowEnableSelectiveInvert");
                 }
             }
 
@@ -188,7 +179,7 @@ import SafeTimer from "./safeTimer.js";
     function detectBackground(tagName) {
         if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
             const detectBackgroundTimer = new SafeTimer(() => {
-                document.body.classList.add("pageShadowDisableStyling");
+                addClass(document.body, "pageShadowDisableStyling");
 
                 const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
                 let i = elements.length;
@@ -197,8 +188,8 @@ import SafeTimer from "./safeTimer.js";
                     detectBackgroundForElement(elements[i]);
                 }
 
-                document.body.classList.remove("pageShadowDisableStyling");
-                document.body.classList.add("pageShadowBackgroundDetected");
+                removeClass(document.body, "pageShadowDisableStyling");
+                addClass(document.body, "pageShadowBackgroundDetected");
 
                 backgroundDetected = true;
                 detectBackgroundTimer.clear();
@@ -206,7 +197,7 @@ import SafeTimer from "./safeTimer.js";
 
             detectBackgroundTimer.start();
         } else {
-            document.body.classList.add("pageShadowBackgroundDetected");
+            addClass(document.body, "pageShadowBackgroundDetected");
             backgroundDetected = true;
         }
 
@@ -248,14 +239,14 @@ import SafeTimer from "./safeTimer.js";
         const hasTransparentBackgroundClass = element.classList.contains("pageShadowHasTransparentBackground");
 
         if(hasBackgroundImg && !hasClassImg) {
-            element.classList.add("pageShadowHasBackgroundImg");
+            addClass(element, "pageShadowHasBackgroundImg");
         }
 
         if(websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled) {
             const hasTransparentBackground = elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg);
 
             if(hasTransparentBackground && !hasTransparentBackgroundClass) {
-                element.classList.add("pageShadowHasTransparentBackground");
+                addClass(element, "pageShadowHasTransparentBackground");
             }
         }
 
@@ -543,8 +534,8 @@ import SafeTimer from "./safeTimer.js";
         }
 
         if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
-            document.body.classList.remove("pageShadowBackgroundDetected");
-            document.body.classList.add("pageShadowDisableStyling");
+            removeClass(document.body, "pageShadowBackgroundDetected");
+            addClass(document.body, "pageShadowDisableStyling");
         }
 
         for(const node of addedNodes) {
@@ -554,8 +545,8 @@ import SafeTimer from "./safeTimer.js";
 
 
         if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
-            document.body.classList.add("pageShadowBackgroundDetected");
-            document.body.classList.remove("pageShadowDisableStyling");
+            addClass(document.body, "pageShadowBackgroundDetected");
+            removeClass(document.body, "pageShadowDisableStyling");
         }
     }
 
@@ -581,8 +572,8 @@ import SafeTimer from "./safeTimer.js";
         }
 
         if(attribute) {
-            document.body.classList.remove("pageShadowBackgroundDetected");
-            document.body.classList.add("pageShadowDisableStyling");
+            removeClass(document.body, "pageShadowBackgroundDetected");
+            addClass(document.body, "pageShadowDisableStyling");
         }
 
         detectBackgroundForElement(element);
@@ -603,8 +594,8 @@ import SafeTimer from "./safeTimer.js";
         }
 
         if(attribute) {
-            document.body.classList.add("pageShadowBackgroundDetected");
-            document.body.classList.remove("pageShadowDisableStyling");
+            addClass(document.body, "pageShadowBackgroundDetected");
+            removeClass(document.body, "pageShadowDisableStyling");
         }
     }
 
@@ -671,88 +662,88 @@ import SafeTimer from "./safeTimer.js";
                     filterTypes.forEach(filterType => {
                         switch(filterType) {
                         case "disableContrastFor":
-                            if(!element.classList.contains("pageShadowElementDisabled")) element.classList.add("pageShadowElementDisabled");
+                            if(!element.classList.contains("pageShadowElementDisabled")) addClass(element, "pageShadowElementDisabled");
                             break;
                         case "forceTransparentBackground":
-                            if(!element.classList.contains("pageShadowElementForceTransparentBackground")) element.classList.add("pageShadowElementForceTransparentBackground");
+                            if(!element.classList.contains("pageShadowElementForceTransparentBackground")) addClass(element, "pageShadowElementForceTransparentBackground");
                             break;
                         case "disableBackgroundStylingFor":
-                            if(!element.classList.contains("pageShadowDisableBackgroundStyling")) element.classList.add("pageShadowDisableBackgroundStyling");
+                            if(!element.classList.contains("pageShadowDisableBackgroundStyling")) addClass(element, "pageShadowDisableBackgroundStyling");
                             break;
                         case "disableTextColorStylingFor":
-                            if(!element.classList.contains("pageShadowDisableColorStyling")) element.classList.add("pageShadowDisableColorStyling");
+                            if(!element.classList.contains("pageShadowDisableColorStyling")) addClass(element, "pageShadowDisableColorStyling");
                             break;
                         case "disableInputBorderStylingFor":
-                            if(!element.classList.contains("pageShadowDisableInputBorderStyling")) element.classList.add("pageShadowDisableInputBorderStyling");
+                            if(!element.classList.contains("pageShadowDisableInputBorderStyling")) addClass(element, "pageShadowDisableInputBorderStyling");
                             break;
                         case "forceInputBorderStylingFor":
-                            if(!element.classList.contains("pageShadowForceInputBorderStyling")) element.classList.add("pageShadowForceInputBorderStyling");
+                            if(!element.classList.contains("pageShadowForceInputBorderStyling")) addClass(element, "pageShadowForceInputBorderStyling");
                             break;
                         case "disableLinkStylingFor":
-                            if(!element.classList.contains("pageShadowDisableLinkStyling")) element.classList.add("pageShadowDisableLinkStyling");
+                            if(!element.classList.contains("pageShadowDisableLinkStyling")) addClass(element, "pageShadowDisableLinkStyling");
                             break;
                         case "disableFontFamilyStylingFor":
-                            if(!element.classList.contains("pageShadowDisableFontFamilyStyling")) element.classList.add("pageShadowDisableFontFamilyStyling");
+                            if(!element.classList.contains("pageShadowDisableFontFamilyStyling")) addClass(element, "pageShadowDisableFontFamilyStyling");
                             break;
                         case "forceFontFamilyStylingFor":
-                            if(!element.classList.contains("pageShadowForceFontFamilyStyling")) element.classList.add("pageShadowForceFontFamilyStyling");
+                            if(!element.classList.contains("pageShadowForceFontFamilyStyling")) addClass(element, "pageShadowForceFontFamilyStyling");
                             break;
                         case "disableElementInvertFor":
-                            if(!element.classList.contains("pageShadowDisableElementInvert")) element.classList.add("pageShadowDisableElementInvert");
+                            if(!element.classList.contains("pageShadowDisableElementInvert")) addClass(element, "pageShadowDisableElementInvert");
                             break;
                         case "hasBackgroundImg":
-                            if(!element.classList.contains("pageShadowHasBackgroundImg")) element.classList.add("pageShadowHasBackgroundImg");
+                            if(!element.classList.contains("pageShadowHasBackgroundImg")) addClass(element, "pageShadowHasBackgroundImg");
                             break;
                         case "forceCustomLinkColorFor":
-                            if(!element.classList.contains("pageShadowForceCustomLinkColor")) element.classList.add("pageShadowForceCustomLinkColor");
+                            if(!element.classList.contains("pageShadowForceCustomLinkColor")) addClass(element, "pageShadowForceCustomLinkColor");
                             break;
                         case "forceCustomBackgroundColorFor":
-                            if(!element.classList.contains("pageShadowForceCustomBackgroundColor")) element.classList.add("pageShadowForceCustomBackgroundColor");
+                            if(!element.classList.contains("pageShadowForceCustomBackgroundColor")) addClass(element, "pageShadowForceCustomBackgroundColor");
                             break;
                         case "forceCustomTextColorFor":
-                            if(!element.classList.contains("pageShadowForceCustomTextColor")) element.classList.add("pageShadowForceCustomTextColor");
+                            if(!element.classList.contains("pageShadowForceCustomTextColor")) addClass(element, "pageShadowForceCustomTextColor");
                             break;
                         case "forceCustomVisitedLinkColor":
-                            if(!element.classList.contains("pageShadowForceCustomVisitedLinkColor")) element.classList.add("pageShadowForceCustomVisitedLinkColor");
+                            if(!element.classList.contains("pageShadowForceCustomVisitedLinkColor")) addClass(element, "pageShadowForceCustomVisitedLinkColor");
                             break;
                         case "disableCustomVisitedLinkColor":
-                            if(!element.classList.contains("pageShadowDisableCustomVisitedLinkColor")) element.classList.add("pageShadowDisableCustomVisitedLinkColor");
+                            if(!element.classList.contains("pageShadowDisableCustomVisitedLinkColor")) addClass(element, "pageShadowDisableCustomVisitedLinkColor");
                             break;
                         case "forceCustomLinkColorAsBackground":
-                            if(!element.classList.contains("pageShadowForceCustomLinkColorAsBackground")) element.classList.add("pageShadowForceCustomLinkColorAsBackground");
+                            if(!element.classList.contains("pageShadowForceCustomLinkColorAsBackground")) addClass(element, "pageShadowForceCustomLinkColorAsBackground");
                             break;
                         case "forceCustomTextColorAsBackground":
-                            if(!element.classList.contains("pageShadowForceCustomTextColorAsBackground")) element.classList.add("pageShadowForceCustomTextColorAsBackground");
+                            if(!element.classList.contains("pageShadowForceCustomTextColorAsBackground")) addClass(element, "pageShadowForceCustomTextColorAsBackground");
                             break;
                         case "forceCustomLinkVisitedColorAsBackground":
-                            if(!element.classList.contains("pageShadowForceCustomLinkVisitedColorAsBackground")) element.classList.add("pageShadowForceCustomLinkVisitedColorAsBackground");
+                            if(!element.classList.contains("pageShadowForceCustomLinkVisitedColorAsBackground")) addClass(element, "pageShadowForceCustomLinkVisitedColorAsBackground");
                             break;
                         case "enablePseudoElementsStyling":
-                            if(!element.classList.contains("pageShadowEnablePseudoElementStyling")) element.classList.add("pageShadowEnablePseudoElementStyling");
+                            if(!element.classList.contains("pageShadowEnablePseudoElementStyling")) addClass(element, "pageShadowEnablePseudoElementStyling");
                             break;
                         case "invertElementAsImage":
-                            if(!element.classList.contains("pageShadowInvertElementAsImage")) element.classList.add("pageShadowInvertElementAsImage");
+                            if(!element.classList.contains("pageShadowInvertElementAsImage")) addClass(element, "pageShadowInvertElementAsImage");
                             break;
                         case "invertElementAsVideo":
-                            if(!element.classList.contains("pageShadowInvertElementAsVideo")) element.classList.add("pageShadowInvertElementAsVideo");
+                            if(!element.classList.contains("pageShadowInvertElementAsVideo")) addClass(element, "pageShadowInvertElementAsVideo");
                             break;
                         case "invertElementAsBackground":
-                            if(!element.classList.contains("pageShadowInvertElementAsBackground")) element.classList.add("pageShadowInvertElementAsBackground");
+                            if(!element.classList.contains("pageShadowInvertElementAsBackground")) addClass(element, "pageShadowInvertElementAsBackground");
                             break;
                         case "enableSelectiveInvert":
-                            if(!element.classList.contains("pageShadowSelectiveInvert")) element.classList.add("pageShadowSelectiveInvert");
+                            if(!element.classList.contains("pageShadowSelectiveInvert")) addClass(element, "pageShadowSelectiveInvert");
                             break;
                         case "enablePseudoElementSelectiveInvert":
-                            if(!element.classList.contains("pageShadowSelectiveInvertPseudoElement")) element.classList.add("pageShadowSelectiveInvertPseudoElement");
+                            if(!element.classList.contains("pageShadowSelectiveInvertPseudoElement")) addClass(element, "pageShadowSelectiveInvertPseudoElement");
                             break;
                         case "invertPseudoElement":
-                            if(!element.classList.contains("pageShadowInvertPseudoElement")) element.classList.add("pageShadowInvertPseudoElement");
+                            if(!element.classList.contains("pageShadowInvertPseudoElement")) addClass(element, "pageShadowInvertPseudoElement");
                             break;
                         case "forceDisableDefaultBackgroundColor": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultBackgroundColor")) {
                                 const oldStyleAttribute = element.getAttribute("style");
                                 element.setAttribute("style", (oldStyleAttribute ? oldStyleAttribute : "") + "background-color: none !important");
-                                element.classList.add("pageShadowforceDisableDefaultBackgroundColor");
+                                addClass(element, "pageShadowforceDisableDefaultBackgroundColor");
                             }
                             break;
                         }
@@ -760,7 +751,7 @@ import SafeTimer from "./safeTimer.js";
                             if(!element.classList.contains("pageShadowforceDisableDefaultBackground")) {
                                 const oldStyleAttribute = element.getAttribute("style");
                                 element.setAttribute("style", (oldStyleAttribute ? oldStyleAttribute : "") + "background: none !important");
-                                element.classList.add("pageShadowforceDisableDefaultBackground");
+                                addClass(element, "pageShadowforceDisableDefaultBackground");
                             }
                             break;
                         }
@@ -768,7 +759,7 @@ import SafeTimer from "./safeTimer.js";
                             if(!element.classList.contains("pageShadowforceDisableDefaultFontColor")) {
                                 const oldStyleAttribute = element.getAttribute("style");
                                 element.setAttribute("style", (oldStyleAttribute ? oldStyleAttribute : "") + "color: none !important");
-                                element.classList.add("pageShadowforceDisableDefaultFontColor");
+                                addClass(element, "pageShadowforceDisableDefaultFontColor");
                             }
                             break;
                         }
@@ -877,8 +868,8 @@ import SafeTimer from "./safeTimer.js";
         if(typeof lnkCustomTheme !== "undefined") lnkCustomTheme.setAttribute("href", "");
 
         if(started && (type == TYPE_RESET || type == TYPE_ONLY_RESET)) {
-            document.body.classList.remove("pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowContrastBlackCustom", "pageShadowDisableImgBgColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert");
-            document.getElementsByTagName("html")[0].classList.remove("pageShadowInvertEntirePage", "pageShadowBackground", "pageShadowBackgroundCustom");
+            removeClass(document.body, "pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowContrastBlackCustom", "pageShadowDisableImgBgColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert");
+            removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground", "pageShadowBackgroundCustom");
 
             for(let i = 1; i <= nbThemes; i++) {
                 let classToRemove = "";
@@ -890,11 +881,11 @@ import SafeTimer from "./safeTimer.js";
                 }
 
                 if(document.body.classList.contains(classToRemove)) {
-                    document.body.classList.remove(classToRemove);
+                    removeClass(document.body, classToRemove);
                 }
 
                 if(document.getElementsByTagName("html")[0].classList.contains(classToRemove)) {
-                    document.getElementsByTagName("html")[0].classList.remove(classToRemove);
+                    removeClass(document.getElementsByTagName("html")[0], classToRemove);
                 }
             }
 
