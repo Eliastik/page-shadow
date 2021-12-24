@@ -43,6 +43,8 @@ import SafeTimer from "./safeTimer.js";
     let newSettingsToApply = null;
     let safeTimerMutationBackgrounds = null;
     let mutationObserverAddedNodes = [];
+    let delayedMutationObserversCalls = [];
+    let safeTimerMutationDelayed = null;
 
     // Contants
     const TYPE_RESET = "reset";
@@ -532,25 +534,12 @@ import SafeTimer from "./safeTimer.js";
             });
         } else if(type == MUTATION_TYPE_BACKGROUNDS) {
             mut_backgrounds = new MutationObserver(mutations => {
-                let i = mutations.length;
+                delayedMutationObserversCalls.push(mutations);
 
-                while(i--) {
-                    const mutation = mutations[i];
-
-                    if(mutation.type == "childList") {
-                        const nodeList = mutation.addedNodes;
-
-                        if(nodeList.length > 0) {
-                            mutationObserverAddedNodes.push(nodeList);
-                        }
-
-                        if(mutationObserverAddedNodes.length > 0) {
-                            safeTimerMutationBackgrounds.start(mutationObserverAddedNodes.length < 100 ? 1 : undefined);
-                        }
-                    } else if(mutation.type == "attributes") {
-                        if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
-                        doProcessFilters(filtersCache, mutation.target);
-                    }
+                if(websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds) {
+                    safeTimerMutationDelayed.start(websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
+                } else {
+                    treatMutationObserverBackgroundCalls();
                 }
             });
 
@@ -565,6 +554,47 @@ import SafeTimer from "./safeTimer.js";
             });
 
             safeTimerMutationBackgrounds = new SafeTimer(mutationElementsBackgrounds);
+            safeTimerMutationDelayed = new SafeTimer(treatMutationObserverBackgroundCalls);
+        }
+    }
+
+    function treatMutationObserverBackgroundCalls() {
+        if(delayedMutationObserversCalls.length > 0) {
+            let i = delayedMutationObserversCalls.length;
+
+            while(i--) {
+                const mutationList = delayedMutationObserversCalls[i];
+
+                let k = mutationList.length;
+
+                while(k--) {
+                    treatOneMutationObserverBackgroundCall(mutationList[k]);
+
+                    if(websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds) {
+                        safeTimerMutationDelayed.start(websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
+                        return mutationList.shift();
+                    }
+                }
+            }
+
+            delayedMutationObserversCalls = [];
+        }
+    }
+
+    function treatOneMutationObserverBackgroundCall(mutation) {
+        if(mutation.type == "childList") {
+            const nodeList = mutation.addedNodes;
+
+            if(nodeList.length > 0) {
+                mutationObserverAddedNodes.push(nodeList);
+            }
+
+            if(mutationObserverAddedNodes.length > 0) {
+                safeTimerMutationBackgrounds.start(mutationObserverAddedNodes.length < 100 ? 1 : undefined);
+            }
+        } else if(mutation.type == "attributes") {
+            if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
+            doProcessFilters(filtersCache, mutation.target);
         }
     }
 
@@ -853,6 +883,9 @@ import SafeTimer from "./safeTimer.js";
             if(rule.type == "enableShadowRootStyleOverride") websiteSpecialFiltersConfig.enableShadowRootStyleOverride = true;
             if(rule.type == "disableShadowRootStyleOverride") websiteSpecialFiltersConfig.enableShadowRootStyleOverride = false;
             if(rule.type == "shadowRootStyleOverrideDelay") websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay = rule.filter;
+            if(rule.type == "enableThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.enableThrottleMutationObserverBackgrounds = true;
+            if(rule.type == "disableThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.disableThrottleMutationObserverBackgrounds = false;
+            if(rule.type == "delayMutationObserverBackgrounds") websiteSpecialFiltersConfig.delayMutationObserverBackgrounds = rule.filter;
         });
     }
 
