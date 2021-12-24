@@ -342,7 +342,12 @@ import SafeTimer from "./safeTimer.js";
 
     function waitAndApplyBrightnessPage(element, wrapper) {
         const timerApplyBrightnessPage = new SafeTimer(() => {
-            appendBrightnessElement(element, wrapper);
+            if(!document.body) {
+                waitAndApplyBrightnessPage(element, wrapper);
+            } else {
+                appendBrightnessElement(element, wrapper);
+            }
+
             timerApplyBrightnessPage.clear();
         });
 
@@ -351,7 +356,12 @@ import SafeTimer from "./safeTimer.js";
 
     function waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert) {
         const timerApplyContrastPage = new SafeTimer(() => {
-            contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert);
+            if(!document.body) {
+                waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert);
+            } else {
+                contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert);
+            }
+
             timerApplyContrastPage.clear();
         });
 
@@ -360,7 +370,12 @@ import SafeTimer from "./safeTimer.js";
 
     function waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert) {
         const timerApplyInvertColors = new SafeTimer(() => {
-            invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert);
+            if(!document.body) {
+                waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert);
+            } else {
+                invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert);
+            }
+
             timerApplyInvertColors.clear();
         });
 
@@ -369,7 +384,12 @@ import SafeTimer from "./safeTimer.js";
 
     function waitAndApplyDetectBackgrounds(tagName) {
         const timerApplyDetectBackgrounds = new SafeTimer(() => {
-            detectBackground(tagName);
+            if(!document.body) {
+                waitAndApplyDetectBackgrounds(tagName);
+            } else {
+                detectBackground(tagName);
+            }
+
             timerApplyDetectBackgrounds.clear();
         });
 
