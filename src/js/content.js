@@ -257,13 +257,23 @@ import SafeTimer from "./safeTimer.js";
         if(backgroundDetected) return false;
 
         if(document.readyState === "complete") {
-            setTimeout(() => waitAndApplyDetectBackgrounds(elements), 1); // detect for all the elements of the page
+            const timerBackgrounds = new SafeTimer(() => {
+                waitAndApplyDetectBackgrounds(elements);
+                timerBackgrounds.clear();
+            });
+
+            timerBackgrounds.start();
         } else {
             if(type == TYPE_LOADING) {
                 window.addEventListener("load", () => {
                     // when the page is entirely loaded
                     if(document.readyState === "complete") {
-                        setTimeout(() => waitAndApplyDetectBackgrounds(elements), 250); // detect for all the elements of the page after 250 ms
+                        const timerBackgrounds = new SafeTimer(() => {
+                            waitAndApplyDetectBackgrounds(elements);
+                            timerBackgrounds.clear();
+                        });
+
+                        timerBackgrounds.start(250);
                     }
                 });
             } else {
@@ -331,23 +341,39 @@ import SafeTimer from "./safeTimer.js";
     }
 
     function waitAndApplyBrightnessPage(element, wrapper) {
-        if(document.body) return appendBrightnessElement(element, wrapper);
-        timeoutApplyBrightness = setTimeout(() => waitAndApplyBrightnessPage(element, wrapper), 50);
+        const timerApplyBrightnessPage = new SafeTimer(() => {
+            appendBrightnessElement(element, wrapper);
+            timerApplyBrightnessPage.clear();
+        });
+
+        timerApplyBrightnessPage.start();
     }
 
     function waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert) {
-        if(document.body) return contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert);
-        timeoutApplyContrast = setTimeout(() => waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert), 50);
+        const timerApplyContrastPage = new SafeTimer(() => {
+            contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert);
+            timerApplyContrastPage.clear();
+        });
+
+        timerApplyContrastPage.start();
     }
 
     function waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert) {
-        if(document.body) return invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert);
-        timeoutApplyInvertColors = setTimeout(() => waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert), 50);
+        const timerApplyInvertColors = new SafeTimer(() => {
+            invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert);
+            timerApplyInvertColors.clear();
+        });
+
+        timerApplyInvertColors.start();
     }
 
     function waitAndApplyDetectBackgrounds(tagName) {
-        if(document.body) return detectBackground(tagName);
-        timeoutApplyDetectBackgrounds = setTimeout(() => waitAndApplyDetectBackgrounds(tagName), 50);
+        const timerApplyDetectBackgrounds = new SafeTimer(() => {
+            detectBackground(tagName);
+            timerApplyDetectBackgrounds.clear();
+        });
+
+        timerApplyDetectBackgrounds.start();
     }
 
     function mutationObserve(type) {
@@ -378,7 +404,12 @@ import SafeTimer from "./safeTimer.js";
                 });
 
                 if(!containsPageContrast) {
-                    setTimeout(() => main(TYPE_ONLY_CONTRAST, MUTATION_TYPE_CONTRAST), 1);
+                    const timerApplyMutationContrast = new SafeTimer(() => {
+                        main(TYPE_ONLY_CONTRAST, MUTATION_TYPE_CONTRAST);
+                        timerApplyMutationContrast.clear();
+                    });
+
+                    timerApplyMutationContrast.start();
                 } else {
                     if(document.readyState == "complete" || document.readyState == "interactive") {
                         mutationObserve(MUTATION_TYPE_CONTRAST);
@@ -422,7 +453,12 @@ import SafeTimer from "./safeTimer.js";
                             || (mutation.oldValue.indexOf("pageShadowInvertVideoColor") !== -1 && !classList.contains("pageShadowInvertVideoColor"))
                             || (mutation.oldValue.indexOf("pageShadowInvertBgColor") !== -1 && !classList.contains("pageShadowInvertBgColor"))
                             || (mutation.oldValue.indexOf("pageShadowEnableSelectiveInvert") !== -1 && !classList.contains("pageShadowEnableSelectiveInvert"))) {
-                            setTimeout(() => main(TYPE_ONLY_INVERT, MUTATION_TYPE_INVERT), 1);
+                            const timerApplyMutationInvert = new SafeTimer(() => {
+                                main(TYPE_ONLY_INVERT, MUTATION_TYPE_INVERT);
+                                timerApplyMutationInvert.clear();
+                            });
+
+                            timerApplyMutationInvert.start();
                         } else {
                             reMutObserveInvert();
                         }
@@ -450,7 +486,12 @@ import SafeTimer from "./safeTimer.js";
 
                 mutations.forEach(mutation => {
                     if((!document.body.contains(brightness) && !document.body.contains(nightmode)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
-                        setTimeout(() => main(TYPE_ONLY_BRIGHTNESS, MUTATION_TYPE_BRIGHTNESS), 1);
+                        const timerApplyMutationBrightness = new SafeTimer(() => {
+                            main(TYPE_ONLY_BRIGHTNESS, MUTATION_TYPE_BRIGHTNESS);
+                            timerApplyMutationBrightness.clear();
+                        });
+
+                        timerApplyMutationBrightness.start();
                     } else {
                         if(document.readyState == "complete" || document.readyState == "interactive") {
                             mutationObserve(MUTATION_TYPE_BRIGHTNESS);
@@ -872,21 +913,8 @@ import SafeTimer from "./safeTimer.js";
             removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground", "pageShadowBackgroundCustom");
 
             for(let i = 1; i <= nbThemes; i++) {
-                let classToRemove = "";
-
-                if(i == 1) {
-                    classToRemove = "pageShadowContrastBlack";
-                } else {
-                    classToRemove = "pageShadowContrastBlack" + i;
-                }
-
-                if(document.body.classList.contains(classToRemove)) {
-                    removeClass(document.body, classToRemove);
-                }
-
-                if(document.getElementsByTagName("html")[0].classList.contains(classToRemove)) {
-                    removeClass(document.getElementsByTagName("html")[0], classToRemove);
-                }
+                removeClass(document.body, (i == 1 ? "pageShadowContrastBlack" : "pageShadowContrastBlack" + i));
+                removeClass(document.getElementsByTagName("html")[0], (i == 1 ? "pageShadowBackgroundContrast" : "pageShadowBackgroundContrast" + i));
             }
 
             if(document.getElementById("pageShadowBrightness") != null && document.body.contains(elementBrightnessWrapper)) {
