@@ -43,7 +43,8 @@
                 "js/content.js"
             ],
             "css": [
-                "css/content.css"
+                "css/content.css",
+                "css/content_invert.css"
             ],
             "matches": [
                 "http://*/*",

@@ -45,6 +45,8 @@ import SafeTimer from "./safeTimer.js";
     let mutationObserverAddedNodes = [];
     let delayedMutationObserversCalls = [];
     let safeTimerMutationDelayed = null;
+    let pageShadowStyleShadowRootsCacheInvert = null;
+    let shadowRootToTreat = null;
 
     // Contants
     const TYPE_RESET = "reset";
@@ -626,7 +628,7 @@ import SafeTimer from "./safeTimer.js";
             while(k--) {
                 const node = nodeList[k];
 
-                if(!node || !node.classList || node == document.body || ignoredElementsContentScript.includes(node.localName) || node.nodeType != 1) {
+                if(!node || !node.classList || node == document.body || ignoredElementsContentScript.includes(node.localName) || node.nodeType != 1 || node.shadowRoot) {
                     continue;
                 }
 
@@ -909,14 +911,23 @@ import SafeTimer from "./safeTimer.js";
     }
 
     function processShadowRoot(currentElement) {
-        if(currentElement) {
-            if(currentElement.shadowRoot != null) {
-                processOneShadowRoot(currentElement);
-                const elementChildrens = currentElement.shadowRoot.querySelectorAll("*");
+        if(!pageShadowStyleShadowRootsCacheInvert) {
+            shadowRootToTreat = currentElement;
 
-                if(elementChildrens && elementChildrens.length > 0) {
-                    for(let i = 0, len = elementChildrens.length; i < len; i++) {
-                        processShadowRoot(elementChildrens[i]);
+            browser.runtime.sendMessage({
+                type: "getGlobalShadowRootPageShadowStyle",
+                what: "invert"
+            });
+        } else {
+            if(currentElement) {
+                if(currentElement.shadowRoot != null) {
+                    processOneShadowRoot(currentElement);
+                    const elementChildrens = currentElement.shadowRoot.querySelectorAll("*");
+
+                    if(elementChildrens && elementChildrens.length > 0) {
+                        for(let i = 0, len = elementChildrens.length; i < len; i++) {
+                            processShadowRoot(elementChildrens[i]);
+                        }
                     }
                 }
             }
@@ -925,17 +936,30 @@ import SafeTimer from "./safeTimer.js";
 
     function processOneShadowRoot(element) {
         if(element.shadowRoot) {
+            shadowRootToTreat = element;
+
             const currentCSSStyle = element.shadowRoot.querySelector(".pageShadowCSSShadowRoot");
+            const currentCSSStyleInvert = element.shadowRoot.querySelector(".pageShadowCSSShadowRootInvert");
 
             if(currentCSSStyle) {
                 element.shadowRoot.removeChild(currentCSSStyle);
             }
 
+            if(currentCSSStyleInvert) {
+                element.shadowRoot.removeChild(currentCSSStyleInvert);
+            }
+
             if(precEnabled && currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") {
                 const currentTheme = currentSettings.theme;
+
                 const styleTag = document.createElement("style");
                 styleTag.classList.add("pageShadowCSSShadowRoot");
                 element.shadowRoot.appendChild(styleTag);
+
+                const styleTagInvert = document.createElement("style");
+                styleTagInvert.classList.add("pageShadowCSSShadowRootInvert");
+                styleTagInvert.innerHTML = pageShadowStyleShadowRootsCacheInvert;
+                element.shadowRoot.appendChild(styleTagInvert);
 
                 if(currentTheme.startsWith("custom")) {
                     customTheme(currentSettings.theme.replace("custom", ""), styleTag, false, null, true);
@@ -943,6 +967,7 @@ import SafeTimer from "./safeTimer.js";
                     processRules(styleTag, defaultThemesBackgrounds[currentTheme - 1].replace("#", ""), defaultThemesLinkColors[currentTheme - 1].replace("#", ""), defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", ""), defaultThemesTextColors[currentTheme - 1].replace("#", ""), null, true);
                 }
 
+                invertColor(currentSettings.colorInvert, currentSettings.invertImageColors, currentSettings.invertEntirePage, currentSettings.invertVideoColors, currentSettings.invertBgColor, element, currentSettings.selectiveInvert);
                 processedShadowRoots.push(element.shadowRoot);
             }
         }
@@ -1100,6 +1125,13 @@ import SafeTimer from "./safeTimer.js";
                 } else {
                     const allowed = await pageShadowAllowed(getCurrentURL());
                     process(allowed, typeProcess);
+                }
+                break;
+            }
+            case "getGlobalShadowRootPageShadowStyleResponse": {
+                if(message.data) {
+                    pageShadowStyleShadowRootsCacheInvert = message.data;
+                    processShadowRoot(shadowRootToTreat);
                 }
                 break;
             }

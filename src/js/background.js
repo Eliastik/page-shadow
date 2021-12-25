@@ -24,8 +24,8 @@ import browser from "webextension-polyfill";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
-let globalPageShadowStyleCache = null;
-let globalPageShadowStyleShadowRootsCache = null;
+const globalPageShadowStyleCache = {};
+const globalPageShadowStyleShadowRootsCache = {};
 
 const filters = new Filter();
 filters.cacheFilters();
@@ -422,16 +422,18 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                         resolve({ type: "getFilterRuleNumberErrorsResponse", data: data });
                     });
                 } else if(message.type == "getGlobalPageShadowStyle" || message.type == "getGlobalShadowRootPageShadowStyle") {
-                    if(globalPageShadowStyleCache && globalPageShadowStyleShadowRootsCache) {
-                        resolve({ type: message.type + "Response", data: message.type == "getGlobalShadowRootPageShadowStyle" ? globalPageShadowStyleShadowRootsCache : globalPageShadowStyleCache });
+                    const url = message.what == "invert" ? "/css/content_invert.css" : "/css/content.css";
+
+                    if(globalPageShadowStyleCache[url] && globalPageShadowStyleShadowRootsCache[url]) {
+                        resolve({ type: message.type + "Response", data: message.type == "getGlobalShadowRootPageShadowStyle" ? globalPageShadowStyleShadowRootsCache[url] : globalPageShadowStyleCache[url] });
                     }
 
-                    fetch("/css/content.css").then(response => {
+                    fetch(url).then(response => {
                         if(response) {
                             response.text().then(text => {
-                                globalPageShadowStyleCache = text;
-                                globalPageShadowStyleShadowRootsCache = processShadowRootStyle(text);
-                                resolve({ type: message.type + "Response", data: message.type == "getGlobalShadowRootPageShadowStyle" ? globalPageShadowStyleShadowRootsCache : globalPageShadowStyleCache });
+                                globalPageShadowStyleCache[url] = text;
+                                globalPageShadowStyleShadowRootsCache[url] = processShadowRootStyle(text);
+                                resolve({ type: message.type + "Response", data: message.type == "getGlobalShadowRootPageShadowStyle" ? globalPageShadowStyleShadowRootsCache[url] : globalPageShadowStyleCache[url] });
                             });
                         }
                     });

@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem } from "./storage.js";
 import browser from "webextension-polyfill";
-import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, shadowRootStyleProcessingPattern } from "./constants.js";
+import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes } from "./constants.js";
 
 function in_array(needle, haystack) {
     for(const key in haystack) {
@@ -910,7 +910,11 @@ function getCurrentURL() {
 }
 
 function processShadowRootStyle(style) {
-    return style.replaceAll(shadowRootStyleProcessingPattern, "$&:host ");
+    let newStyle = style.replaceAll(/body\.pageShadowInvertImageColor.*?/g, ":host(.pageShadowInvertImageColor)");
+    newStyle = newStyle.replaceAll(/body\.pageShadowInvertBgColor.*?/g, ":host(.pageShadowInvertBgColor)");
+    newStyle = newStyle.replaceAll(/body\.pageShadowInvertVideoColor.*?/g, ":host(.pageShadowInvertVideoColor)");
+
+    return newStyle;
 }
 
 function removeClass(element, ...classes) {

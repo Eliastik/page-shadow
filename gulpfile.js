@@ -99,23 +99,23 @@ gulp.task("compile-js", () => {
 });
 
 gulp.task("copyChrome", () => {
-    return gulp.src(["./build/global/**", "./manifests/chrome/**/*", "!./build/global/css/content_firefox.css"])
+    return gulp.src(["./build/global/**", "./manifests/chrome/**/*", "!./build/global/css/content_invert_firefox.css"])
         .pipe(gulp.dest("./build/chrome/"));
 });
 
 gulp.task("copyEdge", () => {
-    return gulp.src(["./build/global/**", "./manifests/edge/*", "!./build/global/css/content_firefox.css"])
+    return gulp.src(["./build/global/**", "./manifests/edge/*", "!./build/global/css/content_invert_firefox.css"])
         .pipe(gulp.dest("./build/edge/"));
 });
 
 gulp.task("copyFirefox", () => {
-    return gulp.src(["./build/global/**", "./manifests/firefox/**/*", "!./build/global/css/content_firefox.css", "!./build/global/css/content.css"])
+    return gulp.src(["./build/global/**", "./manifests/firefox/**/*", "!./build/global/css/content_invert_firefox.css", "!./build/global/css/content_invert.css"])
         .pipe(gulp.dest("./build/firefox/"));
 });
 
 gulp.task("copyFirefoxContentCSS", () => {
-    return gulp.src("./build/global/css/content_firefox.css")
-        .pipe(rename("content.css"))
+    return gulp.src("./build/global/css/content_invert_firefox.css")
+        .pipe(rename("content_invert.css"))
         .pipe(gulp.dest("./build/firefox/css/"));
 });
 
@@ -127,7 +127,7 @@ gulp.task("build", () => {
         .pipe(zip(distFileName + ".xpi"))
         .pipe(gulp.dest("./build"));
     gulp.src("build/edge/**/**/*")
-        .pipe(zip(distFileName + " Edge" +".zip"))
+        .pipe(zip(distFileName + " EdgeLegacy" +".zip"))
         .pipe(gulp.dest("./build"));
     return gulp.src("./build/chrome/")
         .pipe(crx({
