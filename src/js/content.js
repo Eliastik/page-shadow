@@ -561,20 +561,37 @@ import SafeTimer from "./safeTimer.js";
     function treatMutationObserverBackgroundCalls() {
         if(delayedMutationObserversCalls.length > 0) {
             let i = delayedMutationObserversCalls.length;
+            console.log(delayedMutationObserversCalls);
+            let treatedCount = 0;
 
             while(i--) {
                 const mutationList = delayedMutationObserversCalls[i];
 
                 let k = mutationList.length;
 
-                while(k--) {
-                    treatOneMutationObserverBackgroundCall(mutationList[k]);
+                if(k <= 0) {
+                    delayedMutationObserversCalls.pop();
+                } else {
+                    while(k--) {
+                        treatOneMutationObserverBackgroundCall(mutationList[k]);
 
-                    if(websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds) {
-                        safeTimerMutationDelayed.start(websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
-                        return mutationList.shift();
+                        mutationList.shift();
+                        treatedCount++;
+
+                        if(websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds && treatedCount > websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall) {
+                            safeTimerMutationDelayed.start(websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
+                            return;
+                        }
+
+                        if(websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount > websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
+                            websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = true;
+                        }
                     }
                 }
+            }
+
+            if(websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount <= websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
+                websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = false;
             }
 
             delayedMutationObserversCalls = [];
@@ -886,6 +903,10 @@ import SafeTimer from "./safeTimer.js";
             if(rule.type == "enableThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.enableThrottleMutationObserverBackgrounds = true;
             if(rule.type == "disableThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.disableThrottleMutationObserverBackgrounds = false;
             if(rule.type == "delayMutationObserverBackgrounds") websiteSpecialFiltersConfig.delayMutationObserverBackgrounds = rule.filter;
+            if(rule.type == "autoThrottleMutationObserverBackgroundsTreshold") websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold = rule.filter;
+            if(rule.type == "throttledMutationObserverTreatedByCall") websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall = rule.filter;
+            if(rule.type == "disableAutoThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled = false;
+            if(rule.type == "enableAutoThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled = true;
         });
     }
 
