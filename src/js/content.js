@@ -561,7 +561,6 @@ import SafeTimer from "./safeTimer.js";
     function treatMutationObserverBackgroundCalls() {
         if(delayedMutationObserversCalls.length > 0) {
             let i = delayedMutationObserversCalls.length;
-            console.log(delayedMutationObserversCalls);
             let treatedCount = 0;
 
             while(i--) {
@@ -641,10 +640,8 @@ import SafeTimer from "./safeTimer.js";
             return;
         }
 
-        if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
-            removeClass(document.body, "pageShadowBackgroundDetected");
-            addClass(document.body, "pageShadowDisableStyling");
-        }
+        removeClass(document.body, "pageShadowBackgroundDetected");
+        addClass(document.body, "pageShadowDisableStyling");
 
         for(const node of addedNodes) {
             if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationForElement(node, null, null);
@@ -652,10 +649,8 @@ import SafeTimer from "./safeTimer.js";
         }
 
 
-        if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
-            addClass(document.body, "pageShadowBackgroundDetected");
-            removeClass(document.body, "pageShadowDisableStyling");
-        }
+        addClass(document.body, "pageShadowBackgroundDetected");
+        removeClass(document.body, "pageShadowDisableStyling");
     }
 
     function mutationForElement(element, attribute, attributeOldValue) {
@@ -900,7 +895,10 @@ import SafeTimer from "./safeTimer.js";
             if(rule.type == "enableShadowRootStyleOverride") websiteSpecialFiltersConfig.enableShadowRootStyleOverride = true;
             if(rule.type == "disableShadowRootStyleOverride") websiteSpecialFiltersConfig.enableShadowRootStyleOverride = false;
             if(rule.type == "shadowRootStyleOverrideDelay") websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay = rule.filter;
-            if(rule.type == "enableThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.enableThrottleMutationObserverBackgrounds = true;
+            if(rule.type == "enableThrottleMutationObserverBackgrounds") {
+                websiteSpecialFiltersConfig.enableThrottleMutationObserverBackgrounds = true;
+                websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold = false;
+            }
             if(rule.type == "disableThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.disableThrottleMutationObserverBackgrounds = false;
             if(rule.type == "delayMutationObserverBackgrounds") websiteSpecialFiltersConfig.delayMutationObserverBackgrounds = rule.filter;
             if(rule.type == "autoThrottleMutationObserverBackgroundsTreshold") websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold = rule.filter;

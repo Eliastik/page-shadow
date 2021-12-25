@@ -79,7 +79,7 @@ const defaultFilters = {
         {
             "filterName": "Mode performance/Performance mode",
             "sourceName": "Eliastik's Softs",
-            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/performance.txt",
+            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/performance.2.9.1.txt",
             "lastUpdated": 0,
             "enabled": true,
             "hasError": false,
