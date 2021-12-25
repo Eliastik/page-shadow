@@ -914,6 +914,8 @@ function processShadowRootStyle(style) {
 }
 
 function removeClass(element, ...classes) {
+    if(!element) return;
+
     classes.forEach(c => {
         if(element.classList.contains(c)) {
             element.classList.remove(c);
@@ -922,6 +924,8 @@ function removeClass(element, ...classes) {
 }
 
 function addClass(element, ...classes) {
+    if(!element) return;
+
     classes.forEach(c => {
         if(!element.classList.contains(c)) {
             element.classList.add(c);
