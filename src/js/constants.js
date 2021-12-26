@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 const extensionVersion = "2.9";
 const versionDate = new Date(2021, 11, 12);
-const nbThemes = 15; // nb of themes for the function Increase the contrast (used globally in the extension)
+const nbThemes = 16; // nb of themes for the function Increase the contrast (used globally in the extension)
 const colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"]; // color temperatures available for the function Night Mode (used globally in the extension)
 const minBrightnessPercentage = 0; // the minimum percentage of brightness
 const maxBrightnessPercentage = 0.9; // the maximum percentage of brightness
@@ -166,10 +166,10 @@ const defaultWebsiteSpecialFiltersConfig = {
     autoThrottleMutationObserverBackgroundsTreshold: 25,
     throttledMutationObserverTreatedByCall: 5
 };
-const defaultThemesBackgrounds = ["black", "#142634", "#222", "#263238", "#333a49", "#020315", "#192338", "#1A1A1A", "#1d4e6d", "#272822", "white", "#002b36", "#000D00", "#272822", "#2e3436"]; // Colors of the backgrounds
-const defaultThemesTextColors = ["#AAA", "#BDC7C1", "#AAA", "#C3CEE3", "#dfcbd3", "#b9cace", "#6f9bb0", "#FFFFB3", "#BED6FF", "#39B7FF", "black", "#b58901", "#00ca00", "#91e22d", "#d2dde3"];
-const defaultThemesLinkColors = ["#1E90FF", "#7288D4", "#21C7AC", "#C792EA", "#FB77A6", "#d0a00c", "#978FCC", "#A6A6FF", "#F7A92C", "#52D252", "#CC4A00", "#1783d2", "#1e90ff", "#65d9ef", "#6792bf"]; // Colors of the links
-const defaultThemesVisitedLinkColors = ["#FF00FF", "#BC72D4", "#996DF2", "#92BEEA", "#BD8EF0", "#9FD00C", "#8FCCAE", "#E9A6FF", "#B3F72C", "#D2D252", "#6CD96C", "#A471F8", "#9F4AF4", "#7165EF", "#7667BF"]; // Colors of the visited links
+const defaultThemesBackgrounds = ["black", "#142634", "#222", "#263238", "#333a49", "#020315", "#192338", "#1A1A1A", "#1d4e6d", "#272822", "white", "#002b36", "#000D00", "#272822", "#2e3436", "#202124"]; // Colors of the backgrounds
+const defaultThemesTextColors = ["#AAA", "#BDC7C1", "#AAA", "#C3CEE3", "#dfcbd3", "#b9cace", "#6f9bb0", "#FFFFB3", "#BED6FF", "#39B7FF", "black", "#b58901", "#00ca00", "#91e22d", "#d2dde3", "#bdc1c6"];
+const defaultThemesLinkColors = ["#1E90FF", "#7288D4", "#21C7AC", "#C792EA", "#FB77A6", "#d0a00c", "#978FCC", "#A6A6FF", "#F7A92C", "#52D252", "#CC4A00", "#1783d2", "#1e90ff", "#65d9ef", "#6792bf", "#8ab4f8"]; // Colors of the links
+const defaultThemesVisitedLinkColors = ["#FF00FF", "#BC72D4", "#996DF2", "#92BEEA", "#BD8EF0", "#9FD00C", "#8FCCAE", "#E9A6FF", "#B3F72C", "#D2D252", "#6CD96C", "#A471F8", "#9F4AF4", "#7165EF", "#7667BF", "#C58AF9"]; // Colors of the visited links
 const ignoredElementsContentScript = ["style", "script", "br", "head", "link", "meta", "hr"];
 const failedUpdateAutoReupdateDelay = 5 * 60 * 1000; // ms
 
