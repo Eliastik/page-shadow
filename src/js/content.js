@@ -578,6 +578,10 @@ import SafeTimer from "./safeTimer.js";
                         treatedCount++;
 
                         if(websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds && treatedCount > websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall) {
+                            if(mutationObserverAddedNodes.length > 0) {
+                                safeTimerMutationBackgrounds.start(mutationObserverAddedNodes.length < 100 ? 1 : undefined);
+                            }
+
                             safeTimerMutationDelayed.start(websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
                             return;
                         }
@@ -593,6 +597,10 @@ import SafeTimer from "./safeTimer.js";
                 websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = false;
             }
 
+            if(mutationObserverAddedNodes.length > 0) {
+                safeTimerMutationBackgrounds.start(mutationObserverAddedNodes.length < 100 ? 1 : undefined);
+            }
+
             delayedMutationObserversCalls = [];
         }
     }
@@ -603,10 +611,6 @@ import SafeTimer from "./safeTimer.js";
 
             if(nodeList.length > 0) {
                 mutationObserverAddedNodes.push(nodeList);
-            }
-
-            if(mutationObserverAddedNodes.length > 0) {
-                safeTimerMutationBackgrounds.start(mutationObserverAddedNodes.length < 100 ? 1 : undefined);
             }
         } else if(mutation.type == "attributes") {
             if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
