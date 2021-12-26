@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, processRules, removeClass, addClass } from "./util.js";
+import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, processRules, removeClass, addClass, processRulesInvert } from "./util.js";
 import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, ignoredElementsContentScript } from "./constants.js";
 import browser from "webextension-polyfill";
 import SafeTimer from "./safeTimer.js";
@@ -45,8 +45,6 @@ import SafeTimer from "./safeTimer.js";
     let mutationObserverAddedNodes = [];
     let delayedMutationObserversCalls = [];
     let safeTimerMutationDelayed = null;
-    let pageShadowStyleShadowRootsCacheInvert = null;
-    let shadowRootToTreat = null;
 
     // Contants
     const TYPE_RESET = "reset";
@@ -911,23 +909,14 @@ import SafeTimer from "./safeTimer.js";
     }
 
     function processShadowRoot(currentElement) {
-        if(!pageShadowStyleShadowRootsCacheInvert) {
-            shadowRootToTreat = currentElement;
+        if(currentElement) {
+            if(currentElement.shadowRoot != null) {
+                processOneShadowRoot(currentElement);
+                const elementChildrens = currentElement.shadowRoot.querySelectorAll("*");
 
-            browser.runtime.sendMessage({
-                type: "getGlobalShadowRootPageShadowStyle",
-                what: "invert"
-            });
-        } else {
-            if(currentElement) {
-                if(currentElement.shadowRoot != null) {
-                    processOneShadowRoot(currentElement);
-                    const elementChildrens = currentElement.shadowRoot.querySelectorAll("*");
-
-                    if(elementChildrens && elementChildrens.length > 0) {
-                        for(let i = 0, len = elementChildrens.length; i < len; i++) {
-                            processShadowRoot(elementChildrens[i]);
-                        }
+                if(elementChildrens && elementChildrens.length > 0) {
+                    for(let i = 0, len = elementChildrens.length; i < len; i++) {
+                        processShadowRoot(elementChildrens[i]);
                     }
                 }
             }
@@ -936,8 +925,6 @@ import SafeTimer from "./safeTimer.js";
 
     function processOneShadowRoot(element) {
         if(element.shadowRoot) {
-            shadowRootToTreat = element;
-
             const currentCSSStyle = element.shadowRoot.querySelector(".pageShadowCSSShadowRoot");
             const currentCSSStyleInvert = element.shadowRoot.querySelector(".pageShadowCSSShadowRootInvert");
 
@@ -949,25 +936,29 @@ import SafeTimer from "./safeTimer.js";
                 element.shadowRoot.removeChild(currentCSSStyleInvert);
             }
 
-            if(precEnabled && currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") {
-                const currentTheme = currentSettings.theme;
+            if(precEnabled && ((currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") || (currentSettings.colorInvert != undefined && currentSettings.colorInvert == "true"))) {
+                if(currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") {
+                    const currentTheme = currentSettings.theme;
 
-                const styleTag = document.createElement("style");
-                styleTag.classList.add("pageShadowCSSShadowRoot");
-                element.shadowRoot.appendChild(styleTag);
+                    const styleTag = document.createElement("style");
+                    styleTag.classList.add("pageShadowCSSShadowRoot");
+                    element.shadowRoot.appendChild(styleTag);
 
-                const styleTagInvert = document.createElement("style");
-                styleTagInvert.classList.add("pageShadowCSSShadowRootInvert");
-                styleTagInvert.innerHTML = pageShadowStyleShadowRootsCacheInvert;
-                element.shadowRoot.appendChild(styleTagInvert);
-
-                if(currentTheme.startsWith("custom")) {
-                    customTheme(currentSettings.theme.replace("custom", ""), styleTag, false, null, true);
-                } else {
-                    processRules(styleTag, defaultThemesBackgrounds[currentTheme - 1].replace("#", ""), defaultThemesLinkColors[currentTheme - 1].replace("#", ""), defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", ""), defaultThemesTextColors[currentTheme - 1].replace("#", ""), null, true);
+                    if(currentTheme.startsWith("custom")) {
+                        customTheme(currentSettings.theme.replace("custom", ""), styleTag, false, null, true);
+                    } else {
+                        processRules(styleTag, defaultThemesBackgrounds[currentTheme - 1].replace("#", ""), defaultThemesLinkColors[currentTheme - 1].replace("#", ""), defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", ""), defaultThemesTextColors[currentTheme - 1].replace("#", ""), null, true);
+                    }
                 }
 
-                invertColor(currentSettings.colorInvert, currentSettings.invertImageColors, currentSettings.invertEntirePage, currentSettings.invertVideoColors, currentSettings.invertBgColor, element, currentSettings.selectiveInvert);
+                if(currentSettings.colorInvert != undefined && currentSettings.colorInvert == "true") {
+                    const styleTagInvert = document.createElement("style");
+                    styleTagInvert.classList.add("pageShadowCSSShadowRootInvert");
+                    element.shadowRoot.appendChild(styleTagInvert);
+
+                    processRulesInvert(styleTagInvert, currentSettings.colorInvert, currentSettings.invertImageColors, currentSettings.invertEntirePage, currentSettings.invertVideoColors, currentSettings.invertBgColor, currentSettings.selectiveInvert);
+                }
+
                 processedShadowRoots.push(element.shadowRoot);
             }
         }
@@ -979,9 +970,14 @@ import SafeTimer from "./safeTimer.js";
 
             if(shadowRoot) {
                 const currentCSSStyle = shadowRoot.querySelector(".pageShadowCSSShadowRoot");
+                const currentCSSStyleInvert = shadowRoot.querySelector(".pageShadowCSSShadowRootInvert");
 
                 if(currentCSSStyle) {
                     shadowRoot.removeChild(currentCSSStyle);
+                }
+
+                if(currentCSSStyleInvert) {
+                    shadowRoot.removeChild(currentCSSStyleInvert);
                 }
             }
         }
@@ -1125,13 +1121,6 @@ import SafeTimer from "./safeTimer.js";
                 } else {
                     const allowed = await pageShadowAllowed(getCurrentURL());
                     process(allowed, typeProcess);
-                }
-                break;
-            }
-            case "getGlobalShadowRootPageShadowStyleResponse": {
-                if(message.data) {
-                    pageShadowStyleShadowRootsCacheInvert = message.data;
-                    processShadowRoot(shadowRootToTreat);
                 }
                 break;
             }
