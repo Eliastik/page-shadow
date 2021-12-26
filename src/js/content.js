@@ -901,10 +901,10 @@ import SafeTimer from "./safeTimer.js";
             if(rule.type == "disableShadowRootStyleOverride") websiteSpecialFiltersConfig.enableShadowRootStyleOverride = false;
             if(rule.type == "shadowRootStyleOverrideDelay") websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay = rule.filter;
             if(rule.type == "enableThrottleMutationObserverBackgrounds") {
-                websiteSpecialFiltersConfig.enableThrottleMutationObserverBackgrounds = true;
+                websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = true;
                 websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold = false;
             }
-            if(rule.type == "disableThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.disableThrottleMutationObserverBackgrounds = false;
+            if(rule.type == "disableThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = false;
             if(rule.type == "delayMutationObserverBackgrounds") websiteSpecialFiltersConfig.delayMutationObserverBackgrounds = rule.filter;
             if(rule.type == "autoThrottleMutationObserverBackgroundsTreshold") websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold = rule.filter;
             if(rule.type == "throttledMutationObserverTreatedByCall") websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall = rule.filter;
