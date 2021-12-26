@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle } from "./util.js";
-import { defaultFilters, nbPresets, ruleCategory } from "./constants.js";
+import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
 import Filter from "./filters.js";
 import browser from "webextension-polyfill";
@@ -99,7 +99,7 @@ async function menu() {
 
             if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.query) !== "undefined") {
                 const tabs = await browser.tabs.query({active: true, currentWindow: true});
-                if(!tabs) return;
+                if(!tabs || tabs.length <= 0) return;
                 const tabUrl = tabs[0].url;
                 if(!tabUrl || tabUrl.trim() == "") return;
 
@@ -267,9 +267,12 @@ async function checkAutoUpdateFilters() {
     const updateInterval = filterResults.updateInterval;
     const enableAutoUpdate = filterResults.enableAutoUpdate;
     const currentDate = Date.now();
+    const lastFailedUpdate = filterResults.lastFailedUpdate;
 
     if(enableAutoUpdate && updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
-        filters.updateAllFilters(true);
+        filters.updateAllFilters(true, false);
+    } else if(enableAutoUpdate && lastFailedUpdate != null && lastFailedUpdate > -1 && ((currentDate - lastFailedUpdate) >= failedUpdateAutoReupdateDelay)) {
+        filters.updateAllFilters(true, true);
     }
 }
 
@@ -343,8 +346,8 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                         resolve({ type: message.type + "Response", enabled: enabled, settings: settings });
                     });
                 } else if(message.type == "updateAllFilters") {
-                    filters.updateAllFilters().then(result => {
-                        resolve({ type: "updateAllFiltersFinished", result: result });
+                    filters.updateAllFilters().then(() => {
+                        resolve({ type: "updateAllFiltersFinished", result: true });
                     });
                 } else if(message.type == "updateFilter") {
                     filters.updateOneFilter(message.filterId).then(result => {

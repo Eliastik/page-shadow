@@ -105,10 +105,11 @@ export default class FilterProcessor {
         return filterToUpdate;
     }
 
-    async updateAllFilters(autoUpdate) {
+    async updateAllFilters(autoUpdate, updateOnlyFailed) {
         const result = await browser.storage.local.get("filtersSettings");
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
         const nbFilters = filters.filters.length;
+        let updateHadErrors = false;
 
         for(let i = 0; i < nbFilters; i++) {
             const filter = filters.filters[i];
@@ -117,16 +118,24 @@ export default class FilterProcessor {
             const lastUpdate = filter.lastUpdated;
             const currentDate = Date.now();
 
-            if(!autoUpdate || (autoUpdate && (!expires || (lastUpdate <= 0 || (currentDate - lastUpdate) >= expiresMs)))) {
+            if(!autoUpdate || (autoUpdate && (!expires || (lastUpdate <= 0 || (currentDate - lastUpdate) >= expiresMs))) || (updateOnlyFailed && filters.filters[i].hasError)) {
                 filters.filters[i] = await this.updateFilter(i);
+                if(filters.filters[i].hasError) updateHadErrors = true;
             }
         }
 
         filters.lastUpdated = Date.now();
+
+        if(updateHadErrors) {
+            filters.lastFailedUpdate = Date.now();
+        } else {
+            filters.lastFailedUpdate = -1;
+        }
+
         setSettingItem("filtersSettings", filters);
         this.cacheFilters();
 
-        return true;
+        return !updateHadErrors;
     }
 
     async cleanAllFilters() {
