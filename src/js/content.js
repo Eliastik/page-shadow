@@ -573,9 +573,7 @@ import SafeTimer from "./safeTimer.js";
                     delayedMutationObserversCalls.pop();
                 } else {
                     while(k--) {
-                        treatOneMutationObserverBackgroundCall(mutationList[k]);
-
-                        mutationList.shift();
+                        treatOneMutationObserverBackgroundCall(mutationList.shift());
                         treatedCount++;
 
                         if(websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds && treatedCount > websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall) {
@@ -645,8 +643,10 @@ import SafeTimer from "./safeTimer.js";
             return;
         }
 
-        removeClass(document.body, "pageShadowBackgroundDetected");
-        addClass(document.body, "pageShadowDisableStyling");
+        if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
+            removeClass(document.body, "pageShadowBackgroundDetected");
+            addClass(document.body, "pageShadowDisableStyling");
+        }
 
         for(const node of addedNodes) {
             if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationForElement(node, null, null);
@@ -654,8 +654,10 @@ import SafeTimer from "./safeTimer.js";
         }
 
 
-        addClass(document.body, "pageShadowBackgroundDetected");
-        removeClass(document.body, "pageShadowDisableStyling");
+        if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
+            addClass(document.body, "pageShadowBackgroundDetected");
+            removeClass(document.body, "pageShadowDisableStyling");
+        }
     }
 
     function mutationForElement(element, attribute, attributeOldValue) {

@@ -16,8 +16,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getBrowser } from "./util.js";
-
 const extensionVersion = "2.9";
 const versionDate = new Date(2021, 11, 12);
 const nbThemes = 15; // nb of themes for the function Increase the contrast (used globally in the extension)
@@ -81,7 +79,7 @@ const defaultFilters = {
         {
             "filterName": "Mode performance/Performance mode",
             "sourceName": "Eliastik's Softs",
-            "sourceUrl": getBrowser() == "Firefox" ? "https://www.eliastiksofts.com/page-shadow/filters/performance.firefox.2.9.1.txt" : "https://www.eliastiksofts.com/page-shadow/filters/performance.2.9.1.txt",
+            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/performance.2.9.1.txt",
             "lastUpdated": 0,
             "enabled": true,
             "hasError": false,
@@ -162,9 +160,9 @@ const defaultWebsiteSpecialFiltersConfig = {
     enableMutationObserverClass: false,
     enableShadowRootStyleOverride: true,
     shadowRootStyleOverrideDelay: 100, // <= 0 to disable
-    throttleMutationObserverBackgrounds: getBrowser() == "Firefox" ? true : false,
-    delayMutationObserverBackgrounds: getBrowser() == "Firefox" ? 1 : 0,
-    autoThrottleMutationObserverBackgroundsEnabled: getBrowser() == "Firefox" ? false : true,
+    throttleMutationObserverBackgrounds: false,
+    delayMutationObserverBackgrounds: 0,
+    autoThrottleMutationObserverBackgroundsEnabled: true,
     autoThrottleMutationObserverBackgroundsTreshold: 25,
     throttledMutationObserverTreatedByCall: 5
 };
