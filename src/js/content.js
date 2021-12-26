@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, processRules, removeClass, addClass, processRulesInvert } from "./util.js";
+import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, processRules, removeClass, addClass, processRulesInvert, isRunningInIframe, isRunningInPopup } from "./util.js";
 import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, ignoredElementsContentScript } from "./constants.js";
 import browser from "webextension-polyfill";
 import SafeTimer from "./safeTimer.js";
@@ -27,7 +27,8 @@ import SafeTimer from "./safeTimer.js";
     const elementBrightnessWrapper = document.createElement("div");
     const elementBrightness = document.createElement("div");
     const websiteSpecialFiltersConfig = defaultWebsiteSpecialFiltersConfig;
-    const runningInIframe = window !== window.top;
+    const runningInIframe = isRunningInIframe();
+    const runningInPopup = isRunningInPopup();
     let backgroundDetectionAlreadyProcessedNodes = [];
     let processedShadowRoots = [];
 
@@ -1157,6 +1158,11 @@ import SafeTimer from "./safeTimer.js";
     async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled) {
         const result = await browser.storage.local.get("liveSettings");
         const isLiveSettings = result.liveSettings !== "false";
+
+        if(isLiveSettings && runningInPopup) {
+            const allowed = await pageShadowAllowed(getCurrentURL());
+            statusChanged = hasEnabledStateChanged(allowed);
+        }
 
         if(statusChanged && ((!isLiveSettings && !storageChanged) || isLiveSettings)) {
             precEnabled = isEnabled;
