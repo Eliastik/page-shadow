@@ -39,3 +39,9 @@ function translateContent() {
 i18next.on("languageChanged", () => {
     translateContent();
 });
+
+$(() => {
+    $("#testOpenPopup").on("click", () => {
+        window.open("about:blank", "test", "menubar=no,location=yes,resizable=yes,scrollbars=yes,status=yes");
+    });
+});

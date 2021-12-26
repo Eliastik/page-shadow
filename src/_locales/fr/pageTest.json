@@ -27,6 +27,8 @@
         "del": "Élément de suppression",
         "ins": "Élément d'insertion",
         "mark": "Élément de marquage",
-        "testBackground": "Ceci est un test de la détection automatique des éléments transparents par Page Shadow. Si vous voyez ce message, c'est que cette détection ne fonctionne pas correctement."
+        "testBackground": "Ceci est un test de la détection automatique des éléments transparents par Page Shadow. Si vous voyez ce message, c'est que cette détection ne fonctionne pas correctement.",
+        "testPopup": "Test de l'ouverture d'une popup",
+        "testPopupLink": "Cliquez ici"
     }
 }
