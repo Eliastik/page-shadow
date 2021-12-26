@@ -81,7 +81,7 @@ const defaultFilters = {
         {
             "filterName": "Mode performance/Performance mode",
             "sourceName": "Eliastik's Softs",
-            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/performance.2.9.1.txt",
+            "sourceUrl": getBrowser() == "Firefox" ? "https://www.eliastiksofts.com/page-shadow/filters/performance.firefox.2.9.1.txt" : "https://www.eliastiksofts.com/page-shadow/filters/performance.2.9.1.txt",
             "lastUpdated": 0,
             "enabled": true,
             "hasError": false,
@@ -162,9 +162,9 @@ const defaultWebsiteSpecialFiltersConfig = {
     enableMutationObserverClass: false,
     enableShadowRootStyleOverride: true,
     shadowRootStyleOverrideDelay: 100, // <= 0 to disable
-    throttleMutationObserverBackgrounds: false,
+    throttleMutationObserverBackgrounds: getBrowser() == "Firefox" ? true : false,
     delayMutationObserverBackgrounds: getBrowser() == "Firefox" ? 1 : 0,
-    autoThrottleMutationObserverBackgroundsEnabled: true,
+    autoThrottleMutationObserverBackgroundsEnabled: getBrowser() == "Firefox" ? false : true,
     autoThrottleMutationObserverBackgroundsTreshold: 25,
     throttledMutationObserverTreatedByCall: 5
 };
