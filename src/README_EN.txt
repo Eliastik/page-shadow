@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.9 (12/12/2021)
+* Latest version: 2.9.1 (12/26/2021)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -21,6 +21,28 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.9.1 (12/26/2021):
+* Improved performance when enabling/disabling Page Shadow and when changing settings
+* Improved performance of the processing of web pages by Page Shadow
+    - Optimization of "Mutation Observers"
+    - These optimizations can be configured thanks to new filter rules
+* It's now possible to set a color in RGB or in HSV in the custom themes settings
+* Added an optional list "Ultra performance mode"
+* Added theme n°16
+* Bug fixes:
+    - Fixed a bug with the filters applied to the subframes (iframes) of a page: the filters taken into account were those of the parent page and not those of the frames
+    - Fixed a bug with websites using the Shadow DOM feature: the Invert the colors setting was not taken into account
+    - Fixed a bug when reinstalling default filters: manually added filter sources were deleted following this action
+    - Fixed a rare crash when opening a web page from another domain in a new tab from another web page
+    - Fixed a bug when Page Shadow was disabled for a website which had opened an "about:blank" popup window: the state was not applied to the popup
+    - Fixed a false positive for the automatic detection of transparent elements
+    - The advanced settings and the test page now only open in one tab at a time
+    - If an error occurs while updating a filter, Page Shadow now retries to update it 5 minutes later
+    - Fixed the "Create a preset" popup icon
+* Technical improvements:
+    - Some elements are now ignored when processing web pages by Page Shadow
+    - Update of dependencies
 
 ### Version 2.9 (12/12/2021):
 * Added the ability to create a preset and update a preset with current settings directly in the extension menu;

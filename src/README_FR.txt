@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.9 (12/12/2021)
+* Version actuelle : 2.9.1 (26/12/2021)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -21,6 +21,28 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.9.1 (26/12/2021) :
+* Amélioration des performances lors de l'activation/désactivation de Page Shadow et lors de la modification des paramètres
+* Amélioration des performances du traitement des pages web par Page Shadow
+    - Optimisation des "Mutation Observers"
+    - Ces optimisations sont paramétrables grâce à de nouvelles règles de filtre
+* Il est désormais possible d'indiquer une couleur en RGB ou en HSV dans les paramètres des thèmes personnalisés
+* Ajout d'une liste optionnelle "Mode ultra performance"
+* Ajout du thème n°16
+* Correction de bugs :
+    - Correction d'un bug avec les filtres appliqués aux sous-cadres (iframes) d'une page : les filtres pris en compte étaient ceux de la page parent et non ceux du cadres
+    - Correction d'un bug avec les sites web utilisant la fonctionnalité Shadow DOM : le paramétrage Inverser les couleurs n'était pas pris en compte
+    - Correction d'un bug lors de la réinstallation des filtres par défaut : les sources de filtre ajoutés manuellement étaient supprimés suite à cette action
+    - Correction d'un plantage rare lors de l'ouverture d'une page web d'un autre domaine dans un nouvel onglet à partir d'une autre page web
+    - Correction d'un bug lorsque Page Shadow était désactivé pour un site web qui avait ouvert une fenêtre popup "about:blank" : l'état n'était pas appliqué à la popup
+    - Correction d'un faux positif pour la détection automatique des éléments transparents
+    - Les Paramètres avancés et la page de test ne s'ouvrent désormais que dans un seul onglet à la fois
+    - En cas d'erreur lors de la mise à jour d'un filtre, Page Shadow ré-essaye désormais de le mettre à jour 5 minutes plus tard
+    - Correction de l'icône de la popup "Créer un pré-réglage"
+* Améliorations techniques :
+    - Certains éléments sont désormais ignorés lors du traitement des pages web par Page Shadow
+    - Mise à jour des dépendances
 
 ### Version 2.9 (12/12/2021) :
 * Ajout de la possibilité de créer un pré-réglage et de mettre à jour un pré-réglage avec les paramètres actuels directement dans le menu de l'extension ;

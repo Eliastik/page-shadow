@@ -188,7 +188,7 @@ import SafeTimer from "./safeTimer.js";
                 let i = elements.length;
 
                 while(i--) {
-                    detectBackgroundForElement(elements[i]);
+                    detectBackgroundForElement(elements[i], true);
                 }
 
                 removeClass(document.body, "pageShadowDisableStyling");
@@ -219,7 +219,7 @@ import SafeTimer from "./safeTimer.js";
         return (hasNoBackgroundColorValue || isTransparentColor || (isRgbaColor && alpha <= websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasBackgroundImageValue;
     }
 
-    function detectBackgroundForElement(element) {
+    function detectBackgroundForElement(element, disableDestyling) {
         if(element && element.shadowRoot != null && websiteSpecialFiltersConfig.enableShadowRootStyleOverride) {
             if(websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay > 0) {
                 setTimeout(() => processShadowRoot(element), websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
@@ -230,6 +230,10 @@ import SafeTimer from "./safeTimer.js";
 
         if(!element || element == document.body || element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected") || backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1 || ignoredElementsContentScript.includes(element.localName)) {
             return;
+        }
+
+        if(!disableDestyling) {
+            addClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
         }
 
         const computedStyle = window.getComputedStyle(element, null);
@@ -254,6 +258,10 @@ import SafeTimer from "./safeTimer.js";
         }
 
         backgroundDetectionAlreadyProcessedNodes.push(element);
+
+        if(!disableDestyling) {
+            removeClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
+        }
     }
 
     function applyDetectBackground(type, elements) {
@@ -643,20 +651,9 @@ import SafeTimer from "./safeTimer.js";
             return;
         }
 
-        if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
-            removeClass(document.body, "pageShadowBackgroundDetected");
-            addClass(document.body, "pageShadowDisableStyling");
-        }
-
         for(const node of addedNodes) {
             if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationForElement(node, null, null);
             doProcessFilters(filtersCache, node);
-        }
-
-
-        if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
-            addClass(document.body, "pageShadowBackgroundDetected");
-            removeClass(document.body, "pageShadowDisableStyling");
         }
     }
 
@@ -681,12 +678,7 @@ import SafeTimer from "./safeTimer.js";
             }
         }
 
-        if(attribute) {
-            removeClass(document.body, "pageShadowBackgroundDetected");
-            addClass(document.body, "pageShadowDisableStyling");
-        }
-
-        detectBackgroundForElement(element);
+        detectBackgroundForElement(element, false);
 
         // Detect element childrens
         if(!attribute && websiteSpecialFiltersConfig.enableMutationObserversForSubChilds) {
@@ -697,15 +689,10 @@ import SafeTimer from "./safeTimer.js";
                     let i = elementChildrens.length;
 
                     while(i--) {
-                        detectBackgroundForElement(elementChildrens[i]);
+                        detectBackgroundForElement(elementChildrens[i], false);
                     }
                 }
             }
-        }
-
-        if(attribute) {
-            addClass(document.body, "pageShadowBackgroundDetected");
-            removeClass(document.body, "pageShadowDisableStyling");
         }
     }
 
@@ -907,7 +894,7 @@ import SafeTimer from "./safeTimer.js";
                 if(type == "shadowRootStyleOverrideDelay") websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay = rule.filter;
                 if(type == "enableThrottleMutationObserverBackgrounds") {
                     websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = true;
-                    websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold = false;
+                    websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled = false;
                 }
                 if(type == "disableThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = false;
                 if(type == "delayMutationObserverBackgrounds") websiteSpecialFiltersConfig.delayMutationObserverBackgrounds = rule.filter;

@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-const extensionVersion = "2.9";
-const versionDate = new Date(2021, 11, 12);
+const extensionVersion = "2.9.1";
+const versionDate = new Date(2021, 11, 26);
 const nbThemes = 16; // nb of themes for the function Increase the contrast (used globally in the extension)
 const colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"]; // color temperatures available for the function Night Mode (used globally in the extension)
 const minBrightnessPercentage = 0; // the minimum percentage of brightness
@@ -163,8 +163,8 @@ const defaultWebsiteSpecialFiltersConfig = {
     throttleMutationObserverBackgrounds: false,
     delayMutationObserverBackgrounds: 0,
     autoThrottleMutationObserverBackgroundsEnabled: true,
-    autoThrottleMutationObserverBackgroundsTreshold: 25,
-    throttledMutationObserverTreatedByCall: 5
+    autoThrottleMutationObserverBackgroundsTreshold: 75,
+    throttledMutationObserverTreatedByCall: 50
 };
 const defaultThemesBackgrounds = ["black", "#142634", "#222", "#263238", "#333a49", "#020315", "#192338", "#1A1A1A", "#1d4e6d", "#272822", "white", "#002b36", "#000D00", "#272822", "#2e3436", "#202124"]; // Colors of the backgrounds
 const defaultThemesTextColors = ["#AAA", "#BDC7C1", "#AAA", "#C3CEE3", "#dfcbd3", "#b9cace", "#6f9bb0", "#FFFFB3", "#BED6FF", "#39B7FF", "black", "#b58901", "#00ca00", "#91e22d", "#d2dde3", "#bdc1c6"];
