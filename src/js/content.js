@@ -621,7 +621,7 @@ import SafeTimer from "./safeTimer.js";
             }
         } else if(mutation.type == "attributes") {
             if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
-            doProcessFilters(filtersCache, mutation.target);
+            doProcessFilters(filtersCache, mutation.target, false);
         }
     }
 
@@ -653,7 +653,7 @@ import SafeTimer from "./safeTimer.js";
 
         for(const node of addedNodes) {
             if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationForElement(node, null, null);
-            doProcessFilters(filtersCache, node);
+            doProcessFilters(filtersCache, node, true);
         }
     }
 
@@ -708,7 +708,7 @@ import SafeTimer from "./safeTimer.js";
         }
     }
 
-    function doProcessFilters(filters, element) {
+    function doProcessFilters(filters, element, applyToChildrens) {
         if(!filters) return;
 
         for(const filter of filters) {
@@ -733,7 +733,7 @@ import SafeTimer from "./safeTimer.js";
                     }
                 }
 
-                if(element.getElementsByTagName) {
+                if(element.getElementsByTagName && applyToChildrens) {
                     const elementChildrens = element.getElementsByTagName("*");
 
                     if(elementChildrens && elementChildrens.length > 0) {
