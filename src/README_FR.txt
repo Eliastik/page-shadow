@@ -16,6 +16,7 @@ Page Shadow est disponible au téléchargement et à l'installation aux adresses
 * Chrome : https://chrome.google.com/webstore/detail/eimaelgbclmdoeimifebaagealdkjmki/
 * Firefox : https://addons.mozilla.org/fr/firefox/addon/page-shadow/
 * Opera : https://addons.opera.com/fr/extensions/details/page-shadow/?display=fr
+* Edge : https://microsoftedge.microsoft.com/addons/detail/ofcbmommmmaoekccnfojdpjgopgcbgbd
 
 Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le site officiel : http://eliastiksofts.com/page-shadow
 Soit la compiler vous-même (voir section "Compilation").
