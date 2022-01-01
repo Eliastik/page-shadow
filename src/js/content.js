@@ -838,24 +838,21 @@ import SafeTimer from "./safeTimer.js";
                             break;
                         case "forceDisableDefaultBackgroundColor": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultBackgroundColor")) {
-                                const oldStyleAttribute = element.getAttribute("style");
-                                element.setAttribute("style", (oldStyleAttribute ? oldStyleAttribute : "") + "background-color: none !important");
+                                addNewStyleAttribute(element, "background-color: none !important");
                                 addClass(element, "pageShadowforceDisableDefaultBackgroundColor");
                             }
                             break;
                         }
                         case "forceDisableDefaultBackground": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultBackground")) {
-                                const oldStyleAttribute = element.getAttribute("style");
-                                element.setAttribute("style", (oldStyleAttribute ? oldStyleAttribute : "") + "background: none !important");
+                                addNewStyleAttribute(element, "background: none !important");
                                 addClass(element, "pageShadowforceDisableDefaultBackground");
                             }
                             break;
                         }
                         case "forceDisableDefaultFontColor": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultFontColor")) {
-                                const oldStyleAttribute = element.getAttribute("style");
-                                element.setAttribute("style", (oldStyleAttribute ? oldStyleAttribute : "") + "color: none !important");
+                                addNewStyleAttribute(element, "color: none !important");
                                 addClass(element, "pageShadowforceDisableDefaultFontColor");
                             }
                             break;
@@ -869,6 +866,17 @@ import SafeTimer from "./safeTimer.js";
                 }
             }
         }
+    }
+
+    function addNewStyleAttribute(element, styleToAdd) {
+        const oldStyleAttribute = element.getAttribute("style");
+        let newStyleAttribute = (oldStyleAttribute ? oldStyleAttribute : "");
+        if(newStyleAttribute.trim() != "" && !newStyleAttribute.trim().endsWith(";")) {
+            newStyleAttribute += "; " + styleToAdd;
+        } else {
+            newStyleAttribute += styleToAdd;
+        }
+        element.setAttribute("style", newStyleAttribute);
     }
 
     function processSpecialRules(rules) {
