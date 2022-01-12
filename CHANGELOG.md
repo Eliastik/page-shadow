@@ -1,39 +1,261 @@
-# Page Shadow
-## Français :
+# Page Shadow - English
 
-Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.9.1 (26/12/2021)
-* Site officiel : http://eliastiksofts.com/page-shadow
-* Dépôt Github : https://github.com/Eliastik/page-shadow
+## Changelog:
 
-Ceci est le code source de l'extension Page Shadow, compatible avec Chrome/Chromium, Firefox, Opera et Microsoft Edge. Cette extension utilise la technologie WebExtensions via l'API Browser (plus d'infos : https://developer.mozilla.org/fr/Add-ons/WebExtensions ).
+### Version 2.9.1 (12/26/2021):
+* Improved performance when enabling/disabling Page Shadow and when changing settings
+* Improved performance of the processing of web pages by Page Shadow
+    - Optimization of "Mutation Observers"
+    - These optimizations can be configured thanks to new filter rules
+* It's now possible to set a color in RGB or in HSV in the custom themes settings
+* Added an optional list "Ultra performance mode"
+* Added theme n°16
+* Bug fixes:
+    - Fixed a bug with the filters applied to the subframes (iframes) of a page: the filters taken into account were those of the parent page and not those of the frames
+    - Fixed a bug with websites using the Shadow DOM feature: the Invert the colors setting was not taken into account
+    - Fixed a bug when reinstalling default filters: manually added filter sources were deleted following this action
+    - Fixed a rare crash when opening a web page from another domain in a new tab from another web page
+    - Fixed a bug when Page Shadow was disabled for a website which had opened an "about:blank" popup window: the state was not applied to the popup
+    - Fixed a false positive for the automatic detection of transparent elements
+    - The advanced settings and the test page now only open in one tab at a time
+    - If an error occurs while updating a filter, Page Shadow now retries to update it 5 minutes later
+    - Fixed the "Create a preset" popup icon
+* Technical improvements:
+    - Some elements are now ignored when processing web pages by Page Shadow
+    - Update of dependencies
 
-Page Shadow est une extension de mode sombre (dark mode). Elle comprend une série d'outils pour améliorer la lecture de pages web dans une pièce mal éclairée ou dans un environnement sombre.
+### Version 2.9 (12/12/2021) :
+* Added the ability to create a preset and update a preset with current settings directly in the extension menu;
+* Added the "Selective" setting for the Invert the colors function: this setting, based on the filters feature, allows you to invert the colors of a small number of elements which may be displayed incorrectly on a dark theme of the Increase page contrast function;
+* Improved display of the Increase page contrast function on most websites:
+    - Transparent backgrounds are now automatically detected (they were previously colored which could hide certain elements of websites), without going through the filters feature;
+    - Fixed detection of background images;
+    - Fixed the application of the function on websites using the "Shadow Roots" feature (used for example on bugs.chromium.org);
+    - The replacement of the border of the form fields isn't enabled by default (to be activated via the filters)
+* Presets enabled for a webpage now have a higher priority than those enabled for the whole website;
+* Improved Filters feature (advanced settings):
+    - More data is displayed in the filter settings: total number of filters and storage space taken by the filters;
+    - The custom filter editor now has an auto-completion system;
+    - The filters display and the custom filter editor now have an adapted syntax highlighting;
+    - Filters in error are now displayed with a clear error message and the error detection line, which allows you to quickly view the errors;
+    - Distinction between standard rule and special rule (which govern the internal functioning of the extension);
+    - Added new filter rules.
+* When changing custom themes or presets in advanced settings, Page Shadow warns you if changes to settings have not been saved;
+* Performance improvement:
+    - The settings are now applied in real time only if they have actually changed. In previous versions, the settings were refreshed if a global setting was changed (even if it didn't directly influence a given website). This improves performance;
+    - Performance improvement when the percentage of brightness reduction was changed when the Apply the settings in real time function was enabled;
+    - Improved performance of "Mutation observers"
+* Bugfixes:
+    - Fixed filter rules that were not applied in rare cases;
+    - Fiex the presets automatically enabled per page for dynamic SPA applications: the setting was not applied when browsing between pages;
+    - Fixed display of presets created with old versions of Page Shadow (<2.8): in some cases, the display could be incorrect;
+    - Fixed Cloud archiving: in some cases, archiving could not be performed but no error was displayed;
+    - Fixed Cloud archiving when the Cloud storage quota was exceeded;
+    - Fixed Cloud archiving: settings are splitted into several items to avoid a quota per item overrun error;
+    - Fixed a bug with the disabling of Page Shadow on certain websites accessed from Google on Chrome: in the event that Google highlighted a text in the page, the Page Shadow disabling feature for the page didn't work ("#:~:text=" was added at the end of the URL by Google);
+    - Fixed the change of disabled/enabled state for a website when the Apply the settings in real time function was disabled: the change is no longer applied in this case;
+    - Fixed the treatment of regular expressions in filters;
+    - Fixed application of parent page state (enabled/disabled) for iframes;
+    - Fixed a bug with the wildcards for the features allowing to disable/enable Page Shadow for a website/webpage, to enable/disable a preset for a website/webpage as well as for filters;
+        - It is now possible to escape a wildcard with a backslash (\)
+    - Page Shadow is now applied to "about:blank" pages
+* Technical improvements
+    - Improved mutation observer: detection of the mutation of the attributes "style" and "class" is now more precise, the sub-elements of elements modified or added to the page are now treated;
+        - These improvements can be configured per site/webpage via new special filter rules;
+    - Conversion of Promises to async/await, which simplifies the code;
+    - The constants have been separated into a new file (constants.js);
+    - Filters feature now in a FilterProcessor class;
+    - The Opera version is no longer built, the Chromium version running natively on Opera;
+    - Added <all_urls> permission for Chromium based browsers (like Firefox version);
+    - Fixed calls to "deprecated" functions;
+    - Updated dependencies.
 
-Elle vous permet :
+### Version 2.8 (10/24/2021) :
+* Added the Filters feature, accessible in Advanced Settings. Filters allow, based on rules, to improve the display of websites when the following options are enabled: Increase page contrast or Invert colors. This advance significantly improves the display of some websites when Page Shadow is enabled. This feature can also improve the performance of Page Shadow on some websites. These filters are updated daily from Internet sources. The lists provided by default are downloaded from the eliastiksofts.com website (the extension developer's website). It's also possible to define custom rules. You don't have to do anything more on your side to take advantage of the feature, it's operational as soon as the extension is installed/updated. Filters are updated automatically;
+* Addition of the possibility of defining a list of sites/pages where to automatically enable a preset: it's possible to define this list using checkboxes available in the extension menu, or by defining a list manually (the syntax is the same as the feature to disable a website/a page, and supports regular expressions and wildcards);
+* It's now possible to apply the presets using keyboard shortcuts (to be configured manually);
+* The maximum number of storable presets has been increased from 5 to 10;
+* It's now possible to see the settings stored in the presets in the Advanced settings;
+* A notification is displayed when the extension has been updated;
+* Many bug fixes, performance improvements and other minor fixes:
+    - Fixed the function Invert the colors of entire pages: on some sites, a white background could be visible when the page was scrolled;
+    - Fixed the detection of the disabling/activation of a web page on certain sites based on the SPA (Single Page Application) model;
+    - The extension is now operational for frames (iframes). Frames use the settings from the parent website;
+    - Fixed the application of the translation of certain elements/texts which was not operational in certain cases;
+    - Fixed the archiving of the settings with Firefox: the name of the downloaded file is now correct (.json extension);
+    - On Firefox, the link Manage keyboard shortcuts in Advanced settings links to an help page on the Firefox website;
+    - Fixed the status icon representing if Page Shadow is enabled for the current page when multiple windows are open;
+    - Fixed the right-click menu when several windows are open;
+    - Fixed the Increase page contrast function for websites using the Shadow Roots feature (in connection with the Filters feature);
+    - Better detection of background images;
+    - Performance optimization of background image detection;
+    - Optimization of the extension size. Version 2.8 is lighter than version 2.7 despite the new features added.
+* Technical improvements:
+    - Migration of the extension to JavaScript ES6, use of Babel and Webpack. Optimization of the size of JavaScript scripts;
+    - Use of browser API instead of chrome API, use of webextension-polyfill;
+    - Use of Promises instead of callbacks;
+    - Use of npm to manage most of the dependencies;
+    - Updated dependencies;
+    - Added unlimitedStorage permission;
+    - Code cleaning.
 
-- D'augmenter le contraste de la page, c'est à-dire de renforcer les tons sombres d'une page : l'extension transforme le design de n'importe quel site en "mode sombre" ;
-- De baisser la luminosité de la page ;
-- D'inverser les couleurs des images ou des pages entières ;
-- D'activer un mode nuit (applique un filtre orangé sur la page pour réduire la lumière bleue émise par l'écran).
+### Version 2.7 (16/08/2019) :
+* Added the ability to create multiple custom themes instead of just one before;
+* Added Cloud backup in Backups and presets in Advanced settings;
+* Improved blacklist/whitelist with more blocking options (wildcard \*, regular expressions, etc.);
+* The whitelist now supports the same options as the blacklist, previously it only accepted domains;
+* Bug fixes and texts fixes.
 
-Page Shadow dispose de nombreux paramètres pour personnaliser votre expérience de l'extension : réglages adapté à chaque site, activation/désactivation automatique, etc.
+### Version 2.6 (31/10/2018) :
+* Added the ability to set presets (max 5, which can be created from the advanced settings) to restore them later (via the extension menu, advanced settings or the right-click menu);
+* Added a keyboard shortcut (Alt+Shift+S) to enable/disable the extension globally;
+* Added the Videos and Backgrounds (images) elements in the Invert the colors function, so they can be inverted or not regardless of the entire page and images;
+* Added ability to enable or disable background coloring of the images when the function Increase page contrast is enabled;
+* Fixed the display of some elements that could be hidden when the function Increase page contrast was enabled (eg in Google News);
+* The space taken by the extension menu has been reduced to accommodate the new functions;
+* Other minor changes:
+    * Small changes in the interface;
+    * Performance improvement;
+    * Bugfixes;
+    * Updated the software libraries;
+    * Other minor fixes (code simplification, etc.).
 
-### Installation :
+### Version 2.5 (29/04/2018) :
+* Better rendering of the tool Increase page contrast + color contrast of the themes corrected;
+* Added the ability to enable or disable the extension with one click;
+* Added the Enable/disable automatically tool which allows you to automatically enable and/or disable Page Shadow according to the time;
+* Added the ability to write a custom CSS for the custom theme;
+* Added a function for archiving/restoring the settings of Page Shadow;
+* The Invert images colors tool has been renamed to Invert the colors because it now allows you to invert the colors of the images and/or of the entire page indifferently;
+* Improved image detection for the Invert the colors tool;
+* The icon of the extension changes according to its activation state for the current page (red/green);
+* Other minor changes, bug fixes, and performance improvements:
+    * Using Less for some CSS files;
+    * CSS code fixes;
+    * Bug fixes for Firefox Mobile;
+    * Other minor fixes and improvements.
 
-Page Shadow est disponible au téléchargement et à l'installation aux adresses suivantes :
+### Version 2.4 (02/01/2018) :
+* Added the ability to inverse the colors of web pages entirely, not just the images;
+* Added new options for custom themes: color of visited links and font;
+* The themes now have a color for visited links;
+* Added the ability to disable the display of the message after selecting the custom theme for the tool Increase page contrast;
+* Bug fixes, performance improvements and adjustments:
+    * Improved performance (optimizations) and reduced RAM consumption;
+    * Fixed the display of checkboxes with Firefox;
+    * Bug corrected with the tool Invert images colors for some websites (some images couldn't be reversed);
+    * Bug corrected with the tool Decrease page brightness;
+    * Optimization of the layout of the extension menu (reduction of the space taken by some elements);
+    * Adjusted some themes;
+    * Other minor corrections and adjustments.
 
-* Chrome : https://chrome.google.com/webstore/detail/eimaelgbclmdoeimifebaagealdkjmki/
-* Firefox : https://addons.mozilla.org/fr/firefox/addon/page-shadow/
-* Opera : https://addons.opera.com/fr/extensions/details/page-shadow/?display=fr
-* Edge : https://microsoftedge.microsoft.com/addons/detail/ofcbmommmmaoekccnfojdpjgopgcbgbd
+### Version 2.3 (1/12/2017) :
+* Added the possibility to create a custom theme;
+* Improved the Invert images colors tool: background images are now detected, which greatly improves the rendering of the tool;
+* Bug fixes and adjustments:
+    - Simplified and improved CSS code, which improves the compatibility with some websites (the tool Increase page contrast now target all HTML elements except some exceptions);
+    - The extension now works for local web pages (URLs file://) and for the ftp protocol;
+    - Fixed a bug with the tool Decrease page brightness with some websites;
+    - Updated some software libraries;
+    - Fixed the HTML code of the Advanced settings page;
+    - Others minor adjustments and minor bug fixes.
 
-Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le site officiel : http://eliastiksofts.com/page-shadow
-Soit la compiler vous-même (voir section "Compilation").
+### Version 2.2 (25/10/2017) :
+* Added 5 new themes (10 to 15);
+* Bug fixes, major changes in the extension structure and minor adjustments:
+    - Optimizations and important changes in the code of the management of the parameters (dynamic detection of the changes in real time);
+    - Bug fixes for Firefox Android: disabling the extension for a site or page now works, the main settings panel now scrolls correctly;
+    - Fixed a bug in the tool Decrease page brightness: in some cases, the percentage of brightness decrease could be incorrect, that made the settings panel completely dark;
+    - When resetting the settings, the language is now reseted correctly (re-detection of the browser language instead of setting the default language to French);
+    - Fixed some error messages (appearing in the Javascript console);
+    - Better detection of the URLs of the web pages visited;
+    - Correction and optimization of the management code of the right-click menu;
+    - Added global configuration variables of the extension in the file "util.js";
+    - Correction of the code managing the translations of the extension;
+    - Updated some software libraries (i18next and Bootstrap Slider);
+    - Added extension license informations to the source files;
+    - Added a link to the options page in the Firefox Extensions Manager;
+    - Aesthetic corrections, text corrections and other minor adjustments;
+    - The JS and CSS source files are now compressed in the production version of the extension (added new compilation commands). This reduces the weight of the extension.
 
-### Journal des changements :
+### Version 2.1.1, or 2.1 REV1 (09/09/2017) :
+* Revision for the version 2.1:
+    - XML parsing error in Firefox fixed (bug in i18nextXHRBackend) ;
+    - The settings are now initialised directly after the installation of the extension ;
+    - Bug fixed with the manifest file for Microsoft Edge (persistent key in background key).
 
-#### Version 2.9.1 (26/12/2021) :
+### Version 2.1 (04/09/2017) :
+* Improved performance by fixing a bug: the processor could be occupied more than 50% in some special cases ;
+* Added the possibility to toggle the list of websites ignored to a whitelist: all the websites are in this case ignored, and need to be unlocked manually ;
+* Added the possibility to choose the color temperature used by the Night mode ;
+* Bugs fixed and minor adjustments:
+    - Corrections for the new Youtube interface (utilisation of non-standard HTML elements) ;
+    - The SVG images are now supported by the tool Invert images colors ;
+    - Improved layout of the window About and added icons in the Advanced settings ;
+    - Corrections of some texts ;
+    - Updated some libraries ;
+    - Optimised code ;
+    - Others minor adjustments and minor bugs fixed.
+
+### Version 2.0.3 (09/07/2017) :
+* It is now possible to disable Page Shadow for a particular website or page via the right-click or via the extension menu
+* Bug fixes and minor adjustments :
+    - Themes 2 and 3 now have a gray background for transparent images
+    - Added support for HTML form and caption elements by the Increase page contrast tool (improves rendering of the tool)
+    - Fixed a bug with tool setting Decrease page brightness
+    - The image on the test page of the extension now correctly resizes when the browser window is resized
+    - Basic support for future versions of Firefox for Android (not tested)
+    - Small adjustments of the code
+
+### Version 2.0.2 (17/06/2017) :
+* The settings can now be applied in real time
+* Fixed Page Shadow icon (the shadow is better)
+* Bugs fixes :
+    - Bug fixed with the manifest.json file (one manifest.json different for each browser have been created)
+    - Bug fixed with the automatic reactivation of the tool Increase page contrast with some particular websites (such as Youtube)
+    - Bug fixed with the Gulpfile (which allows the compilation of the extension). The extension can now be compiled for Edge and Opera
+    - Other minor adjustements.
+
+### Version 2.0.1 (09/06/2017) :
+* Microsoft Edge support
+* Performance improvements and bugs fixes :
+    - Switched to chrome.storage API instead of localstorage
+    - Removed Jquery dependency for Content Scripts
+    - Fixed bug with browser language detection : the form field in the advanced settings remained blank in certains cases
+    - Fixed bug with the Increase page contrast tool with some websites (such as Youtube)
+    - Other minor adjustements.
+
+### Version 2.0 (05/06/2017) :
+* Firefox support
+* New graphical theme based on Bootstrap
+* Integrated translation engine and added English translation
+* Added color themes for the "Increase contrast" tool
+* Added night mode
+* Added a mode to invert the color of the images
+* Performance improvements
+* Various fixes (bugs, texts)
+
+### Version 1.2.1 :
+* Fixed bug in the advanced settings
+* Adding informations about the extension in the advanced settings
+
+### Version 1.2 :
+* Optimisation of the popup layout
+* Improved function "Increase page contrast". The transparent images are now supported
+* Some adjustements
+
+### Version 1.1 :
+* Improved function "Increase page contrast"
+
+### Version 1.0 :
+* Initial version
+
+
+# Page Shadow - Français
+
+## Journal des changements :
+
+### Version 2.9.1 (26/12/2021) :
 * Amélioration des performances lors de l'activation/désactivation de Page Shadow et lors de la modification des paramètres
 * Amélioration des performances du traitement des pages web par Page Shadow
     - Optimisation des "Mutation Observers"
@@ -55,7 +277,7 @@ Soit la compiler vous-même (voir section "Compilation").
     - Certains éléments sont désormais ignorés lors du traitement des pages web par Page Shadow
     - Mise à jour des dépendances
 
-#### Version 2.9 (12/12/2021) :
+### Version 2.9 (12/12/2021) :
 * Ajout de la possibilité de créer un pré-réglage et de mettre à jour un pré-réglage avec les paramètres actuels directement dans le menu de l'extension ;
 * Ajout du paramétrage "Sélectif" pour la fonctionnalité "Inverser les couleurs" : ce paramètrage, basé sur la fonctionnalité des filtres, permet d'inverser les couleurs d'un nombre restreint d'éléments qui peuvent mal s'afficher sur un thème sombre de la fonctionnalité Augmenter le contraste ;
 * Amélioration de l'affichage de la fonctionnalité Augmenter le contraste sur la plupart des sites web
@@ -101,7 +323,7 @@ Soit la compiler vous-même (voir section "Compilation").
     - Correction des appels à des fonctions "deprecated" ;
     - Mise à jour des dépendances.
 
-#### Version 2.8 (24/10/2021) :
+### Version 2.8 (24/10/2021) :
 * Ajout de la fonctionnalité Filtres, accessible dans les Paramètres avancés. Les filtres permettent, à partir de règles, d'améliorer l'affichage des sites web lorsque les options suivantes sont activées : Augmenter le contraste ou Inverser les couleurs. Cette avancée améliore considérablement l'affichage de certains sites web lorsque Page Shadow est activé. Cette fonctionnalité permet également d'améliorer les performances de Page Shadow sur certains sites web. Ces filtres sont quotidiennement mis à jour à partir de sources Internet. Les listes fournies par défaut sont téléchargées depuis le site web eliastiksofts.com (site web du développeur de l'extension). Il est également possible de définir des règles personnalisées. Vous n'avez rien à faire de plus de votre côté pour profiter de la fonctionnalité, elle est opérationnelle dès l'installation/mise à jour de l'extension. Les filtres sont mis à jour automatiquement ;
 * Ajout de la possibilité de définir une liste de sites/pages où activer automatiquement un pré-réglage : il est possible de définir cette liste à l'aide de cases à cocher disponibles dans le menu de l'extension, ou en définissant une liste manuellement (la syntaxe est la même que la fonctionnalité permettant de désactiver un site/une page, et supporte les expressions régulières et les jokers) ;
 * Il est désormais possible d'appliquer les pré-réglages à l'aide de raccourcis clavier (à paramétrer manuellement) ;
@@ -130,14 +352,14 @@ Soit la compiler vous-même (voir section "Compilation").
     - Ajout de la permission unlimitedStorage ;
     - Nettoyage du code.
 
-#### Version 2.7 (16/08/2019) :
+### Version 2.7 (16/08/2019) :
 * Ajout de la possibilité de créer plusieurs thèmes personnalisés au lieu d'un seul auparavant ;
 * Ajout de Archive Cloud dans Archives et pré-réglages des Paramètres avancés ;
 * Amélioration de la liste noire/blanche avec plus d'options de blocage (joker \*, expressions régulières, etc.) ;
 * La liste blanche supporte désormais les mêmes options que la liste noire, auparavant elle acceptait uniquement les domaines ;
 * Corrections de bugs et des textes.
 
-#### Version 2.6 (31/10/2018) :
+### Version 2.6 (31/10/2018) :
 * Ajout de la possibilité de définir des pré-réglages (5 max, pouvant être créés depuis les paramètres avancés) afin de les restaurer plus tard (via le menu de l'extension, les paramètres avancés ou le menu du clic-droit) ;
 * Ajout d'un raccourci clavier (Alt+Shift+S) permettant d'activer/désactiver l'extension globalement ;
 * Ajout des éléments Vidéos et Arrière-plans (images) dans la fonction Inverser les couleurs, ils peuvent ainsi être inversés ou non indépendamment de la page entière et des images ;
@@ -151,7 +373,7 @@ Soit la compiler vous-même (voir section "Compilation").
     * Mise à jour des bibliothèques logicielles ;
     * Autres corrections mineures (simplification du code, etc.).
 
-#### Version 2.5 (29/04/2018) :
+### Version 2.5 (29/04/2018) :
 * Meilleur rendu de l'outil Augmenter le contraste de la page + contraste de couleurs des thèmes corrigé ;
 * Ajout de la possibilité d'activer ou de désactiver l'extension en un clic ;
 * Ajout de l'outil Activer/désactiver automatiquement qui permet d'activer et/ou de désactiver automatiquement Page Shadow selon l'heure de la journée ;
@@ -167,7 +389,7 @@ Soit la compiler vous-même (voir section "Compilation").
     * Autres corrections et améliorations mineures.
 
 
-#### Version 2.4 (02/01/2018) :
+### Version 2.4 (02/01/2018) :
 * Ajout de la possibilité d'inverser les couleurs des pages web entièrement, et non pas seulement les images ;
 * Ajout de nouvelles options pour les thèmes personnalisés : couleur des liens visités et police de caractères ;
 * Les thèmes ont désormais une couleur pour les liens visités ;
@@ -181,7 +403,7 @@ Soit la compiler vous-même (voir section "Compilation").
     * Ajustement de certains thèmes ;
     * Autres corrections et ajustements mineurs.
 
-#### Version 2.3 (1/12/2017) :
+### Version 2.3 (1/12/2017) :
 * Ajout de la possibilité de créer un thème personnalisé ;
 * Amélioration de l'outil Inverser les couleurs des images : les images d'arrière-plan sont désormais détectées, ce qui améliore grandement le rendu de l'outil ;
 * Corrections de bugs et ajustements :
@@ -192,7 +414,7 @@ Soit la compiler vous-même (voir section "Compilation").
     - Code HTML de la page des Paramètres avancés corrigé ;
     - Autres petits ajustements et corrections de bugs mineurs.
 
-#### Version 2.2 (25/10/2017) :
+### Version 2.2 (25/10/2017) :
 * Ajout de 5 nouveaux thèmes (10 à 15) ;
 * Corrections de bugs, changements importants dans la structure de l'extension et ajustements mineurs :
     - Optimisations et changements importants dans le code de la gestion des paramètres (détection dynamique des changements en temps réel) ;
@@ -210,13 +432,13 @@ Soit la compiler vous-même (voir section "Compilation").
     - Corrections esthétiques, corrections des textes et autres ajustements mineurs ;
     - Les fichiers sources JS et CSS sont désormais compressés dans la version de production de l'extension (ajout de nouvelles commandes de compilation). Cela réduit le poids de l'extension.
 
-#### Version 2.1.1, ou 2.1 REV1 (09/09/2017) :
+### Version 2.1.1, ou 2.1 REV1 (09/09/2017) :
 * Révision pour la version 2.1 :
     - Erreur de parsing XML avec Firefox corrigé (bug avec i18nextXHRBackend) ;
     - Les paramètres sont désormais initialisés dès l'installation de l'extension ;
     - Bug corrigé avec le fichier manifeste pour Microsoft Edge (clé persistent dans la clé background).
 
-#### Version 2.1 (04/09/2017) :
+### Version 2.1 (04/09/2017) :
 * Amélioration des performances par la correction d'un bug : le processeur pouvait être occupé à plus de 50% dans certains cas particuliers ;
 * Ajout de la possibilité de basculer la liste des sites à ignorer en liste blanche : tous les sites sont dans ce cas ignorés, et il faut les débloquer manuellement ;
 * Ajout de la possibilité de choisir la température de couleur utilisée par le Mode nuit ;
@@ -229,7 +451,7 @@ Soit la compiler vous-même (voir section "Compilation").
     - Code optimisé ;
     - Autres petits ajustements et corrections de bugs mineurs.
 
-#### Version 2.0.3 (09/07/2017) :
+### Version 2.0.3 (09/07/2017) :
 * Il est désormais possible de désactiver Page Shadow pour un site ou une page particulière via le clic-droit ou via le menu de l'extension ;
 * Corrections de bugs et ajustements mineurs :
     - Les thèmes 2 et 3 ont désormais un fond gris pour les images transparentes ;
@@ -239,7 +461,7 @@ Soit la compiler vous-même (voir section "Compilation").
     - Prise en charge basique des versions futures de Firefox pour Android (non testé) ;
     - Petits ajustements du code.
 
-#### Version 2.0.2 (17/06/2017) :
+### Version 2.0.2 (17/06/2017) :
 * Les paramètres peuvent désormais être appliqués en temps réel ;
 * Correction de l'icône de Page Shadow (l'ombre est de meilleure qualité) ;
 * Corrections de bugs :
@@ -248,7 +470,7 @@ Soit la compiler vous-même (voir section "Compilation").
     - Corrections de bugs avec le fichier Gulp (qui permet la compilation de l'extension). L'extension peut désormais être compilée pour Edge et Opera ;
     - Autres petits ajustements.
 
-#### Version 2.0.1 (09/06/2017) :
+### Version 2.0.1 (09/06/2017) :
 * Compatibilité Microsoft Edge ;
 * Amélioration des performances et corrections de bugs :
     - Basculement de l'API localstorage vers l'API chrome.storage ;
@@ -257,7 +479,7 @@ Soit la compiler vous-même (voir section "Compilation").
     - Correction d'un bug de l'outil "Augmenter le contraste" avec certains sites (comme Youtube) ;
     - Autres petits ajustements.
 
-#### Version 2.0 (05/06/2017) :
+### Version 2.0 (05/06/2017) :
 * Compatibilité Firefox ;
 * Nouveau thème graphique basé sur Bootstrap ;
 * Moteur de traduction intégré et ajout d'une traduction en anglais ;
@@ -267,83 +489,17 @@ Soit la compiler vous-même (voir section "Compilation").
 * Amélioration des performances ;
 * Corrections diverses (bugs, textes).
 
-#### Version 1.2.1 :
+### Version 1.2.1 :
 * Correction d'un bug dans les paramètres avancés ;
 * Ajout d'informations sur l'application dans les paramètres avancés.
 
-#### Version 1.2 :
+### Version 1.2 :
 * Optimisation de la mise en page de la popup ;
 * Amélioration de l'outil "Augmenter le contraste". Les images transparentes sont désormais prises en charge ;
 * Quelques ajustements.
 
-#### Version 1.1 :
+### Version 1.1 :
 * Amélioration de la fonction "Augmenter le contraste".
 
-#### Version 1.0 :
+### Version 1.0 :
 * Version initiale.
-
-### Compilation :
-
-Vous pouvez compiler vous-même l'extension en une ligne de commande. Pour cela, vous devez avoir installé npm et gulp.
-
-Pour installer npm sur votre système, plus d'infos ici : https://docs.npmjs.com/getting-started/installing-node
-
-Pour installer gulp avec npm, lancez la commande suivante :
-````
-npm i -g gulp
-````
-Faites un Git clone du dépôt et faites un cd vers le dossier du projet (ou bien téléchargez le directement depuis Github) :
-````
-git clone https://github.com/Eliastik/page-shadow.git
-cd page-shadow
-````
-
-Pour installer les dépendances, lancez la commande suivante :
-````
-npm install
-````
-Puis pour compiler :
-
-* Mode dev (pas de compression): `gulp` ou `gulp build-dev`
-* Mode prod (compression): `gulp build-prod` ou `build-prod-no-css-compress` (compresse uniquement les fichiers js)
-
-Les fichiers d'extension compilés seront créés dans le dossier "build".
-
-(Note : le répertoire key contient une clé nécessaire à la création d'une extension Chrome).
-
-Pour installer l'extension dans Firefox, vous devez installer Firefox Developer Edition et smodifier la valeur suivante dans about:config en "false" : xpinstall.signatures.required
-Puis lancez l'installation avec le fichier .xpi
-
-Pour Chrome, faites glisser le fichier .crx dans la fenêtre des extensions (chrome://extensions).
-
-Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `gulp clean-build`
-
-### Licence :
-
-Page Shadow est distribué sous licence GNU GPL-3.0
-
-#### Avis de licence
-
-Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
-
-Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le
-modifier suivant les termes de la GNU General Public License telle que
-publiée par la Free Software Foundation ; soit la version 3 de la
-licence, soit (à votre gré) toute version ultérieure.
-
-Ce programme est distribué dans l'espoir qu'il sera utile,
-mais SANS AUCUNE GARANTIE ; sans même la garantie tacite de
-QUALITÉ MARCHANDE ou d'ADÉQUATION à UN BUT PARTICULIER.
-Consultez la GNU General Public License pour plus de détails.
-
-Vous devez avoir reçu une copie de la GNU General Public License en même temps
-que ce programme ; si ce n'est pas le cas, consultez <http://www.gnu.org/licenses>.
-
-### Credits :
-
-- Source Sans Pro (version 2.020), SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL ) : https://github.com/adobe-fonts/source-sans-pro/blob/master/LICENSE.txt
-- Font Awesome, SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL )
-- Bootstrap (CSS et Javascript), MIT license ( https://github.com/twbs/bootstrap/blob/v4-dev/LICENSE ) ;
-    - Thème : Paper par Bootswatch (modifié) - https://bootswatch.com/paper/
-- Cette extension utilise une photo venant de ce site : http://littlevisuals.co , domaine public ( https://creativecommons.org/publicdomain/zero/1.0/ ).
-- Voir les dépendances dans le fichier package.json

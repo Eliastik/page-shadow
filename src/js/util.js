@@ -177,7 +177,7 @@ function commentAllLines(string) {
     return res.join("\n");
 }
 
-// Callback function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not
+// Function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not
 async function pageShadowAllowed(url) {
     const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]);
 
@@ -782,6 +782,7 @@ function getPriorityPresetEnabledForWebsite(presetsEnabled) {
 
 async function getSettings(url) {
     const result = await browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor", "selectiveInvert"]);
+
     let pageShadowEnabled = result.pageShadowEnabled;
     let theme = result.theme;
     let colorTemp = result.colorTemp;

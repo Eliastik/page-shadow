@@ -8,9 +8,19 @@ An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksoft
 
 This is the source code for the extension Page Shadow, compatible with Chrome/Chromium, Firefox, Opera and Microsoft Edge. This extension uses the WebExtensions technology via the Browser API (more infos : https://developer.mozilla.org/fr/Add-ons/WebExtensions ).
 
-Page Shadow is an extension designed to render a web page more readable in a dark environment. It allows you to increase page contrast, decrease page brightness, invert images colors, or activate a night mode (apply an orange filter on the page to reduce the blue light emitted by the screen).
+Page Shadow is a dark mode plugin. It includes a series of tools to improve the reading of web pages in a dark environment.
+
+It allows you:
+
+- To increase the contrast of the pages, that is to say to reinforce the dark tones of a page: the extension transforms the design of any site in a "dark mode" theme;
+- To decrease the brightness of the pages;
+- To invert the colors of images or entire pages;
+- To enable a night mode (applies an orange filter on the page to reduce the blue light emitted by the screen).
+
+Page Shadow has many parameters to personalize your extension: settings adapted to each site, automatic enable/disable, etc.
 
 ### Installation:
+
 Page Shadow is avalaible to download and install at the following addresses:
 
 * Chrome : https://chrome.google.com/webstore/detail/eimaelgbclmdoeimifebaagealdkjmki/
@@ -23,7 +33,7 @@ Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
 
-### Version 2.9.1 (12/26/2021):
+#### Version 2.9.1 (12/26/2021):
 * Improved performance when enabling/disabling Page Shadow and when changing settings
 * Improved performance of the processing of web pages by Page Shadow
     - Optimization of "Mutation Observers"
@@ -45,7 +55,7 @@ Or you can compile it yourself (see Compilation section).
     - Some elements are now ignored when processing web pages by Page Shadow
     - Update of dependencies
 
-### Version 2.9 (12/12/2021):
+#### Version 2.9 (12/12/2021):
 * Added the ability to create a preset and update a preset with current settings directly in the extension menu;
 * Added the "Selective" setting for the Invert the colors function: this setting, based on the filters feature, allows you to invert the colors of a small number of elements which may be displayed incorrectly on a dark theme of the Increase page contrast function;
 * Improved display of the Increase page contrast function on most websites:
@@ -91,7 +101,7 @@ Or you can compile it yourself (see Compilation section).
     - Fixed calls to "deprecated" functions;
     - Updated dependencies.
 
-### Version 2.8 (10/24/2021) :
+#### Version 2.8 (10/24/2021) :
 * Added the Filters feature, accessible in Advanced Settings. Filters allow, based on rules, to improve the display of websites when the following options are enabled: Increase page contrast or Invert colors. This advance significantly improves the display of some websites when Page Shadow is enabled. This feature can also improve the performance of Page Shadow on some websites. These filters are updated daily from Internet sources. The lists provided by default are downloaded from the eliastiksofts.com website (the extension developer's website). It's also possible to define custom rules. You don't have to do anything more on your side to take advantage of the feature, it's operational as soon as the extension is installed/updated. Filters are updated automatically;
 * Addition of the possibility of defining a list of sites/pages where to automatically enable a preset: it's possible to define this list using checkboxes available in the extension menu, or by defining a list manually (the syntax is the same as the feature to disable a website/a page, and supports regular expressions and wildcards);
 * It's now possible to apply the presets using keyboard shortcuts (to be configured manually);
@@ -120,14 +130,14 @@ Or you can compile it yourself (see Compilation section).
     - Added unlimitedStorage permission;
     - Code cleaning.
 
-### Version 2.7 (16/08/2019) :
+#### Version 2.7 (16/08/2019) :
 * Added the ability to create multiple custom themes instead of just one before;
 * Added Cloud backup in Backups and presets in Advanced settings;
 * Improved blacklist/whitelist with more blocking options (wildcard \*, regular expressions, etc.);
 * The whitelist now supports the same options as the blacklist, previously it only accepted domains;
 * Bug fixes and texts fixes.
 
-### Version 2.6 (31/10/2018) :
+#### Version 2.6 (31/10/2018) :
 * Added the ability to set presets (max 5, which can be created from the advanced settings) to restore them later (via the extension menu, advanced settings or the right-click menu);
 * Added a keyboard shortcut (Alt+Shift+S) to enable/disable the extension globally;
 * Added the Videos and Backgrounds (images) elements in the Invert the colors function, so they can be inverted or not regardless of the entire page and images;
@@ -141,7 +151,7 @@ Or you can compile it yourself (see Compilation section).
     * Updated the software libraries;
     * Other minor fixes (code simplification, etc.).
 
-### Version 2.5 (29/04/2018) :
+#### Version 2.5 (29/04/2018) :
 * Better rendering of the tool Increase page contrast + color contrast of the themes corrected;
 * Added the ability to enable or disable the extension with one click;
 * Added the Enable/disable automatically tool which allows you to automatically enable and/or disable Page Shadow according to the time;
@@ -156,7 +166,7 @@ Or you can compile it yourself (see Compilation section).
     * Bug fixes for Firefox Mobile;
     * Other minor fixes and improvements.
 
-### Version 2.4 (02/01/2018) :
+#### Version 2.4 (02/01/2018) :
 * Added the ability to inverse the colors of web pages entirely, not just the images;
 * Added new options for custom themes: color of visited links and font;
 * The themes now have a color for visited links;
@@ -170,7 +180,7 @@ Or you can compile it yourself (see Compilation section).
     * Adjusted some themes;
     * Other minor corrections and adjustments.
 
-### Version 2.3 (1/12/2017) :
+#### Version 2.3 (1/12/2017) :
 * Added the possibility to create a custom theme;
 * Improved the Invert images colors tool: background images are now detected, which greatly improves the rendering of the tool;
 * Bug fixes and adjustments:
@@ -181,7 +191,7 @@ Or you can compile it yourself (see Compilation section).
     - Fixed the HTML code of the Advanced settings page;
     - Others minor adjustments and minor bug fixes.
 
-### Version 2.2 (25/10/2017) :
+#### Version 2.2 (25/10/2017) :
 * Added 5 new themes (10 to 15);
 * Bug fixes, major changes in the extension structure and minor adjustments:
     - Optimizations and important changes in the code of the management of the parameters (dynamic detection of the changes in real time);
@@ -199,7 +209,7 @@ Or you can compile it yourself (see Compilation section).
     - Aesthetic corrections, text corrections and other minor adjustments;
     - The JS and CSS source files are now compressed in the production version of the extension (added new compilation commands). This reduces the weight of the extension.
 
-### Version 2.1.1, or 2.1 REV1 (09/09/2017) :
+#### Version 2.1.1, or 2.1 REV1 (09/09/2017) :
 * Revision for the version 2.1:
     - XML parsing error in Firefox fixed (bug in i18nextXHRBackend) ;
     - The settings are now initialised directly after the installation of the extension ;
@@ -300,7 +310,7 @@ The extension files compiled will be created in the sub-directory "build".
 
 (Note: The key directory contains a key needed to compile the Chrome extension).
 
-To install the extension in Firefox, you need to modify the following value in about:config to "false": xpinstall.signatures.required
+To install the extension in Firefox, you need to install Firefox Developer Edition then modify the following value in about:config to "false": xpinstall.signatures.required
 Then launch the installation with the .xpi file.
 
 For Chrome, slide the .crx file in the extension window (chrome://extensions).
@@ -308,6 +318,10 @@ For Chrome, slide the .crx file in the extension window (chrome://extensions).
 Then if you want to clean the build directory, run the command `gulp clean-build`
 
 ### Licence :
+
+Page Shadow is distributed under GPL-3.0 license
+
+#### License notice
 
 Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
 
