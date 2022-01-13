@@ -287,7 +287,8 @@ function processRules(style, backgroundTheme, linksColorTheme, linksVisitedColor
         style.sheet.insertRule("html.pageShadowBackgroundCustom.pageShadowForceCustomTextColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + textsColorTheme + " !important; }", 0);
     }
 
-    style.sheet.insertRule(ruleSelector + ":not(.pageShadowDisableBackgroundStyling) { background: #" + backgroundTheme + " !important; background-image: url(); }", 0);
+    style.sheet.insertRule(ruleSelector + ":not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg) { background: #" + backgroundTheme + " !important; background-image: url(); color: #" + textsColorTheme + "; }", 0);
+    style.sheet.insertRule(ruleSelector + ".pageShadowHasBackgroundImg:not(.pageShadowDisableBackgroundStyling) { background-color: #" + backgroundTheme + " !important; color: #" + textsColorTheme + "; }", 0);
     style.sheet.insertRule(ruleSelector + ".pageShadowForceCustomLinkColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + linksColorTheme + " !important; background-image: url(); }", 0);
     style.sheet.insertRule(ruleSelector + ".pageShadowForceCustomLinkVisitedColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + linksVisitedColorTheme + " !important; background-image: url(); }", 0);
     style.sheet.insertRule(ruleSelector + ".pageShadowForceCustomTextColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + textsColorTheme + " !important; background-image: url(); }", 0);

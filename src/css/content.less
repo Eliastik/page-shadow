@@ -80,9 +80,13 @@
     html.pageShadowContrastBlack@{name}.pageShadowForceCustomTextColorAsBackground:not(.pageShadowDisableBackgroundStyling) {
         background: @txtcolor !important;
     }
-    .pageShadowContrastBlack@{name}:not(.pageShadowDisableBackgroundStyling) {
+    .pageShadowContrastBlack@{name}:not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg) {
         background: @bgcolor !important;
         background-image: url();
+        color: @txtcolor;
+    }
+    .pageShadowContrastBlack@{name}.pageShadowHasBackgroundImg:not(.pageShadowDisableBackgroundStyling) {
+        background-color: @bgcolor !important;
         color: @txtcolor;
     }
     .pageShadowContrastBlack@{name}.pageShadowForceCustomLinkColorAsBackground:not(.pageShadowDisableBackgroundStyling) {
