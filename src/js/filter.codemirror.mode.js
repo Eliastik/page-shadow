@@ -79,6 +79,6 @@ export default function registerCodemirrorFilterMode(CodeMirror) {
             }
         });
 
-        CodeMirror.registerHelper("hint", "filtermode", editor => filtersHint(CodeMirror, editor, availableFilterRulesType, (e, cur) => {return e.getTokenAt(cur);}));
+        CodeMirror.registerHelper("hint", "filtermode", editor => filtersHint(CodeMirror, editor, availableFilterRulesType, (e, cur) => e.getTokenAt(cur)));
     }
 }

@@ -559,8 +559,7 @@ $(document).ready(() => {
     $("#checkEntirePageInvert").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("invertEntirePage", "true");
-        }
-        else {
+        } else {
             setSettingItem("invertEntirePage", "false");
         }
     });
@@ -568,8 +567,7 @@ $(document).ready(() => {
     $("#checkImageInvert").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("invertImageColors", "true");
-        }
-        else {
+        } else {
             setSettingItem("invertImageColors", "false");
         }
     });
@@ -577,8 +575,7 @@ $(document).ready(() => {
     $("#checkBgColorInvert").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("invertBgColor", "true");
-        }
-        else {
+        } else {
             setSettingItem("invertBgColor", "false");
         }
     });
@@ -586,8 +583,7 @@ $(document).ready(() => {
     $("#checkVideoInvert").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("invertVideoColors", "true");
-        }
-        else {
+        } else {
             setSettingItem("invertVideoColors", "false");
         }
     });
@@ -595,8 +591,7 @@ $(document).ready(() => {
     $("#checkSelectiveInvert").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("selectiveInvert", "true");
-        }
-        else {
+        } else {
             setSettingItem("selectiveInvert", "false");
         }
     });
@@ -753,7 +748,9 @@ $(document).ready(() => {
         infoAutoEnable();
     });
 
-    setInterval(() => { infoAutoEnable(); }, 1000);
+    setInterval(() => {
+        infoAutoEnable();
+    }, 1000);
 
     async function checkLiveSettings() {
         const result = await browser.storage.local.get("liveSettings");

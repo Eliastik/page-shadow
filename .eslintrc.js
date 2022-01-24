@@ -47,6 +47,15 @@ module.exports = {
         ],
         "no-trailing-spaces": [
             "warn"
+        ],
+        "no-console": [
+            "warn"
+        ],
+        "no-debugger": [
+            "warn"
+        ],
+        "brace-style": [
+            "warn"
         ]
     },
     parser: "@babel/eslint-parser"
