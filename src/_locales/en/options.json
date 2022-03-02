@@ -292,7 +292,7 @@
             "errorLineDetails": "Part of the rule with error:",
             "errorLineMessage": "Complete error message:",
             "errorCount":  "Number of filter rules with errors:",
-            "customFilterEditErrorDetected": "Error detected in your filter",
+            "customFilterEditErrorDetected": "Errors detected in your filter",
             "errorCode": "Error code:"
         },
         "close": "Close",
