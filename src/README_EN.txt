@@ -306,6 +306,14 @@ Then to compile:
 * Dev mode (no compression): `gulp` or `gulp build-dev`
 * Prod mode (compression): `gulp build-prod` or `build-prod-no-css-compress` (only compress js files)
 
+If you encounter the following error message when compiling:
+
+````
+error:25066067:DSO support routines:dlfcn_load:could not load the shared library
+````
+
+Try to launch the following command: `export OPENSSL_CONF=/dev/null`
+
 The extension files compiled will be created in the sub-directory "build".
 
 (Note: The key directory contains a key needed to compile the Chrome extension).
