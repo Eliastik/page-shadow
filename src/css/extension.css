@@ -20,19 +20,19 @@
     font-family: 'Source Sans Pro';
     font-style: normal;
     font-weight: 300;
-    src: local('Source Sans Pro Light'), local('SourceSansPro-Light'), url(../webfonts/SourceSansPro-Light.ttf) format('truetype');
+    src: local('Source Sans Pro Light'), local('SourceSansPro-Light'), url(../webfonts/SourceSansPro-Light.woff2) format('woff2');
 }
 @font-face {
     font-family: 'Source Sans Pro';
     font-style: normal;
     font-weight: 400;
-    src: local('Source Sans Pro Regular'), local('SourceSansPro-Regular'), url(../webfonts/SourceSansPro-Regular.ttf) format('truetype');
+    src: local('Source Sans Pro Regular'), local('SourceSansPro-Regular'), url(../webfonts/SourceSansPro-Regular.woff2) format('woff2');
 }
 @font-face {
     font-family: 'Source Sans Pro';
     font-style: normal;
     font-weight: 700;
-    src: local('Source Sans Pro Bold'), local('SourceSansPro-Bold'), url(../webfonts/SourceSansPro-Bold.ttf) format('truetype');
+    src: local('Source Sans Pro Bold'), local('SourceSansPro-Bold'), url(../webfonts/SourceSansPro-Bold.woff2) format('woff2');
 }
 body {
     background-color: white;
