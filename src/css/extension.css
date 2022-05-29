@@ -437,6 +437,14 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 .full-div-transparent-background-test.pageShadowHasTransparentBackground,.full-div-transparent-background-test2.pageShadowHasTransparentBackground,.full-div-transparent-background-test3.pageShadowHasTransparentBackground {
     display: none !important;
 }
+.option-label {
+    font-size: 12pt;
+    font-weight: normal;
+    text-align: left !important;
+}
+.container-option {
+    width: 80% !important;
+}
 @-webkit-keyframes fadein {
     from { bottom: 0; opacity: 0; }
     to { bottom: 30px; opacity: 0.9; }

@@ -8,9 +8,7 @@
     "container": {
         "description": "Ici, vous pouvez définir certains paramètres avancés ou consulter les informations sur l'extension.",
         "saveInfo": "N'oubliez pas de cliquer sur Valider pour sauvegarder vos paramètres !",
-        "about": "À propos de Page Shadow",
         "update": "Rechercher une mise à jour",
-        "labelLanguage": "Langue :",
         "language": {
             "fr": "Français",
             "en": "English"
@@ -18,9 +16,6 @@
         "labelList": "Liste des sites/pages à exclure (un élément par ligne) :",
         "titleHelp": "Notez que vous pouvez exclure un site ou une page à l'aide du clic-droit et en choissant quoi bloquer dans le sous-menu Page Shadow, à l'aide du menu de l'extension (tout en bas) ou en entrant leurs adresses ci-dessous.",
         "help": "Aide",
-        "customThemeButton": "Thèmes personnalisés",
-        "backup": "Archives et pré-réglages",
-        "keyboardShortcuts": "Gérer les raccourcis clavier…",
         "keyboardShortcutsInfos": "Pas encore disponible avec votre navigateur. Cependant, le raccourci clavier Alt+Shift+S permet d'activer ou désactiver globalement l'extension.",
         "indiceList": "Les entrées ci-dessous seront ignorées par Page Shadow.",
         "whiteList": "Liste blanche (ignorer par défaut tous les sites)",
@@ -30,7 +25,27 @@
         "reset": "Réinitialiser les paramètres",
         "validate": "Valider",
         "customTheme": "Thème personnalisé n°{{count}}",
-        "filters": "Filtres"
+        "filters": "Filtres",
+        "save": "Sauvegarder"
+    },
+    "tabTitles": {
+        "general": "Général",
+        "lists": "Liste noire/blanche",
+        "customThemes": "Thèmes personnalisés",
+        "presets": "Pré-réglages",
+        "filters": "Filtres",
+        "archive": "Archiver/restaurer",
+        "storage": "Stockage",
+        "about": "À propos"
+    },
+    "generalSettings": {
+        "labelLanguage": "Langue :",
+        "darkTheme": "Thème sombre :",
+        "darkThemeAuto": "Automatique",
+        "darkThemeEnabled": "Activé",
+        "darkThemeDisabled": "Désactivé",
+        "keyboardShortcutsLabel": "Raccourcis clavier :",
+        "keyboardShortcuts": "Gérer les raccourcis clavier…"
     },
     "modal": {
         "syntax": {

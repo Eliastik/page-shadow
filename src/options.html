@@ -48,73 +48,270 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
             </div>
             </div>
         </nav>
-        <div class="container">
-            <div class="form-horizontal well">
-                <p class="large-text"><span data-i18n="container.description"></span> <strong data-i18n="container.saveInfo"></strong></p>
-                <div class="form-group">
-                    <div class="col-lg-8">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#about" id="aboutDialogBtn"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="container.about"></span></button> &nbsp; <a href="" target="_blank" class="btn btn-success" role="button" id="updateBtn"><i class="fa fa-search fa-fw" aria-hidden="true"></i> <span data-i18n="container.update"></span></a>
+        <div class="container container-option">
+            <div class="well">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" id="generalTabLink" class="active"><a href="#generalTab" aria-controls="generalTab" role="tab" data-toggle="tab"><i class="fa-solid fa-gears fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.general"></span></a></li>
+                    <li role="presentation" id="listTabLink"><a href="#listTab" aria-controls="listTab" role="tab" data-toggle="tab"><i class="fa-solid fa-rectangle-list fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.lists"></span></a></li>
+                    <li role="presentation" id="customThemeTabLink"><a href="#customThemeTab" aria-controls="customThemeTab" role="tab" data-toggle="tab"><i class="fa-solid fa-palette fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.customThemes"></span></a></li>
+                    <li role="presentation" id="presetsTabLink"><a href="#presetsTab" aria-controls="presetsTab" role="tab" data-toggle="tab"><i class="fa-solid fa-wrench fa-fw" aria-hidden="true"></i><span data-i18n="tabTitles.presets"></span></a></li>
+                    <li role="presentation" id="filtersTabLink"><a href="#filtersTab" aria-controls="filtersTab" role="tab" data-toggle="tab"><i class="fa-solid fa-filter fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.filters"></span></a></li>
+                    <li role="presentation" id="archiveTabLink"><a href="#archiveTab" aria-controls="archiveTab" role="tab" data-toggle="tab"><i class="fa-solid fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.archive"></span></a></li>
+                    <li role="presentation" id="storageTabLink"><a href="#storageTab" aria-controls="storageTab" role="tab" data-toggle="tab"><i class="fa-solid fa-hard-drive fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.storage"></span></a></li>
+                    <li role="presentation" id="aboutTabLink"><a href="#aboutTab" aria-controls="aboutTab" role="tab" data-toggle="tab"><i class="fa-solid fa-circle-info fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.about"></span></a></li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="generalTab">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label for="languageSelect" class="col-lg-2 control-label option-label" data-i18n="generalSettings.labelLanguage"></label>
+                                <div class="col-lg-10">
+                                    <select id="languageSelect" class="form-control" rows="10"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="darkThemeSelect" class="col-lg-2 control-label option-label" data-i18n="generalSettings.darkTheme"></label>
+                                <div class="col-lg-10">
+                                    <select id="darkThemeSelect" class="form-control" rows="10">
+                                        <option value="auto" data-i18n="generalSettings.darkThemeAuto"></option>
+                                        <option value="enabled" data-i18n="generalSettings.darkThemeEnabled"></option>
+                                        <option value="disabled" data-i18n="generalSettings.darkThemeDisabled"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="darkThemeSelect" class="col-lg-2 control-label option-label" data-i18n="generalSettings.keyboardShortcutsLabel"></label>
+                                <div class="col-lg-10">
+                                    <button type="button" class="btn btn-sm btn-primary" id="keyboardShortcuts"><i class="fa fa-keyboard-o fa-fw" aria-hidden="true"></i> <span data-i18n="generalSettings.keyboardShortcuts"></span></button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="languageSelect" class="col-lg-2 control-label bold" data-i18n="container.labelLanguage"></label>
-                    <div class="col-lg-10">
-                        <select id="languageSelect" class="form-control" rows="10"></select>
+                    <div role="tabpanel" class="tab-pane" id="listTab">
+                        <div class="form-horizontal">
+                            <p class="large-text"><span data-i18n="container.description"></span> <strong data-i18n="container.saveInfo"></strong></p>
+                            <div class="form-group">
+                                <label for="textareaAssomPage" class="col-lg-2 control-label option-label" data-i18n="container.labelList"></label>
+                                <div class="col-lg-10">
+                                    <p class="indice"><span data-i18n="container.indiceList"></span> <span data-toggle="tooltip" data-placement="top" data-i18n="[data-original-title]container.titleHelp"><i class="fa fa-question-circle helpIcon" aria-hidden="true"></i></p>
+                                    <p><input type="checkbox" id="checkWhiteList" /> <label for="checkWhiteList" data-i18n="container.whiteList"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleWhiteList"></i></p>
+                                    <p><span data-i18n="container.infoListSyntax"></span> &nbsp; <button type="button" class="btn btn-xs btn-primary" id="syntaxBtn"><span class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip"></span></button></p>
+                                    <textarea id="textareaAssomPage" class="form-control" rows="10" data-i18n="[placeholder]container.textareaPlaceholder"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-10 col-lg-offset-2">
+                                    <button type="button" class="btn btn-primary" id="validerButton"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.save"></span></button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-lg-2">&nbsp;</label>
-                    <div class="col-lg-10">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#customTheme"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span data-i18n="container.customThemeButton"></span></button> &nbsp; <button type="button" class="btn btn-success" data-toggle="modal" data-target="#archive"><i class="fa fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="container.backup"></span></button> &nbsp; <button type="button" class="btn btn-info" data-toggle="modal" data-target="#filters"><i class="fa fa-filter fa-fw" aria-hidden="true"></i> <span data-i18n="container.filters"></span></button><br />
-                        <button type="button" class="btn btn-sm btn-primary" id="keyboardShortcuts"><i class="fa fa-keyboard-o fa-fw" aria-hidden="true"></i> <span data-i18n="container.keyboardShortcuts"></span></button>
+                    <div role="tabpanel" class="tab-pane" id="customThemeTab">
+                        <p><span data-i18n="modal.customTheme.description"></span> <strong data-i18n="modal.customTheme.saveInfo"></strong></p>
+                        <div class="text-center">
+                            <select id="themeSelect" value="1" style="min-width: 80px;"></select>
+                            <p class="mt8"><button id="customThemeSave" data-delay="0" data-container="#customTheme" data-trigger="manual" data-placement="bottom" type="button" class="btn btn-sm btn-success"><i class="fa fa-fw fa-check" aria-hidden="true"></i> <span data-i18n="modal.customTheme.save"></span></button> &nbsp; <button id="customThemeCancel" type="button" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-times" aria-hidden="true"></i> <span data-i18n="modal.customTheme.cancel"></span></button> &nbsp; <button id="customThemeReset" type="button" class="btn btn-sm btn-danger"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i> <span data-i18n="modal.customTheme.reset"></span></button></p>
+                        </div>
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-lg-4 control-label bold" data-i18n="modal.customTheme.preview"></label>
+                                <div class="col-lg-6">
+                                    <div id="previsualisationDiv"><span id="textPreview" data-i18n="modal.customTheme.previewText"></span> <a href="#" id="linkPreview" data-i18n="modal.customTheme.previewLink"></a> <a href="#" id="linkVisitedPreview" data-i18n="modal.customTheme.previewLinkVisited"></a></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-4 control-label bold" data-i18n="modal.customTheme.background"></label>
+                                <div class="col-lg-6">
+                                    <a href="#" class="colorpicker" id="colorpicker1" style="background-color: #000000;" value="000000"></a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-4 control-label bold" data-i18n="modal.customTheme.texts"></label>
+                                <div class="col-lg-6">
+                                    <a href="#" class="colorpicker" id="colorpicker2" style="background-color: #ffffff;" value="ffffff"></a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-4 control-label bold" data-i18n="modal.customTheme.links"></label>
+                                <div class="col-lg-6">
+                                    <a href="#" class="colorpicker" id="colorpicker3" style="background-color: #1E90FF;" value="1E90FF"></a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-4 control-label bold" data-i18n="modal.customTheme.linksVisited"></label>
+                                <div class="col-lg-6">
+                                    <a href="#" class="colorpicker" id="colorpicker4" style="background-color: #800080;" value="800080"></a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="customThemeFont" class="col-lg-4 control-label bold" data-i18n="modal.customTheme.font"></label>
+                                <div class="col-lg-6">
+                                    <input type="text" id="customThemeFont" name="customThemeFont" data-i18n="[placeholder]modal.customTheme.placeholderFont"></input> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" id="customThemeHelp"></i>
+                                    <p id="firefoxLinuxBugFonts" class="orange" style="display: none;"><i class="fa fa-exclamation-triangle fa-fw" aria-hidden="true"></i> <strong data-i18n="modal.customTheme.firefoxLinuxBugFonts"></strong></p>
+                                </div>
+                            </div>
+                            <div class="panel-group" id="accordionCustomCSS">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordionCustomCSS" href="#collapseCustomCSS"><i class="fa fa-fw fa-code" aria-hidden="true"></i> <span data-i18n="modal.customTheme.collapseCustomCSS"></span> </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseCustomCSS" class="panel-collapse collapse in">
+                                        <p class="pnm"><span data-i18n="modal.customTheme.customCSSHelp"></span> <strong data-i18n="modal.customTheme.customCSSHelpSuggestions"></strong></p>
+                                        <textarea id="codeMirrorUserCSSTextarea" style="width: 100%; height: 300px;"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="textareaAssomPage" class="col-lg-2 control-label bold" data-i18n="container.labelList"></label>
-                    <div class="col-lg-10">
-                        <p class="indice"><span data-i18n="container.indiceList"></span> <span data-toggle="tooltip" data-placement="top" data-i18n="[data-original-title]container.titleHelp"><i class="fa fa-question-circle helpIcon" aria-hidden="true"></i></p>
-                        <p><input type="checkbox" id="checkWhiteList" /> <label for="checkWhiteList" data-i18n="container.whiteList"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleWhiteList"></i></p>
-                        <p><span data-i18n="container.infoListSyntax"></span> &nbsp; <button type="button" class="btn btn-xs btn-primary" id="syntaxBtn"><span class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip"></span></button></p>
-                        <textarea id="textareaAssomPage" class="form-control" rows="10" data-i18n="[placeholder]container.textareaPlaceholder"></textarea>
+                    <div role="tabpanel" class="tab-pane" id="presetsTab">
+                        <p><span data-i18n="modal.archive.descriptionPreset"></span> <strong data-i18n="modal.archive.warningPreset"></strong></p>
+                        <center><a class="btn btn-success" id="loadPresetBtn"><i class="fa fa-upload fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.loadPreset"></span></a> &nbsp; <a class="btn btn-primary" id="savePresetBtn"><i class="fa fa-pencil fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.savePreset"></span></a> &nbsp; <a class="btn btn-danger" id="deletePresetBtn"><i class="fa fa-trash fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.deletePreset"></span></a></center>
+                        <div id="loadPreset" class="center" style="display: none;">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="loadPresetSelect" class="col-lg-4 control-label bold" data-i18n="modal.archive.loadPresetLabel"></label>
+                                    <div class="col-lg-8">
+                                        <select id="loadPresetSelect" style="width: 100%;"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <a class="btn btn-success" id="loadPresetValid"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modal.load"></span></a>
+                                </div>
+                                <p id="restorePresetError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetError"></span></p>
+                                <p id="restorePresetEmpty" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetEmpty"></span></p>
+                                <p id="restorePresetSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetSuccess"></span></p>
+                            </div>
+                        </div>
+                        <div id="savePreset" class="center" style="display: none;">
+                            <div class="form-horizontal">
+                                <p data-i18n="modal.archive.infoSavePreset"></p>
+                                <div class="form-group">
+                                    <label for="savePresetSelect" class="col-lg-4 control-label bold" data-i18n="modal.archive.savePresetSelect"></label>
+                                    <div class="col-lg-8">
+                                        <select id="savePresetSelect" style="width: 100%;"></select>
+                                        <a class="btn btn-link" id="presetInfosBtn"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modal.presets.presetInfosLabel"></span></a>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="savePresetTitle" class="col-lg-4 control-label bold" data-i18n="modal.archive.savePresetTitle"></label>
+                                    <div class="col-lg-8">
+                                        <input type="text" id="savePresetTitle" style="width: 100%;"></input>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="savePresetWebsite" class="col-lg-4 control-label bold"><span data-i18n="modal.archive.savePresetWebsite"></span><br /><button type="button" class="btn btn-xs btn-primary" id="syntaxBtnPresets"><span class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip"></span></button></label>
+                                    <div class="col-lg-8">
+                                        <textarea id="savePresetWebsite" class="form-control" style="width: 100%; height: 200px;" data-i18n="[placeholder]container.textareaPlaceholder"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" id="checkSaveNewSettingsPreset" /> <label for="checkSaveNewSettingsPreset" data-i18n="modal.archive.checkSaveNewSettingsPreset"></label>
+                                </div>
+                                <div class="form-group">
+                                    <a class="btn btn-primary" id="savePresetValid"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span id="presetCreateEditBtn"></span></a>
+                                </div>
+                                <p id="savePresetError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetError"></span></p>
+                                <p id="savePresetSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.savePresetSuccess"></span></p>
+                            </div>
+                        </div>
+                        <div id="deletePreset" class="center" style="display: none;">
+                            <div class="form-horizontal">
+                                <p><strong data-i18n="modal.archive.infoDeletePreset"></strong></p>
+                                <div class="form-group">
+                                    <label for="deletePresetSelect" class="col-lg-4 control-label bold" data-i18n="modal.archive.loadPresetLabel"></label>
+                                    <div class="col-lg-8">
+                                        <select id="deletePresetSelect" style="width: 100%;"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <a class="btn btn-danger" id="deletePresetValid"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.delete"></span></a>
+                                </div>
+                                <p id="deletePresetError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetError"></span></p>
+                                <p id="deletePresetSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.deletePresetSuccess"></span></p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-lg-10 col-lg-offset-2">
-                        <button type="button" class="btn btn-primary" id="validerButton"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.validate"></span></button> &nbsp; <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#resetConfirm" id="resetConfirmBtn"><i class="fa fa-refresh" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button>
+                    <div role="tabpanel" class="tab-pane" id="filtersTab">
+                        <p><span data-i18n="modal.filters.infos"></span></p>
+                        <button class="btn btn-sm btn-primary" id="updateAllFilters"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.updateAll"></span></button> &nbsp; 
+                        <button class="btn btn-sm btn-default" id="cleanAllFilters"><i class="fa fa-trash fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.cleanAll"></span></button> &nbsp; 
+                        <input type="checkbox" id="enableFilterAutoUpdate"></input> <label for="enableFilterAutoUpdate" data-i18n="modal.filters.enableFilterAutoUpdate"></label>
+                        <p class="well well-sm well-lmb"><span id="filtersCount"></span> / <span id="filtersStorageSize"></span></p>
+                        <ul class="list-group" id="filtersList"></ul>
+                        <button class="btn btn-sm btn-primary" id="addFilterSourceBtnOpen" data-dismiss="modal" data-toggle="modal" data-target="#addFilterSource"><i class="fa fa-plus fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.addFilter"></span></button>
+                        <button class="btn btn-sm btn-danger" id="resetDefaultFiltersBtn"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.resetDefaultFilters"></span></button>
                     </div>
-                </div>
-            </div>
-        </div>
-        <!-- modals :
-             syntax -->
-        <div class="modal fade" id="syntax" tabindex="-1" role="dialog" aria-labelledby="syntax">
-          <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                  <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                      <h4 class="modal-title" id="syntaxLabel"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modal.syntax.title"></span></h4>
-                  </div>
-                  <div class="modal-body">
-                    <p id="syntaxText"></p>
-                  </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
+                    <div role="tabpanel" class="tab-pane" id="archiveTab">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" id="archiveTabLink" class="active"><a href="#archiveTab" aria-controls="archiveTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-archive" aria-hidden="true"></i> <span data-i18n="modal.archive.archive"></span></a></li>
+                            <li role="presentation" id="restoreTabLink"><a href="#restoreTab" aria-controls="restoreTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-repeat" aria-hidden="true"></i> <span data-i18n="modal.archive.restore"></span></a></li>
+                            <li role="presentation" id="cloudBackupLink"><a href="#cloudBackupTab" aria-controls="cloudBackupTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-cloud" aria-hidden="true"></i> <span data-i18n="modal.archive.cloud"></span></a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="archiveTab">
+                                <p data-i18n="modal.archive.descriptionArchive"></p>
+                                <center><a class="btn btn-primary" id="archiveDataButton"><i class="fa fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.buttonArchive"></span></a></center>
+                                <div class="center">
+                                    <p id="archiveError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveError"></span></p>
+                                </div>
+                                <p id="firefoxHelpArchive" class="orange" style="display: none;"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <strong data-i18n="modal.archive.firefoxHelp"></strong></p>
+                                <div id="helpArchive" style="display: none;">
+                                    <p data-i18n="modal.archive.helpArchive"></p>
+                                    <p><strong data-i18n="modal.archive.suggestedName"></strong> <input type="text" id="archiveSuggestedName" readonly="readonly"></input></p>
+                                    <textarea id="codeMirrorJSONArchiveTextarea" style="width: 100%; height: 75px;" readonly="readonly"></textarea>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="restoreTab">
+                                <p><span data-i18n="modal.archive.descriptionRestore"></span> <strong data-i18n="modal.archive.warningRestore"></strong></p>
+                                <center><a class="btn btn-primary" id="restoreDataButton"><i class="fa fa-repeat fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.buttonRestore"></span></a></center>
+                                <div id="infoRestore" class="center">
+                                    <p id="restoreError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreError"></span></p>
+                                    <p id="restoreErrorFilesize" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreErrorFilesize"></span></p>
+                                    <p id="restoreErrorExtension" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreErrorExtension"></span></p>
+                                    <p id="restoreErrorArchive" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreErrorArchive"></span></p>
+                                    <p id="restoreSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreSuccess"></span></p>
+                                </div>
+                                <input id="inputFileJSON" type="file" name="inputFileJSON" accept=".json" style="display: none;" />
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="cloudBackupTab">
+                                <p><span data-i18n="modal.archive.descriptionCloudBackup"></span> <strong data-i18n="modal.archive.warningCloudBackup"></strong></p>
+                                <center><a class="btn btn-success disabled" id="archiveCloudBtn"><i class="fa fa-cloud-upload fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudBtn"></span></a> &nbsp; <a class="btn btn-primary disabled" id="restoreCloudBtn"><i class="fa fa-cloud-download fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreCloudBtn"></span></a></center>
+                                <div id="infoCloud" class="center">
+                                    <p id="infoCloudLastArchive" style="display: none;"><strong data-i18n="modal.archive.infoCloudLastArchive"></strong> <span id="dateCloudArchive"></span></p>
+                                    <p id="archiveCloudNotCompatible" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudNotCompatible"></span></p>
+                                    <p id="archiveCloudError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudError"></span></p>
+                                    <p id="archiveCloudErrorQuota" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudErrorQuota"></span></p>
+                                    <p id="restoreCloudError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreCloudError"></span></p>
+                                    <p id="archiveCloudSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudSuccess"></span></p>
+                                    <p id="restoreCloudSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreCloudSuccess"></span></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-         </div>
-        <!-- about -->
-        <div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="about">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="aboutLabel"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modal.about.title"></span></h4>
+                    <div role="tabpanel" class="tab-pane" id="storageTab">
+                        <div class="row border-bottom">
+                            <label class="col-lg-4 col-sm-4 control-label bold" data-i18n="modal.archive.infosLocalStorage"></label>
+                            <div class="col-lg-8 col-sm-8">
+                                <span id="infosLocalStorage"></span>
+                            </div>
+                        </div>
+                        <div class="row border-bottom">
+                            <label class="col-lg-4 col-sm-4 control-label bold" data-i18n="modal.archive.infosCloudStorage"></label>
+                            <div class="col-lg-8 col-sm-8">
+                                <span id="infosCloudStorage"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#resetConfirm" id="resetConfirmBtn"><i class="fa fa-refresh" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button>
+                        </div>
                     </div>
-                    <div class="modal-body">
+                    <div role="tabpanel" class="tab-pane" id="aboutTab">
                         <p class="large-text"><span data-i18n="modal.about.description"></span> (<a href="http://www.eliastiksofts.com" target="_blank">www.eliastiksofts.com</a>).</p>
                         <p class="large-text"><label data-i18n="modal.about.version" class="bold"></label> <span class="badge" id="versionExtension"></span></p>
                         <!-- <p class="large-text"><label data-i18n="modal.about.browser"></label> <span class="badge" id="browserName"></span></p> -->
+                        <a href="" target="_blank" class="btn btn-success" role="button" id="updateBtn"><i class="fa fa-search fa-fw" aria-hidden="true"></i> <span data-i18n="container.update"></span></a>
                         <div class="mb">
                             <a class="btn btn-primary" href="#" data-dismiss="modal" data-toggle="modal" data-target="#readme"><i class="fa fa-file-text fa-fw" aria-hidden="true"></i> <span data-i18n="modal.about.readme"></span></a> &nbsp; <a class="btn btn-default" href="http://www.eliastiksofts.com/page-shadow/" target="_blank"><i class="fa fa-home fa-fw" aria-hidden="true"></i> <span data-i18n="modal.about.homepage"></span></a> &nbsp; <div class="btn-group">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-paper-plane fa-fw" aria-hidden="true"></i> <span data-i18n="modal.about.contact.title"></span> <span class="caret"></span></button>
@@ -319,12 +516,27 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <!-- modals :
+             syntax -->
+        <div class="modal fade" id="syntax" tabindex="-1" role="dialog" aria-labelledby="syntax">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title" id="syntaxLabel"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modal.syntax.title"></span></h4>
+                  </div>
+                  <div class="modal-body">
+                    <p id="syntaxText"></p>
+                  </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
                     </div>
                 </div>
             </div>
-        </div>
+         </div>
         <!-- readme -->
         <div class="modal fade" id="readme" tabindex="-1" role="dialog" aria-labelledby="readme">
             <div class="modal-dialog" role="document">
@@ -335,79 +547,6 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     </div>
                     <div class="modal-body">
                         <iframe src="" id="iframeReadme" data-i18n="[src]modal.readme.src"></iframe>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- custom theme -->
-        <div class="modal fade" id="customTheme" tabindex="-1" role="dialog" aria-labelledby="customTheme" data-backdrop="static">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span data-i18n="modal.customTheme.title"></span></h4>
-                    </div>
-                    <div class="modal-body">
-                        <p><span data-i18n="modal.customTheme.description"></span> <strong data-i18n="modal.customTheme.saveInfo"></strong></p>
-                        <div class="text-center">
-                            <select id="themeSelect" value="1" style="min-width: 80px;"></select>
-                            <p class="mt8"><button id="customThemeSave" data-delay="0" data-container="#customTheme" data-trigger="manual" data-placement="bottom" type="button" class="btn btn-sm btn-success"><i class="fa fa-fw fa-check" aria-hidden="true"></i> <span data-i18n="modal.customTheme.save"></span></button> &nbsp; <button id="customThemeCancel" type="button" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-times" aria-hidden="true"></i> <span data-i18n="modal.customTheme.cancel"></span></button> &nbsp; <button id="customThemeReset" type="button" class="btn btn-sm btn-danger"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i> <span data-i18n="modal.customTheme.reset"></span></button></p>
-                        </div>
-                        <div class="form-horizontal">
-                            <div class="form-group">
-                                <label class="col-lg-4 control-label bold" data-i18n="modal.customTheme.preview"></label>
-                                <div class="col-lg-6">
-                                    <div id="previsualisationDiv"><span id="textPreview" data-i18n="modal.customTheme.previewText"></span> <a href="#" id="linkPreview" data-i18n="modal.customTheme.previewLink"></a> <a href="#" id="linkVisitedPreview" data-i18n="modal.customTheme.previewLinkVisited"></a></div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-lg-4 control-label bold" data-i18n="modal.customTheme.background"></label>
-                                <div class="col-lg-6">
-                                    <a href="#" class="colorpicker" id="colorpicker1" style="background-color: #000000;" value="000000"></a>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-lg-4 control-label bold" data-i18n="modal.customTheme.texts"></label>
-                                <div class="col-lg-6">
-                                    <a href="#" class="colorpicker" id="colorpicker2" style="background-color: #ffffff;" value="ffffff"></a>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-lg-4 control-label bold" data-i18n="modal.customTheme.links"></label>
-                                <div class="col-lg-6">
-                                    <a href="#" class="colorpicker" id="colorpicker3" style="background-color: #1E90FF;" value="1E90FF"></a>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-lg-4 control-label bold" data-i18n="modal.customTheme.linksVisited"></label>
-                                <div class="col-lg-6">
-                                    <a href="#" class="colorpicker" id="colorpicker4" style="background-color: #800080;" value="800080"></a>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="customThemeFont" class="col-lg-4 control-label bold" data-i18n="modal.customTheme.font"></label>
-                                <div class="col-lg-6">
-                                    <input type="text" id="customThemeFont" name="customThemeFont" data-i18n="[placeholder]modal.customTheme.placeholderFont"></input> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" id="customThemeHelp"></i>
-                                    <p id="firefoxLinuxBugFonts" class="orange" style="display: none;"><i class="fa fa-exclamation-triangle fa-fw" aria-hidden="true"></i> <strong data-i18n="modal.customTheme.firefoxLinuxBugFonts"></strong></p>
-                                </div>
-                            </div>
-                            <div class="panel-group" id="accordionCustomCSS">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordionCustomCSS" href="#collapseCustomCSS"><i class="fa fa-fw fa-code" aria-hidden="true"></i> <span data-i18n="modal.customTheme.collapseCustomCSS"></span> </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapseCustomCSS" class="panel-collapse collapse in">
-                                        <p class="pnm"><span data-i18n="modal.customTheme.customCSSHelp"></span> <strong data-i18n="modal.customTheme.customCSSHelpSuggestions"></strong></p>
-                                        <textarea id="codeMirrorUserCSSTextarea" style="width: 100%; height: 300px;"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
@@ -466,151 +605,6 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                 </div>
             </div>
         </div>
-        <!-- archive -->
-        <div class="modal fade" id="archive" tabindex="-1" role="dialog" aria-labelledby="archive">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="archiveLabel"><i class="fa fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.title"></span></h4>
-                    </div>
-                    <div class="modal-body">
-                        <ul class="nav nav-tabs" role="tablist">
-                            <li role="presentation" id="archiveTabLink" class="active"><a href="#archiveTab" aria-controls="archiveTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-archive" aria-hidden="true"></i> <span data-i18n="modal.archive.archive"></span></a></li>
-                            <li role="presentation" id="restoreTabLink"><a href="#restoreTab" aria-controls="restoreTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-repeat" aria-hidden="true"></i> <span data-i18n="modal.archive.restore"></span></a></li>
-                            <li role="presentation" id="presetTabLink"><a href="#presetTab" aria-controls="presetTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-wrench" aria-hidden="true"></i> <span data-i18n="modal.archive.preset"></span></a></li>
-                            <li role="presentation" id="cloudBackupLink"><a href="#cloudBackupTab" aria-controls="cloudBackupTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-cloud" aria-hidden="true"></i> <span data-i18n="modal.archive.cloud"></span></a></li>
-                            <li role="presentation" id="infosStorage"><a href="#infosStorageTab" aria-controls="infosStorageTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.infosStorage"></span></a></li>
-                        </ul>
-                        <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane active" id="archiveTab">
-                                <p data-i18n="modal.archive.descriptionArchive"></p>
-                                <center><a class="btn btn-primary" id="archiveDataButton"><i class="fa fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.buttonArchive"></span></a></center>
-                                <div class="center">
-                                    <p id="archiveError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveError"></span></p>
-                                </div>
-                                <p id="firefoxHelpArchive" class="orange" style="display: none;"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <strong data-i18n="modal.archive.firefoxHelp"></strong></p>
-                                <div id="helpArchive" style="display: none;">
-                                    <p data-i18n="modal.archive.helpArchive"></p>
-                                    <p><strong data-i18n="modal.archive.suggestedName"></strong> <input type="text" id="archiveSuggestedName" readonly="readonly"></input></p>
-                                    <textarea id="codeMirrorJSONArchiveTextarea" style="width: 100%; height: 75px;" readonly="readonly"></textarea>
-                                </div>
-                            </div>
-                            <div role="tabpanel" class="tab-pane" id="restoreTab">
-                                <p><span data-i18n="modal.archive.descriptionRestore"></span> <strong data-i18n="modal.archive.warningRestore"></strong></p>
-                                <center><a class="btn btn-primary" id="restoreDataButton"><i class="fa fa-repeat fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.buttonRestore"></span></a></center>
-                                <div id="infoRestore" class="center">
-                                    <p id="restoreError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreError"></span></p>
-                                    <p id="restoreErrorFilesize" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreErrorFilesize"></span></p>
-                                    <p id="restoreErrorExtension" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreErrorExtension"></span></p>
-                                    <p id="restoreErrorArchive" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreErrorArchive"></span></p>
-                                    <p id="restoreSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreSuccess"></span></p>
-                                </div>
-                                <input id="inputFileJSON" type="file" name="inputFileJSON" accept=".json" style="display: none;" />
-                            </div>
-                            <div role="tabpanel" class="tab-pane" id="presetTab">
-                                <p><span data-i18n="modal.archive.descriptionPreset"></span> <strong data-i18n="modal.archive.warningPreset"></strong></p>
-                                <center><a class="btn btn-success" id="loadPresetBtn"><i class="fa fa-upload fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.loadPreset"></span></a> &nbsp; <a class="btn btn-primary" id="savePresetBtn"><i class="fa fa-pencil fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.savePreset"></span></a> &nbsp; <a class="btn btn-danger" id="deletePresetBtn"><i class="fa fa-trash fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.deletePreset"></span></a></center>
-                                <div id="loadPreset" class="center" style="display: none;">
-                                    <div class="form-horizontal">
-                                        <div class="form-group">
-                                            <label for="loadPresetSelect" class="col-lg-4 control-label bold" data-i18n="modal.archive.loadPresetLabel"></label>
-                                            <div class="col-lg-8">
-                                                <select id="loadPresetSelect" style="width: 100%;"></select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <a class="btn btn-success" id="loadPresetValid"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modal.load"></span></a>
-                                        </div>
-                                        <p id="restorePresetError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetError"></span></p>
-                                        <p id="restorePresetEmpty" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetEmpty"></span></p>
-                                        <p id="restorePresetSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetSuccess"></span></p>
-                                    </div>
-                                </div>
-                                <div id="savePreset" class="center" style="display: none;">
-                                    <div class="form-horizontal">
-                                        <p data-i18n="modal.archive.infoSavePreset"></p>
-                                        <div class="form-group">
-                                            <label for="savePresetSelect" class="col-lg-4 control-label bold" data-i18n="modal.archive.savePresetSelect"></label>
-                                            <div class="col-lg-8">
-                                                <select id="savePresetSelect" style="width: 100%;"></select>
-                                                <a class="btn btn-link" id="presetInfosBtn"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modal.presets.presetInfosLabel"></span></a>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="savePresetTitle" class="col-lg-4 control-label bold" data-i18n="modal.archive.savePresetTitle"></label>
-                                            <div class="col-lg-8">
-                                                <input type="text" id="savePresetTitle" style="width: 100%;"></input>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="savePresetWebsite" class="col-lg-4 control-label bold"><span data-i18n="modal.archive.savePresetWebsite"></span><br /><button type="button" class="btn btn-xs btn-primary" id="syntaxBtnPresets"><span class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip"></span></button></label>
-                                            <div class="col-lg-8">
-                                                <textarea id="savePresetWebsite" class="form-control" style="width: 100%; height: 200px;" data-i18n="[placeholder]container.textareaPlaceholder"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="checkbox" id="checkSaveNewSettingsPreset" /> <label for="checkSaveNewSettingsPreset" data-i18n="modal.archive.checkSaveNewSettingsPreset"></label>
-                                        </div>
-                                        <div class="form-group">
-                                            <a class="btn btn-primary" id="savePresetValid"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span id="presetCreateEditBtn"></span></a>
-                                        </div>
-                                        <p id="savePresetError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetError"></span></p>
-                                        <p id="savePresetSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.savePresetSuccess"></span></p>
-                                    </div>
-                                </div>
-                                <div id="deletePreset" class="center" style="display: none;">
-                                    <div class="form-horizontal">
-                                        <p><strong data-i18n="modal.archive.infoDeletePreset"></strong></p>
-                                        <div class="form-group">
-                                            <label for="deletePresetSelect" class="col-lg-4 control-label bold" data-i18n="modal.archive.loadPresetLabel"></label>
-                                            <div class="col-lg-8">
-                                                <select id="deletePresetSelect" style="width: 100%;"></select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <a class="btn btn-danger" id="deletePresetValid"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.delete"></span></a>
-                                        </div>
-                                        <p id="deletePresetError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetError"></span></p>
-                                        <p id="deletePresetSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.deletePresetSuccess"></span></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div role="tabpanel" class="tab-pane" id="cloudBackupTab">
-                                <p><span data-i18n="modal.archive.descriptionCloudBackup"></span> <strong data-i18n="modal.archive.warningCloudBackup"></strong></p>
-                                <center><a class="btn btn-success disabled" id="archiveCloudBtn"><i class="fa fa-cloud-upload fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudBtn"></span></a> &nbsp; <a class="btn btn-primary disabled" id="restoreCloudBtn"><i class="fa fa-cloud-download fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreCloudBtn"></span></a></center>
-                                <div id="infoCloud" class="center">
-                                    <p id="infoCloudLastArchive" style="display: none;"><strong data-i18n="modal.archive.infoCloudLastArchive"></strong> <span id="dateCloudArchive"></span></p>
-                                    <p id="archiveCloudNotCompatible" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudNotCompatible"></span></p>
-                                    <p id="archiveCloudError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudError"></span></p>
-                                    <p id="archiveCloudErrorQuota" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudErrorQuota"></span></p>
-                                    <p id="restoreCloudError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreCloudError"></span></p>
-                                    <p id="archiveCloudSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudSuccess"></span></p>
-                                    <p id="restoreCloudSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreCloudSuccess"></span></p>
-                                </div>
-                            </div>
-                            <div role="tabpanel" class="tab-pane" id="infosStorageTab">
-                                <div class="row border-bottom">
-                                    <label class="col-lg-4 col-sm-4 control-label bold" data-i18n="modal.archive.infosLocalStorage"></label>
-                                    <div class="col-lg-8 col-sm-8">
-                                        <span id="infosLocalStorage"></span>
-                                    </div>
-                                </div>
-                                <div class="row border-bottom">
-                                    <label class="col-lg-4 col-sm-4 control-label bold" data-i18n="modal.archive.infosCloudStorage"></label>
-                                    <div class="col-lg-8 col-sm-8">
-                                        <span id="infosCloudStorage"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- preset infos -->
         <div class="modal fade" id="presetInfos" tabindex="-1" role="dialog" aria-labelledby="presetInfos">
             <div class="modal-dialog" role="document">
@@ -620,30 +614,6 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                         <h4 class="modal-title" id="presetInfosLabel"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modal.presets.presetInfosLabel"></span></h4>
                     </div>
                     <div class="modal-body"></div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- filters -->
-        <div class="modal fade" id="filters" tabindex="-1" role="dialog" aria-labelledby="filters">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="filtersLabel"><i class="fa fa-filter fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.title"></span></h4>
-                    </div>
-                    <div class="modal-body">
-                        <p><span data-i18n="modal.filters.infos"></span></p>
-                        <button class="btn btn-sm btn-primary" id="updateAllFilters"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.updateAll"></span></button> &nbsp; 
-                        <button class="btn btn-sm btn-default" id="cleanAllFilters"><i class="fa fa-trash fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.cleanAll"></span></button> &nbsp; 
-                        <input type="checkbox" id="enableFilterAutoUpdate"></input> <label for="enableFilterAutoUpdate" data-i18n="modal.filters.enableFilterAutoUpdate"></label>
-                        <p class="well well-sm well-lmb"><span id="filtersCount"></span> / <span id="filtersStorageSize"></span></p>
-                        <ul class="list-group" id="filtersList"></ul>
-                        <button class="btn btn-sm btn-primary" id="addFilterSourceBtnOpen" data-dismiss="modal" data-toggle="modal" data-target="#addFilterSource"><i class="fa fa-plus fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.addFilter"></span></button>
-                        <button class="btn btn-sm btn-danger" id="resetDefaultFiltersBtn"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.resetDefaultFilters"></span></button>
-                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
                     </div>

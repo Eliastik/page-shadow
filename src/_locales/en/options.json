@@ -10,7 +10,6 @@
         "saveInfo": "Don't forget to click on Confirm to save your settings!",
         "about": "About Page Shadow",
         "update": "Search update",
-        "labelLanguage": "Language:",
         "language": {
             "fr": "Français",
             "en": "English"
@@ -20,7 +19,6 @@
         "help": "Help",
         "customThemeButton": "Custom themes",
         "backup": "Backups and presets",
-        "keyboardShortcuts": "Manage keyboard shortcuts…",
         "keyboardShortcutsInfos": "Not yet available with your browser. However, the keyboard shortcut Alt+Shift+S allow you to enable or disable globally the extension.",
         "indiceList": "The entries below will be ignored by Page Shadow.",
         "whiteList": "Whitelist (ignore all the websites by default)",
@@ -30,7 +28,27 @@
         "reset": "Reset the settings",
         "validate": "Confirm",
         "customTheme": "Custom theme n°{{count}}",
-        "filters": "Filters"
+        "filters": "Filters",
+        "save": "Save"
+    },
+    "tabTitles": {
+        "general": "General",
+        "lists": "Blacklist/whitelist",
+        "customThemes": "Custom themes",
+        "presets": "Presets",
+        "filters": "Filters",
+        "archive": "Archive/restore",
+        "storage": "Storeage",
+        "about": "About"
+    },
+    "generalSettings": {
+        "labelLanguage": "Language:",
+        "darkTheme": "Dark theme:",
+        "darkThemeAuto": "Automatic",
+        "darkThemeEnabled": "Enabled",
+        "darkThemeDisabled": "Disabled",
+        "keyboardShortcutsLabel": "Keyboard shortcuts:",
+        "keyboardShortcuts": "Manage keyboard shortcuts…"
     },
     "modal": {
         "syntax": {
