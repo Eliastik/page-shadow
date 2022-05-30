@@ -54,7 +54,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     <li role="presentation" id="generalTabLink" class="active"><a href="#generalTab" aria-controls="generalTab" role="tab" data-toggle="tab"><i class="fa-solid fa-gears fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.general"></span></a></li>
                     <li role="presentation" id="listTabLink"><a href="#listTab" aria-controls="listTab" role="tab" data-toggle="tab"><i class="fa-solid fa-rectangle-list fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.lists"></span></a></li>
                     <li role="presentation" id="customThemeTabLink"><a href="#customThemeTab" aria-controls="customThemeTab" role="tab" data-toggle="tab"><i class="fa-solid fa-palette fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.customThemes"></span></a></li>
-                    <li role="presentation" id="presetsTabLink"><a href="#presetsTab" aria-controls="presetsTab" role="tab" data-toggle="tab"><i class="fa-solid fa-wrench fa-fw" aria-hidden="true"></i><span data-i18n="tabTitles.presets"></span></a></li>
+                    <li role="presentation" id="presetsTabLink"><a href="#presetsTab" aria-controls="presetsTab" role="tab" data-toggle="tab"><i class="fa-solid fa-wrench fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.presets"></span></a></li>
                     <li role="presentation" id="filtersTabLink"><a href="#filtersTab" aria-controls="filtersTab" role="tab" data-toggle="tab"><i class="fa-solid fa-filter fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.filters"></span></a></li>
                     <li role="presentation" id="archiveTabLink"><a href="#archiveTab" aria-controls="archiveTab" role="tab" data-toggle="tab"><i class="fa-solid fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.archive"></span></a></li>
                     <li role="presentation" id="storageTabLink"><a href="#storageTab" aria-controls="storageTab" role="tab" data-toggle="tab"><i class="fa-solid fa-hard-drive fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.storage"></span></a></li>
@@ -80,16 +80,16 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="darkThemeSelect" class="col-lg-2 control-label option-label" data-i18n="generalSettings.keyboardShortcutsLabel"></label>
+                                <label for="keyboardShortcuts" class="col-lg-2 control-label option-label" data-i18n="generalSettings.keyboardShortcutsLabel"></label>
                                 <div class="col-lg-10">
-                                    <button type="button" class="btn btn-sm btn-primary" id="keyboardShortcuts"><i class="fa fa-keyboard-o fa-fw" aria-hidden="true"></i> <span data-i18n="generalSettings.keyboardShortcuts"></span></button>
+                                    <button type="button" class="btn btn-sm btn-link" id="keyboardShortcuts"><span data-i18n="generalSettings.keyboardShortcuts"></span></button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="listTab">
                         <div class="form-horizontal">
-                            <p class="large-text"><span data-i18n="container.description"></span> <strong data-i18n="container.saveInfo"></strong></p>
+                            <strong data-i18n="container.saveInfo"></strong></p>
                             <div class="form-group">
                                 <label for="textareaAssomPage" class="col-lg-2 control-label option-label" data-i18n="container.labelList"></label>
                                 <div class="col-lg-10">
@@ -101,7 +101,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                             </div>
                             <div class="form-group">
                                 <div class="col-lg-10 col-lg-offset-2">
-                                    <button type="button" class="btn btn-primary" id="validerButton"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.save"></span></button>
+                                    <button type="button" class="btn btn-primary" id="saveListButton"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.save"></span></button>
                                 </div>
                             </div>
                         </div>

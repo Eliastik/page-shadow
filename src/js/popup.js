@@ -21,7 +21,7 @@ import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
-import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite } from "./util.js";
+import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme } from "./util.js";
 import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots } from "./constants.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
@@ -36,6 +36,7 @@ let i18nextLoaded = false;
 let selectedPreset = 1;
 
 init_i18next("popup").then(() => translateContent());
+toggleTheme(); // Toggle dark/light theme
 
 async function translateContent() {
     jqueryI18next.init(i18next, $, {

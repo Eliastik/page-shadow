@@ -1015,4 +1015,91 @@ function isRunningInIframe() {
     }
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe };
+async function isInterfaceDarkTheme() {
+    const setting = await browser.storage.local.get(["interfaceDarkTheme"]);
+
+    return new Promise(resolve => {
+        if (setting.interfaceDarkTheme === "enabled") {
+            resolve(true);
+        }
+
+        if (!setting.interfaceDarkTheme || setting.interfaceDarkTheme === "auto") {
+            if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                resolve(true);
+            }
+        }
+
+        resolve(false);
+    });
+}
+
+function loadStyles(id, styles) {
+    return new Promise(resolve => {
+        const oldStylesObjects = [];
+        const stylesObjects = [];
+        let loadedStyles = 0;
+        let hasError = false;
+
+        for(let i = 0; i < id.length; i++) {
+            oldStylesObjects.push(document.getElementById(id[i]));
+
+            if (styles[i] != null) {
+                const styleObject = document.createElement("link");
+                styleObject.setAttribute("id", id[i]);
+                styleObject.setAttribute("rel", "stylesheet");
+                styleObject.setAttribute("type", "text/css");
+                styleObject.setAttribute("href", styles[i]);
+                styleObject.addEventListener("load", onload);
+                styleObject.addEventListener("error", onerror);
+
+                stylesObjects.push(styleObject);
+            } else {
+                if (oldStylesObjects[i]) {
+                    document.head.removeChild(oldStylesObjects[i]);
+                }
+            }
+        }
+
+        function onload() {
+            if(!hasError) {
+                loadedStyles++;
+
+                if(loadedStyles >= id.length) {
+                    for(let i = 0; i < oldStylesObjects.length; i++) {
+                        if (oldStylesObjects[i]) {
+                            document.head.removeChild(oldStylesObjects[i]);
+                        }
+                    }
+
+                    resolve(true);
+                }
+            }
+        }
+
+        function onerror() {
+            hasError = true;
+
+            for(let i = 0; i < stylesObjects.length; i++) {
+                document.head.removeChild(stylesObjects[i]);
+            }
+
+            resolve(false);
+        }
+
+        for(let i = 0; i < stylesObjects.length; i++) {
+            document.head.appendChild(stylesObjects[i]);
+        }
+    });
+}
+
+async function toggleTheme() {
+    const isDarkTheme = await isInterfaceDarkTheme();
+
+    if (isDarkTheme) {
+        await loadStyles(["darkThemeStyle"], ["css/dark-theme.css"]);
+    } else {
+        await loadStyles(["darkThemeStyle"], [null]);
+    }
+}
+
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme };

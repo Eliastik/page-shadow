@@ -33,7 +33,7 @@ import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject } from "./util.js";
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme } from "./util.js";
 import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL } from "./constants.js";
 import { setSettingItem, setFirstSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
@@ -54,6 +54,7 @@ let currentSelectedPresetEdit = 1;
 let changingLanguage = false;
 
 init_i18next("options").then(() => translateContent());
+toggleTheme(); // Toggle dark/light theme
 
 function listTranslations(languages) {
     const language = i18next.language.substr(0, 2);
@@ -180,6 +181,12 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets) {
 
     $("#savePresetSelect").val(currentSelectedPresetEdit);
     $("#themeSelect").val(currentSelectedTheme);
+
+    const currentTheme = await browser.storage.local.get(["interfaceDarkTheme"]);
+
+    if (currentTheme.interfaceDarkTheme) {
+        $("#darkThemeSelect").val(currentTheme.interfaceDarkTheme);
+    }
 }
 
 async function displayTheme(nb, defaultSettings) {
@@ -801,12 +808,11 @@ async function notifyChangedThemeNotSaved(nb) {
     customThemes[nb]["customCSSCode"] != $("#codeMirrorUserCSSTextarea").val();
 }
 
-async function saveSettings() {
-    changingLanguage = true;
-
+async function saveList() {
     setSettingItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
 
     const result = await browser.storage.local.get(["whiteList", "sitesInterditPageShadow"]);
+
     if($("#checkWhiteList").prop("checked") == true) {
         if(result.whiteList !== "true") {
             setSettingItem("sitesInterditPageShadow", commentAllLines(result.sitesInterditPageShadow));
@@ -821,13 +827,23 @@ async function saveSettings() {
         setSettingItem("whiteList", "false");
     }
 
+    $("#saved").modal("show");
+    displaySettings("local", true);
+}
+
+async function changeLanguage() {
+    changingLanguage = true;
+
     changeLng($("#languageSelect").val());
     $("span[data-toggle=\"tooltip\"]").tooltip("hide");
     $("i[data-toggle=\"tooltip\"]").tooltip("hide");
-    $("#saved").modal("show");
-    displaySettings("local", true);
 
     changingLanguage = false;
+}
+
+async function changeTheme() {
+    setSettingItem("interfaceDarkTheme", $("#darkThemeSelect").val());
+    toggleTheme();
 }
 
 async function getSettingsToArchive() {
@@ -1172,8 +1188,16 @@ function addFilter() {
 $(document).ready(() => {
     let savedTimeout;
 
-    $("#validerButton").on("click", () => {
-        saveSettings();
+    $("#saveListButton").on("click", () => {
+        saveList();
+    });
+
+    $("#languageSelect").on("change", () => {
+        changeLanguage();
+    });
+
+    $("#darkThemeSelect").on("change", () => {
+        changeTheme();
     });
 
     $("#themeSelect").on("change", async() => {

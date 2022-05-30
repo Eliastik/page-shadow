@@ -445,6 +445,10 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 .container-option {
     width: 80% !important;
 }
+#keyboardShortcuts {
+    font-size: 11pt;
+    margin-bottom: 0 !important;
+}
 @-webkit-keyframes fadein {
     from { bottom: 0; opacity: 0; }
     to { bottom: 30px; opacity: 0.9; }

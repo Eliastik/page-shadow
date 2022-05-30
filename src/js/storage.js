@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { extensionVersion, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, defaultPresets, defaultCustomThemes, defaultFilters } from "./constants.js";
+import { extensionVersion, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, defaultPresets, defaultCustomThemes, defaultFilters, defaultInterfaceDarkTheme } from "./constants.js";
 import browser from "webextension-polyfill";
 
 function setSettingItem(name, value) {
@@ -89,7 +89,8 @@ async function setFirstSettings() {
         "filtersSettings": defaultFilters,
         "customFilter": "",
         "defaultLoad": "0",
-        "updateNotification": updateNotification
+        "updateNotification": updateNotification,
+        "interfaceDarkTheme": defaultInterfaceDarkTheme
     });
 
     return true;

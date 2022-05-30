@@ -6,8 +6,7 @@
         "actual": "(actuel)"
     },
     "container": {
-        "description": "Ici, vous pouvez définir certains paramètres avancés ou consulter les informations sur l'extension.",
-        "saveInfo": "N'oubliez pas de cliquer sur Valider pour sauvegarder vos paramètres !",
+        "saveInfo": "N'oubliez pas de cliquer sur Sauvgearder pour enregistrer votre liste !",
         "update": "Rechercher une mise à jour",
         "language": {
             "fr": "Français",
@@ -40,7 +39,7 @@
     },
     "generalSettings": {
         "labelLanguage": "Langue :",
-        "darkTheme": "Thème sombre :",
+        "darkTheme": "Thème sombre  de l'interface :",
         "darkThemeAuto": "Automatique",
         "darkThemeEnabled": "Activé",
         "darkThemeDisabled": "Désactivé",

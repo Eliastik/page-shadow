@@ -6,8 +6,7 @@
         "actual": "(current)"
     },
     "container": {
-        "description": "Here, you can define some advanced settings or consult informations about the extension.",
-        "saveInfo": "Don't forget to click on Confirm to save your settings!",
+        "saveInfo": "Don't forget to click on Save to validate your list!",
         "about": "About Page Shadow",
         "update": "Search update",
         "language": {
@@ -38,12 +37,12 @@
         "presets": "Presets",
         "filters": "Filters",
         "archive": "Archive/restore",
-        "storage": "Storeage",
+        "storage": "Storage",
         "about": "About"
     },
     "generalSettings": {
         "labelLanguage": "Language:",
-        "darkTheme": "Dark theme:",
+        "darkTheme": "Interface dark theme:",
         "darkThemeAuto": "Automatic",
         "darkThemeEnabled": "Enabled",
         "darkThemeDisabled": "Disabled",
