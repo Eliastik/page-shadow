@@ -483,6 +483,9 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     box-shadow: none !important;
     -webkit-box-shadow: none !important;
 }
+.tabs-left .nav-tabs li a {
+    padding-left: 0 !important;
+}
 .tab-content {
     padding: 0 !important;
     padding-top: 15px !important;
