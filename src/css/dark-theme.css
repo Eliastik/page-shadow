@@ -157,6 +157,11 @@ a:focus, a:hover {
     box-shadow: inset 0 -1px 0 #1b1c20 !important;
 }
 
+.form-control:focus, .btn-default:focus, select:focus, input[type="text"]:focus, input[type="number"]:focus {
+    border-color: #186cb0;
+    box-shadow: inset 0 -2px 0 #186cb0 !important;
+}
+
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default:active:focus, .open>.dropdown-toggle.btn-default, .open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
     background-color: #28292c;
     color: #cbd1d5;
@@ -181,4 +186,8 @@ select, select.form-control {
 
 select:focus, select.form-control:focus {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAQAAAADQ4RFAAAAcklEQVQ4y2OcwEA6YGIY1TSAms4w/McJl+HS9A6P4R9waQpkOIhDy1KGXFyavjJ4Y9W2lCGe4S/ugMCmDUMLZuiha8OiBVuQI2vDqgV7PMG04dDCwMCCNbS+MngyODFsZ/iHPTBZcATyd4ato1ljqGsCAEBsLBqNin30AAAAAElFTkSuQmCC);
+}
+
+#iframeReadme {
+    filter: invert(100%);
 }

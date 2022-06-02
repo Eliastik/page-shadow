@@ -73,7 +73,8 @@
             },
             "version": "Current version:",
             "browser": "Your web browser:",
-            "changelogTitle": "Changelog:",
+            "changelogTitle": "Changelog",
+            "infos": "Informations",
             "changelog": {
                 "291": "<ul><li>Improved performance when enabling/disabling Page Shadow and when changing settings;</li><li>Improved performance of the processing of web pages by Page Shadow;</li><li>It's now possible to set a color in RGB or in HSV in the custom themes settings;</li><li>Added an optional list \"Ultra performance mode\";</li><li>Added theme n°16;</li><li>Bug fixes (see Readme file);</li><li>Technical improvements (see Readme file)</li></ul>",
                 "29": "<ul><li>Added the ability to create a preset and update a preset with current settings directly in the extension menu;</li><li>Added the \"Selective\" setting for the Invert the colors function: this setting, based on the filters feature, allows you to invert the colors of a small number of elements which may be displayed incorrectly on a dark theme of the Increase page contrast function;</li><li>Improved display of the Increase page contrast function on most websites (see Readme file);</li><li>Presets enabled for a webpage now have a higher priority than those enabled for the whole website;</li><li>Improved Filters feature (advanced settings) (see Readme file);</li><li>When changing custom themes or presets in advanced settings, Page Shadow warns you if changes to settings have not been saved;</li><li>Performance improvement (see Readme file);</li><li>Bugfixes (see Readme file);</li><li>Technical improvements (see Readme file);</li></ul>",

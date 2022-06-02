@@ -304,9 +304,6 @@ div.navbar-right {
 .hourFormatAMPM {
     width: 32px;
 }
-.nav-tabs {
-    border-bottom: 1px solid #ddd !important;
-}
 .tab-content {
     padding: 15px !important;
 }
@@ -441,6 +438,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     font-size: 12pt;
     font-weight: normal;
     text-align: left !important;
+    padding-top: 0 !important;
 }
 .container-option {
     width: 80% !important;
@@ -448,6 +446,55 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 #keyboardShortcuts {
     font-size: 11pt;
     margin-bottom: 0 !important;
+}
+.tabs-left {
+    display: flex;
+    flex-shrink: 0;
+    flex-grow: 1;
+    flex-wrap: wrap;
+}
+.tabs-left > .nav-tabs {
+    margin-right: 19px;
+    border-bottom: none !important;
+}
+.tabs-left > .tab-content {
+    flex: 1;
+}
+.tabs-left > .nav-tabs > li {
+    float: none;
+}
+.tabs-left > .nav-tabs > li > a {
+    min-width: 74px;
+    margin-right: 0;
+    margin-bottom: 3px;
+}
+.tabs-left > .nav-tabs {
+    margin-right: 19px;
+}
+.tabs-left .nav-tabs li a, .tabs-left .nav-tabs li a:hover, .tabs-left .nav-tabs li a:focus, .tabs-left .nav-tabs li a:focus:hover {
+    border-bottom: 0 !important;
+    border-right: 2px solid #dddddd;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+}
+.tabs-left .nav-tabs li.active a, .tabs-left .nav-tabs li.active a:hover, .tabs-left .nav-tabs li.active a:focus, .tabs-left .nav-tabs li.active a:focus:hover {
+    border-bottom: 0 !important;
+    border-right: 2px solid #2196f3;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+}
+.tab-content {
+    padding: 0 !important;
+    padding-top: 15px !important;
+}
+.tabs-left .tab-content {
+    padding-top: 0 !important;
+}
+.nav-tabs > li {
+    margin-bottom: 0 !important;
+}
+.tabs-left li a {
+    border-radius: 0 !important;
 }
 @-webkit-keyframes fadein {
     from { bottom: 0; opacity: 0; }
