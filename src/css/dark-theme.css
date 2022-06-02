@@ -43,12 +43,75 @@ label, h1, h2, h3, h4, h5, h6 {
     background-color: #186cb0;
 }
 
+a {
+    color: #1b7ccb;
+}
+
+a:focus, a:hover {
+    color: #176db3;
+}
+
+.panel-title a:focus, .panel-title a:hover {
+    color: #afb3b7;
+}
+
+.checkbox input[type=checkbox]:checked:after, .checkbox-inline input[type=checkbox]:checked:after, input[type=checkbox]:checked:after {
+    background-color: #186cb0;
+    border-color: #186cb0;
+}
+
+.checkbox input[type=checkbox]:focus:after, .checkbox-inline input[type=checkbox]:focus:after, input[type=checkbox]:focus:after {
+    border-color: #186cb0;
+}
+
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary:focus:active {
     background-color: #0f4876;
 }
 
 .btn-primary:active {
-    background-image: radial-gradient(circle,#186cb0 10%,#0f4876 11%);
+    background-image: radial-gradient(circle,#0f4876 10%,#186cb0 11%);
+    color: #e1e7ec;
+}
+
+.btn-success {
+    color: #fff;
+    background-color: #367e38;
+}
+
+.btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success:focus:active {
+    background-color: #2a642c;
+}
+
+.btn-success:active {
+    background-image: radial-gradient(circle,#2a642c 10%,#367e38 11%);
+    color: #e1e7ec;
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: #a21116;
+}
+
+.btn-danger:hover, .btn-danger:focus, .btn-danger:active, .btn-danger:focus:active {
+    background-color: #870e12;
+}
+
+.btn-danger:active {
+    background-image: radial-gradient(circle,#870e12 10%,#a21116 11%);
+    color: #e1e7ec;
+}
+
+.btn-warning {
+    color: #fff;
+    background-color: #ce7c00;
+}
+
+.btn-warning:hover, .btn-warning:focus, .btn-warning:active, .btn-warning:focus:active {
+    background-color: #a06000;
+}
+
+.btn-warning:active {
+    background-image: radial-gradient(circle,#a06000 10%,#ce7c00 11%);
     color: #e1e7ec;
 }
 
@@ -61,7 +124,7 @@ label, h1, h2, h3, h4, h5, h6 {
 }
 
 .dropdown-menu li a:hover {
-    background-color: #202020;
+    background-color: #202020 !important;
 }
 
 .well, .nav-tabs > li>a {
@@ -94,7 +157,7 @@ label, h1, h2, h3, h4, h5, h6 {
     box-shadow: inset 0 -1px 0 #1b1c20 !important;
 }
 
-.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default:active:focus {
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default:active:focus, .open>.dropdown-toggle.btn-default, .open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
     background-color: #28292c;
     color: #cbd1d5;
 }
