@@ -21,11 +21,13 @@ import $ from "jquery";
 import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import { init_i18next } from "./locales.js";
+import { toggleTheme } from "./util.js";
 
 window.$ = $;
 window.jQuery = $;
 
 init_i18next("pageTest").then(() => translateContent());
+toggleTheme(); // Toggle dark/light theme
 
 function translateContent() {
     jqueryI18next.init(i18next, $, {

@@ -20,12 +20,102 @@ body, html {
     background-color: #202124;
 }
 
-.well {
-    background-color: #333438;
+.well, .modal-content, .modal-title {
+    background-color: #303134;
     color: #bdc1c6;
 }
 
-.well, .nav-tabs > li>a {
-    background-color: #333438;
+label, h1, h2, h3, h4, h5, h6 {
     color: #bdc1c6;
+}
+
+.list-group-item, .badge, .dropdown-menu, .dropdown-menu li a, .panel .panel-collapse, .panel-heading {
+    background-color: #434448 !important;
+    color: #bdc1c6 !important;
+    border-color: #202124;
+}
+
+.navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
+    border-color: #186cb0;
+}
+
+.navbar-inverse, .btn-primary {
+    background-color: #186cb0;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary:focus:active {
+    background-color: #0f4876;
+}
+
+.btn-primary:active {
+    background-image: radial-gradient(circle,#186cb0 10%,#0f4876 11%);
+    color: #e1e7ec;
+}
+
+.navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover {
+    background-color: #0f4876;
+}
+
+.panel-heading {
+    background-color: #202124 !important;
+}
+
+.dropdown-menu li a:hover {
+    background-color: #202020;
+}
+
+.well, .nav-tabs > li>a {
+    background-color: #303134;
+    color: #bdc1c6;
+}
+
+.btn-link {
+    color: #bdc1c6;
+}
+
+.btn-link {
+    color: #bdc1c6;
+}
+
+.btn-link:hover, .btn-link:focus, .btn-link:active, .btn-default:active:focus {
+    background-color: #202020;
+    color: #e1e7ec;
+}
+
+.btn-link:active {
+    background-image: radial-gradient(circle,#4f4f4f 10%,#202020 11%);
+    color: #e1e7ec;
+}
+
+.form-control, .btn-default, select, input[type="text"], input[type="number"] {
+    background-color: #4f5157;
+    color: #e1e7ec;
+    border-color: #1b1c20 !important;
+    box-shadow: inset 0 -1px 0 #1b1c20 !important;
+}
+
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default:active:focus {
+    background-color: #28292c;
+    color: #cbd1d5;
+}
+
+.btn-default:active {
+    background-image: radial-gradient(circle,#3c3e42 10%,#28292c 11%);
+    color: #e1e7ec;
+}
+
+.close {
+    color: #bdc1c6;
+}
+
+.close:hover, .close:focus {
+    color: #dee2e8;
+}
+
+select, select.form-control {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAQAAAADQ4RFAAAAbElEQVQ4y2PczEA6YGIY1TSAms4w/McJl+HS9A6P4R9waQpkOIhDy1KGXFyavjJ4Y9W2lCGe4S/ugMCmDUMLZuiha8OiBVuQI2vDqgV7PMG04dDCwMCCNbS+MngyODFsZ/iHPTAZRzPh8NUEAE/rK0GPSi14AAAAAElFTkSuQmCC);
+}
+
+select:focus, select.form-control:focus {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAQAAAADQ4RFAAAAcklEQVQ4y2OcwEA6YGIY1TSAms4w/McJl+HS9A6P4R9waQpkOIhDy1KGXFyavjJ4Y9W2lCGe4S/ugMCmDUMLZuiha8OiBVuQI2vDqgV7PMG04dDCwMCCNbS+MngyODFsZ/iHPTBZcATyd4ato1ljqGsCAEBsLBqNin30AAAAAElFTkSuQmCC);
 }
