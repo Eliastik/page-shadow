@@ -1245,24 +1245,6 @@ $(document).ready(() => {
         $("i[data-toggle=\"tooltip\"]").tooltip("hide");
     });
 
-    $("#loadPresetBtn").on("click", () => {
-        $("#loadPreset").show();
-        $("#savePreset").hide();
-        $("#deletePreset").hide();
-    });
-
-    $("#savePresetBtn").on("click", () => {
-        $("#loadPreset").hide();
-        $("#savePreset").show();
-        $("#deletePreset").hide();
-    });
-
-    $("#deletePresetBtn").on("click", () => {
-        $("#loadPreset").hide();
-        $("#savePreset").hide();
-        $("#deletePreset").show();
-    });
-
     $("#archiveCloudBtn").on("click", () => {
         archiveCloudSettings();
     });
