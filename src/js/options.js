@@ -490,16 +490,11 @@ async function displayFilters() {
 }
 
 async function displayDetailsFilter(idFilter) {
-    $("#filters").modal("hide");
-
     $("#filterDetails").on("shown.bs.modal", () => {
         window.codeMirrorFilterData.refresh();
     });
 
-    $("#filters").on("hidden.bs.modal", () => {
-        $("#filterDetails").modal("show");
-        $("#filters").off("hidden.bs.modal");
-    });
+    $("#filterDetails").modal("show");
 
     window.codeMirrorFilterData.getDoc().setValue("");
 
@@ -516,15 +511,9 @@ async function displayDetailsFilter(idFilter) {
 }
 
 async function displayInfosFilter(idFilter) {
-    $("#filters").modal("hide");
-
-    $("#filters").on("hidden.bs.modal", () => {
-        $("#filterInfos").modal("show");
-        $("#filters").off("hidden.bs.modal");
-    });
+    $("#filterInfos").modal("show");
 
     $("#filterInfos").on("hidden.bs.modal", () => {
-        $("#filters").modal("show");
         $("#filterInfos").off("hidden.bs.modal");
     });
 
@@ -568,6 +557,7 @@ async function displayPresetInfos(nb) {
     $("#archive").off("hidden.bs.modal");
     $("#archive").modal("hide");
 
+    // TODO call when changing tab
     $("#archive").on("hidden.bs.modal", () => {
         $("#presetInfos").modal("show");
         $("#archive").off("hidden.bs.modal");
@@ -627,17 +617,7 @@ async function displayPresetInfos(nb) {
 
 async function displayFilterErrors(data, filterType) {
     if(filterType == "custom") {
-        $("#filters").modal("hide");
-
-        $("#filters").on("hidden.bs.modal", () => {
-            $("#filterErrors").modal("show");
-            $("#filters").off("hidden.bs.modal");
-        });
-
-        $("#filterErrors").on("hidden.bs.modal", () => {
-            $("#filters").modal("show");
-            $("#filterErrors").off("hidden.bs.modal");
-        });
+        $("#filterErrors").modal("show");
     } else {
         $("#filterInfos").off("hidden.bs.modal");
         $("#filterInfos").modal("hide");
@@ -650,11 +630,6 @@ async function displayFilterErrors(data, filterType) {
         $("#filterErrors").on("hidden.bs.modal", () => {
             $("#filterInfos").modal("show");
             $("#filterErrors").off("hidden.bs.modal");
-
-            $("#filterInfos").on("hidden.bs.modal", () => {
-                $("#filters").modal("show");
-                $("#filterInfos").off("hidden.bs.modal");
-            });
         });
     }
 
@@ -725,15 +700,10 @@ function displayFilterErrorsOnElement(data, domElement) {
 }
 
 async function displayFilterEdit() {
-    $("#filters").modal("hide");
+    $("#editFilter").modal("show");
 
     $("#editFilter").on("shown.bs.modal", () => {
         window.codeMirrorEditFilter.refresh();
-    });
-
-    $("#filters").on("hidden.bs.modal", () => {
-        $("#editFilter").modal("show");
-        $("#filters").off("hidden.bs.modal");
     });
 
     window.codeMirrorEditFilter.getDoc().setValue("");
@@ -1429,6 +1399,7 @@ $(document).ready(() => {
     }
 
     // Hash
+    // TODO change tab according to URL
     if(window.location.hash) {
         if(window.location.hash == "#customTheme") {
             $("#customTheme").modal("show");
@@ -1517,22 +1488,6 @@ $(document).ready(() => {
         }
     });
 
-    $("#addFilterSource").on("hidden.bs.modal", () => {
-        $("#filters").modal("show");
-    });
-
-    $("#filterDetails").on("hidden.bs.modal", () => {
-        $("#filters").modal("show");
-    });
-
-    $("#editFilter").on("hidden.bs.modal", () => {
-        $("#filters").modal("show");
-    });
-
-    $("#presetInfos").on("hidden.bs.modal", () => {
-        $("#archive").modal("show");
-    });
-
     $("#customTheme").on("shown.bs.modal", () => {
         window.codeMirrorUserCss.refresh();
     });
@@ -1613,33 +1568,12 @@ $(document).ready(() => {
     });
 
     $("#syntaxBtnPresets").on("click", () => {
-        $("#archive").off("hidden.bs.modal");
-        $("#archive").modal("hide");
-
-        const handlerSyntaxHidden = () => {
-            $("#archive").modal("show");
-            $("#syntax").off("hidden.bs.modal", handlerSyntaxHidden);
-        };
-
-        const handlerArchiveHidden = async() => {
-            $("#archive").off("hidden.bs.modal", handlerArchiveHidden);
-            $("#syntaxText").html(i18next.t("modal.syntax.content", {
-                excluded: i18next.t("modal.syntax.detected"),
-                excluded2: i18next.t("modal.syntax.detected2"),
-                bloqued: i18next.t("modal.syntax.detected3"),
-            }));
-
-            $("#syntax").modal("show");
-            $("#syntax").on("hidden.bs.modal", handlerSyntaxHidden);
-
-            $("#archive").on("hidden.bs.modal", async() => {
-                if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
-                    alert(i18next.t("modal.presets.notifyPresetChangedNotSavedInfo"));
-                }
-            });
-        };
-
-        $("#archive").on("hidden.bs.modal", handlerArchiveHidden);
+        $("#syntax").modal("show");
+        $("#syntaxText").html(i18next.t("modal.syntax.content", {
+            excluded: i18next.t("modal.syntax.detected"),
+            excluded2: i18next.t("modal.syntax.detected2"),
+            bloqued: i18next.t("modal.syntax.detected3"),
+        }));
     });
 
     $("#buttonSeeErrorsCustomFilterEdit").on("click", () => {
