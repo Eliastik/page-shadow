@@ -40,7 +40,7 @@
     "generalSettings": {
         "labelLanguage": "Langue :",
         "darkTheme": "Thème sombre  de l'interface :",
-        "darkThemeAuto": "Automatique",
+        "darkThemeAuto": "Thème de l'appareil",
         "darkThemeEnabled": "Activé",
         "darkThemeDisabled": "Désactivé",
         "keyboardShortcutsLabel": "Raccourcis clavier :",
@@ -145,7 +145,8 @@
             "fontNotCompatible": "Ce paramètre est incompatible avec votre navigateur web.",
             "firefoxLinuxBugFonts": "Il est possible que ce paramètre ne soit pas fonctionnel sur votre système.",
             "notifyThemeChangedNotSaved": "Vous n'avez pas enregistré les modifications apportées au thème. Voulez-vous vraiment continuer ? Dans ce cas, vous perdrez vos modifications.",
-            "notifyThemeChangedNotSavedInfo": "Attention, vous n'avez pas enregistré les modifications apportées au thème. Ouvrez à nouveau la fenêtre des Thèmes personnalisés si vous souhaitez enregistrer vos modifications."
+            "notifyThemeChangedNotSavedInfo": "Attention, vous n'avez pas enregistré les modifications apportées au thème. Ouvrez à nouveau la fenêtre des Thèmes personnalisés si vous souhaitez enregistrer vos modifications.",
+            "chooseTheme": "Thème :"
         },
         "archive": {
             "title": "Archivage, restauration des paramètres et pré-réglages",

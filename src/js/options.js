@@ -54,7 +54,6 @@ let currentSelectedPresetEdit = 1;
 let changingLanguage = false;
 
 init_i18next("options").then(() => translateContent());
-toggleTheme(); // Toggle dark/light theme
 
 function listTranslations(languages) {
     const language = i18next.language.substr(0, 2);
@@ -187,6 +186,8 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets) {
     if (currentTheme.interfaceDarkTheme) {
         $("#darkThemeSelect").val(currentTheme.interfaceDarkTheme);
     }
+
+    toggleTheme(); // Toggle dark/light theme
 }
 
 async function displayTheme(nb, defaultSettings) {
