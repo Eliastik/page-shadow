@@ -112,7 +112,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                             <div class="form-group">
                                 <label class="col-lg-2 control-label option-label" data-i18n="modal.customTheme.chooseTheme" for="themeSelect"></label>
                                 <div class="col-lg-10">
-                                    <select id="themeSelect" value="1" style="min-width: 80px;"></select>
+                                    <select id="themeSelect" value="1" style="min-width: 80px;" class="form-control"></select>
                                     <p class="mt8"><button id="customThemeSave" data-delay="0" data-container="#customTheme" data-trigger="manual" data-placement="bottom" type="button" class="btn btn-sm btn-success"><i class="fa fa-fw fa-check" aria-hidden="true"></i> <span data-i18n="modal.customTheme.save"></span></button> &nbsp; <button id="customThemeCancel" type="button" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-times" aria-hidden="true"></i> <span data-i18n="modal.customTheme.cancel"></span></button> &nbsp; <button id="customThemeReset" type="button" class="btn btn-sm btn-danger"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i> <span data-i18n="modal.customTheme.reset"></span></button></p>
                                 </div>
                             </div>
@@ -196,7 +196,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                     </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="savePresetTab">
-                                    <div class="center">
+                                    <div>
                                         <div class="form-horizontal">
                                             <div class="form-group">
                                                 <label for="savePresetSelect" class="col-lg-2 control-label option-label" data-i18n="modal.archive.savePresetSelect"></label>
@@ -222,15 +222,15 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                                     <textarea id="savePresetWebsite" class="form-control" style="width: 100%; height: 200px;" data-i18n="[placeholder]container.textareaPlaceholder" class="form-control"></textarea>
                                                 </div>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group center">
                                                 <input type="checkbox" id="checkSaveNewSettingsPreset" /> <label for="checkSaveNewSettingsPreset" data-i18n="modal.archive.checkSaveNewSettingsPreset"></label>
                                             </div>
                                             <p data-i18n="modal.archive.infoSavePreset"></p>
-                                            <div class="form-group">
+                                            <div class="form-group center">
                                                 <a class="btn btn-primary" id="savePresetValid"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span id="presetCreateEditBtn"></span></a>
                                             </div>
-                                            <p id="savePresetError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetError"></span></p>
-                                            <p id="savePresetSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.savePresetSuccess"></span></p>
+                                            <p id="savePresetError" class="red center" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restorePresetError"></span></p>
+                                            <p id="savePresetSuccess" class="green center" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.savePresetSuccess"></span></p>
                                         </div>
                                     </div>
                                 </div>

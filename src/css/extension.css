@@ -528,3 +528,12 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
         margin-right: -15px !important;
     }
 }
+@media (max-width: 700px) {
+    .tabs-left > .nav-tabs {
+        width: 100%;
+        margin-right: 0 !important;
+    }
+    .tabs-left {
+        display: block;
+    }
+}

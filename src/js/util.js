@@ -1054,7 +1054,7 @@ function loadStyles(id, styles) {
 
                 stylesObjects.push(styleObject);
             } else {
-                if (oldStylesObjects[i]) {
+                if (oldStylesObjects[i] && document.head.contains(oldStylesObjects[i])) {
                     document.head.removeChild(oldStylesObjects[i]);
                 }
             }
@@ -1066,7 +1066,7 @@ function loadStyles(id, styles) {
 
                 if(loadedStyles >= id.length) {
                     for(let i = 0; i < oldStylesObjects.length; i++) {
-                        if (oldStylesObjects[i]) {
+                        if (oldStylesObjects[i] && document.head.contains(oldStylesObjects[i])) {
                             document.head.removeChild(oldStylesObjects[i]);
                         }
                     }
