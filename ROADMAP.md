@@ -14,8 +14,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Planned/ideas
 
 * [ ] Update the UI ? (update to Bootstrap 5 ?)
-    * [ ] Advanced settings design with tabs
-    * [ ] Interface dark mode
+    * [*] Advanced settings design with tabs
+    * [*] Interface dark mode
     * [ ] Update popup design (icons, etc.) -> improve popup design: icons for option + settings ?
 * [ ] Import Font Awesome with npm
 * [ ] Filters: don't update if file "Last-modified" header from server has not changed compared to the local version and last update
@@ -24,11 +24,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] Option to attenuate the color of the images for the "Increase contrast" mode (see https://web.dev/prefers-color-scheme/#dark-mode-best-practices)
 * [ ] Preserve bright colors?/Several "shades" of background color for the themes?
 * [ ] User suggestion: It would be great if the brightness reduction without night mode and the brightness reduction with night mode could be combined.
-
-#### Currently in developpement (02 june 2022)
-
-* Advanced settings design with tabs
-* Interface dark mode
 
 ### Known issues/bugs
 
