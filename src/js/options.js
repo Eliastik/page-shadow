@@ -33,7 +33,7 @@ import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme } from "./util.js";
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme } from "./util.js";
 import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL } from "./constants.js";
 import { setSettingItem, setFirstSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
@@ -555,20 +555,7 @@ async function displayInfosFilter(idFilter) {
 }
 
 async function displayPresetInfos(nb) {
-    $("#archive").off("hidden.bs.modal");
-    $("#archive").modal("hide");
-
-    // TODO call when changing tab
-    $("#archive").on("hidden.bs.modal", () => {
-        $("#presetInfos").modal("show");
-        $("#archive").off("hidden.bs.modal");
-
-        $("#archive").on("hidden.bs.modal", async() => {
-            if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
-                alert(i18next.t("modal.presets.notifyPresetChangedNotSavedInfo"));
-            }
-        });
-    });
+    $("#presetInfos").modal("show");
 
     const presetData = await getPresetData(nb);
 
@@ -594,7 +581,7 @@ async function displayPresetInfos(nb) {
             if(!value) {
                 span.textContent = i18next.t("modal.presets.undefined");
             } else if(value == "true" || value == "false") {
-                span.textContent = value == "true" ? i18next.t("modal.presets.enabled") : i18next.t("modal.presets.disabled");
+                span.innerHTML = value == "true" ? "<i class=\"fa-solid fa-check fa-fw\"></i>" : "<i class=\"fa-solid fa-xmark fa-fw\"></i>";
             } else if(setting == "pourcentageLum") {
                 span.textContent = value + "%";
             } else if(setting == "theme" && value.startsWith("custom")) {
@@ -813,8 +800,8 @@ async function changeLanguage() {
 }
 
 async function changeTheme() {
-    setSettingItem("interfaceDarkTheme", $("#darkThemeSelect").val());
-    toggleTheme();
+    await setSettingItem("interfaceDarkTheme", $("#darkThemeSelect").val());
+    await toggleTheme();
 }
 
 async function getSettingsToArchive() {
@@ -1156,6 +1143,56 @@ function addFilter() {
     });
 }
 
+async function initColpick() {
+    $("#colorpicker1").colpick({
+        layout: "full",
+        submit: false,
+        color: "000000",
+        colorScheme: await isInterfaceDarkTheme() ? "dark" : "light",
+        onChange: (hsb, hex) => {
+            $("#colorpicker1").css("background-color", "#"+hex);
+            $("#previsualisationDiv").css("background-color", "#"+hex);
+            $("#colorpicker1").attr("value", hex);
+        }
+    });
+
+    $("#colorpicker2").colpick({
+        layout: "full",
+        submit: false,
+        color: "FFFFFF",
+        colorScheme: await isInterfaceDarkTheme() ? "dark" : "light",
+        onChange: (hsb, hex) => {
+            $("#colorpicker2").css("background-color", "#"+hex);
+            $("#textPreview").css("color", "#"+hex);
+            $("#colorpicker2").attr("value", hex);
+        }
+    });
+
+    $("#colorpicker3").colpick({
+        layout: "full",
+        submit: false,
+        color: "1E90FF",
+        colorScheme: await isInterfaceDarkTheme() ? "dark" : "light",
+        onChange: (hsb, hex) => {
+            $("#colorpicker3").css("background-color", "#"+hex);
+            $("#linkPreview").css("color", "#"+hex);
+            $("#colorpicker3").attr("value", hex);
+        }
+    });
+
+    $("#colorpicker4").colpick({
+        layout: "full",
+        submit: false,
+        color: "800080",
+        colorScheme: await isInterfaceDarkTheme() ? "dark" : "light",
+        onChange: (hsb, hex) => {
+            $("#colorpicker4").css("background-color", "#"+hex);
+            $("#linkVisitedPreview").css("color", "#"+hex);
+            $("#colorpicker4").attr("value", hex);
+        }
+    });
+}
+
 $(document).ready(() => {
     let savedTimeout;
 
@@ -1249,53 +1286,7 @@ $(document).ready(() => {
         });
     }
 
-    $("#colorpicker1").colpick({
-        layout: "full",
-        submit: false,
-        color: "000000",
-        appendTo: $("#customTheme"),
-        onChange: (hsb, hex) => {
-            $("#colorpicker1").css("background-color", "#"+hex);
-            $("#previsualisationDiv").css("background-color", "#"+hex);
-            $("#colorpicker1").attr("value", hex);
-        }
-    });
-
-    $("#colorpicker2").colpick({
-        layout: "full",
-        submit: false,
-        color: "FFFFFF",
-        appendTo: $("#customTheme"),
-        onChange: (hsb, hex) => {
-            $("#colorpicker2").css("background-color", "#"+hex);
-            $("#textPreview").css("color", "#"+hex);
-            $("#colorpicker2").attr("value", hex);
-        }
-    });
-
-    $("#colorpicker3").colpick({
-        layout: "full",
-        submit: false,
-        color: "1E90FF",
-        appendTo: $("#customTheme"),
-        onChange: (hsb, hex) => {
-            $("#colorpicker3").css("background-color", "#"+hex);
-            $("#linkPreview").css("color", "#"+hex);
-            $("#colorpicker3").attr("value", hex);
-        }
-    });
-
-    $("#colorpicker4").colpick({
-        layout: "full",
-        submit: false,
-        color: "800080",
-        appendTo: $("#customTheme"),
-        onChange: (hsb, hex) => {
-            $("#colorpicker4").css("background-color", "#"+hex);
-            $("#linkVisitedPreview").css("color", "#"+hex);
-            $("#colorpicker4").attr("value", hex);
-        }
-    });
+    initColpick();
 
     $("#archiveDataButton").on("click", () => {
         archiveSettings();
@@ -1400,18 +1391,14 @@ $(document).ready(() => {
     }
 
     // Hash
-    // TODO change tab according to URL
     if(window.location.hash) {
         if(window.location.hash == "#customTheme") {
-            $("#customTheme").modal("show");
+            $("#customThemeTabLink a").tab("show");
         } else if(window.location.hash == "#presets") {
-            $("#archive").modal("show");
-            $("#archiveTabLink").removeClass("active");
-            $("#archiveTab").removeClass("active");
-            $("#presetTabLink").addClass("active");
-            $("#presetTab").addClass("active");
+            $("#presetsTabLink a").tab("show");
         } else if(window.location.hash == "#aboutLatestVersion") {
-            $("#about").modal("show");
+            $("#aboutTabLink a").tab("show");
+            $("#changelogTabLink a").tab("show");
         }
     }
 
@@ -1493,13 +1480,19 @@ $(document).ready(() => {
         window.codeMirrorUserCss.refresh();
     });
 
-    $("#customTheme").on("hidden.bs.modal", async() => {
+    $("#customThemeTabLink a").on("hidden.bs.tab", async() => {
         if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
             alert(i18next.t("modal.customTheme.notifyThemeChangedNotSavedInfo"));
         }
     });
 
-    $("#archive").on("hidden.bs.modal", async() => {
+    $("#presetsTabLink a").on("hidden.bs.tab", async() => {
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            alert(i18next.t("modal.presets.notifyPresetChangedNotSavedInfo"));
+        }
+    });
+
+    $("#savePresetTabLink a").on("hidden.bs.tab", async() => {
         if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
             alert(i18next.t("modal.presets.notifyPresetChangedNotSavedInfo"));
         }

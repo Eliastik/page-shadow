@@ -145,7 +145,7 @@
             "fontNotCompatible": "Ce paramètre est incompatible avec votre navigateur web.",
             "firefoxLinuxBugFonts": "Il est possible que ce paramètre ne soit pas fonctionnel sur votre système.",
             "notifyThemeChangedNotSaved": "Vous n'avez pas enregistré les modifications apportées au thème. Voulez-vous vraiment continuer ? Dans ce cas, vous perdrez vos modifications.",
-            "notifyThemeChangedNotSavedInfo": "Attention, vous n'avez pas enregistré les modifications apportées au thème. Ouvrez à nouveau la fenêtre des Thèmes personnalisés si vous souhaitez enregistrer vos modifications.",
+            "notifyThemeChangedNotSavedInfo": "Attention, vous n'avez pas enregistré les modifications apportées au thème. Ouvrez à nouveau l'onglet des Thèmes personnalisés si vous souhaitez enregistrer vos modifications.",
             "chooseTheme": "Thème :"
         },
         "archive": {
@@ -229,7 +229,7 @@
             "themeNumber": "Thème n°{{count}}",
             "undefined": "(Non défini)",
             "notifyPresetChangedNotSaved": "Vous n'avez pas enregistré les modifications apportées au pré-réglage. Voulez-vous vraiment continuer ? Dans ce cas, vous perdrez vos modifications.",
-            "notifyPresetChangedNotSavedInfo": "Attention, vous n'avez pas enregistré les modifications apportées au pré-réglage. Ouvrez à nouveau la fenêtre Archives et pré-réglages si vous souhaitez enregistrer vos modifications."
+            "notifyPresetChangedNotSavedInfo": "Attention, vous n'avez pas enregistré les modifications apportées au pré-réglage. Ouvrez à nouveau l'onglet Pré-réglages si vous souhaitez enregistrer vos modifications."
         },
         "saved": {
             "title": "Information",

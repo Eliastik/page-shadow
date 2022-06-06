@@ -149,7 +149,7 @@
             "fontNotCompatible": "This setting is not compatible with your web browser.",
             "firefoxLinuxBugFonts": "This setting may not work on your system.",
             "notifyThemeChangedNotSaved": "You haven't saved your changes to the theme. Are you sure that you want to continue? In this case, you will lose your changes.",
-            "notifyThemeChangedNotSavedInfo": "You haven't saved the changes made to the theme. Open the Custom themes window again if you want to save your changes.",
+            "notifyThemeChangedNotSavedInfo": "You haven't saved the changes made to the theme. Open the Custom themes tab again if you want to save your changes.",
             "chooseTheme": "Theme:"
         },
         "archive": {
@@ -233,7 +233,7 @@
             "themeNumber": "Theme {{count}}",
             "undefined": "(Not defined)",
             "notifyPresetChangedNotSaved": "You haven't saved your changes to the preset. Are you sure that you want to continue? In this case, you will lose your changes.",
-            "notifyPresetChangedNotSavedInfo": "You haven't saved the changes made to the preset. Open the Backups and presets window again if you want to save your changes."
+            "notifyPresetChangedNotSavedInfo": "You haven't saved the changes made to the preset. Open the Presets tab again if you want to save your changes."
         },
         "saved": {
             "title": "Information",

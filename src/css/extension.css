@@ -499,6 +499,10 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 .tabs-left li a {
     border-radius: 0 !important;
 }
+.input-font {
+    width: calc(100% - 35px);
+    display: inline;
+}
 @-webkit-keyframes fadein {
     from { bottom: 0; opacity: 0; }
     to { bottom: 30px; opacity: 0.9; }
