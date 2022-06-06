@@ -514,10 +514,6 @@ async function displayDetailsFilter(idFilter) {
 async function displayInfosFilter(idFilter) {
     $("#filterInfos").modal("show");
 
-    $("#filterInfos").on("hidden.bs.modal", () => {
-        $("#filterInfos").off("hidden.bs.modal");
-    });
-
     const result = await browser.storage.local.get("filtersSettings");
     const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
 
@@ -1476,7 +1472,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#customTheme").on("shown.bs.modal", () => {
+    $("#customThemeTabLink a").on("shown.bs.tab", () => {
         window.codeMirrorUserCss.refresh();
     });
 
