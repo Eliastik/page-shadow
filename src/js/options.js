@@ -54,6 +54,7 @@ let currentSelectedPresetEdit = 1;
 let changingLanguage = false;
 
 init_i18next("options").then(() => translateContent());
+toggleTheme(); // Toggle dark/light theme
 
 function listTranslations(languages) {
     const language = i18next.language.substr(0, 2);

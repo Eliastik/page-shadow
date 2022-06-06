@@ -42,10 +42,10 @@
     },
     "generalSettings": {
         "labelLanguage": "Language:",
-        "darkTheme": "Interface dark theme:",
+        "darkTheme": "Interface theme:",
         "darkThemeAuto": "Device theme",
-        "darkThemeEnabled": "Enabled",
-        "darkThemeDisabled": "Disabled",
+        "darkThemeEnabled": "Dark",
+        "darkThemeDisabled": "Light",
         "keyboardShortcutsLabel": "Keyboard shortcuts:",
         "keyboardShortcuts": "Manage keyboard shortcuts…"
     },

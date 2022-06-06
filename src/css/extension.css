@@ -492,6 +492,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 }
 .tabs-left .tab-content {
     padding-top: 0 !important;
+    overflow-x: hidden;
 }
 .nav-tabs > li {
     margin-bottom: 0 !important;

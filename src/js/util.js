@@ -1041,7 +1041,8 @@ function loadStyles(id, styles) {
         let hasError = false;
 
         for(let i = 0; i < id.length; i++) {
-            oldStylesObjects.push(document.getElementById(id[i]));
+            const currentOldStylesObjects = [...document.querySelectorAll("#" + id[i])];
+            oldStylesObjects.push(...currentOldStylesObjects);
 
             if (styles[i] != null) {
                 const styleObject = document.createElement("link");
@@ -1054,8 +1055,10 @@ function loadStyles(id, styles) {
 
                 stylesObjects.push(styleObject);
             } else {
-                if (oldStylesObjects[i] && document.head.contains(oldStylesObjects[i])) {
-                    document.head.removeChild(oldStylesObjects[i]);
+                for(let i = 0; i < currentOldStylesObjects.length; i++) {
+                    if (currentOldStylesObjects[i] && document.head.contains(currentOldStylesObjects[i])) {
+                        document.head.removeChild(currentOldStylesObjects[i]);
+                    }
                 }
             }
         }

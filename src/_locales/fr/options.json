@@ -39,10 +39,10 @@
     },
     "generalSettings": {
         "labelLanguage": "Langue :",
-        "darkTheme": "Thème sombre  de l'interface :",
+        "darkTheme": "Thème de l'interface :",
         "darkThemeAuto": "Thème de l'appareil",
-        "darkThemeEnabled": "Activé",
-        "darkThemeDisabled": "Désactivé",
+        "darkThemeEnabled": "Sombre",
+        "darkThemeDisabled": "Clair",
         "keyboardShortcutsLabel": "Raccourcis clavier :",
         "keyboardShortcuts": "Gérer les raccourcis clavier…"
     },
