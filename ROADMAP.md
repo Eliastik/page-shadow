@@ -17,7 +17,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [*] Advanced settings design with tabs
     * [*] Interface dark mode
     * [ ] Update popup design (icons, etc.) -> improve popup design: icons for option + settings ?
-* [ ] Import Font Awesome with npm
+* [*] Import Font Awesome with npm
 * [ ] Filters: don't update if file "Last-modified" header from server has not changed compared to the local version and last update
     * [ ] Show update available for filters (check last-modified header)
 * [ ] Display a warning after a certain time to ask the user to archive their settings
