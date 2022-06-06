@@ -39,6 +39,12 @@ import { setSettingItem, setFirstSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./filter.codemirror.mode";
 import browser from "webextension-polyfill";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "@fortawesome/fontawesome-free/css/v4-shims.min.css";
+import "@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2";
+import "@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2";
+import "@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2";
+import "@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2";
 
 window.$ = $;
 window.jQuery = $;

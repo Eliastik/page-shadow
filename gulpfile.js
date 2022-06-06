@@ -79,7 +79,18 @@ gulp.task("compile-js", () => {
                     {
                         test: /\.css$/i,
                         use: ["style-loader", "css-loader"],
-                    }
+                    },
+                    {
+                        test: /\.(woff(2)?|ttf|eot)$/,
+                        type: "asset/resource",
+                        generator: {
+                            filename: "../webfonts/[name][ext]",
+                        },
+                    },
+                    {
+                        test: /\.(eot|ttf|svg)(\?.*$|$)/,
+                        use: ["raw-loader", "ignore-loader"]
+                    },
                 ]
             },
             optimization: {
