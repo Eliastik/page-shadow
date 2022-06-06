@@ -192,7 +192,7 @@
             "archiveCloudBtn": "Archiver les données",
             "restoreCloudBtn": "Restaurer les données",
             "archiveCloudError": "Une erreur est survenue lors de l'archivage des données.",
-            "archiveCloudErrorQuota": "Une erreur est survenue lors de l'archivage des données. Vos paramètres dépassent le quota maximum de stockage prévu par l'archivage cloud (voir l'onglet Infos sur le stockage).",
+            "archiveCloudErrorQuota": "Une erreur est survenue lors de l'archivage des données. Vos paramètres dépassent le quota maximum de stockage prévu par l'archivage cloud (voir l'onglet Stockage).",
             "restoreCloudError": "Une erreur est survenue lors de la restauration de l'archive.",
             "archiveCloudSuccess": "Archivage des données effectué avec succès.",
             "restoreCloudSuccess": "Restauration des données effectuée avec succès.",
@@ -229,7 +229,7 @@
             "themeNumber": "Thème n°{{count}}",
             "undefined": "(Non défini)",
             "notifyPresetChangedNotSaved": "Vous n'avez pas enregistré les modifications apportées au pré-réglage. Voulez-vous vraiment continuer ? Dans ce cas, vous perdrez vos modifications.",
-            "notifyPresetChangedNotSavedInfo": "Attention, vous n'avez pas enregistré les modifications apportées au pré-réglage. Ouvrez à nouveau l'onglet Pré-réglages si vous souhaitez enregistrer vos modifications."
+            "notifyPresetChangedNotSavedInfo": "Attention, vous n'avez pas enregistré les modifications apportées au pré-réglage. Ouvrez à nouveau l'onglet Pré-réglages > Créer/modifier si vous souhaitez enregistrer vos modifications."
         },
         "saved": {
             "title": "Information",
