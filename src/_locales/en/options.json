@@ -312,7 +312,9 @@
             "errorLineMessage": "Complete error message:",
             "errorCount":  "Number of filter rules with errors:",
             "customFilterEditErrorDetected": "Errors detected in your filter",
-            "errorCode": "Error code:"
+            "errorCode": "Error code:",
+            "hasUpdate": "An update is available for this filter",
+            "hasUpdateAuto": "This update will be done automatically, but you can update manually"
         },
         "close": "Close",
         "ok": "OK",

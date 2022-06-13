@@ -58,6 +58,7 @@ let filterSavedTimeout;
 let currentSelectedTheme = 1;
 let currentSelectedPresetEdit = 1;
 let changingLanguage = false;
+let alreadyCheckedForUpdateFilters = false;
 
 init_i18next("options").then(() => translateContent());
 toggleTheme(); // Toggle dark/light theme
@@ -325,6 +326,20 @@ async function displayFilters() {
                 hasError.textContent = i18next.t("modal.filters.errorUpdate");
                 hasError.style.color = "red";
                 texts.appendChild(hasError);
+            }
+
+            if (filter.needUpdate) {
+                const hasUpdate = document.createElement("div");
+                hasUpdate.textContent = i18next.t("modal.filters.hasUpdate");
+                hasUpdate.style.color = "orange";
+                texts.appendChild(hasUpdate);
+
+                if (filters.enableAutoUpdate) {
+                    const hasAutoUpdate = document.createElement("div");
+                    hasAutoUpdate.textContent = i18next.t("modal.filters.hasUpdateAuto");
+                    hasAutoUpdate.style.color = "orange";
+                    texts.appendChild(hasAutoUpdate);
+                }
             }
         }
 
@@ -1576,6 +1591,15 @@ $(document).ready(() => {
     $("#buttonSeeErrorsCustomFilterEdit").on("click", () => {
         $("#customFilterEditErrorDetails").toggle();
     });
+
+    // Auto check for filters update
+    $("#filtersTabLink a").on("shown.bs.tab", () => {
+        if (!alreadyCheckedForUpdateFilters) {
+            browser.runtime.sendMessage({
+                "type": "checkUpdateNeededForFilters"
+            });
+        }
+    });
 });
 
 // Message/response handling
@@ -1721,6 +1745,11 @@ browser.runtime.onMessage.addListener(message => {
                 "type": "getRulesErrorsForCustomEdit",
                 "idFilter": "customFilter"
             });
+            break;
+        }
+        case "getUpdateNeededForFilterFinished": {
+            alreadyCheckedForUpdateFilters = true;
+            displayFilters();
             break;
         }
         }

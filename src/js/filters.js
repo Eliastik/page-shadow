@@ -54,7 +54,7 @@ export default class FilterProcessor {
         return files;
     }
 
-    async checkFilterNeedUpdate(idFilter) {
+    async checkFilterNeedUpdate(idFilter, checkOnlyOnline) {
         const result = await browser.storage.local.get("filtersSettings");
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
         const filter = filters.filters[idFilter];
@@ -65,7 +65,7 @@ export default class FilterProcessor {
         const currentDate = Date.now();
 
         if(!filter.customFilter) {
-            if((!expires || (lastUpdate <= 0 || (currentDate - lastUpdate) >= expiresMs))) {
+            if(checkOnlyOnline || (!expires || (lastUpdate <= 0 || (currentDate - lastUpdate) >= expiresMs))) {
                 try {
                     const data = await fetch(filter.sourceUrl, { method: "HEAD" });
                     const lastMod = data.headers.get("Last-Modified");
@@ -83,6 +83,26 @@ export default class FilterProcessor {
         }
 
         return false;
+    }
+
+    async checkAllFiltersNeedUpdate() {
+        const result = await browser.storage.local.get("filtersSettings");
+        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+        const filtersToUpdate = filters.filters;
+
+        if (filtersToUpdate) {
+            for (let i = 0; i < filtersToUpdate.length; i++) {
+                if (!filtersToUpdate[i].needUpdate) {
+                    filtersToUpdate[i].needUpdate = false;
+
+                    if (await this.checkFilterNeedUpdate(i, true)) {
+                        filtersToUpdate[i].needUpdate = true;
+                    }
+                }
+            }
+
+            setSettingItem("filtersSettings", filters);
+        }
     }
 
     async updateFilter(idFilter) {
@@ -121,6 +141,7 @@ export default class FilterProcessor {
                             filterToUpdate.content = text;
                             filterToUpdate.hasError = false;
                             filterToUpdate.lastUpdated = Date.now();
+                            filterToUpdate.needUpdate = false;
                         } else {
                             filterToUpdate.hasError = true;
                         }
@@ -173,6 +194,7 @@ export default class FilterProcessor {
         for(let i = 0; i < nbFilters; i++) {
             filters.filters[i].content = null;
             filters.filters[i].lastUpdated = 0;
+            filters.filters[i].needUpdate = false;
         }
 
         setSettingItem("filtersSettings", filters);
@@ -486,7 +508,8 @@ export default class FilterProcessor {
                                 "description": description,
                                 "expiresIn": expires,
                                 "version": version,
-                                "license": license
+                                "license": license,
+                                "needUpdate": false
                             });
                         }
 

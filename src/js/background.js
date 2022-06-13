@@ -353,6 +353,10 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     filters.updateOneFilter(message.filterId).then(result => {
                         resolve({ type: "updateFilterFinished", result: result, filterId: message.filterId });
                     });
+                } else if(message.type == "checkUpdateNeededForFilters") {
+                    filters.checkAllFiltersNeedUpdate().then(result => {
+                        resolve({ type: "getUpdateNeededForFilterFinished", result: result });
+                    });
                 } else if(message.type == "disableFilter") {
                     filters.toggleFilter(message.filterId, false).then(result => {
                         resolve({ type: "disabledFilter", result: result, filterId: message.filterId });

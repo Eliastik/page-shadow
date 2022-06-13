@@ -308,7 +308,9 @@
             "errorLineMessage": "Message d'erreur complet :",
             "errorCount":  "Nombre de règles de filtre en erreur :",
             "customFilterEditErrorDetected": "Des erreurs ont été détectées dans votre filtre",
-            "errorCode": "Code de l'erreur :"
+            "errorCode": "Code de l'erreur :",
+            "hasUpdate": "Une mise à jour est disponible pour ce filtre",
+            "hasUpdateAuto": "La mise à jour s'effectuera automatiquement, mais vous pouvez l'effectuer manuellement"
         },
         "close": "Fermer",
         "ok": "OK",
