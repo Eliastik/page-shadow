@@ -54,6 +54,37 @@ export default class FilterProcessor {
         return files;
     }
 
+    async checkFilterNeedUpdate(idFilter) {
+        const result = await browser.storage.local.get("filtersSettings");
+        const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+        const filter = filters.filters[idFilter];
+
+        const expires = filter.expiresIn;
+        const expiresMs = expires * 24 * 60 * 60 * 1000;
+        const lastUpdate = filter.lastUpdated;
+        const currentDate = Date.now();
+
+        if(!filter.customFilter) {
+            if((!expires || (lastUpdate <= 0 || (currentDate - lastUpdate) >= expiresMs))) {
+                try {
+                    const data = await fetch(filter.sourceUrl, { method: "HEAD" });
+                    const lastMod = data.headers.get("Last-Modified");
+                    const lastModDate = new Date(lastMod).getTime();
+
+                    if (lastUpdate >= lastModDate) {
+                        return false;
+                    }
+
+                    return true;
+                } catch(e) {
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
+
     async updateFilter(idFilter) {
         const result = await browser.storage.local.get("filtersSettings");
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
@@ -112,13 +143,9 @@ export default class FilterProcessor {
         let updateHadErrors = false;
 
         for(let i = 0; i < nbFilters; i++) {
-            const filter = filters.filters[i];
-            const expires = filter.expiresIn;
-            const expiresMs = expires * 24 * 60 * 60 * 1000;
-            const lastUpdate = filter.lastUpdated;
-            const currentDate = Date.now();
+            const needUpdate = await this.checkFilterNeedUpdate(i);
 
-            if(!autoUpdate || (autoUpdate && (!expires || (lastUpdate <= 0 || (currentDate - lastUpdate) >= expiresMs))) || (updateOnlyFailed && filters.filters[i].hasError)) {
+            if(!autoUpdate || (autoUpdate && needUpdate) || (updateOnlyFailed && filters.filters[i].hasError)) {
                 filters.filters[i] = await this.updateFilter(i);
                 if(filters.filters[i].hasError) updateHadErrors = true;
             }
