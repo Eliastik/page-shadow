@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -29,10 +29,10 @@ import SafeTimer from "./safeTimer.js";
     const websiteSpecialFiltersConfig = defaultWebsiteSpecialFiltersConfig;
     const runningInIframe = isRunningInIframe();
     const runningInPopup = isRunningInPopup();
+
     let backgroundDetectionAlreadyProcessedNodes = [];
     let processedShadowRoots = [];
 
-    let timeoutApplyBrightness, timeoutApplyContrast, timeoutApplyInvertColors, timeoutApplyDetectBackgrounds;
     let backgroundDetected = false;
     let precEnabled = false;
     let started = false;
@@ -60,6 +60,12 @@ import SafeTimer from "./safeTimer.js";
     const MUTATION_TYPE_BACKGROUNDS = "backgrounds";
     const TYPE_LOADING = "loading";
     const TYPE_START = "start";
+
+    // Timers
+    let timerApplyBrightnessPage = null;
+    let timerApplyContrastPage = null;
+    let timerApplyInvertColors = null;
+    let timerApplyDetectBackgrounds = null;
 
     function contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert) {
         const elementToApply = customElement ? customElement : document.body;
@@ -101,10 +107,6 @@ import SafeTimer from "./safeTimer.js";
 
         if(customElement) {
             addClass(elementToApply, "pageShadowBackgroundDetected");
-        }
-
-        if(!customElement && typeof timeoutApplyContrast !== "undefined") {
-            clearTimeout(timeoutApplyContrast);
         }
     }
 
@@ -172,10 +174,6 @@ import SafeTimer from "./safeTimer.js";
                     });
                 }
             }
-        }
-
-        if(typeof timeoutApplyInvertColors !== "undefined") {
-            clearTimeout(timeoutApplyInvertColors);
         }
     }
 
@@ -345,14 +343,12 @@ import SafeTimer from "./safeTimer.js";
 
         document.body.appendChild(elementWrapper);
         elementWrapper.appendChild(elementBrightness);
-
-        if(typeof timeoutApplyBrightness !== "undefined") {
-            clearTimeout(timeoutApplyBrightness);
-        }
     }
 
     function waitAndApplyBrightnessPage(element, wrapper) {
-        const timerApplyBrightnessPage = new SafeTimer(() => {
+        if(timerApplyBrightnessPage) timerApplyBrightnessPage.clear();
+
+        timerApplyBrightnessPage = new SafeTimer(() => {
             if(!document.body) {
                 waitAndApplyBrightnessPage(element, wrapper);
             } else {
@@ -366,7 +362,9 @@ import SafeTimer from "./safeTimer.js";
     }
 
     function waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert) {
-        const timerApplyContrastPage = new SafeTimer(() => {
+        if(timerApplyContrastPage) timerApplyContrastPage.clear();
+
+        timerApplyContrastPage = new SafeTimer(() => {
             if(!document.body) {
                 waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert);
             } else {
@@ -380,7 +378,9 @@ import SafeTimer from "./safeTimer.js";
     }
 
     function waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert) {
-        const timerApplyInvertColors = new SafeTimer(() => {
+        if(timerApplyInvertColors) timerApplyInvertColors.clear();
+
+        timerApplyInvertColors = new SafeTimer(() => {
             if(!document.body) {
                 waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert);
             } else {
@@ -394,7 +394,9 @@ import SafeTimer from "./safeTimer.js";
     }
 
     function waitAndApplyDetectBackgrounds(tagName) {
-        const timerApplyDetectBackgrounds = new SafeTimer(() => {
+        if(timerApplyDetectBackgrounds) timerApplyInvertColors.clear();
+
+        timerApplyDetectBackgrounds = new SafeTimer(() => {
             if(!document.body) {
                 waitAndApplyDetectBackgrounds(tagName);
             } else {
@@ -542,6 +544,10 @@ import SafeTimer from "./safeTimer.js";
                 "characterData": false
             });
         } else if(type == MUTATION_TYPE_BACKGROUNDS) {
+            // Clear old mutation timers
+            if(safeTimerMutationBackgrounds) safeTimerMutationBackgrounds.clear();
+            if(safeTimerMutationDelayed) safeTimerMutationDelayed.clear();
+
             mut_backgrounds = new MutationObserver(mutations => {
                 delayedMutationObserversCalls.push(mutations);
 
@@ -998,10 +1004,11 @@ import SafeTimer from "./safeTimer.js";
             mutation = TYPE_ALL;
         }
 
-        if(typeof timeoutApplyBrightness !== "undefined") clearTimeout(timeoutApplyBrightness);
-        if(typeof timeoutApplyContrast !== "undefined") clearTimeout(timeoutApplyContrast);
-        if(typeof timeoutApplyInvertColors !== "undefined") clearTimeout(timeoutApplyInvertColors);
-        if(typeof timeoutApplyDetectBackgrounds !== "undefined") clearTimeout(timeoutApplyDetectBackgrounds);
+        if(timerApplyBrightnessPage) timerApplyBrightnessPage.clear();
+        if(timerApplyContrastPage) timerApplyContrastPage.clear();
+        if(timerApplyDetectBackgrounds) timerApplyDetectBackgrounds.clear();
+        if(timerApplyInvertColors) timerApplyInvertColors.clear();
+
         if(typeof mut_contrast !== "undefined" && (mutation == MUTATION_TYPE_CONTRAST || mutation == TYPE_ALL)) mut_contrast.disconnect();
         if(typeof mut_invert !== "undefined" && (mutation == MUTATION_TYPE_INVERT || mutation == TYPE_ALL)) mut_invert.disconnect();
         if(typeof mut_brightness !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS || mutation == TYPE_ALL)) mut_brightness.disconnect();
@@ -1176,6 +1183,7 @@ import SafeTimer from "./safeTimer.js";
                     "type": "applySettingsChanged"
                 });
             } else {
+                console.log(hasSettingsChanged(currentSettings, await getSettings(getCurrentURL())), currentSettings, await getSettings(getCurrentURL()));
                 if(hasSettingsChanged(currentSettings, await getSettings(getCurrentURL()))) {
                     precEnabled = isEnabled;
                     main(TYPE_RESET, TYPE_ALL);

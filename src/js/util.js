@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -798,6 +798,8 @@ async function getSettings(url) {
     let disableImgBgColor = result.disableImgBgColor;
     let colorInvert = result.colorInvert;
     let selectiveInvert = result.selectiveInvert;
+
+    console.log(theme);
 
     // Automatically enable preset ?
     const presetsEnabled = await presetsEnabledForWebsite(url);
