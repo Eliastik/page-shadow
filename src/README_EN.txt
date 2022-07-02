@@ -331,7 +331,7 @@ Page Shadow is distributed under GPL-3.0 license
 
 #### License notice
 
-Copyright (C) 2015-2021 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
