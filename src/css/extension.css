@@ -510,6 +510,17 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 .dropdown-menu-top {
     top: -175%;
 }
+.container.popup #loadPresetSelect {
+    width: 100%;
+    position: relative;
+    top: 1px;
+    height: 24px;
+    border-radius: 3px 0 0 3px;
+}
+.container.popup .well {
+    padding-bottom: 0 !important;
+    margin-bottom: 5px !important;
+}
 @-webkit-keyframes fadein {
     from { bottom: 0; opacity: 0; }
     to { bottom: 30px; opacity: 0.9; }
