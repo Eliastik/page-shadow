@@ -47,7 +47,10 @@
         "darkThemeEnabled": "Dark",
         "darkThemeDisabled": "Light",
         "keyboardShortcutsLabel": "Keyboard shortcuts:",
-        "keyboardShortcuts": "Manage keyboard shortcuts…"
+        "keyboardShortcuts": "Manage keyboard shortcuts…",
+        "popupTheme": "Popup theme:",
+        "popupThemeSwitch": "Switches and icons (by default)",
+        "popupThemeClassic": "Checkboxes (classic)"
     },
     "modal": {
         "syntax": {

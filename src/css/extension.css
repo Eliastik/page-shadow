@@ -312,6 +312,9 @@ hr.nmt {
     margin-bottom: 8px !important;
     justify-content: space-between;
 }
+.popup-option-container-classic {
+    display: none;
+}
 .popup-option-container-checkbox-switch, .popup-option-container-label {
     display: flex;
     align-items: center;

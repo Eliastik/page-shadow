@@ -44,7 +44,10 @@
         "darkThemeEnabled": "Sombre",
         "darkThemeDisabled": "Clair",
         "keyboardShortcutsLabel": "Raccourcis clavier :",
-        "keyboardShortcuts": "Gérer les raccourcis clavier…"
+        "keyboardShortcuts": "Gérer les raccourcis clavier…",
+        "popupTheme": "Thème de la popup :",
+        "popupThemeSwitch": "Switches et icônes (par défaut)",
+        "popupThemeClassic": "Cases à cocher (thème classique)"
     },
     "modal": {
         "syntax": {

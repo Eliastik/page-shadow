@@ -414,13 +414,23 @@ $(document).ready(() => {
 
         if(result.pageShadowEnabled == "true") {
             $("#themeDiv").stop().fadeIn();
+
             if($("#checkAssomPage").is(":checked") == false) {
                 $("#checkAssomPage").prop("checked", true);
             }
+
+            if($("#checkAssomPageCheckbox").is(":checked") == false) {
+                $("#checkAssomPageCheckbox").prop("checked", true);
+            }
         } else {
             $("#themeDiv").stop().fadeOut();
+
             if($("#checkAssomPage").is(":checked") == true) {
                 $("#checkAssomPage").prop("checked", false);
+            }
+
+            if($("#checkAssomPageCheckbox").is(":checked") == true) {
+                $("#checkAssomPageCheckbox").prop("checked", false);
             }
         }
 
@@ -432,6 +442,14 @@ $(document).ready(() => {
     };
 
     $("#checkAssomPage").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("pageShadowEnabled", "true");
+        } else {
+            setSettingItem("pageShadowEnabled", "false");
+        }
+    });
+
+    $("#checkAssomPageCheckbox").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("pageShadowEnabled", "true");
         } else {
@@ -493,6 +511,10 @@ $(document).ready(() => {
                 $("#checkColorInvert").prop("checked", true);
             }
 
+            if($("#checkColorInvertCheckbox").is(":checked") == false) {
+                $("#checkColorInvertCheckbox").prop("checked", true);
+            }
+
             if(result.invertImageColors == "true" && $("#checkImageInvert").is(":checked") == false) {
                 $("#checkImageInvert").prop("checked", true);
             } else if(result.invertImageColors == "false" && $("#checkImageInvert").is(":checked") == true) {
@@ -521,6 +543,10 @@ $(document).ready(() => {
 
             if($("#checkColorInvert").is(":checked") == true) {
                 $("#checkColorInvert").prop("checked", false);
+            }
+
+            if($("#checkColorInvertCheckbox").is(":checked") == true) {
+                $("#checkColorInvertCheckbox").prop("checked", false);
             }
 
             if(result.invertImageColors !== "true") {
@@ -556,6 +582,14 @@ $(document).ready(() => {
     }
 
     $("#checkColorInvert").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("invertPageColors", "true");
+        } else {
+            setSettingItem("invertPageColors", "false");
+        }
+    });
+
+    $("#checkColorInvertCheckbox").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("invertPageColors", "true");
         } else {
@@ -608,12 +642,23 @@ $(document).ready(() => {
 
         if(result.autoEnable == "true" && $("#autoEnable").is(":checked") == false) {
             $("#autoEnable").prop("checked", true);
+            $("#autoEnableCheckbox").prop("checked", true);
         } else if(result.autoEnable !== "true" && $("#autoEnable").is(":checked") == true) {
             $("#autoEnable").prop("checked", false);
+            $("#autoEnableCheckbox").prop("checked", true);
         }
     }
 
     $("#autoEnable").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("autoEnable", "true");
+            $("#autoEnableSettings").modal("show");
+        } else {
+            setSettingItem("autoEnable", "false");
+        }
+    });
+
+    $("#autoEnableCheckbox").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("autoEnable", "true");
             $("#autoEnableSettings").modal("show");
@@ -764,12 +809,22 @@ $(document).ready(() => {
 
         if(result.liveSettings == "true" && $("#liveSettings").is(":checked") == false) {
             $("#liveSettings").prop("checked", true);
+            $("#liveSettingsCheckbox").prop("checked", true);
         } else if(result.liveSettings !== "true" && $("#liveSettings").is(":checked") == true) {
             $("#liveSettings").prop("checked", false);
+            $("#liveSettingsCheckbox").prop("checked", true);
         }
     }
 
     $("#liveSettings").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("liveSettings", "true");
+        } else {
+            setSettingItem("liveSettings", "false");
+        }
+    });
+
+    $("#liveSettingsCheckbox").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("liveSettings", "true");
         } else {
@@ -802,17 +857,34 @@ $(document).ready(() => {
                 $("#checkLuminositePage").prop("checked", true);
             }
 
+            if($("#checkLuminositePageCheckbox").is(":checked") == false) {
+                $("#checkLuminositePageCheckbox").prop("checked", true);
+            }
+
             checkNightMode();
         } else {
             $("#sliderLuminositeDiv").stop().fadeOut();
             elLumB.style.display = "none";
+
             if($("#checkLuminositePage").is(":checked") == true) {
                 $("#checkLuminositePage").prop("checked", false);
+            }
+
+            if($("#checkLuminositePageCheckbox").is(":checked") == true) {
+                $("#checkLuminositePageCheckbox").prop("checked", false);
             }
         }
     }
 
     $("#checkLuminositePage").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("pageLumEnabled", "true");
+        } else {
+            setSettingItem("pageLumEnabled", "false");
+        }
+    });
+
+    $("#checkLuminositePageCheckbox").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("pageLumEnabled", "true");
         } else {
@@ -994,7 +1066,17 @@ $(document).ready(() => {
     });
 
     async function displaySettings() {
-        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad"]);
+        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "popupTheme"]);
+
+        // Switch popup theme
+        if (result && result.popupTheme && result.popupTheme == "checkbox") {
+            $(".popup-option-container").hide();
+            $(".popup-option-container-classic").show();
+        } else {
+            $(".popup-option-container").show();
+            $(".popup-option-container-classic").hide();
+        }
+
         checkContrastMode();
         checkColorInvert();
         checkLiveSettings();

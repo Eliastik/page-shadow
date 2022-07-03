@@ -195,6 +195,12 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets) {
         $("#darkThemeSelect").val(currentTheme.interfaceDarkTheme);
     }
 
+    const currentPopupTheme = await browser.storage.local.get(["popupTheme"]);
+
+    if (currentPopupTheme.popupTheme) {
+        $("#popupThemeSelect").val(currentPopupTheme.popupTheme);
+    }
+
     toggleTheme(); // Toggle dark/light theme
 }
 
@@ -1224,6 +1230,10 @@ $(document).ready(() => {
 
     $("#darkThemeSelect").on("change", () => {
         changeTheme();
+    });
+
+    $("#popupThemeSelect").on("change", async() => {
+        await setSettingItem("popupTheme", $("#popupThemeSelect").val());
     });
 
     $("#themeSelect").on("change", async() => {
