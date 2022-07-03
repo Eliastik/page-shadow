@@ -1032,6 +1032,13 @@ $(document).ready(() => {
         });
     });
 
+    $("#openAdvancedSettingsLink").on("click", () => {
+        browser.runtime.sendMessage({
+            type: "openTab",
+            url: browser.runtime.getURL("options.html")
+        });
+    });
+
     async function createPreset() {
         $("#infoPreset").removeClass("show");
         const presetId = parseInt($("#loadPresetSelect").val());
@@ -1107,6 +1114,12 @@ $(document).ready(() => {
         const updateNotification = result.updateNotification || {};
 
         if(updateNotification[extensionVersion] != true && result.defaultLoad == "0") {
+            if (updateNotification["2.10"] != true) {
+                $("#modalUIUpdatedMessage").show();
+            } else {
+                $("#modalUIUpdatedMessage").hide();
+            }
+
             updateNotification[extensionVersion] = true;
             $("#updated").modal("show");
             $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));

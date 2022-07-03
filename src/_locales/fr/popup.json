@@ -81,7 +81,10 @@
     "modalUpdated": {
         "title": "Mise à jour de l'extension",
         "message": "Page Shadow vient d'être mis à jour vers la version {{version}} en date du {{date}} !",
-        "whatsNew": "Quoi de neuf ?"
+        "whatsNew": "Quoi de neuf ?",
+        "uiUpdated": "L'interface de l'extension a été refondue.",
+        "openAdvancedSettings": "Accédez aux paramètres avancés",
+        "personnalize": "pour personnaliser votre interface."
     },
     "createPresetModal": {
         "title": "Créer le pré-réglage",

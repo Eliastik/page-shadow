@@ -81,7 +81,10 @@
     "modalUpdated": {
         "title": "Extension updated",
         "message": "Page Shadow has just been updated to version {{version}} dated {{date}}!",
-        "whatsNew": "What's new?"
+        "whatsNew": "What's new?",
+        "uiUpdated": "The extension's interface has been redesigned.",
+        "openAdvancedSettings": "Go to advanced settings",
+        "personnalize": "to customize your interface."
     },
     "createPresetModal": {
         "title": "Create preset",
