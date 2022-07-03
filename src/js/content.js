@@ -1183,7 +1183,6 @@ import SafeTimer from "./safeTimer.js";
                     "type": "applySettingsChanged"
                 });
             } else {
-                console.log(hasSettingsChanged(currentSettings, await getSettings(getCurrentURL())), currentSettings, await getSettings(getCurrentURL()));
                 if(hasSettingsChanged(currentSettings, await getSettings(getCurrentURL()))) {
                     precEnabled = isEnabled;
                     main(TYPE_RESET, TYPE_ALL);

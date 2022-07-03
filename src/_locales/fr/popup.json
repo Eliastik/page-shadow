@@ -29,7 +29,7 @@
         "percentage": "Pourcentage de baisse de luminosité :",
         "nightMode": "Mode nuit",
         "tileNightMode": "Applique un filtre orangé sur la page afin de réduire la lumière bleue émise par l'écran.",
-        "autoEnable": "Activer/désactiver automatiquement",
+        "autoEnable": "Activer/désactiver auto.",
         "titleAutoEnable": "Activer ou désactiver globalement Page Shadow de manière automatique en fonction de l'heure. Sélectionnez l'icône roue dentée afin de régler cette fonction.",
         "liveSettings": "Appliquer les paramètres en temps réel",
         "titleLiveSettings": "Peut réduire les performances du navigateur.",

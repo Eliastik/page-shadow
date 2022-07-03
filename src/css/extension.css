@@ -261,6 +261,26 @@ hr.nmt {
     transition: all 0.3s ease-in-out;
     width: 24px;
 }
+.checkbox-switch.checkbox-switch-sm {
+    height: 20px;
+}
+.checkbox-switch.checkbox-switch-sm > label {
+    width: 38px;
+}
+.checkbox-switch.checkbox-switch-sm > label::before {
+    border-radius: 8px;
+    height: 14px;
+    margin-top: -8px;
+    width: 35px;
+}
+.checkbox-switch.checkbox-switch-sm > label::after {
+    border-radius: 12px;
+    height: 20px;
+    left: -4px;
+    margin-top: -8px;
+    top: -3px;
+    width: 20px;
+}
 .checkbox-switch > input[type="checkbox"]:checked + label::before {
     background: inherit;
     opacity: 0.5;
@@ -269,12 +289,32 @@ hr.nmt {
     background: inherit;
     left: 20px;
 }
-/* End of switchs */
-.label-lightgreen {
-    background-color: #8BC34A;
+.checkbox-switch.checkbox-switch-sm > input[type="checkbox"]:checked + label::after {
+    left: 18px;
+}
+.label-blue {
+    background-color: #1a73e8;
 }
 .label-pink {
     background-color: #E91E63;
+}
+/* End of switchs */
+.popup-option-icon {
+    margin-right: 4px;
+}
+.popup-option-label,.popup-option-icon {
+    font-size: 13.15px;
+    margin-bottom: 0 !important;
+}
+.popup-option-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px !important;
+    justify-content: space-between;
+}
+.popup-option-container-checkbox-switch, .popup-option-container-label {
+    display: flex;
+    align-items: center;
 }
 div.navbar-right {
     float: right;

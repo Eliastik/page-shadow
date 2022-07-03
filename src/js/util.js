@@ -799,8 +799,6 @@ async function getSettings(url) {
     let colorInvert = result.colorInvert;
     let selectiveInvert = result.selectiveInvert;
 
-    console.log(theme);
-
     // Automatically enable preset ?
     const presetsEnabled = await presetsEnabledForWebsite(url);
 

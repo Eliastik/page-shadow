@@ -63,7 +63,23 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     </div>
                 </div>
                 <div>
-                    <input type="checkbox" id="checkAssomPage" /> <label for="checkAssomPage" data-i18n="container.contrast"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-placement="top" data-i18n="[data-original-title]container.titleContrast"></i>
+                    <div class="popup-option-container">
+                        <div class="popup-option-container-label">
+                            <div class="popup-option-container-label">
+                                <label class="popup-option-label" for="checkAssomPage">
+                                    <i class="fa-solid fa-circle-half-stroke fa-fw popup-option-icon"></i>
+                                    <span data-i18n="container.contrast"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="popup-option-container-checkbox-switch">
+                            <div class="checkbox-switch checkbox-switch-sm ml-2 mr-2">
+                                <input id="checkAssomPage" name="checkAssomPage" type="checkbox" />
+                                <label for="checkAssomPage" class="label-blue"></label>
+                            </div>
+                            <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-placement="top" data-i18n="[data-original-title]container.titleContrast"></i>
+                        </div>
+                    </div>
                     <div class="well well-sm well-nmb" id="themeDiv" style="display: none;">
                         <label for="themeSelect" data-i18n="container.themeSelect"></label>
                         <select id="themeSelect" style="min-width: 80px;"></select>
@@ -75,13 +91,43 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     </div>
                 </div>
                 <div>
-                    <input type="checkbox" id="checkColorInvert" /> <label for="checkColorInvert"  data-i18n="container.colorInvert"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleColorInvert"></i>
+                    <div class="popup-option-container">
+                        <div class="popup-option-container-label">
+                            <div class="popup-option-container-label">
+                                <label class="popup-option-label" for="checkColorInvert">
+                                    <i class="fa-solid fa-droplet fa-fw popup-option-icon"></i>
+                                    <span data-i18n="container.colorInvert"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="popup-option-container-checkbox-switch">
+                            <div class="checkbox-switch checkbox-switch-sm ml-2 mr-2">
+                                <input id="checkColorInvert" name="checkColorInvert" type="checkbox" />
+                                <label for="checkColorInvert" class="label-blue"></label>
+                            </div>
+                            <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleColorInvert"></i>
+                        </div>
+                    </div>
                     <div class="well well-sm well-nmb" id="invertPageColorsDiv" style="display: none;">
                         <div class="checkbox-group"><input type="checkbox" id="checkImageInvert" /> <label for="checkImageInvert"  data-i18n="container.imageInvert"></label></div> &nbsp; <div class="checkbox-group"><input type="checkbox" id="checkBgColorInvert" /> <label for="checkBgColorInvert" data-i18n="container.bgColorInvert"></label></div> &nbsp; <div class="checkbox-group"><input type="checkbox" id="checkEntirePageInvert" /> <label for="checkEntirePageInvert" data-i18n="container.entirePageInvert"></label></div> &nbsp; <div class="checkbox-group"><input type="checkbox" id="checkVideoInvert" /> <label for="checkVideoInvert" data-i18n="container.videoInvert"></label></div> &nbsp; <div class="checkbox-group"><input type="checkbox" id="checkSelectiveInvert" /> <label for="checkSelectiveInvert" data-i18n="container.selectiveInvert"></label></div> <i class="fa fa-question-circle helpIconMin" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.selectiveInvertHelp"></i>
                     </div>
                 </div>
                 <div>
-                    <input type="checkbox" id="checkLuminositePage" /> <label for="checkLuminositePage" data-i18n="container.brightness"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleBrightness"></i>
+                    <div class="popup-option-container">
+                        <div class="popup-option-container-label">
+                            <label class="popup-option-label" for="checkLuminositePage">
+                                <i class="fa-solid fa-moon fa-fw popup-option-icon"></i>
+                                <span data-i18n="container.brightness"></span>
+                            </label>
+                        </div>
+                        <div class="popup-option-container-checkbox-switch">
+                            <div class="checkbox-switch checkbox-switch-sm ml-2 mr-2">
+                                <input id="checkLuminositePage" name="checkLuminositePage" type="checkbox" />
+                                <label for="checkLuminositePage" class="label-blue"></label>
+                            </div>
+                            <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleBrightness"></i>
+                        </div>
+                    </div>
                     <div class="well well-sm well-nmb" id="sliderLuminositeDiv" style="display: none;">
                         <label for="sliderLuminosite" data-i18n="container.percentage"></label>
                         <input id="sliderLuminosite" data-slider-id="sliderLuminosite" type="text" data-slider-step="1" data-tooltip="show" />
@@ -92,10 +138,39 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     </div>
                 </div>
                 <div>
-                    <input type="checkbox" id="autoEnable" /> <label for="autoEnable" data-i18n="container.autoEnable"></label> <a data-toggle="modal" data-target="#autoEnableSettings"><i class="fa fa-cog settingIcon" aria-hidden="true"></i></a> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleAutoEnable"></i>
+                    <div class="popup-option-container">
+                        <div class="popup-option-container-label">
+                            <label class="popup-option-label" for="autoEnable">
+                                <i class="fa-solid fa-clock fa-fw popup-option-icon"></i>
+                                <span data-i18n="container.autoEnable"></span>
+                            </label>
+                        </div>
+                        <div class="popup-option-container-checkbox-switch">
+                            <a data-toggle="modal" data-target="#autoEnableSettings"><i class="fa fa-cog settingIcon mr-2" aria-hidden="true"></i></a>
+                            <div class="checkbox-switch checkbox-switch-sm ml-2 mr-2">
+                                <input id="autoEnable" name="autoEnable" type="checkbox" />
+                                <label for="autoEnable" class="label-blue"></label>
+                            </div>
+                            <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleAutoEnable"></i>
+                        </div>
+                    </div>
                 </div>
                 <div>
-                    <input type="checkbox" id="liveSettings" /> <label for="liveSettings" data-i18n="container.liveSettings"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleLiveSettings"></i>
+                    <div class="popup-option-container">
+                        <div class="popup-option-container-label">
+                            <label class="popup-option-label" for="liveSettings">
+                                <i class="fa-solid fa-wrench fa-fw popup-option-icon"></i>
+                                <span data-i18n="container.liveSettings"></span>
+                            </label>
+                        </div>
+                        <div class="popup-option-container-checkbox-switch">
+                            <div class="checkbox-switch checkbox-switch-sm ml-2 mr-2">
+                                <input id="liveSettings" name="liveSettings" type="checkbox" />
+                                <label for="liveSettings" class="label-blue"></label>
+                            </div>
+                            <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleLiveSettings"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
             <hr />
