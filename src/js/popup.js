@@ -1077,6 +1077,7 @@ $(document).ready(() => {
             $(".popup-option-container-classic").hide();
         }
 
+        toggleTheme(); // Toggle dark/light theme
         checkContrastMode();
         checkColorInvert();
         checkLiveSettings();
