@@ -33,8 +33,8 @@ import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme } from "./util.js";
-import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL } from "./constants.js";
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig } from "./util.js";
+import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
 import { setSettingItem, setFirstSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./filter.codemirror.mode";
@@ -106,6 +106,7 @@ function translateContent() {
     }
 
     displaySettings(null, changingLanguage);
+    loadAdvancedOptionsUI();
 }
 
 async function changeLng(lng) {
@@ -516,6 +517,68 @@ async function displayFilters() {
     browser.runtime.sendMessage({
         "type": "getRulesErrorCustomFilter"
     });
+}
+
+async function loadAdvancedOptionsUI(reset) {
+    let websiteFiltersConfig = JSON.parse(JSON.stringify(defaultWebsiteSpecialFiltersConfig));
+
+    if (!reset) {
+        websiteFiltersConfig = await loadWebsiteSpecialFiltersConfig();
+    }
+
+    document.querySelector("#advancedOptionsFiltersWebsiteSettings").textContent = "";
+
+    Object.keys(websiteFiltersConfig).forEach(key => {
+        const value = websiteFiltersConfig[key];
+
+        const formGroup = document.createElement("div");
+        formGroup.classList.add("form-group");
+
+        const label = document.createElement("label");
+        label.classList.add("col-lg-4", "control-label", "option-label");
+        label.textContent = i18next.t("advancedOptions.filtersConfig." + key);
+        label.setAttribute("for", key);
+        formGroup.appendChild(label);
+
+        const div = document.createElement("div");
+        div.classList.add("col-lg-8");
+        formGroup.appendChild(div);
+
+        const input = document.createElement("input");
+        input.id = key;
+        input.name = key;
+        input.value = value;
+        input.classList.add("form-control", "input-font");
+        div.appendChild(input);
+
+        const help = document.createElement("i");
+        help.classList.add("fa", "fa-question-circle", "helpIcon");
+        help.setAttribute("data-toggle", "tooltip");
+        help.setAttribute("title", i18next.t("advancedOptions.filtersConfig.help." + key));
+        div.appendChild(help);
+
+        document.querySelector("#advancedOptionsFiltersWebsiteSettings").appendChild(formGroup);
+    });
+
+    $("[data-toggle=\"tooltip\"]").tooltip();
+}
+
+async function saveAdvancedOptions() {
+    const websiteFiltersConfig = JSON.parse(JSON.stringify(defaultWebsiteSpecialFiltersConfig));
+
+    Object.keys(websiteFiltersConfig).forEach(key => {
+        if (Object.prototype.hasOwnProperty.call(websiteFiltersConfig, key)) {
+            const input = document.querySelector("input#" + key);
+
+            if (input) {
+                const value = input.value == "true" ? true : (input.value === "false" ? false : input.value);
+                websiteFiltersConfig[key] = value;
+            }
+        }
+    });
+
+    setSettingItem("advancedOptionsFiltersSettings", websiteFiltersConfig);
+    loadAdvancedOptionsUI();
 }
 
 async function displayDetailsFilter(idFilter) {
@@ -1609,6 +1672,24 @@ $(document).ready(() => {
                 "type": "checkUpdateNeededForFilters"
             });
         }
+    });
+
+    $("#checkboxAdvancedOptions").on("click", () => {
+        if($("#checkboxAdvancedOptions").is(":checked")) {
+            $("#advancedOptionsFull").show();
+            $("#advancedOptionsFullWarning").hide();
+        } else {
+            $("#advancedOptionsFull").hide();
+            $("#advancedOptionsFullWarning").show();
+        }
+    });
+
+    $("#resetAdvancedOptions").on("click", () => {
+        loadAdvancedOptionsUI(true);
+    });
+
+    $("#saveAdvancedOptions").on("click", () => {
+        saveAdvancedOptions();
     });
 });
 

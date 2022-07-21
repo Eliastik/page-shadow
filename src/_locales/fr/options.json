@@ -6,7 +6,8 @@
         "actual": "(actuel)"
     },
     "container": {
-        "saveInfo": "N'oubliez pas de cliquer sur Sauvgearder pour enregistrer votre liste !",
+        "saveInfo": "N'oubliez pas de cliquer sur Sauvegarder pour enregistrer votre liste !",
+        "saveInfo2": "N'oubliez pas de cliquer sur Sauvegarder pour enregistrer vos options !",
         "update": "Rechercher une mise à jour",
         "language": {
             "fr": "Français",
@@ -35,7 +36,8 @@
         "filters": "Filtres",
         "archive": "Archiver/restaurer",
         "storage": "Stockage",
-        "about": "À propos"
+        "about": "À propos",
+        "advanced": "Options avancées"
     },
     "generalSettings": {
         "labelLanguage": "Langue :",
@@ -48,6 +50,42 @@
         "popupTheme": "Thème de la popup :",
         "popupThemeSwitch": "Switches et icônes (par défaut)",
         "popupThemeClassic": "Cases à cocher (thème classique)"
+    },
+    "advancedOptions": {
+        "checkbox": "J'ai compris et je souhaite accéder aux options avancées",
+        "warning": "Attention, ces options sont destinées aux utilisateurs avertis et aux développeurs afin d'effectuer des tests. Les modifier pourrait compromettre le fonctionnement normal de l'extension. Ne les modifiez seulement si vous savez ce que vous faîtes.",
+        "filtersConfig": {
+            "performanceModeEnabled": "Mode performance",
+            "autoDetectTransparentBackgroundEnabled": "Détection automatique des arrières-plan transparents",
+            "enableMutationObserversForSubChilds": "Mutation Observers activés pour les sous-enfants",
+            "opacityDetectedAsTransparentThreshold": "Seuil de détection de l'opacité en tant qu'arrière-plan transparent",
+            "enableMutationObserverAttributes": "Activer les Mutation Observers pour les attributs des éléments",
+            "enableMutationObserverStyle": "Activer les Mutation Observers pour l'attribut style des éléments",
+            "enableMutationObserverClass": "Activer les Mutation Observers pour l'attribut class des éléments",
+            "enableShadowRootStyleOverride": "Activer le remplacement du style des Shadow Roots",
+            "shadowRootStyleOverrideDelay": "Délai avant le remplacement du style des Shadow Roots",
+            "throttleMutationObserverBackgrounds": "Ralentir les Mutation Observers de détection des arrières-plan",
+            "delayMutationObserverBackgrounds": "Délai avant l'exécution des Mutation Observers de détection des arrières-plans",
+            "autoThrottleMutationObserverBackgroundsEnabled": "Auto-ralentissement des Mutation Observers de détection des arrières-plans",
+            "autoThrottleMutationObserverBackgroundsTreshold": "Seuil après lequel activer l'auto-ralentissement des Mutation Observers",
+            "throttledMutationObserverTreatedByCall": "Nombre d'éléments traités par appel aux Mutation Observers lorsqu'ils sont ralentis",
+            "help": {
+                "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrières-plans des éléments.",
+                "autoDetectTransparentBackgroundEnabled": "Active la détection des arrières-plans transparents. Désactiver cette fonctionnalité peut provoquer de nombreux problèmes d'affichage.",
+                "enableMutationObserversForSubChilds": "Lorsque les Mutation Observers analysent un élément, ils traversent et analysent les enfants de cet élément. Désactiver cela peut améliorer les performances, mais provoquer des problèmes d'affichage.",
+                "opacityDetectedAsTransparentThreshold": "Un élément qui a une opacité inférieure à ce seuil sera considéré comme étant un élément transparent.",
+                "enableMutationObserverAttributes": "Les Mutation Observers seront activés pour les mutations des attributs de tous les éléments.",
+                "enableMutationObserverStyle": "Les Mutation Observers seront activés pour les mutations des attributs style de tous les éléments.",
+                "enableMutationObserverClass": "Les Mutation Observers seront activés pour les mutations des attributs class de tous les éléments.",
+                "enableShadowRootStyleOverride": "Remplace les styles par défaut des Shadow Roots",
+                "shadowRootStyleOverrideDelay": "Attend ce délai (ms) avant d'injecter la feuille de style CSS de Page Shadow aux éléments Shadow Roots",
+                "throttleMutationObserverBackgrounds": "Ralenti le traitement des Mutation Observers, ce qui soulage le processeur et améliore les performances.",
+                "delayMutationObserverBackgrounds": "Délai (ms) avant le traitement de chaque Mutation Observer.",
+                "autoThrottleMutationObserverBackgroundsEnabled": "Active seulement si nécessaire le ralentissement des Mutation Observer.",
+                "autoThrottleMutationObserverBackgroundsTreshold": "Si un Mutation Observer traite d'un seul coup un nombre d'éléments supérieur à ce seuil, le ralentissement est activé. Le ralentissement est désactivé lorsque le nombre d'éléments traités tombe sous ce seuil.",
+                "throttledMutationObserverTreatedByCall": "Le nombre d'éléments traités par un appel aux Mutation Observers, lorsque le ralentissement est activé."
+            }
+        }
     },
     "modal": {
         "syntax": {

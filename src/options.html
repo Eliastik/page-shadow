@@ -58,6 +58,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     <li role="presentation" id="archiveRestoreTabLink"><a href="#archiveRestoreTab" aria-controls="archiveRestoreTab" role="tab" data-toggle="tab"><i class="fa-solid fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.archive"></span></a></li>
                     <li role="presentation" id="storageTabLink"><a href="#storageTab" aria-controls="storageTab" role="tab" data-toggle="tab"><i class="fa-solid fa-hard-drive fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.storage"></span></a></li>
                     <li role="presentation" id="aboutTabLink"><a href="#aboutTab" aria-controls="aboutTab" role="tab" data-toggle="tab"><i class="fa-solid fa-circle-info fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.about"></span></a></li>
+                    <li role="presentation" id="advancedLink"><a href="#advancedTab" aria-controls="advancedTab" role="tab" data-toggle="tab"><i class="fa-solid fa-code fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.advanced"></span></a></li>
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="generalTab">
@@ -575,6 +576,21 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 <div role="tabpanel" class="tab-pane" id="readmeTab">
                                     <iframe src="" id="iframeReadme" data-i18n="[src]modal.readme.src"></iframe>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="advancedTab">
+                        <div class="row center" id="advancedOptionsFullWarning">
+                            <p data-i18n="advancedOptions.warning" class="bold"></p>
+                            <input type="checkbox" id="checkboxAdvancedOptions" /> <label for="checkboxAdvancedOptions" data-i18n="advancedOptions.checkbox"></label>
+                        </div>
+                        <div id="advancedOptionsFull">
+                            <p data-i18n="advancedOptions.warning" class="bold center"></p>
+                            <p data-i18n="container.saveInfo2" class="bold center"></p>
+                            <div id="advancedOptionsFiltersWebsiteSettings" class="form-horizontal"></div>
+                            <div class="row center" id="advancedOptionsFullWarning">
+                                <button type="button" class="btn btn-primary" id="saveAdvancedOptions"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.save"></span></button>
+                                <button type="button" class="btn btn-danger ml-2" id="resetAdvancedOptions"><i class="fa fa-refresh" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button>
                             </div>
                         </div>
                     </div>

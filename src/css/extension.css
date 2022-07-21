@@ -417,6 +417,9 @@ div.navbar-right {
     flex-grow: 1;
     margin-left: 8px;
 }
+#advancedOptionsFull {
+    display: none;
+}
 #customTheme .tooltip-inner {
     width: auto;
     min-width: none;

@@ -91,7 +91,8 @@ async function setFirstSettings() {
         "defaultLoad": "0",
         "updateNotification": updateNotification,
         "interfaceDarkTheme": defaultInterfaceDarkTheme,
-        "popupTheme": defaultPopupTheme
+        "popupTheme": defaultPopupTheme,
+        "advancedOptionsFiltersSettings": {}
     });
 
     return true;
