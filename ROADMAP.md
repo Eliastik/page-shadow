@@ -22,7 +22,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Filters: don't update if file "Last-modified" header from server has not changed compared to the local version and last update
     * [x] Show update available for filters (check last-modified header)
 * [ ] Display a warning after a certain time to ask the user to archive their settings
-* [ ] Settings for developpers in the advanced settings page
+* [x] Settings for developpers in the advanced settings page
 * [ ] Option to attenuate the color of the images for the "Increase contrast" mode (see https://web.dev/prefers-color-scheme/#dark-mode-best-practices)
 
 ### Known issues/bugs
@@ -41,3 +41,4 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] Store filters on a Github repository ?
 * [ ] Preserve bright colors?/Several "shades" of background color for the themes?
 * [ ] User suggestion: It would be great if the brightness reduction without night mode and the brightness reduction with night mode could be combined.
+* [ ] Logging ?
