@@ -350,6 +350,9 @@ div.navbar-right {
 .tab-content {
     padding: 15px !important;
 }
+.well-presets-auto {
+    border-radius: 0px 0px 3px 3px;
+}
 #archiveSuggestedName {
     width: 350px;
 }

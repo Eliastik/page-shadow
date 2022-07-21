@@ -102,7 +102,13 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 <label for="textareaAssomPage" class="col-lg-2 control-label option-label" data-i18n="container.labelList"></label>
                                 <div class="col-lg-10">
                                     <p class="indice"><span data-i18n="container.indiceList"></span> <span data-toggle="tooltip" data-placement="top" data-i18n="[data-original-title]container.titleHelp"><i class="fa fa-question-circle helpIcon" aria-hidden="true"></i></p>
-                                    <p><input type="checkbox" id="checkWhiteList" /> <label for="checkWhiteList" data-i18n="container.whiteList"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleWhiteList"></i></p>
+                                    <p>
+                                        <div class="checkbox-switch checkbox-switch-sm ml-2 mr-2">
+                                            <input id="checkWhiteList" name="checkWhiteList" type="checkbox" />
+                                            <label for="checkWhiteList" class="label-blue"></label>
+                                        </div>
+                                        <label for="checkWhiteList" data-i18n="container.whiteList" class="ml-2"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleWhiteList"></i>
+                                    </p>
                                     <p><span data-i18n="container.infoListSyntax"></span> &nbsp; <button type="button" class="btn btn-xs btn-primary" id="syntaxBtn"><span class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip"></span></button></p>
                                     <textarea id="textareaAssomPage" class="form-control" rows="10" data-i18n="[placeholder]container.textareaPlaceholder"></textarea>
                                 </div>
@@ -269,7 +275,11 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                         <p><span data-i18n="modal.filters.infos"></span></p>
                         <button class="btn btn-sm btn-primary" id="updateAllFilters"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.updateAll"></span></button> &nbsp; 
                         <button class="btn btn-sm btn-default" id="cleanAllFilters"><i class="fa fa-trash fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.cleanAll"></span></button> &nbsp; 
-                        <input type="checkbox" id="enableFilterAutoUpdate"></input> <label for="enableFilterAutoUpdate" data-i18n="modal.filters.enableFilterAutoUpdate"></label>
+                        <div class="checkbox-switch checkbox-switch-sm ml-2 mr-2">
+                            <input id="enableFilterAutoUpdate" name="enableFilterAutoUpdate" type="checkbox" />
+                            <label for="enableFilterAutoUpdate" class="label-blue"></label>
+                        </div>
+                        <label for="enableFilterAutoUpdate" data-i18n="modal.filters.enableFilterAutoUpdate" class="ml-2"></label>
                         <p class="well well-sm well-lmb"><span id="filtersCount"></span> / <span id="filtersStorageSize"></span></p>
                         <ul class="list-group" id="filtersList"></ul>
                         <button class="btn btn-sm btn-primary" id="addFilterSourceBtnOpen" data-dismiss="modal" data-toggle="modal" data-target="#addFilterSource"><i class="fa fa-plus fa-fw" aria-hidden="true"></i> <span data-i18n="modal.filters.addFilter"></span></button> &nbsp; 
