@@ -24,6 +24,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] Display a warning after a certain time to ask the user to archive their settings
 * [x] Settings for developpers in the advanced settings page
 * [ ] Option to attenuate the color of the images for the "Increase contrast" mode (see https://web.dev/prefers-color-scheme/#dark-mode-best-practices)
+* [ ] User suggestion: It would be great if the brightness reduction without night mode and the brightness reduction with night mode could be combined.
+    * [ ] Separate brightness reduction and night mode settings (renamed "Blue-light reduction filter")
 
 ### Known issues/bugs
 
@@ -31,6 +33,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] When selecting a custom theme and then choosing a classic theme, the other tabs keep the custom theme
 * [ ] Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] Firefox bug: Page Color inversion - broken float: https://stackoverflow.com/questions/52937708/why-does-applying-a-css-filter-on-the-parent-break-the-child-positioning (difficult to fix)
+* [ ] Bug with solveforum.com : Increase contrast setting cannot be applied -> classes on body element are removed
 
 ### Future
 
@@ -40,5 +43,4 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditonal filter)
 * [ ] Store filters on a Github repository ?
 * [ ] Preserve bright colors?/Several "shades" of background color for the themes?
-* [ ] User suggestion: It would be great if the brightness reduction without night mode and the brightness reduction with night mode could be combined.
 * [ ] Logging ?
