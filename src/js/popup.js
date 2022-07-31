@@ -22,7 +22,7 @@ import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
 import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme } from "./util.js";
-import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots } from "./constants.js";
+import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue } from "./constants.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import browser from "webextension-polyfill";
@@ -88,9 +88,15 @@ $(document).ready(() => {
     const elLumB = document.createElement("div");
     elLumB.style.display = "none";
     document.body.appendChild(elLumB);
+
+    const elBlueLightReduction = document.createElement("div");
+    elBlueLightReduction.style.display = "none";
+    document.body.appendChild(elBlueLightReduction);
+
     const style = document.createElement("style");
     const lnkCustomTheme = document.createElement("link");
     let brightnessChangedFromThisPage = false;
+    let percentageBlueLightChangedFromThisPage = false;
 
     // append the list of the color temperatures in the select
     $("#tempSelect").text("");
@@ -101,9 +107,13 @@ $(document).ready(() => {
     }
 
     // set the min and max percentage of brightness
-    $("#sliderLuminosite").attr("data-slider-min", minBrightnessPercentage * 100);
-    $("#sliderLuminosite").attr("data-slider-max", maxBrightnessPercentage * 100);
-    $("#sliderLuminosite").attr("data-slider-value", brightnessDefaultValue * 100);
+    $("#sliderBrightness").attr("data-slider-min", minBrightnessPercentage * 100);
+    $("#sliderBrightness").attr("data-slider-max", maxBrightnessPercentage * 100);
+    $("#sliderBrightness").attr("data-slider-value", brightnessDefaultValue * 100);
+
+    $("#sliderBlueLightReduction").attr("data-slider-min", minBrightnessPercentage * 100);
+    $("#sliderBlueLightReduction").attr("data-slider-max", maxBrightnessPercentage * 100);
+    $("#sliderBlueLightReduction").attr("data-slider-value", brightnessDefaultValue * 100);
 
     $("[data-toggle=\"tooltip\"]").tooltip({
         trigger: "hover",
@@ -111,7 +121,16 @@ $(document).ready(() => {
         placement: "auto top"
     });
 
-    const sliderLuminosite = new Slider("#sliderLuminosite", {
+    const sliderBrightness = new Slider("#sliderBrightness", {
+        tooltip: "show",
+        step: 1,
+        tooltip_position: "top",
+        formatter: value => {
+            return value;
+        }
+    });
+
+    const sliderBlueLightReduction = new Slider("#sliderBlueLightReduction", {
         tooltip: "show",
         step: 1,
         tooltip_position: "top",
@@ -836,78 +855,43 @@ $(document).ready(() => {
         const result = await browser.storage.local.get(["pageLumEnabled", "nightModeEnabled", "pourcentageLum"]);
 
         if(result.pageLumEnabled == "true") {
-            if(result.nightModeEnabled == "true") {
-                $("#checkNighMode").attr("checked", "checked");
-                elLumB.setAttribute("id", "pageShadowBrightnessNightMode");
-            } else {
-                elLumB.setAttribute("id", "pageShadowBrightness");
-            }
+            elLumB.setAttribute("id", "pageShadowBrightness");
 
             if(result.pourcentageLum / 100 > maxBrightnessPercentage || result.pourcentageLum / 100 < minBrightnessPercentage || typeof result.pourcentageLum === "undefined" || result.pourcentageLum == null) {
                 elLumB.style.opacity = brightnessDefaultValue;
-                sliderLuminosite.setValue(brightnessDefaultValue * 100);
+                sliderBrightness.setValue(brightnessDefaultValue * 100);
             } else {
                 elLumB.style.opacity = result.pourcentageLum / 100;
             }
 
             elLumB.style.display = "block";
-            $("#sliderLuminositeDiv").stop().fadeIn();
+            $("#brightnessSettings").stop().fadeIn();
 
-            if($("#checkLuminositePage").is(":checked") == false) {
-                $("#checkLuminositePage").prop("checked", true);
+            if($("#checkBrightnessPage").is(":checked") == false) {
+                $("#checkBrightnessPage").prop("checked", true);
             }
 
-            if($("#checkLuminositePageCheckbox").is(":checked") == false) {
-                $("#checkLuminositePageCheckbox").prop("checked", true);
+            if($("#checkBrightnessPageCheckbox").is(":checked") == false) {
+                $("#checkBrightnessPageCheckbox").prop("checked", true);
             }
-
-            checkNightMode();
         } else {
-            $("#sliderLuminositeDiv").stop().fadeOut();
+            $("#brightnessSettings").stop().fadeOut();
             elLumB.style.display = "none";
 
-            if($("#checkLuminositePage").is(":checked") == true) {
-                $("#checkLuminositePage").prop("checked", false);
+            if($("#checkBrightnessPage").is(":checked") == true) {
+                $("#checkBrightnessPage").prop("checked", false);
             }
 
-            if($("#checkLuminositePageCheckbox").is(":checked") == true) {
-                $("#checkLuminositePageCheckbox").prop("checked", false);
+            if($("#checkBrightnessPageCheckbox").is(":checked") == true) {
+                $("#checkBrightnessPageCheckbox").prop("checked", false);
             }
         }
     }
 
-    $("#checkLuminositePage").on("change", function() {
-        if($(this).is(":checked") == true) {
-            setSettingItem("pageLumEnabled", "true");
-        } else {
-            setSettingItem("pageLumEnabled", "false");
-        }
-    });
+    async function checkBlueLightReduction() {
+        const result = await browser.storage.local.get(["blueLightReductionEnabled", "colorTemp", "percentageBlueLightReduction"]);
 
-    $("#checkLuminositePageCheckbox").on("change", function() {
-        if($(this).is(":checked") == true) {
-            setSettingItem("pageLumEnabled", "true");
-        } else {
-            setSettingItem("pageLumEnabled", "false");
-        }
-    });
-
-    $("#sliderLuminosite").on("change", () => {
-        const sliderLumValue = sliderLuminosite.getValue();
-        elLumB.style.opacity = sliderLumValue / 100;
-    });
-
-    $("#sliderLuminosite").on("slideStop", () => {
-        const sliderLumValue = sliderLuminosite.getValue();
-        brightnessChangedFromThisPage = true;
-        elLumB.style.opacity = sliderLumValue / 100;
-        setSettingItem("pourcentageLum", sliderLumValue);
-    });
-
-    async function checkNightMode() {
-        const result = await browser.storage.local.get(["nightModeEnabled", "colorTemp"]);
-
-        if(result.nightModeEnabled == "true") {
+        if(result.blueLightReductionEnabled == "true") {
             if(result.colorTemp != undefined) {
                 $("#tempSelect").val(result.colorTemp);
                 previewTemp(result.colorTemp);
@@ -916,19 +900,94 @@ $(document).ready(() => {
                 previewTemp("5");
             }
 
-            $("#tempSelectDiv").stop().fadeIn();
-            elLumB.setAttribute("id", "pageShadowBrightnessNightMode");
-            if($("#checkNighMode").is(":checked") == false) {
-                $("#checkNighMode").prop("checked", true);
+            if(result.percentageBlueLightReduction / 100 > maxBrightnessPercentage || result.percentageBlueLightReduction / 100 < minBrightnessPercentage || typeof result.percentageBlueLightReduction === "undefined" || result.percentageBlueLightReduction == null) {
+                elBlueLightReduction.style.opacity = percentageBlueLightDefaultValue;
+                sliderBlueLightReduction.setValue(percentageBlueLightDefaultValue * 100);
+            } else {
+                elBlueLightReduction.style.opacity = result.percentageBlueLightReduction / 100;
+            }
+
+            $("#blueLightReductionFilterSettings").stop().fadeIn();
+            elBlueLightReduction.setAttribute("id", "pageShadowBrightnessNightMode");
+            elBlueLightReduction.style.display = "block";
+
+            if($("#checkBlueLightReductionFilter").is(":checked") == false) {
+                $("#checkBlueLightReductionFilter").prop("checked", true);
+            }
+
+            if($("#checkBlueLightReductionFilterCheckbox").is(":checked") == false) {
+                $("#checkBlueLightReductionFilterCheckbox").prop("checked", true);
             }
         } else {
-            $("#tempSelectDiv").stop().fadeOut();
-            elLumB.setAttribute("id", "pageShadowBrightness");
-            if($("#checkNighMode").is(":checked") == true) {
-                $("#checkNighMode").prop("checked", false);
+            $("#blueLightReductionFilterSettings").stop().fadeOut();
+            elBlueLightReduction.setAttribute("id", "pageShadowBrightnessNightMode");
+            elBlueLightReduction.style.display = "none";
+
+            if($("#checkBlueLightReductionFilter").is(":checked") == true) {
+                $("#checkBlueLightReductionFilter").prop("checked", false);
+            }
+
+            if($("#checkBlueLightReductionFilterCheckbox").is(":checked") == true) {
+                $("#checkBlueLightReductionFilterCheckbox").prop("checked", false);
             }
         }
     }
+
+    $("#checkBrightnessPage").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("pageLumEnabled", "true");
+        } else {
+            setSettingItem("pageLumEnabled", "false");
+        }
+    });
+
+    $("#checkBrightnessPageCheckbox").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("pageLumEnabled", "true");
+        } else {
+            setSettingItem("pageLumEnabled", "false");
+        }
+    });
+
+    $("#checkBlueLightReductionFilter").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("blueLightReductionEnabled", "true");
+        } else {
+            setSettingItem("blueLightReductionEnabled", "false");
+        }
+    });
+
+    $("#checkBlueLightReductionFilterCheckbox").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("blueLightReductionEnabled", "true");
+        } else {
+            setSettingItem("blueLightReductionEnabled", "false");
+        }
+    });
+
+    $("#sliderBrightness").on("change", () => {
+        const sliderLumValue = sliderBrightness.getValue();
+        elLumB.style.opacity = sliderLumValue / 100;
+    });
+
+    $("#sliderBrightness").on("slideStop", () => {
+        const sliderLumValue = sliderBrightness.getValue();
+        brightnessChangedFromThisPage = true;
+        elLumB.style.opacity = sliderLumValue / 100;
+        setSettingItem("pourcentageLum", sliderLumValue);
+    });
+
+    $("#sliderBlueLightReduction").on("change", () => {
+        const sliderLumValue = sliderBlueLightReduction.getValue();
+        elBlueLightReduction.style.opacity = sliderLumValue / 100;
+    });
+
+    $("#sliderBlueLightReduction").on("slideStop", () => {
+        const sliderBlueLightReductionValue = sliderBlueLightReduction.getValue();
+        percentageBlueLightChangedFromThisPage = true;
+        elBlueLightReduction.style.opacity = sliderBlueLightReductionValue / 100;
+        setSettingItem("percentageBlueLightReduction", sliderBlueLightReductionValue);
+    });
 
     $( "#checkNighMode" ).on("change", function() {
         if($(this).is(":checked") == true) {
@@ -1073,7 +1132,7 @@ $(document).ready(() => {
     });
 
     async function displaySettings() {
-        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "popupTheme"]);
+        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "popupTheme", "percentageBlueLightReduction"]);
 
         // Switch popup theme
         if (result && result.popupTheme && result.popupTheme == "checkbox") {
@@ -1089,17 +1148,26 @@ $(document).ready(() => {
         checkColorInvert();
         checkLiveSettings();
         checkBrightness();
+        checkBlueLightReduction();
         checkEnable();
         checkCustomTheme();
         checkAutoEnable();
         checkGlobalEnable();
 
         if(typeof result.pourcentageLum !== "undefined" && result.pourcentageLum !== null && result.pourcentageLum / 100 <= maxBrightnessPercentage && result.pourcentageLum / 100 >= minBrightnessPercentage && brightnessChangedFromThisPage == false) {
-            sliderLuminosite.setValue(result.pourcentageLum);
+            sliderBrightness.setValue(result.pourcentageLum);
             brightnessChangedFromThisPage = false;
         } else if(brightnessChangedFromThisPage == false) {
-            sliderLuminosite.setValue(brightnessDefaultValue * 100);
+            sliderBrightness.setValue(brightnessDefaultValue * 100);
             brightnessChangedFromThisPage = false;
+        }
+
+        if(typeof result.percentageBlueLightReduction !== "undefined" && result.percentageBlueLightReduction !== null && result.percentageBlueLightReduction / 100 <= maxBrightnessPercentage && result.percentageBlueLightReduction / 100 >= minBrightnessPercentage && percentageBlueLightChangedFromThisPage == false) {
+            sliderBlueLightReduction.setValue(result.percentageBlueLightReduction);
+            percentageBlueLightChangedFromThisPage = false;
+        } else if(percentageBlueLightChangedFromThisPage == false) {
+            sliderBlueLightReduction.setValue(percentageBlueLightDefaultValue * 100);
+            percentageBlueLightChangedFromThisPage = false;
         }
 
         if(($("#autoEnableSettings").data("bs.modal") || {}).isShown !== true) {

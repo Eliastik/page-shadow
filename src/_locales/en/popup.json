@@ -28,7 +28,6 @@
         "titleBrightness": "Decrease the page brightness. You can choose the percentage of brightness decrease.",
         "percentage": "Percentage of brightness decrease:",
         "nightMode": "Night mode",
-        "tileNightMode": "Apply an orange filter on the page to reduce the blue light emitted by the screen.",
         "autoEnable": "Enable/disable automatically",
         "titleAutoEnable": "Enable or disable globally Page Shadow automatically according to the time. Select the cog wheel icon to setup this function.",
         "liveSettings": "Apply the settings in real time",
@@ -40,7 +39,10 @@
         "enableWebsitePreset": "This website",
         "enableWebpagePreset": "This page",
         "updatePresetSettings": "Update the preset with current settings",
-        "createPreset": "Create preset"
+        "createPreset": "Create preset",
+        "blueLightReduction": "Blue light reduction filter",
+        "titleBlueLightReduction": "Apply an orange filter on the page to reduce the blue light emitted by the screen",
+        "percentageBlueLight": "Filter intensity:"
     },
     "modal": {
         "customThemeTitle": "Information",

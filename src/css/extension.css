@@ -570,6 +570,10 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     padding-bottom: 0 !important;
     margin-bottom: 5px !important;
 }
+#sliderBlueLightReduction {
+    width: 185px;
+    margin-left: 10px;
+}
 @-webkit-keyframes fadein {
     from { bottom: 0; opacity: 0; }
     to { bottom: 30px; opacity: 0.9; }

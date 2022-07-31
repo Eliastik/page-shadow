@@ -121,29 +121,54 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                 <div>
                     <div class="popup-option-container">
                         <div class="popup-option-container-label">
-                            <label class="popup-option-label" for="checkLuminositePage">
+                            <label class="popup-option-label" for="checkBrightnessPage">
                                 <i class="fa-solid fa-moon fa-fw popup-option-icon"></i>
                                 <span data-i18n="container.brightness"></span>
                             </label>
                         </div>
                         <div class="popup-option-container-checkbox-switch">
                             <div class="checkbox-switch checkbox-switch-sm ml-2 mr-2">
-                                <input id="checkLuminositePage" name="checkLuminositePage" type="checkbox" />
-                                <label for="checkLuminositePage" class="label-blue"></label>
+                                <input id="checkBrightnessPage" name="checkBrightnessPage" type="checkbox" />
+                                <label for="checkBrightnessPage" class="label-blue"></label>
                             </div>
                             <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleBrightness"></i>
                         </div>
                     </div>
                     <div class="popup-option-container-classic">
-                        <input type="checkbox" id="checkLuminositePageCheckbox" /> <label for="checkLuminositePageCheckbox" data-i18n="container.brightness"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleBrightness"></i>
+                        <input type="checkbox" id="checkBrightnessPageCheckbox" /> <label for="checkBrightnessPageCheckbox" data-i18n="container.brightness"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleBrightness"></i>
                     </div>
-                    <div class="well well-sm well-nmb" id="sliderLuminositeDiv" style="display: none;">
-                        <label for="sliderLuminosite" data-i18n="container.percentage"></label>
-                        <input id="sliderLuminosite" data-slider-id="sliderLuminosite" type="text" data-slider-step="1" data-tooltip="show" />
-                        <div><input type="checkbox" id="checkNighMode" /> <label for="checkNighMode"  data-i18n="container.nightMode"></label> <i class="fa fa-question-circle helpIconMin" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.tileNightMode"></i>
-                        <div id="tempSelectDiv" style="display: none;"><label for="tempSelect" data-i18n="container.tempSelect"></label>
-                        <select id="tempSelect" style="min-width: 80px;"></select>
-                        <i class="fa fa-question-circle helpIconMin" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleTemp"></i></div></div>
+                    <div class="well well-sm well-nmb" id="brightnessSettings" style="display: none;">
+                        <label for="sliderBrightness" data-i18n="container.percentage"></label>
+                        <input id="sliderBrightness" data-slider-id="sliderBrightness" type="text" data-slider-step="1" data-tooltip="show" />
+                    </div>
+                </div>
+                <div>
+                    <div class="popup-option-container">
+                        <div class="popup-option-container-label">
+                            <label class="popup-option-label" for="checkBlueLightReductionFilter">
+                                <i class="fa-solid fa-lightbulb fa-fw popup-option-icon"></i>
+                                <span data-i18n="container.blueLightReduction"></span>
+                            </label>
+                        </div>
+                        <div class="popup-option-container-checkbox-switch">
+                            <div class="checkbox-switch checkbox-switch-sm ml-2 mr-2">
+                                <input id="checkBlueLightReductionFilter" name="checkBlueLightReductionFilter" type="checkbox" />
+                                <label for="checkBlueLightReductionFilter" class="label-blue"></label>
+                            </div>
+                            <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleBlueLightReduction"></i>
+                        </div>
+                    </div>
+                    <div class="popup-option-container-classic">
+                        <input type="checkbox" id="checkBlueLightReductionFilterCheckbox" /> <label for="checkBlueLightReductionFilterCheckbox" data-i18n="container.blueLightReduction"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleBrightness"></i>
+                    </div>
+                    <div class="well well-sm well-nmb" id="blueLightReductionFilterSettings" style="display: none;">
+                        <label for="sliderBlueLightReduction" data-i18n="container.percentageBlueLight"></label>
+                        <input id="sliderBlueLightReduction" data-slider-id="sliderBlueLightReduction" type="text" data-slider-step="1" data-tooltip="show" />
+                        <div id="tempSelectDiv">
+                            <label for="tempSelect" data-i18n="container.tempSelect"></label>
+                            <select id="tempSelect" style="min-width: 80px;"></select>
+                            <i class="fa fa-question-circle helpIconMin" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleTemp"></i>
+                        </div>
                     </div>
                 </div>
                 <div>
