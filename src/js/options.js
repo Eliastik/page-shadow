@@ -33,7 +33,7 @@ import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig } from "./util.js";
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud } from "./util.js";
 import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
 import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
@@ -137,7 +137,7 @@ async function resetSettings() {
 }
 
 async function displaySettings(areaName, dontDisplayThemeAndPresets) {
-    const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
+    const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "autoBackupCloudInterval", "lastAutoBackupFailed"]);
 
     if(areaName != "sync") {
         if(result.sitesInterditPageShadow != undefined) {
@@ -204,6 +204,14 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets) {
     }
 
     toggleTheme(); // Toggle dark/light theme
+
+    if(result && result.autoBackupCloudInterval) {
+        $("#autoBackupCloudSelect").val(result.autoBackupCloudInterval);
+    }
+
+    if(result && result.lastAutoBackupFailed == "true") {
+        $("#autoBackupError").show();
+    }
 }
 
 async function displayTheme(nb, defaultSettings) {
@@ -953,27 +961,6 @@ async function changeTheme() {
     await toggleTheme();
 }
 
-async function getSettingsToArchive() {
-    const data = await browser.storage.local.get(null);
-
-    try {
-        data["ispageshadowarchive"] = "true";
-
-        // Remove filter content
-        const filters = data["filtersSettings"];
-
-        filters.filters.forEach(filter => {
-            filter.content = null;
-            filter.lastUpdated = 0;
-        });
-
-        const dataStr = JSON.stringify(data);
-        return dataStr;
-    } catch(e) {
-        throw "";
-    }
-}
-
 async function archiveSettings() {
     $("#archiveError").hide();
     $("#archiveDataButton").addClass("disabled");
@@ -1104,59 +1091,29 @@ function restoreSettingsFile(event) {
 }
 
 async function archiveCloudSettings() {
-    if(typeof(browser.storage) != "undefined" && typeof(browser.storage.sync) != "undefined") {
-        $("#archiveCloudError").hide();
-        $("#restoreCloudError").hide();
-        $("#archiveCloudSuccess").hide();
-        $("#restoreCloudSuccess").hide();
-        $("#archiveCloudErrorQuota").hide();
-        $("#archiveCloudBtn").addClass("disabled");
-        $("#restoreCloudBtn").addClass("disabled");
+    $("#archiveCloudError").hide();
+    $("#restoreCloudError").hide();
+    $("#archiveCloudSuccess").hide();
+    $("#restoreCloudSuccess").hide();
+    $("#archiveCloudErrorQuota").hide();
+    $("#archiveCloudBtn").addClass("disabled");
+    $("#restoreCloudBtn").addClass("disabled");
 
-        try {
-            const dataStr = await getSettingsToArchive();
-            const dataObj = JSON.parse(dataStr);
+    try {
+        await archiveCloud();
 
-            for(const key in dataObj) {
-                if(typeof(key) === "string") {
-                    if(Object.prototype.hasOwnProperty.call(dataObj, key)) {
-                        const settingToSave = {};
-                        settingToSave[key] = dataObj[key];
-                        try {
-                            await browser.storage.sync.set(settingToSave);
-                        } catch(e) {
-                            if(e && (e.message.indexOf("QUOTA_BYTES_PER_ITEM") != -1 || e.message.indexOf("QuotaExceededError") != -1)) {
-                                $("#archiveCloudErrorQuota").fadeIn(500);
-                            } else {
-                                $("#archiveCloudError").fadeIn(500);
-                            }
-                            displaySettings("sync", true);
-                            return;
-                        }
-                    }
-                }
-            }
-
-            const dateSettings = {};
-            dateSettings["dateLastBackup"] = Date.now().toString();
-
-            const deviceSettings = {};
-            deviceSettings["deviceBackup"] = window.navigator.platform;
-
-            Promise.all([browser.storage.sync.set(dateSettings), browser.storage.sync.set(deviceSettings), browser.storage.sync.remove("pageShadowStorageBackup")])
-                .then(() => {
-                    $("#archiveCloudSuccess").fadeIn(500);
-                    displaySettings("sync");
-                })
-                .catch(() => {
-                    $("#archiveCloudError").fadeIn(500);
-                    displaySettings("sync", true);
-                });
-        } catch(e) {
+        $("#archiveCloudSuccess").fadeIn(500);
+        $("#archiveCloudBtn").removeClass("disabled");
+        $("#restoreCloudBtn").removeClass("disabled");
+    } catch(e) {
+        if(e === "quota") {
+            $("#archiveCloudErrorQuota").fadeIn(500);
+        } else {
             $("#archiveCloudError").fadeIn(500);
-            $("#archiveCloudBtn").removeClass("disabled");
-            $("#restoreCloudBtn").removeClass("disabled");
         }
+
+        $("#archiveCloudBtn").removeClass("disabled");
+        $("#restoreCloudBtn").removeClass("disabled");
     }
 }
 
@@ -1357,6 +1314,10 @@ $(document).ready(() => {
 
     $("#darkThemeSelect").on("change", () => {
         changeTheme();
+    });
+
+    $("#autoBackupCloudSelect").on("change", async() => {
+        await setSettingItem("autoBackupCloudInterval", $("#autoBackupCloudSelect").val());
     });
 
     $("#popupThemeSelect").on("change", async() => {

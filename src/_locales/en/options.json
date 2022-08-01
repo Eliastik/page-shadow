@@ -249,7 +249,18 @@
             "checkSaveNewSettingsPreset": "Save the new settings",
             "infosStorage": "Storage infos",
             "infosLocalStorage": "Local storage used:",
-            "infosCloudStorage": "Cloud storage used:"
+            "infosCloudStorage": "Cloud storage used:",
+            "autoBackupCloudLabel": "Automatic Cloud backup:",
+            "autoBackupCloud": {
+                "0": "Never",
+                "3": "Every 3 days",
+                "5": "Every 5 days",
+                "7": "Every 7 days",
+                "14": "Every 14 days",
+                "30": "Every month (every 30 days)",
+                "60": "Every 2 month (every 60 days)"
+            },
+            "autoBackupError": "An error occurred during the last automatic Cloud backup."
         },
         "presets": {
             "pageShadowEnabled": "Increase contrast:",

@@ -612,3 +612,6 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
         display: block;
     }
 }
+.mt-4 {
+    margin-top: 15px;
+}

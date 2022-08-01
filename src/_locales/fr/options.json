@@ -245,7 +245,18 @@
             "checkSaveNewSettingsPreset": "Sauvegarder les nouveaux réglages",
             "infosStorage": "Infos sur le stockage",
             "infosLocalStorage": "Stockage local utilisé :",
-            "infosCloudStorage": "Stockage cloud utilisé :"
+            "infosCloudStorage": "Stockage cloud utilisé :",
+            "autoBackupCloudLabel": "Sauvegarde automatique dans le Cloud :",
+            "autoBackupCloud": {
+                "0": "Jamais",
+                "3": "Tous les 3 jours",
+                "5": "Tous les 5 jours",
+                "7": "Tous les 7 jours",
+                "14": "Tous les 14 jours",
+                "30": "Tous les mois (tous les 30 jours)",
+                "60": "Tous les 2 mois (tous les 60 jours)"
+            },
+            "autoBackupError": "Une erreur est survenue lors de la dernière sauvegarde automatique dans le Cloud."
         },
         "presets": {
             "pageShadowEnabled": "Augmenter le contraste :",

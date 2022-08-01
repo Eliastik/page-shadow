@@ -1133,4 +1133,70 @@ async function loadWebsiteSpecialFiltersConfig() {
     return websiteSpecialFiltersConfig;
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig };
+async function getSettingsToArchive() {
+    const data = await browser.storage.local.get(null);
+
+    try {
+        data["ispageshadowarchive"] = "true";
+
+        // Remove filter content
+        const filters = data["filtersSettings"];
+
+        filters.filters.forEach(filter => {
+            filter.content = null;
+            filter.lastUpdated = 0;
+        });
+
+        const dataStr = JSON.stringify(data);
+        return dataStr;
+    } catch(e) {
+        throw "";
+    }
+}
+
+async function archiveCloud() {
+    return new Promise((resolve, reject) => {
+        if(typeof(browser.storage) != "undefined" && typeof(browser.storage.sync) != "undefined") {
+            try {
+                getSettingsToArchive().then(dataStr => {
+                    const dataObj = JSON.parse(dataStr);
+
+                    for(const key in dataObj) {
+                        if(typeof(key) === "string") {
+                            if(Object.prototype.hasOwnProperty.call(dataObj, key)) {
+                                const settingToSave = {};
+                                settingToSave[key] = dataObj[key];
+
+                                browser.storage.sync.set(settingToSave).catch(e => {
+                                    if(e && (e.message.indexOf("QUOTA_BYTES_PER_ITEM") != -1 || e.message.indexOf("QuotaExceededError") != -1)) {
+                                        reject("quota");
+                                    } else {
+                                        reject("standard");
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    const dateSettings = {};
+                    dateSettings["dateLastBackup"] = Date.now().toString();
+
+                    const deviceSettings = {};
+                    deviceSettings["deviceBackup"] = window.navigator.platform;
+
+                    Promise.all([browser.storage.sync.set(dateSettings), browser.storage.sync.set(deviceSettings), browser.storage.sync.remove("pageShadowStorageBackup")])
+                        .then(() => {
+                            resolve();
+                        })
+                        .catch(() => {
+                            reject("standard");
+                        });
+                });
+            } catch(e) {
+                reject("standard");
+            }
+        }
+    });
+}
+
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud };

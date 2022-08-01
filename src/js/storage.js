@@ -95,7 +95,10 @@ async function setFirstSettings() {
         "blueLightReductionEnabled": "false",
         "percentageBlueLightReduction": percentageBlueLightDefaultValue,
         "archiveInfoLastShowed": -1,
-        "archiveInfoDisable": "false"
+        "archiveInfoDisable": "false",
+        "autoBackupCloudInterval": 0,
+        "lastAutoBackupCloud": -1,
+        "lastAutoBackupFailed": "false"
     });
 
     return true;

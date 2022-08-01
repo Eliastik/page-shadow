@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle } from "./util.js";
+import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud } from "./util.js";
 import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
 import Filter from "./filters.js";
@@ -273,6 +273,22 @@ async function checkAutoUpdateFilters() {
         filters.updateAllFilters(true, false);
     } else if(enableAutoUpdate && lastFailedUpdate != null && lastFailedUpdate > -1 && ((currentDate - lastFailedUpdate) >= failedUpdateAutoReupdateDelay)) {
         filters.updateAllFilters(true, true);
+    }
+}
+
+async function checkAutoBackupCloud() {
+    const result = await browser.storage.local.get(["autoBackupCloudInterval", "lastAutoBackupCloud"]);
+    const lastAutoBackupCloud = !result.lastAutoBackupCloud ? 0 : result.lastAutoBackupCloud;
+
+    if(result.autoBackupCloudInterval > 0 && lastAutoBackupCloud + (result.autoBackupCloudInterval * 60 * 60 * 24 * 1000) <= Date.now()) {
+        try {
+            await archiveCloud();
+            await setSettingItem("lastAutoBackupFailed", "false");
+            await setSettingItem("lastAutoBackupCloud", Date.now());
+        } catch(e) {
+            await setSettingItem("lastAutoBackupFailed", "true");
+            await setSettingItem("lastAutoBackupCloud", Date.now());
+        }
     }
 }
 
@@ -545,6 +561,8 @@ updateBadge(false);
 autoEnable();
 checkFirstLoad();
 migrateSettings(filters);
+checkAutoBackupCloud();
+
 setInterval(() => {
     checkAutoEnable();
     checkAutoUpdateFilters();
