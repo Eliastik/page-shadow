@@ -88,7 +88,8 @@
                 "autoThrottleMutationObserverBackgroundsTreshold": "If a Mutation Observer processes a number of elements above this threshold at once, the throttle is enabled. Throttle is disabled when the number of elements processed falls below this threshold.",
                 "throttledMutationObserverTreatedByCall": "The number of elements processed by one call to Mutation Observers, when throttle is enabled."
             }
-        }
+        },
+        "saved": "Sauvegardé !"
     },
     "modal": {
         "syntax": {

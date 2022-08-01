@@ -59,6 +59,7 @@ let currentSelectedTheme = 1;
 let currentSelectedPresetEdit = 1;
 let changingLanguage = false;
 let alreadyCheckedForUpdateFilters = false;
+let savedAdvancedOptionsTimeout;
 
 init_i18next("options").then(() => translateContent());
 toggleTheme(); // Toggle dark/light theme
@@ -544,12 +545,34 @@ async function loadAdvancedOptionsUI(reset) {
         div.classList.add("col-lg-8");
         formGroup.appendChild(div);
 
-        const input = document.createElement("input");
-        input.id = key;
-        input.name = key;
-        input.value = value;
-        input.classList.add("form-control", "input-font");
-        div.appendChild(input);
+        if(typeof value !== "boolean") {
+            const input = document.createElement("input");
+            input.id = key;
+            input.name = key;
+            input.value = value;
+            input.classList.add("form-control", "input-font");
+            div.appendChild(input);
+        } else {
+            const divCheckboxSwitch = document.createElement("div");
+            divCheckboxSwitch.classList.add("checkbox-switch", "checkbox-switch-sm");
+
+            const inputCheckbox = document.createElement("input");
+            inputCheckbox.id = key;
+            inputCheckbox.name = key;
+            inputCheckbox.type = "checkbox";
+
+            if(value) {
+                inputCheckbox.setAttribute("checked", "checked");
+            }
+
+            const labelCheckbox = document.createElement("label");
+            labelCheckbox.setAttribute("for", key);
+            labelCheckbox.classList.add("label-blue");
+
+            divCheckboxSwitch.appendChild(inputCheckbox);
+            divCheckboxSwitch.appendChild(labelCheckbox);
+            div.appendChild(divCheckboxSwitch);
+        }
 
         const help = document.createElement("i");
         help.classList.add("fa", "fa-question-circle", "helpIcon");
@@ -568,17 +591,40 @@ async function saveAdvancedOptions() {
 
     Object.keys(websiteFiltersConfig).forEach(key => {
         if (Object.prototype.hasOwnProperty.call(websiteFiltersConfig, key)) {
-            const input = document.querySelector("input#" + key);
+            if(typeof websiteFiltersConfig[key] === "boolean") {
+                const checkbox = document.querySelector("input#" + key);
 
-            if (input) {
-                const value = input.value == "true" ? true : (input.value === "false" ? false : input.value);
-                websiteFiltersConfig[key] = value;
+                if(checkbox) {
+                    if(checkbox.checked) {
+                        websiteFiltersConfig[key] = true;
+                    } else {
+                        websiteFiltersConfig[key] = false;
+                    }
+                }
+            } else {
+                const input = document.querySelector("input#" + key);
+
+                if(input) {
+                    const value = input.value == "true" ? true : (input.value === "false" ? false : input.value);
+                    websiteFiltersConfig[key] = value;
+                }
             }
         }
     });
 
-    setSettingItem("advancedOptionsFiltersSettings", websiteFiltersConfig);
+    await setSettingItem("advancedOptionsFiltersSettings", websiteFiltersConfig);
     loadAdvancedOptionsUI();
+
+    clearTimeout(savedAdvancedOptionsTimeout);
+    savedAdvancedOptionsTimeout = setTimeout(() => {
+        $("#saveAdvancedOptions").attr("data-original-title", "");
+        $("#saveAdvancedOptions").tooltip("hide");
+        $("#saveAdvancedOptions").tooltip("disable");
+    }, 3000);
+
+    $("#saveAdvancedOptions").attr("data-original-title", i18next.t("advancedOptions.saved"));
+    $("#saveAdvancedOptions").tooltip("enable");
+    $("#saveAdvancedOptions").tooltip("show");
 }
 
 async function displayDetailsFilter(idFilter) {
