@@ -35,7 +35,7 @@ import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
 import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig } from "./util.js";
 import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
-import { setSettingItem, setFirstSettings } from "./storage.js";
+import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./filter.codemirror.mode";
 import browser from "webextension-polyfill";
@@ -663,13 +663,27 @@ async function displayPresetInfos(nb) {
             divCol.setAttribute("class", "col-lg-8 col-sm-8");
             const span = document.createElement("span");
 
-            const value = presetData[setting];
+            let value = presetData[setting];
+
+            if(presetData["nightModeEnabled"] == "true" && presetData["pageLumEnabled"] == "true") {
+                if(setting == "blueLightReductionEnabled") {
+                    value = "true";
+                } else if(setting == "percentageBlueLightReduction") {
+                    value = presetData["pourcentageLum"];
+                }
+            } else if(!value) {
+                if(setting == "blueLightReductionEnabled") {
+                    value = "false";
+                } else if(setting == "percentageBlueLightReduction") {
+                    value = presetData["pourcentageLum"];
+                }
+            }
 
             if(!value) {
                 span.textContent = i18next.t("modal.presets.undefined");
             } else if(value == "true" || value == "false") {
                 span.innerHTML = value == "true" ? "<i class=\"fa-solid fa-check fa-fw\"></i>" : "<i class=\"fa-solid fa-xmark fa-fw\"></i>";
-            } else if(setting == "pourcentageLum") {
+            } else if(setting == "pourcentageLum" || setting == "percentageBlueLightReduction") {
                 span.textContent = value + "%";
             } else if(setting == "theme" && value.startsWith("custom")) {
                 const customThemeId = value.split("custom")[1];
@@ -958,10 +972,12 @@ async function restoreSettings(object) {
     for(const key in object) {
         if(typeof(key) === "string") {
             if(Object.prototype.hasOwnProperty.call(object, key)) {
-                setSettingItem(key, object[key]); // invalid data are ignored by the function
+                await setSettingItem(key, object[key]); // invalid data are ignored by the function
             }
         }
     }
+
+    await migrateSettings();
 
     $("#updateAllFilters").attr("disabled", "disabled");
 

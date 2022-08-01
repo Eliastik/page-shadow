@@ -782,7 +782,7 @@ function getPriorityPresetEnabledForWebsite(presetsEnabled) {
 }
 
 async function getSettings(url) {
-    const result = await browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor", "selectiveInvert"]);
+    const result = await browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor", "selectiveInvert", "blueLightReductionEnabled", "percentageBlueLightReduction"]);
 
     let pageShadowEnabled = result.pageShadowEnabled;
     let theme = result.theme;
@@ -794,6 +794,8 @@ async function getSettings(url) {
     let pageLumEnabled = result.pageLumEnabled;
     let pourcentageLum = result.pourcentageLum;
     let nightModeEnabled = result.nightModeEnabled;
+    let blueLightReductionEnabled = result.blueLightReductionEnabled;
+    let percentageBlueLightReduction = result.percentageBlueLightReduction;
     let invertPageColors = result.invertPageColors;
     let disableImgBgColor = result.disableImgBgColor;
     let colorInvert = result.colorInvert;
@@ -822,6 +824,8 @@ async function getSettings(url) {
             disableImgBgColor = presetData.disableImgBgColor;
             colorInvert = presetData.colorInvert;
             selectiveInvert = presetData.selectiveInvert;
+            blueLightReductionEnabled = presetData.blueLightReductionEnabled;
+            percentageBlueLightReduction = presetData.percentageBlueLightReduction;
         }
     }
 
@@ -834,22 +838,29 @@ async function getSettings(url) {
         colorInvert = "false";
     }
 
+    if(nightModeEnabled == "true" && pageLumEnabled == "true") {
+        blueLightReductionEnabled = true;
+        percentageBlueLightReduction = pourcentageLum;
+        nightModeEnabled = false;
+    }
+
     return {
-        pageShadowEnabled: pageShadowEnabled,
-        theme: theme,
-        pageLumEnabled: pageLumEnabled,
-        pourcentageLum: pourcentageLum,
-        nightModeEnabled: nightModeEnabled,
-        colorInvert: colorInvert,
-        invertPageColors: invertPageColors,
-        invertImageColors: invertImageColors,
-        invertEntirePage: invertEntirePage,
-        colorTemp: colorTemp,
+        pageShadowEnabled,
+        theme,
+        pageLumEnabled,
+        pourcentageLum,
+        colorInvert,
+        invertPageColors,
+        invertImageColors,
+        invertEntirePage,
+        colorTemp,
         globallyEnable: result.globallyEnable,
-        invertVideoColors: invertVideoColors,
-        disableImgBgColor: disableImgBgColor,
-        invertBgColor: invertBgColor,
-        selectiveInvert: selectiveInvert
+        invertVideoColors,
+        disableImgBgColor,
+        invertBgColor,
+        selectiveInvert,
+        blueLightReductionEnabled,
+        percentageBlueLightReduction
     };
 }
 

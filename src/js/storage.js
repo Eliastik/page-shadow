@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { extensionVersion, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, defaultPresets, defaultCustomThemes, defaultFilters, defaultInterfaceDarkTheme, defaultPopupTheme } from "./constants.js";
+import { extensionVersion, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, defaultPresets, defaultCustomThemes, defaultFilters, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue } from "./constants.js";
 import browser from "webextension-polyfill";
 
 function setSettingItem(name, value) {
@@ -61,7 +61,6 @@ async function setFirstSettings() {
         "theme": "1",
         "pageLumEnabled": "false",
         "pourcentageLum": (brightnessDefaultValue * 100).toString(),
-        "nightModeEnabled": "false",
         "sitesInterditPageShadow": "",
         "liveSettings": "true",
         "whiteList": "false",
@@ -92,7 +91,9 @@ async function setFirstSettings() {
         "updateNotification": updateNotification,
         "interfaceDarkTheme": defaultInterfaceDarkTheme,
         "popupTheme": defaultPopupTheme,
-        "advancedOptionsFiltersSettings": {}
+        "advancedOptionsFiltersSettings": {},
+        "blueLightReductionEnabled": "false",
+        "percentageBlueLightReduction": percentageBlueLightDefaultValue
     });
 
     return true;
@@ -152,8 +153,15 @@ async function migrateSettings(filters) {
     }
 
     // Migrate default filters
-    if(result.updateNotification && !result.updateNotification[extensionVersion]) {
+    if(filters && result.updateNotification && !result.updateNotification[extensionVersion]) {
         filters.updateDefaultFilters();
+    }
+
+    // Migrate Night mode filter
+    if(result.nightModeEnabled && result.pageLumEnabled && result.nightModeEnabled == "true" && result.pageLumEnabled == "true") {
+        setSettingItem("pageLumEnabled", "false");
+        setSettingItem("blueLightReductionEnabled", "true");
+        setSettingItem("percentageBlueLightReduction", result.pourcentageLum);
     }
 }
 

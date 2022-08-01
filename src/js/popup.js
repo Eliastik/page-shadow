@@ -892,6 +892,8 @@ $(document).ready(() => {
         const result = await browser.storage.local.get(["blueLightReductionEnabled", "colorTemp", "percentageBlueLightReduction"]);
 
         if(result.blueLightReductionEnabled == "true") {
+            elBlueLightReduction.setAttribute("id", "pageShadowBrightnessNightMode");
+
             if(result.colorTemp != undefined) {
                 $("#tempSelect").val(result.colorTemp);
                 previewTemp(result.colorTemp);
@@ -908,7 +910,6 @@ $(document).ready(() => {
             }
 
             $("#blueLightReductionFilterSettings").stop().fadeIn();
-            elBlueLightReduction.setAttribute("id", "pageShadowBrightnessNightMode");
             elBlueLightReduction.style.display = "block";
 
             if($("#checkBlueLightReductionFilter").is(":checked") == false) {

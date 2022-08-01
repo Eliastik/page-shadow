@@ -26,6 +26,7 @@ import SafeTimer from "./safeTimer.js";
     const lnkCustomTheme = document.createElement("link");
     const elementBrightnessWrapper = document.createElement("div");
     const elementBrightness = document.createElement("div");
+    const elementBlueLightFilter = document.createElement("div");
     const websiteSpecialFiltersConfig = await loadWebsiteSpecialFiltersConfig();
     const runningInIframe = isRunningInIframe();
     const runningInPopup = isRunningInPopup();
@@ -37,7 +38,7 @@ import SafeTimer from "./safeTimer.js";
     let precEnabled = false;
     let started = false;
     let filtersCache = null;
-    let mut_contrast, mut_backgrounds, mut_brightness, mut_invert;
+    let mut_contrast, mut_backgrounds, mut_brightness, mut_invert, mut_bluelight;
     let typeProcess = "";
     let precUrl;
     let currentSettings = null;
@@ -54,10 +55,12 @@ import SafeTimer from "./safeTimer.js";
     const TYPE_ONLY_INVERT = "onlyInvert";
     const TYPE_ONLY_BRIGHTNESS = "onlyBrightness";
     const TYPE_ONLY_RESET = "onlyreset";
+    const TYPE_ONLY_BLUELIGHT = "onlyBlueLight";
     const MUTATION_TYPE_CONTRAST = "contrast";
     const MUTATION_TYPE_INVERT = "invert";
     const MUTATION_TYPE_BRIGHTNESS = "brightness";
     const MUTATION_TYPE_BACKGROUNDS = "backgrounds";
+    const MUTATION_TYPE_BLUELIGHT = "blueLight";
     const TYPE_LOADING = "loading";
     const TYPE_START = "start";
 
@@ -66,6 +69,7 @@ import SafeTimer from "./safeTimer.js";
     let timerApplyContrastPage = null;
     let timerApplyInvertColors = null;
     let timerApplyDetectBackgrounds = null;
+    let timerApplyBlueLightPage = null;
 
     function contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert) {
         const elementToApply = customElement ? customElement : document.body;
@@ -291,28 +295,12 @@ import SafeTimer from "./safeTimer.js";
         }
     }
 
-    function brightnessPage(enabled, percentage, nightmode, colorTemp) {
+    function brightnessPage(enabled, percentage) {
         elementBrightness.setAttribute("class", "");
 
         if(enabled == "true" && !runningInIframe) {
             elementBrightness.style.display = "block";
-            if(nightmode == "true") {
-                elementBrightness.setAttribute("id", "pageShadowBrightnessNightMode");
-                elementBrightness.setAttribute("class", "");
-
-                let tempColor = "2000";
-
-                if(colorTemp != undefined) {
-                    const tempIndex = parseInt(colorTemp);
-                    tempColor = colorTemperaturesAvailable[tempIndex - 1];
-
-                    elementBrightness.setAttribute("class", "k" + tempColor);
-                } else {
-                    elementBrightness.setAttribute("class", "k2000");
-                }
-            } else {
-                elementBrightness.setAttribute("id", "pageShadowBrightness");
-            }
+            elementBrightness.setAttribute("id", "pageShadowBrightness");
 
             if(percentage / 100 > maxBrightnessPercentage || percentage / 100 < minBrightnessPercentage || typeof percentage === "undefined" || percentage == null) {
                 elementBrightness.style.opacity = brightnessDefaultValue;
@@ -332,13 +320,46 @@ import SafeTimer from "./safeTimer.js";
         }
     }
 
-    function appendBrightnessElement(elementBrightness, elementWrapper) {
-        if(document.getElementById("pageShadowBrightness") !== null && document.body.contains(elementWrapper)) {
-            elementWrapper.removeChild(document.getElementById("pageShadowBrightness"));
-        }
+    function blueLightFilterPage(enabled, percentage, colorTemp) {
+        elementBlueLightFilter.setAttribute("class", "");
 
-        if(document.getElementById("pageShadowBrightnessNightMode") !== null && document.body.contains(elementWrapper)) {
-            elementWrapper.removeChild(document.getElementById("pageShadowBrightnessNightMode"));
+        if(enabled == "true" && !runningInIframe) {
+            elementBlueLightFilter.style.display = "block";
+            elementBlueLightFilter.setAttribute("id", "pageShadowBrightnessNightMode");
+            elementBlueLightFilter.setAttribute("class", "");
+
+            let tempColor = "2000";
+
+            if(colorTemp != undefined) {
+                const tempIndex = parseInt(colorTemp);
+                tempColor = colorTemperaturesAvailable[tempIndex - 1];
+
+                elementBlueLightFilter.setAttribute("class", "k" + tempColor);
+            } else {
+                elementBlueLightFilter.setAttribute("class", "k2000");
+            }
+
+            if(percentage / 100 > maxBrightnessPercentage || percentage / 100 < minBrightnessPercentage || typeof percentage === "undefined" || percentage == null) {
+                elementBlueLightFilter.style.opacity = brightnessDefaultValue;
+            } else {
+                elementBlueLightFilter.style.opacity = percentage / 100;
+            }
+
+            waitAndApplyBlueLightPage(elementBlueLightFilter, elementBrightnessWrapper);
+
+            if(document.readyState == "complete" || document.readyState == "interactive") {
+                mutationObserve(MUTATION_TYPE_BLUELIGHT);
+            } else {
+                window.addEventListener("load", () => {
+                    mutationObserve(MUTATION_TYPE_BLUELIGHT);
+                });
+            }
+        }
+    }
+
+    function appendBrightnessElement(elementBrightness, elementWrapper) {
+        if(elementWrapper && document.body.contains(elementWrapper) && elementWrapper.contains(elementBrightness)) {
+            elementWrapper.removeChild(elementBrightness);
         }
 
         document.body.appendChild(elementWrapper);
@@ -359,6 +380,31 @@ import SafeTimer from "./safeTimer.js";
         });
 
         timerApplyBrightnessPage.start();
+    }
+
+    function appendBlueLightElement(elementBrightness, elementWrapper) {
+        if(elementWrapper && document.body.contains(elementWrapper) && elementWrapper.contains(elementBlueLightFilter)) {
+            elementWrapper.removeChild(elementBlueLightFilter);
+        }
+
+        document.body.appendChild(elementWrapper);
+        elementWrapper.appendChild(elementBrightness);
+    }
+
+    function waitAndApplyBlueLightPage(element, wrapper) {
+        if(timerApplyBlueLightPage) timerApplyBlueLightPage.clear();
+
+        timerApplyBlueLightPage = new SafeTimer(() => {
+            if(!document.body) {
+                waitAndApplyBlueLightPage(element, wrapper);
+            } else {
+                appendBlueLightElement(element, wrapper);
+            }
+
+            timerApplyBlueLightPage.clear();
+        });
+
+        timerApplyBlueLightPage.start();
     }
 
     function waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert) {
@@ -514,11 +560,9 @@ import SafeTimer from "./safeTimer.js";
 
             mut_brightness = new MutationObserver(mutations => {
                 mut_brightness.disconnect();
-                const brightness = document.getElementById("pageShadowBrightness");
-                const nightmode = document.getElementById("pageShadowBrightnessNightMode");
 
                 mutations.forEach(mutation => {
-                    if((!document.body.contains(brightness) && !document.body.contains(nightmode)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
+                    if((!document.body.contains(elementBrightness) || !document.body.contains(elementBrightnessWrapper)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
                         const timerApplyMutationBrightness = new SafeTimer(() => {
                             main(TYPE_ONLY_BRIGHTNESS, MUTATION_TYPE_BRIGHTNESS);
                             timerApplyMutationBrightness.clear();
@@ -538,6 +582,38 @@ import SafeTimer from "./safeTimer.js";
             });
 
             mut_brightness.observe(elementBrightnessWrapper, {
+                "attributes": true,
+                "subtree": true,
+                "childList": true,
+                "characterData": false
+            });
+        } else if(type == MUTATION_TYPE_BLUELIGHT) {
+            if(typeof mut_bluelight !== "undefined") mut_bluelight.disconnect();
+
+            mut_bluelight = new MutationObserver(mutations => {
+                mut_bluelight.disconnect();
+
+                mutations.forEach(mutation => {
+                    if((!document.body.contains(elementBlueLightFilter) || !document.body.contains(elementBrightnessWrapper)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
+                        const timerApplyMutationBlueLight = new SafeTimer(() => {
+                            main(TYPE_ONLY_BLUELIGHT, MUTATION_TYPE_BLUELIGHT);
+                            timerApplyMutationBlueLight.clear();
+                        });
+
+                        timerApplyMutationBlueLight.start();
+                    } else {
+                        if(document.readyState == "complete" || document.readyState == "interactive") {
+                            mutationObserve(MUTATION_TYPE_BLUELIGHT);
+                        } else {
+                            window.addEventListener("load", () => {
+                                mutationObserve(MUTATION_TYPE_BLUELIGHT);
+                            });
+                        }
+                    }
+                });
+            });
+
+            mut_bluelight.observe(elementBrightnessWrapper, {
                 "attributes": true,
                 "subtree": true,
                 "childList": true,
@@ -1012,6 +1088,7 @@ import SafeTimer from "./safeTimer.js";
         if(typeof mut_contrast !== "undefined" && (mutation == MUTATION_TYPE_CONTRAST || mutation == TYPE_ALL)) mut_contrast.disconnect();
         if(typeof mut_invert !== "undefined" && (mutation == MUTATION_TYPE_INVERT || mutation == TYPE_ALL)) mut_invert.disconnect();
         if(typeof mut_brightness !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS || mutation == TYPE_ALL)) mut_brightness.disconnect();
+        if(typeof mut_bluelight !== "undefined" && (mutation == MUTATION_TYPE_BLUELIGHT || mutation == TYPE_ALL)) mut_bluelight.disconnect();
         if(typeof lnkCustomTheme !== "undefined") lnkCustomTheme.setAttribute("href", "");
 
         if(started && (type == TYPE_RESET || type == TYPE_ONLY_RESET)) {
@@ -1023,12 +1100,12 @@ import SafeTimer from "./safeTimer.js";
                 removeClass(document.getElementsByTagName("html")[0], (i == 1 ? "pageShadowBackgroundContrast" : "pageShadowBackgroundContrast" + i));
             }
 
-            if(document.getElementById("pageShadowBrightness") != null && document.body.contains(elementBrightnessWrapper)) {
-                elementBrightnessWrapper.removeChild(document.getElementById("pageShadowBrightness"));
+            if(elementBrightnessWrapper && document.body.contains(elementBrightnessWrapper) && document.body.contains(elementBrightness)) {
+                elementBrightnessWrapper.removeChild(elementBrightness);
             }
 
-            if(document.getElementById("pageShadowBrightnessNightMode") != null && document.body.contains(elementBrightnessWrapper)) {
-                elementBrightnessWrapper.removeChild(document.getElementById("pageShadowBrightnessNightMode"));
+            if(elementBrightnessWrapper && document.body.contains(elementBrightnessWrapper) && document.body.contains(elementBlueLightFilter)) {
+                elementBrightnessWrapper.removeChild(elementBlueLightFilter);
             }
 
             resetShadowRoots();
@@ -1057,15 +1134,18 @@ import SafeTimer from "./safeTimer.js";
             } else if(type == TYPE_ONLY_INVERT) {
                 invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, null, settings.selectiveInvert);
             } else if(type == TYPE_ONLY_BRIGHTNESS) {
-                brightnessPage(settings.pageLumEnabled, settings.pourcentageLum, settings.nightModeEnabled, settings.colorTemp);
+                brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
+            } else if(type == TYPE_ONLY_BLUELIGHT) {
+                blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
             } else if(settings.pageShadowEnabled == "true") {
                 waitAndApplyContrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.colorTemp, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, customElement, settings.selectiveInvert);
             } else {
                 waitAndApplyInvertColors(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, customElement, settings.selectiveInvert);
             }
 
-            if(type !== TYPE_ONLY_CONTRAST && type !== TYPE_ONLY_INVERT && type !== TYPE_ONLY_BRIGHTNESS && !customElement) {
-                brightnessPage(settings.pageLumEnabled, settings.pourcentageLum, settings.nightModeEnabled, settings.colorTemp);
+            if(type !== TYPE_ONLY_CONTRAST && type !== TYPE_ONLY_INVERT && type !== TYPE_ONLY_BRIGHTNESS && type !== TYPE_ONLY_BLUELIGHT && !customElement) {
+                brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
+                blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
 
                 if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") {
                     if(type == TYPE_START || !backgroundDetected) {
