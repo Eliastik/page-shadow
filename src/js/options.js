@@ -1554,6 +1554,8 @@ $(document).ready(() => {
         } else if(window.location.hash == "#aboutLatestVersion") {
             $("#aboutTabLink a").tab("show");
             $("#changelogTabLink a").tab("show");
+        } else if(window.location.hash == "#archive") {
+            $("#archiveRestoreTabLink a").tab("show");
         }
     }
 

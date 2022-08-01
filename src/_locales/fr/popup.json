@@ -101,5 +101,10 @@
         "enableWebsite": "Désactiver pour ce site",
         "disableWebpage": "Désactiver pour cette page",
         "enableWebpage": "Désactiver pour cette page"
+    },
+    "modalArchiveInfo": {
+        "title": "Conseil",
+        "message": "Il est conseillé de faire régulièrement des sauvegardes de vos paramètres, pour éviter leur perte accidentelle. Vous pouvez effectuer une sauvegarde sur votre appareil en local (fichier JSON) ou sur le Cloud, depuis les Paramètres avancés, dans l'onglet Archiver/restaurer.",
+        "disable": "Ne plus afficher ce conseil"
     }
 }

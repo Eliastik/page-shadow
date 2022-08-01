@@ -101,5 +101,10 @@
         "enableWebsite": "Disable for this website",
         "disableWebpage": "Disable for this page",
         "enableWebpage": "Disable for this page"
+    },
+    "modalArchiveInfo": {
+        "title": "Advice",
+        "message": "It's recommended to make regular backups of your settings, to avoid their accidental loss. You can backup to your device locally (JSON file) or to the Cloud, from Advanced settings, under the Archive/restore tab.",
+        "disable": "Don't show this tip again"
     }
 }

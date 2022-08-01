@@ -319,7 +319,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="savedLabel"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modalUpdated.title"></span></h4>
+                        <h4 class="modal-title" id="updatedLabel"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modalUpdated.title"></span></h4>
                     </div>
                     <div class="modal-body">
                         <p class="largeFontSize" id="modalUpdatedMessage"></p>
@@ -356,6 +356,26 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" id="createPresetModalValidate" data-dismiss="modal"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modalAutoEnable.validate"></span></button>
                         <button type="button" class="btn btn-danger" id="createPresetModalCancel" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modalAutoEnable.cancel"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="archiveInfo" tabindex="-1" role="dialog" aria-labelledby="archiveInfo">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="archiveInfoLabel"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modalArchiveInfo.title"></span></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalArchiveInfoMessage"><span data-i18n="modalArchiveInfo.message"></span></p>
+                        <div>
+                            <input type="checkbox" id="archiveInfoDisable" /> <label for="archiveInfoDisable" data-i18n="modalArchiveInfo.disable"></label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
+                        <button type="button" class="btn btn-primary" id="linkAdvSettings3"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span data-i18n="modal.AdvSettings"></span></button>
                     </div>
                 </div>
             </div>

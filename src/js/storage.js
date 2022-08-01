@@ -93,7 +93,9 @@ async function setFirstSettings() {
         "popupTheme": defaultPopupTheme,
         "advancedOptionsFiltersSettings": {},
         "blueLightReductionEnabled": "false",
-        "percentageBlueLightReduction": percentageBlueLightDefaultValue
+        "percentageBlueLightReduction": percentageBlueLightDefaultValue,
+        "archiveInfoLastShowed": -1,
+        "archiveInfoDisable": "false"
     });
 
     return true;

@@ -22,7 +22,7 @@ import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
 import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme } from "./util.js";
-import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue } from "./constants.js";
+import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval } from "./constants.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import browser from "webextension-polyfill";
@@ -40,6 +40,8 @@ let checkContrastMode;
 let checkPresetAutoEnabled;
 let i18nextLoaded = false;
 let selectedPreset = 1;
+let updateNotificationShowed = false;
+let archiveInfoShowed = false;
 
 init_i18next("popup").then(() => translateContent());
 toggleTheme(); // Toggle dark/light theme
@@ -152,6 +154,14 @@ $(document).ready(() => {
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
             part: "customTheme"
+        });
+    });
+
+    $("#linkAdvSettings3").on("click", () => {
+        browser.runtime.sendMessage({
+            type: "openTab",
+            url: browser.runtime.getURL("options.html"),
+            part: "archive"
         });
     });
 
@@ -501,6 +511,14 @@ $(document).ready(() => {
             setSettingItem("customThemeInfoDisable", "true");
         } else {
             setSettingItem("customThemeInfoDisable", "false");
+        }
+    });
+
+    $("#archiveInfoDisable").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("archiveInfoDisable", "true");
+        } else {
+            setSettingItem("archiveInfoDisable", "false");
         }
     });
 
@@ -1133,7 +1151,7 @@ $(document).ready(() => {
     });
 
     async function displaySettings() {
-        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "popupTheme", "percentageBlueLightReduction"]);
+        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "popupTheme", "percentageBlueLightReduction", "archiveInfoLastShowed", "archiveInfoDisable"]);
 
         // Switch popup theme
         if (result && result.popupTheme && result.popupTheme == "checkbox") {
@@ -1193,6 +1211,16 @@ $(document).ready(() => {
             $("#updated").modal("show");
             $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));
             setSettingItem("updateNotification", updateNotification);
+            updateNotificationShowed = true;
+        } else if(!updateNotificationShowed && !archiveInfoShowed) {
+            const archiveInfoLastShowed = !result.archiveInfoLastShowed ? 0 : result.archiveInfoLastShowed;
+
+            if(archiveInfoLastShowed + (archiveInfoShowInterval * 60 * 60 * 24 * 1000) <= Date.now() && result.archiveInfoDisable !== "true") {
+                $("#archiveInfo").modal("show");
+                setSettingItem("archiveInfoLastShowed", Date.now());
+            }
+
+            archiveInfoShowed = true;
         }
     }
 
