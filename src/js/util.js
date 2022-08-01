@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { setSettingItem } from "./storage.js";
+import { setSettingItem, migrateSettings } from "./storage.js";
 import browser from "webextension-polyfill";
 import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
 
@@ -105,9 +105,9 @@ async function disableEnableToggle(type, checked, url) {
         break;
     case "disable-globally":
         if(checked) {
-            setSettingItem("globallyEnable", "false");
+            await setSettingItem("globallyEnable", "false");
         } else {
-            setSettingItem("globallyEnable", "true");
+            await setSettingItem("globallyEnable", "true");
         }
         break;
     }
@@ -120,12 +120,12 @@ async function disableEnableToggle(type, checked, url) {
             disabledWebsitesNew = commentMatched(disabledWebsitesNew, match);
             disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
 
-            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
+            await setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
         } else if((!checked && result.whiteList == "true") || (checked && result.whiteList != "true")) {
             disabledWebsitesArray.push(match);
             disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
 
-            setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
+            await setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
         }
     }
 
@@ -581,7 +581,7 @@ async function presetsEnabled() {
         let presets;
 
         if(data.presets == null || typeof(data.presets) == "undefined") {
-            setSettingItem("presets", defaultPresets);
+            await setSettingItem("presets", defaultPresets);
             presets = defaultPresets;
         } else {
             presets = data.presets;
@@ -614,7 +614,7 @@ async function loadPreset(nb) {
         let presets;
 
         if(data.presets == null || typeof(data.presets) == "undefined") {
-            setSettingItem("presets", defaultPresets);
+            await setSettingItem("presets", defaultPresets);
             return "empty";
         } else {
             presets = data.presets;
@@ -626,12 +626,14 @@ async function loadPreset(nb) {
 
         for(const key in preset) {
             if(typeof(key) === "string") {
-                if(Object.prototype.hasOwnProperty.call(preset, key) && settingsToSavePresets.indexOf(key) !== -1) {
-                    setSettingItem(key, preset[key]);
+                if(Object.prototype.hasOwnProperty.call(preset, key) && (settingsToSavePresets.indexOf(key) !== -1 || key == "nightModeEnabled")) {
+                    await setSettingItem(key, preset[key]);
                     settingsRestored++;
                 }
             }
         }
+
+        await migrateSettings();
 
         if(settingsRestored > 0) {
             return "success";
@@ -654,7 +656,7 @@ async function getPresetData(nb) {
         let presets;
 
         if(data.presets == null || typeof(data.presets) == "undefined") {
-            setSettingItem("presets", defaultPresets);
+            await setSettingItem("presets", defaultPresets);
         } else {
             presets = data.presets;
         }
@@ -697,7 +699,7 @@ async function savePreset(nb, name, websiteListToApply, saveNewSettings) {
             }
         }
 
-        setSettingItem("presets", preset);
+        await setSettingItem("presets", preset);
 
         return "success";
     } catch(e) {
@@ -724,7 +726,7 @@ async function deletePreset(nb) {
         const preset = presets;
         preset[nb] = {};
 
-        setSettingItem("presets", preset);
+        await setSettingItem("presets", preset);
 
         return "success";
     } catch(e) {
@@ -839,9 +841,9 @@ async function getSettings(url) {
     }
 
     if(nightModeEnabled == "true" && pageLumEnabled == "true") {
-        blueLightReductionEnabled = true;
+        blueLightReductionEnabled = "true";
         percentageBlueLightReduction = pourcentageLum;
-        nightModeEnabled = false;
+        nightModeEnabled = "false";
     }
 
     return {

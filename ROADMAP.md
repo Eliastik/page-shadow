@@ -24,8 +24,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] Display a warning after a certain time to ask the user to archive their settings
 * [x] Settings for developpers in the advanced settings page
 * [ ] Option to attenuate the color of the images for the "Increase contrast" mode (see https://web.dev/prefers-color-scheme/#dark-mode-best-practices)
-* [ ] User suggestion: It would be great if the brightness reduction without night mode and the brightness reduction with night mode could be combined.
-    * [ ] Separate brightness reduction and night mode settings (renamed "Blue-light reduction filter")
+* [x] User suggestion: It would be great if the brightness reduction without night mode and the brightness reduction with night mode could be combined.
+    * [x] Separate brightness reduction and night mode settings (renamed "Blue-light reduction filter")
 
 ### Known issues/bugs
 

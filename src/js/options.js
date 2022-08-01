@@ -670,6 +670,8 @@ async function displayPresetInfos(nb) {
                     value = "true";
                 } else if(setting == "percentageBlueLightReduction") {
                     value = presetData["pourcentageLum"];
+                } else if(setting == "pageLumEnabled") {
+                    value = "false";
                 }
             } else if(!value) {
                 if(setting == "blueLightReductionEnabled") {

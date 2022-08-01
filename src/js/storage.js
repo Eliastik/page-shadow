@@ -148,7 +148,7 @@ async function migrateSettings(filters) {
         customThemes["1"]["customThemeFont"] = customThemeFont;
         customThemes["1"]["customCSSCode"] = customCSSCode;
 
-        setSettingItem("customThemes", customThemes);
+        await setSettingItem("customThemes", customThemes);
         removeSettingItem(["customThemeBg", "customThemeTexts", "customThemeLinks", "customThemeLinksVisited", "customThemeFont", "customCSSCode"]);
     }
 
@@ -159,9 +159,10 @@ async function migrateSettings(filters) {
 
     // Migrate Night mode filter
     if(result.nightModeEnabled && result.pageLumEnabled && result.nightModeEnabled == "true" && result.pageLumEnabled == "true") {
-        setSettingItem("pageLumEnabled", "false");
-        setSettingItem("blueLightReductionEnabled", "true");
-        setSettingItem("percentageBlueLightReduction", result.pourcentageLum);
+        await setSettingItem("pageLumEnabled", "false");
+        await setSettingItem("blueLightReductionEnabled", "true");
+        await setSettingItem("percentageBlueLightReduction", result.pourcentageLum);
+        removeSettingItem(["nightModeEnabled"]);
     }
 }
 
