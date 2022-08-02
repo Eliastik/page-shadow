@@ -42,7 +42,9 @@
         "createPreset": "Créer le pré-réglage",
         "blueLightReduction": "Filtre de réduction de la lumière bleue",
         "titleBlueLightReduction": "Applique un filtre orangé sur la page afin de réduire la lumière bleue émise par l'écran",
-        "percentageBlueLight": "Intensité du filtre :"
+        "percentageBlueLight": "Intensité du filtre :",
+        "attenuateImageColor": "Atténuer la couleur des images",
+        "titleAttenuateImageColor": "Atténue la couleur des images pour éviter l'affichage de couleurs trop vives"
     },
     "modal": {
         "customThemeTitle": "Information",

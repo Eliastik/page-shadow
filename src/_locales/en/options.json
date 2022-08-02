@@ -283,6 +283,7 @@
             "selectiveInvert": "Selective invert:",
             "blueLightReductionEnabled": "Blue light reduction filter:",
             "percentageBlueLightReduction": "Intensity of the blue light reduction filter:",
+            "attenuateImageColor": "Attenuate image color:",
             "presetInfosLabel": "Preset details",
             "enabled": "Enabled",
             "disabled": "Disabled",

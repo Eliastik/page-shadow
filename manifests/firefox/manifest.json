@@ -53,7 +53,8 @@
             ],
             "css": [
                 "css/content.css",
-                "css/content_invert.css"
+                "css/content_invert.css",
+                "css/content_attenuate.css"
             ],
             "matches": [
                 "http://*/*",

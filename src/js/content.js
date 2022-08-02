@@ -72,7 +72,7 @@ import SafeTimer from "./safeTimer.js";
     let timerApplyDetectBackgrounds = null;
     let timerApplyBlueLightPage = null;
 
-    function contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert) {
+    function contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert, attenuateImageColor) {
         const elementToApply = customElement ? customElement : document.body;
 
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
@@ -98,7 +98,7 @@ import SafeTimer from "./safeTimer.js";
             }
         }
 
-        invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert);
+        invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
 
         if(!customElement) {
             if(document.readyState == "complete" || document.readyState == "interactive") {
@@ -121,13 +121,15 @@ import SafeTimer from "./safeTimer.js";
         }
     }
 
-    function invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert) {
+    function invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert, attenuateImageColor) {
         const elementToApply = customElement ? customElement : document.body;
         removeClass(elementToApply, "pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert");
 
         if(!customElement) {
             removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
         }
+
+        document.documentElement.style.setProperty("--page-shadow-invert-filter-image-backgrounds", "invert(100%)");
 
         if(enabled !== null && enabled == "true") {
             if(invertEntirePage !== null && invertEntirePage == "true") {
@@ -179,6 +181,18 @@ import SafeTimer from "./safeTimer.js";
                     });
                 }
             }
+        }
+
+        attenuateColor(attenuateImageColor, customElement);
+    }
+
+    function attenuateColor(enabled, customElement) {
+        const elementToApply = customElement ? customElement : document.body;
+        removeClass(elementToApply, "pageShadowAttenuateImageColor");
+
+        if(enabled == "true") {
+            document.documentElement.style.setProperty("--page-shadow-invert-filter-image-backgrounds", "invert(100%) grayscale(50%)");
+            addClass(elementToApply, "pageShadowAttenuateImageColor");
         }
     }
 
@@ -408,14 +422,14 @@ import SafeTimer from "./safeTimer.js";
         timerApplyBlueLightPage.start();
     }
 
-    function waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert) {
+    function waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert, attenuateImageColor) {
         if(timerApplyContrastPage) timerApplyContrastPage.clear();
 
         timerApplyContrastPage = new SafeTimer(() => {
             if(!document.body) {
-                waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert);
+                waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
             } else {
-                contrastPage(pageShadowEnabled, theme, colorInvert, colorTemp, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert);
+                contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
             }
 
             timerApplyContrastPage.clear();
@@ -424,14 +438,14 @@ import SafeTimer from "./safeTimer.js";
         timerApplyContrastPage.start();
     }
 
-    function waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert) {
+    function waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert, attenuateImageColor) {
         if(timerApplyInvertColors) timerApplyInvertColors.clear();
 
         timerApplyInvertColors = new SafeTimer(() => {
             if(!document.body) {
-                waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert);
+                waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
             } else {
-                invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert);
+                invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
             }
 
             timerApplyInvertColors.clear();
@@ -825,7 +839,7 @@ import SafeTimer from "./safeTimer.js";
                 "type": "getFiltersForThisWebsite"
             });
         } else {
-            if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") doProcessFilters(filtersCache);
+            if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true" || settings.attenuateImageColor == "true") doProcessFilters(filtersCache);
         }
     }
 
@@ -1064,7 +1078,7 @@ import SafeTimer from "./safeTimer.js";
                 element.shadowRoot.removeChild(currentCSSStyleInvert);
             }
 
-            if(precEnabled && ((currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") || (currentSettings.colorInvert != undefined && currentSettings.colorInvert == "true"))) {
+            if(precEnabled && ((currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") || (currentSettings.colorInvert != undefined && currentSettings.colorInvert == "true") || (currentSettings.attenuateImageColor != undefined && currentSettings.attenuateImageColor == "true"))) {
                 if(currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") {
                     const currentTheme = currentSettings.theme;
 
@@ -1171,24 +1185,24 @@ import SafeTimer from "./safeTimer.js";
             if(!customElement) precEnabled = true;
 
             if(type == TYPE_ONLY_CONTRAST) {
-                contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.colorTemp, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, null, settings.selectiveInvert);
+                contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, null, settings.selectiveInvert, settings.attenuateImageColor);
             } else if(type == TYPE_ONLY_INVERT) {
-                invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, null, settings.selectiveInvert);
+                invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, null, settings.selectiveInvert, settings.attenuateImageColor);
             } else if(type == TYPE_ONLY_BRIGHTNESS) {
                 brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
             } else if(type == TYPE_ONLY_BLUELIGHT) {
                 blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
             } else if(settings.pageShadowEnabled == "true") {
-                waitAndApplyContrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.colorTemp, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, customElement, settings.selectiveInvert);
+                waitAndApplyContrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, customElement, settings.selectiveInvert, settings.attenuateImageColor);
             } else {
-                waitAndApplyInvertColors(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, customElement, settings.selectiveInvert);
+                waitAndApplyInvertColors(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, customElement, settings.selectiveInvert, settings.attenuateImageColor);
             }
 
             if(type !== TYPE_ONLY_CONTRAST && type !== TYPE_ONLY_INVERT && type !== TYPE_ONLY_BRIGHTNESS && type !== TYPE_ONLY_BLUELIGHT && !customElement) {
                 brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
                 blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
 
-                if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") {
+                if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true" || settings.attenuateImageColor == "true") {
                     if(type == TYPE_START || !backgroundDetected) {
                         applyDetectBackground(TYPE_LOADING, "*");
                     }
@@ -1224,7 +1238,7 @@ import SafeTimer from "./safeTimer.js";
                     filtersCache = message.filters;
                     const settings = newSettingsToApply || await getSettings(getCurrentURL());
                     processSpecialRules(message.specialFilters);
-                    if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true") doProcessFilters(message.filters);
+                    if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true" || settings.attenuateImageColor == "true") doProcessFilters(message.filters);
                 }
                 break;
             }

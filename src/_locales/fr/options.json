@@ -277,6 +277,7 @@
             "autoEnable": "Activation automatique selon l'heure :",
             "disableImgBgColor": "Désactiver la coloration de l'arrière-plan des images :",
             "selectiveInvert": "Inversion sélective :",
+            "attenuateImageColor": "Atténuer la couleur des images :",
             "blueLightReductionEnabled": "Filtre de réduction de la lumière bleue :",
             "percentageBlueLightReduction": "Intensité du filtre de réduction de la lumière bleue :",
             "presetInfosLabel": "Détails du pré-réglage",

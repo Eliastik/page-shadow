@@ -784,7 +784,7 @@ function getPriorityPresetEnabledForWebsite(presetsEnabled) {
 }
 
 async function getSettings(url) {
-    const result = await browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor", "selectiveInvert", "blueLightReductionEnabled", "percentageBlueLightReduction"]);
+    const result = await browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor", "selectiveInvert", "blueLightReductionEnabled", "percentageBlueLightReduction", "attenuateImageColor"]);
 
     let pageShadowEnabled = result.pageShadowEnabled;
     let theme = result.theme;
@@ -802,6 +802,7 @@ async function getSettings(url) {
     let disableImgBgColor = result.disableImgBgColor;
     let colorInvert = result.colorInvert;
     let selectiveInvert = result.selectiveInvert;
+    let attenuateImageColor = result.attenuateImageColor;
 
     // Automatically enable preset ?
     const presetsEnabled = await presetsEnabledForWebsite(url);
@@ -828,6 +829,7 @@ async function getSettings(url) {
             selectiveInvert = presetData.selectiveInvert;
             blueLightReductionEnabled = presetData.blueLightReductionEnabled;
             percentageBlueLightReduction = presetData.percentageBlueLightReduction;
+            attenuateImageColor = presetData.attenuateImageColor;
         }
     }
 
@@ -862,7 +864,8 @@ async function getSettings(url) {
         invertBgColor,
         selectiveInvert,
         blueLightReductionEnabled,
-        percentageBlueLightReduction
+        percentageBlueLightReduction,
+        attenuateImageColor
     };
 }
 

@@ -674,6 +674,34 @@ $(document).ready(() => {
         }
     });
 
+    async function checkAttenuateImageColor() {
+        const result = await browser.storage.local.get("attenuateImageColor");
+
+        if(result.attenuateImageColor == "true" && $("#checkAttenuateImageColor").is(":checked") == false) {
+            $("#checkAttenuateImageColor").prop("checked", true);
+            $("#checkAttenuateImageColorCheckbox").prop("checked", true);
+        } else if(result.attenuateImageColor !== "true" && $("#checkAttenuateImageColor").is(":checked") == true) {
+            $("#checkAttenuateImageColor").prop("checked", false);
+            $("#checkAttenuateImageColorCheckbox").prop("checked", true);
+        }
+    }
+
+    $("#checkAttenuateImageColor").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("attenuateImageColor", "true");
+        } else {
+            setSettingItem("attenuateImageColor", "false");
+        }
+    });
+
+    $("#checkAttenuateImageColorCheckbox").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("attenuateImageColor", "true");
+        } else {
+            setSettingItem("attenuateImageColor", "false");
+        }
+    });
+
     async function checkAutoEnable() {
         const result = await browser.storage.local.get("autoEnable");
 
@@ -1165,6 +1193,7 @@ $(document).ready(() => {
         toggleTheme(); // Toggle dark/light theme
         checkContrastMode();
         checkColorInvert();
+        checkAttenuateImageColor();
         checkLiveSettings();
         checkBrightness();
         checkBlueLightReduction();

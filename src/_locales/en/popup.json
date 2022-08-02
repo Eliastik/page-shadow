@@ -42,7 +42,9 @@
         "createPreset": "Create preset",
         "blueLightReduction": "Blue light reduction filter",
         "titleBlueLightReduction": "Apply an orange filter on the page to reduce the blue light emitted by the screen",
-        "percentageBlueLight": "Filter intensity:"
+        "percentageBlueLight": "Filter intensity:",
+        "attenuateImageColor": "Attenuate image color",
+        "titleAttenuateImageColor": "Attenuate the color of images to avoid displaying too bright colors"
     },
     "modal": {
         "customThemeTitle": "Information",

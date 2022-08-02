@@ -44,7 +44,7 @@ body.popup {
     width: 350px;
     overflow-x: hidden;
     overflow-y: auto;
-    max-height: 1035px;
+    max-height: 1050px;
 }
 body.popup > .navbar {
     margin-bottom: 8px;

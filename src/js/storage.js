@@ -98,7 +98,8 @@ async function setFirstSettings() {
         "archiveInfoDisable": "false",
         "autoBackupCloudInterval": 0,
         "lastAutoBackupCloud": -1,
-        "lastAutoBackupFailed": "false"
+        "lastAutoBackupFailed": "false",
+        "attenuateImageColor": "false"
     });
 
     return true;
