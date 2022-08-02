@@ -38,7 +38,7 @@ import SafeTimer from "./safeTimer.js";
     let precEnabled = false;
     let started = false;
     let filtersCache = null;
-    let mut_contrast, mut_backgrounds, mut_brightness, mut_brightness_wrapper, mut_invert, mut_bluelight;
+    let mut_contrast, mut_backgrounds, mut_brightness, mut_brightness_wrapper, mut_invert, mut_bluelight, mut_attenuate;
     let typeProcess = "";
     let precUrl;
     let currentSettings = null;
@@ -62,6 +62,7 @@ import SafeTimer from "./safeTimer.js";
     const MUTATION_TYPE_BACKGROUNDS = "backgrounds";
     const MUTATION_TYPE_BLUELIGHT = "blueLight";
     const MUTATION_TYPE_BRIGHTNESSWRAPPER = "brightnesswrapper";
+    const MUTATION_TYPE_ATTENUATE = "attenuate";
     const TYPE_LOADING = "loading";
     const TYPE_START = "start";
 
@@ -193,6 +194,16 @@ import SafeTimer from "./safeTimer.js";
         if(enabled == "true") {
             document.documentElement.style.setProperty("--page-shadow-invert-filter-image-backgrounds", "invert(100%) grayscale(50%)");
             addClass(elementToApply, "pageShadowAttenuateImageColor");
+
+            if(!customElement) {
+                if(document.readyState == "complete" || document.readyState == "interactive") {
+                    mutationObserve(MUTATION_TYPE_ATTENUATE);
+                } else {
+                    window.addEventListener("load", () => {
+                        mutationObserve(MUTATION_TYPE_ATTENUATE);
+                    });
+                }
+            }
         }
     }
 
@@ -563,6 +574,50 @@ import SafeTimer from "./safeTimer.js";
             });
 
             mut_invert.observe(document.body, {
+                "attributes": true,
+                "subtree": false,
+                "childList": false,
+                "characterData": false,
+                "attributeOldValue": true,
+                "attributeFilter": ["class"]
+            });
+        } else if(type == MUTATION_TYPE_ATTENUATE) {
+            if(typeof mut_attenuate !== "undefined") mut_attenuate.disconnect();
+
+            mut_attenuate = new MutationObserver(mutations => {
+                mut_attenuate.disconnect();
+
+                function reMutObserveInvert() {
+                    if(document.readyState == "complete" || document.readyState == "interactive") {
+                        mutationObserve(MUTATION_TYPE_ATTENUATE);
+                    } else {
+                        window.addEventListener("load", () => {
+                            mutationObserve(MUTATION_TYPE_ATTENUATE);
+                        });
+                    }
+                }
+
+                mutations.forEach((mutation) => {
+                    if(mutation.type == "attributes" && mutation.attributeName == "class") {
+                        const classList = document.body.classList;
+
+                        if((mutation.oldValue.indexOf("pageShadowAttenuateImageColor") !== -1 && !classList.contains("pageShadowAttenuateImageColor"))) {
+                            const timerApplyMutationAttenuate = new SafeTimer(() => {
+                                main(TYPE_ONLY_INVERT, MUTATION_TYPE_ATTENUATE);
+                                timerApplyMutationAttenuate.clear();
+                            });
+
+                            timerApplyMutationAttenuate.start(websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
+                        } else {
+                            reMutObserveInvert();
+                        }
+                    } else {
+                        reMutObserveInvert();
+                    }
+                });
+            });
+
+            mut_attenuate.observe(document.body, {
                 "attributes": true,
                 "subtree": false,
                 "childList": false,
@@ -1141,13 +1196,14 @@ import SafeTimer from "./safeTimer.js";
 
         if(typeof mut_contrast !== "undefined" && (mutation == MUTATION_TYPE_CONTRAST || mutation == TYPE_ALL)) mut_contrast.disconnect();
         if(typeof mut_invert !== "undefined" && (mutation == MUTATION_TYPE_INVERT || mutation == TYPE_ALL)) mut_invert.disconnect();
+        if(typeof mut_attenuate !== "undefined" && (mutation == MUTATION_TYPE_ATTENUATE || mutation == TYPE_ALL)) mut_attenuate.disconnect();
         if(typeof mut_brightness !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS || mutation == TYPE_ALL)) mut_brightness.disconnect();
         if(typeof mut_bluelight !== "undefined" && (mutation == MUTATION_TYPE_BLUELIGHT || mutation == TYPE_ALL)) mut_bluelight.disconnect();
         if(typeof mut_brightness !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS || mutation == MUTATION_TYPE_BLUELIGHT || mutation == TYPE_ALL)) mut_brightness_wrapper.disconnect();
         if(typeof lnkCustomTheme !== "undefined") lnkCustomTheme.setAttribute("href", "");
 
         if(started && (type == TYPE_RESET || type == TYPE_ONLY_RESET)) {
-            removeClass(document.body, "pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowContrastBlackCustom", "pageShadowDisableImgBgColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert");
+            removeClass(document.body, "pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowContrastBlackCustom", "pageShadowDisableImgBgColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert", "pageShadowAttenuateImageColor");
             removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground", "pageShadowBackgroundCustom");
 
             for(let i = 1; i <= nbThemes; i++) {

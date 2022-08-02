@@ -18,7 +18,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Interface dark mode
     * [x] Update popup design (icons, etc.) -> improve popup design: icons for option + settings ?
         * [ ] Alternative popup design ?
-* [ ] Option to attenuate the color of the images for the "Increase contrast" mode (see https://web.dev/prefers-color-scheme/#dark-mode-best-practices)
+* [x] Option to attenuate the color of the images for the "Increase contrast" mode (see https://web.dev/prefers-color-scheme/#dark-mode-best-practices)
 * [x] Import Font Awesome with npm
 * [x] Filters: don't update if file "Last-modified" header from server has not changed compared to the local version and last update
     * [x] Show update available for filters (check last-modified header)
