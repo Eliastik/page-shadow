@@ -72,6 +72,7 @@
             "autoThrottleMutationObserverBackgroundsEnabled": "Automatic throttle of background detection Mutation Observers",
             "autoThrottleMutationObserverBackgroundsTreshold": "Threshold after which to enable automatic throttle of Mutation Observers",
             "throttledMutationObserverTreatedByCall": "Number of elements processed per call to Mutation Observers when throttling is enabled",
+            "delayApplyMutationObserversSafeTimer": "Delay before reapplying Page Shadow settings after detection by Mutation Observers",
             "help": {
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
                 "autoDetectTransparentBackgroundEnabled": "Enable detection of transparent backgrounds. Disabling this feature can cause many display issues.",
@@ -86,7 +87,8 @@
                 "delayMutationObserverBackgrounds": "Delay (ms) before processing each Mutation Observer.",
                 "autoThrottleMutationObserverBackgroundsEnabled": "Enable Mutation Observer throttle only if needed.",
                 "autoThrottleMutationObserverBackgroundsTreshold": "If a Mutation Observer processes a number of elements above this threshold at once, the throttle is enabled. Throttle is disabled when the number of elements processed falls below this threshold.",
-                "throttledMutationObserverTreatedByCall": "The number of elements processed by one call to Mutation Observers, when throttle is enabled."
+                "throttledMutationObserverTreatedByCall": "The number of elements processed by one call to Mutation Observers, when throttle is enabled.",
+                "delayApplyMutationObserversSafeTimer": "Applies a delay between Mutation Observers detecting a page change and reapplying Page Shadow settings (increase contrast, invert colors, decrease brightness, or blue light reduction filter). Increasing this timeout may fix issues on some websites."
             }
         },
         "saved": "Sauvegardé !"

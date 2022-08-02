@@ -488,7 +488,7 @@ import SafeTimer from "./safeTimer.js";
                         timerApplyMutationContrast.clear();
                     });
 
-                    timerApplyMutationContrast.start();
+                    timerApplyMutationContrast.start(websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
                 } else {
                     if(document.readyState == "complete" || document.readyState == "interactive") {
                         mutationObserve(MUTATION_TYPE_CONTRAST);
@@ -537,7 +537,7 @@ import SafeTimer from "./safeTimer.js";
                                 timerApplyMutationInvert.clear();
                             });
 
-                            timerApplyMutationInvert.start();
+                            timerApplyMutationInvert.start(websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
                         } else {
                             reMutObserveInvert();
                         }
@@ -568,7 +568,7 @@ import SafeTimer from "./safeTimer.js";
                             timerApplyMutationBrightness.clear();
                         });
 
-                        timerApplyMutationBrightness.start();
+                        timerApplyMutationBrightness.start(websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
                     } else {
                         if(document.readyState == "complete" || document.readyState == "interactive") {
                             mutationObserve(MUTATION_TYPE_BRIGHTNESS);
@@ -600,7 +600,7 @@ import SafeTimer from "./safeTimer.js";
                             timerApplyMutationBlueLight.clear();
                         });
 
-                        timerApplyMutationBlueLight.start();
+                        timerApplyMutationBlueLight.start(websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
                     } else {
                         if(document.readyState == "complete" || document.readyState == "interactive") {
                             mutationObserve(MUTATION_TYPE_BLUELIGHT);
@@ -992,6 +992,7 @@ import SafeTimer from "./safeTimer.js";
                 if(type == "throttledMutationObserverTreatedByCall") websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall = rule.filter;
                 if(type == "disableAutoThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled = false;
                 if(type == "enableAutoThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled = true;
+                if(type == "delayApplyMutationObserversSafeTimer") websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer = rule.filter;
             });
         });
     }
