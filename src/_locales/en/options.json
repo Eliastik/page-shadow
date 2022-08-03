@@ -52,7 +52,8 @@
         "keyboardShortcuts": "Manage keyboard shortcuts…",
         "popupTheme": "Popup theme:",
         "popupThemeSwitch": "Switches and icons (by default)",
-        "popupThemeClassic": "Checkboxes (classic)"
+        "popupThemeClassic": "Checkboxes (classic)",
+        "popupThemeModern": "Modern (beta)"
     },
     "advancedOptions": {
         "checkbox": "I understand and I want to access to the advanced options",

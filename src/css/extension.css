@@ -615,3 +615,67 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 .mt-4 {
     margin-top: 15px;
 }
+/* Popup options modern */
+.popup-options-modern {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.popup-options-modern > div {
+    max-width: 160px;
+    width: 160px;
+}
+
+.popup-option-container-modern {
+    padding: 8px;
+    font-size: 11.5px;
+    line-height: 1.25;
+}
+
+.popup-option-container-modern i {
+    font-size: 22px;
+}
+
+.popup-option-modern {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    width: 100%;
+    height: 80px;
+    border: 1px solid lightgray;
+    background-color: #F5F5F5;
+    color: #212121;
+    border-radius: 5px;
+    align-items: center;
+    text-align: center;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.popup-option-modern:hover {
+    background-color: #E0E0E0;
+}
+
+.popup-option-modern:active {
+    background-color: #BDBDBD;
+}
+
+.popup-option-modern.active {
+    background-color: #03A9F4;
+    border-color: #03A9F4;
+    color: #212121;
+}
+
+.popup-option-modern.active:hover {
+    background-color: #039BE5;
+}
+
+.popup-option-modern.active:active {
+    background-color: #0288D1;
+}
+
+.popup-advanced-option {
+    display: none !important;
+}

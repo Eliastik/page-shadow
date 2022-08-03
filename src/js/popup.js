@@ -451,6 +451,8 @@ $(document).ready(() => {
             if($("#checkAssomPageCheckbox").is(":checked") == false) {
                 $("#checkAssomPageCheckbox").prop("checked", true);
             }
+
+            $("#checkAssomPageModern").addClass("active");
         } else {
             $("#themeDiv").stop().fadeOut();
 
@@ -461,6 +463,8 @@ $(document).ready(() => {
             if($("#checkAssomPageCheckbox").is(":checked") == true) {
                 $("#checkAssomPageCheckbox").prop("checked", false);
             }
+
+            $("#checkAssomPageModern").removeClass("active");
         }
 
         if(result.disableImgBgColor == "true" && $("#checkDisableImgBgColor").is(":checked") == true) {
@@ -480,6 +484,14 @@ $(document).ready(() => {
 
     $("#checkAssomPageCheckbox").on("change", function() {
         if($(this).is(":checked") == true) {
+            setSettingItem("pageShadowEnabled", "true");
+        } else {
+            setSettingItem("pageShadowEnabled", "false");
+        }
+    });
+
+    $("#checkAssomPageModern").on("click", function() {
+        if(!$(this).hasClass("active") == true) {
             setSettingItem("pageShadowEnabled", "true");
         } else {
             setSettingItem("pageShadowEnabled", "false");
@@ -552,6 +564,8 @@ $(document).ready(() => {
                 $("#checkColorInvertCheckbox").prop("checked", true);
             }
 
+            $("#checkColorInvertModern").addClass("active");
+
             if(result.invertImageColors == "true" && $("#checkImageInvert").is(":checked") == false) {
                 $("#checkImageInvert").prop("checked", true);
             } else if(result.invertImageColors == "false" && $("#checkImageInvert").is(":checked") == true) {
@@ -585,6 +599,8 @@ $(document).ready(() => {
             if($("#checkColorInvertCheckbox").is(":checked") == true) {
                 $("#checkColorInvertCheckbox").prop("checked", false);
             }
+
+            $("#checkColorInvertModern").removeClass("active");
 
             if(result.invertImageColors !== "true") {
                 if($("#checkImageInvert").is(":checked") == true) {
@@ -628,6 +644,14 @@ $(document).ready(() => {
 
     $("#checkColorInvertCheckbox").on("change", function() {
         if($(this).is(":checked") == true) {
+            setSettingItem("invertPageColors", "true");
+        } else {
+            setSettingItem("invertPageColors", "false");
+        }
+    });
+
+    $("#checkColorInvertModern").on("click", function() {
+        if(!$(this).hasClass("active") == true) {
             setSettingItem("invertPageColors", "true");
         } else {
             setSettingItem("invertPageColors", "false");
@@ -680,9 +704,11 @@ $(document).ready(() => {
         if(result.attenuateImageColor == "true" && $("#checkAttenuateImageColor").is(":checked") == false) {
             $("#checkAttenuateImageColor").prop("checked", true);
             $("#checkAttenuateImageColorCheckbox").prop("checked", true);
+            $("#checkAttenuateImageColorModern").addClass("active");
         } else if(result.attenuateImageColor !== "true" && $("#checkAttenuateImageColor").is(":checked") == true) {
             $("#checkAttenuateImageColor").prop("checked", false);
             $("#checkAttenuateImageColorCheckbox").prop("checked", true);
+            $("#checkAttenuateImageColorModern").removeClass("active");
         }
     }
 
@@ -702,15 +728,25 @@ $(document).ready(() => {
         }
     });
 
+    $("#checkAttenuateImageColorModern").on("click", function() {
+        if(!$(this).hasClass("active") == true) {
+            setSettingItem("attenuateImageColor", "true");
+        } else {
+            setSettingItem("attenuateImageColor", "false");
+        }
+    });
+
     async function checkAutoEnable() {
         const result = await browser.storage.local.get("autoEnable");
 
         if(result.autoEnable == "true" && $("#autoEnable").is(":checked") == false) {
             $("#autoEnable").prop("checked", true);
             $("#autoEnableCheckbox").prop("checked", true);
+            $("#autoEnableModern").addClass("active");
         } else if(result.autoEnable !== "true" && $("#autoEnable").is(":checked") == true) {
             $("#autoEnable").prop("checked", false);
-            $("#autoEnableCheckbox").prop("checked", true);
+            $("#autoEnableCheckbox").prop("checked", false);
+            $("#autoEnableModern").removeClass("active");
         }
     }
 
@@ -725,6 +761,15 @@ $(document).ready(() => {
 
     $("#autoEnableCheckbox").on("change", function() {
         if($(this).is(":checked") == true) {
+            setSettingItem("autoEnable", "true");
+            $("#autoEnableSettings").modal("show");
+        } else {
+            setSettingItem("autoEnable", "false");
+        }
+    });
+
+    $("#autoEnableModern").on("click", function() {
+        if(!$(this).hasClass("active") == true) {
             setSettingItem("autoEnable", "true");
             $("#autoEnableSettings").modal("show");
         } else {
@@ -875,9 +920,11 @@ $(document).ready(() => {
         if(result.liveSettings == "true" && $("#liveSettings").is(":checked") == false) {
             $("#liveSettings").prop("checked", true);
             $("#liveSettingsCheckbox").prop("checked", true);
+            $("#liveSettingsModern").addClass("active");
         } else if(result.liveSettings !== "true" && $("#liveSettings").is(":checked") == true) {
             $("#liveSettings").prop("checked", false);
-            $("#liveSettingsCheckbox").prop("checked", true);
+            $("#liveSettingsCheckbox").prop("checked", false);
+            $("#liveSettingsModern").removeClass("active");
         }
     }
 
@@ -891,6 +938,14 @@ $(document).ready(() => {
 
     $("#liveSettingsCheckbox").on("change", function() {
         if($(this).is(":checked") == true) {
+            setSettingItem("liveSettings", "true");
+        } else {
+            setSettingItem("liveSettings", "false");
+        }
+    });
+
+    $("#liveSettingsModern").on("click", function() {
+        if(!$(this).hasClass("active")) {
             setSettingItem("liveSettings", "true");
         } else {
             setSettingItem("liveSettings", "false");
@@ -920,6 +975,8 @@ $(document).ready(() => {
             if($("#checkBrightnessPageCheckbox").is(":checked") == false) {
                 $("#checkBrightnessPageCheckbox").prop("checked", true);
             }
+
+            $("#checkBrightnessPageModern").addClass("active");
         } else {
             $("#brightnessSettings").stop().fadeOut();
             elLumB.style.display = "none";
@@ -931,6 +988,8 @@ $(document).ready(() => {
             if($("#checkBrightnessPageCheckbox").is(":checked") == true) {
                 $("#checkBrightnessPageCheckbox").prop("checked", false);
             }
+
+            $("#checkBrightnessPageModern").removeClass("active");
         }
     }
 
@@ -965,6 +1024,8 @@ $(document).ready(() => {
             if($("#checkBlueLightReductionFilterCheckbox").is(":checked") == false) {
                 $("#checkBlueLightReductionFilterCheckbox").prop("checked", true);
             }
+
+            $("#checkBlueLightReductionFilterModern").addClass("active");
         } else {
             $("#blueLightReductionFilterSettings").stop().fadeOut();
             elBlueLightReduction.setAttribute("id", "pageShadowBrightnessNightMode");
@@ -977,6 +1038,8 @@ $(document).ready(() => {
             if($("#checkBlueLightReductionFilterCheckbox").is(":checked") == true) {
                 $("#checkBlueLightReductionFilterCheckbox").prop("checked", false);
             }
+
+            $("#checkBlueLightReductionFilterModern").removeClass("active");
         }
     }
 
@@ -996,6 +1059,14 @@ $(document).ready(() => {
         }
     });
 
+    $("#checkBrightnessPageModern").on("click", function() {
+        if(!$(this).hasClass("active") == true) {
+            setSettingItem("pageLumEnabled", "true");
+        } else {
+            setSettingItem("pageLumEnabled", "false");
+        }
+    });
+
     $("#checkBlueLightReductionFilter").on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("blueLightReductionEnabled", "true");
@@ -1006,6 +1077,14 @@ $(document).ready(() => {
 
     $("#checkBlueLightReductionFilterCheckbox").on("change", function() {
         if($(this).is(":checked") == true) {
+            setSettingItem("blueLightReductionEnabled", "true");
+        } else {
+            setSettingItem("blueLightReductionEnabled", "false");
+        }
+    });
+
+    $("#checkBlueLightReductionFilterModern").on("click", function() {
+        if(!$(this).hasClass("active") == true) {
             setSettingItem("blueLightReductionEnabled", "true");
         } else {
             setSettingItem("blueLightReductionEnabled", "false");
@@ -1185,9 +1264,18 @@ $(document).ready(() => {
         if (result && result.popupTheme && result.popupTheme == "checkbox") {
             $(".popup-option-container").hide();
             $(".popup-option-container-classic").show();
+            $(".popup-option-container-modern").hide();
+            $("#popup-options").removeClass("popup-options-modern");
+        } else if (result && result.popupTheme && result.popupTheme == "modern") {
+            $(".popup-option-container").hide();
+            $(".popup-option-container-classic").hide();
+            $(".popup-option-container-modern").show();
+            $("#popup-options").addClass("popup-options-modern");
         } else {
             $(".popup-option-container").show();
             $(".popup-option-container-classic").hide();
+            $(".popup-option-container-modern").hide();
+            $("#popup-options").removeClass("popup-options-modern");
         }
 
         toggleTheme(); // Toggle dark/light theme
