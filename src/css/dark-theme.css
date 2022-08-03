@@ -228,28 +228,35 @@ select:focus, select.form-control:focus {
     width: 100%;
 }
 
-.popup-option-modern:hover {
+.popup-option-modern:hover, .popup-option-modern-complement:hover {
     background-color: #353639;
 }
 
-.popup-option-modern:active {
+.popup-option-modern:active, .popup-option-modern-complement:active {
     background-color: #46474a;
 }
 
-.popup-option-modern.active {
+.popup-option-container-modern.active > div {
     background-color: #016c9e;
     border-color: #016c9e;
     color: #e6ebf0;
+    border-bottom-color: #006391;
 }
 
-.popup-option-modern.active:hover {
+.popup-option-container-modern.active > div:hover {
     background-color: #0179b0;
 }
 
-.popup-option-modern.active:active {
+.popup-option-container-modern.active > div:active {
     background-color: #0087c5;
 }
 
 .popup-options-modern .popup-advanced-option:before {
     border-bottom-color: #303134;
+}
+
+.popup-option-modern-complement {
+    border-color: #353639;
+    background-color: #303134;
+    color: #e6ebf0;
 }

@@ -56,6 +56,7 @@ async function translateContent() {
     $(".container").localize();
     $(".modal").localize();
     $("footer").localize();
+    await checkCurrentPopupTheme();
     if(checkContrastMode) checkContrastMode();
     await loadPresetSelect("loadPresetSelect", i18next);
     checkPresetAutoEnabled(await getCurrentURL());
@@ -84,6 +85,31 @@ async function getCurrentURL() {
         if(!browser.runtime.lastError) {
             return normalizeURL(tabs[0].url);
         }
+    }
+}
+
+async function checkCurrentPopupTheme() {
+    const result = await browser.storage.local.get("popupTheme");
+
+    // Switch popup theme
+    if (result && result.popupTheme && result.popupTheme == "checkbox") {
+        $(".popup-option-container").hide();
+        $(".popup-option-container-classic").show();
+        $(".popup-option-container-modern").hide();
+        $("#popup-options").removeClass("popup-options-modern");
+        currentTheme = "checkbox";
+    } else if (result && result.popupTheme && result.popupTheme == "modern") {
+        $(".popup-option-container").hide();
+        $(".popup-option-container-classic").hide();
+        $(".popup-option-container-modern").show();
+        $("#popup-options").addClass("popup-options-modern");
+        currentTheme = "modern";
+    } else {
+        $(".popup-option-container").show();
+        $(".popup-option-container-classic").hide();
+        $(".popup-option-container-modern").hide();
+        $("#popup-options").removeClass("popup-options-modern");
+        currentTheme = "switch";
     }
 }
 
@@ -493,8 +519,8 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkAssomPageModern").on("click", function() {
-        if(!$(this).hasClass("active") == true) {
+    $("#checkAssomPageModern .popup-option-modern").on("click", () => {
+        if(!$("#checkAssomPageModern").hasClass("active") == true) {
             setSettingItem("pageShadowEnabled", "true");
             $("#themeDiv").stop().fadeIn();
         } else {
@@ -502,13 +528,17 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkAssomPageModern").on("mouseover", function() {
-        if($(this).hasClass("active") == true) {
+    $("#checkAssomPageModern .popup-option-modern-complement").on("click", () => {
+        $("#themeDiv").stop().fadeToggle();
+    });
+
+    $("#checkAssomPageModern .popup-option-modern").on("mouseover", () => {
+        if($("#checkAssomPageModern").hasClass("active") == true) {
             $("#themeDiv").stop().fadeIn();
         }
     });
 
-    $("#checkAssomPageModern").on("mouseout", () => {
+    $("#checkAssomPageModern .popup-option-modern").on("mouseout", () => {
         $("#themeDiv").stop().fadeOut();
     });
 
@@ -666,8 +696,8 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkColorInvertModern").on("click", function() {
-        if(!$(this).hasClass("active") == true) {
+    $("#checkColorInvertModern .popup-option-modern").on("click", () => {
+        if(!$("#checkColorInvertModern").hasClass("active") == true) {
             setSettingItem("invertPageColors", "true");
             $("#invertPageColorsDiv").stop().fadeIn();
         } else {
@@ -675,13 +705,17 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkColorInvertModern").on("mouseover", function() {
-        if($(this).hasClass("active") == true) {
+    $("#checkColorInvertModern .popup-option-modern-complement").on("click", () => {
+        $("#invertPageColorsDiv").stop().fadeToggle();
+    });
+
+    $("#checkColorInvertModern .popup-option-modern").on("mouseover", () => {
+        if($("#checkColorInvertModern").hasClass("active") == true) {
             $("#invertPageColorsDiv").stop().fadeIn();
         }
     });
 
-    $("#checkColorInvertModern").on("mouseout", () => {
+    $("#checkColorInvertModern .popup-option-modern").on("mouseout", () => {
         $("#invertPageColorsDiv").stop().fadeOut();
     });
 
@@ -755,8 +789,8 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkAttenuateImageColorModern").on("click", function() {
-        if(!$(this).hasClass("active") == true) {
+    $("#checkAttenuateImageColorModern .popup-option-modern").on("click", () => {
+        if(!$("#checkAttenuateImageColorModern").hasClass("active") == true) {
             setSettingItem("attenuateImageColor", "true");
         } else {
             setSettingItem("attenuateImageColor", "false");
@@ -795,13 +829,17 @@ $(document).ready(() => {
         }
     });
 
-    $("#autoEnableModern").on("click", function() {
-        if(!$(this).hasClass("active") == true) {
+    $("#autoEnableModern .popup-option-modern").on("click", () => {
+        if(!$("#autoEnableModern").hasClass("active") == true) {
             setSettingItem("autoEnable", "true");
             $("#autoEnableSettings").modal("show");
         } else {
             setSettingItem("autoEnable", "false");
         }
+    });
+
+    $("#autoEnableModern .popup-option-modern-complement").on("click", () => {
+        $("#autoEnableSettings").modal("show");
     });
 
     async function checkSettingsAutoEnable() {
@@ -971,8 +1009,8 @@ $(document).ready(() => {
         }
     });
 
-    $("#liveSettingsModern").on("click", function() {
-        if(!$(this).hasClass("active")) {
+    $("#liveSettingsModern .popup-option-modern").on("click", () => {
+        if(!$("#liveSettingsModern").hasClass("active")) {
             setSettingItem("liveSettings", "true");
         } else {
             setSettingItem("liveSettings", "false");
@@ -1092,8 +1130,8 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkBrightnessPageModern").on("click", function() {
-        if(!$(this).hasClass("active") == true) {
+    $("#checkBrightnessPageModern .popup-option-modern").on("click", () => {
+        if(!$("#checkBrightnessPageModern").hasClass("active") == true) {
             setSettingItem("pageLumEnabled", "true");
             $("#brightnessSettings").stop().fadeIn();
         } else {
@@ -1101,13 +1139,17 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkBrightnessPageModern").on("mouseover", function() {
-        if($(this).hasClass("active") == true) {
+    $("#checkBrightnessPageModern .popup-option-modern-complement").on("click", () => {
+        $("#brightnessSettings").stop().fadeToggle();
+    });
+
+    $("#checkBrightnessPageModern .popup-option-modern").on("mouseover", () => {
+        if($("#checkBrightnessPageModern").hasClass("active") == true) {
             $("#brightnessSettings").stop().fadeIn();
         }
     });
 
-    $("#checkBrightnessPageModern").on("mouseout", () => {
+    $("#checkBrightnessPageModern .popup-option-modern").on("mouseout", () => {
         $("#brightnessSettings").stop().fadeOut();
     });
 
@@ -1127,8 +1169,8 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkBlueLightReductionFilterModern").on("click", function() {
-        if(!$(this).hasClass("active") == true) {
+    $("#checkBlueLightReductionFilterModern .popup-option-modern").on("click", () => {
+        if(!$("#checkBlueLightReductionFilterModern").hasClass("active") == true) {
             setSettingItem("blueLightReductionEnabled", "true");
             $("#blueLightReductionFilterSettings").stop().fadeIn();
         } else {
@@ -1136,13 +1178,17 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkBlueLightReductionFilterModern").on("mouseover", function() {
-        if($(this).hasClass("active") == true) {
+    $("#checkBlueLightReductionFilterModern .popup-option-modern-complement").on("click", () => {
+        $("#blueLightReductionFilterSettings").stop().fadeToggle();
+    });
+
+    $("#checkBlueLightReductionFilterModern .popup-option-modern").on("mouseover", () => {
+        if($("#checkBlueLightReductionFilterModern").hasClass("active") == true) {
             $("#blueLightReductionFilterSettings").stop().fadeIn();
         }
     });
 
-    $("#checkBlueLightReductionFilterModern").on("mouseout", () => {
+    $("#checkBlueLightReductionFilterModern .popup-option-modern").on("mouseout", () => {
         $("#blueLightReductionFilterSettings").stop().fadeOut();
     });
 
@@ -1313,29 +1359,9 @@ $(document).ready(() => {
     });
 
     async function displaySettings() {
-        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "popupTheme", "percentageBlueLightReduction", "archiveInfoLastShowed", "archiveInfoDisable"]);
+        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "percentageBlueLightReduction", "archiveInfoLastShowed", "archiveInfoDisable"]);
 
-        // Switch popup theme
-        if (result && result.popupTheme && result.popupTheme == "checkbox") {
-            $(".popup-option-container").hide();
-            $(".popup-option-container-classic").show();
-            $(".popup-option-container-modern").hide();
-            $("#popup-options").removeClass("popup-options-modern");
-            currentTheme = "checkbox";
-        } else if (result && result.popupTheme && result.popupTheme == "modern") {
-            $(".popup-option-container").hide();
-            $(".popup-option-container-classic").hide();
-            $(".popup-option-container-modern").show();
-            $("#popup-options").addClass("popup-options-modern");
-            currentTheme = "modern";
-        } else {
-            $(".popup-option-container").show();
-            $(".popup-option-container-classic").hide();
-            $(".popup-option-container-modern").hide();
-            $("#popup-options").removeClass("popup-options-modern");
-            currentTheme = "switch";
-        }
-
+        checkCurrentPopupTheme();
         toggleTheme(); // Toggle dark/light theme
         checkContrastMode();
         checkColorInvert();

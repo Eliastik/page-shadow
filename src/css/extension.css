@@ -650,31 +650,33 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     background-color: #F5F5F5;
     color: #212121;
     border-radius: 5px;
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
     align-items: center;
     text-align: center;
     padding: 8px;
     cursor: pointer;
 }
 
-.popup-option-modern:hover {
+.popup-option-modern:hover, .popup-option-modern-complement:hover {
     background-color: #E0E0E0;
 }
 
-.popup-option-modern:active {
+.popup-option-modern:active, .popup-option-modern-complement:active {
     background-color: #BDBDBD;
 }
 
-.popup-option-modern.active {
+.popup-option-container-modern.active > div {
     background-color: #03A9F4;
     border-color: #039BE5;
     color: #181717;
 }
 
-.popup-option-modern.active:hover {
+.popup-option-container-modern.active > div:hover {
     background-color: #039BE5;
 }
 
-.popup-option-modern.active:active {
+.popup-option-container-modern.active > div:active {
     background-color: #0288D1;
 }
 
@@ -706,6 +708,39 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     clear: both;
 }
 
-.popup-options-modern #themeDiv:before, .popup-options-modern #blueLightReductionFilterSettings:before {
-    left: 65px;
+.popup-options-modern #themeDiv:before, .popup-options-modern #brightnessSettings:before {
+    left: 35px;
+    right: none !important;
+}
+
+.popup-options-modern #invertPageColorsDiv:before, .popup-options-modern #blueLightReductionFilterSettings:before {
+    left: 150px;
+    right: none !important;
+}
+
+.popup-option-modern-complement {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    width: 100%;
+    border: 1px solid lightgray;
+    border-top: 0 !important;
+    background-color: #F5F5F5;
+    color: #212121;
+    border-radius: 0px !important;
+    border-bottom-left-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
+    text-align: center;
+    cursor: pointer;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.popup-option-modern-complement i {
+    font-size: 12px;
+}
+
+.popup-option-container-modern.without-complement .popup-option-modern {
+    border-radius: 5px !important;
+    height: 107px;
 }
