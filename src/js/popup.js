@@ -42,6 +42,7 @@ let i18nextLoaded = false;
 let selectedPreset = 1;
 let updateNotificationShowed = false;
 let archiveInfoShowed = false;
+let currentTheme = "checkbox";
 
 init_i18next("popup").then(() => translateContent());
 toggleTheme(); // Toggle dark/light theme
@@ -442,7 +443,9 @@ $(document).ready(() => {
         }
 
         if(result.pageShadowEnabled == "true") {
-            $("#themeDiv").stop().fadeIn();
+            if(currentTheme != "modern") {
+                $("#themeDiv").stop().fadeIn();
+            }
 
             if($("#checkAssomPage").is(":checked") == false) {
                 $("#checkAssomPage").prop("checked", true);
@@ -493,9 +496,20 @@ $(document).ready(() => {
     $("#checkAssomPageModern").on("click", function() {
         if(!$(this).hasClass("active") == true) {
             setSettingItem("pageShadowEnabled", "true");
+            $("#themeDiv").stop().fadeIn();
         } else {
             setSettingItem("pageShadowEnabled", "false");
         }
+    });
+
+    $("#checkAssomPageModern").on("mouseover", function() {
+        if($(this).hasClass("active") == true) {
+            $("#themeDiv").stop().fadeIn();
+        }
+    });
+
+    $("#checkAssomPageModern").on("mouseout", () => {
+        $("#themeDiv").stop().fadeOut();
     });
 
     $("#checkDisableImgBgColor").on("change", function() {
@@ -554,7 +568,9 @@ $(document).ready(() => {
             setSettingItem("invertBgColor", "true");
             checkColorInvert();
         } else if(result.invertPageColors == "true") {
-            $("#invertPageColorsDiv").stop().fadeIn();
+            if(currentTheme != "modern") {
+                $("#invertPageColorsDiv").stop().fadeIn();
+            }
 
             if($("#checkColorInvert").is(":checked") == false) {
                 $("#checkColorInvert").prop("checked", true);
@@ -653,9 +669,20 @@ $(document).ready(() => {
     $("#checkColorInvertModern").on("click", function() {
         if(!$(this).hasClass("active") == true) {
             setSettingItem("invertPageColors", "true");
+            $("#invertPageColorsDiv").stop().fadeIn();
         } else {
             setSettingItem("invertPageColors", "false");
         }
+    });
+
+    $("#checkColorInvertModern").on("mouseover", function() {
+        if($(this).hasClass("active") == true) {
+            $("#invertPageColorsDiv").stop().fadeIn();
+        }
+    });
+
+    $("#checkColorInvertModern").on("mouseout", () => {
+        $("#invertPageColorsDiv").stop().fadeOut();
     });
 
     $("#checkEntirePageInvert").on("change", function() {
@@ -966,7 +993,10 @@ $(document).ready(() => {
             }
 
             elLumB.style.display = "block";
-            $("#brightnessSettings").stop().fadeIn();
+
+            if(currentTheme != "modern") {
+                $("#brightnessSettings").stop().fadeIn();
+            }
 
             if($("#checkBrightnessPage").is(":checked") == false) {
                 $("#checkBrightnessPage").prop("checked", true);
@@ -1014,7 +1044,10 @@ $(document).ready(() => {
                 elBlueLightReduction.style.opacity = result.percentageBlueLightReduction / 100;
             }
 
-            $("#blueLightReductionFilterSettings").stop().fadeIn();
+            if(currentTheme != "modern") {
+                $("#blueLightReductionFilterSettings").stop().fadeIn();
+            }
+
             elBlueLightReduction.style.display = "block";
 
             if($("#checkBlueLightReductionFilter").is(":checked") == false) {
@@ -1062,9 +1095,20 @@ $(document).ready(() => {
     $("#checkBrightnessPageModern").on("click", function() {
         if(!$(this).hasClass("active") == true) {
             setSettingItem("pageLumEnabled", "true");
+            $("#brightnessSettings").stop().fadeIn();
         } else {
             setSettingItem("pageLumEnabled", "false");
         }
+    });
+
+    $("#checkBrightnessPageModern").on("mouseover", function() {
+        if($(this).hasClass("active") == true) {
+            $("#brightnessSettings").stop().fadeIn();
+        }
+    });
+
+    $("#checkBrightnessPageModern").on("mouseout", () => {
+        $("#brightnessSettings").stop().fadeOut();
     });
 
     $("#checkBlueLightReductionFilter").on("change", function() {
@@ -1086,9 +1130,20 @@ $(document).ready(() => {
     $("#checkBlueLightReductionFilterModern").on("click", function() {
         if(!$(this).hasClass("active") == true) {
             setSettingItem("blueLightReductionEnabled", "true");
+            $("#blueLightReductionFilterSettings").stop().fadeIn();
         } else {
             setSettingItem("blueLightReductionEnabled", "false");
         }
+    });
+
+    $("#checkBlueLightReductionFilterModern").on("mouseover", function() {
+        if($(this).hasClass("active") == true) {
+            $("#blueLightReductionFilterSettings").stop().fadeIn();
+        }
+    });
+
+    $("#checkBlueLightReductionFilterModern").on("mouseout", () => {
+        $("#blueLightReductionFilterSettings").stop().fadeOut();
     });
 
     $("#sliderBrightness").on("change", () => {
@@ -1266,16 +1321,19 @@ $(document).ready(() => {
             $(".popup-option-container-classic").show();
             $(".popup-option-container-modern").hide();
             $("#popup-options").removeClass("popup-options-modern");
+            currentTheme = "checkbox";
         } else if (result && result.popupTheme && result.popupTheme == "modern") {
             $(".popup-option-container").hide();
             $(".popup-option-container-classic").hide();
             $(".popup-option-container-modern").show();
             $("#popup-options").addClass("popup-options-modern");
+            currentTheme = "modern";
         } else {
             $(".popup-option-container").show();
             $(".popup-option-container-classic").hide();
             $(".popup-option-container-modern").hide();
             $("#popup-options").removeClass("popup-options-modern");
+            currentTheme = "switch";
         }
 
         toggleTheme(); // Toggle dark/light theme
@@ -1348,4 +1406,16 @@ $(document).ready(() => {
             displaySettings();
         });
     }
+
+    $(".popup-advanced-option-wrapper").on("mouseover", function() {
+        if(currentTheme == "modern") {
+            $(this).find("> div").stop().fadeIn();
+        }
+    });
+
+    $(".popup-advanced-option-wrapper").on("mouseout", function() {
+        if(currentTheme == "modern") {
+            $(this).find("> div").stop().fadeOut();
+        }
+    });
 });

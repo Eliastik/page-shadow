@@ -676,6 +676,34 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     background-color: #0288D1;
 }
 
-.popup-advanced-option {
-    display: none !important;
+.popup-options-modern .popup-advanced-option-wrapper {
+    position: absolute;
+    right: 0;
+    width: 95%;
+    margin-right: 8px;
+    margin-top: -8px;
+}
+
+.popup-options-modern .popup-advanced-option {
+    border-radius: 3px;
+    margin-top: 8px;
+    background-color: #e7e7e7;
+    width: 100%;
+}
+
+.popup-options-modern .popup-advanced-option:before {
+    content: '';
+    position: absolute;
+    right: 80px;
+    top: 0px;
+    width: 0;
+    height: 0;
+    border-left: 16px solid transparent;
+    border-right: 16px solid transparent;
+    border-bottom: 16px solid #e7e7e7;
+    clear: both;
+}
+
+.popup-options-modern #themeDiv:before, .popup-options-modern #blueLightReductionFilterSettings:before {
+    left: 65px;
 }

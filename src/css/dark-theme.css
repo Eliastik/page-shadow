@@ -221,6 +221,13 @@ select:focus, select.form-control:focus {
     color: #e6ebf0;
 }
 
+.popup-options-modern .popup-advanced-option {
+    border-radius: 3px;
+    margin-top: 8px;
+    background-color: #303134;
+    width: 100%;
+}
+
 .popup-option-modern:hover {
     background-color: #353639;
 }
@@ -241,4 +248,8 @@ select:focus, select.form-control:focus {
 
 .popup-option-modern.active:active {
     background-color: #0087c5;
+}
+
+.popup-options-modern .popup-advanced-option:before {
+    border-bottom-color: #303134;
 }

@@ -91,14 +91,16 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 <span data-i18n="container.contrast"></span>
                             </div>
                         </div>
-                        <div class="well well-sm well-nmb popup-advanced-option" id="themeDiv" style="display: none;">
-                            <label for="themeSelect" data-i18n="container.themeSelect"></label>
-                            <select id="themeSelect" style="min-width: 80px;"></select>
-                            <i class="fa fa-question-circle helpIconMin" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.tileTheme"></i>
-                            <div id="previsualisationTheme">
-                                <span data-i18n="container.previsualisationTheme"></span> <div id="previsualisationDiv"><span data-i18n="[html]container.previsualisationThemeText"></span></div>
+                        <div class="popup-advanced-option-wrapper">
+                            <div class="well well-sm well-nmb popup-advanced-option" id="themeDiv" style="display: none;">
+                                <label for="themeSelect" data-i18n="container.themeSelect"></label>
+                                <select id="themeSelect" style="min-width: 80px;"></select>
+                                <i class="fa fa-question-circle helpIconMin" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.tileTheme"></i>
+                                <div id="previsualisationTheme">
+                                    <span data-i18n="container.previsualisationTheme"></span> <div id="previsualisationDiv"><span data-i18n="[html]container.previsualisationThemeText"></span></div>
+                                </div>
+                                <input type="checkbox" id="checkDisableImgBgColor" /> <label for="checkDisableImgBgColor"  data-i18n="container.disableImgBgColor"></label>
                             </div>
-                            <input type="checkbox" id="checkDisableImgBgColor" /> <label for="checkDisableImgBgColor"  data-i18n="container.disableImgBgColor"></label>
                         </div>
                     </div>
                     <div>
@@ -128,8 +130,10 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 <span data-i18n="container.colorInvert"></span>
                             </div>
                         </div>
-                        <div class="well well-sm well-nmb popup-advanced-option" id="invertPageColorsDiv" style="display: none;">
-                            <div class="checkbox-group"><input type="checkbox" id="checkImageInvert" /> <label for="checkImageInvert"  data-i18n="container.imageInvert"></label></div> &nbsp; <div class="checkbox-group"><input type="checkbox" id="checkBgColorInvert" /> <label for="checkBgColorInvert" data-i18n="container.bgColorInvert"></label></div> &nbsp; <div class="checkbox-group"><input type="checkbox" id="checkEntirePageInvert" /> <label for="checkEntirePageInvert" data-i18n="container.entirePageInvert"></label></div> &nbsp; <div class="checkbox-group"><input type="checkbox" id="checkVideoInvert" /> <label for="checkVideoInvert" data-i18n="container.videoInvert"></label></div> &nbsp; <div class="checkbox-group"><input type="checkbox" id="checkSelectiveInvert" /> <label for="checkSelectiveInvert" data-i18n="container.selectiveInvert"></label></div> <i class="fa fa-question-circle helpIconMin" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.selectiveInvertHelp"></i>
+                        <div class="popup-advanced-option-wrapper">
+                            <div class="well well-sm well-nmb popup-advanced-option" id="invertPageColorsDiv" style="display: none;">
+                                <div class="checkbox-group"><input type="checkbox" id="checkImageInvert" /> <label for="checkImageInvert"  data-i18n="container.imageInvert"></label></div> &nbsp; <div class="checkbox-group"><input type="checkbox" id="checkBgColorInvert" /> <label for="checkBgColorInvert" data-i18n="container.bgColorInvert"></label></div> &nbsp; <div class="checkbox-group"><input type="checkbox" id="checkEntirePageInvert" /> <label for="checkEntirePageInvert" data-i18n="container.entirePageInvert"></label></div> &nbsp; <div class="checkbox-group"><input type="checkbox" id="checkVideoInvert" /> <label for="checkVideoInvert" data-i18n="container.videoInvert"></label></div> &nbsp; <div class="checkbox-group"><input type="checkbox" id="checkSelectiveInvert" /> <label for="checkSelectiveInvert" data-i18n="container.selectiveInvert"></label></div> <i class="fa fa-question-circle helpIconMin" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.selectiveInvertHelp"></i>
+                            </div>
                         </div>
                     </div>
                     <div>
@@ -185,9 +189,11 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 <span data-i18n="container.brightness"></span>
                             </div>
                         </div>
-                        <div class="well well-sm well-nmb popup-advanced-option" id="brightnessSettings" style="display: none;">
-                            <label for="sliderBrightness" data-i18n="container.percentage"></label>
-                            <input id="sliderBrightness" data-slider-id="sliderBrightness" type="text" data-slider-step="1" data-tooltip="show" />
+                        <div class="popup-advanced-option-wrapper">
+                            <div class="well well-sm well-nmb popup-advanced-option" id="brightnessSettings" style="display: none;">
+                                <label for="sliderBrightness" data-i18n="container.percentage"></label>
+                                <input id="sliderBrightness" data-slider-id="sliderBrightness" type="text" data-slider-step="1" data-tooltip="show" />
+                            </div>
                         </div>
                     </div>
                     <div>
@@ -215,13 +221,15 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 <span data-i18n="container.blueLightReduction"></span>
                             </div>
                         </div>
-                        <div class="well well-sm well-nmb popup-advanced-option" id="blueLightReductionFilterSettings" style="display: none;">
-                            <label for="sliderBlueLightReduction" data-i18n="container.percentageBlueLight"></label>
-                            <input id="sliderBlueLightReduction" data-slider-id="sliderBlueLightReduction" type="text" data-slider-step="1" data-tooltip="show" />
-                            <div id="tempSelectDiv">
-                                <label for="tempSelect" data-i18n="container.tempSelect"></label>
-                                <select id="tempSelect" style="min-width: 80px;"></select>
-                                <i class="fa fa-question-circle helpIconMin" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleTemp"></i>
+                        <div class="popup-advanced-option-wrapper">
+                            <div class="well well-sm well-nmb popup-advanced-option" id="blueLightReductionFilterSettings" style="display: none;">
+                                <label for="sliderBlueLightReduction" data-i18n="container.percentageBlueLight"></label>
+                                <input id="sliderBlueLightReduction" data-slider-id="sliderBlueLightReduction" type="text" data-slider-step="1" data-tooltip="show" />
+                                <div id="tempSelectDiv">
+                                    <label for="tempSelect" data-i18n="container.tempSelect"></label>
+                                    <select id="tempSelect" style="min-width: 80px;"></select>
+                                    <i class="fa fa-question-circle helpIconMin" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleTemp"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
