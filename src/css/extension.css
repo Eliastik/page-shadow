@@ -621,21 +621,23 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+    margin-left: -20px;
+    margin-right: -20px;
 }
 
 .popup-options-modern > div {
-    max-width: 160px;
-    width: 160px;
+    max-width: 112px;
+    width: 112px;
 }
 
 .popup-option-container-modern {
     padding: 8px;
-    font-size: 11.5px;
+    font-size: 11.25px;
     line-height: 1.25;
 }
 
 .popup-option-container-modern i {
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .popup-option-modern {
@@ -643,7 +645,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     justify-content: space-around;
     flex-direction: column;
     width: 100%;
-    height: 80px;
+    height: 90px;
     border: 1px solid lightgray;
     background-color: #F5F5F5;
     color: #212121;
