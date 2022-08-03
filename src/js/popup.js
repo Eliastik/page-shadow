@@ -734,7 +734,7 @@ $(document).ready(() => {
             $("#checkAttenuateImageColorModern").addClass("active");
         } else if(result.attenuateImageColor !== "true" && $("#checkAttenuateImageColor").is(":checked") == true) {
             $("#checkAttenuateImageColor").prop("checked", false);
-            $("#checkAttenuateImageColorCheckbox").prop("checked", true);
+            $("#checkAttenuateImageColorCheckbox").prop("checked", false);
             $("#checkAttenuateImageColorModern").removeClass("active");
         }
     }
