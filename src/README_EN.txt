@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.9.1 (12/26/2021)
+* Latest version: 2.10 (8/4/2022)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -32,6 +32,32 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.10 (8/4/2022) :
+
+* Page Shadow has undergone a redesign of its graphical interface. Many new features are available:
+    * Added a dark mode for the entire Page Shadow interface. The dark mode is automatically enabled according to the device settings.
+    * Added 2 new interface modes for the popup: "Switches and icons" mode (enabled by default) and "Modern" (still in beta, and will be the default interface of the Page Shadow popup on the next version)
+    * The Advanced settings interface has undergone a total overhaul: now organized in the form of tabs, which allows easier navigation in the settings
+    * Dark/light mode and popup interface theme can be set in Advanced settings
+* Separation of "Night mode" from "Decrease page brightness" function: "Night mode" is now a separate function, named "Blue light reduction filter"
+    * It's now possible to combine the 2 functions
+    * Existing user settings will be automatically migrated to this new setting (including presets)
+* Added the "Attenuate image color" function to avoid displaying colors that are too bright;
+* It's now possible to automatically archive Page Shadow settings in the Cloud, at a configurable interval (by default, this feature is disabled);
+* A warning is now displayed to warn of the importance of making an archive of the extension settings;
+* Optimization of downloading and automatic updating of filters: they are updated only if necessary (date of last update of the file on the server). If an update is necessary, a message is displayed at the level of the list of filters;
+* Added advanced options for advanced users in Advanced settings;
+* Bug fixes and technical improvements:
+    * Fixed a bug that could occur when selecting a custom theme and then a classic (non-custom) theme: the custom theme remained applied to the other tabs;
+    * Fixed a rare bug with some websites, where the extension had difficulty applying the "Increase page contrast" function (websites forcing reset of some HTML attributes)
+        * Added "delayApplyMutationObserversSafeTimer" filter functionality to fix this issue;
+    * Fixed a bug with some websites and the application of some filters (forceDisableDefault...);
+    * Fixed applying some filters to the body element;
+    * Optimized extension size;
+    * Fixed other minor bugs and minor performance optimizations;
+    * Font Awesome is now managed with NPM;
+    * Updated dependencies.
 
 #### Version 2.9.1 (12/26/2021):
 * Improved performance when enabling/disabling Page Shadow and when changing settings

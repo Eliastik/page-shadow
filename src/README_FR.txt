@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.9.1 (26/12/2021)
+* Version actuelle : 2.10 (04/08/2022)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -32,6 +32,31 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+#### Version 2.10 (04/08/2022) :
+* Page Shadow a subit une refonte de son interface graphique. De nombreuses nouveautés sont disponibles :
+    * Ajout d'un mode sombre pour toute l'interface de Page Shadow. Il s'active automatiquement selon les paramètres de l'appareil.
+    * Ajout de 2 nouveaux modes d'interface pour la popup : le mode "Switches et icônes" (activé par défaut) et "Moderne" (encore en bêta, et sera l'interface par défaut de la popup de Page Shadow sur la prochaine version)
+    * L'interface des Paramètres avancées a subit une refonte totale : elle est désormais organisée sous forme d'onglets, ce qui permet une navigation plus facile dans les paramètres
+    * Le mode sombre/claire et le thème de l'interface de la popup sont paramétrables dans les Paramètres avancés
+* Séparation du "Mode nuit" de la fonction "Baisser la luminosité de la page" : le "Mode nuit" est désormais une fonction à part, nommée "Filtre de réduction de la lumière bleue"
+    * Cela permet de combiner les 2 fonctions
+    * Les paramètres des utilisateurs existants seront automatiquement migrés vers ce nouveau fonctionnement (y compris les pré-réglages)
+* Ajout de la fonction "Atténuer la couleur des images" permettant d'éviter d'afficher des couleurs trop vives ;
+* Il est désormais possible d'archiver automatiquement les paramètres de Page Shadow dans le Cloud, à un intervalle paramétrable (par défaut, cette fonctionnalité est désactivée) ;
+* Un avertissement est désormais affiché pour avertir de l'importance d'effectuer une archive de ses paramètres de l'extension ;
+* Optimisation du téléchargement et de la mise à jour automatique des filtres : ceux-ci sont mis à jour uniquement si nécessaire (date de dernière mise à jour du fichier sur le serveur). Si une mise à jour est nécessaire, un message est affiché au niveau de la liste des filtres ;
+* Ajout d'options avancées pour les utilisateurs avertis dans les Paramètres avancés ;
+* Corrections de bugs et améliorations techniques :
+    * Correction d'un bug qui pouvait survenir lorsque l'on sélectionnait un thème personnalisé puis un thème classique (non personnalisé) : le thème personnalisé restait appliqué aux autres onglets ;
+    * Correction d'un rare bug avec certains sites, où l'extension avait des difficultés à appliquer la fonction "Augmenter le contraste" (les sites web forçant la réinitialisation de certains attributs HTML)
+        * Ajout de la fonctionnalité de filtre "delayApplyMutationObserversSafeTimer" pour corriger ce problème ;
+    * Correction d'un bug avec certains sites web et l'application de certains filtres (forceDisableDefault...) ;
+    * Correction de l'application de certains filtres à l'élément body ;
+    * Optimisation de la taille de l'extension ;
+    * Correction d'autres bugs mineurs et optimisation mineure des performances ;
+    * Gestion de Font Awesome avec NPM ;
+    * Mise à jour des dépendances.
 
 #### Version 2.9.1 (26/12/2021) :
 * Amélioration des performances lors de l'activation/désactivation de Page Shadow et lors de la modification des paramètres
