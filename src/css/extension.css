@@ -635,7 +635,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 }
 
 .popup-option-container-modern i {
-    font-size: 22px;
+    font-size: 20px;
 }
 
 .popup-option-modern {
@@ -664,8 +664,8 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 
 .popup-option-modern.active {
     background-color: #03A9F4;
-    border-color: #03A9F4;
-    color: #212121;
+    border-color: #039BE5;
+    color: #181717;
 }
 
 .popup-option-modern.active:hover {

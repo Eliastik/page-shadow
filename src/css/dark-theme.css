@@ -214,3 +214,31 @@ select:focus, select.form-control:focus {
     background: rgb(125 125 125 / 75%);
     box-shadow: inset 0px 0px 10px rgb(125 125 125 / 50%);
 }
+
+.popup-option-modern {
+    border-color: #353639;
+    background-color: #303134;
+    color: #e6ebf0;
+}
+
+.popup-option-modern:hover {
+    background-color: #353639;
+}
+
+.popup-option-modern:active {
+    background-color: #46474a;
+}
+
+.popup-option-modern.active {
+    background-color: #016c9e;
+    border-color: #016c9e;
+    color: #e6ebf0;
+}
+
+.popup-option-modern.active:hover {
+    background-color: #0179b0;
+}
+
+.popup-option-modern.active:active {
+    background-color: #0087c5;
+}
