@@ -1452,8 +1452,10 @@ $(document).ready(() => {
         } else if(!updateNotificationShowed && !archiveInfoShowed) {
             const archiveInfoLastShowed = !result.archiveInfoLastShowed ? 0 : result.archiveInfoLastShowed;
 
-            if(archiveInfoLastShowed + (archiveInfoShowInterval * 60 * 60 * 24 * 1000) <= Date.now() && result.archiveInfoDisable !== "true") {
+            if(archiveInfoLastShowed > 0 && archiveInfoLastShowed + (archiveInfoShowInterval * 60 * 60 * 24 * 1000) <= Date.now() && result.archiveInfoDisable !== "true") {
                 $("#archiveInfo").modal("show");
+                setSettingItem("archiveInfoLastShowed", Date.now());
+            } else {
                 setSettingItem("archiveInfoLastShowed", Date.now());
             }
 
