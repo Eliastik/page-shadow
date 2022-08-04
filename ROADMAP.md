@@ -6,7 +6,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 ### Common
 
-* [ ] Update to extension manifest v3
+* [x] Update to extension manifest v3
 * [ ] FAQ for common questions
 
 ### 2.10
