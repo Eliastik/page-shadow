@@ -207,6 +207,8 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets) {
 
     if(result && result.autoBackupCloudInterval) {
         $("#autoBackupCloudSelect").val(result.autoBackupCloudInterval);
+    } else {
+        $("#autoBackupCloudSelect").val("0");
     }
 
     if(result && result.lastAutoBackupFailed == "true") {
