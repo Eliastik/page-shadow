@@ -762,13 +762,25 @@ $(document).ready(() => {
     async function checkAttenuateImageColor() {
         const result = await browser.storage.local.get("attenuateImageColor");
 
-        if(result.attenuateImageColor == "true" && $("#checkAttenuateImageColor").is(":checked") == false) {
-            $("#checkAttenuateImageColor").prop("checked", true);
-            $("#checkAttenuateImageColorCheckbox").prop("checked", true);
+        if(result.attenuateImageColor == "true") {
+            if($("#checkAttenuateImageColor").is(":checked") == false) {
+                $("#checkAttenuateImageColor").prop("checked", true);
+            }
+
+            if($("#checkAttenuateImageColorCheckbox").is(":checked") == false) {
+                $("#checkAttenuateImageColorCheckbox").prop("checked", true);
+            }
+
             $("#checkAttenuateImageColorModern").addClass("active");
-        } else if(result.attenuateImageColor !== "true" && $("#checkAttenuateImageColor").is(":checked") == true) {
-            $("#checkAttenuateImageColor").prop("checked", false);
-            $("#checkAttenuateImageColorCheckbox").prop("checked", false);
+        } else {
+            if($("#checkAttenuateImageColor").is(":checked") == true) {
+                $("#checkAttenuateImageColor").prop("checked", false);
+            }
+
+            if($("#checkAttenuateImageColorCheckbox").is(":checked") == true) {
+                $("#checkAttenuateImageColorCheckbox").prop("checked", false);
+            }
+
             $("#checkAttenuateImageColorModern").removeClass("active");
         }
     }
@@ -800,13 +812,25 @@ $(document).ready(() => {
     async function checkAutoEnable() {
         const result = await browser.storage.local.get("autoEnable");
 
-        if(result.autoEnable == "true" && $("#autoEnable").is(":checked") == false) {
-            $("#autoEnable").prop("checked", true);
-            $("#autoEnableCheckbox").prop("checked", true);
+        if(result.autoEnable == "true") {
+            if($("#autoEnable").is(":checked") == false) {
+                $("#autoEnable").prop("checked", true);
+            }
+
+            if($("#autoEnableCheckbox").is(":checked") == false) {
+                $("#autoEnableCheckbox").prop("checked", true);
+            }
+
             $("#autoEnableModern").addClass("active");
-        } else if(result.autoEnable !== "true" && $("#autoEnable").is(":checked") == true) {
-            $("#autoEnable").prop("checked", false);
-            $("#autoEnableCheckbox").prop("checked", false);
+        } else {
+            if($("#autoEnable").is(":checked") == true) {
+                $("#autoEnable").prop("checked", false);
+            }
+
+            if($("#autoEnableCheckbox").is(":checked") == true) {
+                $("#autoEnableCheckbox").prop("checked", false);
+            }
+
             $("#autoEnableModern").removeClass("active");
         }
     }
@@ -982,13 +1006,25 @@ $(document).ready(() => {
     async function checkLiveSettings() {
         const result = await browser.storage.local.get("liveSettings");
 
-        if(result.liveSettings == "true" && $("#liveSettings").is(":checked") == false) {
-            $("#liveSettings").prop("checked", true);
-            $("#liveSettingsCheckbox").prop("checked", true);
+        if(result.liveSettings == "true") {
+            if($("#liveSettings").is(":checked") == false) {
+                $("#liveSettings").prop("checked", true);
+            }
+
+            if($("#liveSettingsCheckbox").is(":checked") == false) {
+                $("#liveSettingsCheckbox").prop("checked", true);
+            }
+
             $("#liveSettingsModern").addClass("active");
-        } else if(result.liveSettings !== "true" && $("#liveSettings").is(":checked") == true) {
-            $("#liveSettings").prop("checked", false);
-            $("#liveSettingsCheckbox").prop("checked", false);
+        } else {
+            if($("#liveSettings").is(":checked") == true) {
+                $("#liveSettings").prop("checked", false);
+            }
+
+            if($("#liveSettingsCheckbox").is(":checked") == true) {
+                $("#liveSettingsCheckbox").prop("checked", false);
+            }
+
             $("#liveSettingsModern").removeClass("active");
         }
     }

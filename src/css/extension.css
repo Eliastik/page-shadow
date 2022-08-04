@@ -682,9 +682,9 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 
 .popup-options-modern .popup-advanced-option-wrapper {
     position: absolute;
-    right: 0;
-    width: 95%;
-    margin-right: 8px;
+    left: 0;
+    width: 334px;
+    margin-left: 8px;
     margin-top: -8px;
 }
 
@@ -709,12 +709,12 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 }
 
 .popup-options-modern #themeDiv:before, .popup-options-modern #brightnessSettings:before {
-    left: 35px;
+    left: 39px;
     right: none !important;
 }
 
 .popup-options-modern #invertPageColorsDiv:before, .popup-options-modern #blueLightReductionFilterSettings:before {
-    left: 150px;
+    left: 151px;
     right: none !important;
 }
 
