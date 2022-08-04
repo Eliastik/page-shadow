@@ -1455,7 +1455,7 @@ $(document).ready(() => {
             if(archiveInfoLastShowed > 0 && archiveInfoLastShowed + (archiveInfoShowInterval * 60 * 60 * 24 * 1000) <= Date.now() && result.archiveInfoDisable !== "true") {
                 $("#archiveInfo").modal("show");
                 setSettingItem("archiveInfoLastShowed", Date.now());
-            } else {
+            } else if(archiveInfoLastShowed <= 0) {
                 setSettingItem("archiveInfoLastShowed", Date.now());
             }
 
