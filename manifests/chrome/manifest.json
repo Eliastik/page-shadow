@@ -15,10 +15,6 @@
     },
     "description": "__MSG_extensionDescription__",
     "author": "Eliastik",
-    "developer": {
-        "name": "Eliastik",
-        "url": "http://www.eliastiksofts.com/page-shadow/"
-    },
     "homepage_url": "http://www.eliastiksofts.com/page-shadow/",
     "browser_action": {
         "default_title": "Page Shadow",
