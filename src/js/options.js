@@ -719,23 +719,7 @@ async function displayPresetInfos(nb) {
             divCol.setAttribute("class", "col-lg-8 col-sm-8");
             const span = document.createElement("span");
 
-            let value = presetData[setting];
-
-            if(presetData["nightModeEnabled"] == "true" && presetData["pageLumEnabled"] == "true") {
-                if(setting == "blueLightReductionEnabled") {
-                    value = "true";
-                } else if(setting == "percentageBlueLightReduction") {
-                    value = presetData["pourcentageLum"];
-                } else if(setting == "pageLumEnabled") {
-                    value = "false";
-                }
-            } else if(!value) {
-                if(setting == "blueLightReductionEnabled") {
-                    value = "false";
-                } else if(setting == "percentageBlueLightReduction") {
-                    value = presetData["pourcentageLum"];
-                }
-            }
+            const value = presetData[setting];
 
             if(!value) {
                 span.textContent = i18next.t("modal.presets.undefined");

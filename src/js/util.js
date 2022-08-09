@@ -669,6 +669,10 @@ async function getPresetData(nb) {
         const namePreset = nb;
         const preset = presets[namePreset];
 
+        if(!preset || Object.keys(preset).length <= 0) {
+            return preset;
+        }
+
         const settingsNames = JSON.parse(JSON.stringify(settingsToSavePresets));
 
         for(const key of settingsNames) {
@@ -677,6 +681,14 @@ async function getPresetData(nb) {
                     preset[key] = defaultSettings[key];
                 }
             }
+        }
+
+        // Migrate Night mode filter
+        if(preset["nightModeEnabled"] && preset["pageLumEnabled"] && preset["nightModeEnabled"] == "true" && preset["pageLumEnabled"] == "true") {
+            preset["pageLumEnabled"] = "false";
+            preset["blueLightReductionEnabled"] = "true";
+            preset["percentageBlueLightReduction"] = preset["pourcentageLum"];
+            preset["nightModeEnabled"] = undefined;
         }
 
         return preset;
