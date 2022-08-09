@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem, migrateSettings } from "./storage.js";
 import browser from "webextension-polyfill";
-import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
+import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings } from "./constants.js";
 
 function in_array(needle, haystack) {
     for(const key in haystack) {
@@ -624,11 +624,16 @@ async function loadPreset(nb) {
         const preset = presets[namePreset];
         let settingsRestored = 0;
 
-        for(const key in preset) {
+        const settingsNames = JSON.parse(JSON.stringify(settingsToSavePresets));
+        settingsNames.push("nightModeEnabled");
+
+        for(const key of settingsNames) {
             if(typeof(key) === "string") {
-                if(Object.prototype.hasOwnProperty.call(preset, key) && (settingsToSavePresets.indexOf(key) !== -1 || key == "nightModeEnabled")) {
+                if(Object.prototype.hasOwnProperty.call(preset, key)) {
                     await setSettingItem(key, preset[key]);
                     settingsRestored++;
+                } else {
+                    await setSettingItem(key, defaultSettings[key]); // Restore default setting
                 }
             }
         }
@@ -663,6 +668,16 @@ async function getPresetData(nb) {
 
         const namePreset = nb;
         const preset = presets[namePreset];
+
+        const settingsNames = JSON.parse(JSON.stringify(settingsToSavePresets));
+
+        for(const key of settingsNames) {
+            if(typeof(key) === "string") {
+                if(!Object.prototype.hasOwnProperty.call(preset, key)) {
+                    preset[key] = defaultSettings[key];
+                }
+            }
+        }
 
         return preset;
     } catch(e) {

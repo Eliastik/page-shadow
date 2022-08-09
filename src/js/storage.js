@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { extensionVersion, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, defaultPresets, defaultCustomThemes, defaultFilters, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue } from "./constants.js";
+import { extensionVersion, defaultSettings, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingNames, defaultCustomThemes } from "./constants.js";
 import browser from "webextension-polyfill";
 
 function setSettingItem(name, value) {
@@ -52,56 +52,8 @@ async function checkFirstLoad() {
 }
 
 async function setFirstSettings() {
-    const updateNotification = {};
-    updateNotification[extensionVersion] = true;
-
     // Set default settings values
-    await browser.storage.local.set({
-        "pageShadowEnabled": "false",
-        "theme": "1",
-        "pageLumEnabled": "false",
-        "pourcentageLum": (brightnessDefaultValue * 100).toString(),
-        "sitesInterditPageShadow": "",
-        "liveSettings": "true",
-        "whiteList": "false",
-        "colorTemp": "5",
-        "colorInvert": "false",
-        "invertPageColors": "false",
-        "invertImageColors": "true",
-        "invertEntirePage": "false",
-        "invertVideoColors": "false",
-        "selectiveInvert": "false",
-        "invertBgColor": "true",
-        "globallyEnable": "true",
-        "customThemeInfoDisable": "false",
-        "autoEnable": "false",
-        "autoEnableHourFormat": defaultAutoEnableHourFormat,
-        "hourEnable": defaultHourEnable,
-        "minuteEnable": defaultMinuteEnable,
-        "hourEnableFormat": defaultHourEnableFormat,
-        "hourDisable": defaultHourDisable,
-        "minuteDisable": defaultMinuteDisable,
-        "hourDisableFormat": defaultHourDisableFormat,
-        "disableImgBgColor": "false",
-        "presets": defaultPresets,
-        "customThemes": defaultCustomThemes,
-        "filtersSettings": defaultFilters,
-        "customFilter": "",
-        "defaultLoad": "0",
-        "updateNotification": updateNotification,
-        "interfaceDarkTheme": defaultInterfaceDarkTheme,
-        "popupTheme": defaultPopupTheme,
-        "advancedOptionsFiltersSettings": {},
-        "blueLightReductionEnabled": "false",
-        "percentageBlueLightReduction": percentageBlueLightDefaultValue,
-        "archiveInfoLastShowed": -1,
-        "archiveInfoDisable": "false",
-        "autoBackupCloudInterval": 0,
-        "lastAutoBackupCloud": -1,
-        "lastAutoBackupFailed": "false",
-        "attenuateImageColor": "false"
-    });
-
+    await browser.storage.local.set(defaultSettings);
     return true;
 }
 

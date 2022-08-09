@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-const extensionVersion = "2.10-release-candidate";
-const versionDate = new Date(2022, 8, 4);
+const extensionVersion = "2.10-RC2";
+const versionDate = new Date(2022, 8, 9);
 const nbThemes = 16; // nb of themes for the function Increase the contrast (used globally in the extension)
 const colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"]; // color temperatures available for the function Night Mode (used globally in the extension)
 const minBrightnessPercentage = 0; // the minimum percentage of brightness
@@ -43,7 +43,8 @@ const settingsToSavePresets = ["pageShadowEnabled", "theme", "disableImgBgColor"
 const nbPresets = 10;
 const defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}};
 const nbCustomThemesSlots = 5;
-const defaultCustomThemes = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}};
+const defaultCustomThemes = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
+// Default filters object
 const defaultFilters = {
     "filters": [
         {
@@ -133,7 +134,7 @@ const defaultFilters = {
     "enableAutoUpdate": true,
     "lastFailedUpdate": -1
 };
-const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.9.1.php";
+const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.10.php";
 const regexpDetectionPattern = /^((.*)\/(?:[^\\]|\\.)*?\/)(\|)/;
 const regexpDetectionPatternHighlight = /^(\/(?:[^\\]|\\.)*?\/)(\|)/;
 const opacityDetectedAsTransparentThresholdDefault = 0.1;
@@ -178,4 +179,53 @@ const failedUpdateAutoReupdateDelay = 5 * 60 * 1000; // ms
 const defaultInterfaceDarkTheme = "auto"; // auto/on/off
 const defaultPopupTheme = "switch"; // switch/classic
 
-export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, regexpDetectionPatternHighlight, ignoredElementsContentScript, failedUpdateAutoReupdateDelay, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue, archiveInfoShowInterval };
+// Default settings
+const updateNotification = {};
+updateNotification[extensionVersion] = true;
+const defaultSettings = {
+    "pageShadowEnabled": "false",
+    "theme": "1",
+    "pageLumEnabled": "false",
+    "pourcentageLum": (brightnessDefaultValue * 100).toString(),
+    "sitesInterditPageShadow": "",
+    "liveSettings": "true",
+    "whiteList": "false",
+    "colorTemp": "5",
+    "colorInvert": "false",
+    "invertPageColors": "false",
+    "invertImageColors": "true",
+    "invertEntirePage": "false",
+    "invertVideoColors": "false",
+    "selectiveInvert": "false",
+    "invertBgColor": "true",
+    "globallyEnable": "true",
+    "customThemeInfoDisable": "false",
+    "autoEnable": "false",
+    "autoEnableHourFormat": defaultAutoEnableHourFormat,
+    "hourEnable": defaultHourEnable,
+    "minuteEnable": defaultMinuteEnable,
+    "hourEnableFormat": defaultHourEnableFormat,
+    "hourDisable": defaultHourDisable,
+    "minuteDisable": defaultMinuteDisable,
+    "hourDisableFormat": defaultHourDisableFormat,
+    "disableImgBgColor": "false",
+    "presets": defaultPresets,
+    "customThemes": defaultCustomThemes,
+    "filtersSettings": defaultFilters,
+    "customFilter": "",
+    "defaultLoad": "0",
+    "updateNotification": updateNotification,
+    "interfaceDarkTheme": defaultInterfaceDarkTheme,
+    "popupTheme": defaultPopupTheme,
+    "advancedOptionsFiltersSettings": {},
+    "blueLightReductionEnabled": "false",
+    "percentageBlueLightReduction": (percentageBlueLightDefaultValue * 100).toString(),
+    "archiveInfoLastShowed": -1,
+    "archiveInfoDisable": "false",
+    "autoBackupCloudInterval": 0,
+    "lastAutoBackupCloud": -1,
+    "lastAutoBackupFailed": "false",
+    "attenuateImageColor": "false"
+};
+
+export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, regexpDetectionPatternHighlight, ignoredElementsContentScript, failedUpdateAutoReupdateDelay, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue, archiveInfoShowInterval, defaultSettings };
