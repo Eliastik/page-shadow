@@ -42,7 +42,7 @@ Or you can compile it yourself (see Compilation section).
 * Separation of "Night mode" from "Decrease page brightness" function: "Night mode" is now a separate function, named "Blue light reduction filter"
     * It's now possible to combine the 2 functions
     * Existing user settings will be automatically migrated to this new setting (including presets)
-* Added the "Attenuate image color" function to avoid displaying colors that are too bright;
+* Added the "Attenuate image colors" function to avoid displaying colors that are too bright;
 * It's now possible to automatically archive Page Shadow settings in the Cloud, at a configurable interval (by default, this feature is disabled);
 * A warning is now displayed to warn of the importance of making an archive of the extension settings;
 * Optimization of downloading and automatic updating of filters: they are updated only if necessary (date of last update of the file on the server). If an update is necessary, a message is displayed at the level of the list of filters;
@@ -53,6 +53,7 @@ Or you can compile it yourself (see Compilation section).
         * Added "delayApplyMutationObserversSafeTimer" filter functionality to fix this issue;
     * Fixed a bug with some websites, where the functions were removed by the website page changes (Github for example, when navigating between pages)
         * Added 2 new filters to configure this bugfix (observeBodyChange and observeBodyChangeTimerInterval)
+    * Fixed a bug with the function "Invert entire page colors" on Firefox;
     * Fixed bugs with Mutation Observers;
     * Fixed a bug with some websites and the application of some filters (forceDisableDefault...);
     * Fixed applying some filters to the body element;
