@@ -1153,7 +1153,7 @@ import SafeTimer from "./safeTimer.js";
         if(timerApplyDetectBackgrounds) timerApplyDetectBackgrounds.clear();
         if(timerApplyInvertColors) timerApplyInvertColors.clear();
 
-        if(typeof mut_contrast !== "undefined" && (mutation == MUTATION_TYPE_BODY || mutation == TYPE_ALL)) mut_body.disconnect();
+        if(typeof mut_body !== "undefined" && (mutation == MUTATION_TYPE_BODY || mutation == TYPE_ALL)) mut_body.disconnect();
         if(typeof mut_brightness !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS || mutation == TYPE_ALL)) mut_brightness.disconnect();
         if(typeof mut_bluelight !== "undefined" && (mutation == MUTATION_TYPE_BLUELIGHT || mutation == TYPE_ALL)) mut_bluelight.disconnect();
         if(typeof mut_brightness !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS || mutation == MUTATION_TYPE_BLUELIGHT || mutation == TYPE_ALL)) mut_brightness_wrapper.disconnect();
