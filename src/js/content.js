@@ -631,6 +631,7 @@ import SafeTimer from "./safeTimer.js";
             // Clear old mutation timers
             if(safeTimerMutationBackgrounds) safeTimerMutationBackgrounds.clear();
             if(safeTimerMutationDelayed) safeTimerMutationDelayed.clear();
+            if(mut_backgrounds) mut_backgrounds.disconnect();
 
             mut_backgrounds = new MutationObserver(mutations => {
                 delayedMutationObserversCalls.push(mutations);
@@ -703,6 +704,7 @@ import SafeTimer from "./safeTimer.js";
 
                     if(document.body != oldBody) {
                         main(TYPE_RESET, TYPE_ALL);
+                        mutationObserve(MUTATION_TYPE_BACKGROUNDS);
                     }
 
                     oldBody = document.body;
