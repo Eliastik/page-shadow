@@ -47,7 +47,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] Logging ?
 * [ ] Rework the Mutation Observers to simplify the code and fix somes issues (see the mutation-observers-reworking branch) -> Wrapper class
 
-### Known issues/bugs
+#### Known issues/bugs
 
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
