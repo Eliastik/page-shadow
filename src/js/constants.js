@@ -170,7 +170,7 @@ const defaultWebsiteSpecialFiltersConfig = {
     throttledMutationObserverTreatedByCall: 50,
     delayApplyMutationObserversSafeTimer: 0,
     observeBodyChange: true,
-    observeBodyChangeTimerInterval: 500
+    observeBodyChangeTimerInterval: 1
 };
 const defaultThemesBackgrounds = ["black", "#142634", "#222", "#263238", "#333a49", "#020315", "#192338", "#1A1A1A", "#1d4e6d", "#272822", "white", "#002b36", "#000D00", "#272822", "#2e3436", "#202124"]; // Colors of the backgrounds
 const defaultThemesTextColors = ["#AAA", "#BDC7C1", "#AAA", "#C3CEE3", "#dfcbd3", "#b9cace", "#6f9bb0", "#FFFFB3", "#BED6FF", "#39B7FF", "black", "#b58901", "#00ca00", "#91e22d", "#d2dde3", "#bdc1c6"];
