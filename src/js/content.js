@@ -38,7 +38,7 @@ import SafeTimer from "./safeTimer.js";
     let precEnabled = false;
     let started = false;
     let filtersCache = null;
-    let mut_body, mut_backgrounds, mut_brightness, mut_brightness_wrapper, mut_bluelight;
+    let mut_body, mut_backgrounds, mut_brightness_bluelight, mut_brightness_bluelight_wrapper;
     let typeProcess = "";
     let precUrl;
     let currentSettings = null;
@@ -57,11 +57,11 @@ import SafeTimer from "./safeTimer.js";
     const TYPE_ONLY_BRIGHTNESS = "onlyBrightness";
     const TYPE_ONLY_RESET = "onlyreset";
     const TYPE_ONLY_BLUELIGHT = "onlyBlueLight";
+    const TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT = "onlyBrightnessAndBlueLight";
     const MUTATION_TYPE_BODY = "body";
     const MUTATION_TYPE_BACKGROUNDS = "backgrounds";
-    const MUTATION_TYPE_BLUELIGHT = "blueLight";
     const MUTATION_TYPE_BRIGHTNESSWRAPPER = "brightnesswrapper";
-    const MUTATION_TYPE_BRIGHTNESS = "brightness";
+    const MUTATION_TYPE_BRIGHTNESS_BLUELIGHT = "brightnessbluelight";
     const TYPE_LOADING = "loading";
     const TYPE_START = "start";
 
@@ -305,14 +305,6 @@ import SafeTimer from "./safeTimer.js";
             }
 
             waitAndApplyBrightnessPage(elementBrightness, elementBrightnessWrapper);
-
-            if(document.readyState == "complete" || document.readyState == "interactive") {
-                mutationObserve(MUTATION_TYPE_BRIGHTNESS);
-            } else {
-                window.addEventListener("load", () => {
-                    mutationObserve(MUTATION_TYPE_BRIGHTNESS);
-                });
-            }
         }
     }
 
@@ -342,14 +334,6 @@ import SafeTimer from "./safeTimer.js";
             }
 
             waitAndApplyBlueLightPage(elementBlueLightFilter, elementBrightnessWrapper);
-
-            if(document.readyState == "complete" || document.readyState == "interactive") {
-                mutationObserve(MUTATION_TYPE_BLUELIGHT);
-            } else {
-                window.addEventListener("load", () => {
-                    mutationObserve(MUTATION_TYPE_BLUELIGHT);
-                });
-            }
         }
     }
 
@@ -458,6 +442,7 @@ import SafeTimer from "./safeTimer.js";
     }
 
     function mutationObserve(type) {
+        // Mutation Observer for the body element classList (contrast/invert/attenuate)
         if(type == MUTATION_TYPE_BODY) {
             if(typeof mut_body !== "undefined") mut_body.disconnect();
 
@@ -554,80 +539,61 @@ import SafeTimer from "./safeTimer.js";
                 "attributeOldValue": true,
                 "attributeFilter": ["class"]
             });
-        } else if(type == MUTATION_TYPE_BRIGHTNESS) {
-            if(typeof mut_brightness !== "undefined") mut_brightness.disconnect();
+        } else if(type == MUTATION_TYPE_BRIGHTNESS_BLUELIGHT) { // Mutation Observer for the brigthness/bluelight settings
+            if(typeof mut_brightness_bluelight !== "undefined") mut_brightness_bluelight.disconnect();
 
-            mut_brightness = new MutationObserver(mutations => {
-                let reApplyMutationObserver = true;
-                mut_brightness.disconnect();
+            mut_brightness_bluelight = new MutationObserver(mutations => {
+                mut_brightness_bluelight.disconnect();
+
+                let reApplyBrightness = false;
+                let reApplyBlueLight = false;
 
                 mutations.forEach(mutation => {
-                    if((!document.body.contains(elementBrightness) || !document.body.contains(elementBrightnessWrapper)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
-                        reApplyMutationObserver = false;
+                    if(currentSettings.pageLumEnabled != undefined && currentSettings.pageLumEnabled === "true") {
+                        if((!document.body.contains(elementBrightness) || !document.body.contains(elementBrightnessWrapper)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
+                            reApplyBrightness = true;
+                        }
+                    }
 
-                        const timerApplyMutationBrightness = new SafeTimer(() => {
-                            main(TYPE_ONLY_BRIGHTNESS, MUTATION_TYPE_BRIGHTNESS);
-                            timerApplyMutationBrightness.clear();
-                        });
-
-                        timerApplyMutationBrightness.start(websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
+                    if(currentSettings.blueLightReductionEnabled != undefined && currentSettings.blueLightReductionEnabled === "true") {
+                        if((!document.body.contains(elementBlueLightFilter) || !document.body.contains(elementBrightnessWrapper)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
+                            reApplyBlueLight = true;
+                        }
                     }
                 });
 
-                if(reApplyMutationObserver) {
+                if(reApplyBrightness || reApplyBlueLight) {
+                    const timerApplyMutationBlueLight = new SafeTimer(() => {
+                        if(reApplyBrightness && reApplyBlueLight) {
+                            main(TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT, MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+                        } else if(reApplyBrightness) {
+                            main(TYPE_ONLY_BRIGHTNESS, MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+                        } else if(reApplyBlueLight) {
+                            main(TYPE_ONLY_BLUELIGHT, MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+                        }
+
+                        timerApplyMutationBlueLight.clear();
+                    });
+
+                    timerApplyMutationBlueLight.start(websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
+                } else {
                     if(document.readyState == "complete" || document.readyState == "interactive") {
-                        mutationObserve(MUTATION_TYPE_BRIGHTNESS);
+                        mutationObserve(MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
                     } else {
                         window.addEventListener("load", () => {
-                            mutationObserve(MUTATION_TYPE_BRIGHTNESS);
+                            mutationObserve(MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
                         });
                     }
                 }
             });
 
-            mut_brightness.observe(elementBrightnessWrapper, {
+            mut_brightness_bluelight.observe(elementBrightnessWrapper, {
                 "attributes": true,
                 "subtree": true,
                 "childList": true,
                 "characterData": false
             });
-        } else if(type == MUTATION_TYPE_BLUELIGHT) {
-            if(typeof mut_bluelight !== "undefined") mut_bluelight.disconnect();
-
-            mut_bluelight = new MutationObserver(mutations => {
-                let reApplyMutationObserver = true;
-                mut_bluelight.disconnect();
-
-                mutations.forEach(mutation => {
-                    if((!document.body.contains(elementBlueLightFilter) || !document.body.contains(elementBrightnessWrapper)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
-                        reApplyMutationObserver = false;
-                        const timerApplyMutationBlueLight = new SafeTimer(() => {
-                            main(TYPE_ONLY_BLUELIGHT, MUTATION_TYPE_BLUELIGHT);
-                            timerApplyMutationBlueLight.clear();
-                        });
-
-                        timerApplyMutationBlueLight.start(websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
-                    }
-                });
-
-                if(reApplyMutationObserver) {
-                    if(document.readyState == "complete" || document.readyState == "interactive") {
-                        mutationObserve(MUTATION_TYPE_BLUELIGHT);
-                    } else {
-                        window.addEventListener("load", () => {
-                            mutationObserve(MUTATION_TYPE_BLUELIGHT);
-                        });
-                    }
-                }
-            });
-
-            mut_bluelight.observe(elementBrightnessWrapper, {
-                "attributes": true,
-                "subtree": true,
-                "childList": true,
-                "characterData": false
-            });
-        } else if(type == MUTATION_TYPE_BACKGROUNDS) {
+        } else if(type == MUTATION_TYPE_BACKGROUNDS) { // Mutation Observer for analyzing whole page elements (detecting backgrounds and applying filters)
             // Clear old mutation timers
             if(safeTimerMutationBackgrounds) safeTimerMutationBackgrounds.clear();
             if(safeTimerMutationDelayed) safeTimerMutationDelayed.clear();
@@ -657,12 +623,12 @@ import SafeTimer from "./safeTimer.js";
             safeTimerMutationDelayed = new SafeTimer(treatMutationObserverBackgroundCalls);
         }
 
-        if(type === MUTATION_TYPE_BRIGHTNESS || type === MUTATION_TYPE_BLUELIGHT || type === MUTATION_TYPE_BRIGHTNESSWRAPPER) {
-            if(typeof mut_brightness_wrapper !== "undefined") mut_brightness_wrapper.disconnect();
+        if(type === MUTATION_TYPE_BRIGHTNESS_BLUELIGHT || type === MUTATION_TYPE_BRIGHTNESSWRAPPER) { // Mutation for the brightness/bluelight wrapper element
+            if(typeof mut_brightness_bluelight_wrapper !== "undefined") mut_brightness_bluelight_wrapper.disconnect();
 
-            mut_brightness_wrapper = new MutationObserver(mutations => {
+            mut_brightness_bluelight_wrapper = new MutationObserver(mutations => {
                 let reStart = true;
-                mut_brightness_wrapper.disconnect();
+                mut_brightness_bluelight_wrapper.disconnect();
 
                 mutations.forEach(mutation => {
                     mutation.removedNodes.forEach(removedNode => {
@@ -685,7 +651,7 @@ import SafeTimer from "./safeTimer.js";
                 }
             });
 
-            mut_brightness_wrapper.observe(document.body, {
+            mut_brightness_bluelight_wrapper.observe(document.body, {
                 "attributes": false,
                 "subtree": false,
                 "childList": true,
@@ -1060,6 +1026,8 @@ import SafeTimer from "./safeTimer.js";
                 if(type == "disableAutoThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled = false;
                 if(type == "enableAutoThrottleMutationObserverBackgrounds") websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled = true;
                 if(type == "delayApplyMutationObserversSafeTimer") websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer = rule.filter;
+                if(type == "observeBodyChange") websiteSpecialFiltersConfig.observeBodyChange = true;
+                if(type == "observeBodyChangeTimerInterval") websiteSpecialFiltersConfig.observeBodyChangeTimerInterval = rule.filter;
             });
         });
     }
@@ -1154,9 +1122,8 @@ import SafeTimer from "./safeTimer.js";
         if(timerApplyInvertColors) timerApplyInvertColors.clear();
 
         if(typeof mut_body !== "undefined" && (mutation == MUTATION_TYPE_BODY || mutation == TYPE_ALL)) mut_body.disconnect();
-        if(typeof mut_brightness !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS || mutation == TYPE_ALL)) mut_brightness.disconnect();
-        if(typeof mut_bluelight !== "undefined" && (mutation == MUTATION_TYPE_BLUELIGHT || mutation == TYPE_ALL)) mut_bluelight.disconnect();
-        if(typeof mut_brightness !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS || mutation == MUTATION_TYPE_BLUELIGHT || mutation == TYPE_ALL)) mut_brightness_wrapper.disconnect();
+        if(typeof mut_brightness_bluelight !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS_BLUELIGHT || mutation == TYPE_ALL)) mut_brightness_bluelight.disconnect();
+        if(typeof mut_brightness_bluelight_wrapper !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS_BLUELIGHT || mutation == TYPE_ALL)) mut_brightness_bluelight_wrapper.disconnect();
         if(typeof lnkCustomTheme !== "undefined") lnkCustomTheme.setAttribute("href", "");
 
         if(started && (type == TYPE_RESET || type == TYPE_ONLY_RESET)) {
@@ -1203,10 +1170,14 @@ import SafeTimer from "./safeTimer.js";
                 contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, null, settings.selectiveInvert, settings.attenuateImageColor);
             } else if(type == TYPE_ONLY_INVERT) {
                 invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, null, settings.selectiveInvert, settings.attenuateImageColor);
-            } else if(type == TYPE_ONLY_BRIGHTNESS) {
-                brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
-            } else if(type == TYPE_ONLY_BLUELIGHT) {
-                blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
+            } else if(type == TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT || type == TYPE_ONLY_BRIGHTNESS || type == TYPE_ONLY_BLUELIGHT) {
+                if(type == TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT || type == TYPE_ONLY_BRIGHTNESS) {
+                    brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
+                }
+
+                if(type == TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT || type == TYPE_ONLY_BLUELIGHT) {
+                    blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
+                }
             } else if(settings.pageShadowEnabled == "true") {
                 waitAndApplyContrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, customElement, settings.selectiveInvert, settings.attenuateImageColor);
             } else {
@@ -1235,11 +1206,14 @@ import SafeTimer from "./safeTimer.js";
             if(!customElement) precEnabled = false;
         }
 
+        // Apply Mutation Observers
         if(document.readyState == "complete" || document.readyState == "interactive") {
             mutationObserve(MUTATION_TYPE_BODY);
+            mutationObserve(MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
         } else {
             window.addEventListener("load", () => {
                 mutationObserve(MUTATION_TYPE_BODY);
+                mutationObserve(MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
             });
         }
 
