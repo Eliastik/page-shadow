@@ -38,7 +38,7 @@ import SafeTimer from "./safeTimer.js";
     let precEnabled = false;
     let started = false;
     let filtersCache = null;
-    let mut_contrast, mut_backgrounds, mut_brightness, mut_brightness_wrapper, mut_invert, mut_bluelight, mut_attenuate;
+    let mut_body, mut_backgrounds, mut_brightness, mut_brightness_wrapper, mut_bluelight;
     let typeProcess = "";
     let precUrl;
     let currentSettings = null;
@@ -47,6 +47,7 @@ import SafeTimer from "./safeTimer.js";
     let mutationObserverAddedNodes = [];
     let delayedMutationObserversCalls = [];
     let safeTimerMutationDelayed = null;
+    let oldBody = null;
 
     // Contants
     const TYPE_RESET = "reset";
@@ -56,13 +57,11 @@ import SafeTimer from "./safeTimer.js";
     const TYPE_ONLY_BRIGHTNESS = "onlyBrightness";
     const TYPE_ONLY_RESET = "onlyreset";
     const TYPE_ONLY_BLUELIGHT = "onlyBlueLight";
-    const MUTATION_TYPE_CONTRAST = "contrast";
-    const MUTATION_TYPE_INVERT = "invert";
-    const MUTATION_TYPE_BRIGHTNESS = "brightness";
+    const MUTATION_TYPE_BODY = "body";
     const MUTATION_TYPE_BACKGROUNDS = "backgrounds";
     const MUTATION_TYPE_BLUELIGHT = "blueLight";
     const MUTATION_TYPE_BRIGHTNESSWRAPPER = "brightnesswrapper";
-    const MUTATION_TYPE_ATTENUATE = "attenuate";
+    const MUTATION_TYPE_BRIGHTNESS = "brightness";
     const TYPE_LOADING = "loading";
     const TYPE_START = "start";
 
@@ -72,6 +71,7 @@ import SafeTimer from "./safeTimer.js";
     let timerApplyInvertColors = null;
     let timerApplyDetectBackgrounds = null;
     let timerApplyBlueLightPage = null;
+    let timerObserveBodyChange = null;
 
     function contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert, attenuateImageColor) {
         const elementToApply = customElement ? customElement : document.body;
@@ -103,10 +103,10 @@ import SafeTimer from "./safeTimer.js";
 
         if(!customElement) {
             if(document.readyState == "complete" || document.readyState == "interactive") {
-                mutationObserve(MUTATION_TYPE_CONTRAST);
+                mutationObserve(MUTATION_TYPE_BODY);
             } else {
                 window.addEventListener("load", () => {
-                    mutationObserve(MUTATION_TYPE_CONTRAST);
+                    mutationObserve(MUTATION_TYPE_BODY);
                 });
             }
         }
@@ -175,10 +175,10 @@ import SafeTimer from "./safeTimer.js";
 
             if(!customElement) {
                 if(document.readyState == "complete" || document.readyState == "interactive") {
-                    mutationObserve(MUTATION_TYPE_INVERT);
+                    mutationObserve(MUTATION_TYPE_BODY);
                 } else {
                     window.addEventListener("load", () => {
-                        mutationObserve(MUTATION_TYPE_INVERT);
+                        mutationObserve(MUTATION_TYPE_BODY);
                     });
                 }
             }
@@ -197,10 +197,10 @@ import SafeTimer from "./safeTimer.js";
 
             if(!customElement) {
                 if(document.readyState == "complete" || document.readyState == "interactive") {
-                    mutationObserve(MUTATION_TYPE_ATTENUATE);
+                    mutationObserve(MUTATION_TYPE_BODY);
                 } else {
                     window.addEventListener("load", () => {
-                        mutationObserve(MUTATION_TYPE_ATTENUATE);
+                        mutationObserve(MUTATION_TYPE_BODY);
                     });
                 }
             }
@@ -384,11 +384,14 @@ import SafeTimer from "./safeTimer.js";
     }
 
     function appendBrightnessElement(elementBrightness, elementWrapper) {
-        if(elementWrapper && document.body.contains(elementWrapper) && elementWrapper.contains(elementBrightness)) {
-            elementWrapper.removeChild(elementBrightness);
+        if(document.body) {
+            if(elementWrapper && document.body.contains(elementWrapper) && elementWrapper.contains(elementBrightness)) {
+                elementWrapper.removeChild(elementBrightness);
+            }
+
+            document.body.appendChild(elementWrapper);
         }
 
-        document.body.appendChild(elementWrapper);
         elementWrapper.appendChild(elementBrightness);
     }
 
@@ -409,11 +412,14 @@ import SafeTimer from "./safeTimer.js";
     }
 
     function appendBlueLightElement(elementBrightness, elementWrapper) {
-        if(elementWrapper && document.body.contains(elementWrapper) && elementWrapper.contains(elementBlueLightFilter)) {
-            elementWrapper.removeChild(elementBlueLightFilter);
+        if(document.body) {
+            if(elementWrapper && document.body.contains(elementWrapper) && elementWrapper.contains(elementBlueLightFilter)) {
+                elementWrapper.removeChild(elementBlueLightFilter);
+            }
+
+            document.body.appendChild(elementWrapper);
         }
 
-        document.body.appendChild(elementWrapper);
         elementWrapper.appendChild(elementBrightness);
     }
 
@@ -466,7 +472,7 @@ import SafeTimer from "./safeTimer.js";
     }
 
     function waitAndApplyDetectBackgrounds(tagName) {
-        if(timerApplyDetectBackgrounds) timerApplyInvertColors.clear();
+        if(timerApplyDetectBackgrounds) timerApplyDetectBackgrounds.clear();
 
         timerApplyDetectBackgrounds = new SafeTimer(() => {
             if(!document.body) {
@@ -482,142 +488,95 @@ import SafeTimer from "./safeTimer.js";
     }
 
     function mutationObserve(type) {
-        if(type == MUTATION_TYPE_CONTRAST) {
-            if(typeof mut_contrast !== "undefined") mut_contrast.disconnect();
+        if(type == MUTATION_TYPE_BODY) {
+            if(typeof mut_body !== "undefined") mut_body.disconnect();
 
-            mut_contrast = new MutationObserver(mutations => {
-                mut_contrast.disconnect();
+            mut_body = new MutationObserver(mutations => {
+                mut_body.disconnect();
+
                 const classList = document.body.classList;
-                let containsPageContrast = true;
 
-                for(let i = 1; i <= nbThemes; i++) {
-                    if(i == "1" && !classList.contains("pageShadowContrastBlack")) {
-                        containsPageContrast = false;
-                    } else if(!classList.contains("pageShadowContrastBlack" + i)) {
-                        containsPageContrast = false;
+                let reApplyContrast = false;
+                let reApplyInvert = false;
+                let reApplyAttenuate = false;
+
+                if(currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") {
+                    let classFound = false;
+
+                    for(let i = 1; i <= nbThemes; i++) {
+                        if(i == 1 && classList.contains("pageShadowContrastBlack")) {
+                            classFound = true;
+                        } else if(classList.contains("pageShadowContrastBlack" + i)) {
+                            classFound = true;
+                        }
+                    }
+
+                    if(classList.contains("pageShadowContrastBlackCustom")) {
+                        classFound = true;
+                    }
+
+                    if(!classFound) {
+                        reApplyContrast = true;
                     }
                 }
 
                 mutations.forEach((mutation) => {
-                    if(mutation.type == "attributes" && mutation.attributeName == "class") {
-                        const classList = document.body.classList;
+                    if(currentSettings.colorInvert !== null && currentSettings.colorInvert == "true") {
+                        if(mutation.type == "attributes" && mutation.attributeName == "class") {
+                            const classList = document.body.classList;
 
-                        if(mutation.oldValue.indexOf("pageShadowDisableImgBgColor") !== -1 && !classList.contains("pageShadowDisableImgBgColor")) {
-                            containsPageContrast = false;
+                            if((mutation.oldValue.indexOf("pageShadowInvertImageColor") !== -1 && !classList.contains("pageShadowInvertImageColor"))
+                                || (mutation.oldValue.indexOf("pageShadowInvertVideoColor") !== -1 && !classList.contains("pageShadowInvertVideoColor"))
+                                || (mutation.oldValue.indexOf("pageShadowInvertBgColor") !== -1 && !classList.contains("pageShadowInvertBgColor"))
+                                || (mutation.oldValue.indexOf("pageShadowEnableSelectiveInvert") !== -1 && !classList.contains("pageShadowEnableSelectiveInvert"))) {
+                                reApplyInvert = true;
+                            }
+                        }
+
+                        if(mutation.type == "attributes" && mutation.attributeName == "class") {
+                            const classList = document.body.classList;
+
+                            if(mutation.oldValue.indexOf("pageShadowDisableImgBgColor") !== -1 && !classList.contains("pageShadowDisableImgBgColor")) {
+                                reApplyInvert = true;
+                            }
+                        }
+                    }
+
+                    if(currentSettings.attenuateImageColor !== null && currentSettings.attenuateImageColor == "true") {
+                        if(mutation.type == "attributes" && mutation.attributeName == "class") {
+                            const classList = document.body.classList;
+
+                            if((mutation.oldValue.indexOf("pageShadowAttenuateImageColor") !== -1 && !classList.contains("pageShadowAttenuateImageColor"))) {
+                                reApplyAttenuate = true;
+                            }
                         }
                     }
                 });
 
-                if(!containsPageContrast) {
-                    const timerApplyMutationContrast = new SafeTimer(() => {
-                        main(TYPE_ONLY_CONTRAST, MUTATION_TYPE_CONTRAST);
-                        timerApplyMutationContrast.clear();
+                if(reApplyContrast || reApplyInvert || reApplyAttenuate) {
+                    const timerReapply = new SafeTimer(() => {
+                        if(!reApplyContrast && (reApplyInvert || reApplyAttenuate)) {
+                            main(TYPE_ONLY_INVERT, MUTATION_TYPE_BODY);
+                        } else {
+                            main(TYPE_ONLY_CONTRAST, MUTATION_TYPE_BODY);
+                        }
+
+                        timerReapply.clear();
                     });
 
-                    timerApplyMutationContrast.start(websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
+                    timerReapply.start(websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
                 } else {
                     if(document.readyState == "complete" || document.readyState == "interactive") {
-                        mutationObserve(MUTATION_TYPE_CONTRAST);
+                        mutationObserve(MUTATION_TYPE_BODY);
                     } else {
                         window.addEventListener("load", () => {
-                            mutationObserve(MUTATION_TYPE_CONTRAST);
+                            mutationObserve(MUTATION_TYPE_BODY);
                         });
                     }
                 }
             });
 
-            mut_contrast.observe(document.body, {
-                "attributes": true,
-                "subtree": false,
-                "childList": false,
-                "characterData": false,
-                "attributeOldValue": true,
-                "attributeFilter": ["class"]
-            });
-        } else if(type == MUTATION_TYPE_INVERT) {
-            if(typeof mut_invert !== "undefined") mut_invert.disconnect();
-
-            mut_invert = new MutationObserver(mutations => {
-                mut_invert.disconnect();
-
-                function reMutObserveInvert() {
-                    if(document.readyState == "complete" || document.readyState == "interactive") {
-                        mutationObserve(MUTATION_TYPE_INVERT);
-                    } else {
-                        window.addEventListener("load", () => {
-                            mutationObserve(MUTATION_TYPE_INVERT);
-                        });
-                    }
-                }
-
-                mutations.forEach((mutation) => {
-                    if(mutation.type == "attributes" && mutation.attributeName == "class") {
-                        const classList = document.body.classList;
-
-                        if((mutation.oldValue.indexOf("pageShadowInvertImageColor") !== -1 && !classList.contains("pageShadowInvertImageColor"))
-                            || (mutation.oldValue.indexOf("pageShadowInvertVideoColor") !== -1 && !classList.contains("pageShadowInvertVideoColor"))
-                            || (mutation.oldValue.indexOf("pageShadowInvertBgColor") !== -1 && !classList.contains("pageShadowInvertBgColor"))
-                            || (mutation.oldValue.indexOf("pageShadowEnableSelectiveInvert") !== -1 && !classList.contains("pageShadowEnableSelectiveInvert"))) {
-                            const timerApplyMutationInvert = new SafeTimer(() => {
-                                main(TYPE_ONLY_INVERT, MUTATION_TYPE_INVERT);
-                                timerApplyMutationInvert.clear();
-                            });
-
-                            timerApplyMutationInvert.start(websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
-                        } else {
-                            reMutObserveInvert();
-                        }
-                    } else {
-                        reMutObserveInvert();
-                    }
-                });
-            });
-
-            mut_invert.observe(document.body, {
-                "attributes": true,
-                "subtree": false,
-                "childList": false,
-                "characterData": false,
-                "attributeOldValue": true,
-                "attributeFilter": ["class"]
-            });
-        } else if(type == MUTATION_TYPE_ATTENUATE) {
-            if(typeof mut_attenuate !== "undefined") mut_attenuate.disconnect();
-
-            mut_attenuate = new MutationObserver(mutations => {
-                mut_attenuate.disconnect();
-
-                function reMutObserveInvert() {
-                    if(document.readyState == "complete" || document.readyState == "interactive") {
-                        mutationObserve(MUTATION_TYPE_ATTENUATE);
-                    } else {
-                        window.addEventListener("load", () => {
-                            mutationObserve(MUTATION_TYPE_ATTENUATE);
-                        });
-                    }
-                }
-
-                mutations.forEach((mutation) => {
-                    if(mutation.type == "attributes" && mutation.attributeName == "class") {
-                        const classList = document.body.classList;
-
-                        if((mutation.oldValue.indexOf("pageShadowAttenuateImageColor") !== -1 && !classList.contains("pageShadowAttenuateImageColor"))) {
-                            const timerApplyMutationAttenuate = new SafeTimer(() => {
-                                main(TYPE_ONLY_INVERT, MUTATION_TYPE_ATTENUATE);
-                                timerApplyMutationAttenuate.clear();
-                            });
-
-                            timerApplyMutationAttenuate.start(websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
-                        } else {
-                            reMutObserveInvert();
-                        }
-                    } else {
-                        reMutObserveInvert();
-                    }
-                });
-            });
-
-            mut_attenuate.observe(document.body, {
+            mut_body.observe(document.body, {
                 "attributes": true,
                 "subtree": false,
                 "childList": false,
@@ -731,11 +690,14 @@ import SafeTimer from "./safeTimer.js";
             if(typeof mut_brightness_wrapper !== "undefined") mut_brightness_wrapper.disconnect();
 
             mut_brightness_wrapper = new MutationObserver(mutations => {
+                let reStart = true;
                 mut_brightness_wrapper.disconnect();
 
                 mutations.forEach(mutation => {
                     mutation.removedNodes.forEach(removedNode => {
                         if(removedNode === elementBrightnessWrapper) {
+                            reStart = false;
+
                             const timerApplyMutationBrightnessWrapper = new SafeTimer(() => {
                                 document.body.appendChild(elementBrightnessWrapper);
                                 timerApplyMutationBrightnessWrapper.clear();
@@ -746,6 +708,10 @@ import SafeTimer from "./safeTimer.js";
                         }
                     });
                 });
+
+                if(reStart) {
+                    mutationObserve(MUTATION_TYPE_BRIGHTNESSWRAPPER);
+                }
             });
 
             mut_brightness_wrapper.observe(document.body, {
@@ -754,6 +720,27 @@ import SafeTimer from "./safeTimer.js";
                 "childList": true,
                 "characterData": false
             });
+        }
+    }
+
+    function observeBodyChange() {
+        if(websiteSpecialFiltersConfig.observeBodyChange) {
+            if(timerObserveBodyChange) timerObserveBodyChange.clear();
+
+            timerObserveBodyChange = new SafeTimer(() => {
+                if(document.body) {
+                    if(!oldBody) oldBody = document.body;
+
+                    if(document.body != oldBody) {
+                        main(TYPE_RESET, TYPE_ALL);
+                    }
+
+                    oldBody = document.body;
+                }
+                timerObserveBodyChange.start();
+            }, websiteSpecialFiltersConfig.observeBodyChangeTimerInterval);
+
+            timerObserveBodyChange.start();
         }
     }
 
@@ -1194,9 +1181,7 @@ import SafeTimer from "./safeTimer.js";
         if(timerApplyDetectBackgrounds) timerApplyDetectBackgrounds.clear();
         if(timerApplyInvertColors) timerApplyInvertColors.clear();
 
-        if(typeof mut_contrast !== "undefined" && (mutation == MUTATION_TYPE_CONTRAST || mutation == TYPE_ALL)) mut_contrast.disconnect();
-        if(typeof mut_invert !== "undefined" && (mutation == MUTATION_TYPE_INVERT || mutation == TYPE_ALL)) mut_invert.disconnect();
-        if(typeof mut_attenuate !== "undefined" && (mutation == MUTATION_TYPE_ATTENUATE || mutation == TYPE_ALL)) mut_attenuate.disconnect();
+        if(typeof mut_contrast !== "undefined" && (mutation == MUTATION_TYPE_BODY || mutation == TYPE_ALL)) mut_body.disconnect();
         if(typeof mut_brightness !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS || mutation == TYPE_ALL)) mut_brightness.disconnect();
         if(typeof mut_bluelight !== "undefined" && (mutation == MUTATION_TYPE_BLUELIGHT || mutation == TYPE_ALL)) mut_bluelight.disconnect();
         if(typeof mut_brightness !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS || mutation == MUTATION_TYPE_BLUELIGHT || mutation == TYPE_ALL)) mut_brightness_wrapper.disconnect();
@@ -1211,11 +1196,11 @@ import SafeTimer from "./safeTimer.js";
                 removeClass(document.getElementsByTagName("html")[0], (i == 1 ? "pageShadowBackgroundContrast" : "pageShadowBackgroundContrast" + i));
             }
 
-            if(elementBrightnessWrapper && document.body.contains(elementBrightnessWrapper) && document.body.contains(elementBrightness)) {
+            if(elementBrightnessWrapper && document.body && document.body.contains(elementBrightnessWrapper) && document.body.contains(elementBrightness)) {
                 elementBrightnessWrapper.removeChild(elementBrightness);
             }
 
-            if(elementBrightnessWrapper && document.body.contains(elementBrightnessWrapper) && document.body.contains(elementBlueLightFilter)) {
+            if(elementBrightnessWrapper && document.body && document.body.contains(elementBrightnessWrapper) && document.body.contains(elementBlueLightFilter)) {
                 elementBrightnessWrapper.removeChild(elementBlueLightFilter);
             }
 
@@ -1227,6 +1212,8 @@ import SafeTimer from "./safeTimer.js";
         }
 
         typeProcess = type;
+
+        observeBodyChange();
 
         browser.runtime.sendMessage({
             "type": "getSpecialRules"
