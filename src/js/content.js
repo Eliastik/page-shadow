@@ -687,10 +687,10 @@ import MutationObserverWrapper from "./mutationObserver.js";
 
                     oldBody = document.body;
                 }
-                timerObserveBodyChange.start();
-            }, websiteSpecialFiltersConfig.observeBodyChangeTimerInterval);
+                timerObserveBodyChange.start(websiteSpecialFiltersConfig.observeBodyChangeTimerInterval);
+            });
 
-            timerObserveBodyChange.start();
+            timerObserveBodyChange.start(websiteSpecialFiltersConfig.observeBodyChangeTimerInterval);
         }
     }
 
