@@ -202,7 +202,12 @@ import SafeTimer from "./safeTimer.js";
             backgroundDetected = true;
         }
 
-        mutationObserve(MUTATION_TYPE_BACKGROUNDS);
+        const mutationBackgroundTimer = new SafeTimer(() => {
+            mutationObserve(MUTATION_TYPE_BACKGROUNDS);
+            mutationBackgroundTimer.clear();
+        });
+
+        mutationBackgroundTimer.start(1);
     }
 
     function elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
@@ -438,7 +443,7 @@ import SafeTimer from "./safeTimer.js";
             timerApplyDetectBackgrounds.clear();
         });
 
-        timerApplyDetectBackgrounds.start(1);
+        timerApplyDetectBackgrounds.start();
     }
 
     function mutationObserve(type) {
