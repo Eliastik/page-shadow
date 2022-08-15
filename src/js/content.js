@@ -488,10 +488,10 @@ import MutationObserverWrapper from "./mutationObserver.js";
                         if(mutation.type == "attributes" && mutation.attributeName == "class") {
                             const classList = document.body.classList;
 
-                            if((mutation.oldValue.indexOf("pageShadowInvertImageColor") !== -1 && !classList.contains("pageShadowInvertImageColor"))
+                            if(mutation.oldValue && ((mutation.oldValue.indexOf("pageShadowInvertImageColor") !== -1 && !classList.contains("pageShadowInvertImageColor"))
                                 || (mutation.oldValue.indexOf("pageShadowInvertVideoColor") !== -1 && !classList.contains("pageShadowInvertVideoColor"))
                                 || (mutation.oldValue.indexOf("pageShadowInvertBgColor") !== -1 && !classList.contains("pageShadowInvertBgColor"))
-                                || (mutation.oldValue.indexOf("pageShadowEnableSelectiveInvert") !== -1 && !classList.contains("pageShadowEnableSelectiveInvert"))) {
+                                || (mutation.oldValue.indexOf("pageShadowEnableSelectiveInvert") !== -1 && !classList.contains("pageShadowEnableSelectiveInvert")))) {
                                 reApplyInvert = true;
                             }
                         }
@@ -509,7 +509,7 @@ import MutationObserverWrapper from "./mutationObserver.js";
                         if(mutation.type == "attributes" && mutation.attributeName == "class") {
                             const classList = document.body.classList;
 
-                            if((mutation.oldValue.indexOf("pageShadowAttenuateImageColor") !== -1 && !classList.contains("pageShadowAttenuateImageColor"))) {
+                            if(mutation.oldValue && mutation.oldValue.indexOf("pageShadowAttenuateImageColor") !== -1 && !classList.contains("pageShadowAttenuateImageColor")) {
                                 reApplyAttenuate = true;
                             }
                         }
