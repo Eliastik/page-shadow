@@ -101,16 +101,6 @@ import SafeTimer from "./safeTimer.js";
 
         invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
 
-        if(!customElement) {
-            if(document.readyState == "complete" || document.readyState == "interactive") {
-                mutationObserve(MUTATION_TYPE_BODY);
-            } else {
-                window.addEventListener("load", () => {
-                    mutationObserve(MUTATION_TYPE_BODY);
-                });
-            }
-        }
-
         if(customElement) {
             addClass(elementToApply, "pageShadowBackgroundDetected");
         }
@@ -172,16 +162,6 @@ import SafeTimer from "./safeTimer.js";
                     addClass(elementToApply, "pageShadowEnableSelectiveInvert");
                 }
             }
-
-            if(!customElement) {
-                if(document.readyState == "complete" || document.readyState == "interactive") {
-                    mutationObserve(MUTATION_TYPE_BODY);
-                } else {
-                    window.addEventListener("load", () => {
-                        mutationObserve(MUTATION_TYPE_BODY);
-                    });
-                }
-            }
         }
 
         attenuateColor(attenuateImageColor, customElement);
@@ -194,16 +174,6 @@ import SafeTimer from "./safeTimer.js";
         if(enabled == "true") {
             document.documentElement.style.setProperty("--page-shadow-invert-filter-image-backgrounds", "invert(100%) grayscale(50%)");
             addClass(elementToApply, "pageShadowAttenuateImageColor");
-
-            if(!customElement) {
-                if(document.readyState == "complete" || document.readyState == "interactive") {
-                    mutationObserve(MUTATION_TYPE_BODY);
-                } else {
-                    window.addEventListener("load", () => {
-                        mutationObserve(MUTATION_TYPE_BODY);
-                    });
-                }
-            }
         }
     }
 
@@ -1261,6 +1231,14 @@ import SafeTimer from "./safeTimer.js";
             }
         } else {
             if(!customElement) precEnabled = false;
+        }
+
+        if(document.readyState == "complete" || document.readyState == "interactive") {
+            mutationObserve(MUTATION_TYPE_BODY);
+        } else {
+            window.addEventListener("load", () => {
+                mutationObserve(MUTATION_TYPE_BODY);
+            });
         }
 
         if(!customElement) started = true;
