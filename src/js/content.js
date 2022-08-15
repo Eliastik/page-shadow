@@ -499,7 +499,7 @@ import MutationObserverWrapper from "./mutationObserver.js";
                         if(mutation.type == "attributes" && mutation.attributeName == "class") {
                             const classList = document.body.classList;
 
-                            if(mutation.oldValue.indexOf("pageShadowDisableImgBgColor") !== -1 && !classList.contains("pageShadowDisableImgBgColor")) {
+                            if(mutation.oldValue && mutation.oldValue.indexOf("pageShadowDisableImgBgColor") !== -1 && !classList.contains("pageShadowDisableImgBgColor")) {
                                 reApplyInvert = true;
                             }
                         }
