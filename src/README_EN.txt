@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.10 (8/4/2022)
+* Latest version: 2.10 (8/15/2022)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -33,8 +33,7 @@ Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
 
-### Version 2.10 (8/4/2022) :
-
+### Version 2.10 (8/15/2022) :
 * Page Shadow has undergone a redesign of its graphical interface. Many new features are available:
     * Added a dark mode for the entire Page Shadow interface. The dark mode is automatically enabled according to the device settings.
     * Added 2 new interface modes for the popup: "Switches and icons" mode (enabled by default) and "Modern" (still in beta, and will be the default interface of the Page Shadow popup on the next version)
@@ -52,11 +51,15 @@ Or you can compile it yourself (see Compilation section).
     * Fixed a bug that could occur when selecting a custom theme and then a classic (non-custom) theme: the custom theme remained applied to the other tabs;
     * Fixed a rare bug with some websites, where the extension had difficulty applying the "Increase page contrast" function (websites forcing reset of some HTML attributes)
         * Added "delayApplyMutationObserversSafeTimer" filter functionality to fix this issue;
+    * Fixed a bug with some websites, where the functions were removed by the website page changes (Github for example, when navigating between pages)
+        * Added 2 new filters to configure this bugfix (observeBodyChange and observeBodyChangeTimerInterval)
+    * Fixed bugs with Mutation Observers;
     * Fixed a bug with some websites and the application of some filters (forceDisableDefault...);
     * Fixed applying some filters to the body element;
     * Optimized extension size;
     * Fixed other minor bugs and minor performance optimizations;
     * Font Awesome is now managed with NPM;
+    * Simplified code;
     * Updated dependencies.
 
 #### Version 2.9.1 (12/26/2021):

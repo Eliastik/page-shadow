@@ -2,7 +2,7 @@
 
 ## Changelog:
 
-### Version 2.10 (8/3/2022) :
+### Version 2.10 (8/15/2022) :
 
 * Page Shadow has undergone a redesign of its graphical interface. Many new features are available:
     * Added a dark mode for the entire Page Shadow interface. The dark mode is automatically enabled according to the device settings.
@@ -21,11 +21,15 @@
     * Fixed a bug that could occur when selecting a custom theme and then a classic (non-custom) theme: the custom theme remained applied to the other tabs;
     * Fixed a rare bug with some websites, where the extension had difficulty applying the "Increase page contrast" function (websites forcing reset of some HTML attributes)
         * Added "delayApplyMutationObserversSafeTimer" filter functionality to fix this issue;
+    * Fixed a bug with some websites, where the functions were removed by the website page changes (Github for example, when navigating between pages)
+        * Added 2 new filters to configure this bugfix (observeBodyChange and observeBodyChangeTimerInterval)
+    * Fixed bugs with Mutation Observers;
     * Fixed a bug with some websites and the application of some filters (forceDisableDefault...);
     * Fixed applying some filters to the body element;
     * Optimized extension size;
     * Fixed other minor bugs and minor performance optimizations;
     * Font Awesome is now managed with NPM;
+    * Simplified code;
     * Updated dependencies.
 
 ### Version 2.9.1 (12/26/2021):
@@ -281,7 +285,7 @@
 
 ## Journal des changements :
 
-### Version 2.10 (03/08/2022) :
+### Version 2.10 (15/08/2022) :
 
 * Page Shadow a subit une refonte de son interface graphique. De nombreuses nouveautés sont disponibles :
     * Ajout d'un mode sombre pour toute l'interface de Page Shadow. Il s'active automatiquement selon les paramètres de l'appareil.
@@ -300,10 +304,14 @@
     * Correction d'un bug qui pouvait survenir lorsque l'on sélectionnait un thème personnalisé puis un thème classique (non personnalisé) : le thème personnalisé restait appliqué aux autres onglets ;
     * Correction d'un rare bug avec certains sites, où l'extension avait des difficultés à appliquer la fonction "Augmenter le contraste" (les sites web forçant la réinitialisation de certains attributs HTML)
         * Ajout de la fonctionnalité de filtre "delayApplyMutationObserversSafeTimer" pour corriger ce problème ;
+    * Correction d'un bug avec certains sites, où les fonctions de l'extension étaient écrasées par certains changements sur les pages (Github par exemple, en naviguant entre pages)
+        * Ajout de 2 nouveaux filtres pour configurer cette correction (observeBodyChange et observeBodyChangeTimerInterval)
+    * Correction de bugs avec les Mutation Observers ;
     * Correction d'un bug avec certains sites web et l'application de certains filtres (forceDisableDefault...) ;
     * Correction de l'application de certains filtres à l'élément body ;
     * Optimisation de la taille de l'extension ;
     * Correction d'autres bugs mineurs et optimisation mineure des performances ;
+    * Simplifications du code ;
     * Gestion de Font Awesome avec NPM ;
     * Mise à jour des dépendances.
 

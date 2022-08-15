@@ -40,7 +40,7 @@
     "bootstrap-slider": "^11.0.2",
     "codemirror": "^5.65.7",
     "i18next": "^21.9.0",
-    "i18next-browser-languagedetector": "^6.1.4",
+    "i18next-browser-languagedetector": "^6.1.5",
     "i18next-http-backend": "^1.4.1",
     "jquery": "^3.6.0",
     "jquery-colpick": "^3.1.0",

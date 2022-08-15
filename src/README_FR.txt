@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.10 (04/08/2022)
+* Version actuelle : 2.10 (15/08/2022)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -33,7 +33,7 @@ Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
 
-#### Version 2.10 (04/08/2022) :
+#### Version 2.10 (15/08/2022) :
 * Page Shadow a subit une refonte de son interface graphique. De nombreuses nouveautés sont disponibles :
     * Ajout d'un mode sombre pour toute l'interface de Page Shadow. Il s'active automatiquement selon les paramètres de l'appareil.
     * Ajout de 2 nouveaux modes d'interface pour la popup : le mode "Switches et icônes" (activé par défaut) et "Moderne" (encore en bêta, et sera l'interface par défaut de la popup de Page Shadow sur la prochaine version)
@@ -51,10 +51,14 @@ Soit la compiler vous-même (voir section "Compilation").
     * Correction d'un bug qui pouvait survenir lorsque l'on sélectionnait un thème personnalisé puis un thème classique (non personnalisé) : le thème personnalisé restait appliqué aux autres onglets ;
     * Correction d'un rare bug avec certains sites, où l'extension avait des difficultés à appliquer la fonction "Augmenter le contraste" (les sites web forçant la réinitialisation de certains attributs HTML)
         * Ajout de la fonctionnalité de filtre "delayApplyMutationObserversSafeTimer" pour corriger ce problème ;
+    * Correction d'un bug avec certains sites, où les fonctions de l'extension étaient écrasées par certains changements sur les pages (Github par exemple, en naviguant entre pages)
+        * Ajout de 2 nouveaux filtres pour configurer cette correction (observeBodyChange et observeBodyChangeTimerInterval)
+    * Correction de bugs avec les Mutation Observers ;
     * Correction d'un bug avec certains sites web et l'application de certains filtres (forceDisableDefault...) ;
     * Correction de l'application de certains filtres à l'élément body ;
     * Optimisation de la taille de l'extension ;
     * Correction d'autres bugs mineurs et optimisation mineure des performances ;
+    * Simplifications du code ;
     * Gestion de Font Awesome avec NPM ;
     * Mise à jour des dépendances.
 
