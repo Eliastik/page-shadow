@@ -203,16 +203,12 @@ import MutationObserverWrapper from "./mutationObserver.js";
             backgroundDetected = true;
         }
 
-        // Clear old mutation timers
-        if(safeTimerMutationBackgrounds) safeTimerMutationBackgrounds.clear();
-        if(safeTimerMutationDelayed) safeTimerMutationDelayed.clear();
+        const mutationBackgroundTimer = new SafeTimer(() => {
+            mutationObserve(MUTATION_TYPE_BACKGROUNDS);
+            mutationBackgroundTimer.clear();
+        });
 
-        safeTimerMutationBackgrounds = new SafeTimer(mutationElementsBackgrounds);
-        safeTimerMutationDelayed = new SafeTimer(treatMutationObserverBackgroundCalls);
-
-        if(mut_backgrounds) {
-            mut_backgrounds.start();
-        }
+        mutationBackgroundTimer.start(1);
     }
 
     function elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
@@ -448,7 +444,7 @@ import MutationObserverWrapper from "./mutationObserver.js";
             timerApplyDetectBackgrounds.clear();
         });
 
-        timerApplyDetectBackgrounds.start(1);
+        timerApplyDetectBackgrounds.start();
     }
 
     function mutationObserve(type) {
@@ -624,6 +620,9 @@ import MutationObserverWrapper from "./mutationObserver.js";
                 "attributeOldValue": true,
                 "characterDataOldValue": false
             }, null, true);
+
+            safeTimerMutationBackgrounds = new SafeTimer(mutationElementsBackgrounds);
+            safeTimerMutationDelayed = new SafeTimer(treatMutationObserverBackgroundCalls);
 
             mut_backgrounds.start();
         }
