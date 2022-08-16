@@ -260,3 +260,17 @@ select:focus, select.form-control:focus {
     background-color: #303134;
     color: #e6ebf0;
 }
+
+.btn-default.disabled.focus, .btn-default.disabled:focus, .btn-default.disabled:hover, .btn-default[disabled].focus, .btn-default[disabled]:focus, .btn-default[disabled]:hover, fieldset[disabled] .btn-default.focus, fieldset[disabled] .btn-default:focus, fieldset[disabled] .btn-default:hover {
+    background-color: #4f5157 !important;
+    color: #e1e7ec !important;
+}
+
+.btn-link[disabled]:focus, .btn-link[disabled]:hover, fieldset[disabled] .btn-link:focus, fieldset[disabled] .btn-link:hover {
+    color: #e1e7ec !important;
+}
+
+.btn-default.disabled:active, .btn-default[disabled]:active {
+    background-color: #4f5157 !important;
+    color: #e1e7ec !important;
+}

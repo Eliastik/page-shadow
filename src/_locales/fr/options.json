@@ -218,7 +218,7 @@
             "restoreErrorArchive": "Ce fichier n'est pas une archive de paramètres Page Shadow. Assurez-vous d'avoir sélectionné le bon fichier.",
             "restoreSuccess": "Restauration des données effectuée avec succès.",
             "preset": "Pré-réglages",
-            "descriptionPreset": "Vous pouvez ici créer et charger des pré-réglages pour pouvoir les restaurer instantanément plus tard. Les réglages sauvegardables correspondent à ceux affichés dans le menu de l'extension. 10 slots de pré-réglages sont disponibles.",
+            "descriptionPreset": "Vous pouvez ici créer des pré-réglages pour pouvoir les restaurer/charger instantanément plus tard. Les réglages sauvegardables correspondent à ceux affichés dans le menu de l'extension. 10 slots de pré-réglages sont disponibles.",
             "descriptionPresetAdvanced": "Les pré-réglages vous permettent également de configurer des paramètres différents pour chaque site web/page web. Par exemple, vous pouvez créer un pré-réglage qui comprend le paramètre « Augmenter le contraste » et « Inverser les couleurs » > « Sélectif », un autre qui comprend le réglage « Baisser la luminosité », etc. Vous pouvez ensuite appliquer l'un des pré-réglages à un site web ou une page web instantanément dans le menu de l'extension, en cliquant sur « Ce site » ou « Cette page » en face de la ligne « Auto activ. du pré-régl. pour ». Vous pouvez aussi paramétrer la liste des sites web/page web directement lorsque vous créez votre pré-réglage.",
             "warningPreset": "Attention, avant de charger un pré-réglage, sauvegardez vos réglages actuels dans un autre slot car ils seront écrasés !",
             "loadPreset": "Charger",
@@ -311,7 +311,7 @@
         },
         "filters": {
             "title": "Filtres",
-            "infos": "Les filtres permettent d'améliorer la compatibilité de Page Shadow avec les sites web en corrigeant les problèmes d'affichage. Ces filtres sont utilisés par la fonctionnalité Augmenter le contraste de la page et Inverser les couleurs. Ces filtres sont téléchargés depuis des sources en ligne. Ils sont automatiquement mis à jour, et il est également possible de le faire manuellement. Vous pouvez également écrire vos propres règles de filtre.",
+            "infos": "Les filtres permettent d'améliorer la compatibilité de Page Shadow avec les sites web en corrigeant les problèmes d'affichage. Ces filtres sont utilisés par la fonctionnalité Augmenter le contraste et Inverser les couleurs. Ces filtres sont téléchargés depuis des sources en ligne. Ils sont automatiquement mis à jour, et il est également possible de le faire manuellement. Vous pouvez également écrire vos propres règles de filtre.",
             "updateAll": "Tout mettre à jour",
             "addFilter": "Ajouter une source de filtre",
             "lastUpdate": "Dernière mise à jour le : {{date}} à {{hour}}",

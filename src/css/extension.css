@@ -744,3 +744,26 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     border-radius: 5px !important;
     height: 107px;
 }
+
+.btn.disabled, .btn[disabled], fieldset[disabled] .btn {
+    box-shadow: none !important;
+}
+
+.btn-default.disabled.focus, .btn-default.disabled:focus, .btn-default.disabled:hover, .btn-default[disabled].focus, .btn-default[disabled]:focus, .btn-default[disabled]:hover, fieldset[disabled] .btn-default.focus, fieldset[disabled] .btn-default:focus, fieldset[disabled] .btn-default:hover {
+    background-color: #FFFFFF;
+    color: #444 !important;
+}
+
+.btn-link[disabled]:focus, .btn-link[disabled]:hover, fieldset[disabled] .btn-link:focus, fieldset[disabled] .btn-link:hover {
+    background-color: transparent !important;
+    color: #444 !important;
+}
+
+.btn.disabled:active, .btn[disabled]:active {
+    background-image: none !important;
+}
+
+.btn-default.disabled:active, .btn-default[disabled]:active {
+    background-color: #FFFFFF;
+    color: #444 !important;
+}
