@@ -224,6 +224,7 @@
             "preset": "Presets",
             "descriptionPreset": "Here you can create and load presets so you can restore them instantly later. The settings which can be saved in presets correspond to those displayed in the extension menu. 10 preset slots are available.",
             "warningPreset": "Warning, before loading a preset, save your current settings in another slot because they will be overwritten!",
+            "descriptionPresetAdvanced": "Presets also allow you to configure different settings for each website/webpage. For example, you can create a preset that includes the setting \"Increase contrast\" and \"Invert colors\" > \"Selective\", another preset with the setting \"Decrease brightness\", etc. You can then apply one of the preset to a website or a webpage instantly in the extension menu, by selecting \"This website\" or \"This page\" opposite to the line \"Auto enable preset for\". You can also configure the list of website/webpage directly when you create your preset.",
             "loadPreset": "Load",
             "savePreset": "Create/edit",
             "deletePreset": "Delete",

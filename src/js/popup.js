@@ -426,20 +426,22 @@ $(document).ready(() => {
         disablePageShadow("disable-webpage", true);
     });
 
-    $("#disableWebsitePreset").on("click", () => {
+    $("#disableWebsitePreset").on("click", async() => {
         togglePreset("toggle-website", selectedPreset, true);
     });
 
-    $("#enableWebsitePreset").on("click", () => {
-        togglePreset("toggle-website", selectedPreset, false);
+    $("#enableWebsitePreset").on("click", async() => {
+        await togglePreset("toggle-website", selectedPreset, false);
+        checkPresetAutoEnabled(await getCurrentURL());
     });
 
-    $("#disableWebpagePreset").on("click", () => {
-        togglePreset("toggle-webpage", selectedPreset, true);
+    $("#disableWebpagePreset").on("click", async() => {
+        await togglePreset("toggle-webpage", selectedPreset, true);
     });
 
-    $("#enableWebpagePreset").on("click", () => {
-        togglePreset("toggle-webpage", selectedPreset, false);
+    $("#enableWebpagePreset").on("click", async() => {
+        await togglePreset("toggle-webpage", selectedPreset, false);
+        checkPresetAutoEnabled(await getCurrentURL());
     });
 
     checkContrastMode = async function() {

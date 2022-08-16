@@ -219,6 +219,7 @@
             "restoreSuccess": "Restauration des données effectuée avec succès.",
             "preset": "Pré-réglages",
             "descriptionPreset": "Vous pouvez ici créer et charger des pré-réglages pour pouvoir les restaurer instantanément plus tard. Les réglages sauvegardables correspondent à ceux affichés dans le menu de l'extension. 10 slots de pré-réglages sont disponibles.",
+            "descriptionPresetAdvanced": "Les pré-réglages vous permettent également de configurer des paramètres différents pour chaque site web/page web. Par exemple, vous pouvez créer un pré-réglage qui comprend le paramètre « Augmenter le contraste » et « Inverser les couleurs » > « Sélectif », un autre qui comprend le réglage « Baisser la luminosité », etc. Vous pouvez ensuite appliquer l'un des pré-réglages à un site web ou une page web instantanément dans le menu de l'extension, en cliquant sur « Ce site » ou « Cette page » en face de la ligne « Auto activ. du pré-régl. pour ». Vous pouvez aussi paramétrer la liste des sites web/page web directement lorsque vous créez votre pré-réglage.",
             "warningPreset": "Attention, avant de charger un pré-réglage, sauvegardez vos réglages actuels dans un autre slot car ils seront écrasés !",
             "loadPreset": "Charger",
             "savePreset": "Créer/modifier",
