@@ -15,7 +15,7 @@
         "previsualisationTheme": "Preview:",
         "previsualisationThemeText": "A text. <a href=\"#\" id=\"pageShadowLinkNotVisited\">A link</a>. <a href=\"#\" id=\"pageShadowLinkVisited\">A visited link</a>.",
         "disableImgBgColor": "Color the background of the images",
-        "colorInvert": "Invert the colors",
+        "colorInvert": "Invert colors",
         "titleColorInvert": "Invert the colors of the images, the videos and/or of the entire page to better stand out on the dark theme.",
         "entirePageInvert": "Entire page",
         "imageInvert": "Images",

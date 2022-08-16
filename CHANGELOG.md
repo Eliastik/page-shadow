@@ -24,6 +24,7 @@
     * Fixed a bug with some websites, where the functions were removed by the website page changes (Github for example, when navigating between pages)
         * Added 2 new filters to configure this bugfix (observeBodyChange and observeBodyChangeTimerInterval)
     * Fixed a bug with the function "Invert entire page colors" on Firefox;
+    * Fixed bugs with the function "Invert colors" on all browsers;
     * Fixed bugs with Mutation Observers;
     * Fixed a bug with some websites and the application of some filters (forceDisableDefault...);
     * Fixed applying some filters to the body element;
@@ -308,6 +309,7 @@
     * Correction d'un bug avec certains sites, où les fonctions de l'extension étaient écrasées par certains changements sur les pages (Github par exemple, en naviguant entre pages)
         * Ajout de 2 nouveaux filtres pour configurer cette correction (observeBodyChange et observeBodyChangeTimerInterval)
     * Correction d'un bug avec la fonction "Inverser les couleurs de la page entière" sous Firefox ;
+    * Correction de bugs avec la fonction "Inverser les couleurs" sur tous les navigateurs ;
     * Correction de bugs avec les Mutation Observers ;
     * Correction d'un bug avec certains sites web et l'application de certains filtres (forceDisableDefault...) ;
     * Correction de l'application de certains filtres à l'élément body ;
