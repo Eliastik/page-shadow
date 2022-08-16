@@ -54,6 +54,7 @@ Or you can compile it yourself (see Compilation section).
     * Fixed a bug with some websites, where the functions were removed by the website page changes (Github for example, when navigating between pages)
         * Added 2 new filters to configure this bugfix (observeBodyChange and observeBodyChangeTimerInterval)
     * Fixed a bug with the function "Invert entire page colors" on Firefox;
+    * Fixed bugs with the function "Invert colors" on all browsers;
     * Fixed bugs with Mutation Observers;
     * Fixed a bug with some websites and the application of some filters (forceDisableDefault...);
     * Fixed applying some filters to the body element;

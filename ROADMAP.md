@@ -46,6 +46,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] Preserve bright colors?/Several "shades" of background color for the themes?
 * [ ] Logging ?
 * [ ] Rework the Mutation Observers to simplify the code and fix somes issues (see the mutation-observers-reworking branch) -> Wrapper class
+* [ ] Attenuate the "flash" when changing settings
 
 #### Known issues/bugs
 

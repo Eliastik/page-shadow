@@ -520,6 +520,7 @@ export default class FilterProcessor {
                     throw "Parsing error";
                 }
             } catch(e) {
+                if(e === "Parsing error") throw e;
                 throw "Fetch error";
             }
         }

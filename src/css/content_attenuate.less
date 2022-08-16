@@ -20,9 +20,23 @@
     --page-shadow-attenuate-filter: grayscale(50%);
 }
 
-body.pageShadowAttenuateImageColor:not(.pageShadowInvertImageColor) img, body.pageShadowAttenuateImageColor:not(.pageShadowInvertImageColor) svg, body.pageShadowAttenuateImageColor:not(.pageShadowInvertBgColor) .pageShadowHasBackgroundImg {
+body.pageShadowAttenuateImageColor:not(.pageShadowInvertImageColor) img:not(.pageShadowDisableElementInvert), body.pageShadowAttenuateImageColor:not(.pageShadowInvertImageColor) svg:not(.pageShadowDisableElementInvert), body.pageShadowAttenuateImageColor:not(.pageShadowInvertBgColor) .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert) {
     filter: var(--page-shadow-attenuate-filter) !important;
     -moz-filter: var(--page-shadow-attenuate-filter) !important;
     -o-filter: var(--page-shadow-attenuate-filter) !important;
     -webkit-filter: var(--page-shadow-attenuate-filter) !important;
+}
+
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateImageColor img.pageShadowDisableElementInvert, html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateImageColor svg.pageShadowDisableElementInvert, html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateImageColor .pageShadowHasBackgroundImg.pageShadowDisableElementInvert {
+    filter: grayscale(50%) !important;
+    -moz-filter: grayscale(50%) !important;
+    -o-filter: grayscale(50%) !important;
+    -webkit-filter: grayscale(50%) !important;
+}
+
+html.pageShadowInvertEntirePage body.pageShadowAttenuateImageColor img.pageShadowDisableElementInvert, html.pageShadowInvertEntirePage body.pageShadowAttenuateImageColor svg.pageShadowDisableElementInvert, html.pageShadowInvertEntirePage body.pageShadowAttenuateImageColor .pageShadowHasBackgroundImg.pageShadowDisableElementInvert {
+    filter: invert(100%) grayscale(50%) !important;
+    -moz-filter: invert(100%) grayscale(50%) !important;
+    -o-filter: invert(100%) grayscale(50%) !important;
+    -webkit-filter: invert(100%) grayscale(50%) !important;
 }
