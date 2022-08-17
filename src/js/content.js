@@ -183,6 +183,10 @@ import MutationObserverWrapper from "./mutationObserver.js";
             const detectBackgroundTimer = new SafeTimer(() => {
                 addClass(document.body, "pageShadowDisableStyling");
 
+                addClass(document.body, "pageShadowDisableBackgroundStyling");
+                detectBackgroundForElement(document.body, true);
+                removeClass(document.body, "pageShadowDisableBackgroundStyling");
+
                 const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
                 let i = elements.length;
 
@@ -232,7 +236,7 @@ import MutationObserverWrapper from "./mutationObserver.js";
             }
         }
 
-        if(!element || element == document.body || element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected") || backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1 || ignoredElementsContentScript.includes(element.localName)) {
+        if(!element || (element != document.body && (element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected"))) || backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1 || ignoredElementsContentScript.includes(element.localName)) {
             return;
         }
 
