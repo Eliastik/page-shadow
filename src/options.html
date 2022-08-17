@@ -117,7 +117,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                             </div>
                             <div class="form-group">
                                 <div class="col-lg-10 col-lg-offset-2">
-                                    <button type="button" class="btn btn-primary" id="saveListButton"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.save"></span></button>
+                                    <button type="button" class="btn btn-primary" id="saveListButton"><i class="fa fa-floppy-disk fa-fw" aria-hidden="true"></i> <span data-i18n="container.save"></span></button>
                                 </div>
                             </div>
                         </div>
@@ -129,7 +129,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 <label class="col-lg-2 control-label option-label" data-i18n="modal.customTheme.chooseTheme" for="themeSelect"></label>
                                 <div class="col-lg-10">
                                     <select id="themeSelect" value="1" style="min-width: 80px;" class="form-control"></select>
-                                    <p class="mt8"><button id="customThemeSave" data-delay="0" data-container="#customThemeTab" data-trigger="manual" data-placement="bottom" type="button" class="btn btn-sm btn-success"><i class="fa fa-fw fa-check" aria-hidden="true"></i> <span data-i18n="modal.customTheme.save"></span></button> &nbsp; <button id="customThemeCancel" type="button" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-times" aria-hidden="true"></i> <span data-i18n="modal.customTheme.cancel"></span></button> &nbsp; <button id="customThemeReset" type="button" class="btn btn-sm btn-danger"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i> <span data-i18n="modal.customTheme.reset"></span></button></p>
+                                    <p class="mt8"><button id="customThemeSave" data-delay="0" data-container="#customThemeTab" data-trigger="manual" data-placement="bottom" type="button" class="btn btn-sm btn-success"><i class="fa fa-fw fa-floppy-disk" aria-hidden="true"></i> <span data-i18n="modal.customTheme.save"></span></button> &nbsp; <button id="customThemeCancel" type="button" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-arrow-rotate-left" aria-hidden="true"></i> <span data-i18n="modal.customTheme.cancel"></span></button> &nbsp; <button id="customThemeReset" type="button" class="btn btn-sm btn-danger"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i> <span data-i18n="modal.customTheme.reset"></span></button></p>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -302,7 +302,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                     <div class="center">
                                         <p id="archiveError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveError"></span></p>
                                     </div>
-                                    <p id="firefoxHelpArchive" class="orange" style="display: none;"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <strong data-i18n="modal.archive.firefoxHelp"></strong></p>
+                                    <p id="firefoxHelpArchive" class="orange" style="display: none;"><i class="fa fa-exclamation-triangle fa-fw" aria-hidden="true"></i> <strong data-i18n="modal.archive.firefoxHelp"></strong></p>
                                     <div id="helpArchive" style="display: none;">
                                         <p data-i18n="modal.archive.helpArchive"></p>
                                         <p><strong data-i18n="modal.archive.suggestedName"></strong> <input type="text" id="archiveSuggestedName" readonly="readonly"></input></p>
@@ -370,7 +370,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                             </div>
                         </div>
                         <div class="row center">
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#resetConfirm" id="resetConfirmBtn"><i class="fa fa-refresh" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#resetConfirm" id="resetConfirmBtn"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button>
                         </div>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="aboutTab">
@@ -616,8 +616,8 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                             <p data-i18n="container.saveInfo2" class="bold center"></p>
                             <div id="advancedOptionsFiltersWebsiteSettings" class="form-horizontal"></div>
                             <div class="row center" id="advancedOptionsFullWarning">
-                                <button type="button" class="btn btn-primary" id="saveAdvancedOptions" data-delay="0" data-container="#advancedTab" data-trigger="manual" data-placement="top"><i class="fa fa-check" aria-hidden="true"></i> <span data-i18n="container.save"></span></button>
-                                <button type="button" class="btn btn-danger ml-2" id="resetAdvancedOptions"><i class="fa fa-refresh" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button>
+                                <button type="button" class="btn btn-primary" id="saveAdvancedOptions" data-delay="0" data-container="#advancedTab" data-trigger="manual" data-placement="top"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="container.save"></span></button>
+                                <button type="button" class="btn btn-danger ml-2" id="resetAdvancedOptions"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="container.reset"></span></button>
                             </div>
                         </div>
                     </div>
@@ -817,7 +817,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <button id="customFilterSave" data-delay="0" data-container="#editFilter" data-trigger="manual" data-placement="bottom" type="button" class="btn btn-sm btn-success"><i class="fa fa-fw fa-check" aria-hidden="true"></i> <span data-i18n="modal.filters.save"></span></button> &nbsp; <button id="customFilterCancel" type="button" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-times" aria-hidden="true"></i> <span data-i18n="modal.filters.cancel"></span></button> &nbsp; <button id="customFilterGuide" type="button" class="btn btn-sm btn-primary"><i class="fa fa-file-text fa-times" aria-hidden="true"></i> <span data-i18n="modal.filters.guide"></span></button></button>
+                                <button id="customFilterSave" data-delay="0" data-container="#editFilter" data-trigger="manual" data-placement="bottom" type="button" class="btn btn-sm btn-success"><i class="fa fa-fw fa-floppy-disk" aria-hidden="true"></i> <span data-i18n="modal.filters.save"></span></button> &nbsp; <button id="customFilterCancel" type="button" class="btn btn-sm btn-warning"><i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i> <span data-i18n="modal.filters.cancel"></span></button> &nbsp; <button id="customFilterGuide" type="button" class="btn btn-sm btn-primary"><i class="fa fa-file-text fa-times" aria-hidden="true"></i> <span data-i18n="modal.filters.guide"></span></button></button>
                             </div>
                         </div>
                         <div class="row">
