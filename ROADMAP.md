@@ -33,6 +33,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] When selecting a custom theme and then choosing a classic theme, the other tabs keep the custom theme
 * [x] Bug with some websites (Github) : Increase contrast setting cannot be applied -> classes on body element are removed
     * [x] Other bug: the settings are not working when changing of a page on Github -> document.body changes between page refreshing
+* [x] (Minor) Background image on body element is not detected
+* [x] (Minor) SVG with use element is not working with Invert colors function (see Leroy Merlin website)
 
 ### Futures versions
 
@@ -52,7 +54,5 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
-* [ ] (Minor) Background image on body element is not detected
-* [ ] (Minor) SVG with use element is not working with Invert colors function (see Leroy Merlin website)
 * [x] (Medium) Firefox bug: Page Color inversion - broken float: https://stackoverflow.com/questions/52937708/why-does-applying-a-css-filter-on-the-parent-break-the-child-positioning (difficult to fix)
     * Seems to be fixed on latest Firefox versions
