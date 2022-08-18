@@ -2,7 +2,7 @@
 
 ## Changelog:
 
-### Version 2.10 (8/15/2022) :
+### Version 2.10 (8/18/2022) :
 
 * Page Shadow has undergone a redesign of its graphical interface. Many new features are available:
     * Added a dark mode for the entire Page Shadow interface. The dark mode is automatically enabled according to the device settings.
@@ -287,7 +287,7 @@
 
 ## Journal des changements :
 
-### Version 2.10 (15/08/2022) :
+### Version 2.10 (18/08/2022) :
 
 * Page Shadow a subit une refonte de son interface graphique. De nombreuses nouveautés sont disponibles :
     * Ajout d'un mode sombre pour toute l'interface de Page Shadow. Il s'active automatiquement selon les paramètres de l'appareil.

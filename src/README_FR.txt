@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.10 (15/08/2022)
+* Version actuelle : 2.10 (18/08/2022)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -12,12 +12,13 @@ Page Shadow est une extension de mode sombre (dark mode). Elle comprend une sér
 
 Elle vous permet :
 
-- D'augmenter le contraste de la page, c'est à-dire de renforcer les tons sombres d'une page : l'extension transforme le design de n'importe quel site en "mode sombre" ;
-- De baisser la luminosité de la page ;
+- D'augmenter le contraste des pages, c'est à-dire de renforcer les tons sombres des pages : l'extension transforme le design de n'importe quel site en "mode sombre" ;
+- De baisser la luminosité des pages ;
 - D'inverser les couleurs des images ou des pages entières ;
-- D'activer un mode nuit (applique un filtre orangé sur la page pour réduire la lumière bleue émise par l'écran).
+- D'atténuer les couleurs des images ;
+- D'activer un mode nuit (applique un filtre orangé sur les pages pour réduire la lumière bleue émise par l'écran).
 
-Page Shadow dispose de nombreux paramètres pour personnaliser votre expérience de l'extension : réglages adapté à chaque site, activation/désactivation automatique, etc.
+Page Shadow dispose de nombreux paramètres pour personnaliser votre expérience de l'extension : réglages adaptés à chaque site, activation/désactivation automatique, etc.
 
 ### Installation :
 
@@ -33,7 +34,7 @@ Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
 
-#### Version 2.10 (15/08/2022) :
+#### Version 2.10 (18/08/2022) :
 * Page Shadow a subit une refonte de son interface graphique. De nombreuses nouveautés sont disponibles :
     * Ajout d'un mode sombre pour toute l'interface de Page Shadow. Il s'active automatiquement selon les paramètres de l'appareil.
     * Ajout de 2 nouveaux modes d'interface pour la popup : le mode "Switches et icônes" (activé par défaut) et "Moderne" (encore en bêta, et sera l'interface par défaut de la popup de Page Shadow sur la prochaine version)
@@ -350,16 +351,16 @@ Les fichiers d'extension compilés seront créés dans le dossier "build".
 
 (Note : le répertoire key contient une clé nécessaire à la création d'une extension Chrome).
 
-Pour installer l'extension dans Firefox, vous devez installer Firefox Developer Edition et smodifier la valeur suivante dans about:config en "false" : xpinstall.signatures.required
+Pour installer l'extension dans Firefox, vous devez installer Firefox Developer Edition et modifier la valeur suivante dans about:config en "false" : xpinstall.signatures.required
 Puis lancez l'installation avec le fichier .xpi
 
-Pour Chrome, faites glisser le fichier .crx dans la fenêtre des extensions (chrome://extensions).
+Pour Chromium, faites glisser le fichier .crx dans la fenêtre des extensions (chrome://extensions).
 
 Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `gulp clean-build`
 
 ### Licence :
 
-Page Shadow est distribué sous licence GNU GPL-3.0
+Page Shadow est distribué sous licence GNU GPL-3.0 (voir le fichier LICENCE.txt)
 
 #### Avis de licence
 
@@ -381,7 +382,6 @@ que ce programme ; si ce n'est pas le cas, consultez <http://www.gnu.org/license
 ### Credits :
 
 - Source Sans Pro (version 2.020), SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL ) : https://github.com/adobe-fonts/source-sans-pro/blob/master/LICENSE.txt
-- Font Awesome, SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL )
 - Bootstrap (CSS et Javascript), MIT license ( https://github.com/twbs/bootstrap/blob/v4-dev/LICENSE ) ;
     - Thème : Paper par Bootswatch (modifié) - https://bootswatch.com/paper/
 - Cette extension utilise une photo venant de ce site : http://littlevisuals.co , domaine public ( https://creativecommons.org/publicdomain/zero/1.0/ ).

@@ -180,9 +180,8 @@ import SafeTimer from "./safeTimer.js";
     function detectBackground(tagName) {
         if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
             const detectBackgroundTimer = new SafeTimer(() => {
-                addClass(document.body, "pageShadowDisableStyling");
+                addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
 
-                addClass(document.body, "pageShadowDisableBackgroundStyling");
                 detectBackgroundForElement(document.body, true);
                 removeClass(document.body, "pageShadowDisableBackgroundStyling");
 

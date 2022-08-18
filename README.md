@@ -4,22 +4,23 @@
 <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen.png" width="300" alt="Page Shadow" /> <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen_2.png" width="300" alt="Page Shadow" />
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.10 (08/04/2022)
+* Latest version: 2.10 (08/18/2022)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
 This is the source code for the extension Page Shadow, compatible with Chrome/Chromium, Firefox, Opera and Microsoft Edge. This extension uses the WebExtensions technology via the Browser API (more infos : https://developer.mozilla.org/fr/Add-ons/WebExtensions ).
 
-Page Shadow is a dark mode plugin. It includes a series of tools to improve the reading of web pages in a dark environment.
+Page Shadow is a dark mode extension. It includes a series of tools to improve the reading of web pages in a dark environment.
 
 It allows you:
 
-- To increase the contrast of the pages, that is to say to reinforce the dark tones of a page: the extension transforms the design of any site in a "dark mode" theme;
+- To increase the contrast of the pages, that is to say to reinforce the dark tones of the pages: the extension transforms the design of any site into a "dark mode" theme;
 - To decrease the brightness of the pages;
 - To invert the colors of images or entire pages;
-- To enable a night mode (applies an orange filter on the page to reduce the blue light emitted by the screen).
+- To attenuate the colors of images;
+- To enable a night mode (applies an orange filter on the pages to reduce the blue light emitted by the screen).
 
-Page Shadow has many parameters to personalize your extension: settings adapted to each site, automatic enable/disable, etc.
+Page Shadow has many settings to personalize your extension: settings adapted to each site, automatic enable/disable, etc.
 
 ### Installation:
 
@@ -73,13 +74,13 @@ The extension files compiled will be created in the sub-directory "build".
 To install the extension in Firefox, you need to install Firefox Developer Edition then modify the following value in about:config to "false": xpinstall.signatures.required
 Then launch the installation with the .xpi file.
 
-For Chrome, slide the .crx file in the extension window (chrome://extensions).
+For Chromium, slide the .crx file into the extension page (chrome://extensions).
 
 Then if you want to clean the build directory, run the command `gulp clean-build`
 
 ### Licence :
 
-Page Shadow is distributed under GPL-3.0 license
+Page Shadow is distributed under GPL-3.0 license (see LICENCE.txt file)
 
 #### License notice
 
@@ -101,7 +102,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ### Credits :
 
 - Source Sans Pro (version 2.020), SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL ) : https://github.com/adobe-fonts/source-sans-pro/blob/master/LICENSE.txt
-- Font Awesome, SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL )
 - Bootstrap (CSS and Javascript), MIT license ( https://github.com/twbs/bootstrap/blob/v4-dev/LICENSE ) ;
     - Theme: Paper by Bootswatch (modified) - https://bootswatch.com/paper/
 - This extension uses a picture from this site: http://littlevisuals.co , Public domain ( https://creativecommons.org/publicdomain/zero/1.0/ ).
@@ -112,7 +112,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen_fr.png" width="300" alt="Page Shadow" /> <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen_fr_2.png" width="300" alt="Page Shadow" />
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.10 (04/08/2022)
+* Version actuelle : 2.10 (18/08/2022)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -122,12 +122,13 @@ Page Shadow est une extension de mode sombre (dark mode). Elle comprend une sér
 
 Elle vous permet :
 
-- D'augmenter le contraste de la page, c'est à-dire de renforcer les tons sombres d'une page : l'extension transforme le design de n'importe quel site en "mode sombre" ;
-- De baisser la luminosité de la page ;
+- D'augmenter le contraste des pages, c'est à-dire de renforcer les tons sombres des pages : l'extension transforme le design de n'importe quel site en "mode sombre" ;
+- De baisser la luminosité des pages ;
 - D'inverser les couleurs des images ou des pages entières ;
-- D'activer un mode nuit (applique un filtre orangé sur la page pour réduire la lumière bleue émise par l'écran).
+- D'atténuer les couleurs des images ;
+- D'activer un mode nuit (applique un filtre orangé sur les pages pour réduire la lumière bleue émise par l'écran).
 
-Page Shadow dispose de nombreux paramètres pour personnaliser votre expérience de l'extension : réglages adapté à chaque site, activation/désactivation automatique, etc.
+Page Shadow dispose de nombreux paramètres pour personnaliser votre expérience de l'extension : réglages adaptés à chaque site, activation/désactivation automatique, etc.
 
 ### Installation :
 
@@ -178,16 +179,16 @@ Les fichiers d'extension compilés seront créés dans le dossier "build".
 
 (Note : le répertoire key contient une clé nécessaire à la création d'une extension Chrome).
 
-Pour installer l'extension dans Firefox, vous devez installer Firefox Developer Edition et smodifier la valeur suivante dans about:config en "false" : xpinstall.signatures.required
+Pour installer l'extension dans Firefox, vous devez installer Firefox Developer Edition et modifier la valeur suivante dans about:config en "false" : xpinstall.signatures.required
 Puis lancez l'installation avec le fichier .xpi
 
-Pour Chrome, faites glisser le fichier .crx dans la fenêtre des extensions (chrome://extensions).
+Pour Chromium, faites glisser le fichier .crx dans la fenêtre des extensions (chrome://extensions).
 
 Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `gulp clean-build`
 
 ### Licence :
 
-Page Shadow est distribué sous licence GNU GPL-3.0
+Page Shadow est distribué sous licence GNU GPL-3.0 (voir le fichier LICENCE.txt)
 
 #### Avis de licence
 
@@ -209,7 +210,6 @@ que ce programme ; si ce n'est pas le cas, consultez <http://www.gnu.org/license
 ### Credits :
 
 - Source Sans Pro (version 2.020), SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL ) : https://github.com/adobe-fonts/source-sans-pro/blob/master/LICENSE.txt
-- Font Awesome, SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL )
 - Bootstrap (CSS et Javascript), MIT license ( https://github.com/twbs/bootstrap/blob/v4-dev/LICENSE ) ;
     - Thème : Paper par Bootswatch (modifié) - https://bootswatch.com/paper/
 - Cette extension utilise une photo venant de ce site : http://littlevisuals.co , domaine public ( https://creativecommons.org/publicdomain/zero/1.0/ ).
