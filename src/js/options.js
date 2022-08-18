@@ -214,6 +214,8 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets) {
     if(result && result.lastAutoBackupFailed == "true") {
         $("#autoBackupError").show();
     }
+
+    checkAdvancedOptions();
 }
 
 async function displayTheme(nb, defaultSettings) {
@@ -1287,6 +1289,16 @@ async function initColpick() {
     });
 }
 
+function checkAdvancedOptions() {
+    if($("#checkboxAdvancedOptions").is(":checked")) {
+        $("#advancedOptionsFull").show();
+        $("#advancedOptionsFullWarning").hide();
+    } else {
+        $("#advancedOptionsFull").hide();
+        $("#advancedOptionsFullWarning").show();
+    }
+}
+
 $(document).ready(() => {
     let savedTimeout;
 
@@ -1688,13 +1700,7 @@ $(document).ready(() => {
     });
 
     $("#checkboxAdvancedOptions").on("click", () => {
-        if($("#checkboxAdvancedOptions").is(":checked")) {
-            $("#advancedOptionsFull").show();
-            $("#advancedOptionsFullWarning").hide();
-        } else {
-            $("#advancedOptionsFull").hide();
-            $("#advancedOptionsFullWarning").show();
-        }
+        checkAdvancedOptions();
     });
 
     $("#resetAdvancedOptions").on("click", () => {

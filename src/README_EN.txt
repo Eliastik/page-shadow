@@ -2,22 +2,23 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.10 (8/15/2022)
+* Latest version: 2.10 (8/18/2022)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
 This is the source code for the extension Page Shadow, compatible with Chrome/Chromium, Firefox, Opera and Microsoft Edge. This extension uses the WebExtensions technology via the Browser API (more infos : https://developer.mozilla.org/fr/Add-ons/WebExtensions ).
 
-Page Shadow is a dark mode plugin. It includes a series of tools to improve the reading of web pages in a dark environment.
+Page Shadow is a dark mode extension. It includes a series of tools to improve the reading of web pages in a dark environment.
 
 It allows you:
 
-- To increase the contrast of the pages, that is to say to reinforce the dark tones of a page: the extension transforms the design of any site in a "dark mode" theme;
+- To increase the contrast of the pages, that is to say to reinforce the dark tones of the pages: the extension transforms the design of any site into a "dark mode" theme;
 - To decrease the brightness of the pages;
 - To invert the colors of images or entire pages;
-- To enable a night mode (applies an orange filter on the page to reduce the blue light emitted by the screen).
+- To attenuate the colors of images;
+- To enable a night mode (applies an orange filter on the pages to reduce the blue light emitted by the screen).
 
-Page Shadow has many parameters to personalize your extension: settings adapted to each site, automatic enable/disable, etc.
+Page Shadow has many settings to personalize your extension: settings adapted to each site, automatic enable/disable, etc.
 
 ### Installation:
 
@@ -33,7 +34,7 @@ Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
 
-### Version 2.10 (8/15/2022) :
+### Version 2.10 (8/18/2022) :
 * Page Shadow has undergone a redesign of its graphical interface. Many new features are available:
     * Added a dark mode for the entire Page Shadow interface. The dark mode is automatically enabled according to the device settings.
     * Added 2 new interface modes for the popup: "Switches and icons" mode (enabled by default) and "Modern" (still in beta, and will be the default interface of the Page Shadow popup on the next version)
@@ -352,13 +353,13 @@ The extension files compiled will be created in the sub-directory "build".
 To install the extension in Firefox, you need to install Firefox Developer Edition then modify the following value in about:config to "false": xpinstall.signatures.required
 Then launch the installation with the .xpi file.
 
-For Chrome, slide the .crx file in the extension window (chrome://extensions).
+For Chromium, slide the .crx file in the extension window (chrome://extensions).
 
 Then if you want to clean the build directory, run the command `gulp clean-build`
 
 ### Licence :
 
-Page Shadow is distributed under GPL-3.0 license
+Page Shadow is distributed under GPL-3.0 license (see LICENCE.txt file)
 
 #### License notice
 
@@ -380,7 +381,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ### Credits :
 
 - Source Sans Pro (version 2.020), SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL ) : https://github.com/adobe-fonts/source-sans-pro/blob/master/LICENSE.txt
-- Font Awesome, SIL Open Font License version 1.1 ( http://scripts.sil.org/OFL )
 - Bootstrap (CSS and Javascript), MIT license ( https://github.com/twbs/bootstrap/blob/v4-dev/LICENSE ) ;
     - Theme: Paper by Bootswatch (modified) - https://bootswatch.com/paper/
 - This extension uses a picture from this site: http://littlevisuals.co , Public domain ( https://creativecommons.org/publicdomain/zero/1.0/ ).

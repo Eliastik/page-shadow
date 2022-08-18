@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-const extensionVersion = "2.10-RC3";
-const versionDate = new Date(2022, 7, 15);
+const extensionVersion = "2.10";
+const versionDate = new Date(2022, 7, 18);
 const nbThemes = 16; // nb of themes for the function Increase the contrast (used globally in the extension)
 const colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"]; // color temperatures available for the function Night Mode (used globally in the extension)
 const minBrightnessPercentage = 0; // the minimum percentage of brightness
@@ -99,6 +99,22 @@ const defaultFilters = {
             "filterName": "Mode performance ultra/Ultra performance mode",
             "sourceName": "Eliastik's Softs",
             "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/ultra.performance.txt",
+            "lastUpdated": 0,
+            "enabled": false,
+            "hasError": false,
+            "local": false,
+            "homepage": "https://www.eliastiksofts.com/page-shadow/",
+            "builtIn": true,
+            "expiresIn": 1, // days
+            "description": "",
+            "version": "0",
+            "license": "",
+            "content": null
+        },
+        {
+            "filterName": "Filtre expérimental/Experimental filter",
+            "sourceName": "Eliastik's Softs",
+            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/experimental.txt",
             "lastUpdated": 0,
             "enabled": false,
             "hasError": false,
