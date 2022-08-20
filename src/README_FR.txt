@@ -34,6 +34,11 @@ Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
 
+### Version 2.10 - Hotfix 2 (20/08/2022) :
+
+* Corrige l'application des fonctions Réduire la luminosité/Filtre de réduction de la lumière bleue sous Firefox
+* Corrige les Mutation Observers sous Firefox
+
 ### Version 2.10 - Hotfix 1 (20/08/2022) :
 
 * Corrige la migration des paramètres actuels (réduction de la luminosité et mode nuit)

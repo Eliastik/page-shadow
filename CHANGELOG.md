@@ -2,6 +2,11 @@
 
 ## Changelog:
 
+### Version 2.10 - Hotfix 2 (20/08/2022) :
+
+* Fix the features Decrease brightness/Blue light reduction filter on Firefox
+* Fix Mutation Observers on Firefox
+
 ### Version 2.10 - Hotfix 1 (8/20/2022) :
 
 * Fix migration of current settings (decrease brightness and night mode)
@@ -290,6 +295,11 @@
 # Page Shadow - Français
 
 ## Journal des changements :
+
+### Version 2.10 - Hotfix 2 (20/08/2022) :
+
+* Corrige l'application des fonctions Réduire la luminosité/Filtre de réduction de la lumière bleue sous Firefox
+* Corrige les Mutation Observers sous Firefox
 
 ### Version 2.10 - Hotfix 1 (20/08/2022) :
 
