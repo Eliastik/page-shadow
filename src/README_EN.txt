@@ -34,6 +34,10 @@ Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
 
+### Version 2.10 - Hotfix 1 (8/20/2022) :
+
+* Fix migration of current settings (decrease brightness and night mode)
+
 ### Version 2.10 (8/18/2022) :
 * Page Shadow has undergone a redesign of its graphical interface. Many new features are available:
     * Added a dark mode for the entire Page Shadow interface. The dark mode is automatically enabled according to the device settings.

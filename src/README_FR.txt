@@ -34,6 +34,10 @@ Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
 
+### Version 2.10 - Hotfix 1 (20/08/2022) :
+
+* Corrige la migration des paramètres actuels (réduction de la luminosité et mode nuit)
+
 #### Version 2.10 (18/08/2022) :
 * Page Shadow a subit une refonte de son interface graphique. De nombreuses nouveautés sont disponibles :
     * Ajout d'un mode sombre pour toute l'interface de Page Shadow. Il s'active automatiquement selon les paramètres de l'appareil.
