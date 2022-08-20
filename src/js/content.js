@@ -206,8 +206,8 @@ import SafeTimer from "./safeTimer.js";
         }
 
         const mutationBackgroundTimer = new SafeTimer(() => {
-            mutationObserve(MUTATION_TYPE_BACKGROUNDS);
             mutationBackgroundTimer.clear();
+            mutationObserve(MUTATION_TYPE_BACKGROUNDS);
         });
 
         mutationBackgroundTimer.start(1);
@@ -275,8 +275,8 @@ import SafeTimer from "./safeTimer.js";
 
         if(document.readyState === "complete") {
             const timerBackgrounds = new SafeTimer(() => {
-                waitAndApplyDetectBackgrounds(elements);
                 timerBackgrounds.clear();
+                waitAndApplyDetectBackgrounds(elements);
             });
 
             timerBackgrounds.start();
@@ -286,8 +286,8 @@ import SafeTimer from "./safeTimer.js";
                     // when the page is entirely loaded
                     if(document.readyState === "complete") {
                         const timerBackgrounds = new SafeTimer(() => {
-                            waitAndApplyDetectBackgrounds(elements);
                             timerBackgrounds.clear();
+                            waitAndApplyDetectBackgrounds(elements);
                         });
 
                         timerBackgrounds.start(250);
@@ -361,13 +361,13 @@ import SafeTimer from "./safeTimer.js";
         if(timerApplyBrightnessPage) timerApplyBrightnessPage.clear();
 
         timerApplyBrightnessPage = new SafeTimer(() => {
+            timerApplyBrightnessPage.clear();
+
             if(!document.body) {
                 waitAndApplyBrightnessPage(element, wrapper);
             } else {
                 appendBrightnessElement(element, wrapper);
             }
-
-            timerApplyBrightnessPage.clear();
         });
 
         timerApplyBrightnessPage.start(1);
@@ -389,13 +389,13 @@ import SafeTimer from "./safeTimer.js";
         if(timerApplyBlueLightPage) timerApplyBlueLightPage.clear();
 
         timerApplyBlueLightPage = new SafeTimer(() => {
+            timerApplyBlueLightPage.clear();
+
             if(!document.body) {
                 waitAndApplyBlueLightPage(element, wrapper);
             } else {
                 appendBlueLightElement(element, wrapper);
             }
-
-            timerApplyBlueLightPage.clear();
         });
 
         timerApplyBlueLightPage.start(1);
@@ -405,13 +405,13 @@ import SafeTimer from "./safeTimer.js";
         if(timerApplyContrastPage) timerApplyContrastPage.clear();
 
         timerApplyContrastPage = new SafeTimer(() => {
+            timerApplyContrastPage.clear();
+
             if(!document.body) {
                 waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
             } else {
                 contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
             }
-
-            timerApplyContrastPage.clear();
         });
 
         timerApplyContrastPage.start(1);
@@ -421,13 +421,13 @@ import SafeTimer from "./safeTimer.js";
         if(timerApplyInvertColors) timerApplyInvertColors.clear();
 
         timerApplyInvertColors = new SafeTimer(() => {
+            timerApplyInvertColors.clear();
+
             if(!document.body) {
                 waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
             } else {
                 invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
             }
-
-            timerApplyInvertColors.clear();
         });
 
         timerApplyInvertColors.start(1);
@@ -437,13 +437,13 @@ import SafeTimer from "./safeTimer.js";
         if(timerApplyDetectBackgrounds) timerApplyDetectBackgrounds.clear();
 
         timerApplyDetectBackgrounds = new SafeTimer(() => {
+            timerApplyDetectBackgrounds.clear();
+
             if(!document.body) {
                 waitAndApplyDetectBackgrounds(tagName);
             } else {
                 detectBackground(tagName);
             }
-
-            timerApplyDetectBackgrounds.clear();
         });
 
         timerApplyDetectBackgrounds.start();
@@ -518,13 +518,13 @@ import SafeTimer from "./safeTimer.js";
 
                 if(reApplyContrast || reApplyInvert || reApplyAttenuate) {
                     const timerReapply = new SafeTimer(() => {
+                        timerReapply.clear();
+
                         if(!reApplyContrast && (reApplyInvert || reApplyAttenuate)) {
                             main(TYPE_ONLY_INVERT, MUTATION_TYPE_BODY);
                         } else {
                             main(TYPE_ONLY_CONTRAST, MUTATION_TYPE_BODY);
                         }
-
-                        timerReapply.clear();
                     });
 
                     timerReapply.start(websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
@@ -572,6 +572,8 @@ import SafeTimer from "./safeTimer.js";
 
                 if(reApplyBrightness || reApplyBlueLight) {
                     const timerApplyMutationBlueLight = new SafeTimer(() => {
+                        timerApplyMutationBlueLight.clear();
+
                         if(reApplyBrightness && reApplyBlueLight) {
                             main(TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT, MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
                         } else if(reApplyBrightness) {
@@ -579,8 +581,6 @@ import SafeTimer from "./safeTimer.js";
                         } else if(reApplyBlueLight) {
                             main(TYPE_ONLY_BLUELIGHT, MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
                         }
-
-                        timerApplyMutationBlueLight.clear();
                     });
 
                     timerApplyMutationBlueLight.start(websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
