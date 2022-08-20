@@ -55,5 +55,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) Texts with gradient are not visible (example on frandroid.com)
+* [ ] (Minor) Changing custom theme settings should apply in real-time to websites using the theme
+* [ ] (Medium) Issue on Firefox with Mutation Observer (Invert colors)
 * [x] (Medium) Firefox bug: Page Color inversion - broken float: https://stackoverflow.com/questions/52937708/why-does-applying-a-css-filter-on-the-parent-break-the-child-positioning (difficult to fix)
     * Seems to be fixed on latest Firefox versions

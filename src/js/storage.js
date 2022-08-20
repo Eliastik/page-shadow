@@ -120,8 +120,9 @@ async function migrateSettings(filters) {
         await setSettingItem("pageLumEnabled", "false");
         await setSettingItem("blueLightReductionEnabled", "true");
         await setSettingItem("percentageBlueLightReduction", result.pourcentageLum);
-        removeSettingItem(["nightModeEnabled"]);
     }
+
+    removeSettingItem(["nightModeEnabled"]);
 }
 
 export { setSettingItem, removeSettingItem, checkFirstLoad, setFirstSettings, migrateSettings };

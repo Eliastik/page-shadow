@@ -724,6 +724,8 @@ async function savePreset(nb, name, websiteListToApply, saveNewSettings) {
                     }
                 }
             }
+
+            preset[namePreset]["nightModeEnabled"] = false;
         }
 
         await setSettingItem("presets", preset);
