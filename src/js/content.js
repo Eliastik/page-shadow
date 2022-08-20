@@ -72,6 +72,7 @@ import SafeTimer from "./safeTimer.js";
     let timerApplyDetectBackgrounds = null;
     let timerApplyBlueLightPage = null;
     let timerObserveBodyChange = null;
+    let timerApplyMutationObservers = null;
 
     function contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert, attenuateImageColor) {
         const elementToApply = customElement ? customElement : document.body;
@@ -279,7 +280,7 @@ import SafeTimer from "./safeTimer.js";
                 waitAndApplyDetectBackgrounds(elements);
             });
 
-            timerBackgrounds.start();
+            timerBackgrounds.start(1);
         } else {
             if(type == TYPE_LOADING) {
                 window.addEventListener("load", () => {
@@ -446,7 +447,23 @@ import SafeTimer from "./safeTimer.js";
             }
         });
 
-        timerApplyDetectBackgrounds.start();
+        timerApplyDetectBackgrounds.start(1);
+    }
+
+    function waitAndApplyMutationObservers() {
+        if(timerApplyMutationObservers) timerApplyMutationObservers.clear();
+
+        if(document.body) {
+            mutationObserve(MUTATION_TYPE_BODY);
+            mutationObserve(MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+        } else {
+            timerApplyMutationObservers = new SafeTimer(() => {
+                timerApplyMutationObservers.clear();
+                waitAndApplyMutationObservers();
+            });
+
+            timerApplyMutationObservers.start(1);
+        }
     }
 
     function mutationObserve(type) {
@@ -1128,6 +1145,7 @@ import SafeTimer from "./safeTimer.js";
         if(timerApplyContrastPage) timerApplyContrastPage.clear();
         if(timerApplyDetectBackgrounds) timerApplyDetectBackgrounds.clear();
         if(timerApplyInvertColors) timerApplyInvertColors.clear();
+        if(timerApplyMutationObservers) timerApplyMutationObservers.clear();
 
         if(typeof mut_body !== "undefined" && (mutation == MUTATION_TYPE_BODY || mutation == TYPE_ALL)) mut_body.disconnect();
         if(typeof mut_brightness_bluelight !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS_BLUELIGHT || mutation == TYPE_ALL)) mut_brightness_bluelight.disconnect();
@@ -1211,16 +1229,7 @@ import SafeTimer from "./safeTimer.js";
                 }
             }
 
-            // Apply Mutation Observers
-            if(document.readyState == "complete" || document.readyState == "interactive") {
-                mutationObserve(MUTATION_TYPE_BODY);
-                mutationObserve(MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
-            } else {
-                window.addEventListener("load", () => {
-                    mutationObserve(MUTATION_TYPE_BODY);
-                    mutationObserve(MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
-                });
-            }
+            waitAndApplyMutationObservers();
         } else {
             if(!customElement) precEnabled = false;
         }
