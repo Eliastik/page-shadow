@@ -41,7 +41,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Planned/ideas
 
 * [ ] Preserve bright colors?/Several "shades" of background color for the themes?
-* [ ] Rework the Mutation Observers to simplify the code and fix somes issues (see the mutation-observers-reworking branch) -> Wrapper class
+* [x] Rework the Mutation Observers to simplify the code and fix somes issues (see the mutation-observers-reworking branch) -> Wrapper class
 * [ ] Attenuate the "flash" when changing settings and navigating between pages
 * [ ] Logging ?
 * [ ] No longer rely on classes for styling -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
