@@ -56,7 +56,6 @@ import MutationObserverWrapper from "./mutationObserver.js";
     const TYPE_ONLY_CONTRAST = "onlyContrast";
     const TYPE_ONLY_INVERT = "onlyInvert";
     const TYPE_ONLY_BRIGHTNESS = "onlyBrightness";
-    const TYPE_ONLY_RESET = "onlyreset";
     const TYPE_ONLY_BLUELIGHT = "onlyBlueLight";
     const TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT = "onlyBrightnessAndBlueLight";
     const MUTATION_TYPE_BODY = "body";
@@ -68,44 +67,59 @@ import MutationObserverWrapper from "./mutationObserver.js";
 
     // Timers
     let timerApplyBrightnessPage = null;
-    let timerApplyContrastPage = null;
-    let timerApplyInvertColors = null;
+    let timerApplyContrastInvertAttenuate = null;
     let timerApplyDetectBackgrounds = null;
     let timerApplyBlueLightPage = null;
     let timerObserveBodyChange = null;
     let timerApplyMutationObservers = null;
 
-    function contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert, attenuateImageColor) {
-        const elementToApply = customElement ? customElement : document.body;
-
+    function contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor) {
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
             if(theme != undefined) {
                 if(theme == "1") {
-                    addClass(elementToApply, "pageShadowContrastBlack");
-                    if(!customElement) addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundContrast");
+                    addClass(document.body, "pageShadowContrastBlack");
+                    addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundContrast");
                 } else if(theme.startsWith("custom")) {
-                    if(!customElement) customThemeApply(theme);
-                    addClass(elementToApply, "pageShadowContrastBlackCustom");
-                    if(!customElement) addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundCustom");
+                    customThemeApply(theme);
+                    addClass(document.body, "pageShadowContrastBlackCustom");
+                    addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundCustom");
                 } else {
-                    addClass(elementToApply, "pageShadowContrastBlack" + theme);
-                    if(!customElement) addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundContrast" + theme);
+                    addClass(document.body, "pageShadowContrastBlack" + theme);
+                    addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundContrast" + theme);
                 }
+
+                resetContrastPage(theme);
             } else {
-                addClass(elementToApply, "pageShadowContrastBlack");
-                if(!customElement) addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundContrast");
+                addClass(document.body, "pageShadowContrastBlack");
+                addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundContrast");
+                resetContrastPage(1);
             }
 
             if(disableImgBgColor != undefined && disableImgBgColor == "true") {
-                addClass(elementToApply, "pageShadowDisableImgBgColor");
+                addClass(document.body, "pageShadowDisableImgBgColor");
+            }
+        } else {
+            resetContrastPage();
+        }
+
+        invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert, attenuateImageColor);
+    }
+
+    function resetContrastPage(themeException) {
+        if(!themeException || !themeException.startsWith("custom")) {
+            if(typeof lnkCustomTheme !== "undefined") lnkCustomTheme.setAttribute("href", "");
+            removeClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundCustom");
+            removeClass(document.body, "pageShadowContrastBlackCustom");
+        }
+
+        for(let i = 1; i <= nbThemes; i++) {
+            if(!themeException || themeException != i) {
+                removeClass(document.body, (i == 1 ? "pageShadowContrastBlack" : "pageShadowContrastBlack" + i));
+                removeClass(document.getElementsByTagName("html")[0], (i == 1 ? "pageShadowBackgroundContrast" : "pageShadowBackgroundContrast" + i));
             }
         }
 
-        invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
-
-        if(customElement) {
-            addClass(elementToApply, "pageShadowBackgroundDetected");
-        }
+        removeClass(document.body, "pageShadowDisableImgBgColor");
     }
 
     function customThemeApply(theme) {
@@ -114,69 +128,86 @@ import MutationObserverWrapper from "./mutationObserver.js";
         }
     }
 
-    function invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert, attenuateImageColor) {
-        const elementToApply = customElement ? customElement : document.body;
-        removeClass(elementToApply, "pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert");
-
-        if(!customElement) {
-            removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
-        }
-
+    function invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert, attenuateImageColor) {
         document.documentElement.style.setProperty("--page-shadow-invert-filter-image-backgrounds", "invert(100%)");
 
         if(enabled !== null && enabled == "true") {
             if(invertEntirePage !== null && invertEntirePage == "true") {
-                addClass(elementToApply, "pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert");
-
-                if(!customElement) {
-                    addClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
-                }
+                addClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
 
                 if(invertImageColors != null && invertImageColors == "true") {
-                    removeClass(elementToApply, "pageShadowInvertImageColor");
+                    removeClass(document.body, "pageShadowInvertImageColor");
+                } else {
+                    addClass(document.body, "pageShadowInvertImageColor");
                 }
 
                 if(invertBgColors != null && invertBgColors == "true") {
-                    removeClass(elementToApply, "pageShadowInvertBgColor");
+                    removeClass(document.body, "pageShadowInvertBgColor");
+                } else {
+                    addClass(document.body, "pageShadowInvertVideoColor");
                 }
 
                 if(invertVideoColors != null && invertVideoColors == "true") {
-                    removeClass(elementToApply, "pageShadowInvertVideoColor");
+                    removeClass(document.body, "pageShadowInvertVideoColor");
+                } else {
+                    addClass(document.body, "pageShadowInvertBgColor");
                 }
 
                 if(selectiveInvert != null && selectiveInvert == "true") {
-                    removeClass(elementToApply, "pageShadowEnableSelectiveInvert");
+                    removeClass(document.body, "pageShadowEnableSelectiveInvert");
+                } else {
+                    addClass(document.body, "pageShadowEnableSelectiveInvert");
                 }
             } else {
+                removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
+
                 if(invertImageColors != null && invertImageColors == "true") {
-                    addClass(elementToApply, "pageShadowInvertImageColor");
+                    addClass(document.body, "pageShadowInvertImageColor");
+                } else {
+                    removeClass(document.body, "pageShadowInvertImageColor");
                 }
 
                 if(invertBgColors != null && invertBgColors != "false") {
-                    addClass(elementToApply, "pageShadowInvertBgColor");
+                    addClass(document.body, "pageShadowInvertBgColor");
+                } else {
+                    removeClass(document.body, "pageShadowInvertBgColor");
                 }
 
                 if(invertVideoColors != null && invertVideoColors == "true") {
-                    addClass(elementToApply, "pageShadowInvertVideoColor");
+                    addClass(document.body, "pageShadowInvertVideoColor");
+                } else {
+                    removeClass(document.body, "pageShadowInvertVideoColor");
                 }
 
                 if(selectiveInvert != null && selectiveInvert == "true") {
-                    addClass(elementToApply, "pageShadowEnableSelectiveInvert");
+                    addClass(document.body, "pageShadowEnableSelectiveInvert");
+                } else {
+                    removeClass(document.body, "pageShadowEnableSelectiveInvert");
                 }
             }
+        } else {
+            resetInvertPage();
         }
 
-        attenuateColor(attenuateImageColor, customElement);
+        attenuateColor(attenuateImageColor);
     }
 
-    function attenuateColor(enabled, customElement) {
-        const elementToApply = customElement ? customElement : document.body;
-        removeClass(elementToApply, "pageShadowAttenuateImageColor");
+    function resetInvertPage() {
+        removeClass(document.body, "pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert");
+        removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
+    }
 
+    function attenuateColor(enabled) {
         if(enabled == "true") {
             document.documentElement.style.setProperty("--page-shadow-invert-filter-image-backgrounds", "invert(100%) grayscale(50%)");
-            addClass(elementToApply, "pageShadowAttenuateImageColor");
+            addClass(document.body, "pageShadowAttenuateImageColor");
+        } else {
+            resetAttenuateColor();
         }
+    }
+
+    function resetAttenuateColor() {
+        removeClass(document.body, "pageShadowAttenuateImageColor");
     }
 
     function detectBackground(tagName) {
@@ -315,6 +346,14 @@ import MutationObserverWrapper from "./mutationObserver.js";
             }
 
             waitAndApplyBrightnessPage(elementBrightness, elementBrightnessWrapper);
+        } else {
+            resetBrightnessPage();
+        }
+    }
+
+    function resetBrightnessPage() {
+        if(elementBrightnessWrapper && document.body && document.body.contains(elementBrightnessWrapper) && document.body.contains(elementBrightness)) {
+            elementBrightnessWrapper.removeChild(elementBrightness);
         }
     }
 
@@ -344,6 +383,14 @@ import MutationObserverWrapper from "./mutationObserver.js";
             }
 
             waitAndApplyBlueLightPage(elementBlueLightFilter, elementBrightnessWrapper);
+        } else {
+            resetBlueLightPage();
+        }
+    }
+
+    function resetBlueLightPage() {
+        if(elementBrightnessWrapper && document.body && document.body.contains(elementBrightnessWrapper) && document.body.contains(elementBlueLightFilter)) {
+            elementBrightnessWrapper.removeChild(elementBlueLightFilter);
         }
     }
 
@@ -403,36 +450,20 @@ import MutationObserverWrapper from "./mutationObserver.js";
         timerApplyBlueLightPage.start(1);
     }
 
-    function waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert, attenuateImageColor) {
-        if(timerApplyContrastPage) timerApplyContrastPage.clear();
+    function waitAndApplyContrastInvertAttenuate(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor) {
+        if(timerApplyContrastInvertAttenuate) timerApplyContrastInvertAttenuate.clear();
 
-        timerApplyContrastPage = new SafeTimer(() => {
-            timerApplyContrastPage.clear();
+        timerApplyContrastInvertAttenuate = new SafeTimer(() => {
+            timerApplyContrastInvertAttenuate.clear();
 
             if(!document.body) {
-                waitAndApplyContrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
+                waitAndApplyContrastInvertAttenuate(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor);
             } else {
-                contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
+                contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor);
             }
         });
 
-        timerApplyContrastPage.start(1);
-    }
-
-    function waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert, attenuateImageColor) {
-        if(timerApplyInvertColors) timerApplyInvertColors.clear();
-
-        timerApplyInvertColors = new SafeTimer(() => {
-            timerApplyInvertColors.clear();
-
-            if(!document.body) {
-                waitAndApplyInvertColors(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
-            } else {
-                invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, customElement, selectiveInvert, attenuateImageColor);
-            }
-        });
-
-        timerApplyInvertColors.start(1);
+        timerApplyContrastInvertAttenuate.start(1);
     }
 
     function waitAndApplyDetectBackgrounds(tagName) {
@@ -1160,44 +1191,18 @@ import MutationObserverWrapper from "./mutationObserver.js";
         precUrl = getCurrentURL();
         oldBody = document.body;
 
-        if(type == TYPE_RESET || type == TYPE_ONLY_RESET) {
+        if(type == TYPE_RESET) {
             mutation = TYPE_ALL;
         }
 
         if(timerApplyBrightnessPage) timerApplyBrightnessPage.clear();
-        if(timerApplyContrastPage) timerApplyContrastPage.clear();
+        if(timerApplyContrastInvertAttenuate) timerApplyContrastInvertAttenuate.clear();
         if(timerApplyDetectBackgrounds) timerApplyDetectBackgrounds.clear();
-        if(timerApplyInvertColors) timerApplyInvertColors.clear();
         if(timerApplyMutationObservers) timerApplyMutationObservers.clear();
 
         if(typeof mut_body !== "undefined" && (mutation == MUTATION_TYPE_BODY || mutation == TYPE_ALL)) mut_body.pause();
         if(typeof mut_brightness_bluelight !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS_BLUELIGHT || mutation == TYPE_ALL)) mut_brightness_bluelight.pause();
         if(typeof mut_brightness_bluelight_wrapper !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS_BLUELIGHT || mutation == TYPE_ALL)) mut_brightness_bluelight_wrapper.pause();
-        if(typeof lnkCustomTheme !== "undefined") lnkCustomTheme.setAttribute("href", "");
-
-        if(started && (type == TYPE_RESET || type == TYPE_ONLY_RESET)) {
-            removeClass(document.body, "pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowContrastBlackCustom", "pageShadowDisableImgBgColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert", "pageShadowAttenuateImageColor");
-            removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground", "pageShadowBackgroundCustom");
-
-            for(let i = 1; i <= nbThemes; i++) {
-                removeClass(document.body, (i == 1 ? "pageShadowContrastBlack" : "pageShadowContrastBlack" + i));
-                removeClass(document.getElementsByTagName("html")[0], (i == 1 ? "pageShadowBackgroundContrast" : "pageShadowBackgroundContrast" + i));
-            }
-
-            if(elementBrightnessWrapper && document.body && document.body.contains(elementBrightnessWrapper) && document.body.contains(elementBrightness)) {
-                elementBrightnessWrapper.removeChild(elementBrightness);
-            }
-
-            if(elementBrightnessWrapper && document.body && document.body.contains(elementBrightnessWrapper) && document.body.contains(elementBlueLightFilter)) {
-                elementBrightnessWrapper.removeChild(elementBlueLightFilter);
-            }
-
-            resetShadowRoots();
-
-            if(type == TYPE_ONLY_RESET) {
-                return;
-            }
-        }
 
         typeProcess = type;
 
@@ -1208,12 +1213,11 @@ import MutationObserverWrapper from "./mutationObserver.js";
         });
     }
 
-    async function process(allowed, type, customElement) {
+    async function process(allowed, type) {
         if(allowed) {
             const settings = newSettingsToApply || await getSettings(getCurrentURL());
             currentSettings = settings;
-
-            if(!customElement) precEnabled = true;
+            precEnabled = true;
 
             if(type == TYPE_ONLY_CONTRAST) {
                 contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, null, settings.selectiveInvert, settings.attenuateImageColor);
@@ -1227,13 +1231,11 @@ import MutationObserverWrapper from "./mutationObserver.js";
                 if(type == TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT || type == TYPE_ONLY_BLUELIGHT) {
                     blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
                 }
-            } else if(settings.pageShadowEnabled == "true") {
-                waitAndApplyContrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, customElement, settings.selectiveInvert, settings.attenuateImageColor);
             } else {
-                waitAndApplyInvertColors(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, customElement, settings.selectiveInvert, settings.attenuateImageColor);
+                waitAndApplyContrastInvertAttenuate(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, settings.selectiveInvert, settings.attenuateImageColor);
             }
 
-            if(type !== TYPE_ONLY_CONTRAST && type !== TYPE_ONLY_INVERT && type !== TYPE_ONLY_BRIGHTNESS && type !== TYPE_ONLY_BLUELIGHT && !customElement) {
+            if(type !== TYPE_ONLY_CONTRAST && type !== TYPE_ONLY_INVERT && type !== TYPE_ONLY_BRIGHTNESS && type !== TYPE_ONLY_BLUELIGHT) {
                 brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
                 blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
 
@@ -1254,10 +1256,20 @@ import MutationObserverWrapper from "./mutationObserver.js";
 
             waitAndApplyMutationObservers();
         } else {
-            if(!customElement) precEnabled = false;
+            precEnabled = false;
+            if(typeof lnkCustomTheme !== "undefined") lnkCustomTheme.setAttribute("href", "");
+
+            if(started) {
+                resetContrastPage();
+                resetInvertPage();
+                resetAttenuateColor();
+                resetBrightnessPage();
+                resetBlueLightPage();
+                resetShadowRoots();
+            }
         }
 
-        if(!customElement) started = true;
+        started = true;
     }
 
     // Start the processing of the page
