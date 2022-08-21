@@ -239,7 +239,7 @@ async function updateBadge(storageChanged) {
 
 async function checkAutoEnable() {
     const autoEnableActivated = await isAutoEnable();
-    const result = await browser.storage.local.get("lastAutoEnableDetected");
+    const result = await browser.storage.session.get("lastAutoEnableDetected");
 
     if(autoEnableActivated) {
         const data = await getAutoEnableSavedData();
@@ -247,10 +247,10 @@ async function checkAutoEnable() {
 
         if(enabled && result.lastAutoEnableDetected == "false" || enabled && result.lastAutoEnableDetected == "null") {
             await setSettingItem("globallyEnable", "true");
-            await setSettingItem("lastAutoEnableDetected", "true");
+            await browser.storage.session.set({ "lastAutoEnableDetected": "true" });
         } else if(!enabled && result.lastAutoEnableDetected == "true" || !enabled && result.lastAutoEnableDetected == "null") {
             await setSettingItem("globallyEnable", "false");
-            await setSettingItem("lastAutoEnableDetected", "false");
+            await browser.storage.session.set({ "lastAutoEnableDetected": "false" });
         }
     }
 }
@@ -292,7 +292,7 @@ async function checkAutoBackupCloud() {
 
 async function autoEnable(changed) {
     if(typeof(changed) === "undefined" || changed == null || checkChangedStorageData(["hourEnable", "minuteEnable", "hourDisable", "minuteDisable"], changed)) {
-        await setSettingItem("lastAutoEnableDetected", "null");
+        await browser.storage.session.set({ "lastAutoEnableDetected": "null" });
         checkAutoEnable();
     }
 }
