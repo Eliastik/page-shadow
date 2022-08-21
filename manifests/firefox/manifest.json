@@ -2,7 +2,7 @@
     "name": "Page Shadow",
     "version": "2.10.0.2",
     "default_locale": "en",
-    "manifest_version": 2,
+    "manifest_version": 3,
     "icons": {
         "32": "img/icon_32.png",
         "40": "img/icon_40.png",
@@ -20,7 +20,7 @@
         "url": "http://www.eliastiksofts.com/page-shadow/"
     },
     "homepage_url": "http://www.eliastiksofts.com/page-shadow/",
-    "browser_action": {
+    "action": {
         "default_title": "Page Shadow",
         "default_icon": {
             "32": "img/icon_32.png",
@@ -44,7 +44,10 @@
         }
     },
     "permissions": [
-        "storage", "contextMenus", "tabs", "<all_urls>", "unlimitedStorage"
+        "storage", "contextMenus", "tabs", "unlimitedStorage", "alarms"
+    ],
+    "host_permissions": [
+        "<all_urls>"
     ],
     "content_scripts": [
         {
@@ -68,7 +71,7 @@
         }
     ],
     "background": {
-        "scripts": ["js/background.js"]
+        "service_worker": "js/background.js"
     },
     "commands": {
         "enableDisable": {

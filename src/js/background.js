@@ -16,28 +16,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud } from "./util.js";
+import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud, isAutoEnable } from "./util.js";
 import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
 import Filter from "./filters.js";
 import browser from "webextension-polyfill";
 
-let autoEnableActivated = false;
-let lastAutoEnableDetected = null;
-const globalPageShadowStyleCache = {};
-const globalPageShadowStyleShadowRootsCache = {};
-
-const filters = new Filter();
-filters.cacheFilters();
-
 function setPopup() {
-    if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setPopup) !== "undefined") {
-        browser.browserAction.setPopup({
+    if(typeof(browser.action) !== "undefined" && typeof(browser.action.setPopup) !== "undefined") {
+        browser.action.setPopup({
             popup: "../extension.html"
         });
-    } else if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.onClicked) !== "undefined" && typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.create) !== "undefined") {
+    } else if(typeof(browser.action) !== "undefined" && typeof(browser.action.onClicked) !== "undefined" && typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.create) !== "undefined") {
         // For Firefox for Android
-        browser.browserAction.onClicked.addListener(tab => {
+        browser.action.onClicked.addListener(tab => {
             if(typeof(tab.id) !== "undefined") {
                 browser.tabs.create({
                     url: "../extension.html?tabId="+ tab.id
@@ -196,35 +188,35 @@ async function updateBadge(storageChanged) {
             const url = tab.url;
             const enabled = await pageShadowAllowed(normalizeURL(url));
 
-            if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeText) !== "undefined") {
-                browser.browserAction.setBadgeText({
+            if(typeof(browser.action) !== "undefined" && typeof(browser.action.setBadgeText) !== "undefined") {
+                browser.action.setBadgeText({
                     text: " ",
                     tabId: tab.id
                 });
             }
 
-            if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeBackgroundColor) !== "undefined") {
+            if(typeof(browser.action) !== "undefined" && typeof(browser.action.setBadgeBackgroundColor) !== "undefined") {
                 if(enabled) {
-                    browser.browserAction.setBadgeBackgroundColor({
+                    browser.action.setBadgeBackgroundColor({
                         color: "#2ecc71",
                         tabId: tab.id
                     });
                 } else {
-                    browser.browserAction.setBadgeBackgroundColor({
+                    browser.action.setBadgeBackgroundColor({
                         color: "#e74c3c",
                         tabId: tab.id
                     });
                 }
             }
 
-            if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setTitle) !== "undefined") {
+            if(typeof(browser.action) !== "undefined" && typeof(browser.action.setTitle) !== "undefined") {
                 if(!enabled) {
-                    browser.browserAction.setTitle({
+                    browser.action.setTitle({
                         title: "Page Shadow (" + getUImessage("pageShadowDisabled") + ")",
                         tabId: tab.id
                     });
                 } else {
-                    browser.browserAction.setTitle({
+                    browser.action.setTitle({
                         title: "Page Shadow",
                         tabId: tab.id
                     });
@@ -246,16 +238,19 @@ async function updateBadge(storageChanged) {
 }
 
 async function checkAutoEnable() {
+    const autoEnableActivated = await isAutoEnable();
+    const result = await browser.storage.local.get("lastAutoEnableDetected");
+
     if(autoEnableActivated) {
         const data = await getAutoEnableSavedData();
         const enabled = checkAutoEnableStartup(data[6], data[4], data[7], data[5]);
 
-        if(enabled && !lastAutoEnableDetected || enabled && lastAutoEnableDetected == null) {
-            setSettingItem("globallyEnable", "true");
-            lastAutoEnableDetected = true;
-        } else if(!enabled && lastAutoEnableDetected || !enabled && lastAutoEnableDetected == null) {
-            setSettingItem("globallyEnable", "false");
-            lastAutoEnableDetected = false;
+        if(enabled && result.lastAutoEnableDetected == "false" || enabled && result.lastAutoEnableDetected == "null") {
+            await setSettingItem("globallyEnable", "true");
+            await setSettingItem("lastAutoEnableDetected", "true");
+        } else if(!enabled && result.lastAutoEnableDetected == "true" || !enabled && result.lastAutoEnableDetected == "null") {
+            await setSettingItem("globallyEnable", "false");
+            await setSettingItem("lastAutoEnableDetected", "false");
         }
     }
 }
@@ -268,6 +263,9 @@ async function checkAutoUpdateFilters() {
     const enableAutoUpdate = filterResults.enableAutoUpdate;
     const currentDate = Date.now();
     const lastFailedUpdate = filterResults.lastFailedUpdate;
+
+    const filters = new Filter();
+    filters.cacheFilters();
 
     if(enableAutoUpdate && updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
         filters.updateAllFilters(true, false);
@@ -293,19 +291,9 @@ async function checkAutoBackupCloud() {
 }
 
 async function autoEnable(changed) {
-    if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.local) !== "undefined") {
-        const result = await browser.storage.local.get("autoEnable");
-
-        if(result.autoEnable == "true") {
-            autoEnableActivated = true;
-        } else {
-            autoEnableActivated = false;
-        }
-
-        if(typeof(changed) === "undefined" || changed == null || checkChangedStorageData(["hourEnable", "minuteEnable", "hourDisable", "minuteDisable"], changed)) {
-            lastAutoEnableDetected = null;
-            checkAutoEnable();
-        }
+    if(typeof(changed) === "undefined" || changed == null || checkChangedStorageData(["hourEnable", "minuteEnable", "hourDisable", "minuteDisable"], changed)) {
+        await setSettingItem("lastAutoEnableDetected", "null");
+        checkAutoEnable();
     }
 }
 
@@ -346,6 +334,9 @@ if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) 
 
 if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) !== "undefined") {
     browser.runtime.onMessage.addListener((message, sender) => {
+        const filters = new Filter();
+        filters.cacheFilters();
+
         new Promise(resolve => {
             if(message) {
                 if(message.type == "openTab") {
@@ -446,6 +437,8 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     });
                 } else if(message.type == "getGlobalPageShadowStyle" || message.type == "getGlobalShadowRootPageShadowStyle") {
                     const url = message.what == "invert" ? "/css/content_invert.css" : "/css/content.css";
+                    const globalPageShadowStyleCache = {};
+                    const globalPageShadowStyleShadowRootsCache = {};
 
                     if(globalPageShadowStyleCache[url] && globalPageShadowStyleShadowRootsCache[url]) {
                         resolve({ type: message.type + "Response", data: message.type == "getGlobalShadowRootPageShadowStyle" ? globalPageShadowStyleShadowRootsCache[url] : globalPageShadowStyleCache[url] });
@@ -560,10 +553,12 @@ menu();
 updateBadge(false);
 autoEnable();
 checkFirstLoad();
-migrateSettings(filters);
+migrateSettings(new Filter());
 checkAutoBackupCloud();
 
-setInterval(() => {
+browser.alarms.create({ periodInMinutes: 1 });
+
+browser.alarms.onAlarm.addListener(() => {
     checkAutoEnable();
     checkAutoUpdateFilters();
-}, 1000);
+});

@@ -20,6 +20,7 @@ import { setSettingItem } from "./storage.js";
 import { matchWebsite, getSizeObject } from "./util.js";
 import { defaultFilters, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory } from "./constants.js";
 import browser from "webextension-polyfill";
+import { parseHTML } from "linkedom";
 
 export default class FilterProcessor {
     rules = [];
@@ -253,10 +254,19 @@ export default class FilterProcessor {
     }
 
     testSelector(selector) {
-        const testElement = document.createElement("body");
+        const { document } = parseHTML(`
+            <!doctype html>
+            <html lang="en">
+              <head>
+                <title>Test Selector</title>
+              </head>
+              <body>
+                <div></div>
+              </body>
+            </html>`);
 
         try {
-            testElement.querySelector(selector);
+            document.querySelector(selector);
         } catch(e) {
             return {
                 "error": true,
