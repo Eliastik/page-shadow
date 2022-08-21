@@ -1220,9 +1220,9 @@ import MutationObserverWrapper from "./mutationObserver.js";
             precEnabled = true;
 
             if(type == TYPE_ONLY_CONTRAST) {
-                contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, null, settings.selectiveInvert, settings.attenuateImageColor);
+                contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, settings.selectiveInvert, settings.attenuateImageColor);
             } else if(type == TYPE_ONLY_INVERT) {
-                invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, null, settings.selectiveInvert, settings.attenuateImageColor);
+                invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, settings.selectiveInvert, settings.attenuateImageColor);
             } else if(type == TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT || type == TYPE_ONLY_BRIGHTNESS || type == TYPE_ONLY_BLUELIGHT) {
                 if(type == TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT || type == TYPE_ONLY_BRIGHTNESS) {
                     brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
