@@ -460,6 +460,7 @@ import MutationObserverWrapper from "./mutationObserver.js";
                 waitAndApplyContrastInvertAttenuate(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor);
             } else {
                 contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor);
+                waitAndApplyMutationObservers();
             }
         });
 
@@ -1196,6 +1197,7 @@ import MutationObserverWrapper from "./mutationObserver.js";
         }
 
         if(timerApplyBrightnessPage) timerApplyBrightnessPage.clear();
+        if(timerApplyBlueLightPage) timerApplyBlueLightPage.clear();
         if(timerApplyContrastInvertAttenuate) timerApplyContrastInvertAttenuate.clear();
         if(timerApplyDetectBackgrounds) timerApplyDetectBackgrounds.clear();
         if(timerApplyMutationObservers) timerApplyMutationObservers.clear();
@@ -1216,6 +1218,8 @@ import MutationObserverWrapper from "./mutationObserver.js";
     async function process(allowed, type) {
         if(allowed) {
             const settings = newSettingsToApply || await getSettings(getCurrentURL());
+            let applyMutationObservers = true;
+
             currentSettings = settings;
             precEnabled = true;
 
@@ -1233,6 +1237,7 @@ import MutationObserverWrapper from "./mutationObserver.js";
                 }
             } else {
                 waitAndApplyContrastInvertAttenuate(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, settings.selectiveInvert, settings.attenuateImageColor);
+                applyMutationObservers = false;
             }
 
             if(type !== TYPE_ONLY_CONTRAST && type !== TYPE_ONLY_INVERT && type !== TYPE_ONLY_BRIGHTNESS && type !== TYPE_ONLY_BLUELIGHT) {
@@ -1254,7 +1259,9 @@ import MutationObserverWrapper from "./mutationObserver.js";
                 }
             }
 
-            waitAndApplyMutationObservers();
+            if(applyMutationObservers) {
+                waitAndApplyMutationObservers();
+            }
         } else {
             precEnabled = false;
             if(typeof lnkCustomTheme !== "undefined") lnkCustomTheme.setAttribute("href", "");
