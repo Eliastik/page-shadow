@@ -16,9 +16,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { setSettingItem, migrateSettings } from "./storage.js";
+import { setSettingItem, migrateSettings } from "../storage.js";
 import browser from "webextension-polyfill";
-import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings } from "./constants.js";
+import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings } from "../constants.js";
 
 function in_array(needle, haystack) {
     for(const key in haystack) {
@@ -1036,12 +1036,15 @@ function removeClass(element, ...classes) {
 
 function addClass(element, ...classes) {
     if(!element) return;
+    const classToAdd = [];
 
     classes.forEach(c => {
         if(!element.classList.contains(c)) {
-            element.classList.add(c);
+            classToAdd.push(c);
         }
     });
+
+    element.classList.add(...classToAdd);
 }
 
 function isRunningInPopup() {

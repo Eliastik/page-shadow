@@ -16,11 +16,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, processRules, removeClass, addClass, processRulesInvert, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig } from "./util.js";
+import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, processRules, removeClass, addClass, processRulesInvert, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig } from "./utils/util.js";
 import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, ignoredElementsContentScript } from "./constants.js";
 import browser from "webextension-polyfill";
-import SafeTimer from "./safeTimer.js";
-import MutationObserverWrapper from "./mutationObserver.js";
+import SafeTimer from "./utils/safeTimer.js";
+import MutationObserverWrapper from "./utils/mutationObserver.js";
+import ClassBatcher from "./utils/classBatcher.js";
 
 (async function() {
     const style = document.createElement("style");
@@ -73,30 +74,35 @@ import MutationObserverWrapper from "./mutationObserver.js";
     let timerObserveBodyChange = null;
     let timerApplyMutationObservers = null;
 
+    // Batcher
+    let bodyClassBatcher;
+    let htmlClassBatcher;
+    let bodyClassBatcherRemover;
+
     function contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor) {
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
             if(theme != undefined) {
                 if(theme == "1") {
-                    addClass(document.body, "pageShadowContrastBlack");
-                    addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundContrast");
+                    bodyClassBatcher.add("pageShadowContrastBlack");
+                    htmlClassBatcher.add("pageShadowBackgroundContrast");
                 } else if(theme.startsWith("custom")) {
                     customThemeApply(theme);
-                    addClass(document.body, "pageShadowContrastBlackCustom");
-                    addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundCustom");
+                    bodyClassBatcher.add("pageShadowContrastBlackCustom");
+                    htmlClassBatcher.add("pageShadowBackgroundCustom");
                 } else {
-                    addClass(document.body, "pageShadowContrastBlack" + theme);
-                    addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundContrast" + theme);
+                    bodyClassBatcher.add("pageShadowContrastBlack" + theme);
+                    htmlClassBatcher.add("pageShadowBackgroundContrast" + theme);
                 }
 
                 resetContrastPage(theme);
             } else {
-                addClass(document.body, "pageShadowContrastBlack");
-                addClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundContrast");
+                bodyClassBatcher.add("pageShadowContrastBlack");
+                htmlClassBatcher.add("pageShadowBackgroundContrast");
                 resetContrastPage(1);
             }
 
             if(disableImgBgColor != undefined && disableImgBgColor == "true") {
-                addClass(document.body, "pageShadowDisableImgBgColor");
+                bodyClassBatcher.add("pageShadowDisableImgBgColor");
             }
         } else {
             resetContrastPage();
@@ -106,20 +112,26 @@ import MutationObserverWrapper from "./mutationObserver.js";
     }
 
     function resetContrastPage(themeException) {
+        const removeBatcher = new ClassBatcher(document.body);
+        const removeBatcherHTML = new ClassBatcher(document.getElementsByTagName("html")[0]);
+
         if(!themeException || !themeException.startsWith("custom")) {
             if(typeof lnkCustomTheme !== "undefined") lnkCustomTheme.setAttribute("href", "");
-            removeClass(document.getElementsByTagName("html")[0], "pageShadowBackgroundCustom");
-            removeClass(document.body, "pageShadowContrastBlackCustom");
+            removeBatcherHTML.add("pageShadowBackgroundCustom");
+            removeBatcher.add("pageShadowContrastBlackCustom");
         }
 
         for(let i = 1; i <= nbThemes; i++) {
             if(!themeException || themeException != i) {
-                removeClass(document.body, (i == 1 ? "pageShadowContrastBlack" : "pageShadowContrastBlack" + i));
-                removeClass(document.getElementsByTagName("html")[0], (i == 1 ? "pageShadowBackgroundContrast" : "pageShadowBackgroundContrast" + i));
+                removeBatcher.add((i == 1 ? "pageShadowContrastBlack" : "pageShadowContrastBlack" + i));
+                removeBatcherHTML.add((i == 1 ? "pageShadowBackgroundContrast" : "pageShadowBackgroundContrast" + i));
             }
         }
 
-        removeClass(document.body, "pageShadowDisableImgBgColor");
+        removeBatcher.add("pageShadowDisableImgBgColor");
+
+        removeBatcher.applyRemove();
+        removeBatcherHTML.applyRemove();
     }
 
     function customThemeApply(theme) {
@@ -133,56 +145,56 @@ import MutationObserverWrapper from "./mutationObserver.js";
 
         if(enabled !== null && enabled == "true") {
             if(invertEntirePage !== null && invertEntirePage == "true") {
-                addClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
+                htmlClassBatcher.add("pageShadowInvertEntirePage", "pageShadowBackground");
 
                 if(invertImageColors != null && invertImageColors == "true") {
-                    removeClass(document.body, "pageShadowInvertImageColor");
+                    bodyClassBatcherRemover.add("pageShadowInvertImageColor");
                 } else {
-                    addClass(document.body, "pageShadowInvertImageColor");
+                    bodyClassBatcher.add("pageShadowInvertImageColor");
                 }
 
                 if(invertBgColors != null && invertBgColors == "true") {
-                    removeClass(document.body, "pageShadowInvertBgColor");
+                    bodyClassBatcherRemover.add("pageShadowInvertBgColor");
                 } else {
-                    addClass(document.body, "pageShadowInvertVideoColor");
+                    bodyClassBatcher.add("pageShadowInvertVideoColor");
                 }
 
                 if(invertVideoColors != null && invertVideoColors == "true") {
-                    removeClass(document.body, "pageShadowInvertVideoColor");
+                    bodyClassBatcherRemover.add("pageShadowInvertVideoColor");
                 } else {
-                    addClass(document.body, "pageShadowInvertBgColor");
+                    bodyClassBatcher.add("pageShadowInvertBgColor");
                 }
 
                 if(selectiveInvert != null && selectiveInvert == "true") {
-                    removeClass(document.body, "pageShadowEnableSelectiveInvert");
+                    bodyClassBatcherRemover.add("pageShadowEnableSelectiveInvert");
                 } else {
-                    addClass(document.body, "pageShadowEnableSelectiveInvert");
+                    bodyClassBatcher.add("pageShadowEnableSelectiveInvert");
                 }
             } else {
                 removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
 
                 if(invertImageColors != null && invertImageColors == "true") {
-                    addClass(document.body, "pageShadowInvertImageColor");
+                    bodyClassBatcher.add("pageShadowInvertImageColor");
                 } else {
-                    removeClass(document.body, "pageShadowInvertImageColor");
+                    bodyClassBatcherRemover.add("pageShadowInvertImageColor");
                 }
 
                 if(invertBgColors != null && invertBgColors != "false") {
-                    addClass(document.body, "pageShadowInvertBgColor");
+                    bodyClassBatcher.add("pageShadowInvertBgColor");
                 } else {
-                    removeClass(document.body, "pageShadowInvertBgColor");
+                    bodyClassBatcherRemover.add("pageShadowInvertBgColor");
                 }
 
                 if(invertVideoColors != null && invertVideoColors == "true") {
-                    addClass(document.body, "pageShadowInvertVideoColor");
+                    bodyClassBatcher.add("pageShadowInvertVideoColor");
                 } else {
-                    removeClass(document.body, "pageShadowInvertVideoColor");
+                    bodyClassBatcherRemover.add("pageShadowInvertVideoColor");
                 }
 
                 if(selectiveInvert != null && selectiveInvert == "true") {
-                    addClass(document.body, "pageShadowEnableSelectiveInvert");
+                    bodyClassBatcher.add("pageShadowEnableSelectiveInvert");
                 } else {
-                    removeClass(document.body, "pageShadowEnableSelectiveInvert");
+                    bodyClassBatcherRemover.add("pageShadowEnableSelectiveInvert");
                 }
             }
         } else {
@@ -193,28 +205,27 @@ import MutationObserverWrapper from "./mutationObserver.js";
     }
 
     function resetInvertPage() {
-        removeClass(document.body, "pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert");
+        bodyClassBatcherRemover.add("pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert");
         removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
     }
 
     function attenuateColor(enabled) {
         if(enabled == "true") {
             document.documentElement.style.setProperty("--page-shadow-invert-filter-image-backgrounds", "invert(100%) grayscale(50%)");
-            addClass(document.body, "pageShadowAttenuateImageColor");
+            bodyClassBatcher.add("pageShadowAttenuateImageColor");
         } else {
             resetAttenuateColor();
         }
     }
 
     function resetAttenuateColor() {
-        removeClass(document.body, "pageShadowAttenuateImageColor");
+        bodyClassBatcherRemover.add("pageShadowAttenuateImageColor");
     }
 
     function detectBackground(tagName) {
         if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
             const detectBackgroundTimer = new SafeTimer(() => {
                 addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
-
                 detectBackgroundForElement(document.body, true);
                 removeClass(document.body, "pageShadowDisableBackgroundStyling");
 
@@ -226,7 +237,7 @@ import MutationObserverWrapper from "./mutationObserver.js";
                 }
 
                 removeClass(document.body, "pageShadowDisableStyling");
-                addClass(document.body, "pageShadowBackgroundDetected");
+                bodyClassBatcher.add(document.body, "pageShadowBackgroundDetected");
 
                 backgroundDetected = true;
                 detectBackgroundTimer.clear();
@@ -459,7 +470,16 @@ import MutationObserverWrapper from "./mutationObserver.js";
             if(!document.body) {
                 waitAndApplyContrastInvertAttenuate(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor);
             } else {
+                bodyClassBatcher.removeAll();
+                bodyClassBatcherRemover.removeAll();
+                htmlClassBatcher.removeAll();
+
                 contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor);
+
+                bodyClassBatcher.applyAdd();
+                bodyClassBatcherRemover.applyRemove();
+                htmlClassBatcher.applyAdd();
+
                 waitAndApplyMutationObservers();
             }
         });
@@ -748,6 +768,10 @@ import MutationObserverWrapper from "./mutationObserver.js";
                     if(!oldBody) oldBody = document.body;
 
                     if(document.body != oldBody) {
+                        bodyClassBatcher = new ClassBatcher(document.body);
+                        bodyClassBatcherRemover = new ClassBatcher(document.body);
+                        htmlClassBatcher = new ClassBatcher(document.getElementsByTagName("html")[0]);
+
                         main(TYPE_RESET, TYPE_ALL);
                         mutationObserve(MUTATION_TYPE_BACKGROUNDS);
                     }
@@ -1222,11 +1246,30 @@ import MutationObserverWrapper from "./mutationObserver.js";
 
             currentSettings = settings;
             precEnabled = true;
+            bodyClassBatcher = bodyClassBatcher || new ClassBatcher(document.body);
+            bodyClassBatcherRemover = bodyClassBatcherRemover || new ClassBatcher(document.body);
+            htmlClassBatcher = htmlClassBatcher || new ClassBatcher(document.getElementsByTagName("html")[0]);
 
             if(type == TYPE_ONLY_CONTRAST) {
+                bodyClassBatcher.removeAll();
+                bodyClassBatcherRemover.removeAll();
+                htmlClassBatcher.removeAll();
+
                 contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, settings.selectiveInvert, settings.attenuateImageColor);
+
+                bodyClassBatcher.applyAdd();
+                bodyClassBatcherRemover.applyRemove();
+                htmlClassBatcher.applyAdd();
             } else if(type == TYPE_ONLY_INVERT) {
+                bodyClassBatcher.removeAll();
+                bodyClassBatcherRemover.removeAll();
+                htmlClassBatcher.removeAll();
+
                 invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, settings.selectiveInvert, settings.attenuateImageColor);
+
+                bodyClassBatcher.applyAdd();
+                bodyClassBatcherRemover.applyRemove();
+                htmlClassBatcher.applyAdd();
             } else if(type == TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT || type == TYPE_ONLY_BRIGHTNESS || type == TYPE_ONLY_BLUELIGHT) {
                 if(type == TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT || type == TYPE_ONLY_BRIGHTNESS) {
                     brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);

@@ -21,7 +21,7 @@ import $ from "jquery";
 import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import { init_i18next } from "./locales.js";
-import { toggleTheme } from "./util.js";
+import { toggleTheme } from "./utils/util.js";
 
 window.$ = $;
 window.jQuery = $;

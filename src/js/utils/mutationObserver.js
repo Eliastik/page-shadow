@@ -16,6 +16,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+/**
+ * Mutation Observer Wrapper class adding new features to Mutation Observers :
+ *
+ * - pause() : pauses the Mutation Observer. When enableQueueMutations is set to true, the Mutation Observers listen
+ * to new mutations and executes them when the Mutation Observer is restarted
+ *
+ * - start() : start the Mutation Observer
+ */
 export default class MutationObserverWrapper {
     callback = null;
     options = null;
