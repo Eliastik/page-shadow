@@ -239,7 +239,7 @@ $(document).ready(() => {
     }
 
     checkPresetAutoEnabled = async function(url) {
-        const presetsEnabled = await presetsEnabledForWebsite(url);
+        const presetsEnabled = await presetsEnabledForWebsite(url, true);
 
         if(presetsEnabled && presetsEnabled.length > 0) {
             const presetEnabled = getPriorityPresetEnabledForWebsite(presetsEnabled);
@@ -323,7 +323,7 @@ $(document).ready(() => {
     async function checkAutoEnablePreset(nb) {
         const url = await getCurrentURL();
         const isFileURL = url.startsWith("file:///") || url.startsWith("about:");
-        const presetsAutoEnabled = await presetsEnabledForWebsite(url);
+        const presetsAutoEnabled = await presetsEnabledForWebsite(url, true);
         const currentPreset = await getPresetData(nb);
 
         $("#enableWebsitePreset-li").hide();

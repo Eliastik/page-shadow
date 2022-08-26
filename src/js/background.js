@@ -21,6 +21,7 @@ import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay 
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
 import Filter from "./filters.js";
 import browser from "webextension-polyfill";
+import PresetCache from "./utils/presetCache.js";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
@@ -29,6 +30,9 @@ const globalPageShadowStyleShadowRootsCache = {};
 
 const filters = new Filter();
 filters.cacheFilters();
+
+const presetCache = new PresetCache();
+presetCache.updateCache();
 
 function setPopup() {
     if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setPopup) !== "undefined") {
@@ -236,7 +240,7 @@ async function updateBadge(storageChanged) {
                     type: "websiteUrlUpdated",
                     enabled,
                     storageChanged,
-                    settings: await getSettings(url)
+                    settings: await getSettings(url, true)
                 }).catch(() => {
                     if(browser.runtime.lastError) return; // ignore the error messages
                 });
@@ -352,13 +356,17 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     openTab(message.url, message.part);
                 }
 
+                if(message.type == "updatePresetCache") {
+                    presetCache.updateCache();
+                }
+
                 if(!sender.tab) return;
                 const tabURL = normalizeURL(sender.tab.url);
                 const pageURL = normalizeURL(sender.url);
 
                 if(message.type == "isEnabledForThisPage" || message.type == "applySettingsChanged") {
                     pageShadowAllowed(tabURL).then(async(enabled) => {
-                        const settings = await getSettings(tabURL);
+                        const settings = await getSettings(tabURL, true);
                         resolve({ type: message.type + "Response", enabled: enabled, settings: settings });
                     });
                 } else if(message.type == "updateAllFilters") {
@@ -460,6 +468,12 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                             });
                         }
                     });
+                } else if(message.type == "getPreset") {
+                    const data = presetCache.getPresetData(message.idPreset);
+                    resolve({ type: "getPresetResponse", data: data });
+                } else if(message.type == "getAllPresets") {
+                    const data = presetCache.getAllPresetsData();
+                    resolve({ type: "getAllPresetsResponse", data: data });
                 }
             }
         }).then(result => {

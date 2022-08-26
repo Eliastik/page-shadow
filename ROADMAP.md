@@ -36,7 +36,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Minor) Background image on body element is not detected
 * [x] (Minor) SVG with use element is not working with Invert colors function (see Leroy Merlin website)
 
-### Futures versions
+### 2.10
 
 #### Planned/ideas
 
@@ -44,14 +44,11 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Rework the Mutation Observers to simplify the code and fix somes issues (see the mutation-observers-reworking branch) -> Wrapper class
 * [x] Attenuate the "flash" when changing settings
 * [ ] Attenuate the "flash" when navigating between pages
+    * [ ] The slowdown process have been identified: getSettings -> cache system to implement for settings
+* [ ] Increase contrast : use only one stylesheet + CSS variable to apply default themes and custom themes
 * [ ] Try to simplify the code of content.js
-* [ ] waitAndApply... -> class
+* [x] waitAndApply... -> class
 * [ ] Logging ?
-* [ ] No longer rely on classes for styling -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
-* [ ] Filters: UI to report a website problem
-* [ ] Filters: Element picker to create custom rule easily
-* [ ] Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditonal filter)
-* [ ] Store filters on a Github repository ?
 
 #### Known issues/bugs
 
@@ -62,3 +59,11 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] (Medium) Issue on Firefox with Mutation Observer (Invert colors)
 * [x] (Medium) Firefox bug: Page Color inversion - broken float: https://stackoverflow.com/questions/52937708/why-does-applying-a-css-filter-on-the-parent-break-the-child-positioning (difficult to fix)
     * Seems to be fixed on latest Firefox versions
+
+#### Planned/ideas
+
+* [ ] No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
+* [ ] Filters: UI to report a website problem
+* [ ] Filters: Element picker to create custom rule easily
+* [ ] Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditonal filter)
+* [ ] Store filters on a Github repository ?

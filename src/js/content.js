@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, processRules, removeClass, addClass, processRulesInvert, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig } from "./utils/util.js";
+import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, processRules, removeClass, addClass, processRulesInvert, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise } from "./utils/util.js";
 import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, ignoredElementsContentScript } from "./constants.js";
 import browser from "webextension-polyfill";
 import SafeTimer from "./utils/safeTimer.js";
@@ -42,7 +42,6 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
     let started = false;
     let filtersCache = null;
     let mut_body, mut_backgrounds, mut_brightness_bluelight, mut_brightness_bluelight_wrapper;
-    let typeProcess = "";
     let precUrl;
     let currentSettings = null;
     let newSettingsToApply = null;
@@ -822,15 +821,16 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
     }
 
     async function updateFilters() {
-        const settings = newSettingsToApply || await getSettings(getCurrentURL());
-
         if(filtersCache == null) {
-            browser.runtime.sendMessage({
-                "type": "getFiltersForThisWebsite"
-            });
-        } else {
-            if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true" || settings.attenuateImageColor == "true") doProcessFilters(filtersCache);
+            const response = await sendMessageWithPromise({ "type": "getFiltersForThisWebsite" }, "getFiltersResponse");
+
+            if(response.filters) {
+                filtersCache = response.filters;
+                processSpecialRules(response.specialFilters);
+            }
         }
+
+        if(currentSettings.pageShadowEnabled == "true" || currentSettings.colorInvert == "true" || currentSettings.attenuateImageColor == "true") doProcessFilters(filtersCache);
     }
 
     function doProcessFilters(filters, element, applyToChildrens) {
@@ -1119,7 +1119,7 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
         processedShadowRoots = [];
     }
 
-    function main(type, mutation) {
+    async function main(type, mutation, disableCache) {
         precUrl = getCurrentURL();
         oldBody = document.body;
 
@@ -1131,21 +1131,26 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
         if(typeof mut_brightness_bluelight !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS_BLUELIGHT || mutation == TYPE_ALL)) mut_brightness_bluelight.pause();
         if(typeof mut_brightness_bluelight_wrapper !== "undefined" && (mutation == MUTATION_TYPE_BRIGHTNESS_BLUELIGHT || mutation == TYPE_ALL)) mut_brightness_bluelight_wrapper.pause();
 
-        typeProcess = type;
+        if(runningInIframe) {
+            const responseEnabled = await sendMessageWithPromise({ "type": "isEnabledForThisPage" }, "isEnabledForThisPageResponse");
 
-        observeBodyChange();
+            if(responseEnabled.enabled) {
+                newSettingsToApply = responseEnabled.settings;
+            }
 
-        browser.runtime.sendMessage({
-            "type": "getSpecialRules"
-        });
+            process(responseEnabled.enabled, type);
+        } else {
+            const allowed = await pageShadowAllowed(getCurrentURL());
+            process(allowed, type, disableCache);
+        }
     }
 
-    async function process(allowed, type) {
+    async function process(allowed, type, disableCache) {
         if(applyWhenBodyIsAvailableTimer) applyWhenBodyIsAvailableTimer.clear();
 
         applyWhenBodyIsAvailableTimer = new ApplyBodyAvailable(async() => {
             if(allowed) {
-                const settings = newSettingsToApply || await getSettings(getCurrentURL());
+                const settings = newSettingsToApply || await getSettings(getCurrentURL(), disableCache);
 
                 currentSettings = settings;
                 precEnabled = true;
@@ -1186,6 +1191,11 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
                 if(type !== TYPE_ONLY_CONTRAST && type !== TYPE_ONLY_INVERT && type !== TYPE_ONLY_BRIGHTNESS && type !== TYPE_ONLY_BLUELIGHT) {
                     brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
                     blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
+
+                    const specialRules = await sendMessageWithPromise({ "type": "getSpecialRules" }, "getSpecialRulesResponse");
+                    processSpecialRules(specialRules.filters);
+
+                    observeBodyChange();
 
                     if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true" || settings.attenuateImageColor == "true") {
                         if(type == TYPE_START || !backgroundDetected) {
@@ -1234,65 +1244,20 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
 
     // Message/response handling
     browser.runtime.onMessage.addListener(async(message) => {
-        if(message) {
-            switch(message.type) {
-            case "getFiltersResponse": {
-                if(message.filters) {
-                    filtersCache = message.filters;
-                    const settings = newSettingsToApply || await getSettings(getCurrentURL());
-                    processSpecialRules(message.specialFilters);
-                    if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true" || settings.attenuateImageColor == "true") doProcessFilters(message.filters);
-                }
-                break;
+        if(message && message.type == "websiteUrlUpdated") { // Execute when the page URL changes in Single Page Applications
+            let changed = hasEnabledStateChanged(message.enabled);
+            const urlUpdated = precUrl != getCurrentURL();
+
+            if(urlUpdated) {
+                backgroundDetected = false;
+                precUrl = getCurrentURL();
+                filtersCache = null;
+                if(hasSettingsChanged(currentSettings, message.settings)) changed = true;
+                updateFilters();
             }
-            case "applySettingsChangedResponse": {
-                const changed = hasEnabledStateChanged(message.enabled);
 
-                if(changed || hasSettingsChanged(currentSettings, message.settings)) {
-                    precEnabled = message.enabled;
-                    main(TYPE_RESET, TYPE_ALL);
-                }
-                break;
-            }
-            case "isEnabledForThisPageResponse": {
-                if(message.enabled) {
-                    newSettingsToApply = message.settings;
-                }
-
-                process(message.enabled, typeProcess);
-                break;
-            }
-            case "getSpecialRulesResponse": {
-                processSpecialRules(message.filters);
-
-                if(runningInIframe) {
-                    browser.runtime.sendMessage({
-                        "type": "isEnabledForThisPage"
-                    });
-                } else {
-                    const allowed = await pageShadowAllowed(getCurrentURL());
-                    process(allowed, typeProcess);
-                }
-                break;
-            }
-            case "websiteUrlUpdated": { // Execute when the page URL changes in Single Page Applications
-                let changed = hasEnabledStateChanged(message.enabled);
-                const urlUpdated = precUrl != getCurrentURL();
-
-                if(urlUpdated) {
-                    backgroundDetected = false;
-                    precUrl = getCurrentURL();
-                    filtersCache = null;
-                    if(hasSettingsChanged(currentSettings, message.settings)) changed = true;
-                    updateFilters();
-                }
-
-                if(changed) {
-                    applyIfSettingsChanged(true, message.storageChanged, message.enabled);
-                }
-
-                break;
-            }
+            if(changed) {
+                applyIfSettingsChanged(true, message.storageChanged, message.enabled);
             }
         }
     });
@@ -1317,13 +1282,17 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
 
         if(isLiveSettings && storageChanged) {
             if(runningInIframe) {
-                browser.runtime.sendMessage({
-                    "type": "applySettingsChanged"
-                });
+                const response = await sendMessageWithPromise({ "type": "applySettingsChanged" }, "applySettingsChangedResponse");
+                const changed = hasEnabledStateChanged(response.enabled);
+
+                if(changed || hasSettingsChanged(currentSettings, response.settings)) {
+                    precEnabled = response.enabled;
+                    main(TYPE_RESET, TYPE_ALL, true);
+                }
             } else {
-                if(hasSettingsChanged(currentSettings, await getSettings(getCurrentURL()))) {
+                if(hasSettingsChanged(currentSettings, await getSettings(getCurrentURL(), true))) {
                     precEnabled = isEnabled;
-                    main(TYPE_RESET, TYPE_ALL);
+                    main(TYPE_RESET, TYPE_ALL, true);
                 }
             }
         }

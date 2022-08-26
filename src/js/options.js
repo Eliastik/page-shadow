@@ -33,7 +33,7 @@ import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud } from "./utils/util.js";
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise } from "./utils/util.js";
 import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
 import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
@@ -315,16 +315,13 @@ async function displayFilters() {
         checkbox.setAttribute("type", "checkbox");
         if(filter.enabled) checkbox.checked = true;
 
-        checkbox.addEventListener("click", () => {
+        checkbox.addEventListener("click", async() => {
             checkbox.disabled = true;
             let messageType = "enableFilter";
 
             if(!checkbox.checked) messageType = "disableFilter";
 
-            browser.runtime.sendMessage({
-                "type": messageType,
-                "filterId": index
-            });
+            sendMessageWithPromise({ "type": messageType, "filterId": index });
         });
 
         element.appendChild(checkbox);
@@ -379,13 +376,18 @@ async function displayFilters() {
             buttonSeeErrors.setAttribute("data-toggle", "tooltip");
             buttonSeeErrors.setAttribute("title", i18next.t("modal.filters.seeErrorDetails"));
 
-            buttonSeeErrors.addEventListener("click", () => {
+            buttonSeeErrors.addEventListener("click", async() => {
                 buttonSeeErrors.setAttribute("disabled", "disabled");
 
-                browser.runtime.sendMessage({
-                    "type": "getRulesErrors",
-                    "idFilter": "customFilter"
-                });
+                const message = await sendMessageWithPromise({ "type": "getRulesErrors", "idFilter": "customFilter" }, "getRulesErrorsResponse");
+
+                if(message.typeFilter == "custom") {
+                    $("#buttonSeeErrorsCustomFilter").removeAttr("disabled");
+                } else {
+                    $("#buttonSeeErrorsFilter").removeAttr("disabled");
+                }
+
+                displayFilterErrors(message.data, message.typeFilter);
             });
 
             const iconSeeErrors = document.createElement("i");
@@ -430,11 +432,7 @@ async function displayFilters() {
                 buttonHome.appendChild(iconHome);
 
                 buttonHome.addEventListener("click", () => {
-                    browser.runtime.sendMessage({
-                        type: "openTab",
-                        url: filter.homepage,
-                        part: ""
-                    });
+                    sendMessageWithPromise({ type: "openTab", url: filter.homepage, part: "" });
                 });
 
                 buttonContainer.appendChild(buttonHome);
@@ -465,11 +463,7 @@ async function displayFilters() {
 
                 buttonDelete.addEventListener("click", () => {
                     buttonDelete.disabled = true;
-
-                    browser.runtime.sendMessage({
-                        "type": "removeFilter",
-                        "filterId": index
-                    });
+                    sendMessageWithPromise({ "type": "removeFilter", "filterId": index });
                 });
 
                 buttonContainer.appendChild(buttonDelete);
@@ -483,13 +477,11 @@ async function displayFilters() {
             iconUpdate.setAttribute("class", "fa fa-refresh fa-fw");
             buttonUpdate.appendChild(iconUpdate);
 
-            buttonUpdate.addEventListener("click", () => {
+            buttonUpdate.addEventListener("click", async() => {
                 buttonUpdate.disabled = true;
 
-                browser.runtime.sendMessage({
-                    "type": "updateFilter",
-                    "filterId": index
-                });
+                const message = await sendMessageWithPromise({ "type": "updateFilter", "filterId": index }, "updateFilterFinished");
+                if(!message.result) displayFilters();
             });
 
             buttonContainer.appendChild(buttonUpdate);
@@ -515,21 +507,24 @@ async function displayFilters() {
 
     $("[data-toggle=\"tooltip\"]").tooltip();
 
-    browser.runtime.sendMessage({
-        "type": "getNumberOfTotalRules"
-    });
+    const rulesCount = await sendMessageWithPromise({ "type": "getNumberOfTotalRules" }, "getNumberOfTotalRulesResponse");
+    $("#filtersCount").text(i18next.t("modal.filters.filtersCount", { count: rulesCount.count }));
 
-    browser.runtime.sendMessage({
-        "type": "getFiltersSize"
-    });
+    const filtersSize = await sendMessageWithPromise({ "type": "getFiltersSize" }, "getFiltersSizeResponse");
+    const converted = convertBytes(filtersSize.size);
+    $("#filtersStorageSize").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
 
-    browser.runtime.sendMessage({
-        "type": "getNumberOfCustomFilterRules"
-    });
+    const customRulesCount = await sendMessageWithPromise({ "type": "getNumberOfCustomFilterRules" }, "getNumberOfCustomFilterRulesResponse");
+    $("#customFilterCount").text(i18next.t("modal.filters.filtersCount", { count: customRulesCount.count }));
 
-    browser.runtime.sendMessage({
-        "type": "getRulesErrorCustomFilter"
-    });
+    const errorCustomRules = await sendMessageWithPromise({ "type": "getRulesErrorCustomFilter" }, "getRulesErrorCustomFilterResponse");
+    $("#errorFilterCountCustom").text("");
+    $("#buttonSeeErrorsCustomFilter").hide();
+
+    if(errorCustomRules.data && errorCustomRules.data.length > 0) {
+        $("#errorFilterCountCustom").text(i18next.t("modal.filters.filtersWithErrorCount", { count: errorCustomRules.data.length }));
+        $("#buttonSeeErrorsCustomFilter").show();
+    }
 }
 
 async function loadAdvancedOptionsUI(reset) {
@@ -679,22 +674,30 @@ async function displayInfosFilter(idFilter) {
             $("#detailsFilterVersion").text(filter.version && filter.version.trim() != "" ? filter.version : "0");
             $("#detailsFilterLicense").text(filter.license && filter.license.trim() != "" ? filter.license : i18next.t("modal.filters.licenseEmpty"));
 
-            browser.runtime.sendMessage({
-                "type": "getNumberOfRules",
-                "idFilter": idFilter
-            });
 
-            browser.runtime.sendMessage({
-                "type": "getFilterRuleNumberErrors",
-                "idFilter": idFilter
-            });
+            const resultCount = await sendMessageWithPromise({ "type": "getNumberOfRules", "idFilter": idFilter }, "getNumberOfRulesResponse");
+            $("#detailsFilterRulesCount").text(resultCount.count);
 
-            $("#buttonSeeErrorsFilter").on("click", () => {
-                browser.runtime.sendMessage({
-                    "type": "getRulesErrors",
-                    "idFilter": idFilter
-                });
-            });
+            const resultErrorsNumber = await sendMessageWithPromise({ "type": "getFilterRuleNumberErrors", "idFilter": idFilter }, "getFilterRuleNumberErrorsResponse");
+
+            if(resultErrorsNumber.data) {
+                $("#errorFilterCount").text(i18next.t("modal.filters.filtersWithErrorCount", { count: resultErrorsNumber.data.length }));
+                $("#buttonSeeErrorsFilter").attr("disabled", "disabled");
+
+                if(resultErrors.data.length > 0) {
+                    $("#buttonSeeErrorsFilter").removeAttr("disabled");
+                }
+            }
+
+            const resultErrors = await sendMessageWithPromise({ "type": "getRulesErrors", "idFilter": idFilter }, "getRulesErrorsResponse");
+
+            if(resultErrors.typeFilter == "custom") {
+                $("#buttonSeeErrorsCustomFilter").removeAttr("disabled");
+            } else {
+                $("#buttonSeeErrorsFilter").removeAttr("disabled");
+            }
+
+            displayFilterErrors(resultErrors.data, resultErrors.typeFilter);
         }
     }
 }
@@ -847,20 +850,53 @@ async function displayFilterEdit() {
     if(filter) {
         window.codeMirrorEditFilter.getDoc().setValue(filter);
 
-        browser.runtime.sendMessage({
-            "type": "getRulesErrorsForCustomEdit",
-            "idFilter": "customFilter"
-        });
+        const result = await sendMessageWithPromise({ "type": "getRulesErrorsForCustomEdit", "idFilter": "customFilter" }, "getRulesErrorsForCustomEditResponse");
+
+        displayFilterErrorsOnElement(result.data, document.querySelector("#customFilterEditErrorDetails"));
+
+        if(Object.keys(result.data).length > 0) {
+            $("#customFilterEditErrorDetected").show();
+        } else {
+            $("#customFilterEditErrorDetected").hide();
+            $("#customFilterEditErrorDetails").hide();
+        }
     }
 }
 
-function saveCustomFilter(close) {
+async function saveCustomFilter(close) {
     const text = window.codeMirrorEditFilter.getDoc().getValue();
 
-    browser.runtime.sendMessage({
-        "type": close ? "updateCustomFilterAndClose" : "updateCustomFilter",
-        "text": text
-    });
+    const result = await sendMessageWithPromise({ "type": close ? "updateCustomFilterAndClose" : "updateCustomFilter", "text": text }, "updateCustomFilterFinished", "updateCustomFilterAndCloseFinished");
+
+    if(result) {
+        if(close) {
+            $("#closeAndSaveCustomFilter").removeAttr("disabled", "disabled");
+            $("#editFilter").modal("hide");
+        } else {
+            $("#customFilterSave").removeAttr("disabled", "disabled");
+
+            clearTimeout(filterSavedTimeout);
+            filterSavedTimeout = setTimeout(() => {
+                $("#customFilterSave").attr("data-original-title", "");
+                $("#customFilterSave").tooltip("hide");
+                $("#customFilterSave").tooltip("disable");
+            }, 3000);
+
+            $("#customFilterSave").attr("data-original-title", i18next.t("modal.filters.saved"));
+            $("#customFilterSave").tooltip("enable");
+            $("#customFilterSave").tooltip("show");
+        }
+
+        const resultErrors = await sendMessageWithPromise({ "type": "getRulesErrorsForCustomEdit", "idFilter": "customFilter" }, "getRulesErrorsForCustomEditResponse");
+        displayFilterErrorsOnElement(resultErrors.data, document.querySelector("#customFilterEditErrorDetails"));
+
+        if(Object.keys(resultErrors.data).length > 0) {
+            $("#customFilterEditErrorDetected").show();
+        } else {
+            $("#customFilterEditErrorDetected").hide();
+            $("#customFilterEditErrorDetails").hide();
+        }
+    }
 }
 
 async function saveThemeSettings(nb) {
@@ -1004,9 +1040,8 @@ async function restoreSettings(object) {
 
     $("#updateAllFilters").attr("disabled", "disabled");
 
-    browser.runtime.sendMessage({
-        "type": "updateAllFilters"
-    });
+    const message = await sendMessageWithPromise({ "type": "updateAllFilters" }, "updateAllFiltersFinished");
+    if(message.result) $("#updateAllFilters").removeAttr("disabled");
 
     return true;
 }
@@ -1223,7 +1258,7 @@ async function displayPresetSettings(id) {
     }
 }
 
-function addFilter() {
+async function addFilter() {
     $("#addFilterBtn").attr("disabled", "disabled");
     $("#filterAddress").attr("disabled", "disabled");
     $("#addFilterCancelBtn").attr("disabled", "disabled");
@@ -1233,10 +1268,33 @@ function addFilter() {
     $("#addFilterErrorAlreadyAdded").hide();
     $("#addFilterErrorEmpty").hide();
 
-    browser.runtime.sendMessage({
-        "type": "addFilter",
-        "address": $("#filterAddress").val()
-    });
+    const response = await sendMessageWithPromise({ "type": "addFilter", "address": $("#filterAddress").val() }, "addFilterFinished", "addFilterError");
+
+    $("#addFilterBtn").removeAttr("disabled");
+    $("#filterAddress").removeAttr("disabled");
+    $("#addFilterCancelBtn").removeAttr("disabled");
+
+    if(response.type == "addFilterError") {
+        switch(response.error) {
+        case "Fetch error":
+            $("#addFilterErrorFetch").show();
+            break;
+        case "Parsing error":
+            $("#addFilterErrorParsing").show();
+            break;
+        case "Unknown error":
+            $("#addFilterErrorUnknown").show();
+            break;
+        case "Already added error":
+            $("#addFilterErrorAlreadyAdded").show();
+            break;
+        case "Empty error":
+            $("#addFilterErrorEmpty").show();
+            break;
+        }
+    } else {
+        $("#addFilterSource").modal("hide");
+    }
 }
 
 async function initColpick() {
@@ -1480,7 +1538,7 @@ $(document).ready(() => {
 
     if(getBrowser() == "Chrome" || getBrowser() == "Opera") {
         $("#keyboardShortcuts").on("click", () => {
-            browser.runtime.sendMessage({
+            sendMessageWithPromise({
                 type: "openTab",
                 url: "chrome://extensions/configureCommands",
                 part: ""
@@ -1488,7 +1546,7 @@ $(document).ready(() => {
         });
     } else if(getBrowser() == "Edge") {
         $("#keyboardShortcuts").on("click", () => {
-            browser.runtime.sendMessage({
+            sendMessageWithPromise({
                 type: "openTab",
                 url: "edge://extensions/shortcuts",
                 part: ""
@@ -1496,7 +1554,7 @@ $(document).ready(() => {
         });
     } else if(getBrowser() == "Firefox") {
         $("#keyboardShortcuts").on("click", () => {
-            browser.runtime.sendMessage({
+            sendMessageWithPromise({
                 type: "openTab",
                 url: "https://support.mozilla.org/" + i18next.language + "/kb/manage-extension-shortcuts-firefox",
                 part: ""
@@ -1557,20 +1615,18 @@ $(document).ready(() => {
         }
     });
 
-    $("#updateAllFilters").on("click", () => {
+    $("#updateAllFilters").on("click", async() => {
         $("#updateAllFilters").attr("disabled", "disabled");
 
-        browser.runtime.sendMessage({
-            "type": "updateAllFilters"
-        });
+        const message = await sendMessageWithPromise({ "type": "updateAllFilters" }, "updateAllFiltersFinished");
+        if(message.result) $("#updateAllFilters").removeAttr("disabled");
     });
 
-    $("#cleanAllFilters").on("click", () => {
+    $("#cleanAllFilters").on("click", async() => {
         $("#cleanAllFilters").attr("disabled", "disabled");
 
-        browser.runtime.sendMessage({
-            "type": "cleanAllFilters"
-        });
+        const message = await sendMessageWithPromise({ "type": "cleanAllFilters" }, "cleanAllFiltersFinished");
+        if(message.result) $("#cleanAllFilters").removeAttr("disabled");
     });
 
     $("#addFilterSourceBtnOpen").on("click", () => {
@@ -1614,21 +1670,18 @@ $(document).ready(() => {
         }
     });
 
-    $("#enableFilterAutoUpdate").on("change", () => {
+    $("#enableFilterAutoUpdate").on("change", async() => {
         $("#enableFilterAutoUpdate").attr("disabled", "disabled");
 
-        browser.runtime.sendMessage({
-            "type": "toggleAutoUpdate",
-            "enabled": $("#enableFilterAutoUpdate").is(":checked")
-        });
+        const message = await sendMessageWithPromise({ "type": "toggleAutoUpdate", "enabled": $("#enableFilterAutoUpdate").is(":checked") }, "toggleAutoUpdateFinished");
+        if(message.result) $("#enableFilterAutoUpdate").removeAttr("disabled");
     });
 
-    $("#resetDefaultFiltersBtn").on("click", () => {
+    $("#resetDefaultFiltersBtn").on("click", async() => {
         $("#resetDefaultFiltersBtn").attr("disabled", "disabled");
 
-        browser.runtime.sendMessage({
-            "type": "reinstallDefaultFilters"
-        });
+        const message = await sendMessageWithPromise({ "type": "reinstallDefaultFilters" }, "reinstallDefaultFiltersResponse");
+        if(message.result) $("#resetDefaultFiltersBtn").removeAttr("disabled");
     });
 
     $("#customFilterSave").on("click", () => {
@@ -1691,11 +1744,11 @@ $(document).ready(() => {
     });
 
     // Auto check for filters update
-    $("#filtersTabLink a").on("shown.bs.tab", () => {
+    $("#filtersTabLink a").on("shown.bs.tab", async() => {
         if (!alreadyCheckedForUpdateFilters) {
-            browser.runtime.sendMessage({
-                "type": "checkUpdateNeededForFilters"
-            });
+            await sendMessageWithPromise({ "type": "checkUpdateNeededForFilters" }, "getUpdateNeededForFilterFinished");
+            alreadyCheckedForUpdateFilters = true;
+            displayFilters();
         }
     });
 
@@ -1710,160 +1763,6 @@ $(document).ready(() => {
     $("#saveAdvancedOptions").on("click", () => {
         saveAdvancedOptions();
     });
-});
-
-// Message/response handling
-browser.runtime.onMessage.addListener(message => {
-    if(message) {
-        switch(message.type) {
-        case "toggleAutoUpdateFinished": {
-            if(message.result) $("#enableFilterAutoUpdate").removeAttr("disabled");
-            break;
-        }
-        case "cleanAllFiltersFinished": {
-            if(message.result) $("#cleanAllFilters").removeAttr("disabled");
-            break;
-        }
-        case "updateAllFiltersFinished": {
-            if(message.result) $("#updateAllFilters").removeAttr("disabled");
-            break;
-        }
-        case "updateFilterFinished": {
-            if(!message.result) displayFilters();
-            break;
-        }
-        case "getNumberOfRulesResponse": {
-            $("#detailsFilterRulesCount").text(message.count);
-            break;
-        }
-        case "getNumberOfTotalRulesResponse": {
-            $("#filtersCount").text(i18next.t("modal.filters.filtersCount", { count: message.count }));
-            break;
-        }
-        case "getNumberOfCustomFilterRulesResponse": {
-            $("#customFilterCount").text(i18next.t("modal.filters.filtersCount", { count: message.count }));
-            break;
-        }
-        case "getRulesErrorCustomFilterResponse": {
-            $("#errorFilterCountCustom").text("");
-            $("#buttonSeeErrorsCustomFilter").hide();
-
-            if(message.data && message.data.length > 0) {
-                $("#errorFilterCountCustom").text(i18next.t("modal.filters.filtersWithErrorCount", { count: message.data.length }));
-                $("#buttonSeeErrorsCustomFilter").show();
-            }
-            break;
-        }
-        case "getFilterRuleNumberErrorsResponse": {
-            if(message.data) {
-                $("#errorFilterCount").text(i18next.t("modal.filters.filtersWithErrorCount", { count: message.data.length }));
-                $("#buttonSeeErrorsFilter").attr("disabled", "disabled");
-
-                if(message.data.length > 0) {
-                    $("#buttonSeeErrorsFilter").removeAttr("disabled");
-                }
-            }
-            break;
-        }
-        case "getRulesErrorsResponse": {
-            if(message.typeFilter == "custom") {
-                $("#buttonSeeErrorsCustomFilter").removeAttr("disabled");
-            } else {
-                $("#buttonSeeErrorsFilter").removeAttr("disabled");
-            }
-
-            displayFilterErrors(message.data, message.typeFilter);
-
-            break;
-        }
-        case "getRulesErrorsForCustomEditResponse": {
-            displayFilterErrorsOnElement(message.data, document.querySelector("#customFilterEditErrorDetails"));
-
-            if(Object.keys(message.data).length > 0) {
-                $("#customFilterEditErrorDetected").show();
-            } else {
-                $("#customFilterEditErrorDetected").hide();
-                $("#customFilterEditErrorDetails").hide();
-            }
-
-            break;
-        }
-        case "getFiltersSizeResponse": {
-            const converted = convertBytes(message.size);
-
-            $("#filtersStorageSize").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
-            break;
-        }
-        case "reinstallDefaultFiltersResponse": {
-            if(message.result) $("#resetDefaultFiltersBtn").removeAttr("disabled");
-            break;
-        }
-        case "addFilterFinished":
-        case "addFilterError": {
-            $("#addFilterBtn").removeAttr("disabled");
-            $("#filterAddress").removeAttr("disabled");
-            $("#addFilterCancelBtn").removeAttr("disabled");
-
-            if(message.type == "addFilterError") {
-                switch(message.error) {
-                case "Fetch error":
-                    $("#addFilterErrorFetch").show();
-                    break;
-                case "Parsing error":
-                    $("#addFilterErrorParsing").show();
-                    break;
-                case "Unknown error":
-                    $("#addFilterErrorUnknown").show();
-                    break;
-                case "Already added error":
-                    $("#addFilterErrorAlreadyAdded").show();
-                    break;
-                case "Empty error":
-                    $("#addFilterErrorEmpty").show();
-                    break;
-                }
-            } else {
-                $("#addFilterSource").modal("hide");
-            }
-            break;
-        }
-        case "updateCustomFilterFinished": {
-            $("#customFilterSave").removeAttr("disabled", "disabled");
-
-            clearTimeout(filterSavedTimeout);
-            filterSavedTimeout = setTimeout(() => {
-                $("#customFilterSave").attr("data-original-title", "");
-                $("#customFilterSave").tooltip("hide");
-                $("#customFilterSave").tooltip("disable");
-            }, 3000);
-
-            $("#customFilterSave").attr("data-original-title", i18next.t("modal.filters.saved"));
-            $("#customFilterSave").tooltip("enable");
-            $("#customFilterSave").tooltip("show");
-
-            browser.runtime.sendMessage({
-                "type": "getRulesErrorsForCustomEdit",
-                "idFilter": "customFilter"
-            });
-            break;
-        }
-        case "updateCustomFilterAndCloseFinished": {
-            $("#closeAndSaveCustomFilter").removeAttr("disabled", "disabled");
-            $("#editFilter").modal("hide");
-
-            browser.runtime.sendMessage({
-                "type": "getRulesErrorsForCustomEdit",
-                "idFilter": "customFilter"
-            });
-            break;
-        }
-        case "getUpdateNeededForFilterFinished": {
-            alreadyCheckedForUpdateFilters = true;
-            displayFilters();
-            break;
-        }
-        }
-    }
 });
 
 window.onbeforeunload = () => {
