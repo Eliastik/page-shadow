@@ -680,24 +680,30 @@ async function displayInfosFilter(idFilter) {
 
             const resultErrorsNumber = await sendMessageWithPromise({ "type": "getFilterRuleNumberErrors", "idFilter": idFilter }, "getFilterRuleNumberErrorsResponse");
 
-            if(resultErrorsNumber.data) {
-                $("#errorFilterCount").text(i18next.t("modal.filters.filtersWithErrorCount", { count: resultErrorsNumber.data.length }));
-                $("#buttonSeeErrorsFilter").attr("disabled", "disabled");
+            if(resultErrorsNumber) {
+                if(resultErrorsNumber.data) {
+                    $("#errorFilterCount").text(i18next.t("modal.filters.filtersWithErrorCount", { count: resultErrorsNumber.data.length }));
+                    $("#buttonSeeErrorsFilter").attr("disabled", "disabled");
 
-                if(resultErrors.data.length > 0) {
-                    $("#buttonSeeErrorsFilter").removeAttr("disabled");
+                    if(resultErrorsNumber.data && resultErrorsNumber.data.length > 0) {
+                        $("#buttonSeeErrorsFilter").removeAttr("disabled");
+                    }
                 }
             }
 
-            const resultErrors = await sendMessageWithPromise({ "type": "getRulesErrors", "idFilter": idFilter }, "getRulesErrorsResponse");
+            $("#buttonSeeErrorsFilter").on("click", async() => {
+                const resultErrors = await sendMessageWithPromise({ "type": "getRulesErrors", "idFilter": idFilter }, "getRulesErrorsResponse");
 
-            if(resultErrors.typeFilter == "custom") {
-                $("#buttonSeeErrorsCustomFilter").removeAttr("disabled");
-            } else {
-                $("#buttonSeeErrorsFilter").removeAttr("disabled");
-            }
+                if(resultErrors) {
+                    if(resultErrors.typeFilter == "custom") {
+                        $("#buttonSeeErrorsCustomFilter").removeAttr("disabled");
+                    } else {
+                        $("#buttonSeeErrorsFilter").removeAttr("disabled");
+                    }
+                }
 
-            displayFilterErrors(resultErrors.data, resultErrors.typeFilter);
+                displayFilterErrors(resultErrors.data, resultErrors.typeFilter);
+            });
         }
     }
 }
