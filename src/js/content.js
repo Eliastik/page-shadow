@@ -16,13 +16,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, processRules, removeClass, addClass, processRulesInvert, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise } from "./utils/util.js";
-import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, ignoredElementsContentScript } from "./constants.js";
+import { pageShadowAllowed, customTheme, getSettings, getCurrentURL, hasSettingsChanged, removeClass, addClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise } from "./utils/util.js";
+import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, ignoredElementsContentScript } from "./constants.js";
 import browser from "webextension-polyfill";
 import SafeTimer from "./utils/safeTimer.js";
 import MutationObserverWrapper from "./utils/mutationObserver.js";
 import ClassBatcher from "./utils/classBatcher.js";
 import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
+import PageAnalyzer from "./utils/pageAnalyzer.js";
 
 (async function() {
     const style = document.createElement("style");
@@ -33,9 +34,6 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
     const websiteSpecialFiltersConfig = await loadWebsiteSpecialFiltersConfig();
     const runningInIframe = isRunningInIframe();
     const runningInPopup = isRunningInPopup();
-
-    let backgroundDetectionAlreadyProcessedNodes = [];
-    let processedShadowRoots = [];
 
     let backgroundDetected = false;
     let precEnabled = false;
@@ -74,6 +72,9 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
     let bodyClassBatcher;
     let htmlClassBatcher;
     let bodyClassBatcherRemover;
+
+    // Page Analyzer
+    let pageAnalyzer;
 
     function contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor) {
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
@@ -218,105 +219,15 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
         bodyClassBatcherRemover.add("pageShadowAttenuateImageColor");
     }
 
-    function detectBackground(tagName) {
-        if(!websiteSpecialFiltersConfig.performanceModeEnabled) {
-            const detectBackgroundTimer = new SafeTimer(() => {
-                addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
-                detectBackgroundForElement(document.body, true);
-                removeClass(document.body, "pageShadowDisableBackgroundStyling");
-
-                const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
-                let i = elements.length;
-
-                while(i--) {
-                    detectBackgroundForElement(elements[i], true);
-                }
-
-                removeClass(document.body, "pageShadowDisableStyling");
-                bodyClassBatcher.add(document.body, "pageShadowBackgroundDetected");
-
-                backgroundDetected = true;
-                detectBackgroundTimer.clear();
-            });
-
-            detectBackgroundTimer.start();
-        } else {
-            addClass(document.body, "pageShadowBackgroundDetected");
-            backgroundDetected = true;
-        }
-
-        const mutationBackgroundTimer = new SafeTimer(() => {
-            mutationBackgroundTimer.clear();
-            mutationObserve(MUTATION_TYPE_BACKGROUNDS);
-        });
-
-        mutationBackgroundTimer.start(1);
-    }
-
-    function elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
-        if(!backgroundColor) return true;
-
-        const isRgbaColor = backgroundColor.trim().startsWith("rgba");
-        const isTransparentColor = backgroundColor.trim().startsWith("rgba(0, 0, 0, 0)");
-        const alpha = isRgbaColor ? parseFloat(backgroundColor.split(",")[3]) : -1;
-        const hasBackgroundImageValue = backgroundImage && (backgroundImage.trim().toLowerCase() != "none" && backgroundImage.trim() != "");
-        const hasNoBackgroundColorValue = backgroundColor && (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "");
-
-        return (hasNoBackgroundColorValue || isTransparentColor || (isRgbaColor && alpha <= websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasBackgroundImageValue;
-    }
-
-    function detectBackgroundForElement(element, disableDestyling) {
-        if(element && element.shadowRoot != null && websiteSpecialFiltersConfig.enableShadowRootStyleOverride) {
-            if(websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay > 0) {
-                setTimeout(() => processShadowRoot(element), websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
-            } else {
-                processShadowRoot(element);
-            }
-        }
-
-        if(!element || (element != document.body && (element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected"))) || backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1 || ignoredElementsContentScript.includes(element.localName)) {
-            return;
-        }
-
-        if(!disableDestyling) {
-            addClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
-        }
-
-        const computedStyle = window.getComputedStyle(element, null);
-        const background = computedStyle.getPropertyValue("background");
-        const backgroundColor = computedStyle.getPropertyValue("background-color");
-        const backgroundImage = computedStyle.getPropertyValue("background-image");
-
-        const hasBackgroundImg = background.trim().substr(0, 4).toLowerCase().includes("url(") || backgroundImage.trim().substr(0, 4).toLowerCase() == "url(";
-        const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
-        const hasTransparentBackgroundClass = element.classList.contains("pageShadowHasTransparentBackground");
-
-        if(hasBackgroundImg && !hasClassImg) {
-            addClass(element, "pageShadowHasBackgroundImg");
-        }
-
-        if(websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled) {
-            const hasTransparentBackground = elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg);
-
-            if(hasTransparentBackground && !hasTransparentBackgroundClass) {
-                addClass(element, "pageShadowHasTransparentBackground");
-            }
-        }
-
-        backgroundDetectionAlreadyProcessedNodes.push(element);
-
-        if(!disableDestyling) {
-            removeClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
-        }
-    }
-
-    function applyDetectBackground(type, elements) {
+    async function applyDetectBackground(type, elements) {
         if(backgroundDetected) return false;
+        await pageAnalyzer.setSettings(websiteSpecialFiltersConfig, currentSettings, precEnabled);
 
         if(document.readyState === "complete") {
-            const timerBackgrounds = new SafeTimer(() => {
+            const timerBackgrounds = new SafeTimer(async() => {
                 timerBackgrounds.clear();
-                detectBackground(elements);
+                await pageAnalyzer.detectBackground(elements);
+                mutationObserve(MUTATION_TYPE_BACKGROUNDS);
             });
 
             timerBackgrounds.start(1);
@@ -325,9 +236,10 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
                 window.addEventListener("load", () => {
                     // when the page is entirely loaded
                     if(document.readyState === "complete") {
-                        const timerBackgrounds = new SafeTimer(() => {
+                        const timerBackgrounds = new SafeTimer(async() => {
                             timerBackgrounds.clear();
-                            detectBackground(elements);
+                            await pageAnalyzer.detectBackground(elements);
+                            mutationObserve(MUTATION_TYPE_BACKGROUNDS);
                         });
 
                         timerBackgrounds.start(250);
@@ -691,10 +603,11 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
         }
     }
 
-    function treatMutationObserverBackgroundCalls() {
+    async function treatMutationObserverBackgroundCalls() {
         if(delayedMutationObserversCalls.length > 0) {
             let i = delayedMutationObserversCalls.length;
             let treatedCount = 0;
+            await pageAnalyzer.setSettings(websiteSpecialFiltersConfig, currentSettings, precEnabled);
 
             while(i--) {
                 const mutationList = delayedMutationObserversCalls[i];
@@ -744,7 +657,7 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
                 mutationObserverAddedNodes.push(nodeList);
             }
         } else if(mutation.type == "attributes") {
-            if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
+            if(!websiteSpecialFiltersConfig.performanceModeEnabled) pageAnalyzer.mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
             doProcessFilters(filtersCache, mutation.target, false);
         }
     }
@@ -776,47 +689,8 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
         }
 
         for(const node of addedNodes) {
-            if(!websiteSpecialFiltersConfig.performanceModeEnabled) mutationForElement(node, null, null);
+            if(!websiteSpecialFiltersConfig.performanceModeEnabled) pageAnalyzer.mutationForElement(node, null, null);
             doProcessFilters(filtersCache, node, true);
-        }
-    }
-
-    function mutationForElement(element, attribute, attributeOldValue) {
-        if(!element || !element.classList || element == document.body || ignoredElementsContentScript.includes(element.localName) || element.nodeType != 1) {
-            return false;
-        }
-
-        if(attribute && (!websiteSpecialFiltersConfig.enableMutationObserverAttributes || (attribute.toLowerCase() == "class" && !websiteSpecialFiltersConfig.enableMutationObserverClass)
-            || (attribute.toLowerCase() == "style" && !websiteSpecialFiltersConfig.enableMutationObserverStyle))) {
-            return false;
-        }
-
-        if(attribute == "class" && attributeOldValue !== null) {
-            if(attributeOldValue.indexOf("pageShadowDisableStyling") !== -1) {
-                return false;
-            }
-
-            if((attributeOldValue.indexOf("pageShadowHasTransparentBackground") !== -1 && !element.classList.contains("pageShadowHasTransparentBackground")) ||
-                (attributeOldValue.indexOf("pageShadowHasBackgroundImg") !== -1 && !element.classList.contains("pageShadowHasBackgroundImg"))) {
-                backgroundDetectionAlreadyProcessedNodes = backgroundDetectionAlreadyProcessedNodes.filter(node => node != element);
-            }
-        }
-
-        detectBackgroundForElement(element, false);
-
-        // Detect element childrens
-        if(!attribute && websiteSpecialFiltersConfig.enableMutationObserversForSubChilds) {
-            if(element.getElementsByTagName) {
-                const elementChildrens = element.getElementsByTagName("*");
-
-                if(elementChildrens && elementChildrens.length > 0) {
-                    let i = elementChildrens.length;
-
-                    while(i--) {
-                        detectBackgroundForElement(elementChildrens[i], false);
-                    }
-                }
-            }
         }
     }
 
@@ -984,7 +858,9 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
                         }
                         case "disableShadowRootsCustomStyle":
                         case "overrideShadowRootsCustomStyle":
-                            if(element.shadowRoot != null) processShadowRoot(element);
+                            pageAnalyzer.setSettings(websiteSpecialFiltersConfig, currentSettings, precEnabled).then(() => {
+                                if(element.shadowRoot != null) pageAnalyzer.processShadowRoot(element);
+                            });
                             break;
                         }
                     });
@@ -1042,83 +918,6 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
         });
     }
 
-    function processShadowRoot(currentElement) {
-        if(currentElement) {
-            if(currentElement.shadowRoot != null) {
-                processOneShadowRoot(currentElement);
-                const elementChildrens = currentElement.shadowRoot.querySelectorAll("*");
-
-                if(elementChildrens && elementChildrens.length > 0) {
-                    for(let i = 0, len = elementChildrens.length; i < len; i++) {
-                        processShadowRoot(elementChildrens[i]);
-                    }
-                }
-            }
-        }
-    }
-
-    function processOneShadowRoot(element) {
-        if(element.shadowRoot) {
-            const currentCSSStyle = element.shadowRoot.querySelector(".pageShadowCSSShadowRoot");
-            const currentCSSStyleInvert = element.shadowRoot.querySelector(".pageShadowCSSShadowRootInvert");
-
-            if(currentCSSStyle) {
-                element.shadowRoot.removeChild(currentCSSStyle);
-            }
-
-            if(currentCSSStyleInvert) {
-                element.shadowRoot.removeChild(currentCSSStyleInvert);
-            }
-
-            if(precEnabled && ((currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") || (currentSettings.colorInvert != undefined && currentSettings.colorInvert == "true") || (currentSettings.attenuateImageColor != undefined && currentSettings.attenuateImageColor == "true"))) {
-                if(currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") {
-                    const currentTheme = currentSettings.theme;
-
-                    const styleTag = document.createElement("style");
-                    styleTag.classList.add("pageShadowCSSShadowRoot");
-                    element.shadowRoot.appendChild(styleTag);
-
-                    if(currentTheme.startsWith("custom")) {
-                        customTheme(currentSettings.theme.replace("custom", ""), styleTag, false, null, true);
-                    } else {
-                        processRules(styleTag, defaultThemesBackgrounds[currentTheme - 1].replace("#", ""), defaultThemesLinkColors[currentTheme - 1].replace("#", ""), defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", ""), defaultThemesTextColors[currentTheme - 1].replace("#", ""), null, true);
-                    }
-                }
-
-                if(currentSettings.colorInvert != undefined && currentSettings.colorInvert == "true") {
-                    const styleTagInvert = document.createElement("style");
-                    styleTagInvert.classList.add("pageShadowCSSShadowRootInvert");
-                    element.shadowRoot.appendChild(styleTagInvert);
-
-                    processRulesInvert(styleTagInvert, currentSettings.colorInvert, currentSettings.invertImageColors, currentSettings.invertEntirePage, currentSettings.invertVideoColors, currentSettings.invertBgColor, currentSettings.selectiveInvert);
-                }
-
-                processedShadowRoots.push(element.shadowRoot);
-            }
-        }
-    }
-
-    function resetShadowRoots() {
-        for(let i = 0, len = processedShadowRoots.length; i < len; i++) {
-            const shadowRoot = processedShadowRoots[i];
-
-            if(shadowRoot) {
-                const currentCSSStyle = shadowRoot.querySelector(".pageShadowCSSShadowRoot");
-                const currentCSSStyleInvert = shadowRoot.querySelector(".pageShadowCSSShadowRootInvert");
-
-                if(currentCSSStyle) {
-                    shadowRoot.removeChild(currentCSSStyle);
-                }
-
-                if(currentCSSStyleInvert) {
-                    shadowRoot.removeChild(currentCSSStyleInvert);
-                }
-            }
-        }
-
-        processedShadowRoots = [];
-    }
-
     async function main(type, mutation, disableCache) {
         precUrl = getCurrentURL();
         oldBody = document.body;
@@ -1149,6 +948,8 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
         if(applyWhenBodyIsAvailableTimer) applyWhenBodyIsAvailableTimer.clear();
 
         applyWhenBodyIsAvailableTimer = new ApplyBodyAvailable(async() => {
+            pageAnalyzer = pageAnalyzer || new PageAnalyzer(websiteSpecialFiltersConfig, currentSettings, precEnabled);
+
             if(allowed) {
                 const settings = newSettingsToApply || await getSettings(getCurrentURL(), disableCache);
 
@@ -1224,7 +1025,7 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
                     resetAttenuateColor();
                     resetBrightnessPage();
                     resetBlueLightPage();
-                    resetShadowRoots();
+                    pageAnalyzer.resetShadowRoots();
                 }
             }
 
