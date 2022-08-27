@@ -21,7 +21,7 @@ import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
-import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme } from "./utils/util.js";
+import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme, sendMessageWithPromise } from "./utils/util.js";
 import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval } from "./constants.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
@@ -169,7 +169,7 @@ $(document).ready(() => {
     });
 
     $("#linkAdvSettings").on("click", () => {
-        browser.runtime.sendMessage({
+        sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
             part: ""
@@ -177,7 +177,7 @@ $(document).ready(() => {
     });
 
     $("#linkAdvSettings2").on("click", () => {
-        browser.runtime.sendMessage({
+        sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
             part: "customTheme"
@@ -185,7 +185,7 @@ $(document).ready(() => {
     });
 
     $("#linkAdvSettings3").on("click", () => {
-        browser.runtime.sendMessage({
+        sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
             part: "archive"
@@ -193,15 +193,15 @@ $(document).ready(() => {
     });
 
     $("#linkTestExtension").on("click", () => {
-        browser.runtime.sendMessage({
+        sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("pageTest.html"),
-            part: "customTheme"
+            part: ""
         });
     });
 
     $("#settingsPresets").on("click", () => {
-        browser.runtime.sendMessage({
+        sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
             part: "presets"
@@ -1336,7 +1336,7 @@ $(document).ready(() => {
     });
 
     $("#whatsNew").on("click", () => {
-        browser.runtime.sendMessage({
+        sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
             part: "aboutLatestVersion"
@@ -1349,7 +1349,7 @@ $(document).ready(() => {
     });
 
     $("#createPresetModalAdvancedLink").on("click", () => {
-        browser.runtime.sendMessage({
+        sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
             part: "presets"
@@ -1357,7 +1357,7 @@ $(document).ready(() => {
     });
 
     $("#openAdvancedSettingsLink").on("click", () => {
-        browser.runtime.sendMessage({
+        sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html")
         });
