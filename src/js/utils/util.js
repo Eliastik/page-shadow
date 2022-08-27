@@ -773,7 +773,7 @@ async function presetsEnabledForWebsite(url, disableCache) {
     let allPresetData;
 
     if(!disableCache) { // Get preset with cache
-        const response = await sendMessageWithPromise({ "+type": "getAllPresets" }, "getAllPresetsResponse");
+        const response = await sendMessageWithPromise({ "type": "getAllPresets" }, "getAllPresetsResponse");
         allPresetData = response.data;
     }
 
