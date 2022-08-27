@@ -110,25 +110,23 @@ import FilterProcessor from "./utils/filterProcessor.js";
     }
 
     function resetContrastPage(themeException) {
-        const removeBatcher = new ClassBatcher(document.body);
         const removeBatcherHTML = new ClassBatcher(document.getElementsByTagName("html")[0]);
 
         if(!themeException || !themeException.startsWith("custom")) {
             if(typeof lnkCustomTheme !== "undefined") lnkCustomTheme.setAttribute("href", "");
             removeBatcherHTML.add("pageShadowBackgroundCustom");
-            removeBatcher.add("pageShadowContrastBlackCustom");
+            bodyClassBatcherRemover.add("pageShadowContrastBlackCustom");
         }
 
         for(let i = 1; i <= nbThemes; i++) {
             if(!themeException || themeException != i) {
-                removeBatcher.add((i == 1 ? "pageShadowContrastBlack" : "pageShadowContrastBlack" + i));
+                bodyClassBatcherRemover.add((i == 1 ? "pageShadowContrastBlack" : "pageShadowContrastBlack" + i));
                 removeBatcherHTML.add((i == 1 ? "pageShadowBackgroundContrast" : "pageShadowBackgroundContrast" + i));
             }
         }
 
-        removeBatcher.add("pageShadowDisableImgBgColor");
+        bodyClassBatcherRemover.add("pageShadowDisableImgBgColor");
 
-        removeBatcher.applyRemove();
         removeBatcherHTML.applyRemove();
     }
 
@@ -353,7 +351,7 @@ import FilterProcessor from "./utils/filterProcessor.js";
                     let reApplyInvert = false;
                     let reApplyAttenuate = false;
 
-                    if(currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") {
+                    if(currentSettings && currentSettings.pageShadowEnabled != undefined && currentSettings.pageShadowEnabled == "true") {
                         let classFound = false;
 
                         for(let i = 1; i <= nbThemes; i++) {
@@ -374,7 +372,7 @@ import FilterProcessor from "./utils/filterProcessor.js";
                     }
 
                     mutations.forEach(mutation => {
-                        if(currentSettings.colorInvert !== null && currentSettings.colorInvert == "true") {
+                        if(currentSettings && currentSettings.colorInvert !== null && currentSettings.colorInvert == "true") {
                             if(mutation.type == "attributes" && mutation.attributeName == "class") {
                                 const classList = document.body.classList;
 
@@ -395,7 +393,7 @@ import FilterProcessor from "./utils/filterProcessor.js";
                             }
                         }
 
-                        if(currentSettings.attenuateImageColor !== null && currentSettings.attenuateImageColor == "true") {
+                        if(currentSettings && currentSettings.attenuateImageColor !== null && currentSettings.attenuateImageColor == "true") {
                             if(mutation.type == "attributes" && mutation.attributeName == "class") {
                                 const classList = document.body.classList;
 
@@ -449,13 +447,13 @@ import FilterProcessor from "./utils/filterProcessor.js";
                     let reApplyBlueLight = false;
 
                     mutations.forEach(mutation => {
-                        if(currentSettings.pageLumEnabled != undefined && currentSettings.pageLumEnabled === "true") {
+                        if(currentSettings && currentSettings.pageLumEnabled != undefined && currentSettings.pageLumEnabled === "true") {
                             if((!document.body.contains(elementBrightness) || !document.body.contains(elementBrightnessWrapper)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
                                 reApplyBrightness = true;
                             }
                         }
 
-                        if(currentSettings.blueLightReductionEnabled != undefined && currentSettings.blueLightReductionEnabled === "true") {
+                        if(currentSettings && currentSettings.blueLightReductionEnabled != undefined && currentSettings.blueLightReductionEnabled === "true") {
                             if((!document.body.contains(elementBlueLightFilter) || !document.body.contains(elementBrightnessWrapper)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
                                 reApplyBlueLight = true;
                             }
@@ -705,8 +703,10 @@ import FilterProcessor from "./utils/filterProcessor.js";
             }
         }
 
-        await pageAnalyzer.setSettings(websiteSpecialFiltersConfig, currentSettings, precEnabled);
-        if(currentSettings.pageShadowEnabled == "true" || currentSettings.colorInvert == "true" || currentSettings.attenuateImageColor == "true") filterProcessor.doProcessFilters(filtersCache);
+        if(currentSettings && (currentSettings.pageShadowEnabled == "true" || currentSettings.colorInvert == "true" || currentSettings.attenuateImageColor == "true")) {
+            await pageAnalyzer.setSettings(websiteSpecialFiltersConfig, currentSettings, precEnabled);
+            filterProcessor.doProcessFilters(filtersCache);
+        }
     }
 
     async function main(type, mutation, disableCache) {
@@ -742,14 +742,15 @@ import FilterProcessor from "./utils/filterProcessor.js";
             pageAnalyzer = pageAnalyzer || new PageAnalyzer(websiteSpecialFiltersConfig, currentSettings, precEnabled);
             filterProcessor = filterProcessor || new FilterProcessor(pageAnalyzer);
 
+            bodyClassBatcher = bodyClassBatcher || new ClassBatcher(document.body);
+            bodyClassBatcherRemover = bodyClassBatcherRemover || new ClassBatcher(document.body);
+            htmlClassBatcher = htmlClassBatcher || new ClassBatcher(document.getElementsByTagName("html")[0]);
+
             if(allowed) {
                 const settings = newSettingsToApply || await getSettings(getCurrentURL(), disableCache);
 
                 currentSettings = settings;
                 precEnabled = true;
-                bodyClassBatcher = bodyClassBatcher || new ClassBatcher(document.body);
-                bodyClassBatcherRemover = bodyClassBatcherRemover || new ClassBatcher(document.body);
-                htmlClassBatcher = htmlClassBatcher || new ClassBatcher(document.getElementsByTagName("html")[0]);
 
                 if(type == TYPE_ONLY_INVERT) {
                     bodyClassBatcher.removeAll();
@@ -812,12 +813,16 @@ import FilterProcessor from "./utils/filterProcessor.js";
                 if(typeof lnkCustomTheme !== "undefined") lnkCustomTheme.setAttribute("href", "");
 
                 if(started) {
+                    bodyClassBatcherRemover.clearAll();
+
                     resetContrastPage();
                     resetInvertPage();
                     resetAttenuateColor();
                     resetBrightnessPage();
                     resetBlueLightPage();
+
                     pageAnalyzer.resetShadowRoots();
+                    bodyClassBatcherRemover.applyRemove();
                 }
             }
 

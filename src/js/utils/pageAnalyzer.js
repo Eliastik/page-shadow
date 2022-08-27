@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { customTheme, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig } from "./util.js";
 import SafeTimer from "./safeTimer.js";
-import { ignoredElementsContentScript, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors } from "../constants.js";
+import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors } from "../constants.js";
 
 /**
  * Class used to analyze the pages and detect transparent background,
@@ -215,7 +215,7 @@ export default class PageAnalyzer {
                     if(currentTheme.startsWith("custom")) {
                         customTheme(this.currentSettings.theme.replace("custom", ""), styleTag, false, null, true);
                     } else {
-                        processRules(styleTag, this.defaultThemesBackgrounds[currentTheme - 1].replace("#", ""), defaultThemesLinkColors[currentTheme - 1].replace("#", ""), defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", ""), defaultThemesTextColors[currentTheme - 1].replace("#", ""), null, true);
+                        processRules(styleTag, defaultThemesBackgrounds[currentTheme - 1].replace("#", ""), defaultThemesLinkColors[currentTheme - 1].replace("#", ""), defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", ""), defaultThemesTextColors[currentTheme - 1].replace("#", ""), null, true);
                     }
                 }
 
