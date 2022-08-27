@@ -1065,6 +1065,17 @@ function addClass(element, ...classes) {
     element.classList.add(...classToAdd);
 }
 
+function addNewStyleAttribute(element, styleToAdd) {
+    const oldStyleAttribute = element.getAttribute("style");
+    let newStyleAttribute = (oldStyleAttribute ? oldStyleAttribute : "");
+    if(newStyleAttribute.trim() != "" && !newStyleAttribute.trim().endsWith(";")) {
+        newStyleAttribute += "; " + styleToAdd;
+    } else {
+        newStyleAttribute += styleToAdd;
+    }
+    element.setAttribute("style", newStyleAttribute);
+}
+
 function isRunningInPopup() {
     try {
         return window.opener && window.opener !== window;
@@ -1271,4 +1282,4 @@ async function sendMessageWithPromise(data, ...expectedMessageType) {
     });
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise };
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute };
