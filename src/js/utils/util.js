@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem, migrateSettings } from "../storage.js";
 import browser from "webextension-polyfill";
-import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings } from "../constants.js";
+import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad } from "../constants.js";
 
 function in_array(needle, haystack) {
     for(const key in haystack) {
@@ -830,26 +830,27 @@ function getPriorityPresetEnabledForWebsite(presetsEnabled) {
     return presetEnabled;
 }
 
-async function getSettings(url, disableCache) {
-    const result = await browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor", "selectiveInvert", "blueLightReductionEnabled", "percentageBlueLightReduction", "attenuateImageColor"]);
+function getDefaultSettingsToLoad() {
+    const settings = {};
 
-    let pageShadowEnabled = result.pageShadowEnabled;
-    let theme = result.theme;
-    let colorTemp = result.colorTemp;
-    let invertEntirePage = result.invertEntirePage;
-    let invertImageColors = result.invertImageColors;
-    let invertVideoColors = result.invertVideoColors;
-    let invertBgColor = result.invertBgColor;
-    let pageLumEnabled = result.pageLumEnabled;
-    let pourcentageLum = result.pourcentageLum;
-    let nightModeEnabled = result.nightModeEnabled;
-    let blueLightReductionEnabled = result.blueLightReductionEnabled;
-    let percentageBlueLightReduction = result.percentageBlueLightReduction;
-    let invertPageColors = result.invertPageColors;
-    let disableImgBgColor = result.disableImgBgColor;
-    let colorInvert = result.colorInvert;
-    let selectiveInvert = result.selectiveInvert;
-    let attenuateImageColor = result.attenuateImageColor;
+    for(const setting of settingsToLoad) {
+        if(Object.prototype.hasOwnProperty.call(defaultSettings, setting)) {
+            settings[setting] = defaultSettings[setting];
+        }
+    }
+
+    return settings;
+}
+
+function fillSettings(defaultSettings, newSettings) {
+    for(const key of Object.keys(defaultSettings)) {
+        defaultSettings[key] = newSettings[key];
+    }
+}
+
+async function getSettings(url, disableCache) {
+    const settings = getDefaultSettingsToLoad();
+    let loadGlobalSettings = true;
 
     // Automatically enable preset ?
     const presetsEnabled = await presetsEnabledForWebsite(url, disableCache);
@@ -859,61 +860,33 @@ async function getSettings(url, disableCache) {
 
         if(presetEnabled && presetEnabled.presetNb > 0) {
             const presetData = presetEnabled.presetData;
-
-            pageShadowEnabled = presetData.pageShadowEnabled;
-            theme = presetData.theme;
-            colorTemp = presetData.colorTemp;
-            invertEntirePage = presetData.invertEntirePage;
-            invertImageColors = presetData.invertImageColors;
-            invertVideoColors = presetData.invertVideoColors;
-            invertBgColor = presetData.invertBgColor;
-            pageLumEnabled = presetData.pageLumEnabled;
-            pourcentageLum = presetData.pourcentageLum;
-            nightModeEnabled = presetData.nightModeEnabled;
-            invertPageColors = presetData.invertPageColors;
-            disableImgBgColor = presetData.disableImgBgColor;
-            colorInvert = presetData.colorInvert;
-            selectiveInvert = presetData.selectiveInvert;
-            blueLightReductionEnabled = presetData.blueLightReductionEnabled;
-            percentageBlueLightReduction = presetData.percentageBlueLightReduction;
-            attenuateImageColor = presetData.attenuateImageColor;
+            fillSettings(settings, presetData);
+            loadGlobalSettings = false;
         }
     }
 
-    if(colorInvert == "true") {
-        colorInvert = "true";
-        invertImageColors = "true";
-    } else if(invertPageColors == "true") {
-        colorInvert = "true";
+    // Else, load the global settings
+    if(loadGlobalSettings) {
+        fillSettings(settings, await browser.storage.local.get(settingsToLoad));
+    }
+
+    // Migrate deprecated/old settings
+    if(settings.colorInvert == "true") {
+        settings.colorInvert = "true";
+        settings.invertImageColors = "true";
+    } else if(settings.invertPageColors == "true") {
+        settings.colorInvert = "true";
     } else {
-        colorInvert = "false";
+        settings.colorInvert = "false";
     }
 
-    if(nightModeEnabled == "true" && pageLumEnabled == "true") {
-        blueLightReductionEnabled = "true";
-        percentageBlueLightReduction = pourcentageLum;
-        nightModeEnabled = "false";
+    if(settings.nightModeEnabled == "true" && settings.pageLumEnabled == "true") {
+        settings.blueLightReductionEnabled = "true";
+        settings.percentageBlueLightReduction = settings.pourcentageLum;
+        settings.nightModeEnabled = "false";
     }
 
-    return {
-        pageShadowEnabled,
-        theme,
-        pageLumEnabled,
-        pourcentageLum,
-        colorInvert,
-        invertPageColors,
-        invertImageColors,
-        invertEntirePage,
-        colorTemp,
-        globallyEnable: result.globallyEnable,
-        invertVideoColors,
-        disableImgBgColor,
-        invertBgColor,
-        selectiveInvert,
-        blueLightReductionEnabled,
-        percentageBlueLightReduction,
-        attenuateImageColor
-    };
+    return settings;
 }
 
 function hasSettingsChanged(currentSettings, newSettings) {
