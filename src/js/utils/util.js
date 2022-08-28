@@ -765,7 +765,7 @@ async function deletePreset(nb) {
 }
 
 function resetPresetCache() {
-    sendMessageWithPromise({ "type": "updatePresetCache" }, "updatePresetCacheResponse");
+    sendMessageWithPromise({ "type": "updatePresetCache" });
 }
 
 async function presetsEnabledForWebsite(url, disableCache) {
@@ -867,7 +867,16 @@ async function getSettings(url, disableCache) {
 
     // Else, load the global settings
     if(loadGlobalSettings) {
-        fillSettings(settings, await browser.storage.local.get(settingsToLoad));
+        let newSettings = {};
+
+        if(!disableCache) {
+            const settingsResponse = await sendMessageWithPromise({ "type": "getSettings" }, "getSettingsResponse");
+            newSettings = settingsResponse.data;
+        } else {
+            newSettings = await browser.storage.local.get(settingsToLoad);
+        }
+
+        fillSettings(settings, newSettings);
     }
 
     // Migrate deprecated/old settings

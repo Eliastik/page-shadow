@@ -16,7 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { extensionVersion, defaultSettings, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingNames, defaultCustomThemes } from "./constants.js";
+import { extensionVersion, defaultSettings, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingNames, defaultCustomThemes, settingsToLoad } from "./constants.js";
+import { sendMessageWithPromise } from "./utils/util.js";
 import browser from "webextension-polyfill";
 
 function setSettingItem(name, value) {
@@ -24,10 +25,16 @@ function setSettingItem(name, value) {
         const newSetting = {};
         newSetting[name] = value;
 
-        return browser.storage.local.set(newSetting);
-    } else {
-        return false;
+        browser.storage.local.set(newSetting);
+
+        if(settingsToLoad.includes(name)) {
+            sendMessageWithPromise({ "type": "updateSettingsCache" });
+        }
+
+        return true;
     }
+
+    return false;
 }
 
 function removeSettingItem(name) {

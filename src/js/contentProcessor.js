@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise } from "./utils/util.js";
+import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme } from "./utils/util.js";
 import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, ignoredElementsContentScript } from "./constants.js";
 import SafeTimer from "./utils/safeTimer.js";
 import MutationObserverWrapper from "./utils/mutationObserver.js";
@@ -147,7 +147,7 @@ export default class ContentProcessor {
 
     customThemeApply(theme) {
         if(theme != undefined && typeof(theme) == "string" && theme.startsWith("custom")) {
-            this.customTheme(theme.replace("custom", ""), this.style, false, this.lnkCustomTheme, false);
+            customTheme(theme.replace("custom", ""), this.style, false, this.lnkCustomTheme, false);
         }
     }
 
@@ -844,7 +844,7 @@ export default class ContentProcessor {
             this.started = true;
         });
 
-        this.applyWhenBodyIsAvailableTimer.start(1);
+        this.applyWhenBodyIsAvailableTimer.start();
     }
 
     hasEnabledStateChanged(isEnabled) {

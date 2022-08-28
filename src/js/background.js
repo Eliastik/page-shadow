@@ -22,6 +22,7 @@ import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
 import Filter from "./filters.js";
 import browser from "webextension-polyfill";
 import PresetCache from "./utils/presetCache.js";
+import SettingsCache from "./utils/settingsCache.js";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
@@ -33,6 +34,9 @@ filters.cacheFilters();
 
 const presetCache = new PresetCache();
 presetCache.updateCache();
+
+const settingsCache = new SettingsCache();
+settingsCache.updateCache();
 
 function setPopup() {
     if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setPopup) !== "undefined") {
@@ -360,6 +364,10 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     presetCache.updateCache();
                 }
 
+                if(message.type == "updateSettingsCache") {
+                    settingsCache.updateCache();
+                }
+
                 if(!sender.tab) return;
                 const tabURL = normalizeURL(sender.tab.url);
                 const pageURL = normalizeURL(sender.url);
@@ -474,6 +482,9 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 } else if(message.type == "getAllPresets") {
                     const data = presetCache.getAllPresetsData();
                     resolve({ type: "getAllPresetsResponse", data: data });
+                } else if(message.type == "getSettings") {
+                    const data = settingsCache.data;
+                    resolve({ type: "getSettingsResponse", data: data });
                 }
             }
         }).then(result => {
