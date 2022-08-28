@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem, migrateSettings } from "../storage.js";
 import browser from "webextension-polyfill";
-import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad } from "../constants.js";
+import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors } from "../constants.js";
 
 function in_array(needle, haystack) {
     for(const key in haystack) {
@@ -1264,4 +1264,22 @@ async function sendMessageWithPromise(data, ...expectedMessageType) {
     });
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute };
+function applyContrastPageVariables(theme) {
+    const themeNumber = parseInt(theme) - 1;
+
+    document.documentElement.style.setProperty("--page-shadow-bgcolor", defaultThemesBackgrounds[themeNumber]);
+    document.documentElement.style.setProperty("--page-shadow-txtcolor", defaultThemesTextColors[themeNumber]);
+    document.documentElement.style.setProperty("--page-shadow-lnkcolor", defaultThemesLinkColors[themeNumber]);
+    document.documentElement.style.setProperty("--page-shadow-visitedlnkcolor", defaultThemesVisitedLinkColors[themeNumber]);
+    document.documentElement.style.setProperty("--page-shadow-selectbgcolor", defaultThemesSelectBgColors[themeNumber]);
+    document.documentElement.style.setProperty("--page-shadow-selectxtcolor", defaultThemesSelectTextColors[themeNumber]);
+    document.documentElement.style.setProperty("--page-shadow-insbgcolor", defaultThemesInsBgColors[themeNumber]);
+    document.documentElement.style.setProperty("--page-shadow-instxtcolor", defaultThemesInsTextColors[themeNumber]);
+    document.documentElement.style.setProperty("--page-shadow-delbgcolor", defaultThemesDelBgColors[themeNumber]);
+    document.documentElement.style.setProperty("--page-shadow-deltxtcolor", defaultThemesDelTextColors[themeNumber]);
+    document.documentElement.style.setProperty("--page-shadow-markbgcolor", defaultThemesMarkBgColors[themeNumber]);
+    document.documentElement.style.setProperty("--page-shadow-marktxtcolor", defaultThemesMarkTextColors[themeNumber]);
+    document.documentElement.style.setProperty("--page-shadow-imgbgcolor", defaultThemesImgBgColors[themeNumber]);
+}
+
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables };

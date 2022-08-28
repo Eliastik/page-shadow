@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme } from "./utils/util.js";
+import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariables } from "./utils/util.js";
 import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, ignoredElementsContentScript } from "./constants.js";
 import SafeTimer from "./utils/safeTimer.js";
 import MutationObserverWrapper from "./utils/mutationObserver.js";
@@ -93,18 +93,16 @@ export default class ContentProcessor {
     contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor) {
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
             if(theme != undefined) {
-                if(theme == "1") {
-                    this.bodyClassBatcher.add("pageShadowContrastBlack");
-                    this.htmlClassBatcher.add("pageShadowBackgroundContrast");
-                } else if(theme.startsWith("custom")) {
+                if(theme.startsWith("custom")) {
                     this.customThemeApply(theme);
                     this.bodyClassBatcher.add("pageShadowContrastBlackCustom");
                     this.htmlClassBatcher.add("pageShadowBackgroundCustom");
                 } else {
-                    this.bodyClassBatcher.add("pageShadowContrastBlack" + theme);
-                    this.htmlClassBatcher.add("pageShadowBackgroundContrast" + theme);
+                    this.bodyClassBatcher.add("pageShadowContrastBlack");
+                    this.htmlClassBatcher.add("pageShadowBackgroundContrast");
                 }
 
+                applyContrastPageVariables(theme);
                 this.resetContrastPage(theme, disableImgBgColor);
             } else {
                 this.bodyClassBatcher.add("pageShadowContrastBlack");
@@ -131,12 +129,8 @@ export default class ContentProcessor {
             this.bodyClassBatcherRemover.add("pageShadowContrastBlackCustom");
         }
 
-        for(let i = 1; i <= nbThemes; i++) {
-            if(!themeException || themeException != i) {
-                this.bodyClassBatcherRemover.add((i == 1 ? "pageShadowContrastBlack" : "pageShadowContrastBlack" + i));
-                removeBatcherHTML.add((i == 1 ? "pageShadowBackgroundContrast" : "pageShadowBackgroundContrast" + i));
-            }
-        }
+        removeBatcherHTML.add("pageShadowContrastBlack");
+        this.bodyClassBatcherRemover.add("pageShadowBackgroundContrast");
 
         if(disableImgBgColor != "true") {
             this.bodyClassBatcherRemover.add("pageShadowDisableImgBgColor");
@@ -371,8 +365,6 @@ export default class ContentProcessor {
 
                         for(let i = 1; i <= nbThemes; i++) {
                             if(i == 1 && classList.contains("pageShadowContrastBlack")) {
-                                classFound = true;
-                            } else if(classList.contains("pageShadowContrastBlack" + i)) {
                                 classFound = true;
                             }
                         }

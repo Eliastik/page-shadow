@@ -21,7 +21,7 @@ import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
-import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme, sendMessageWithPromise } from "./utils/util.js";
+import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme, sendMessageWithPromise, applyContrastPageVariables } from "./utils/util.js";
 import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval } from "./constants.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
@@ -212,12 +212,11 @@ $(document).ready(() => {
         $("#previsualisationDiv").attr("class", "");
 
         if(theme !== null) {
-            if(theme == "1") {
-                $("#previsualisationDiv").addClass("pageShadowContrastBlack");
-            } else if(theme.trim().startsWith("custom")) {
+            if(theme.trim().startsWith("custom")) {
                 $("#previsualisationDiv").addClass("pageShadowContrastBlackCustom");
             } else {
-                $("#previsualisationDiv").addClass("pageShadowContrastBlack" + theme);
+                $("#previsualisationDiv").addClass("pageShadowContrastBlack");
+                applyContrastPageVariables(theme);
             }
         } else {
             $("#previsualisationDiv").addClass("pageShadowContrastBlack");
