@@ -197,7 +197,7 @@ const updateNotification = {};
 updateNotification[extensionVersion] = true;
 
 const defaultInterfaceDarkTheme = "auto"; // auto/on/off
-const defaultPopupTheme = "switch"; // switch/classic
+const defaultPopupTheme = "modern"; // switch/classic/modern
 const defaultSettings = {
     "pageShadowEnabled": "false",
     "theme": "1",

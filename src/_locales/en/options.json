@@ -53,7 +53,7 @@
         "popupTheme": "Popup theme:",
         "popupThemeSwitch": "Switches and icons (by default)",
         "popupThemeClassic": "Checkboxes (classic)",
-        "popupThemeModern": "Modern (beta)"
+        "popupThemeModern": "Modern"
     },
     "advancedOptions": {
         "checkbox": "I understand and I want to access to the advanced options",
