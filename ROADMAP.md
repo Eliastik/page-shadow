@@ -41,7 +41,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [ ] Preserve bright colors?/Several "shades" of background color for the themes?
 * [x] Further optimize content.js code
-    * [x] Simplify code applying Shadow Roots styles?
 * [x] Enhance UX of Modern popup theme
 * [x] Attenuate the "flash" when navigating between pages
     * [x] The slowdown process have been identified: getSettings -> cache system to implement for settings
@@ -71,6 +70,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Planned/ideas
 
 * [ ] (Important) Update to Manifest v3 (check manifestv3 branch)
+* [ ] Comment the code: doc for methode/functions
+* [ ] Simplify code applying Shadow Roots styles?
 * [ ] No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
 * [ ] Filters: UI to report a website problem
 * [ ] Filters: Element picker to create custom rule easily
