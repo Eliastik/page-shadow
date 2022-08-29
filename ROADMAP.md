@@ -6,7 +6,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 ### Common
 
-* [x] Update to extension manifest v3
 * [ ] FAQ for common questions
 
 ### 2.10
@@ -40,9 +39,9 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Planned/ideas
 
-* [ ] Further optimize content.js code
-    * [ ] Simplify code applying Shadow Roots styles?
 * [ ] Preserve bright colors?/Several "shades" of background color for the themes?
+* [x] Further optimize content.js code
+    * [x] Simplify code applying Shadow Roots styles?
 * [x] Enhance UX of Modern popup theme
 * [x] Attenuate the "flash" when navigating between pages
     * [x] The slowdown process have been identified: getSettings -> cache system to implement for settings
@@ -56,16 +55,22 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Known issues/bugs
 
-* [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
-* [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) Texts with gradient are not visible (example on frandroid.com)
-* [ ] (Minor) Changing custom theme settings should apply in real-time to websites using the theme
-* [ ] (Medium) Issue on Firefox with Mutation Observer (Invert colors)
+* [x] (Minor) Changing custom theme settings should apply in real-time to websites using the theme
+* [x] (Medium) Issue on Firefox with Mutation Observer (Invert colors)
 * [x] (Medium) Firefox bug: Page Color inversion - broken float: https://stackoverflow.com/questions/52937708/why-does-applying-a-css-filter-on-the-parent-break-the-child-positioning (difficult to fix)
     * Seems to be fixed on latest Firefox versions
 
+### Future version
+
+#### Known issues/bugs
+
+* [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
+* [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
+
 #### Planned/ideas
 
+* [ ] (Important) Update to Manifest v3 (check manifestv3 branch)
 * [ ] No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
 * [ ] Filters: UI to report a website problem
 * [ ] Filters: Element picker to create custom rule easily

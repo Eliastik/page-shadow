@@ -27,8 +27,8 @@ import ContentProcessor from "./contentProcessor.js";
     contentProcessor.main(contentProcessor.TYPE_START);
 
     // If storage/settings have changed
-    browser.storage.onChanged.addListener(() => {
-        applyIfSettingsChanged(false, true);
+    browser.storage.onChanged.addListener(changes => {
+        applyIfSettingsChanged(false, true, null, changes.customThemes != null);
     });
 
     // Message/response handling
@@ -51,7 +51,7 @@ import ContentProcessor from "./contentProcessor.js";
         }
     });
 
-    async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled) {
+    async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, customThemeChanged) {
         const result = await browser.storage.local.get("liveSettings");
         const isLiveSettings = result.liveSettings !== "false";
 
@@ -75,7 +75,7 @@ import ContentProcessor from "./contentProcessor.js";
                     contentProcessor.main(contentProcessor.TYPE_RESET, contentProcessor.TYPE_ALL, true);
                 }
             } else {
-                if(hasSettingsChanged(contentProcessor.currentSettings, await getSettings(getCurrentURL(), true))) {
+                if(hasSettingsChanged(contentProcessor.currentSettings, await getSettings(getCurrentURL(), true), customThemeChanged)) {
                     contentProcessor.precEnabled = isEnabled;
                     contentProcessor.main(contentProcessor.TYPE_RESET, contentProcessor.TYPE_ALL, true);
                 }

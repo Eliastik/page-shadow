@@ -934,11 +934,16 @@ async function getSettings(url, disableCache) {
     return settings;
 }
 
-function hasSettingsChanged(currentSettings, newSettings) {
+function hasSettingsChanged(currentSettings, newSettings, customThemeChanged) {
     if(currentSettings == null) return true;
 
     for(const settingKey of Object.keys(currentSettings)) {
         if(currentSettings[settingKey] !== newSettings[settingKey]) return true;
+    }
+
+    if(currentSettings.theme && newSettings.theme
+        && currentSettings.theme.startsWith("custom") && newSettings.theme.startsWith("custom") && customThemeChanged) {
+        return true;
     }
 
     return false;
