@@ -124,8 +124,10 @@ export default class PageAnalyzer {
 
         if(this.websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled) {
             const hasTransparentBackground = this.elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg);
+            const backgroundClip = computedStyle.getPropertyValue("background-clip") || computedStyle.getPropertyValue("-webkit-background-clip");
+            const hasBackgroundClipText = backgroundClip && backgroundClip.trim().toLowerCase() == "text";
 
-            if(hasTransparentBackground && !hasTransparentBackgroundClass) {
+            if((hasTransparentBackground || hasBackgroundClipText) && !hasTransparentBackgroundClass) {
                 addClass(element, "pageShadowHasTransparentBackground");
             }
         }

@@ -55,7 +55,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Known issues/bugs
 
-* [ ] (Minor) Texts with gradient are not visible (example on frandroid.com)
+* [x] (Minor) Texts with gradient are not visible (example on frandroid.com)
 * [x] (Minor) Changing custom theme settings should apply in real-time to websites using the theme
 * [x] (Medium) Issue on Firefox with Mutation Observer (Invert colors)
 * [x] (Medium) Firefox bug: Page Color inversion - broken float: https://stackoverflow.com/questions/52937708/why-does-applying-a-css-filter-on-the-parent-break-the-child-positioning (difficult to fix)
