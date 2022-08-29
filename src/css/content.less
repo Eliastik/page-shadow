@@ -30,6 +30,7 @@
     --page-shadow-markbgcolor: orange;
     --page-shadow-marktxtcolor: black;
     --page-shadow-imgbgcolor: #BDBDBD;
+    --page-shadow-customfontfamily: initial;
 }
 
 @colortempsnames: 1000, 1200, 1500, 1800, 2000, 2200, 2600, 2900, 3100, 3600; // Name of the color temperatures (in Kelvin)
@@ -163,6 +164,9 @@ html.pageShadowContrastBlack.pageShadowForceCustomTextColorAsBackground:not(.pag
 .pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) > *.pageShadowForceCustomTextColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) {
     background: var(--page-shadow-txtcolor) !important;
 }
+.pageShadowCustomFontFamily *:not(.pageShadowElementDisabled):not(.pageShadowDisableFontFamilyStyling), .pageShadowCustomFontFamily *.pageShadowForceFontFamilyStyling {
+    font-family: var(--page-shadow-customfontfamily) !important;
+}
 
 /* Color temperatures */
 .loopColorTemps(@i) when (@i =< @nbcolortemps) {
@@ -180,41 +184,6 @@ html.pageShadowContrastBlack.pageShadowForceCustomTextColorAsBackground:not(.pag
     div#pageShadowBrightnessNightMode.k@{colortempname} {
         background-color: @colortemp !important;
     }
-}
-
-/* Custom theme */
-.pageShadowContrastBlackCustom select:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
-    background-color: grey !important;
-}
-.pageShadowContrastBlackCustom select:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
-    color: black !important;
-}
-.pageShadowContrastBlackCustom ins:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
-    background-color: green !important;
-}
-.pageShadowContrastBlackCustom ins:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
-    color: white !important;
-}
-.pageShadowContrastBlackCustom del:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
-    background-color: red !important;
-}
-.pageShadowContrastBlackCustom del:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
-    color: white !important;
-}
-.pageShadowContrastBlackCustom mark:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
-    background-color: orange !important;
-}
-.pageShadowContrastBlackCustom mark:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
-    color: dark !important;
-}
-.pageShadowContrastBlackCustom:not(.pageShadowDisableImgBgColor) img:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
-    background-color: #BDBDBD !important;
-}
-.pageShadowContrastBlackCustom .pageShadowHasBackgroundImg, .pageShadowContrastBlackCustom .pageShadowDisableElementInvert {
-    background-color: transparent !important;
-}
-.pageShadowContrastBlackCustom.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) .pageShadowHasHiddenElement, .pageShadowContrastBlackCustom.pageShadowBackgroundDetected *.pageShadowHasHiddenElement > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled), .pageShadowContrastBlackCustom.pageShadowBackgroundDetected *.pageShadowElementForceTransparentBackground, .pageShadowContrastBlackCustom.pageShadowBackgroundDetected *.pageShadowElementForceTransparentBackground * {
-    background: transparent !important;
 }
 
 /* Brightness */

@@ -41,16 +41,18 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Planned/ideas
 
 * [ ] Further optimize content.js code
+    * [ ] Simplify code applying Shadow Roots styles?
+* [ ] Preserve bright colors?/Several "shades" of background color for the themes?
+* [ ] Enhance UX of Modern popup theme
 * [x] Attenuate the "flash" when navigating between pages
     * [x] The slowdown process have been identified: getSettings -> cache system to implement for settings
 * [x] Increase contrast : use only one stylesheet + CSS variable to apply default themes
-    * [ ] Same with custom themes -> use CSS variables
+    * [x] Same with custom themes -> use CSS variables
 * [x] Try to simplify the code of content.js
 * [x] Rework the Mutation Observers to simplify the code and fix somes issues (see the mutation-observers-reworking branch) -> Wrapper class
 * [x] Attenuate the "flash" when changing settings
 * [x] waitAndApply... -> class
-* [ ] Preserve bright colors?/Several "shades" of background color for the themes?
-* [ ] Logging ?
+* [x] Logging ? -> No
 
 #### Known issues/bugs
 

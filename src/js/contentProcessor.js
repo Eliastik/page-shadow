@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariables } from "./utils/util.js";
-import { nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, ignoredElementsContentScript } from "./constants.js";
+import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme } from "./utils/util.js";
+import { colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, ignoredElementsContentScript } from "./constants.js";
 import SafeTimer from "./utils/safeTimer.js";
 import MutationObserverWrapper from "./utils/mutationObserver.js";
 import ClassBatcher from "./utils/classBatcher.js";
@@ -29,7 +29,6 @@ import FilterProcessor from "./utils/filterProcessor.js";
  * Main class used by the content script
  */
 export default class ContentProcessor {
-    style = document.createElement("style");
     lnkCustomTheme = document.createElement("link");
     elementBrightnessWrapper = document.createElement("div");
     elementBrightness = document.createElement("div");
@@ -90,20 +89,20 @@ export default class ContentProcessor {
         this.websiteSpecialFiltersConfig = await loadWebsiteSpecialFiltersConfig();
     }
 
-    contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor) {
+    async contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor) {
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
             if(theme != undefined) {
+                this.resetContrastPage(theme, disableImgBgColor);
+
                 if(theme.startsWith("custom")) {
-                    this.customThemeApply(theme);
-                    this.bodyClassBatcher.add("pageShadowContrastBlackCustom");
+                    await this.customThemeApply(theme);
                     this.htmlClassBatcher.add("pageShadowBackgroundCustom");
                 } else {
-                    this.bodyClassBatcher.add("pageShadowContrastBlack");
-                    this.htmlClassBatcher.add("pageShadowBackgroundContrast");
+                    applyContrastPageVariablesWithTheme(theme);
                 }
 
-                this.resetContrastPage(theme, disableImgBgColor);
-                applyContrastPageVariables(theme);
+                this.bodyClassBatcher.add("pageShadowContrastBlack");
+                this.htmlClassBatcher.add("pageShadowBackgroundContrast");
             } else {
                 this.bodyClassBatcher.add("pageShadowContrastBlack");
                 this.htmlClassBatcher.add("pageShadowBackgroundContrast");
@@ -126,10 +125,10 @@ export default class ContentProcessor {
         if(!themeException || !themeException.startsWith("custom")) {
             if(typeof this.lnkCustomTheme !== "undefined") this.lnkCustomTheme.setAttribute("href", "");
             removeBatcherHTML.add("pageShadowBackgroundCustom");
-            this.bodyClassBatcherRemover.add("pageShadowContrastBlackCustom");
+            this.bodyClassBatcherRemover.add("pageShadowCustomFontFamily");
         }
 
-        if(!themeException || themeException.startsWith("custom")) {
+        if(!themeException) {
             removeBatcherHTML.add("pageShadowBackgroundContrast");
             this.bodyClassBatcherRemover.add("pageShadowContrastBlack");
         }
@@ -141,9 +140,15 @@ export default class ContentProcessor {
         removeBatcherHTML.applyRemove();
     }
 
-    customThemeApply(theme) {
+    async customThemeApply(theme) {
         if(theme != undefined && typeof(theme) == "string" && theme.startsWith("custom")) {
-            customTheme(theme.replace("custom", ""), this.style, false, this.lnkCustomTheme, false);
+            const applyCustomFontFamily = await customTheme(theme.replace("custom", ""), false, this.lnkCustomTheme);
+
+            if(applyCustomFontFamily) {
+                this.bodyClassBatcher.add("pageShadowCustomFontFamily");
+            } else {
+                this.bodyClassBatcherRemover.add("pageShadowCustomFontFamily");
+            }
         }
     }
 
@@ -365,13 +370,11 @@ export default class ContentProcessor {
                     if(this.currentSettings && this.currentSettings.pageShadowEnabled != undefined && this.currentSettings.pageShadowEnabled == "true") {
                         let classFound = false;
 
-                        for(let i = 1; i <= nbThemes; i++) {
-                            if(i == 1 && classList.contains("pageShadowContrastBlack")) {
-                                classFound = true;
-                            }
+                        if(classList.contains("pageShadowContrastBlack")) {
+                            classFound = true;
                         }
 
-                        if(classList.contains("pageShadowContrastBlackCustom")) {
+                        if(classList.contains("pageShadowCustomFontFamily")) {
                             classFound = true;
                         }
 
@@ -784,7 +787,7 @@ export default class ContentProcessor {
                     this.bodyClassBatcherRemover.removeAll();
                     this.htmlClassBatcher.removeAll();
 
-                    this.contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, settings.selectiveInvert, settings.attenuateImageColor);
+                    await this.contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, settings.selectiveInvert, settings.attenuateImageColor);
 
                     this.bodyClassBatcher.applyAdd();
                     this.bodyClassBatcherRemover.applyRemove();

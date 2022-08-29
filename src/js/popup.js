@@ -21,7 +21,7 @@ import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
-import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme, sendMessageWithPromise, applyContrastPageVariables } from "./utils/util.js";
+import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme, sendMessageWithPromise, applyContrastPageVariablesWithTheme } from "./utils/util.js";
 import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval } from "./constants.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
@@ -122,7 +122,6 @@ $(document).ready(() => {
     elBlueLightReduction.style.display = "none";
     document.body.appendChild(elBlueLightReduction);
 
-    const style = document.createElement("style");
     const lnkCustomTheme = document.createElement("link");
     let brightnessChangedFromThisPage = false;
     let percentageBlueLightChangedFromThisPage = false;
@@ -209,16 +208,13 @@ $(document).ready(() => {
     });
 
     function previewTheme(theme) {
-        $("#previsualisationDiv").attr("class", "");
+        $("#previsualisationDiv").removeClass("class", "pageShadowContrastBlack");
 
         if(theme !== null) {
-            if(theme.trim().startsWith("custom")) {
-                $("#previsualisationDiv").addClass("pageShadowContrastBlackCustom");
-            } else {
-                $("#previsualisationDiv").addClass("pageShadowContrastBlack");
-                applyContrastPageVariables(theme);
+            if(!theme.trim().startsWith("custom")) {
+                applyContrastPageVariablesWithTheme(theme);
             }
-        } else {
+
             $("#previsualisationDiv").addClass("pageShadowContrastBlack");
         }
     }
@@ -583,7 +579,13 @@ $(document).ready(() => {
         const result = await browser.storage.local.get("theme");
 
         if(result.theme != undefined && typeof(result.theme) == "string" && result.theme.startsWith("custom")) {
-            customTheme(result.theme.replace("custom", ""), style, true, lnkCustomTheme);
+            const applyCustomFontFamily = await customTheme(result.theme.replace("custom", ""), true, lnkCustomTheme);
+
+            if(applyCustomFontFamily) {
+                $("#previsualisationDiv").addClass("pageShadowCustomFontFamily");
+            } else {
+                $("#previsualisationDiv").removeClass("pageShadowCustomFontFamily");
+            }
         }
     }
 

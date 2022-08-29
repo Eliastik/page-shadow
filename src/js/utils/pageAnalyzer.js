@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { customTheme, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig } from "./util.js";
+import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig } from "./util.js";
 import SafeTimer from "./safeTimer.js";
 import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors } from "../constants.js";
 
@@ -191,7 +191,7 @@ export default class PageAnalyzer {
         }
     }
 
-    processOneShadowRoot(element) {
+    async processOneShadowRoot(element) {
         if(element.shadowRoot) {
             const currentCSSStyle = element.shadowRoot.querySelector(".pageShadowCSSShadowRoot");
             const currentCSSStyleInvert = element.shadowRoot.querySelector(".pageShadowCSSShadowRootInvert");
@@ -208,14 +208,25 @@ export default class PageAnalyzer {
                 if(this.currentSettings.pageShadowEnabled != undefined && this.currentSettings.pageShadowEnabled == "true") {
                     const currentTheme = this.currentSettings.theme;
 
-                    const styleTag = document.createElement("style");
-                    styleTag.classList.add("pageShadowCSSShadowRoot");
-                    element.shadowRoot.appendChild(styleTag);
+                    if(currentTheme != null) {
+                        const styleTag = document.createElement("style");
+                        styleTag.classList.add("pageShadowCSSShadowRoot");
+                        element.shadowRoot.appendChild(styleTag);
 
-                    if(currentTheme.startsWith("custom")) {
-                        customTheme(this.currentSettings.theme.replace("custom", ""), styleTag, false, null, true);
-                    } else {
-                        processRules(styleTag, defaultThemesBackgrounds[currentTheme - 1].replace("#", ""), defaultThemesLinkColors[currentTheme - 1].replace("#", ""), defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", ""), defaultThemesTextColors[currentTheme - 1].replace("#", ""), null, true);
+                        let themeConfig = {};
+
+                        if(currentTheme.startsWith("custom")) {
+                            themeConfig = await getCustomThemeConfig(this.currentSettings.theme.replace("custom", ""));
+                        } else {
+                            themeConfig = {
+                                backgroundColor: defaultThemesBackgrounds[currentTheme - 1].replace("#", ""),
+                                textColor: defaultThemesLinkColors[currentTheme - 1].replace("#", ""),
+                                linkColor: defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", ""),
+                                visitedLinkColor: defaultThemesTextColors[currentTheme - 1].replace("#", "")
+                            };
+                        }
+
+                        processRules(styleTag, themeConfig, true);
                     }
                 }
 

@@ -202,11 +202,10 @@ function getUImessage(id) {
     return browser.i18n.getMessage(id);
 }
 
-async function customTheme(nb, style, disableCustomCSS, lnkCssElement, isShadowRoot) {
-    disableCustomCSS = disableCustomCSS == undefined ? false : disableCustomCSS;
+async function getCustomThemeConfig(nb) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
-    let customThemes, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme, fontTheme;
+    let customThemes, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme, fontTheme, customCSSCode;
 
     const result = await browser.storage.local.get("customThemes");
 
@@ -246,30 +245,62 @@ async function customTheme(nb, style, disableCustomCSS, lnkCssElement, isShadowR
         fontTheme = defaultFontCustomTheme;
     }
 
-    if(!isShadowRoot) {
-        if(document.getElementsByTagName("head")[0].contains(style)) { // remove style element
-            document.getElementsByTagName("head")[0].removeChild(style);
-        }
-
-        // Append style element
-        document.getElementsByTagName("head")[0].appendChild(style);
+    if(customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
+        customCSSCode = customThemes["customCSSCode"];
+    } else {
+        customCSSCode = "";
     }
 
-    // Create rules
-    processRules(style, backgroundTheme, linksColorTheme, linksVisitedColorTheme, textsColorTheme, fontTheme, isShadowRoot);
+    return {
+        backgroundColor: "#" + backgroundTheme,
+        textColor: "#" + textsColorTheme,
+        linkColor: "#" + linksColorTheme,
+        visitedLinkColor: "#" + linksVisitedColorTheme,
+        selectBackgroundColor: defaultThemesSelectBgColors[0],
+        selectTextColor: defaultThemesSelectTextColors[0],
+        insBackgroundColor: defaultThemesInsTextColors[0],
+        insTextColor: defaultThemesInsBgColors[0],
+        delBackgroundColor: defaultThemesDelBgColors[0],
+        delTextColor: defaultThemesDelTextColors[0],
+        markBackgroundColor: defaultThemesMarkBgColors[0],
+        markTxtColor: defaultThemesMarkTextColors[0],
+        imageBackgroundColor: defaultThemesImgBgColors[0],
+        fontFamily: fontTheme,
+        customCSSCode
+    };
+}
 
-    // Custom CSS
-    if(!isShadowRoot && !disableCustomCSS && customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
+/**
+ *
+ * @param {*} nb theme number
+ * @param {*} disableCustomCSS disable applying custom CSS code
+ * @param {*} lnkCssElement link element for applying custom CSS code
+ * @returns true if applying custom font family, false otherwise
+ */
+async function customTheme(nb, disableCustomCSS, lnkCssElement) {
+    const config = await getCustomThemeConfig(nb);
+    disableCustomCSS = disableCustomCSS == undefined ? false : disableCustomCSS;
+
+    applyContrastPageVariables(config);
+
+    // Apply custom CSS
+    if(!disableCustomCSS && config.customCSSCode != "") {
         lnkCssElement.setAttribute("rel", "stylesheet");
         lnkCssElement.setAttribute("type", "text/css");
         lnkCssElement.setAttribute("id", "pageShadowCustomCSS");
         lnkCssElement.setAttribute("name", "pageShadowCustomCSS");
-        lnkCssElement.setAttribute("href", "data:text/css;charset=UTF-8," + encodeURIComponent(customThemes["customCSSCode"]));
+        lnkCssElement.setAttribute("href", "data:text/css;charset=UTF-8," + encodeURIComponent(config.customCSSCode));
         document.getElementsByTagName("head")[0].appendChild(lnkCssElement);
     }
+
+    if(config.fontFamily && config.fontFamily.trim() != "") {
+        return true;
+    }
+
+    return false;
 }
 
-function processRules(style, backgroundTheme, linksColorTheme, linksVisitedColorTheme, textsColorTheme, fontTheme, isShadowRoot) {
+function processRules(style, config, isShadowRoot) {
     if(!style.sheet) return;
     if(style.cssRules) { // Remove all rules
         for(let i = 0; i < style.cssRules.length; i++) {
@@ -278,6 +309,11 @@ function processRules(style, backgroundTheme, linksColorTheme, linksVisitedColor
     }
 
     const ruleSelector = isShadowRoot ? ":host" : ".pageShadowContrastBlackCustom:not(.pageShadowDisableStyling)";
+    const backgroundTheme = config.backgroundColor;
+    const linksColorTheme = config.linkColor;
+    const linksVisitedColorTheme = config.visitedLinkColor;
+    const textsColorTheme = config.textColor;
+    const fontTheme = config.fontFamily;
 
     if(!isShadowRoot) {
         style.sheet.insertRule("html.pageShadowBackgroundCustom:not(.pageShadowDisableBackgroundStyling) { background: #" + backgroundTheme + " !important; }", 0);
@@ -1264,22 +1300,46 @@ async function sendMessageWithPromise(data, ...expectedMessageType) {
     });
 }
 
-function applyContrastPageVariables(theme) {
+function applyContrastPageVariablesWithTheme(theme) {
     const themeNumber = parseInt(theme) - 1;
 
-    document.documentElement.style.setProperty("--page-shadow-bgcolor", defaultThemesBackgrounds[themeNumber]);
-    document.documentElement.style.setProperty("--page-shadow-txtcolor", defaultThemesTextColors[themeNumber]);
-    document.documentElement.style.setProperty("--page-shadow-lnkcolor", defaultThemesLinkColors[themeNumber]);
-    document.documentElement.style.setProperty("--page-shadow-visitedlnkcolor", defaultThemesVisitedLinkColors[themeNumber]);
-    document.documentElement.style.setProperty("--page-shadow-selectbgcolor", defaultThemesSelectBgColors[themeNumber]);
-    document.documentElement.style.setProperty("--page-shadow-selectxtcolor", defaultThemesSelectTextColors[themeNumber]);
-    document.documentElement.style.setProperty("--page-shadow-insbgcolor", defaultThemesInsBgColors[themeNumber]);
-    document.documentElement.style.setProperty("--page-shadow-instxtcolor", defaultThemesInsTextColors[themeNumber]);
-    document.documentElement.style.setProperty("--page-shadow-delbgcolor", defaultThemesDelBgColors[themeNumber]);
-    document.documentElement.style.setProperty("--page-shadow-deltxtcolor", defaultThemesDelTextColors[themeNumber]);
-    document.documentElement.style.setProperty("--page-shadow-markbgcolor", defaultThemesMarkBgColors[themeNumber]);
-    document.documentElement.style.setProperty("--page-shadow-marktxtcolor", defaultThemesMarkTextColors[themeNumber]);
-    document.documentElement.style.setProperty("--page-shadow-imgbgcolor", defaultThemesImgBgColors[themeNumber]);
+    applyContrastPageVariables({
+        backgroundColor: defaultThemesBackgrounds[themeNumber],
+        textColor: defaultThemesTextColors[themeNumber],
+        linkColor: defaultThemesLinkColors[themeNumber],
+        visitedLinkColor: defaultThemesVisitedLinkColors[themeNumber],
+        selectBackgroundColor: defaultThemesSelectBgColors[themeNumber],
+        selectTextColor: defaultThemesSelectTextColors[themeNumber],
+        insBackgroundColor: defaultThemesInsTextColors[themeNumber],
+        insTextColor: defaultThemesInsBgColors[themeNumber],
+        delBackgroundColor: defaultThemesDelBgColors[themeNumber],
+        delTextColor: defaultThemesDelTextColors[themeNumber],
+        markBackgroundColor: defaultThemesMarkBgColors[themeNumber],
+        markTxtColor: defaultThemesMarkTextColors[themeNumber],
+        imageBackgroundColor: defaultThemesImgBgColors[themeNumber]
+    });
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables };
+function applyContrastPageVariables(config) {
+    document.documentElement.style.setProperty("--page-shadow-bgcolor", config.backgroundColor);
+    document.documentElement.style.setProperty("--page-shadow-txtcolor", config.textColor);
+    document.documentElement.style.setProperty("--page-shadow-lnkcolor", config.linkColor);
+    document.documentElement.style.setProperty("--page-shadow-visitedlnkcolor", config.visitedLinkColor);
+    document.documentElement.style.setProperty("--page-shadow-selectbgcolor", config.selectBackgroundColor);
+    document.documentElement.style.setProperty("--page-shadow-selectxtcolor", config.selectTextColor);
+    document.documentElement.style.setProperty("--page-shadow-insbgcolor", config.insBackgroundColor);
+    document.documentElement.style.setProperty("--page-shadow-instxtcolor", config.insTextColor);
+    document.documentElement.style.setProperty("--page-shadow-delbgcolor", config.delBackgroundColor);
+    document.documentElement.style.setProperty("--page-shadow-deltxtcolor", config.delTextColor);
+    document.documentElement.style.setProperty("--page-shadow-markbgcolor", config.markBackgroundColor);
+    document.documentElement.style.setProperty("--page-shadow-marktxtcolor", config.markTxtColor);
+    document.documentElement.style.setProperty("--page-shadow-imgbgcolor", config.imageBackgroundColor);
+
+    if(config && config.fontFamily && config.fontFamily.trim() != "") {
+        document.documentElement.style.setProperty("--page-shadow-customfontfamily", config.fontFamily);
+    } else {
+        document.documentElement.style.removeProperty("--page-shadow-customfontfamily");
+    }
+}
+
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig };
