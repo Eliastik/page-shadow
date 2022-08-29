@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig } from "./util.js";
+import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsv } from "./util.js";
 import SafeTimer from "./safeTimer.js";
 import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors } from "../constants.js";
 
@@ -92,6 +92,28 @@ export default class PageAnalyzer {
         return (hasNoBackgroundColorValue || isTransparentColor || (isRgbaColor && alpha <= this.websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasBackgroundImageValue;
     }
 
+    elementHasBrightColor(backgroundColor) {
+        if(backgroundColor) {
+            const hasGradient = backgroundColor.trim().toLowerCase().indexOf("linear-gradient") != -1
+                || backgroundColor.trim().toLowerCase().indexOf("radial-gradient") != -1 || backgroundColor.trim().toLowerCase().indexOf("conic-gradient") != -1;
+
+            if(backgroundColor.trim().startsWith("rgb")) {
+                const rgbValues = backgroundColor.split("(")[1].split(")")[0];
+                const rgbValuesList = rgbValues.trim().split(",");
+                const hsv = rgb2hsv(rgbValuesList[0], rgbValuesList[1], rgbValuesList[2]);
+
+                // If saturation is grater than a value
+                if(hsv[1] > this.websiteSpecialFiltersConfig.brightColorSaturationTreshold) {
+                    return true;
+                }
+            }
+
+            return hasGradient;
+        }
+
+        return false;
+    }
+
     detectBackgroundForElement(element, disableDestyling) {
         if(element && element.shadowRoot != null && this.websiteSpecialFiltersConfig.enableShadowRootStyleOverride) {
             if(this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay > 0) {
@@ -118,6 +140,7 @@ export default class PageAnalyzer {
         const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
         const hasTransparentBackgroundClass = element.classList.contains("pageShadowHasTransparentBackground");
 
+
         if(hasBackgroundImg && !hasClassImg) {
             addClass(element, "pageShadowHasBackgroundImg");
         }
@@ -128,6 +151,14 @@ export default class PageAnalyzer {
             const hasBackgroundClipText = backgroundClip && backgroundClip.trim().toLowerCase() == "text";
 
             if((hasTransparentBackground || hasBackgroundClipText) && !hasTransparentBackgroundClass) {
+                addClass(element, "pageShadowHasTransparentBackground");
+            }
+        }
+
+        if(this.websiteSpecialFiltersConfig.enableBrightColorDetection) {
+            const hasBrightColor = this.elementHasBrightColor(backgroundColor);
+
+            if(hasBrightColor) {
                 addClass(element, "pageShadowHasTransparentBackground");
             }
         }

@@ -222,6 +222,8 @@ export default class FilterProcessor {
                 if(type == "delayApplyMutationObserversSafeTimer") websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer = rule.filter;
                 if(type == "observeBodyChange") websiteSpecialFiltersConfig.observeBodyChange = true;
                 if(type == "observeBodyChangeTimerInterval") websiteSpecialFiltersConfig.observeBodyChangeTimerInterval = rule.filter;
+                if(type == "enableBrightColorDetection") websiteSpecialFiltersConfig.enableBrightColorDetection = true;
+                if(type == "brightColorSaturationTreshold") websiteSpecialFiltersConfig.brightColorSaturationTreshold = rule.filter;
             });
         });
     }

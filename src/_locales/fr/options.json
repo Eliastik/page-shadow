@@ -73,6 +73,8 @@
             "delayApplyMutationObserversSafeTimer": "Délai avant de réappliquer les paramètres de Page Shadow après une détection par Mutation Observers",
             "observeBodyChange": "Observer le changement d'état de l'élément body",
             "observeBodyChangeTimerInterval": "Intervalle d'observation du changement de l'état de l'élément body",
+            "enableBrightColorDetection": "Activer la détection des éléments avec des couleurs vives",
+            "brightColorSaturationTreshold": "Seuil de détection des éléments avec des couleurs vives",
             "help": {
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrières-plans des éléments.",
                 "autoDetectTransparentBackgroundEnabled": "Active la détection des arrières-plans transparents. Désactiver cette fonctionnalité peut provoquer de nombreux problèmes d'affichage.",
@@ -90,7 +92,9 @@
                 "throttledMutationObserverTreatedByCall": "Le nombre d'éléments traités par un appel aux Mutation Observers, lorsque le ralentissement est activé.",
                 "delayApplyMutationObserversSafeTimer": "Applique un délai entre la détection d'une modification de la page par Mutation Observer et la réappliquation des paramètres de Page Shadow (augmenter le contraste, inverser les couleurs, baisser la luminosité ou filtre de réduction de la lumière bleue). Augmenter ce délai peut corriger des problèmes sur certains sites.",
                 "observeBodyChange": "Observe le changement d'état de l'élément body (suppression puis création d'un nouvel élément body). Corrige des problèmes avec certains sites web (comme Github) ou applications SPA. Désactiver cette option peut améliorer les performances.",
-                "observeBodyChangeTimerInterval": "L'observation du changement d'état de l'élément body s'appuie sur un timer qui s'exécute à un intervalle donné (au lieu d'utiliser les Mutation Observer). L'intervalle est en ms."
+                "observeBodyChangeTimerInterval": "L'observation du changement d'état de l'élément body s'appuie sur un timer qui s'exécute à un intervalle donné (au lieu d'utiliser les Mutation Observer). L'intervalle est en ms.",
+                "enableBrightColorDetection": "Détecte les éléments avec des couleurs vives et, si l'option est activée par l'utilisateur, désactive la fonction Augmenter le contraste pour ces éléments. La désactivation de cette option peut améliorer les performances.",
+                "brightColorSaturationTreshold": "Si un élément a une valeur de saturation supérieure à ce seuil, l'élément sera détecté comme élément de couleur vive."
             }
         },
         "saved": "Sauvegardé !"
