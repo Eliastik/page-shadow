@@ -102,8 +102,8 @@ export default class ContentProcessor {
                     this.htmlClassBatcher.add("pageShadowBackgroundContrast");
                 }
 
-                applyContrastPageVariables(theme);
                 this.resetContrastPage(theme, disableImgBgColor);
+                applyContrastPageVariables(theme);
             } else {
                 this.bodyClassBatcher.add("pageShadowContrastBlack");
                 this.htmlClassBatcher.add("pageShadowBackgroundContrast");
@@ -129,8 +129,10 @@ export default class ContentProcessor {
             this.bodyClassBatcherRemover.add("pageShadowContrastBlackCustom");
         }
 
-        removeBatcherHTML.add("pageShadowContrastBlack");
-        this.bodyClassBatcherRemover.add("pageShadowBackgroundContrast");
+        if(!themeException || themeException.startsWith("custom")) {
+            removeBatcherHTML.add("pageShadowBackgroundContrast");
+            this.bodyClassBatcherRemover.add("pageShadowContrastBlack");
+        }
 
         if(disableImgBgColor != "true") {
             this.bodyClassBatcherRemover.add("pageShadowDisableImgBgColor");
