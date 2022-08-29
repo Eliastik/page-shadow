@@ -480,7 +480,9 @@ $(document).ready(() => {
 
             $("#checkAssomPageModern").addClass("active");
         } else {
-            $("#themeDiv").stop().fadeOut();
+            if(currentTheme != "modern") {
+                $("#themeDiv").stop().fadeOut();
+            }
 
             if($("#checkAssomPage").is(":checked") == true) {
                 $("#checkAssomPage").prop("checked", false);
@@ -516,27 +518,26 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkAssomPageModern .popup-option-modern").on("click", () => {
+    $("#checkAssomPageModern .popup-option-modern").on("click", e => {
+        $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
+
         if(!$("#checkAssomPageModern").hasClass("active") == true) {
             setSettingItem("pageShadowEnabled", "true");
             $("#themeDiv").stop().fadeIn();
         } else {
             setSettingItem("pageShadowEnabled", "false");
         }
+
+        e.preventDefault();
+        e.stopPropagation();
     });
 
-    $("#checkAssomPageModern .popup-option-modern-complement").on("click", () => {
+    $("#checkAssomPageModern .popup-option-modern-complement").on("click", e => {
+        $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
         $("#themeDiv").stop().fadeToggle();
-    });
 
-    $("#checkAssomPageModern .popup-option-modern").on("mouseover", () => {
-        if($("#checkAssomPageModern").hasClass("active") == true) {
-            $("#themeDiv").stop().fadeIn();
-        }
-    });
-
-    $("#checkAssomPageModern .popup-option-modern").on("mouseout", () => {
-        $("#themeDiv").stop().fadeOut();
+        e.preventDefault();
+        e.stopPropagation();
     });
 
     $("#checkDisableImgBgColor").on("change", function() {
@@ -639,7 +640,9 @@ $(document).ready(() => {
                 $("#checkSelectiveInvert").prop("checked", false);
             }
         } else {
-            $("#invertPageColorsDiv").stop().fadeOut();
+            if(currentTheme != "modern") {
+                $("#invertPageColorsDiv").stop().fadeOut();
+            }
 
             if($("#checkColorInvert").is(":checked") == true) {
                 $("#checkColorInvert").prop("checked", false);
@@ -699,27 +702,26 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkColorInvertModern .popup-option-modern").on("click", () => {
+    $("#checkColorInvertModern .popup-option-modern").on("click", e => {
+        $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
+
         if(!$("#checkColorInvertModern").hasClass("active") == true) {
             setSettingItem("invertPageColors", "true");
             $("#invertPageColorsDiv").stop().fadeIn();
         } else {
             setSettingItem("invertPageColors", "false");
         }
+
+        e.preventDefault();
+        e.stopPropagation();
     });
 
-    $("#checkColorInvertModern .popup-option-modern-complement").on("click", () => {
+    $("#checkColorInvertModern .popup-option-modern-complement").on("click", e => {
+        $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
         $("#invertPageColorsDiv").stop().fadeToggle();
-    });
 
-    $("#checkColorInvertModern .popup-option-modern").on("mouseover", () => {
-        if($("#checkColorInvertModern").hasClass("active") == true) {
-            $("#invertPageColorsDiv").stop().fadeIn();
-        }
-    });
-
-    $("#checkColorInvertModern .popup-option-modern").on("mouseout", () => {
-        $("#invertPageColorsDiv").stop().fadeOut();
+        e.preventDefault();
+        e.stopPropagation();
     });
 
     $("#checkEntirePageInvert").on("change", function() {
@@ -856,17 +858,26 @@ $(document).ready(() => {
         }
     });
 
-    $("#autoEnableModern .popup-option-modern").on("click", () => {
+    $("#autoEnableModern .popup-option-modern").on("click", e => {
+        $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
+
         if(!$("#autoEnableModern").hasClass("active") == true) {
             setSettingItem("autoEnable", "true");
             $("#autoEnableSettings").modal("show");
         } else {
             setSettingItem("autoEnable", "false");
         }
+
+        e.preventDefault();
+        e.stopPropagation();
     });
 
-    $("#autoEnableModern .popup-option-modern-complement").on("click", () => {
+    $("#autoEnableModern .popup-option-modern-complement").on("click", e => {
+        $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
         $("#autoEnableSettings").modal("show");
+
+        e.preventDefault();
+        e.stopPropagation();
     });
 
     async function checkSettingsAutoEnable() {
@@ -1085,7 +1096,10 @@ $(document).ready(() => {
 
             $("#checkBrightnessPageModern").addClass("active");
         } else {
-            $("#brightnessSettings").stop().fadeOut();
+            if(currentTheme != "modern") {
+                $("#brightnessSettings").stop().fadeOut();
+            }
+
             elLumB.style.display = "none";
 
             if($("#checkBrightnessPage").is(":checked") == true) {
@@ -1137,7 +1151,10 @@ $(document).ready(() => {
 
             $("#checkBlueLightReductionFilterModern").addClass("active");
         } else {
-            $("#blueLightReductionFilterSettings").stop().fadeOut();
+            if(currentTheme != "modern") {
+                $("#blueLightReductionFilterSettings").stop().fadeOut();
+            }
+
             elBlueLightReduction.setAttribute("id", "pageShadowBrightnessNightMode");
             elBlueLightReduction.style.display = "none";
 
@@ -1169,27 +1186,25 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkBrightnessPageModern .popup-option-modern").on("click", () => {
+    $("#checkBrightnessPageModern .popup-option-modern").on("click", e => {
+        $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
+
         if(!$("#checkBrightnessPageModern").hasClass("active") == true) {
             setSettingItem("pageLumEnabled", "true");
             $("#brightnessSettings").stop().fadeIn();
         } else {
             setSettingItem("pageLumEnabled", "false");
         }
+
+        e.preventDefault();
+        e.stopPropagation();
     });
 
-    $("#checkBrightnessPageModern .popup-option-modern-complement").on("click", () => {
+    $("#checkBrightnessPageModern .popup-option-modern-complement").on("click", e => {
+        $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
         $("#brightnessSettings").stop().fadeToggle();
-    });
-
-    $("#checkBrightnessPageModern .popup-option-modern").on("mouseover", () => {
-        if($("#checkBrightnessPageModern").hasClass("active") == true) {
-            $("#brightnessSettings").stop().fadeIn();
-        }
-    });
-
-    $("#checkBrightnessPageModern .popup-option-modern").on("mouseout", () => {
-        $("#brightnessSettings").stop().fadeOut();
+        e.preventDefault();
+        e.stopPropagation();
     });
 
     $("#checkBlueLightReductionFilter").on("change", function() {
@@ -1208,27 +1223,25 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkBlueLightReductionFilterModern .popup-option-modern").on("click", () => {
+    $("#checkBlueLightReductionFilterModern .popup-option-modern").on("click", e => {
+        $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
+
         if(!$("#checkBlueLightReductionFilterModern").hasClass("active") == true) {
             setSettingItem("blueLightReductionEnabled", "true");
             $("#blueLightReductionFilterSettings").stop().fadeIn();
         } else {
             setSettingItem("blueLightReductionEnabled", "false");
         }
+
+        e.preventDefault();
+        e.stopPropagation();
     });
 
-    $("#checkBlueLightReductionFilterModern .popup-option-modern-complement").on("click", () => {
+    $("#checkBlueLightReductionFilterModern .popup-option-modern-complement").on("click", e => {
+        $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
         $("#blueLightReductionFilterSettings").stop().fadeToggle();
-    });
-
-    $("#checkBlueLightReductionFilterModern .popup-option-modern").on("mouseover", () => {
-        if($("#checkBlueLightReductionFilterModern").hasClass("active") == true) {
-            $("#blueLightReductionFilterSettings").stop().fadeIn();
-        }
-    });
-
-    $("#checkBlueLightReductionFilterModern .popup-option-modern").on("mouseout", () => {
-        $("#blueLightReductionFilterSettings").stop().fadeOut();
+        e.preventDefault();
+        e.stopPropagation();
     });
 
     $("#sliderBrightness").on("change", () => {
@@ -1474,15 +1487,19 @@ $(document).ready(() => {
         });
     }
 
-    $(".popup-advanced-option-wrapper").on("mouseover", function() {
+    $("body").on("click", e => {
         if(currentTheme == "modern") {
-            $(this).find("> div").stop().fadeIn();
-        }
-    });
+            let found = false;
 
-    $(".popup-advanced-option-wrapper").on("mouseout", function() {
-        if(currentTheme == "modern") {
-            $(this).find("> div").stop().fadeOut();
+            $(".popup-advanced-option").each(function() {
+                if($(this).is(":visible") && !$(this).is(e.target) && $(this).has(e.target).length === 0) {
+                    found = true;
+                }
+            });
+
+            if(found) {
+                $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
+            }
         }
     });
 });
