@@ -440,7 +440,8 @@ $(document).ready(() => {
     });
 
     checkContrastMode = async function() {
-        const result = await browser.storage.local.get(["theme", "pageShadowEnabled", "disableImgBgColor"]);
+        const result = await browser.storage.local.get(["theme", "pageShadowEnabled", "disableImgBgColor", "brightColorPreservation"]);
+
         // append the list of themes in the select
         $("#themeSelect").text("");
 
@@ -500,6 +501,12 @@ $(document).ready(() => {
         } else if(result.disableImgBgColor !== "true" && $("#checkDisableImgBgColor").is(":checked") == false) {
             $("#checkDisableImgBgColor").prop("checked", true);
         }
+
+        if(result.brightColorPreservation == "true" && $("#checkEnableBrightColorPreservation").is(":checked") == false) {
+            $("#checkEnableBrightColorPreservation").prop("checked", true);
+        } else if(result.brightColorPreservation !== "true" && $("#checkEnableBrightColorPreservation").is(":checked") == true) {
+            $("#checkEnableBrightColorPreservation").prop("checked", false);
+        }
     };
 
     $("#checkAssomPage").on("change", function() {
@@ -545,6 +552,14 @@ $(document).ready(() => {
             setSettingItem("disableImgBgColor", "false");
         } else {
             setSettingItem("disableImgBgColor", "true");
+        }
+    });
+
+    $("#checkEnableBrightColorPreservation").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("brightColorPreservation", "true");
+        } else {
+            setSettingItem("brightColorPreservation", "false");
         }
     });
 

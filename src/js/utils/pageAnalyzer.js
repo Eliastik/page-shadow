@@ -102,7 +102,7 @@ export default class PageAnalyzer {
                 const rgbValuesList = rgbValues.trim().split(",");
                 const hsl = rgb2hsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
 
-                // If ligthness is between than a value
+                // If ligthness is between min and max values
                 if(hsl[2] >= this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMin
                     && hsl[2] <= this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMax) {
                     return true;
@@ -163,7 +163,7 @@ export default class PageAnalyzer {
             const hasBrightColor = this.elementHasBrightColor(backgroundColor);
 
             if(hasBrightColor) {
-                addClass(element, "pageShadowHasTransparentBackground");
+                addClass(element, "pageShadowHasBrightColorBackground");
             }
         }
 

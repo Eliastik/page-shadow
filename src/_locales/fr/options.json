@@ -294,6 +294,7 @@
             "attenuateImageColor": "Atténuer la couleur des images :",
             "blueLightReductionEnabled": "Filtre de réduction de la lumière bleue :",
             "percentageBlueLightReduction": "Intensité du filtre de réduction de la lumière bleue :",
+            "brightColorPreservation": "Préserver les couleurs des éléments :",
             "presetInfosLabel": "Détails du pré-réglage",
             "enabled": "Activé",
             "disabled": "Désactivé",

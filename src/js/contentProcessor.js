@@ -89,10 +89,10 @@ export default class ContentProcessor {
         this.websiteSpecialFiltersConfig = await loadWebsiteSpecialFiltersConfig();
     }
 
-    async contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor) {
+    async contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor, brightColorPreservation) {
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
             if(theme != undefined) {
-                this.resetContrastPage(theme, disableImgBgColor);
+                this.resetContrastPage(theme, disableImgBgColor, brightColorPreservation);
 
                 if(theme.startsWith("custom")) {
                     await this.customThemeApply(theme);
@@ -106,11 +106,15 @@ export default class ContentProcessor {
             } else {
                 this.bodyClassBatcher.add("pageShadowContrastBlack");
                 this.htmlClassBatcher.add("pageShadowBackgroundContrast");
-                this.resetContrastPage(1, disableImgBgColor);
+                this.resetContrastPage(1, disableImgBgColor, brightColorPreservation);
             }
 
             if(disableImgBgColor != undefined && disableImgBgColor == "true") {
                 this.bodyClassBatcher.add("pageShadowDisableImgBgColor");
+            }
+
+            if(brightColorPreservation != undefined && brightColorPreservation == "true") {
+                this.bodyClassBatcher.add("pageShadowPreserveBrightColor");
             }
         } else {
             this.resetContrastPage();
@@ -119,7 +123,7 @@ export default class ContentProcessor {
         this.invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert, attenuateImageColor);
     }
 
-    resetContrastPage(themeException, disableImgBgColor) {
+    resetContrastPage(themeException, disableImgBgColor, brightColorPreservation) {
         const removeBatcherHTML = new ClassBatcher(document.getElementsByTagName("html")[0]);
 
         if(!themeException || !themeException.startsWith("custom")) {
@@ -135,6 +139,10 @@ export default class ContentProcessor {
 
         if(disableImgBgColor != "true") {
             this.bodyClassBatcherRemover.add("pageShadowDisableImgBgColor");
+        }
+
+        if(brightColorPreservation != "true") {
+            this.bodyClassBatcherRemover.add("pageShadowPreserveBrightColor");
         }
 
         removeBatcherHTML.applyRemove();
@@ -399,8 +407,9 @@ export default class ContentProcessor {
                             if(mutation.type == "attributes" && mutation.attributeName == "class") {
                                 const classList = document.body.classList;
 
-                                if(mutation.oldValue && mutation.oldValue.indexOf("pageShadowDisableImgBgColor") !== -1 && !classList.contains("pageShadowDisableImgBgColor")) {
-                                    reApplyInvert = true;
+                                if((mutation.oldValue && mutation.oldValue.indexOf("pageShadowDisableImgBgColor") !== -1 && !classList.contains("pageShadowDisableImgBgColor"))
+                                    || (mutation.oldValue && mutation.oldValue.indexOf("pageShadowPreserveBrightColor") !== -1 && !classList.contains("pageShadowPreserveBrightColor"))) {
+                                    reApplyContrast = true;
                                 }
                             }
                         }
@@ -787,7 +796,7 @@ export default class ContentProcessor {
                     this.bodyClassBatcherRemover.removeAll();
                     this.htmlClassBatcher.removeAll();
 
-                    await this.contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, settings.selectiveInvert, settings.attenuateImageColor);
+                    await this.contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, settings.selectiveInvert, settings.attenuateImageColor, settings.brightColorPreservation);
 
                     this.bodyClassBatcher.applyAdd();
                     this.bodyClassBatcherRemover.applyRemove();

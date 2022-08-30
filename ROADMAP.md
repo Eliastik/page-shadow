@@ -39,8 +39,9 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Planned/ideas
 
+* [ ] Optimize background detection (method "detectBackground" of PageAnalyzer class)
 * [x] Preserve bright colors
-    * [ ] Option in popup to enable/disable this detection
+    * [x] Option in popup to enable/disable this detection
 * [x] Further optimize content.js code
 * [x] Enhance UX of Modern popup theme
 * [x] Attenuate the "flash" when navigating between pages
@@ -72,7 +73,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [ ] (Important) Update to Manifest v3 (check manifestv3 branch)
 * [ ] Comment the code: doc for methode/functions
-* [ ] Several "shades" of background color for the themes?
+* [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
 * [ ] Simplify code applying Shadow Roots styles?
 * [ ] No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
 * [ ] Filters: UI to report a website problem
