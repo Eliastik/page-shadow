@@ -243,35 +243,41 @@ export default class ContentProcessor {
     }
 
     async applyDetectBackground(type, elements) {
-        if(this.pageAnalyzer.backgroundDetected) return false;
         await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
 
-        if(document.readyState === "complete") {
-            const timerBackgrounds = new SafeTimer(async() => {
-                timerBackgrounds.clear();
-                await this.pageAnalyzer.detectBackground(elements);
-                this.mutationObserve(this.MUTATION_TYPE_BACKGROUNDS);
-            });
+        return new Promise(resolve => {
+            if(this.pageAnalyzer.backgroundDetected) resolve();
 
-            timerBackgrounds.start(1);
-        } else {
-            if(type == this.TYPE_LOADING) {
-                window.addEventListener("load", () => {
-                    // when the page is entirely loaded
-                    if(document.readyState === "complete") {
-                        const timerBackgrounds = new SafeTimer(async() => {
-                            timerBackgrounds.clear();
-                            await this.pageAnalyzer.detectBackground(elements);
-                            this.mutationObserve(this.MUTATION_TYPE_BACKGROUNDS);
-                        });
-
-                        timerBackgrounds.start(250);
-                    }
+            if(document.readyState === "complete") {
+                const timerBackgrounds = new SafeTimer(async() => {
+                    timerBackgrounds.clear();
+                    await this.pageAnalyzer.detectBackground(elements);
+                    this.mutationObserve(this.MUTATION_TYPE_BACKGROUNDS);
+                    resolve();
                 });
+
+                timerBackgrounds.start(1);
             } else {
-                this.applyDetectBackground(this.TYPE_LOADING, elements);
+                if(type == this.TYPE_LOADING) {
+                    window.addEventListener("load", () => {
+                        // when the page is entirely loaded
+                        if(document.readyState === "complete") {
+                            const timerBackgrounds = new SafeTimer(async() => {
+                                timerBackgrounds.clear();
+                                await this.pageAnalyzer.detectBackground(elements);
+                                this.mutationObserve(this.MUTATION_TYPE_BACKGROUNDS);
+                                resolve();
+                            });
+
+                            timerBackgrounds.start(250);
+                        }
+                    });
+                } else {
+                    this.applyDetectBackground(this.TYPE_LOADING, elements);
+                    resolve();
+                }
             }
-        }
+        });
     }
 
     brightnessPage(enabled, percentage) {
@@ -814,16 +820,16 @@ export default class ContentProcessor {
 
                     if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true" || settings.attenuateImageColor == "true") {
                         if(type == this.TYPE_START || !this.pageAnalyzer.backgroundDetected) {
-                            this.applyDetectBackground(this.TYPE_LOADING, "*");
+                            this.applyDetectBackground(this.TYPE_LOADING, "*").then(() => {
+                                if(document.readyState == "complete") {
+                                    this.updateFilters();
+                                } else {
+                                    window.addEventListener("load", () => {
+                                        this.updateFilters();
+                                    });
+                                }
+                            });
                         }
-                    }
-
-                    if(document.readyState == "complete") {
-                        this.updateFilters();
-                    } else {
-                        window.addEventListener("load", () => {
-                            this.updateFilters();
-                        });
                     }
                 }
 

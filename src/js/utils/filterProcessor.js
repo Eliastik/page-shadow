@@ -181,6 +181,9 @@ export default class FilterProcessor {
                         case "overrideShadowRootsCustomStyle":
                             if(element.shadowRoot != null) this.pageAnalyzer.processShadowRoot(element);
                             break;
+                        case "preserveBrightColor":
+                            if(!element.classList.contains("pageShadowHasBrightColorBackground")) addClass(element, "pageShadowHasBrightColorBackground");
+                            break;
                         }
                     });
                 }
