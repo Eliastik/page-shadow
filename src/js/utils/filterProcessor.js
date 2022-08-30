@@ -223,7 +223,8 @@ export default class FilterProcessor {
                 if(type == "observeBodyChange") websiteSpecialFiltersConfig.observeBodyChange = true;
                 if(type == "observeBodyChangeTimerInterval") websiteSpecialFiltersConfig.observeBodyChangeTimerInterval = rule.filter;
                 if(type == "enableBrightColorDetection") websiteSpecialFiltersConfig.enableBrightColorDetection = true;
-                if(type == "brightColorSaturationTreshold") websiteSpecialFiltersConfig.brightColorSaturationTreshold = rule.filter;
+                if(type == "brightColorLightnessTresholdMin") websiteSpecialFiltersConfig.brightColorLightnessTresholdMin = rule.filter;
+                if(type == "brightColorLightnessTresholdMax") websiteSpecialFiltersConfig.brightColorLightnessTresholdMax = rule.filter;
             });
         });
     }

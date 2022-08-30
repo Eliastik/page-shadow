@@ -77,7 +77,8 @@
             "observeBodyChange": "Observe body element state change",
             "observeBodyChangeTimerInterval": "Interval for the observation of body element state change",
             "enableBrightColorDetection": "Enable detection of bright color",
-            "brightColorSaturationTreshold": "Saturation treshold for bright color detection",
+            "brightColorLightnessTresholdMin": "Minimum lightness treshold for bright color detection",
+            "brightColorLightnessTresholdMax": "Maximum lightness treshold for bright color detection",
             "help": {
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
                 "autoDetectTransparentBackgroundEnabled": "Enable detection of transparent backgrounds. Disabling this feature can cause many display issues.",
@@ -97,7 +98,8 @@
                 "observeBodyChange": "Observes the state change of the body element (deletion then creation of a new body element). Fixes issues with some websites (like Github) or SPA applications. Disabling this option may improve performance.",
                 "observeBodyChangeTimerInterval": "Observing the state change of the body element relies on a timer that runs at a given interval (instead of using Mutation Observers). The interval is in ms.",
                 "enableBrightColorDetection": "Detect element with bright color, and if enabled by the user, disable the Increase contrast function for these elements. Disabling this option may improve performance.",
-                "brightColorSaturationTreshold": "If an element has a saturation value that is above this treshold, the element will be detected as bright color element."
+                "brightColorLightnessTresholdMin": "If an element has a lightness value that is above this treshold but lower than the maximum, the element will be detected as bright color element.",
+                "brightColorLightnessTresholdMax": "If an element has a lightness value that is lower than this treshold but above the minimum, the element will be detected as bright color element."
             }
         },
         "saved": "Sauvegardé !"

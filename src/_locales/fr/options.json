@@ -74,7 +74,8 @@
             "observeBodyChange": "Observer le changement d'état de l'élément body",
             "observeBodyChangeTimerInterval": "Intervalle d'observation du changement de l'état de l'élément body",
             "enableBrightColorDetection": "Activer la détection des éléments avec des couleurs vives",
-            "brightColorSaturationTreshold": "Seuil de détection des éléments avec des couleurs vives",
+            "brightColorLightnessTresholdMin": "Seuil minimum de détection des éléments avec des couleurs vives",
+            "brightColorLightnessTresholdMax": "Seuil maximum de détection des éléments avec des couleurs vives",
             "help": {
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrières-plans des éléments.",
                 "autoDetectTransparentBackgroundEnabled": "Active la détection des arrières-plans transparents. Désactiver cette fonctionnalité peut provoquer de nombreux problèmes d'affichage.",
@@ -94,7 +95,8 @@
                 "observeBodyChange": "Observe le changement d'état de l'élément body (suppression puis création d'un nouvel élément body). Corrige des problèmes avec certains sites web (comme Github) ou applications SPA. Désactiver cette option peut améliorer les performances.",
                 "observeBodyChangeTimerInterval": "L'observation du changement d'état de l'élément body s'appuie sur un timer qui s'exécute à un intervalle donné (au lieu d'utiliser les Mutation Observer). L'intervalle est en ms.",
                 "enableBrightColorDetection": "Détecte les éléments avec des couleurs vives et, si l'option est activée par l'utilisateur, désactive la fonction Augmenter le contraste pour ces éléments. La désactivation de cette option peut améliorer les performances.",
-                "brightColorSaturationTreshold": "Si un élément a une valeur de saturation supérieure à ce seuil, l'élément sera détecté comme élément de couleur vive."
+                "brightColorLightnessTresholdMin": "Si un élément a une valeur de luminosité supérieure à ce seuil et inférieure à la valeur maximum, l'élément sera détecté comme élément de couleur vive.",
+                "brightColorLightnessTresholdMax": "Si un élément a une valeur de luminosité inférieure à ce seuil et supérieure à la valeur minimum, l'élément sera détecté comme élément de couleur vive."
             }
         },
         "saved": "Sauvegardé !"

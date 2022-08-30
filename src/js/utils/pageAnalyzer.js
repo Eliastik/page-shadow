@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsv } from "./util.js";
+import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsl } from "./util.js";
 import SafeTimer from "./safeTimer.js";
 import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors } from "../constants.js";
 
@@ -100,10 +100,11 @@ export default class PageAnalyzer {
             if(backgroundColor.trim().startsWith("rgb")) {
                 const rgbValues = backgroundColor.split("(")[1].split(")")[0];
                 const rgbValuesList = rgbValues.trim().split(",");
-                const hsv = rgb2hsv(rgbValuesList[0], rgbValuesList[1], rgbValuesList[2]);
+                const hsl = rgb2hsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
 
-                // If saturation is grater than a value
-                if(hsv[1] > this.websiteSpecialFiltersConfig.brightColorSaturationTreshold) {
+                // If ligthness is between than a value
+                if(hsl[2] >= this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMin
+                    && hsl[2] <= this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMax) {
                     return true;
                 }
             }
@@ -145,6 +146,8 @@ export default class PageAnalyzer {
             addClass(element, "pageShadowHasBackgroundImg");
         }
 
+        let transparentColorDetected = false;
+
         if(this.websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled) {
             const hasTransparentBackground = this.elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg);
             const backgroundClip = computedStyle.getPropertyValue("background-clip") || computedStyle.getPropertyValue("-webkit-background-clip");
@@ -152,10 +155,11 @@ export default class PageAnalyzer {
 
             if((hasTransparentBackground || hasBackgroundClipText) && !hasTransparentBackgroundClass) {
                 addClass(element, "pageShadowHasTransparentBackground");
+                transparentColorDetected = true;
             }
         }
 
-        if(this.websiteSpecialFiltersConfig.enableBrightColorDetection) {
+        if(this.websiteSpecialFiltersConfig.enableBrightColorDetection && !transparentColorDetected) {
             const hasBrightColor = this.elementHasBrightColor(backgroundColor);
 
             if(hasBrightColor) {
