@@ -56,19 +56,26 @@ export default class PageAnalyzer {
                     removeClass(document.body, "pageShadowDisableBackgroundStyling");
 
                     const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
-                    let i = elements.length;
+                    let index = elements.length;
 
-                    while(i--) {
-                        this.detectBackgroundForElement(elements[i], true);
+                    if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection) {
+                        const throttledBackgroundDetectionTimer = new SafeTimer(() => {
+                            index = this.detectBackgroundLoop(elements, index);
+
+                            if(index <= 0) {
+                                detectBackgroundTimer.clear();
+                                resolve();
+                            } else {
+                                throttledBackgroundDetectionTimer.start(1);
+                            }
+                        });
+
+                        throttledBackgroundDetectionTimer.start(1);
+                    } else {
+                        this.detectBackgroundLoop(elements, index);
+                        detectBackgroundTimer.clear();
+                        resolve();
                     }
-
-                    removeClass(document.body, "pageShadowDisableStyling");
-                    addClass(document.body, "pageShadowBackgroundDetected");
-
-                    this.backgroundDetected = true;
-                    detectBackgroundTimer.clear();
-
-                    resolve();
                 });
 
                 detectBackgroundTimer.start();
@@ -78,6 +85,26 @@ export default class PageAnalyzer {
                 resolve();
             }
         });
+    }
+
+    detectBackgroundLoop(elements, i) {
+        while(i--) {
+            this.detectBackgroundForElement(elements[i], true);
+
+            if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection &&
+                i % this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall == 0) {
+                break;
+            }
+        }
+
+        if(i <= 0) {
+            removeClass(document.body, "pageShadowDisableStyling");
+            addClass(document.body, "pageShadowBackgroundDetected");
+
+            this.backgroundDetected = true;
+        }
+
+        return i;
     }
 
     elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {

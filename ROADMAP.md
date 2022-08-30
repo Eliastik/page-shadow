@@ -4,10 +4,6 @@
 
 This is a roadmap/to-do list of things that are planned to be fixed or developed for Page Shadow.
 
-### Common
-
-* [ ] FAQ for common questions
-
 ### 2.10
 
 #### Planned/ideas
@@ -35,11 +31,11 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Minor) Background image on body element is not detected
 * [x] (Minor) SVG with use element is not working with Invert colors function (see Leroy Merlin website)
 
-### 2.10
+### 2.10.1
 
 #### Planned/ideas
 
-* [ ] Optimize background detection (method "detectBackground" of PageAnalyzer class)
+* [x] Optimize background detection (method "detectBackground" of PageAnalyzer class)
 * [x] Preserve bright colors
     * [x] Option in popup to enable/disable this detection
 * [x] Further optimize content.js code
@@ -62,21 +58,26 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Medium) Firefox bug: Page Color inversion - broken float: https://stackoverflow.com/questions/52937708/why-does-applying-a-css-filter-on-the-parent-break-the-child-positioning (difficult to fix)
     * Seems to be fixed on latest Firefox versions
 
-### Future version
+### Futures versions
 
-#### Known issues/bugs
+### Common
 
-* [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
-* [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
+* [ ] FAQ for common questions?
 
 #### Planned/ideas
 
 * [ ] (Important) Update to Manifest v3 (check manifestv3 branch)
-* [ ] Comment the code: doc for methode/functions
+* [ ] Bright color detection: fix text color?
 * [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
+* [ ] Comment the code: doc for methods/functions
 * [ ] Simplify code applying Shadow Roots styles?
 * [ ] No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
 * [ ] Filters: UI to report a website problem
 * [ ] Filters: Element picker to create custom rule easily
 * [ ] Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditonal filter)
 * [ ] Store filters on a Github repository ?
+
+#### Known issues/bugs
+
+* [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
+* [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element

@@ -57,7 +57,7 @@
         "warning": "Attention, ces options sont destinées aux utilisateurs avertis et aux développeurs afin d'effectuer des tests. Les modifier pourrait compromettre le fonctionnement normal de l'extension. Ne les modifiez seulement si vous savez ce que vous faîtes.",
         "filtersConfig": {
             "performanceModeEnabled": "Mode performance",
-            "autoDetectTransparentBackgroundEnabled": "Détection automatique des arrières-plan transparents",
+            "autoDetectTransparentBackgroundEnabled": "Détection automatique des arrière-plans transparents",
             "enableMutationObserversForSubChilds": "Mutation Observers activés pour les sous-enfants",
             "opacityDetectedAsTransparentThreshold": "Seuil de détection de l'opacité en tant qu'arrière-plan transparent",
             "enableMutationObserverAttributes": "Activer les Mutation Observers pour les attributs des éléments",
@@ -65,9 +65,9 @@
             "enableMutationObserverClass": "Activer les Mutation Observers pour l'attribut class des éléments",
             "enableShadowRootStyleOverride": "Activer le remplacement du style des Shadow Roots",
             "shadowRootStyleOverrideDelay": "Délai avant le remplacement du style des Shadow Roots",
-            "throttleMutationObserverBackgrounds": "Ralentir les Mutation Observers de détection des arrières-plan",
-            "delayMutationObserverBackgrounds": "Délai avant l'exécution des Mutation Observers de détection des arrières-plans",
-            "autoThrottleMutationObserverBackgroundsEnabled": "Auto-ralentissement des Mutation Observers de détection des arrières-plans",
+            "throttleMutationObserverBackgrounds": "Ralentir les Mutation Observers de détection des arrière-plans",
+            "delayMutationObserverBackgrounds": "Délai avant l'exécution des Mutation Observers de détection des arrière-plans",
+            "autoThrottleMutationObserverBackgroundsEnabled": "Auto-ralentissement des Mutation Observers de détection des arrière-plans",
             "autoThrottleMutationObserverBackgroundsTreshold": "Seuil après lequel activer l'auto-ralentissement des Mutation Observers",
             "throttledMutationObserverTreatedByCall": "Nombre d'éléments traités par appel aux Mutation Observers lorsqu'ils sont ralentis",
             "delayApplyMutationObserversSafeTimer": "Délai avant de réappliquer les paramètres de Page Shadow après une détection par Mutation Observers",
@@ -76,9 +76,11 @@
             "enableBrightColorDetection": "Activer la détection des éléments avec des couleurs vives",
             "brightColorLightnessTresholdMin": "Seuil minimum de détection des éléments avec des couleurs vives",
             "brightColorLightnessTresholdMax": "Seuil maximum de détection des éléments avec des couleurs vives",
+            "throttleBackgroundDetection": "Ralentir la détection des arrière-plans au chargement des pages",
+            "throttleBackgroundDetectionElementsTreatedByCall": "Nombre d'éléments traités par appel lors du ralentissement de la détection des arrière-plans",
             "help": {
-                "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrières-plans des éléments.",
-                "autoDetectTransparentBackgroundEnabled": "Active la détection des arrières-plans transparents. Désactiver cette fonctionnalité peut provoquer de nombreux problèmes d'affichage.",
+                "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrière-plans des éléments.",
+                "autoDetectTransparentBackgroundEnabled": "Active la détection des arrière-plans transparents. Désactiver cette fonctionnalité peut provoquer de nombreux problèmes d'affichage.",
                 "enableMutationObserversForSubChilds": "Lorsque les Mutation Observers analysent un élément, ils traversent et analysent les enfants de cet élément. Désactiver cela peut améliorer les performances, mais provoquer des problèmes d'affichage.",
                 "opacityDetectedAsTransparentThreshold": "Un élément qui a une opacité inférieure à ce seuil sera considéré comme étant un élément transparent.",
                 "enableMutationObserverAttributes": "Les Mutation Observers seront activés pour les mutations des attributs de tous les éléments.",
@@ -92,11 +94,13 @@
                 "autoThrottleMutationObserverBackgroundsTreshold": "Si un Mutation Observer traite d'un seul coup un nombre d'éléments supérieur à ce seuil, le ralentissement est activé. Le ralentissement est désactivé lorsque le nombre d'éléments traités tombe sous ce seuil.",
                 "throttledMutationObserverTreatedByCall": "Le nombre d'éléments traités par un appel aux Mutation Observers, lorsque le ralentissement est activé.",
                 "delayApplyMutationObserversSafeTimer": "Applique un délai entre la détection d'une modification de la page par Mutation Observer et la réappliquation des paramètres de Page Shadow (augmenter le contraste, inverser les couleurs, baisser la luminosité ou filtre de réduction de la lumière bleue). Augmenter ce délai peut corriger des problèmes sur certains sites.",
-                "observeBodyChange": "Observe le changement d'état de l'élément body (suppression puis création d'un nouvel élément body). Corrige des problèmes avec certains sites web (comme Github) ou applications SPA. Désactiver cette option peut améliorer les performances.",
+                "observeBodyChange": "Observe le changement d'état de l'élément body (suppression puis création d'un nouvel élément body). Corrige des problèmes avec certains sites web (comme Github) ou applications SPA (Single Page Application). Désactiver cette option peut améliorer les performances.",
                 "observeBodyChangeTimerInterval": "L'observation du changement d'état de l'élément body s'appuie sur un timer qui s'exécute à un intervalle donné (au lieu d'utiliser les Mutation Observer). L'intervalle est en ms.",
                 "enableBrightColorDetection": "Détecte les éléments avec des couleurs vives et, si l'option est activée par l'utilisateur, désactive la fonction Augmenter le contraste pour ces éléments. La désactivation de cette option peut améliorer les performances.",
                 "brightColorLightnessTresholdMin": "Si un élément a une valeur de luminosité supérieure à ce seuil et inférieure à la valeur maximum, l'élément sera détecté comme élément de couleur vive.",
-                "brightColorLightnessTresholdMax": "Si un élément a une valeur de luminosité inférieure à ce seuil et supérieure à la valeur minimum, l'élément sera détecté comme élément de couleur vive."
+                "brightColorLightnessTresholdMax": "Si un élément a une valeur de luminosité inférieure à ce seuil et supérieure à la valeur minimum, l'élément sera détecté comme élément de couleur vive.",
+                "throttleBackgroundDetection": "Applique un délai à la détection des arrière-plans au chargement des pages, ce qui permet d'améliorer les performances sur les grandes pages.",
+                "throttleBackgroundDetectionElementsTreatedByCall": "Défini le nombre d'éléments traités par chaque appel de boucle lorsque la détection des arrière-plans est ralentie. Une valeur élevée peut impacter les performances."
             }
         },
         "saved": "Sauvegardé !"

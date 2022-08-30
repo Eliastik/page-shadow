@@ -228,6 +228,8 @@ export default class FilterProcessor {
                 if(type == "enableBrightColorDetection") websiteSpecialFiltersConfig.enableBrightColorDetection = true;
                 if(type == "brightColorLightnessTresholdMin") websiteSpecialFiltersConfig.brightColorLightnessTresholdMin = rule.filter;
                 if(type == "brightColorLightnessTresholdMax") websiteSpecialFiltersConfig.brightColorLightnessTresholdMax = rule.filter;
+                if(type == "throttleBackgroundDetection") websiteSpecialFiltersConfig.throttleBackgroundDetection = true;
+                if(type == "throttleBackgroundDetectionElementsTreatedByCall") websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall = rule.filter;
             });
         });
     }

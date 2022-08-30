@@ -79,6 +79,8 @@
             "enableBrightColorDetection": "Enable detection of bright color",
             "brightColorLightnessTresholdMin": "Minimum lightness treshold for bright color detection",
             "brightColorLightnessTresholdMax": "Maximum lightness treshold for bright color detection",
+            "throttleBackgroundDetection": "Throttle background detection on page load",
+            "throttleBackgroundDetectionElementsTreatedByCall": "Number of elements processed per call while throttling background detection",
             "help": {
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
                 "autoDetectTransparentBackgroundEnabled": "Enable detection of transparent backgrounds. Disabling this feature can cause many display issues.",
@@ -95,11 +97,13 @@
                 "autoThrottleMutationObserverBackgroundsTreshold": "If a Mutation Observer processes a number of elements above this threshold at once, the throttle is enabled. Throttle is disabled when the number of elements processed falls below this threshold.",
                 "throttledMutationObserverTreatedByCall": "The number of elements processed by one call to Mutation Observers, when throttle is enabled.",
                 "delayApplyMutationObserversSafeTimer": "Applies a delay between Mutation Observers detecting a page change and reapplying Page Shadow settings (increase contrast, invert colors, decrease brightness, or blue light reduction filter). Increasing this timeout may fix issues on some websites.",
-                "observeBodyChange": "Observes the state change of the body element (deletion then creation of a new body element). Fixes issues with some websites (like Github) or SPA applications. Disabling this option may improve performance.",
+                "observeBodyChange": "Observes the state change of the body element (deletion then creation of a new body element). Fixes issues with some websites (like Github) or SPA applications (Single Page Application). Disabling this option may improve performance.",
                 "observeBodyChangeTimerInterval": "Observing the state change of the body element relies on a timer that runs at a given interval (instead of using Mutation Observers). The interval is in ms.",
                 "enableBrightColorDetection": "Detect element with bright color, and if enabled by the user, disable the Increase contrast function for these elements. Disabling this option may improve performance.",
                 "brightColorLightnessTresholdMin": "If an element has a lightness value that is above this treshold but lower than the maximum, the element will be detected as bright color element.",
-                "brightColorLightnessTresholdMax": "If an element has a lightness value that is lower than this treshold but above the minimum, the element will be detected as bright color element."
+                "brightColorLightnessTresholdMax": "If an element has a lightness value that is lower than this treshold but above the minimum, the element will be detected as bright color element.",
+                "throttleBackgroundDetection": "Applies a delay to the detection of backgrounds on page load, which can improve performance on large pages.",
+                "throttleBackgroundDetectionElementsTreatedByCall": "Sets the number of elements processed by each loop call when background detection is throttled. A high value can impact performance."
             }
         },
         "saved": "Sauvegardé !"
