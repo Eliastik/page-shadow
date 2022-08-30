@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.10 (8/18/2022)
+* Latest version: 2.10.1 (8/30/2022)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,22 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.10.1 (30/08/2022) :
+
+* Major performance optimization, which limits the flashes that appeared when navigating between pages or changing settings in real time;
+* Added "Preserve element colors" function (enabled by default) to "Increase contrast" function. This function preserves the colors of the elements, but replaces colors very close to white or dark colors;
+* Improved user experience when "Modern" popup theme is enabled. This theme is now the default theme for new installations;
+* Bug fixes and technical improvements:
+    * Fixed bug with Firefox and Mutation Observers;
+    * Changes to custom themes now apply in real time to pages using that theme;
+    * Fixed a bug with some sites using texts with color gradients: texts of this type were not displayed with the "Increase contrast" function;
+    * Simplification and major reorganization of the extension code including:
+        * Use of the same CSS stylesheet for classic themes and custom themes, and use of CSS variables;
+        * Simplification of the code managing the message passing between background page and scripts of the extension;
+        * The Mutation Observer code has been reworked, fixing issues;
+        * Other technical improvements
+    * Update dependencies
 
 ### Version 2.10 - Hotfix 2 (20/08/2022) :
 

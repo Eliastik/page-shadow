@@ -2,6 +2,22 @@
 
 ## Changelog:
 
+### Version 2.10.1 (30/08/2022) :
+
+* Major performance optimization, which limits the flashes that appeared when navigating between pages or changing settings in real time;
+* Added "Preserve element colors" function (enabled by default) to "Increase contrast" function. This function preserves the colors of the elements, but replaces colors very close to white or dark colors;
+* Improved user experience when "Modern" popup theme is enabled. This theme is now the default theme for new installations;
+* Bug fixes and technical improvements:
+    * Fixed bug with Firefox and Mutation Observers;
+    * Changes to custom themes now apply in real time to pages using that theme;
+    * Fixed a bug with some sites using texts with color gradients: texts of this type were not displayed with the "Increase contrast" function;
+    * Simplification and major reorganization of the extension code including:
+        * Use of the same CSS stylesheet for classic themes and custom themes, and use of CSS variables;
+        * Simplification of the code managing the message passing between background page and scripts of the extension;
+        * The Mutation Observer code has been reworked, fixing issues;
+        * Other technical improvements
+    * Update dependencies
+
 ### Version 2.10 - Hotfix 2 (20/08/2022) :
 
 * Fix the features Decrease brightness/Blue light reduction filter on Firefox
@@ -295,6 +311,22 @@
 # Page Shadow - Français
 
 ## Journal des changements :
+
+### Version 2.10.1 (30/08/2022) :
+
+* Optimisation majeure des performances, ce qui permet de limiter l'apparition de flashs lors de la navigation entre pages ou le changement des paramètres en temps réel ;
+* Ajout de la fonction "Préserver les couleurs des éléments" (activée par défaut) à la fonction "Augmenter le contraste". Cette fonction préserve les couleurs des éléments, mais remplace les couleurs très proches du blanc ou les couleurs sombres ;
+* Amélioration de l'expérience d'utilisation lorsque le thème de la popup "Moderne" est activé. Ce thème est désormais le thème par défaut pour les nouvelles installations ;
+* Corrections de bugs et améliorations techniques :
+    * Correction d'un bug avec Firefox et les Mutation Observers ;
+    * Les modifications des thèmes personnalisés s'appliquent désormais en temps réel aux pages utilisant ce thème ;
+    * Correction d'un bug avec certains sites utilisant des textes avec des dégradés de couleur : les textes de ce type ne s'affichaient pas avec la fonction "Augmenter le contraste" ;
+    * Simplification et réorganisation majeure du code de l'extension dont :
+        * Utilisation de la même feuille de style CSS pour les thèmes classiques et les thèmes personnalisées, et utilisation des variables CSS ;
+        * Simplification du code gérant les appels entre background page et scripts de l'extension ;
+        * Le code des Mutation Observer ont été remaniés, corrigeant des problèmes ;
+        * Autres améliorations techniques
+    * Mise à jour des dépendences
 
 ### Version 2.10 - Hotfix 2 (20/08/2022) :
 
