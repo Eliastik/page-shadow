@@ -61,6 +61,7 @@ async function checkFirstLoad() {
 async function setFirstSettings() {
     // Set default settings values
     await browser.storage.local.set(defaultSettings);
+    sendMessageWithPromise({ "type": "updateSettingsCache" });
     return true;
 }
 
@@ -130,6 +131,7 @@ async function migrateSettings(filters) {
     }
 
     removeSettingItem(["nightModeEnabled"]);
+    sendMessageWithPromise({ "type": "updateSettingsCache" });
 }
 
 export { setSettingItem, removeSettingItem, checkFirstLoad, setFirstSettings, migrateSettings };
