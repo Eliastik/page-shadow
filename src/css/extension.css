@@ -45,6 +45,7 @@ body.popup {
     overflow-x: hidden;
     overflow-y: auto;
     max-height: 1050px;
+    padding-right: 0 !important;
 }
 body.popup > .navbar {
     margin-bottom: 8px;
@@ -345,7 +346,8 @@ div.navbar-right {
     width: 100%;
 }
 .hourFormatAMPM {
-    width: 32px;
+    width: 40px;
+    height: 29px;
 }
 .tab-content {
     padding: 15px !important;
@@ -766,4 +768,8 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 .btn-default.disabled:active, .btn-default[disabled]:active {
     background-color: #FFFFFF;
     color: #444 !important;
+}
+.modal {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
