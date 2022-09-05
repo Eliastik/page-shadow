@@ -103,6 +103,11 @@ async function checkCurrentPopupTheme() {
         $(".popup-option-container-classic").hide();
         $(".popup-option-container-modern").show();
         $("#popup-options").addClass("popup-options-modern");
+
+        if(currentTheme != "modern") {
+            $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
+        }
+
         currentTheme = "modern";
     } else {
         $(".popup-option-container").show();
