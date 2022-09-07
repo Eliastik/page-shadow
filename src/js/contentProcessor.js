@@ -344,11 +344,18 @@ export default class ContentProcessor {
 
     appendBrightnessElement(elementBrightness, elementWrapper) {
         if(document.body) {
+            const brightnessPageElement = document.getElementById("pageShadowBrightness");
+
             if(elementWrapper && document.body.contains(elementWrapper) && elementWrapper.contains(elementBrightness)) {
                 elementWrapper.removeChild(elementBrightness);
             }
 
             document.body.appendChild(elementWrapper);
+
+            // Remove old decrease brightness if found
+            if(brightnessPageElement) {
+                brightnessPageElement.remove();
+            }
         }
 
         elementWrapper.appendChild(elementBrightness);
@@ -356,11 +363,18 @@ export default class ContentProcessor {
 
     appendBlueLightElement(elementBlueLightFilter, elementWrapper) {
         if(document.body) {
+            const blueLightPageElement = document.getElementById("pageShadowBrightnessNightMode");
+
             if(elementWrapper && document.body.contains(elementWrapper) && elementWrapper.contains(elementBlueLightFilter)) {
                 elementWrapper.removeChild(elementBlueLightFilter);
             }
 
             document.body.appendChild(elementWrapper);
+
+            // Remove old blue light page filters if found
+            if(blueLightPageElement) {
+                blueLightPageElement.remove();
+            }
         }
 
         elementWrapper.appendChild(elementBlueLightFilter);

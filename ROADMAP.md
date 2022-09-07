@@ -38,6 +38,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Optimize background detection (method "detectBackground" of PageAnalyzer class)
 * [x] Preserve bright colors
     * [x] Option in popup to enable/disable this detection
+    * [ ] Keep good text color contrast
 * [x] Further optimize content.js code
 * [x] Enhance UX of Modern popup theme
 * [x] Attenuate the "flash" when navigating between pages
@@ -57,6 +58,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Medium) Issue on Firefox with Mutation Observer (Invert colors)
 * [x] (Medium) Firefox bug: Page Color inversion - broken float: https://stackoverflow.com/questions/52937708/why-does-applying-a-css-filter-on-the-parent-break-the-child-positioning (difficult to fix)
     * Seems to be fixed on latest Firefox versions
+* [x] (Medium) On Github, when navigating between pages and going back with the browser back button and using the "Decrease brightness" or "Blue light reduction filter", sometimes the effect is increased (double)
 
 ### Futures versions
 
