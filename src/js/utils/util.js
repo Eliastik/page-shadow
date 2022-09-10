@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem, migrateSettings } from "../storage.js";
 import browser from "webextension-polyfill";
-import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors } from "../constants.js";
+import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack } from "../constants.js";
 
 function in_array(needle, haystack) {
     for(const key in haystack) {
@@ -265,6 +265,8 @@ async function getCustomThemeConfig(nb) {
         markBackgroundColor: defaultThemesMarkBgColors[0],
         markTxtColor: defaultThemesMarkTextColors[0],
         imageBackgroundColor: defaultThemesImgBgColors[0],
+        brightColorTextWhite: defaultThemesBrightColorTextWhite[0],
+        brightColorTextBlack: defaultThemesBrightColorTextBlack[0],
         fontFamily: fontTheme,
         customCSSCode
     };
@@ -1321,7 +1323,9 @@ function applyContrastPageVariablesWithTheme(theme) {
         delTextColor: defaultThemesDelTextColors[themeNumber],
         markBackgroundColor: defaultThemesMarkBgColors[themeNumber],
         markTxtColor: defaultThemesMarkTextColors[themeNumber],
-        imageBackgroundColor: defaultThemesImgBgColors[themeNumber]
+        imageBackgroundColor: defaultThemesImgBgColors[themeNumber],
+        brightColorTextWhite: defaultThemesBrightColorTextWhite[themeNumber],
+        brightColorTextBlack: defaultThemesBrightColorTextBlack[themeNumber]
     });
 }
 
@@ -1339,6 +1343,8 @@ function applyContrastPageVariables(config) {
     document.documentElement.style.setProperty("--page-shadow-markbgcolor", config.markBackgroundColor);
     document.documentElement.style.setProperty("--page-shadow-marktxtcolor", config.markTxtColor);
     document.documentElement.style.setProperty("--page-shadow-imgbgcolor", config.imageBackgroundColor);
+    document.documentElement.style.setProperty("--page-shadow-brightcolortxtwhite", config.brightColorTextWhite);
+    document.documentElement.style.setProperty("--page-shadow-brightcolortxtblack", config.brightColorTextBlack);
 
     if(config && config.fontFamily && config.fontFamily.trim() != "") {
         document.documentElement.style.setProperty("--page-shadow-customfontfamily", config.fontFamily);

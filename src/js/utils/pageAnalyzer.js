@@ -132,14 +132,18 @@ export default class PageAnalyzer {
                 // If ligthness is between min and max values
                 if(hsl[2] >= this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMin
                     && hsl[2] <= this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMax) {
-                    return true;
+                    if(hsl[2] >= 0.5) {
+                        return [true, true];
+                    }
+
+                    return [true, false];
                 }
             }
 
-            return hasGradient;
+            return [hasGradient, false];
         }
 
-        return false;
+        return [false, false];
     }
 
     detectBackgroundForElement(element, disableDestyling) {
@@ -189,8 +193,14 @@ export default class PageAnalyzer {
         if(this.websiteSpecialFiltersConfig.enableBrightColorDetection && !transparentColorDetected) {
             const hasBrightColor = this.elementHasBrightColor(backgroundColor);
 
-            if(hasBrightColor) {
+            if(hasBrightColor && hasBrightColor[0]) {
                 addClass(element, "pageShadowHasBrightColorBackground");
+
+                if(hasBrightColor[1]) {
+                    addClass(element, "pageShadowBrightColorWithBlackText");
+                } else {
+                    addClass(element, "pageShadowBrightColorWithWhiteText");
+                }
             }
         }
 
