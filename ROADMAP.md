@@ -38,7 +38,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Optimize background detection (method "detectBackground" of PageAnalyzer class)
 * [x] Preserve bright colors
     * [x] Option in popup to enable/disable this detection
-    * [ ] Keep good text color contrast
+    * [x] Keep good text color contrast
 * [x] Further optimize content.js code
 * [x] Enhance UX of Modern popup theme
 * [x] Attenuate the "flash" when navigating between pages

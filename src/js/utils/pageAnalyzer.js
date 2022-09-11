@@ -190,7 +190,7 @@ export default class PageAnalyzer {
             }
         }
 
-        if(this.websiteSpecialFiltersConfig.enableBrightColorDetection && !transparentColorDetected) {
+        if(this.websiteSpecialFiltersConfig.enableBrightColorDetection && !transparentColorDetected && !hasBackgroundImg && !hasTransparentBackgroundClass) {
             const hasBrightColor = this.elementHasBrightColor(backgroundColor);
 
             if(hasBrightColor && hasBrightColor[0]) {
