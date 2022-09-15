@@ -48,9 +48,9 @@
         "keyboardShortcutsLabel": "Raccourcis clavier :",
         "keyboardShortcuts": "Gérer les raccourcis clavier…",
         "popupTheme": "Thème de la popup :",
-        "popupThemeSwitch": "Switches et icônes (par défaut)",
+        "popupThemeSwitch": "Switches et icônes",
         "popupThemeClassic": "Cases à cocher (thème classique)",
-        "popupThemeModern": "Moderne",
+        "popupThemeModern": "Moderne (par défaut)",
         "enableRightClickMenu": "Activer le menu du clic droit :"
     },
     "advancedOptions": {

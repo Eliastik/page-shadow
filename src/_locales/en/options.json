@@ -51,9 +51,9 @@
         "keyboardShortcutsLabel": "Keyboard shortcuts:",
         "keyboardShortcuts": "Manage keyboard shortcuts…",
         "popupTheme": "Popup theme:",
-        "popupThemeSwitch": "Switches and icons (by default)",
+        "popupThemeSwitch": "Switches and icons",
         "popupThemeClassic": "Checkboxes (classic)",
-        "popupThemeModern": "Modern",
+        "popupThemeModern": "Modern (by default)",
         "enableRightClickMenu": "Enable right-click menu:"
     },
     "advancedOptions": {
