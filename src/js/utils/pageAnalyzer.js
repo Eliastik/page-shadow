@@ -204,7 +204,9 @@ export default class PageAnalyzer {
             }
         }
 
-        this.backgroundDetectionAlreadyProcessedNodes.push(element);
+        if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes) {
+            this.backgroundDetectionAlreadyProcessedNodes.push(element);
+        }
 
         if(!disableDestyling) {
             removeClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
@@ -226,7 +228,8 @@ export default class PageAnalyzer {
                 return false;
             }
 
-            if((attributeOldValue.indexOf("pageShadowHasTransparentBackground") !== -1 && !element.classList.contains("pageShadowHasTransparentBackground")) ||
+            if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes &&
+                (attributeOldValue.indexOf("pageShadowHasTransparentBackground") !== -1 && !element.classList.contains("pageShadowHasTransparentBackground")) ||
                 (attributeOldValue.indexOf("pageShadowHasBackgroundImg") !== -1 && !element.classList.contains("pageShadowHasBackgroundImg"))) {
                 this.backgroundDetectionAlreadyProcessedNodes = this.backgroundDetectionAlreadyProcessedNodes.filter(node => node != element);
             }
