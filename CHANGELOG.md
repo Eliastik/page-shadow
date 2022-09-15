@@ -12,6 +12,7 @@
     * Fixed bug with Firefox and Mutation Observers;
     * Changes to custom themes now apply in real time to pages using that theme;
     * Fixed a bug with some sites using texts with color gradients: texts of this type were not displayed with the "Increase contrast" function;
+    * Fixed a bug with the settings Decrease brightness and Blue light filter: on some websites (like Github), when going back to the previous page with the browser back button, the filter intensity increased randomly;
     * Simplification and major reorganization of the extension code including:
         * Use of the same CSS stylesheet for classic themes and custom themes, and use of CSS variables;
         * Simplification of the code managing the message passing between background page and scripts of the extension;
@@ -323,6 +324,7 @@
     * Correction d'un bug avec Firefox et les Mutation Observers ;
     * Les modifications des thèmes personnalisés s'appliquent désormais en temps réel aux pages utilisant ce thème ;
     * Correction d'un bug avec certains sites utilisant des textes avec des dégradés de couleur : les textes de ce type ne s'affichaient pas avec la fonction "Augmenter le contraste" ;
+    * Correction d'un bug avec les fonctions Baisser la luminosité et Filtre de réduction de la lumière bleue : sur certains sites (comme Github), lorsque l'on retournait à la page précédente à l'aide du bouton Retour du navigateur, l'intensité des filtres augmentait de manière aléatoire ;
     * Simplification et réorganisation majeure du code de l'extension dont :
         * Utilisation de la même feuille de style CSS pour les thèmes classiques et les thèmes personnalisées, et utilisation des variables CSS ;
         * Simplification du code gérant les appels entre background page et scripts de l'extension ;

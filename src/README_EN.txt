@@ -44,6 +44,7 @@ Or you can compile it yourself (see Compilation section).
     * Fixed bug with Firefox and Mutation Observers;
     * Changes to custom themes now apply in real time to pages using that theme;
     * Fixed a bug with some sites using texts with color gradients: texts of this type were not displayed with the "Increase contrast" function;
+    * Fixed a bug with the settings Decrease brightness and Blue light filter: on some websites (like Github), when going back to the previous page with the browser back button, the filter intensity increased randomly;
     * Simplification and major reorganization of the extension code including:
         * Use of the same CSS stylesheet for classic themes and custom themes, and use of CSS variables;
         * Simplification of the code managing the message passing between background page and scripts of the extension;
