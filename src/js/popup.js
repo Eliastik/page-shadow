@@ -485,6 +485,21 @@ $(document).ready(() => {
             }
 
             $("#checkAssomPageModern").addClass("active");
+
+            const result = await browser.storage.local.get(["increaseContrastInformationShowed"]);
+
+            if(result && result.increaseContrastInformationShowed != "true") {
+                $("#informations").removeClass("show");
+                $("#informations").text(i18next.t("container.increaseContrastInformation"));
+                $("#informations").addClass("show");
+
+                $("#informations").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", async(e) => {
+                    if(e.originalEvent.animationName === "fadeout") {
+                        $("#informations").removeClass("show");
+                        await setSettingItem("increaseContrastInformationShowed", "true");
+                    }
+                });
+            }
         } else {
             if(currentTheme != "modern") {
                 $("#themeDiv").stop().fadeOut();
