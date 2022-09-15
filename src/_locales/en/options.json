@@ -53,7 +53,8 @@
         "popupTheme": "Popup theme:",
         "popupThemeSwitch": "Switches and icons (by default)",
         "popupThemeClassic": "Checkboxes (classic)",
-        "popupThemeModern": "Modern"
+        "popupThemeModern": "Modern",
+        "enableRightClickMenu": "Enable right-click menu:"
     },
     "advancedOptions": {
         "checkbox": "I understand and I want to access to the advanced options",

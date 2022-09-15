@@ -96,7 +96,9 @@ function deleteContextMenu(id) {
 async function menu() {
     async function createMenu() {
         if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.local) !== "undefined") {
-            const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]);
+            const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable", "disableRightClickMenu"]);
+            if(result.disableRightClickMenu == "true") return;
+
             let sitesInterdits;
 
             if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
@@ -108,8 +110,13 @@ async function menu() {
             if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.query) !== "undefined") {
                 const tabs = await browser.tabs.query({active: true, currentWindow: true});
                 if(!tabs || tabs.length <= 0) return;
+
                 const tabUrl = tabs[0].url;
                 if(!tabUrl || tabUrl.trim() == "") return;
+
+                // Don't show the right-click menu on extension pages
+                const extensionDomain = browser.runtime.getURL("");
+                if(tabUrl.startsWith(extensionDomain)) return;
 
                 const url_str = normalizeURL(tabUrl);
                 const url = new URL(url_str);
@@ -161,7 +168,8 @@ async function menu() {
     }
 
     async function createMenuOthers() {
-        const data = await browser.storage.local.get(["globallyEnable"]);
+        const data = await browser.storage.local.get(["globallyEnable", "disableRightClickMenu"]);
+        if(data.disableRightClickMenu == "true") return;
 
         if(data.globallyEnable == "false") {
             createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], true);

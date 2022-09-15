@@ -137,7 +137,7 @@ async function resetSettings() {
 }
 
 async function displaySettings(areaName, dontDisplayThemeAndPresets) {
-    const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "autoBackupCloudInterval", "lastAutoBackupFailed"]);
+    const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "autoBackupCloudInterval", "lastAutoBackupFailed", "disableRightClickMenu"]);
 
     if(areaName != "sync") {
         if(result.sitesInterditPageShadow != undefined) {
@@ -213,6 +213,12 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets) {
 
     if(result && result.lastAutoBackupFailed == "true") {
         $("#autoBackupError").show();
+    }
+
+    if(result && result.disableRightClickMenu == "true") {
+        $("#enableRightClickMenu").prop("checked", false);
+    } else {
+        $("#enableRightClickMenu").prop("checked", true);
     }
 
     checkAdvancedOptions();
@@ -1378,8 +1384,12 @@ $(document).ready(() => {
         changeTheme();
     });
 
+    $("#enableRightClickMenu").on("change", async() => {
+        await setSettingItem("disableRightClickMenu", $("#enableRightClickMenu").is(":checked") ? "false" : "true");
+    });
+
     $("#autoBackupCloudSelect").on("change", async() => {
-        await setSettingItem("autoBackupCloudInterval", $("#autoBackupCloudSelect").val());
+        await setSettingItem("disableRightClickMenu", $("#autoBackupCloudSelect").val());
     });
 
     $("#popupThemeSelect").on("change", async() => {

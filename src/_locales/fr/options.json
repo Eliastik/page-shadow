@@ -50,7 +50,8 @@
         "popupTheme": "Thème de la popup :",
         "popupThemeSwitch": "Switches et icônes (par défaut)",
         "popupThemeClassic": "Cases à cocher (thème classique)",
-        "popupThemeModern": "Moderne"
+        "popupThemeModern": "Moderne",
+        "enableRightClickMenu": "Activer le menu du clic droit :"
     },
     "advancedOptions": {
         "checkbox": "J'ai compris et je souhaite accéder aux options avancées",
