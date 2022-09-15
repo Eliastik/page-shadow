@@ -184,9 +184,16 @@ export default class PageAnalyzer {
             const backgroundClip = computedStyle.getPropertyValue("background-clip") || computedStyle.getPropertyValue("-webkit-background-clip");
             const hasBackgroundClipText = backgroundClip && backgroundClip.trim().toLowerCase() == "text";
 
-            if((hasTransparentBackground || hasBackgroundClipText) && !hasTransparentBackgroundClass) {
-                addClass(element, "pageShadowHasTransparentBackground");
-                transparentColorDetected = true;
+            if((hasTransparentBackground || hasBackgroundClipText)) {
+                if(!hasTransparentBackgroundClass) {
+                    addClass(element, "pageShadowHasTransparentBackground");
+                    transparentColorDetected = true;
+                }
+            } else {
+                if(hasTransparentBackgroundClass) {
+                    removeClass(element, "pageShadowHasTransparentBackground");
+                    transparentColorDetected = false;
+                }
             }
         }
 
@@ -198,9 +205,13 @@ export default class PageAnalyzer {
 
                 if(hasBrightColor[1]) {
                     addClass(element, "pageShadowBrightColorWithBlackText");
+                    removeClass(element, "pageShadowBrightColorWithWhiteText");
                 } else {
                     addClass(element, "pageShadowBrightColorWithWhiteText");
+                    removeClass(element, "pageShadowBrightColorWithBlackText");
                 }
+            } else {
+                removeClass(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText");
             }
         }
 
