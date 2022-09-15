@@ -39,6 +39,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Preserve bright colors
     * [x] Option in popup to enable/disable this detection
     * [x] Keep good text color contrast
+    * [x] Bright color detection: fix text color?
 * [x] Further optimize content.js code
 * [x] Enhance UX of Modern popup theme
 * [x] Attenuate the "flash" when navigating between pages
@@ -69,7 +70,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Planned/ideas
 
 * [ ] (Important) Update to Manifest v3 (check manifestv3 branch)
-* [ ] Bright color detection: fix text color?
 * [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
 * [ ] Comment the code: doc for methods/functions
 * [ ] Simplify code applying Shadow Roots styles?
