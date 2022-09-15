@@ -233,6 +233,7 @@ export default class FilterProcessor {
                 if(type == "enableThrottleBackgroundDetection") websiteSpecialFiltersConfig.throttleBackgroundDetection = true;
                 if(type == "disableThrottleBackgroundDetection") websiteSpecialFiltersConfig.throttleBackgroundDetection = false;
                 if(type == "throttleBackgroundDetectionElementsTreatedByCall") websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall = rule.filter;
+                if(type == "backgroundDetectionStartDelay") websiteSpecialFiltersConfig.backgroundDetectionStartDelay = rule.filter;
             });
         });
     }

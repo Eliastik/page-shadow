@@ -58,7 +58,7 @@ export default class PageAnalyzer {
                     const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
                     let index = elements.length;
 
-                    if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection) {
+                    if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection || this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay > 0) {
                         const throttledBackgroundDetectionTimer = new SafeTimer(() => {
                             index = this.detectBackgroundLoop(elements, index);
 
@@ -70,7 +70,7 @@ export default class PageAnalyzer {
                             }
                         });
 
-                        throttledBackgroundDetectionTimer.start(1);
+                        throttledBackgroundDetectionTimer.start(this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay);
                     } else {
                         this.detectBackgroundLoop(elements, index);
                         detectBackgroundTimer.clear();
