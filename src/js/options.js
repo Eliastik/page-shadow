@@ -151,9 +151,8 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets) {
         }
     }
 
-    if(typeof(browser.storage) != "undefined" && typeof(browser.storage.sync) != "undefined") {
-        $("#archiveCloudBtn").removeClass("disabled");
-    } else {
+    if(typeof(browser.storage) == "undefined" || typeof(browser.storage.sync) == "undefined") {
+        $("#archiveCloudBtn").addClass("disabled");
         $("#archiveCloudNotCompatible").show();
     }
 
@@ -179,7 +178,6 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets) {
 
     if(areaName != "sync") {
         if(!dontDisplayThemeAndPresets) displayTheme($("#themeSelect").val());
-        $("#restoreDataButton").removeClass("disabled");
         displayFilters();
     }
 
@@ -999,7 +997,7 @@ async function changeTheme() {
 
 async function archiveSettings() {
     $("#archiveError").hide();
-    $("#archiveDataButton").addClass("disabled");
+    $("#archiveDataButton").attr("disabled", "disabled");
 
     try {
         const date = new Date();
@@ -1011,12 +1009,12 @@ async function archiveSettings() {
         setTimeout(() => window.codeMirrorJSONArchive.refresh(), 50);
         $("#archiveSuggestedName").val(filename);
         $("#helpArchive").show();
-        $("#archiveDataButton").removeClass("disabled");
+        $("#archiveDataButton").removeAttr("disabled");
 
         downloadData(dataStr, filename);
     } catch(e) {
         $("#archiveError").fadeIn(500);
-        $("#archiveDataButton").removeClass("disabled");
+        $("#archiveDataButton").removeAttr("disabled");
     }
 }
 
@@ -1064,7 +1062,6 @@ function restoreSettingsFile(event) {
     $("#restoreErrorFilesize").hide();
     $("#restoreErrorExtension").hide();
     $("#restoreErrorArchive").hide();
-    $("#restoreDataButton").addClass("disabled");
 
     const oldTextareadValue = $("#textareaAssomPage").val();
 
@@ -1084,12 +1081,14 @@ function restoreSettingsFile(event) {
             $("#textareaAssomPage").val("");
             $("#checkWhiteList").prop("checked", false);
             $("#restoreDataButton").attr("disabled", "disabled");
+            $("#archiveCloudBtn").attr("disabled", "disabled");
             $("#restoreCloudBtn").attr("disabled", "disabled");
             $("#restoring").show();
 
             const result = await restoreSettings(obj);
 
             $("#restoreDataButton").removeAttr("disabled");
+            $("#archiveCloudBtn").removeAttr("disabled");
             $("#restoreCloudBtn").removeAttr("disabled");
             $("#restoring").hide();
 
@@ -1138,16 +1137,18 @@ async function archiveCloudSettings() {
     $("#archiveCloudSuccess").hide();
     $("#restoreCloudSuccess").hide();
     $("#archiveCloudErrorQuota").hide();
-    $("#archiveCloudBtn").addClass("disabled");
-    $("#restoreCloudBtn").addClass("disabled");
+    $("#archiveCloudBtn").attr("disabled", "disabled");
+    $("#restoreCloudBtn").attr("disabled", "disabled");
+    $("#restoreDataButton").attr("disabled", "disabled");
     $("#archivingCloud").show();
 
     try {
         await archiveCloud();
 
         $("#archiveCloudSuccess").fadeIn(500);
-        $("#archiveCloudBtn").removeClass("disabled");
-        $("#restoreCloudBtn").removeClass("disabled");
+        $("#archiveCloudBtn").removeAttr("disabled");
+        $("#restoreCloudBtn").removeAttr("disabled");
+        $("#restoreDataButton").removeAttr("disabled");
         $("#archivingCloud").hide();
     } catch(e) {
         if(e === "quota") {
@@ -1156,8 +1157,9 @@ async function archiveCloudSettings() {
             $("#archiveCloudError").fadeIn(500);
         }
 
-        $("#archiveCloudBtn").removeClass("disabled");
-        $("#restoreCloudBtn").removeClass("disabled");
+        $("#archiveCloudBtn").removeAttr("disabled");
+        $("#restoreCloudBtn").removeAttr("disabled");
+        $("#restoreDataButton").removeAttr("disabled");
         $("#archivingCloud").hide();
     }
 }
@@ -1194,8 +1196,6 @@ async function restoreCloudSettings() {
         $("#archiveCloudSuccess").hide();
         $("#restoreCloudSuccess").hide();
         $("#archiveCloudErrorQuota").hide();
-        $("#archiveCloudBtn").addClass("disabled");
-        $("#restoreCloudBtn").addClass("disabled");
 
         const dataSync = await browser.storage.sync.get(null);
         const oldTextareadValue = $("#textareaAssomPage").val();
@@ -1212,10 +1212,12 @@ async function restoreCloudSettings() {
                 $("#checkWhiteList").prop("checked", false);
                 $("#restoreCloudBtn").attr("disabled", "disabled");
                 $("#restoreDataButton").attr("disabled", "disabled");
+                $("#archiveCloudBtn").attr("disabled", "disabled");
                 $("#restoringCloud").show();
 
                 const result = await restoreSettings(dataObj);
 
+                $("#archiveCloudBtn").removeAttr("disabled");
                 $("#restoreCloudBtn").removeAttr("disabled");
                 $("#restoreDataButton").removeAttr("disabled");
                 $("#restoringCloud").hide();
@@ -1230,6 +1232,7 @@ async function restoreCloudSettings() {
             } catch(e) {
                 $("#restoreCloudError").fadeIn(500);
                 $("#textareaAssomPage").val(oldTextareadValue);
+                $("#archiveCloudBtn").removeAttr("disabled");
                 $("#restoreCloudBtn").removeAttr("disabled");
                 $("#restoreDataButton").removeAttr("disabled");
                 displaySettings("sync", true);
