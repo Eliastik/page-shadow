@@ -48,6 +48,7 @@ init_i18next("popup").then(() => translateContent());
 toggleTheme(); // Toggle dark/light theme
 
 async function translateContent() {
+    i18nextLoaded = true;
     jqueryI18next.init(i18next, $, {
         handleName: "localize",
         selectorAttr: "data-i18n"
@@ -57,12 +58,11 @@ async function translateContent() {
     $(".modal").localize();
     $("footer").localize();
     await checkCurrentPopupTheme();
-    if(checkContrastMode) checkContrastMode();
+    if(checkContrastMode) checkContrastMode(false);
     await loadPresetSelect("loadPresetSelect", i18next);
     checkPresetAutoEnabled(await getCurrentURL());
     $("#loadPresetSelect").val(selectedPreset).trigger("change");
     $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));
-    i18nextLoaded = true;
 }
 
 i18next.on("languageChanged", () => {
@@ -444,8 +444,8 @@ $(document).ready(() => {
         checkPresetAutoEnabled(await getCurrentURL());
     });
 
-    checkContrastMode = async function() {
-        const result = await browser.storage.local.get(["theme", "pageShadowEnabled", "disableImgBgColor", "brightColorPreservation"]);
+    checkContrastMode = async function(showAdvice) {
+        const result = await browser.storage.local.get(["theme", "pageShadowEnabled", "disableImgBgColor", "brightColorPreservation", "invertPageColors", "selectiveInvert", "increaseContrastInformationShowed"]);
 
         // append the list of themes in the select
         $("#themeSelect").text("");
@@ -486,17 +486,19 @@ $(document).ready(() => {
 
             $("#checkAssomPageModern").addClass("active");
 
-            const result = await browser.storage.local.get(["increaseContrastInformationShowed"]);
-
-            if(result && result.increaseContrastInformationShowed != "true") {
+            if(result && result.increaseContrastInformationShowed != "true"
+                && ((result.invertPageColors == "true" && result.selectiveInvert != "true")
+                    || (result.invertPageColors != "true"))
+                && showAdvice && i18nextLoaded) {
                 $("#informations").removeClass("show");
                 $("#informations").text(i18next.t("container.increaseContrastInformation"));
                 $("#informations").addClass("show");
 
-                $("#informations").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", async(e) => {
+                await setSettingItem("increaseContrastInformationShowed", "true");
+
+                $("#informations").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", e => {
                     if(e.originalEvent.animationName === "fadeout") {
                         $("#informations").removeClass("show");
-                        await setSettingItem("increaseContrastInformationShowed", "true");
                     }
                 });
             }
@@ -1448,9 +1450,10 @@ $(document).ready(() => {
     async function displaySettings() {
         const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "percentageBlueLightReduction", "archiveInfoLastShowed", "archiveInfoDisable"]);
 
+        const informationShowed = showInformationPopup(result);
         checkCurrentPopupTheme();
         toggleTheme(); // Toggle dark/light theme
-        checkContrastMode();
+        checkContrastMode(!updateNotificationShowed && !archiveInfoShowed && !informationShowed);
         checkColorInvert();
         checkAttenuateImageColor();
         checkLiveSettings();
@@ -1485,33 +1488,6 @@ $(document).ready(() => {
             await loadPresetSelect("loadPresetSelect", i18next);
             $("#loadPresetSelect").val(selectedPreset).trigger("change");
         }
-
-        const updateNotification = result.updateNotification || {};
-
-        if(updateNotification[extensionVersion] != true && result.defaultLoad == "0") {
-            if (updateNotification["2.10"] != true) {
-                $("#modalUIUpdatedMessage").show();
-            } else {
-                $("#modalUIUpdatedMessage").hide();
-            }
-
-            updateNotification[extensionVersion] = true;
-            $("#updated").modal("show");
-            $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));
-            setSettingItem("updateNotification", updateNotification);
-            updateNotificationShowed = true;
-        } else if(!updateNotificationShowed && !archiveInfoShowed) {
-            const archiveInfoLastShowed = !result.archiveInfoLastShowed ? 0 : result.archiveInfoLastShowed;
-
-            if(archiveInfoLastShowed > 0 && archiveInfoLastShowed + (archiveInfoShowInterval * 60 * 60 * 24 * 1000) <= Date.now() && result.archiveInfoDisable !== "true") {
-                $("#archiveInfo").modal("show");
-                setSettingItem("archiveInfoLastShowed", Date.now());
-            } else if(archiveInfoLastShowed <= 0) {
-                setSettingItem("archiveInfoLastShowed", Date.now());
-            }
-
-            archiveInfoShowed = true;
-        }
     }
 
     displaySettings();
@@ -1538,3 +1514,35 @@ $(document).ready(() => {
         }
     });
 });
+
+function showInformationPopup(result) {
+    const updateNotification = result.updateNotification || {};
+
+    if (updateNotification[extensionVersion] != true && result.defaultLoad == "0") {
+        if (updateNotification["2.10"] != true) {
+            $("#modalUIUpdatedMessage").show();
+        } else {
+            $("#modalUIUpdatedMessage").hide();
+        }
+
+        updateNotification[extensionVersion] = true;
+        $("#updated").modal("show");
+        setSettingItem("updateNotification", updateNotification);
+        updateNotificationShowed = true;
+        return true;
+    } else if (!updateNotificationShowed && !archiveInfoShowed) {
+        const archiveInfoLastShowed = !result.archiveInfoLastShowed ? 0 : result.archiveInfoLastShowed;
+
+        if (archiveInfoLastShowed > 0 && archiveInfoLastShowed + (archiveInfoShowInterval * 60 * 60 * 24 * 1000) <= Date.now() && result.archiveInfoDisable !== "true") {
+            $("#archiveInfo").modal("show");
+            setSettingItem("archiveInfoLastShowed", Date.now());
+            archiveInfoShowed = true;
+
+            return true;
+        } else if (archiveInfoLastShowed <= 0) {
+            setSettingItem("archiveInfoLastShowed", Date.now());
+        }
+    }
+
+    return false;
+}

@@ -1083,8 +1083,15 @@ function restoreSettingsFile(event) {
 
             $("#textareaAssomPage").val("");
             $("#checkWhiteList").prop("checked", false);
+            $("#restoreDataButton").attr("disabled", "disabled");
+            $("#restoreCloudBtn").attr("disabled", "disabled");
+            $("#restoring").show();
 
             const result = await restoreSettings(obj);
+
+            $("#restoreDataButton").removeAttr("disabled");
+            $("#restoreCloudBtn").removeAttr("disabled");
+            $("#restoring").hide();
 
             if(result) {
                 $("#restoreSuccess").fadeIn(500);
@@ -1133,6 +1140,7 @@ async function archiveCloudSettings() {
     $("#archiveCloudErrorQuota").hide();
     $("#archiveCloudBtn").addClass("disabled");
     $("#restoreCloudBtn").addClass("disabled");
+    $("#archivingCloud").show();
 
     try {
         await archiveCloud();
@@ -1140,6 +1148,7 @@ async function archiveCloudSettings() {
         $("#archiveCloudSuccess").fadeIn(500);
         $("#archiveCloudBtn").removeClass("disabled");
         $("#restoreCloudBtn").removeClass("disabled");
+        $("#archivingCloud").hide();
     } catch(e) {
         if(e === "quota") {
             $("#archiveCloudErrorQuota").fadeIn(500);
@@ -1149,6 +1158,7 @@ async function archiveCloudSettings() {
 
         $("#archiveCloudBtn").removeClass("disabled");
         $("#restoreCloudBtn").removeClass("disabled");
+        $("#archivingCloud").hide();
     }
 }
 
@@ -1200,8 +1210,15 @@ async function restoreCloudSettings() {
 
                 $("#textareaAssomPage").val("");
                 $("#checkWhiteList").prop("checked", false);
+                $("#restoreCloudBtn").attr("disabled", "disabled");
+                $("#restoreDataButton").attr("disabled", "disabled");
+                $("#restoringCloud").show();
 
                 const result = await restoreSettings(dataObj);
+
+                $("#restoreCloudBtn").removeAttr("disabled");
+                $("#restoreDataButton").removeAttr("disabled");
+                $("#restoringCloud").hide();
 
                 if(result) {
                     $("#restoreCloudSuccess").fadeIn(500);
@@ -1213,6 +1230,8 @@ async function restoreCloudSettings() {
             } catch(e) {
                 $("#restoreCloudError").fadeIn(500);
                 $("#textareaAssomPage").val(oldTextareadValue);
+                $("#restoreCloudBtn").removeAttr("disabled");
+                $("#restoreDataButton").removeAttr("disabled");
                 displaySettings("sync", true);
             }
         } else {

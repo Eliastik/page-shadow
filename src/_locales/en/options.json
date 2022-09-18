@@ -287,7 +287,9 @@
                 "30": "Every month (every 30 days)",
                 "60": "Every 2 months (every 60 days)"
             },
-            "autoBackupError": "An error occurred during the last automatic Cloud backup."
+            "autoBackupError": "An error occurred during the last automatic Cloud backup.",
+            "restoring": "Restoring data…",
+            "archivingCloud": "Backing up data…"
         },
         "presets": {
             "pageShadowEnabled": "Increase contrast:",

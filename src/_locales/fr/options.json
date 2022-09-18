@@ -283,7 +283,9 @@
                 "30": "Tous les mois (tous les 30 jours)",
                 "60": "Tous les 2 mois (tous les 60 jours)"
             },
-            "autoBackupError": "Une erreur est survenue lors de la dernière sauvegarde automatique dans le Cloud."
+            "autoBackupError": "Une erreur est survenue lors de la dernière sauvegarde automatique dans le Cloud.",
+            "restoring": "Restauration en cours…",
+            "archivingCloud": "Archivage en cours…"
         },
         "presets": {
             "pageShadowEnabled": "Augmenter le contraste :",
