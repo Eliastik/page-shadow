@@ -1408,7 +1408,7 @@ $(document).ready(() => {
     });
 
     $("#autoBackupCloudSelect").on("change", async() => {
-        await setSettingItem("disableRightClickMenu", $("#autoBackupCloudSelect").val());
+        await setSettingItem("autoBackupCloudInterval", $("#autoBackupCloudSelect").val());
     });
 
     $("#popupThemeSelect").on("change", async() => {
