@@ -345,7 +345,7 @@ async function displayFilters() {
             if(filter.hasError) {
                 const hasError = document.createElement("div");
                 hasError.textContent = i18next.t("modal.filters.errorUpdate");
-                hasError.style.color = "red";
+                hasError.classList.add("red");
                 texts.appendChild(hasError);
             }
 
@@ -372,7 +372,7 @@ async function displayFilters() {
             const divErrorFilterCount = document.createElement("div");
             const errorFilterCount = document.createElement("span");
             errorFilterCount.setAttribute("id", "errorFilterCountCustom");
-            errorFilterCount.style.color = "red";
+            errorFilterCount.classList.add("red");
 
             const buttonSeeErrors = document.createElement("button");
             buttonSeeErrors.setAttribute("class", "btn btn-sm btn-link ml-2");
