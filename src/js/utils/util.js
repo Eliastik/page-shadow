@@ -877,7 +877,11 @@ function getDefaultSettingsToLoad() {
 
     for(const setting of settingsToLoad) {
         if(Object.prototype.hasOwnProperty.call(defaultSettings, setting)) {
-            settings[setting] = defaultSettings[setting];
+            if(setting === "brightColorPreservation") {
+                settings[setting] = "false";
+            } else {
+                settings[setting] = defaultSettings[setting];
+            }
         }
     }
 

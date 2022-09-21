@@ -22,6 +22,7 @@ import ContentProcessor from "./contentProcessor.js";
 
 (async function() {
     const contentProcessor = new ContentProcessor();
+    let currentSettings = contentProcessor.currentSettings;
 
     // Start the processing of the page
     contentProcessor.main(contentProcessor.TYPE_START);
@@ -32,21 +33,30 @@ import ContentProcessor from "./contentProcessor.js";
     });
 
     // Message/response handling
-    browser.runtime.onMessage.addListener(async(message) => {
+    browser.runtime.onMessage.addListener(message => {
         if(message && message.type == "websiteUrlUpdated") { // Execute when the page URL changes in Single Page Applications
-            let changed = contentProcessor.hasEnabledStateChanged(message.enabled);
-            const urlUpdated = contentProcessor.precUrl != getCurrentURL();
+            const currentURL = getCurrentURL();
 
-            if(urlUpdated) {
-                contentProcessor.pageAnalyzer.backgroundDetected = false;
-                contentProcessor.precUrl = getCurrentURL();
-                contentProcessor.filtersCache = null;
-                if(hasSettingsChanged(contentProcessor.currentSettings, message.settings)) changed = true;
-                contentProcessor.updateFilters();
-            }
+            if(message && message.url == currentURL) {
+                const URLUpdated = contentProcessor.precUrl != getCurrentURL();
+                let changed = contentProcessor.hasEnabledStateChanged(message.enabled);
 
-            if(changed) {
-                applyIfSettingsChanged(true, message.storageChanged, message.enabled);
+                if(URLUpdated) {
+                    contentProcessor.pageAnalyzer.backgroundDetected = false;
+                    contentProcessor.precUrl = getCurrentURL();
+                    contentProcessor.filtersCache = null;
+
+                    if(hasSettingsChanged(currentSettings, message.settings)) {
+                        changed = true;
+                        currentSettings = message.settings;
+                    }
+
+                    contentProcessor.updateFilters();
+                }
+
+                if(changed) {
+                    applyIfSettingsChanged(true, message.storageChanged, message.enabled);
+                }
             }
         }
     });

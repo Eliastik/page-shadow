@@ -252,7 +252,8 @@ async function updateBadge(storageChanged) {
                     type: "websiteUrlUpdated",
                     enabled,
                     storageChanged,
-                    settings: await getSettings(url, true)
+                    settings: await getSettings(url, true),
+                    url
                 }).catch(() => {
                     if(browser.runtime.lastError) return; // ignore the error messages
                 });
