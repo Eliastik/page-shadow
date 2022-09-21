@@ -715,7 +715,11 @@ async function getPresetData(nb) {
         for(const key of settingsNames) {
             if(typeof(key) === "string") {
                 if(!Object.prototype.hasOwnProperty.call(preset, key)) {
-                    preset[key] = defaultSettings[key];
+                    if(key === "brightColorPreservation") {
+                        preset[key] = "false";
+                    } else {
+                        preset[key] = defaultSettings[key];
+                    }
                 }
             }
         }

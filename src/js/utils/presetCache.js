@@ -34,7 +34,7 @@ export default class PresetCache {
     async updateCache() {
         this.data = [];
 
-        for(let i = 0; i < nbPresets; i++) {
+        for(let i = 1; i <= nbPresets; i++) {
             const presetData = await getPresetData(i);
             this.data[i] = presetData;
         }
