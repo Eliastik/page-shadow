@@ -34,7 +34,7 @@ import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
 import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise } from "./utils/util.js";
-import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
+import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, advancedSettingsRealTimeChangeKeys } from "./constants.js";
 import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./filter.codemirror.mode";
@@ -106,7 +106,7 @@ function translateContent() {
         $("#firefoxLinuxBugFonts").show();
     }
 
-    displaySettings(null, changingLanguage);
+    displaySettings("local", changingLanguage);
     loadAdvancedOptionsUI();
 }
 
@@ -136,26 +136,8 @@ async function resetSettings() {
     localStorage.clear();
 }
 
-async function displaySettings(areaName, dontDisplayThemeAndPresets) {
+async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = null) {
     const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "autoBackupCloudInterval", "lastAutoBackupFailed", "disableRightClickMenu"]);
-
-    if(areaName != "sync") {
-        if(result.sitesInterditPageShadow != undefined) {
-            $("#textareaAssomPage").val(result.sitesInterditPageShadow);
-        }
-
-        if(result.whiteList == "true" && $("#checkWhiteList").is(":checked") == false) {
-            $("#checkWhiteList").prop("checked", true);
-        } else if(result.whiteList !== "true" && $("#checkWhiteList").is(":checked") == true) {
-            $("#checkWhiteList").prop("checked", false);
-        }
-    }
-
-    if(typeof(browser.storage) == "undefined" || typeof(browser.storage.sync) == "undefined") {
-        $("#archiveCloudBtn").addClass("disabled");
-        $("#archiveCloudNotCompatible").show();
-    }
-
     const cloudData = await isArchiveCloudAvailable();
 
     if(cloudData.available) {
@@ -176,50 +158,85 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets) {
     const convertedCloudMax = convertBytes(browser.storage.sync.QUOTA_BYTES);
     $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
 
-    if(areaName != "sync") {
-        if(!dontDisplayThemeAndPresets) displayTheme($("#themeSelect").val());
-        displayFilters();
+    if(areaName == "local") {
+        if(result.sitesInterditPageShadow != undefined && (!changes || changes.includes("sitesInterditPageShadow"))) {
+            $("#textareaAssomPage").val(result.sitesInterditPageShadow);
+        }
+
+        if(!changes || changes.includes("whiteList")) {
+            if(result.whiteList == "true" && $("#checkWhiteList").is(":checked") == false) {
+                $("#checkWhiteList").prop("checked", true);
+            } else if(result.whiteList !== "true" && $("#checkWhiteList").is(":checked") == true) {
+                $("#checkWhiteList").prop("checked", false);
+            }
+        }
+
+        if(typeof(browser.storage) == "undefined" || typeof(browser.storage.sync) == "undefined") {
+            $("#archiveCloudBtn").addClass("disabled");
+            $("#archiveCloudNotCompatible").show();
+        }
+
+        if((!changes || changes.includes("customThemes")) && !dontDisplayThemeAndPresets) {
+            $("#themeSelect").val(currentSelectedTheme);
+            displayTheme($("#themeSelect").val());
+        }
+
+        if((!changes || changes.includes("filtersSettings") || changes.includes("customFilter")) && !dontDisplayThemeAndPresets) {
+            displayFilters();
+        }
+
+        if(!changes || changes.includes("presets")) {
+            await loadPresetSelect("loadPresetSelect", i18next);
+            await loadPresetSelect("savePresetSelect", i18next);
+            await loadPresetSelect("deletePresetSelect", i18next);
+            if(!dontDisplayThemeAndPresets) displayPresetSettings(currentSelectedPresetEdit);
+
+            $("#savePresetSelect").val(currentSelectedPresetEdit);
+        }
+
+        if(!changes || changes.includes("interfaceDarkTheme")) {
+            const currentTheme = await browser.storage.local.get(["interfaceDarkTheme"]);
+
+            if (currentTheme.interfaceDarkTheme) {
+                $("#darkThemeSelect").val(currentTheme.interfaceDarkTheme);
+            }
+
+            toggleTheme(); // Toggle dark/light theme
+        }
+
+        if(!changes || changes.includes("popupTheme")) {
+            const currentPopupTheme = await browser.storage.local.get(["popupTheme"]);
+
+            if (currentPopupTheme.popupTheme) {
+                $("#popupThemeSelect").val(currentPopupTheme.popupTheme);
+            }
+        }
+
+        if(!changes || changes.includes("autoBackupCloudInterval")) {
+            if(result && result.autoBackupCloudInterval) {
+                $("#autoBackupCloudSelect").val(result.autoBackupCloudInterval);
+            } else {
+                $("#autoBackupCloudSelect").val("0");
+            }
+        }
+
+        if(result && result.lastAutoBackupFailed == "true") {
+            $("#autoBackupError").show();
+        }
+
+        if(!changes || changes.includes("disableRightClickMenu")) {
+            if(result && result.disableRightClickMenu == "true") {
+                $("#enableRightClickMenu").prop("checked", false);
+            } else {
+                $("#enableRightClickMenu").prop("checked", true);
+            }
+        }
+
+        if(!changes || changes.includes("advancedOptionsFiltersSettings")) {
+            checkAdvancedOptions();
+            loadAdvancedOptionsUI();
+        }
     }
-
-    await loadPresetSelect("loadPresetSelect", i18next);
-    await loadPresetSelect("savePresetSelect", i18next);
-    await loadPresetSelect("deletePresetSelect", i18next);
-    if(!dontDisplayThemeAndPresets) displayPresetSettings(currentSelectedPresetEdit);
-
-    $("#savePresetSelect").val(currentSelectedPresetEdit);
-    $("#themeSelect").val(currentSelectedTheme);
-
-    const currentTheme = await browser.storage.local.get(["interfaceDarkTheme"]);
-
-    if (currentTheme.interfaceDarkTheme) {
-        $("#darkThemeSelect").val(currentTheme.interfaceDarkTheme);
-    }
-
-    const currentPopupTheme = await browser.storage.local.get(["popupTheme"]);
-
-    if (currentPopupTheme.popupTheme) {
-        $("#popupThemeSelect").val(currentPopupTheme.popupTheme);
-    }
-
-    toggleTheme(); // Toggle dark/light theme
-
-    if(result && result.autoBackupCloudInterval) {
-        $("#autoBackupCloudSelect").val(result.autoBackupCloudInterval);
-    } else {
-        $("#autoBackupCloudSelect").val("0");
-    }
-
-    if(result && result.lastAutoBackupFailed == "true") {
-        $("#autoBackupError").show();
-    }
-
-    if(result && result.disableRightClickMenu == "true") {
-        $("#enableRightClickMenu").prop("checked", false);
-    } else {
-        $("#enableRightClickMenu").prop("checked", true);
-    }
-
-    checkAdvancedOptions();
 }
 
 async function displayTheme(nb, defaultSettings) {
@@ -977,7 +994,6 @@ async function saveList() {
     }
 
     $("#saved").modal("show");
-    displaySettings("local", true);
 }
 
 async function changeLanguage() {
@@ -1074,7 +1090,6 @@ function restoreSettingsFile(event) {
                 obj = JSON.parse(event.target.result);
             } catch(e) {
                 $("#restoreError").fadeIn(500);
-                displaySettings("local", true);
                 return false;
             }
 
@@ -1097,14 +1112,12 @@ function restoreSettingsFile(event) {
             } else {
                 $("#restoreErrorArchive").fadeIn(500);
                 $("#textareaAssomPage").val(oldTextareadValue);
-                displaySettings("local", true);
             }
         };
 
         reader.onerror = function() {
             $("#restoreError").fadeIn(500);
             $("#textareaAssomPage").val(oldTextareadValue);
-            displaySettings("local", true);
         };
 
         const fileExtension = event.target.files[0].name.split(".").pop().toLowerCase();
@@ -1117,13 +1130,11 @@ function restoreSettingsFile(event) {
             } else {
                 $("#restoreErrorFilesize").fadeIn(500);
                 $("#textareaAssomPage").val(oldTextareadValue);
-                displaySettings("local", true);
                 return false;
             }
         } else {
             $("#restoreErrorExtension").fadeIn(500);
             $("#textareaAssomPage").val(oldTextareadValue);
-            displaySettings("local", true);
             return false;
         }
     } else {
@@ -1227,7 +1238,6 @@ async function restoreCloudSettings() {
                 } else {
                     $("#restoreCloudError").fadeIn(500);
                     $("#textareaAssomPage").val(oldTextareadValue);
-                    displaySettings("sync", true);
                 }
             } catch(e) {
                 $("#restoreCloudError").fadeIn(500);
@@ -1235,12 +1245,10 @@ async function restoreCloudSettings() {
                 $("#archiveCloudBtn").removeAttr("disabled");
                 $("#restoreCloudBtn").removeAttr("disabled");
                 $("#restoreDataButton").removeAttr("disabled");
-                displaySettings("sync", true);
             }
         } else {
             $("#restoreCloudError").fadeIn(500);
             $("#textareaAssomPage").val(oldTextareadValue);
-            displaySettings("sync", true);
         }
     }
 }
@@ -1492,7 +1500,9 @@ $(document).ready(() => {
 
     if(typeof(browser.storage.onChanged) !== "undefined") {
         browser.storage.onChanged.addListener((changes, areaName) => {
-            displaySettings(areaName, changingLanguage);
+            if(changes && Object.keys(changes).some(change => advancedSettingsRealTimeChangeKeys.includes(change))) {
+                displaySettings(areaName, changingLanguage, Object.keys(changes));
+            }
         });
     }
 
