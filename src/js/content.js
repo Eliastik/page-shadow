@@ -40,6 +40,7 @@ import ContentProcessor from "./contentProcessor.js";
             if(message && message.url == currentURL) {
                 const URLUpdated = contentProcessor.precUrl != getCurrentURL();
                 let changed = contentProcessor.hasEnabledStateChanged(message.enabled);
+                console.log(currentURL);
 
                 if(URLUpdated) {
                     contentProcessor.pageAnalyzer.backgroundDetected = false;

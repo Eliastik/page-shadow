@@ -34,7 +34,7 @@ import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
 import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise } from "./utils/util.js";
-import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, advancedSettingsRealTimeChangeKeys } from "./constants.js";
+import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
 import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./filter.codemirror.mode";
@@ -106,7 +106,7 @@ function translateContent() {
         $("#firefoxLinuxBugFonts").show();
     }
 
-    displaySettings("local", changingLanguage);
+    displaySettings(null, changingLanguage);
     loadAdvancedOptionsUI();
 }
 
@@ -137,28 +137,31 @@ async function resetSettings() {
 }
 
 async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = null) {
-    const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "autoBackupCloudInterval", "lastAutoBackupFailed", "disableRightClickMenu"]);
-    const cloudData = await isArchiveCloudAvailable();
+    if(!areaName || areaName == "sync") {
+        const cloudData = await isArchiveCloudAvailable();
 
-    if(cloudData.available) {
-        $("#restoreCloudBtn").removeClass("disabled");
-        $("#infoCloudLastArchive").show();
-        $("#dateCloudArchive").text(i18next.t("modal.archive.dateCloudLastArchive", { device: cloudData.device, date: new Intl.DateTimeFormat(i18next.language).format(cloudData.date), hour: new Intl.DateTimeFormat(i18next.language, { hour: "numeric", minute: "numeric", second: "numeric", timeZoneName: "short" }).format(cloudData.date), interpolation: { escapeValue: false } }));
-    } else {
-        $("#restoreCloudBtn").addClass("disabled");
-        $("#infoCloudLastArchive").hide();
+        if(cloudData.available) {
+            $("#restoreCloudBtn").removeClass("disabled");
+            $("#infoCloudLastArchive").show();
+            $("#dateCloudArchive").text(i18next.t("modal.archive.dateCloudLastArchive", { device: cloudData.device, date: new Intl.DateTimeFormat(i18next.language).format(cloudData.date), hour: new Intl.DateTimeFormat(i18next.language, { hour: "numeric", minute: "numeric", second: "numeric", timeZoneName: "short" }).format(cloudData.date), interpolation: { escapeValue: false } }));
+        } else {
+            $("#restoreCloudBtn").addClass("disabled");
+            $("#infoCloudLastArchive").hide();
+        }
+
+        const sizeCloud = browser.storage.sync.getBytesInUse ? await browser.storage.sync.getBytesInUse(null) : getSizeObject(await browser.storage.sync.get(null));
+        const convertedCloud = convertBytes(sizeCloud);
+        const convertedCloudMax = convertBytes(browser.storage.sync.QUOTA_BYTES);
+        $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
     }
 
-    const size = browser.storage.local.getBytesInUse ? await browser.storage.local.getBytesInUse(null) : getSizeObject(await browser.storage.local.get(null));
-    const converted = convertBytes(size);
-    $("#infosLocalStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
+    if(!areaName || areaName == "local") {
+        const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "autoBackupCloudInterval", "lastAutoBackupFailed", "disableRightClickMenu"]);
 
-    const sizeCloud = browser.storage.sync.getBytesInUse ? await browser.storage.sync.getBytesInUse(null) : getSizeObject(await browser.storage.sync.get(null));
-    const convertedCloud = convertBytes(sizeCloud);
-    const convertedCloudMax = convertBytes(browser.storage.sync.QUOTA_BYTES);
-    $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
+        const size = browser.storage.local.getBytesInUse ? await browser.storage.local.getBytesInUse(null) : getSizeObject(await browser.storage.local.get(null));
+        const converted = convertBytes(size);
+        $("#infosLocalStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
 
-    if(areaName == "local") {
         if(result.sitesInterditPageShadow != undefined && (!changes || changes.includes("sitesInterditPageShadow"))) {
             $("#textareaAssomPage").val(result.sitesInterditPageShadow);
         }
@@ -314,6 +317,12 @@ async function displayTheme(nb, defaultSettings) {
     $("#previsualisationDiv").css("font-family", fontTheme);
 
     window.codeMirrorUserCss.getDoc().setValue(customCSS);
+
+    if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+        $("#not-saved-customThemes").show();
+    } else {
+        $("#not-saved-customThemes").hide();
+    }
 }
 
 async function displayFilters() {
@@ -1345,10 +1354,16 @@ async function initColpick() {
         submit: false,
         color: "000000",
         colorScheme: await isInterfaceDarkTheme() ? "dark" : "light",
-        onChange: (hsb, hex) => {
+        onChange: async(hsb, hex) => {
             $("#colorpicker1").css("background-color", "#"+hex);
             $("#previsualisationDiv").css("background-color", "#"+hex);
             $("#colorpicker1").attr("value", hex);
+
+            if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+                $("#not-saved-customThemes").show();
+            } else {
+                $("#not-saved-customThemes").hide();
+            }
         }
     });
 
@@ -1357,10 +1372,16 @@ async function initColpick() {
         submit: false,
         color: "FFFFFF",
         colorScheme: await isInterfaceDarkTheme() ? "dark" : "light",
-        onChange: (hsb, hex) => {
+        onChange: async(hsb, hex) => {
             $("#colorpicker2").css("background-color", "#"+hex);
             $("#textPreview").css("color", "#"+hex);
             $("#colorpicker2").attr("value", hex);
+
+            if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+                $("#not-saved-customThemes").show();
+            } else {
+                $("#not-saved-customThemes").hide();
+            }
         }
     });
 
@@ -1369,10 +1390,16 @@ async function initColpick() {
         submit: false,
         color: "1E90FF",
         colorScheme: await isInterfaceDarkTheme() ? "dark" : "light",
-        onChange: (hsb, hex) => {
+        onChange: async(hsb, hex) => {
             $("#colorpicker3").css("background-color", "#"+hex);
             $("#linkPreview").css("color", "#"+hex);
             $("#colorpicker3").attr("value", hex);
+
+            if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+                $("#not-saved-customThemes").show();
+            } else {
+                $("#not-saved-customThemes").hide();
+            }
         }
     });
 
@@ -1381,10 +1408,16 @@ async function initColpick() {
         submit: false,
         color: "800080",
         colorScheme: await isInterfaceDarkTheme() ? "dark" : "light",
-        onChange: (hsb, hex) => {
+        onChange: async(hsb, hex) => {
             $("#colorpicker4").css("background-color", "#"+hex);
             $("#linkVisitedPreview").css("color", "#"+hex);
             $("#colorpicker4").attr("value", hex);
+
+            if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+                $("#not-saved-customThemes").show();
+            } else {
+                $("#not-saved-customThemes").hide();
+            }
         }
     });
 }
@@ -1434,6 +1467,7 @@ $(document).ready(() => {
             }
         }
 
+        $("#not-saved-customThemes").hide();
         currentSelectedTheme = $("#themeSelect").val();
         displayTheme($("#themeSelect").val());
     });
@@ -1451,6 +1485,7 @@ $(document).ready(() => {
         $("#customThemeSave").attr("data-original-title", i18next.t("modal.customTheme.saved"));
         $("#customThemeSave").tooltip("enable");
         $("#customThemeSave").tooltip("show");
+        $("#not-saved-customThemes").hide();
     });
 
     $("#customThemeCancel").on("click", () => {
@@ -1500,7 +1535,7 @@ $(document).ready(() => {
 
     if(typeof(browser.storage.onChanged) !== "undefined") {
         browser.storage.onChanged.addListener((changes, areaName) => {
-            if(changes && Object.keys(changes).some(change => advancedSettingsRealTimeChangeKeys.includes(change))) {
+            if(changes) {
                 displaySettings(areaName, changingLanguage, Object.keys(changes));
             }
         });
@@ -1521,11 +1556,17 @@ $(document).ready(() => {
         $(this).val("");
     });
 
-    $("#customThemeFont").on("input", () => {
+    $("#customThemeFont").on("input", async() => {
         if($("#customThemeFont").val().trim() !== "") {
             $("#previsualisationDiv").css("font-family", "\"" + $("#customThemeFont").val() + "\"");
         } else {
             $("#previsualisationDiv").css("font-family", "");
+        }
+
+        if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+            $("#not-saved-customThemes").show();
+        } else {
+            $("#not-saved-customThemes").hide();
         }
     });
 
@@ -1544,6 +1585,14 @@ $(document).ready(() => {
         matchBrackets: true,
         scrollbarStyle: "overlay",
         extraKeys: {"Ctrl-Space": "autocomplete"}
+    });
+
+    window.codeMirrorUserCss.on("change", async() => {
+        if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+            $("#not-saved-customThemes").show();
+        } else {
+            $("#not-saved-customThemes").hide();
+        }
     });
 
     window.codeMirrorJSONArchive = CodeMirror.fromTextArea(document.getElementById("codeMirrorJSONArchiveTextarea"), {
@@ -1582,7 +1631,7 @@ $(document).ready(() => {
 
     window.codeMirrorJSONArchive.setSize(null, 50);
 
-    displaySettings("local");
+    displaySettings();
 
     if(getBrowser() == "Chrome" || getBrowser() == "Opera") {
         $("#keyboardShortcuts").on("click", () => {

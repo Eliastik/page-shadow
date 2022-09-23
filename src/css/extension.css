@@ -781,3 +781,9 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     padding-left: 0 !important;
     padding-right: 0 !important;
 }
+.not-saved {
+    color: #2196F3 !important;
+    display: none;
+    font-size: 6pt !important;
+    margin-left: 6px;
+}

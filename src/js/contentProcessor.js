@@ -90,6 +90,7 @@ export default class ContentProcessor {
     }
 
     async contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor, brightColorPreservation) {
+        console.log(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor, brightColorPreservation);
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
             if(theme != undefined) {
                 this.resetContrastPage(theme, disableImgBgColor, brightColorPreservation);
@@ -789,6 +790,7 @@ export default class ContentProcessor {
 
             if(allowed) {
                 const settings = this.newSettingsToApply || await getSettings(getCurrentURL(), disableCache);
+                console.log(settings, type);
 
                 this.currentSettings = settings;
                 this.precEnabled = true;
