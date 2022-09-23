@@ -239,6 +239,30 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
             checkAdvancedOptions();
             loadAdvancedOptionsUI();
         }
+
+        if(await notifyChangedThemeNotSaved($("#themeSelect").val())) {
+            $("#not-saved-lists").show();
+        } else {
+            $("#not-saved-lists").hide();
+        }
+
+        if(await notifyChangedListNotSaved()) {
+            $("#not-saved-lists").show();
+        } else {
+            $("#not-saved-lists").hide();
+        }
+
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            $("#not-saved-presets").show();
+        } else {
+            $("#not-saved-presets").hide();
+        }
+
+        if(await notifyChangedAdvancedOptionsNotSaved()) {
+            $("#not-saved-advanced").show();
+        } else {
+            $("#not-saved-advanced").hide();
+        }
     }
 }
 
@@ -588,6 +612,13 @@ async function loadAdvancedOptionsUI(reset) {
             input.name = key;
             input.value = value;
             input.classList.add("form-control", "input-font");
+            input.oninput = async() => {
+                if(await notifyChangedAdvancedOptionsNotSaved()) {
+                    $("#not-saved-advanced").show();
+                } else {
+                    $("#not-saved-advanced").hide();
+                }
+            };
             div.appendChild(input);
         } else {
             const divCheckboxSwitch = document.createElement("div");
@@ -597,6 +628,13 @@ async function loadAdvancedOptionsUI(reset) {
             inputCheckbox.id = key;
             inputCheckbox.name = key;
             inputCheckbox.type = "checkbox";
+            inputCheckbox.onchange = async() => {
+                if(await notifyChangedAdvancedOptionsNotSaved()) {
+                    $("#not-saved-advanced").show();
+                } else {
+                    $("#not-saved-advanced").hide();
+                }
+            };
 
             if(value) {
                 inputCheckbox.setAttribute("checked", "checked");
@@ -623,7 +661,7 @@ async function loadAdvancedOptionsUI(reset) {
     $("[data-toggle=\"tooltip\"]").tooltip();
 }
 
-async function saveAdvancedOptions() {
+function getUpdatedAdvancedOptions() {
     const websiteFiltersConfig = JSON.parse(JSON.stringify(defaultWebsiteSpecialFiltersConfig));
 
     Object.keys(websiteFiltersConfig).forEach(key => {
@@ -649,7 +687,11 @@ async function saveAdvancedOptions() {
         }
     });
 
-    await setSettingItem("advancedOptionsFiltersSettings", websiteFiltersConfig);
+    return websiteFiltersConfig;
+}
+
+async function saveAdvancedOptions() {
+    await setSettingItem("advancedOptionsFiltersSettings", getUpdatedAdvancedOptions());
     loadAdvancedOptionsUI();
 
     clearTimeout(savedAdvancedOptionsTimeout);
@@ -662,6 +704,21 @@ async function saveAdvancedOptions() {
     $("#saveAdvancedOptions").attr("data-original-title", i18next.t("advancedOptions.saved"));
     $("#saveAdvancedOptions").tooltip("enable");
     $("#saveAdvancedOptions").tooltip("show");
+}
+
+async function notifyChangedAdvancedOptionsNotSaved() {
+    const result = await browser.storage.local.get("advancedOptionsFiltersSettings");
+    const resultConfig = result.advancedOptionsFiltersSettings;
+    const currentConfig = resultConfig && Object.keys(resultConfig).length > 0 ? resultConfig : defaultWebsiteSpecialFiltersConfig;
+    const websiteFiltersConfig = getUpdatedAdvancedOptions();
+
+    for(const key of Object.keys(websiteFiltersConfig)) {
+        if(currentConfig[key] != websiteFiltersConfig[key]) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 async function displayDetailsFilter(idFilter) {
@@ -976,11 +1033,21 @@ async function notifyChangedThemeNotSaved(nb) {
     if(customThemes[nb]["customCSSCode"] == null) customThemes[nb]["customCSSCode"] = defaultCustomCSSCode;
 
     return customThemes[nb]["customThemeBg"].toLowerCase() != $("#colorpicker1").attr("value").toLowerCase() ||
-    customThemes[nb]["customThemeTexts"].toLowerCase() != $("#colorpicker2").attr("value").toLowerCase() ||
-    customThemes[nb]["customThemeLinks"].toLowerCase() != $("#colorpicker3").attr("value").toLowerCase() ||
-    customThemes[nb]["customThemeLinksVisited"].toLowerCase() != $("#colorpicker4").attr("value").toLowerCase() ||
-    customThemes[nb]["customThemeFont"].toLowerCase() != $("#customThemeFont").val().toLowerCase() ||
-    customThemes[nb]["customCSSCode"] != $("#codeMirrorUserCSSTextarea").val();
+        customThemes[nb]["customThemeTexts"].toLowerCase() != $("#colorpicker2").attr("value").toLowerCase() ||
+        customThemes[nb]["customThemeLinks"].toLowerCase() != $("#colorpicker3").attr("value").toLowerCase() ||
+        customThemes[nb]["customThemeLinksVisited"].toLowerCase() != $("#colorpicker4").attr("value").toLowerCase() ||
+        customThemes[nb]["customThemeFont"].toLowerCase() != $("#customThemeFont").val().toLowerCase() ||
+        customThemes[nb]["customCSSCode"] != $("#codeMirrorUserCSSTextarea").val();
+}
+
+async function notifyChangedListNotSaved() {
+    const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
+    const list = result.sitesInterditPageShadow || "";
+    const whiteListSetting = result.whiteListChecked || "false";
+    const whiteListChecked = $("#checkWhiteList").is(":checked") ? "true" : "false";
+
+    return list.toLowerCase() != $("#textareaAssomPage").val().toLowerCase() ||
+        whiteListSetting.toLowerCase() != whiteListChecked.toLowerCase();
 }
 
 async function saveList() {
@@ -1814,8 +1881,33 @@ $(document).ready(() => {
             }
         }
 
+        $("#not-saved-presets").hide();
         currentSelectedPresetEdit = $("#savePresetSelect").val();
         displayPresetSettings($("#savePresetSelect").val());
+    });
+
+    $("#savePresetTitle").on("input", async() => {
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            $("#not-saved-presets").show();
+        } else {
+            $("#not-saved-presets").hide();
+        }
+    });
+
+    $("#savePresetWebsite").on("input", async() => {
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            $("#not-saved-presets").show();
+        } else {
+            $("#not-saved-presets").hide();
+        }
+    });
+
+    $("#checkSaveNewSettingsPreset").on("change", async() => {
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            $("#not-saved-presets").show();
+        } else {
+            $("#not-saved-presets").hide();
+        }
     });
 
     $("#syntaxBtn").on("click", () => {
@@ -1853,12 +1945,34 @@ $(document).ready(() => {
         checkAdvancedOptions();
     });
 
-    $("#resetAdvancedOptions").on("click", () => {
+    $("#resetAdvancedOptions").on("click", async() => {
         loadAdvancedOptionsUI(true);
+
+        if(await notifyChangedAdvancedOptionsNotSaved()) {
+            $("#not-saved-advanced").show();
+        } else {
+            $("#not-saved-advanced").hide();
+        }
     });
 
     $("#saveAdvancedOptions").on("click", () => {
         saveAdvancedOptions();
+    });
+
+    $("#checkWhiteList").on("change", async() => {
+        if(await notifyChangedListNotSaved()) {
+            $("#not-saved-lists").show();
+        } else {
+            $("#not-saved-lists").hide();
+        }
+    });
+
+    $("#textareaAssomPage").on("input", async() => {
+        if(await notifyChangedListNotSaved()) {
+            $("#not-saved-lists").show();
+        } else {
+            $("#not-saved-lists").hide();
+        }
     });
 });
 
