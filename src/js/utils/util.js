@@ -670,7 +670,11 @@ async function loadPreset(nb) {
                     await setSettingItem(key, preset[key]);
                     settingsRestored++;
                 } else {
-                    await setSettingItem(key, defaultSettings[key]); // Restore default setting
+                    if(key != "brightColorPreservation") {
+                        await setSettingItem(key, defaultSettings[key]); // Restore default setting
+                    } else {
+                        await setSettingItem(key, "false"); // Restore "false" for "brightColorPreservation" setting
+                    }
                 }
             }
         }
@@ -715,7 +719,11 @@ async function getPresetData(nb) {
         for(const key of settingsNames) {
             if(typeof(key) === "string") {
                 if(!Object.prototype.hasOwnProperty.call(preset, key)) {
-                    preset[key] = defaultSettings[key];
+                    if(key === "brightColorPreservation") {
+                        preset[key] = "false";
+                    } else {
+                        preset[key] = defaultSettings[key];
+                    }
                 }
             }
         }
@@ -867,7 +875,11 @@ function getDefaultSettingsToLoad() {
 
     for(const setting of settingsToLoad) {
         if(Object.prototype.hasOwnProperty.call(defaultSettings, setting)) {
-            settings[setting] = defaultSettings[setting];
+            if(setting === "brightColorPreservation") {
+                settings[setting] = "false";
+            } else {
+                settings[setting] = defaultSettings[setting];
+            }
         }
     }
 
