@@ -670,7 +670,11 @@ async function loadPreset(nb) {
                     await setSettingItem(key, preset[key]);
                     settingsRestored++;
                 } else {
-                    await setSettingItem(key, defaultSettings[key]); // Restore default setting
+                    if(key != "brightColorPreservation") {
+                        await setSettingItem(key, defaultSettings[key]); // Restore default setting
+                    } else {
+                        await setSettingItem(key, "false"); // Restore "false" for "brightColorPreservation" setting
+                    }
                 }
             }
         }
@@ -770,7 +774,6 @@ async function savePreset(nb, name, websiteListToApply, saveNewSettings) {
         }
 
         await setSettingItem("presets", preset);
-        resetPresetCache();
 
         return "success";
     } catch(e) {
@@ -798,16 +801,11 @@ async function deletePreset(nb) {
         preset[nb] = {};
 
         await setSettingItem("presets", preset);
-        resetPresetCache();
 
         return "success";
     } catch(e) {
         return "error";
     }
-}
-
-function resetPresetCache() {
-    sendMessageWithPromise({ "type": "updatePresetCache" });
 }
 
 async function presetsEnabledForWebsite(url, disableCache) {

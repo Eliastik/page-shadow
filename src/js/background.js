@@ -30,13 +30,8 @@ const globalPageShadowStyleCache = {};
 const globalPageShadowStyleShadowRootsCache = {};
 
 const filters = new Filter();
-filters.cacheFilters();
-
 const presetCache = new PresetCache();
-presetCache.updateCache();
-
 const settingsCache = new SettingsCache();
-settingsCache.updateCache();
 
 function setPopup() {
     if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setPopup) !== "undefined") {

@@ -29,6 +29,7 @@ export default class FilterProcessor {
     constructor() { // Filter class is a Singleton
         if(!FilterProcessor.instance) {
             FilterProcessor.instance = this;
+            this.cacheFilters();
         }
 
         return FilterProcessor.instance;

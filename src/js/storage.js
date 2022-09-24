@@ -21,14 +21,21 @@ import { sendMessageWithPromise } from "./utils/util.js";
 import browser from "webextension-polyfill";
 
 function setSettingItem(name, value) {
-    if(settingNames.indexOf(name) !== -1) {
+    if(name && settingNames.indexOf(name) !== -1) {
         const newSetting = {};
         newSetting[name] = value;
 
         browser.storage.local.set(newSetting);
 
+        // If we update a website setting (increase contrast, invert colors, etc.)
+        // The cache is updated
         if(settingsToLoad.includes(name)) {
             sendMessageWithPromise({ "type": "updateSettingsCache" });
+        }
+
+        // If the presets are updated, we update the cache
+        if(name.toLowerCase() === "presets") {
+            sendMessageWithPromise({ "type": "updatePresetCache" });
         }
 
         return true;

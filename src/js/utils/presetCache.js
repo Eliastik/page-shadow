@@ -26,6 +26,7 @@ export default class PresetCache {
     constructor() { // Singleton
         if(!PresetCache.instance) {
             PresetCache.instance = this;
+            this.updateCache();
         }
 
         return PresetCache.instance;
