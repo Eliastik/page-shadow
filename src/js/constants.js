@@ -177,7 +177,7 @@ const defaultWebsiteSpecialFiltersConfig = {
     opacityDetectedAsTransparentThreshold: opacityDetectedAsTransparentThresholdDefault,
     enableMutationObserverAttributes: true,
     enableMutationObserverStyle: true,
-    enableMutationObserverClass: false,
+    enableMutationObserverClass: true,
     enableShadowRootStyleOverride: true,
     shadowRootStyleOverrideDelay: 100, // <= 0 to disable
     throttleMutationObserverBackgrounds: false,
