@@ -48,6 +48,7 @@ Or you can compile it yourself (see Compilation section).
     * Fixed a bug with the settings Decrease brightness and Blue light filter: on some websites (like Github), when going back to the previous page with the browser back button, the filter intensity increased randomly;
     * Fixed bugs when restoring cloud archives, and improved performance for Firefox when restoring archives;
     * Fixed a bug with the real-time display of settings in Advanced Settings: if a popup setting was changed, and a change to a setting in Advanced Settings had not been saved, that change was lost;
+    * Fixed a bug with presets applying to SPA (Single Page Applications) when different presets where set to different pages;
     * Simplification and major reorganization of the extension code including:
         * Use of the same CSS stylesheet for classic themes and custom themes, and use of CSS variables;
         * Simplification of the code managing the message passing between background page and scripts of the extension;

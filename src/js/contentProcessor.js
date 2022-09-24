@@ -44,7 +44,6 @@ export default class ContentProcessor {
     mut_backgrounds;
     mut_brightness_bluelight;
     mut_brightness_bluelight_wrapper;
-    precUrl = null;
     currentSettings = null;
     newSettingsToApply = null;
     safeTimerMutationBackgrounds = null;
@@ -751,9 +750,6 @@ export default class ContentProcessor {
     }
 
     async main(type, mutation, disableCache) {
-        this.precUrl = getCurrentURL();
-        this.oldBody = document.body;
-
         if(type == this.TYPE_RESET) {
             mutation = this.TYPE_ALL;
         }

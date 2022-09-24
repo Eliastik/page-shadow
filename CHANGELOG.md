@@ -16,6 +16,7 @@
     * Fixed a bug with the settings Decrease brightness and Blue light filter: on some websites (like Github), when going back to the previous page with the browser back button, the filter intensity increased randomly;
     * Fixed bugs when restoring cloud archives, and improved performance for Firefox when restoring archives;
     * Fixed a bug with the real-time display of settings in Advanced Settings: if a popup setting was changed, and a change to a setting in Advanced Settings had not been saved, that change was lost;
+    * Fixed a bug with presets applying to SPA (Single Page Applications) when different presets where set to different pages;
     * Simplification and major reorganization of the extension code including:
         * Use of the same CSS stylesheet for classic themes and custom themes, and use of CSS variables;
         * Simplification of the code managing the message passing between background page and scripts of the extension;
@@ -331,6 +332,7 @@
     * Correction d'un bug avec les fonctions Baisser la luminosité et Filtre de réduction de la lumière bleue : sur certains sites (comme Github), lorsque l'on retournait à la page précédente à l'aide du bouton Retour du navigateur, l'intensité des filtres augmentait de manière aléatoire ;
     * Correction de bugs avec la restauration des archives Cloud, et amélioration des performances pour Firefox lors de la restauration des archives ;
     * Correction d'un bug avec l'affichage en temps réel des paramètres dans les Paramètres avancés : si un paramètre de la popup était modifié, et qu'une modification d'un paramètre dans les paramètres avancés n'avait pas été sauvegardée, cette modification était écrasée ;
+    * Correction d'un bug avec l'application des pré-réglages aux SPA (Single Page Application) lorsque des pré-réglages différents étaient paramétrés pour les différents pages ;
     * Simplification et réorganisation majeure du code de l'extension dont :
         * Utilisation de la même feuille de style CSS pour les thèmes classiques et les thèmes personnalisées, et utilisation des variables CSS ;
         * Simplification du code gérant les appels entre background page et scripts de l'extension ;

@@ -23,9 +23,11 @@ import ContentProcessor from "./contentProcessor.js";
 (async function() {
     const contentProcessor = new ContentProcessor();
     let currentSettings = contentProcessor.currentSettings;
+    let precUrl = null;
 
     // Start the processing of the page
     contentProcessor.main(contentProcessor.TYPE_START);
+    precUrl = getCurrentURL();
 
     // If storage/settings have changed
     browser.storage.onChanged.addListener(changes => {
@@ -38,12 +40,12 @@ import ContentProcessor from "./contentProcessor.js";
             const currentURL = getCurrentURL();
 
             if(message && message.url == currentURL) {
-                const URLUpdated = contentProcessor.precUrl != getCurrentURL();
+                const URLUpdated = precUrl != getCurrentURL();
                 let changed = contentProcessor.hasEnabledStateChanged(message.enabled);
 
                 if(URLUpdated) {
                     contentProcessor.pageAnalyzer.backgroundDetected = false;
-                    contentProcessor.precUrl = getCurrentURL();
+                    precUrl = getCurrentURL();
                     contentProcessor.filtersCache = null;
 
                     if(hasSettingsChanged(currentSettings, message.settings)) {
