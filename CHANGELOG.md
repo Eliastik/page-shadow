@@ -2,7 +2,7 @@
 
 ## Changelog:
 
-### Version 2.10.1 (30/08/2022) :
+### Version 2.10.1 (9/25/2022) :
 
 * Major performance optimization, which limits the flashes that appeared when navigating between pages or changing settings in real time;
 * Added "Preserve element colors" function (enabled by default) to "Increase contrast" function. This function preserves the colors of the elements, but replaces colors very close to white or dark colors;
@@ -24,7 +24,7 @@
         * Other technical improvements
     * Update dependencies
 
-### Version 2.10 - Hotfix 2 (20/08/2022) :
+### Version 2.10 - Hotfix 2 (8/20/2022) :
 
 * Fix the features Decrease brightness/Blue light reduction filter on Firefox
 * Fix Mutation Observers on Firefox
@@ -318,7 +318,7 @@
 
 ## Journal des changements :
 
-### Version 2.10.1 (30/08/2022) :
+### Version 2.10.1 (25/09/2022) :
 
 * Optimisation majeure des performances, ce qui permet de limiter l'apparition de flashs lors de la navigation entre pages ou le changement des paramètres en temps réel ;
 * Ajout de la fonction "Préserver les couleurs des éléments" (activée par défaut) à la fonction "Augmenter le contraste". Cette fonction préserve les couleurs des éléments, mais remplace les couleurs très proches du blanc ou les couleurs sombres ;

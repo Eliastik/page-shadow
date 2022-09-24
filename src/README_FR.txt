@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.10.1 (30/08/2022)
+* Version actuelle : 2.10.1 (25/09/2022)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -34,7 +34,7 @@ Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
 
-### Version 2.10.1 (30/08/2022) :
+### Version 2.10.1 (25/09/2022) :
 
 * Optimisation majeure des performances, ce qui permet de limiter l'apparition de flashs lors de la navigation entre pages ou le changement des paramètres en temps réel ;
 * Ajout de la fonction "Préserver les couleurs des éléments" (activée par défaut) à la fonction "Augmenter le contraste". Cette fonction préserve les couleurs des éléments, mais remplace les couleurs très proches du blanc ou les couleurs sombres ;

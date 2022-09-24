@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.10.1 (8/30/2022)
+* Latest version: 2.10.1 (9/25/2022)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -34,7 +34,7 @@ Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
 
-### Version 2.10.1 (30/08/2022) :
+### Version 2.10.1 (9/25/2022) :
 
 * Major performance optimization, which limits the flashes that appeared when navigating between pages or changing settings in real time;
 * Added "Preserve element colors" function (enabled by default) to "Increase contrast" function. This function preserves the colors of the elements, but replaces colors very close to white or dark colors;
@@ -56,7 +56,7 @@ Or you can compile it yourself (see Compilation section).
         * Other technical improvements
     * Update dependencies
 
-### Version 2.10 - Hotfix 2 (20/08/2022) :
+### Version 2.10 - Hotfix 2 (8/20/2022) :
 
 * Fix the features Decrease brightness/Blue light reduction filter on Firefox
 * Fix Mutation Observers on Firefox

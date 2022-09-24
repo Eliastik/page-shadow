@@ -4,7 +4,7 @@
 <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen.png" width="300" alt="Page Shadow" /> <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen_2.png" width="300" alt="Page Shadow" />
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.10.1 (08/30/2022)
+* Latest version: 2.10.1 (09/25/2022)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -112,7 +112,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen_fr.png" width="300" alt="Page Shadow" /> <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen_fr_2.png" width="300" alt="Page Shadow" />
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.10.1 (30/08/2022)
+* Version actuelle : 2.10.1 (25/09/2022)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
