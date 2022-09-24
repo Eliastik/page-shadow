@@ -60,6 +60,7 @@ let currentSelectedPresetEdit = 1;
 let changingLanguage = false;
 let alreadyCheckedForUpdateFilters = false;
 let savedAdvancedOptionsTimeout;
+let disableStorageSizeCalculation = false;
 
 init_i18next("options").then(() => translateContent());
 toggleTheme(); // Toggle dark/light theme
@@ -149,18 +150,22 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
             $("#infoCloudLastArchive").hide();
         }
 
-        const sizeCloud = browser.storage.sync.getBytesInUse ? await browser.storage.sync.getBytesInUse(null) : getSizeObject(await browser.storage.sync.get(null));
-        const convertedCloud = convertBytes(sizeCloud);
-        const convertedCloudMax = convertBytes(browser.storage.sync.QUOTA_BYTES);
-        $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
+        if(!disableStorageSizeCalculation) {
+            const sizeCloud = browser.storage.sync.getBytesInUse ? await browser.storage.sync.getBytesInUse(null) : getSizeObject(await browser.storage.sync.get(null));
+            const convertedCloud = convertBytes(sizeCloud);
+            const convertedCloudMax = convertBytes(browser.storage.sync.QUOTA_BYTES);
+            $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
+        }
     }
 
     if(!areaName || areaName == "local") {
         const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "autoBackupCloudInterval", "lastAutoBackupFailed", "disableRightClickMenu"]);
 
-        const size = browser.storage.local.getBytesInUse ? await browser.storage.local.getBytesInUse(null) : getSizeObject(await browser.storage.local.get(null));
-        const converted = convertBytes(size);
-        $("#infosLocalStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
+        if(!disableStorageSizeCalculation) {
+            const size = browser.storage.local.getBytesInUse ? await browser.storage.local.getBytesInUse(null) : getSizeObject(await browser.storage.local.get(null));
+            const converted = convertBytes(size);
+            $("#infosLocalStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
+        }
 
         if(result.sitesInterditPageShadow != undefined && (!changes || changes.includes("sitesInterditPageShadow"))) {
             $("#textareaAssomPage").val(result.sitesInterditPageShadow);
@@ -709,11 +714,14 @@ async function saveAdvancedOptions() {
 async function notifyChangedAdvancedOptionsNotSaved() {
     const result = await browser.storage.local.get("advancedOptionsFiltersSettings");
     const resultConfig = result.advancedOptionsFiltersSettings;
-    const currentConfig = resultConfig && Object.keys(resultConfig).length > 0 ? resultConfig : defaultWebsiteSpecialFiltersConfig;
+    const currentConfigs = resultConfig && Object.keys(resultConfig).length > 0 ? resultConfig : defaultWebsiteSpecialFiltersConfig;
     const websiteFiltersConfig = getUpdatedAdvancedOptions();
 
     for(const key of Object.keys(websiteFiltersConfig)) {
-        if(currentConfig[key] != websiteFiltersConfig[key]) {
+        const currentConfigHasKey = Object.prototype.hasOwnProperty.call(currentConfigs, key);
+        const currentConfig = currentConfigHasKey ? currentConfigs[key] : defaultWebsiteSpecialFiltersConfig[key];
+
+        if(currentConfig != websiteFiltersConfig[key]) {
             return true;
         }
     }
@@ -1111,6 +1119,8 @@ async function archiveSettings() {
 }
 
 async function restoreSettings(object) {
+    disableStorageSizeCalculation = true;
+
     // Check if it's a Page Shadow archive file
     let ispageshadowarchive = false;
 
@@ -1145,6 +1155,7 @@ async function restoreSettings(object) {
     const message = await sendMessageWithPromise({ "type": "updateAllFilters" }, "updateAllFiltersFinished");
     if(message.result) $("#updateAllFilters").removeAttr("disabled");
 
+    disableStorageSizeCalculation = false;
     return true;
 }
 
