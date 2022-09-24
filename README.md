@@ -4,7 +4,7 @@
 <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen.png" width="300" alt="Page Shadow" /> <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen_2.png" width="300" alt="Page Shadow" />
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.10.1 (09/25/2022)
+* Latest version: 2.10.1 (9/25/2022)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
