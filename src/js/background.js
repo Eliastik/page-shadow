@@ -575,12 +575,16 @@ async function openTab(url, part) {
 
         const updateDetails = { active: true };
 
-        if(!tab.url.startsWith(url)) {
+        if(!tab.url.startsWith(completeURL)) {
             updateDetails.url = completeURL;
         }
 
         tab = await browser.tabs.update(tab.id, updateDetails);
         browser.windows.update(tab.windowId, { focused: true });
+
+        if(part) {
+            browser.tabs.sendMessage(tab.id, { type: "hashUpdated" });
+        }
     }
 }
 

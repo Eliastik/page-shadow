@@ -34,7 +34,7 @@ import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
 import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise } from "./utils/util.js";
-import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
+import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, defaultSettings } from "./constants.js";
 import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./filter.codemirror.mode";
@@ -1151,17 +1151,27 @@ async function restoreSettings(object) {
 
     // Reset data
     await browser.storage.local.clear();
+    // Fix performance issue on Firefox by disabling real time applying of settings to pages
+    // when restoring settings
+    await setSettingItem("liveSettings", "false");
     await setFirstSettings();
+
+    let liveSettingValue = defaultSettings["liveSettings"];
 
     for(const key in object) {
         if(typeof(key) === "string") {
             if(Object.prototype.hasOwnProperty.call(object, key)) {
-                await setSettingItem(key, object[key]); // invalid data are ignored by the function
+                if(key !== "liveSettings") {
+                    await setSettingItem(key, object[key]); // invalid data are ignored by the function
+                } else {
+                    liveSettingValue = object[key];
+                }
             }
         }
     }
 
     await migrateSettings();
+    await setSettingItem("liveSettings", liveSettingValue);
 
     $("#updateAllFilters").attr("disabled", "disabled");
 
@@ -1529,6 +1539,22 @@ function checkAdvancedOptions() {
     }
 }
 
+function openTabByHash() {
+    // Hash
+    if(window.location.hash) {
+        if(window.location.hash == "#customTheme") {
+            $("#customThemeTabLink a").tab("show");
+        } else if(window.location.hash == "#presets") {
+            $("#presetsTabLink a").tab("show");
+        } else if(window.location.hash == "#aboutLatestVersion") {
+            $("#aboutTabLink a").tab("show");
+            $("#changelogTabLink a").tab("show");
+        } else if(window.location.hash == "#archive") {
+            $("#archiveRestoreTabLink a").tab("show");
+        }
+    }
+}
+
 $(document).ready(() => {
     let savedTimeout;
 
@@ -1754,20 +1780,6 @@ $(document).ready(() => {
                 part: ""
             });
         });
-    }
-
-    // Hash
-    if(window.location.hash) {
-        if(window.location.hash == "#customTheme") {
-            $("#customThemeTabLink a").tab("show");
-        } else if(window.location.hash == "#presets") {
-            $("#presetsTabLink a").tab("show");
-        } else if(window.location.hash == "#aboutLatestVersion") {
-            $("#aboutTabLink a").tab("show");
-            $("#changelogTabLink a").tab("show");
-        } else if(window.location.hash == "#archive") {
-            $("#archiveRestoreTabLink a").tab("show");
-        }
     }
 
     $("#loadPresetValid").on("click", async() => {
@@ -2004,8 +2016,16 @@ $(document).ready(() => {
             $("#not-saved-lists").hide();
         }
     });
+
+    openTabByHash();
 });
 
 window.onbeforeunload = () => {
     return "";
 };
+
+browser.runtime.onMessage.addListener(message => {
+    if(message && message.type == "hashUpdated") {
+        openTabByHash();
+    }
+});
