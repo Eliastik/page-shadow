@@ -1046,25 +1046,25 @@ async function notifyChangedThemeNotSaved(nb) {
 
     window.codeMirrorUserCss.save();
 
-    if(customThemes[nb]["customThemeBg"] == null) customThemes[nb]["customThemeBg"] = defaultBGColorCustomTheme;
-    if(customThemes[nb]["customThemeTexts"] == null) customThemes[nb]["customThemeTexts"] = defaultTextsColorCustomTheme;
-    if(customThemes[nb]["customThemeLinks"] == null) customThemes[nb]["customThemeLinks"] = defaultLinksColorCustomTheme;
-    if(customThemes[nb]["customThemeLinksVisited"] == null) customThemes[nb]["customThemeLinksVisited"] = defaultVisitedLinksColorCustomTheme;
-    if(customThemes[nb]["customThemeFont"] == null) customThemes[nb]["customThemeFont"] = defaultFontCustomTheme;
-    if(customThemes[nb]["customCSSCode"] == null) customThemes[nb]["customCSSCode"] = defaultCustomCSSCode;
+    if(customThemes[nb]["customThemeBg"] == null || customThemes[nb]["customThemeBg"].trim() == "") customThemes[nb]["customThemeBg"] = defaultBGColorCustomTheme;
+    if(customThemes[nb]["customThemeTexts"] == null || customThemes[nb]["customThemeTexts"].trim() == "") customThemes[nb]["customThemeTexts"] = defaultTextsColorCustomTheme;
+    if(customThemes[nb]["customThemeLinks"] == null || customThemes[nb]["customThemeLinks"].trim() == "") customThemes[nb]["customThemeLinks"] = defaultLinksColorCustomTheme;
+    if(customThemes[nb]["customThemeLinksVisited"] == null || customThemes[nb]["customThemeLinksVisited"].trim() == "") customThemes[nb]["customThemeLinksVisited"] = defaultVisitedLinksColorCustomTheme;
+    if(customThemes[nb]["customThemeFont"] == null || customThemes[nb]["customThemeFont"].trim() == "") customThemes[nb]["customThemeFont"] = defaultFontCustomTheme;
+    if(customThemes[nb]["customCSSCode"] == null || customThemes[nb]["customCSSCode"].trim() == "") customThemes[nb]["customCSSCode"] = defaultCustomCSSCode;
 
     return customThemes[nb]["customThemeBg"].toLowerCase() != $("#colorpicker1").attr("value").toLowerCase() ||
         customThemes[nb]["customThemeTexts"].toLowerCase() != $("#colorpicker2").attr("value").toLowerCase() ||
         customThemes[nb]["customThemeLinks"].toLowerCase() != $("#colorpicker3").attr("value").toLowerCase() ||
         customThemes[nb]["customThemeLinksVisited"].toLowerCase() != $("#colorpicker4").attr("value").toLowerCase() ||
-        customThemes[nb]["customThemeFont"].toLowerCase() != $("#customThemeFont").val().toLowerCase() ||
+        customThemes[nb]["customThemeFont"].trim().toLowerCase() != $("#customThemeFont").val().trim().toLowerCase() ||
         customThemes[nb]["customCSSCode"] != $("#codeMirrorUserCSSTextarea").val();
 }
 
 async function notifyChangedListNotSaved() {
     const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
     const list = result.sitesInterditPageShadow || "";
-    const whiteListSetting = result.whiteListChecked || "false";
+    const whiteListSetting = result.whiteList != null ? result.whiteList : "false";
     const whiteListChecked = $("#checkWhiteList").is(":checked") ? "true" : "false";
 
     return list.toLowerCase() != $("#textareaAssomPage").val().toLowerCase() ||
