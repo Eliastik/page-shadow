@@ -83,3 +83,4 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
+* [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list ?

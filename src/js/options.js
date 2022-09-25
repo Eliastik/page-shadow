@@ -107,8 +107,8 @@ function translateContent() {
         $("#firefoxLinuxBugFonts").show();
     }
 
-    displaySettings(null, changingLanguage);
-    loadAdvancedOptionsUI();
+    displaySettings(null, changingLanguage, null, changingLanguage);
+    loadAdvancedOptionsUI(false, changingLanguage);
 }
 
 async function changeLng(lng) {
@@ -137,7 +137,12 @@ async function resetSettings() {
     localStorage.clear();
 }
 
-async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = null) {
+async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = null, changingLanguage) {
+    if(typeof(browser.storage) == "undefined" || typeof(browser.storage.sync) == "undefined") {
+        $("#archiveCloudBtn").addClass("disabled");
+        $("#archiveCloudNotCompatible").show();
+    }
+
     if(!areaName || areaName == "sync") {
         const cloudData = await isArchiveCloudAvailable();
 
@@ -167,82 +172,82 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
             $("#infosLocalStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
         }
 
-        if(result.sitesInterditPageShadow != undefined && (!changes || changes.includes("sitesInterditPageShadow"))) {
-            $("#textareaAssomPage").val(result.sitesInterditPageShadow);
-        }
-
-        if(!changes || changes.includes("whiteList")) {
-            if(result.whiteList == "true" && $("#checkWhiteList").is(":checked") == false) {
-                $("#checkWhiteList").prop("checked", true);
-            } else if(result.whiteList !== "true" && $("#checkWhiteList").is(":checked") == true) {
-                $("#checkWhiteList").prop("checked", false);
+        if(!changingLanguage) {
+            if(result.sitesInterditPageShadow != undefined && (!changes || changes.includes("sitesInterditPageShadow"))) {
+                $("#textareaAssomPage").val(result.sitesInterditPageShadow);
             }
-        }
 
-        if(typeof(browser.storage) == "undefined" || typeof(browser.storage.sync) == "undefined") {
-            $("#archiveCloudBtn").addClass("disabled");
-            $("#archiveCloudNotCompatible").show();
-        }
+            if(!changes || changes.includes("whiteList")) {
+                if(result.whiteList == "true" && $("#checkWhiteList").is(":checked") == false) {
+                    $("#checkWhiteList").prop("checked", true);
+                } else if(result.whiteList !== "true" && $("#checkWhiteList").is(":checked") == true) {
+                    $("#checkWhiteList").prop("checked", false);
+                }
+            }
 
-        if((!changes || changes.includes("customThemes")) && !dontDisplayThemeAndPresets) {
-            $("#themeSelect").val(currentSelectedTheme);
-            displayTheme($("#themeSelect").val());
-        }
+            if((!changes || changes.includes("customThemes")) && (!dontDisplayThemeAndPresets)) {
+                $("#themeSelect").val(currentSelectedTheme);
+                displayTheme($("#themeSelect").val(), null);
+            }
 
-        if((!changes || changes.includes("filtersSettings") || changes.includes("customFilter")) && !dontDisplayThemeAndPresets) {
-            displayFilters();
-        }
+            if((!changes || changes.includes("filtersSettings") || changes.includes("customFilter")) && (!dontDisplayThemeAndPresets)) {
+                displayFilters();
+            }
 
-        if(!changes || changes.includes("presets")) {
+            if(!changes || changes.includes("presets")) {
+                await loadPresetSelect("loadPresetSelect", i18next);
+                await loadPresetSelect("savePresetSelect", i18next);
+                await loadPresetSelect("deletePresetSelect", i18next);
+                if(!dontDisplayThemeAndPresets) displayPresetSettings(currentSelectedPresetEdit);
+
+                $("#savePresetSelect").val(currentSelectedPresetEdit);
+            }
+
+            if(!changes || changes.includes("interfaceDarkTheme")) {
+                const currentTheme = await browser.storage.local.get(["interfaceDarkTheme"]);
+
+                if (currentTheme.interfaceDarkTheme) {
+                    $("#darkThemeSelect").val(currentTheme.interfaceDarkTheme);
+                }
+
+                toggleTheme(); // Toggle dark/light theme
+            }
+
+            if(!changes || changes.includes("popupTheme")) {
+                const currentPopupTheme = await browser.storage.local.get(["popupTheme"]);
+
+                if (currentPopupTheme.popupTheme) {
+                    $("#popupThemeSelect").val(currentPopupTheme.popupTheme);
+                }
+            }
+
+            if(!changes || changes.includes("autoBackupCloudInterval")) {
+                if(result && result.autoBackupCloudInterval) {
+                    $("#autoBackupCloudSelect").val(result.autoBackupCloudInterval);
+                } else {
+                    $("#autoBackupCloudSelect").val("0");
+                }
+            }
+
+            if(!changes || changes.includes("disableRightClickMenu")) {
+                if(result && result.disableRightClickMenu == "true") {
+                    $("#enableRightClickMenu").prop("checked", false);
+                } else {
+                    $("#enableRightClickMenu").prop("checked", true);
+                }
+            }
+
+            if(!changes || changes.includes("advancedOptionsFiltersSettings")) {
+                checkAdvancedOptions();
+                loadAdvancedOptionsUI();
+            }
+        } else {
             await loadPresetSelect("loadPresetSelect", i18next);
             await loadPresetSelect("savePresetSelect", i18next);
             await loadPresetSelect("deletePresetSelect", i18next);
-            if(!dontDisplayThemeAndPresets) displayPresetSettings(currentSelectedPresetEdit);
 
-            $("#savePresetSelect").val(currentSelectedPresetEdit);
-        }
-
-        if(!changes || changes.includes("interfaceDarkTheme")) {
-            const currentTheme = await browser.storage.local.get(["interfaceDarkTheme"]);
-
-            if (currentTheme.interfaceDarkTheme) {
-                $("#darkThemeSelect").val(currentTheme.interfaceDarkTheme);
-            }
-
-            toggleTheme(); // Toggle dark/light theme
-        }
-
-        if(!changes || changes.includes("popupTheme")) {
-            const currentPopupTheme = await browser.storage.local.get(["popupTheme"]);
-
-            if (currentPopupTheme.popupTheme) {
-                $("#popupThemeSelect").val(currentPopupTheme.popupTheme);
-            }
-        }
-
-        if(!changes || changes.includes("autoBackupCloudInterval")) {
-            if(result && result.autoBackupCloudInterval) {
-                $("#autoBackupCloudSelect").val(result.autoBackupCloudInterval);
-            } else {
-                $("#autoBackupCloudSelect").val("0");
-            }
-        }
-
-        if(result && result.lastAutoBackupFailed == "true") {
-            $("#autoBackupError").show();
-        }
-
-        if(!changes || changes.includes("disableRightClickMenu")) {
-            if(result && result.disableRightClickMenu == "true") {
-                $("#enableRightClickMenu").prop("checked", false);
-            } else {
-                $("#enableRightClickMenu").prop("checked", true);
-            }
-        }
-
-        if(!changes || changes.includes("advancedOptionsFiltersSettings")) {
-            checkAdvancedOptions();
-            loadAdvancedOptionsUI();
+            displayPresetSettings(currentSelectedPresetEdit, changingLanguage);
+            displayFilters();
         }
 
         if(await notifyChangedThemeNotSaved($("#themeSelect").val())) {
@@ -267,6 +272,10 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
             $("#not-saved-advanced").show();
         } else {
             $("#not-saved-advanced").hide();
+        }
+
+        if(result && result.lastAutoBackupFailed == "true") {
+            $("#autoBackupError").show();
         }
     }
 }
@@ -586,11 +595,15 @@ async function displayFilters() {
     }
 }
 
-async function loadAdvancedOptionsUI(reset) {
+async function loadAdvancedOptionsUI(reset, changingLanguage) {
     let websiteFiltersConfig = JSON.parse(JSON.stringify(defaultWebsiteSpecialFiltersConfig));
 
     if (!reset) {
         websiteFiltersConfig = await loadWebsiteSpecialFiltersConfig();
+    }
+
+    if(changingLanguage) {
+        websiteFiltersConfig = getUpdatedAdvancedOptions();
     }
 
     document.querySelector("#advancedOptionsFiltersWebsiteSettings").textContent = "";
@@ -1366,18 +1379,24 @@ async function notifyChangedPresetNotSaved(nb) {
     return $("#savePresetTitle").val().trim() != "" || $("#savePresetWebsite").val().trim() != "";
 }
 
-async function displayPresetSettings(id) {
+async function displayPresetSettings(id, changingLanguage) {
     const data = await getPresetData(id);
 
-    $("#savePresetTitle").val("");
-    $("#savePresetWebsite").val("");
-    $("#checkSaveNewSettingsPreset").prop("checked", false);
+    if(!changingLanguage) {
+        $("#savePresetTitle").val("");
+        $("#savePresetWebsite").val("");
+        $("#checkSaveNewSettingsPreset").prop("checked", false);
+    }
+
     $("#checkSaveNewSettingsPreset").removeAttr("disabled");
     $("#presetInfosBtn").removeAttr("disabled");
 
     if(data && data != "error" && Object.keys(data).length > 0) {
-        if(data.name) $("#savePresetTitle").val(data.name);
-        if(data.websiteListToApply) $("#savePresetWebsite").val(data.websiteListToApply);
+        if(!changingLanguage) {
+            if(data.name) $("#savePresetTitle").val(data.name);
+            if(data.websiteListToApply) $("#savePresetWebsite").val(data.websiteListToApply);
+        }
+
         $("#presetCreateEditBtn").text(i18next.t("modal.edit"));
     } else {
         $("#checkSaveNewSettingsPreset").prop("checked", true);
