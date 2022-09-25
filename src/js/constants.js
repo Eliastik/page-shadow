@@ -249,7 +249,7 @@ const defaultSettings = {
     "lastAutoBackupCloud": -1,
     "lastAutoBackupFailed": "false",
     "attenuateImageColor": "false",
-    "brightColorPreservation": "true",
+    "brightColorPreservation": "false",
     "disableRightClickMenu": "false",
     "increaseContrastInformationShowed": "false"
 };
