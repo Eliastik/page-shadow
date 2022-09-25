@@ -1171,7 +1171,10 @@ async function restoreSettings(object) {
     }
 
     await migrateSettings();
-    await setSettingItem("liveSettings", liveSettingValue);
+
+    setTimeout(() => {
+        setSettingItem("liveSettings", liveSettingValue);
+    }, 500);
 
     $("#updateAllFilters").attr("disabled", "disabled");
 

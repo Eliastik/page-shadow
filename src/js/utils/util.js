@@ -664,10 +664,21 @@ async function loadPreset(nb) {
         const settingsNames = JSON.parse(JSON.stringify(settingsToSavePresets));
         settingsNames.push("nightModeEnabled");
 
+        // Fix performance issue on Firefox by disabling real time applying of settings to pages
+        // when restoring settings
+        await setSettingItem("liveSettings", "false");
+
+        let liveSettingValue = defaultSettings["liveSettings"];
+
         for(const key of settingsNames) {
             if(typeof(key) === "string") {
                 if(Object.prototype.hasOwnProperty.call(preset, key)) {
-                    await setSettingItem(key, preset[key]);
+                    if(key !== "liveSettings") {
+                        await setSettingItem(key, preset[key]); // invalid data are ignored by the function
+                    } else {
+                        liveSettingValue = preset[key];
+                    }
+
                     settingsRestored++;
                 } else {
                     await setSettingItem(key, defaultSettings[key]); // Restore default setting
@@ -676,6 +687,10 @@ async function loadPreset(nb) {
         }
 
         await migrateSettings();
+
+        setTimeout(() => {
+            setSettingItem("liveSettings", liveSettingValue);
+        }, 500);
 
         if(settingsRestored > 0) {
             return "success";
