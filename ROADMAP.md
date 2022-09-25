@@ -61,6 +61,12 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * Seems to be fixed on latest Firefox versions
 * [x] (Medium) On Github, when navigating between pages and going back with the browser back button and using the "Decrease brightness" or "Blue light reduction filter", sometimes the effect is increased (double)
 
+### Next version (2.10.2 ?)
+
+#### Planned
+
+* [ ] (Important) Update to Manifest v3 (check manifestv3 branch)
+
 ### Futures versions
 
 ### Common
@@ -69,7 +75,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Planned/ideas
 
-* [ ] (Important) Update to Manifest v3 (check manifestv3 branch)
 * [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
 * [ ] Comment the code: doc for methods/functions
 * [ ] Simplify code applying Shadow Roots styles?
@@ -85,3 +90,4 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list ?
 * [ ] (Minor) Performance issue on Firefox when loading a preset or restoring setting archive -> small optimization have already been made
+* [ ] (Minor) Fix Preserve bright color on some website (white text color on white background)
