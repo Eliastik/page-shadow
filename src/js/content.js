@@ -22,7 +22,6 @@ import ContentProcessor from "./contentProcessor.js";
 
 (async function() {
     const contentProcessor = new ContentProcessor();
-    let currentSettings = contentProcessor.currentSettings;
     let precUrl = null;
 
     // Start the processing of the page
@@ -41,18 +40,14 @@ import ContentProcessor from "./contentProcessor.js";
 
             if(message && message.url == currentURL) {
                 const URLUpdated = precUrl != getCurrentURL();
-                let changed = contentProcessor.hasEnabledStateChanged(message.enabled);
+                let changed = contentProcessor.hasEnabledStateChanged(message.enabled) || contentProcessor.mutationDetected;
 
                 if(URLUpdated) {
                     contentProcessor.pageAnalyzer.backgroundDetected = false;
                     precUrl = getCurrentURL();
+                    contentProcessor.precUrl = getCurrentURL();
                     contentProcessor.filtersCache = null;
-
-                    if(hasSettingsChanged(currentSettings, message.settings)) {
-                        changed = true;
-                        currentSettings = message.settings;
-                    }
-
+                    changed = true;
                     contentProcessor.updateFilters();
                 }
 

@@ -51,6 +51,8 @@ export default class ContentProcessor {
     delayedMutationObserversCalls = [];
     safeTimerMutationDelayed = null;
     oldBody = null;
+    precUrl = null;
+    mutationDetected = false;
 
     // Contants
     TYPE_RESET = "reset";
@@ -448,10 +450,14 @@ export default class ContentProcessor {
                         const timerReapply = new SafeTimer(() => {
                             timerReapply.clear();
 
-                            if(!reApplyContrast && (reApplyInvert || reApplyAttenuate)) {
-                                this.main(this.TYPE_ONLY_INVERT, this.MUTATION_TYPE_BODY);
+                            if(this.precUrl == getCurrentURL()) {
+                                if(!reApplyContrast && (reApplyInvert || reApplyAttenuate)) {
+                                    this.main(this.TYPE_ONLY_INVERT, this.MUTATION_TYPE_BODY);
+                                } else {
+                                    this.main(this.TYPE_ONLY_CONTRAST, this.MUTATION_TYPE_BODY);
+                                }
                             } else {
-                                this.main(this.TYPE_ONLY_CONTRAST, this.MUTATION_TYPE_BODY);
+                                this.mutationDetected = true;
                             }
                         });
 
@@ -504,12 +510,16 @@ export default class ContentProcessor {
                         const timerApplyMutationBlueLight = new SafeTimer(() => {
                             timerApplyMutationBlueLight.clear();
 
-                            if(reApplyBrightness && reApplyBlueLight) {
-                                this.main(this.TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT, this.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
-                            } else if(reApplyBrightness) {
-                                this.main(this.TYPE_ONLY_BRIGHTNESS, this.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
-                            } else if(reApplyBlueLight) {
-                                this.main(this.TYPE_ONLY_BLUELIGHT, this.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+                            if(this.precUrl == getCurrentURL()) {
+                                if(reApplyBrightness && reApplyBlueLight) {
+                                    this.main(this.TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT, this.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+                                } else if(reApplyBrightness) {
+                                    this.main(this.TYPE_ONLY_BRIGHTNESS, this.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+                                } else if(reApplyBlueLight) {
+                                    this.main(this.TYPE_ONLY_BLUELIGHT, this.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+                                }
+                            } else {
+                                this.mutationDetected = true;
                             }
                         });
 
@@ -629,7 +639,12 @@ export default class ContentProcessor {
                         this.bodyClassBatcherRemover = new ClassBatcher(document.body);
                         this.htmlClassBatcher = new ClassBatcher(document.getElementsByTagName("html")[0]);
 
-                        this.main(this.TYPE_RESET, this.TYPE_ALL);
+                        if(this.precUrl == getCurrentURL()) {
+                            this.main(this.TYPE_RESET, this.TYPE_ALL);
+                        } else {
+                            this.mutationDetected = true;
+                        }
+
                         this.mutationObserve(this.MUTATION_TYPE_BACKGROUNDS);
                     }
 
@@ -750,6 +765,9 @@ export default class ContentProcessor {
     }
 
     async main(type, mutation, disableCache) {
+        this.precUrl = this.precUrl || getCurrentURL();
+        this.mutationDetected = false;
+
         if(type == this.TYPE_RESET) {
             mutation = this.TYPE_ALL;
         }
