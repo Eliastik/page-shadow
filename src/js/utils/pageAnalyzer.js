@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsl } from "./util.js";
 import SafeTimer from "./safeTimer.js";
-import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors } from "../constants.js";
+import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, pageShadowClassListsMutationsIgnore } from "../constants.js";
 
 /**
  * Class used to analyze the pages and detect transparent background,
@@ -234,15 +234,54 @@ export default class PageAnalyzer {
             return false;
         }
 
-        if(attribute == "class" && attributeOldValue !== null) {
-            if(attributeOldValue.indexOf("pageShadowDisableStyling") !== -1) {
+        if(attribute == "class" && attributeOldValue != null) {
+            if(attributeOldValue.indexOf("pageShadowDisableStyling") !== -1 ||
+                element.classList.contains("pageShadowDisableStyling") ||
+                attributeOldValue.indexOf("pageShadowElementDisabled") !== -1 ||
+                element.classList.contains("pageShadowElementDisabled")) {
                 return false;
             }
 
-            if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes &&
-                (attributeOldValue.indexOf("pageShadowHasTransparentBackground") !== -1 && !element.classList.contains("pageShadowHasTransparentBackground")) ||
-                (attributeOldValue.indexOf("pageShadowHasBackgroundImg") !== -1 && !element.classList.contains("pageShadowHasBackgroundImg"))) {
-                this.backgroundDetectionAlreadyProcessedNodes = this.backgroundDetectionAlreadyProcessedNodes.filter(node => node != element);
+            if(element.classList.length <= 0) {
+                return false;
+            }
+
+            let hasMutationPageShadowClass = false;
+            let newClassContainsPageShadowClass = false;
+            let noChange = true;
+
+            for(const _class of attributeOldValue.split(" ")) {
+                if(!element.classList.contains(_class)) {
+                    noChange = false;
+                    break;
+                }
+            }
+
+            if(noChange) {
+                return false;
+            }
+
+            for(const _class of pageShadowClassListsMutationsIgnore) {
+                const indexOfClass = attributeOldValue.indexOf(_class);
+                const elementContainsClass = element.classList.contains(_class);
+
+                if(indexOfClass !== -1 && !elementContainsClass) {
+                    hasMutationPageShadowClass = true;
+                }
+
+                if(indexOfClass < 0 && elementContainsClass) {
+                    newClassContainsPageShadowClass = true;
+                }
+            }
+
+            if(newClassContainsPageShadowClass) {
+                return false;
+            }
+
+            if(hasMutationPageShadowClass) {
+                if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes) {
+                    this.backgroundDetectionAlreadyProcessedNodes = this.backgroundDetectionAlreadyProcessedNodes.filter(node => node != element);
+                }
             }
         }
 
