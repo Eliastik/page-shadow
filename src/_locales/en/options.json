@@ -51,9 +51,10 @@
         "keyboardShortcutsLabel": "Keyboard shortcuts:",
         "keyboardShortcuts": "Manage keyboard shortcuts…",
         "popupTheme": "Popup theme:",
-        "popupThemeSwitch": "Switches and icons (by default)",
+        "popupThemeSwitch": "Switches and icons",
         "popupThemeClassic": "Checkboxes (classic)",
-        "popupThemeModern": "Modern (beta)"
+        "popupThemeModern": "Modern (by default)",
+        "enableRightClickMenu": "Enable right-click menu:"
     },
     "advancedOptions": {
         "checkbox": "I understand and I want to access to the advanced options",
@@ -76,6 +77,13 @@
             "delayApplyMutationObserversSafeTimer": "Delay before reapplying Page Shadow settings after detection by Mutation Observers",
             "observeBodyChange": "Observe body element state change",
             "observeBodyChangeTimerInterval": "Interval for the observation of body element state change",
+            "enableBrightColorDetection": "Enable detection of bright color",
+            "brightColorLightnessTresholdMin": "Minimum lightness treshold for bright color detection",
+            "brightColorLightnessTresholdMax": "Maximum lightness treshold for bright color detection",
+            "throttleBackgroundDetection": "Throttle background detection on page load",
+            "throttleBackgroundDetectionElementsTreatedByCall": "Number of elements processed per call while throttling background detection",
+            "backgroundDetectionStartDelay": "Delay before applying background detection",
+            "useBackgroundDetectionAlreadyProcessedNodes": "Use an already processed elements list for background detection",
             "help": {
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
                 "autoDetectTransparentBackgroundEnabled": "Enable detection of transparent backgrounds. Disabling this feature can cause many display issues.",
@@ -92,8 +100,15 @@
                 "autoThrottleMutationObserverBackgroundsTreshold": "If a Mutation Observer processes a number of elements above this threshold at once, the throttle is enabled. Throttle is disabled when the number of elements processed falls below this threshold.",
                 "throttledMutationObserverTreatedByCall": "The number of elements processed by one call to Mutation Observers, when throttle is enabled.",
                 "delayApplyMutationObserversSafeTimer": "Applies a delay between Mutation Observers detecting a page change and reapplying Page Shadow settings (increase contrast, invert colors, decrease brightness, or blue light reduction filter). Increasing this timeout may fix issues on some websites.",
-                "observeBodyChange": "Observes the state change of the body element (deletion then creation of a new body element). Fixes issues with some websites (like Github) or SPA applications. Disabling this option may improve performance.",
-                "observeBodyChangeTimerInterval": "Observing the state change of the body element relies on a timer that runs at a given interval (instead of using Mutation Observers). The interval is in ms."
+                "observeBodyChange": "Observes the state change of the body element (deletion then creation of a new body element). Fixes issues with some websites (like Github) or SPA applications (Single Page Application). Disabling this option may improve performance.",
+                "observeBodyChangeTimerInterval": "Observing the state change of the body element relies on a timer that runs at a given interval (instead of using Mutation Observers). The interval is in ms.",
+                "enableBrightColorDetection": "Detect element with bright color, and if enabled by the user, disable the Increase contrast function for these elements. Disabling this option may improve performance.",
+                "brightColorLightnessTresholdMin": "If an element has a lightness value that is above this treshold but lower than the maximum, the element will be detected as bright color element.",
+                "brightColorLightnessTresholdMax": "If an element has a lightness value that is lower than this treshold but above the minimum, the element will be detected as bright color element.",
+                "throttleBackgroundDetection": "Applies a delay to the detection of backgrounds on page load, which can improve performance on large pages.",
+                "throttleBackgroundDetectionElementsTreatedByCall": "Sets the number of elements processed by each loop call when background detection is throttled. A high value can impact performance.",
+                "backgroundDetectionStartDelay": "Apply a delay before applying background detection of the elements. By default 1 ms.",
+                "useBackgroundDetectionAlreadyProcessedNodes": "Use an already processed elements list for background detection to avoid re-processing elements. May increase performance but may increase memory usage."
             }
         },
         "saved": "Sauvegardé !"
@@ -125,7 +140,8 @@
             "changelogTitle": "Changelog",
             "infos": "Informations",
             "changelog": {
-                "210": "<ul><li>Page Shadow has undergone a redesign of its graphical interface. Many new features are available (see Readme file);</li><li>Separation of \"Night mode\" from \"Decrease page brightness\" function: \"Night mode\" is now a separate function, named \"Blue light reduction filter\";</li><li>Added the \"Attenuate image colors\" function to avoid displaying colors that are too bright;</li><li>It's now possible to automatically archive Page Shadow settings in the Cloud, at a configurable interval (by default, this feature is disabled);</li><li>A warning is now displayed to warn of the importance of making an archive of the extension settings;</li><li>Optimization of downloading and automatic updating of filters: they are updated only if necessary (date of last update of the file on the server). If an update is necessary, a message is displayed at the level of the list of filters;</li><li>Added advanced options for advanced users in Advanced settings;</li><li>Bug fixes and technical improvements (see Readme file).</li></ul>",
+                "2101": "<ul><li>Major performance optimization, which limits the flashes that appeared when navigating between pages or changing settings in real time;</li><li>Added \"Preserve element colors\" function (not enabled by default) to \"Increase contrast\" function. This function preserves the colors of the elements, but replaces colors very close to white or dark colors;</li><li>Improved user experience when \"Modern\" popup theme is enabled. This theme is now the default theme for new installations;</li><li>Minor improvements to the Advanced Settings interface: display of an icon on tabs if changes to settings have not been saved, display of a loading indicator when restoring settings archives;</li><li>Add the setting \"Enable right-click menu\" in General settings (enabled by default);</li><li>Bug fixes and technical improvements (see Readme file)</li></ul>",
+                "210": "<ul><li>Page Shadow has undergone a redesign of its graphical interface. Many new features are available (see Readme file);</li><li>Separation of \"Night mode\" from \"Decrease page brightness\" function: \"Night mode\" is now a separate function, named \"Blue light reduction filter\";</li><li>Added the \"Attenuate image colors\" function to avoid displaying colors that are too bright;</li><li>It's now possible to automatically archive Page Shadow settings in the Cloud, at a configurable interval (by default, this feature is disabled);</li><li>A warning is now displayed to warn of the importance of making an archive of the extension settings;</li><li>Optimization of downloading and automatic updating of filters: they are updated only if necessary (date of last update of the file on the server). If an update is necessary, a message is displayed at the level of the list of filters;</li><li>Added advanced options for advanced users in Advanced settings;</li><li>Bug fixes and technical improvements (see Readme file)</li></ul>",
                 "291": "<ul><li>Improved performance when enabling/disabling Page Shadow and when changing settings;</li><li>Improved performance of the processing of web pages by Page Shadow;</li><li>It's now possible to set a color in RGB or in HSV in the custom themes settings;</li><li>Added an optional list \"Ultra performance mode\";</li><li>Added theme n°16;</li><li>Bug fixes (see Readme file);</li><li>Technical improvements (see Readme file)</li></ul>",
                 "29": "<ul><li>Added the ability to create a preset and update a preset with current settings directly in the extension menu;</li><li>Added the \"Selective\" setting for the Invert the colors function: this setting, based on the filters feature, allows you to invert the colors of a small number of elements which may be displayed incorrectly on a dark theme of the Increase page contrast function;</li><li>Improved display of the Increase page contrast function on most websites (see Readme file);</li><li>Presets enabled for a webpage now have a higher priority than those enabled for the whole website;</li><li>Improved Filters feature (advanced settings) (see Readme file);</li><li>When changing custom themes or presets in advanced settings, Page Shadow warns you if changes to settings have not been saved;</li><li>Performance improvement (see Readme file);</li><li>Bugfixes (see Readme file);</li><li>Technical improvements (see Readme file);</li></ul>",
                 "28": "<ul><li>Added the Filters feature, accessible in Advanced Settings. Filters allow, based on rules, to improve the display of websites when the following options are enabled: Increase page contrast or Invert colors. This advance significantly improves the display of some websites when Page Shadow is enabled. This feature can also improve the performance of Page Shadow on some websites. These filters are updated daily from Internet sources. The lists provided by default are downloaded from the eliastiksofts.com website (the extension developer's website). It's also possible to define custom rules. You don't have to do anything more on your side to take advantage of the feature, it's operational as soon as the extension is installed/updated. Filters are updated automatically;</li><li>Addition of the possibility of defining a list of sites/pages where to automatically enable a preset: it's possible to define this list using checkboxes available in the extension menu, or by defining a list manually (the syntax is the same as the feature to disable a website/a page, and supports regular expressions and wildcards);</li><li>It's now possible to apply the presets using keyboard shortcuts (to be configured manually);</li><li>The maximum number of storable presets has been increased from 5 to 10;</li><li>It's now possible to see the settings stored in the presets in the Advanced settings;</li><li>A notification is displayed when the extension has been updated;</li><li>Many bug fixes, performance improvements and other minor fixes (see Readme file);</li><li>Technical improvements (see Readme file).</li></ul>",
@@ -146,6 +162,7 @@
                 "11": "<ul><li>Improved function \"Increase page contrast\"</li></ul>",
                 "1": "<ul><li>Initial version</li></ul>",
                 "versionNames": {
+                    "2101": "Version 2.10.1 (9/25/2022)",
                     "210": "Version 2.10 (8/18/2022)",
                     "291": "Version 2.9.1 (12/26/2021)",
                     "29": "Version 2.9 (12/12/2021)",
@@ -270,7 +287,9 @@
                 "30": "Every month (every 30 days)",
                 "60": "Every 2 months (every 60 days)"
             },
-            "autoBackupError": "An error occurred during the last automatic Cloud backup."
+            "autoBackupError": "An error occurred during the last automatic Cloud backup.",
+            "restoring": "Restoring data…",
+            "archivingCloud": "Backing up data…"
         },
         "presets": {
             "pageShadowEnabled": "Increase contrast:",
@@ -291,6 +310,7 @@
             "selectiveInvert": "Selective invert:",
             "blueLightReductionEnabled": "Blue light reduction filter:",
             "percentageBlueLightReduction": "Intensity of the blue light reduction filter:",
+            "brightColorPreservation": "Preserve element colors:",
             "attenuateImageColor": "Attenuate image colors:",
             "presetInfosLabel": "Preset details",
             "enabled": "Enabled",

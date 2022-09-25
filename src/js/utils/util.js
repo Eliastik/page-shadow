@@ -16,9 +16,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { setSettingItem, migrateSettings } from "./storage.js";
+import { setSettingItem, migrateSettings } from "../storage.js";
 import browser from "webextension-polyfill";
-import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings } from "./constants.js";
+import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack } from "../constants.js";
 
 function in_array(needle, haystack) {
     for(const key in haystack) {
@@ -48,7 +48,6 @@ function matchWebsite(needle, rule) {
             rule = rule.replace(/\\\\\*/g, "\\*");
             rule = "/" + rule + "/";
         }
-
 
         if(rule.trim().startsWith("/") && rule.trim().endsWith("/")) {
             try {
@@ -203,11 +202,10 @@ function getUImessage(id) {
     return browser.i18n.getMessage(id);
 }
 
-async function customTheme(nb, style, disableCustomCSS, lnkCssElement, isShadowRoot) {
-    disableCustomCSS = disableCustomCSS == undefined ? false : disableCustomCSS;
+async function getCustomThemeConfig(nb) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
-    let customThemes, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme, fontTheme;
+    let customThemes, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme, fontTheme, customCSSCode;
 
     const result = await browser.storage.local.get("customThemes");
 
@@ -247,30 +245,64 @@ async function customTheme(nb, style, disableCustomCSS, lnkCssElement, isShadowR
         fontTheme = defaultFontCustomTheme;
     }
 
-    if(!isShadowRoot) {
-        if(document.getElementsByTagName("head")[0].contains(style)) { // remove style element
-            document.getElementsByTagName("head")[0].removeChild(style);
-        }
-
-        // Append style element
-        document.getElementsByTagName("head")[0].appendChild(style);
+    if(customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
+        customCSSCode = customThemes["customCSSCode"];
+    } else {
+        customCSSCode = "";
     }
 
-    // Create rules
-    processRules(style, backgroundTheme, linksColorTheme, linksVisitedColorTheme, textsColorTheme, fontTheme, isShadowRoot);
+    return {
+        backgroundColor: "#" + backgroundTheme,
+        textColor: "#" + textsColorTheme,
+        linkColor: "#" + linksColorTheme,
+        visitedLinkColor: "#" + linksVisitedColorTheme,
+        selectBackgroundColor: defaultThemesSelectBgColors[0],
+        selectTextColor: defaultThemesSelectTextColors[0],
+        insBackgroundColor: defaultThemesInsBgColors[0],
+        insTextColor: defaultThemesInsTextColors[0],
+        delBackgroundColor: defaultThemesDelBgColors[0],
+        delTextColor: defaultThemesDelTextColors[0],
+        markBackgroundColor: defaultThemesMarkBgColors[0],
+        markTxtColor: defaultThemesMarkTextColors[0],
+        imageBackgroundColor: defaultThemesImgBgColors[0],
+        brightColorTextWhite: defaultThemesBrightColorTextWhite[0],
+        brightColorTextBlack: defaultThemesBrightColorTextBlack[0],
+        fontFamily: fontTheme,
+        customCSSCode
+    };
+}
 
-    // Custom CSS
-    if(!isShadowRoot && !disableCustomCSS && customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
+/**
+ *
+ * @param {*} nb theme number
+ * @param {*} disableCustomCSS disable applying custom CSS code
+ * @param {*} lnkCssElement link element for applying custom CSS code
+ * @returns true if applying custom font family, false otherwise
+ */
+async function customTheme(nb, disableCustomCSS, lnkCssElement) {
+    const config = await getCustomThemeConfig(nb);
+    disableCustomCSS = disableCustomCSS == undefined ? false : disableCustomCSS;
+
+    applyContrastPageVariables(config);
+
+    // Apply custom CSS
+    if(!disableCustomCSS && config.customCSSCode != "") {
         lnkCssElement.setAttribute("rel", "stylesheet");
         lnkCssElement.setAttribute("type", "text/css");
         lnkCssElement.setAttribute("id", "pageShadowCustomCSS");
         lnkCssElement.setAttribute("name", "pageShadowCustomCSS");
-        lnkCssElement.setAttribute("href", "data:text/css;charset=UTF-8," + encodeURIComponent(customThemes["customCSSCode"]));
+        lnkCssElement.setAttribute("href", "data:text/css;charset=UTF-8," + encodeURIComponent(config.customCSSCode));
         document.getElementsByTagName("head")[0].appendChild(lnkCssElement);
     }
+
+    if(config.fontFamily && config.fontFamily.trim() != "") {
+        return true;
+    }
+
+    return false;
 }
 
-function processRules(style, backgroundTheme, linksColorTheme, linksVisitedColorTheme, textsColorTheme, fontTheme, isShadowRoot) {
+function processRules(style, config, isShadowRoot) {
     if(!style.sheet) return;
     if(style.cssRules) { // Remove all rules
         for(let i = 0; i < style.cssRules.length; i++) {
@@ -279,6 +311,11 @@ function processRules(style, backgroundTheme, linksColorTheme, linksVisitedColor
     }
 
     const ruleSelector = isShadowRoot ? ":host" : ".pageShadowContrastBlackCustom:not(.pageShadowDisableStyling)";
+    const backgroundTheme = config.backgroundColor;
+    const linksColorTheme = config.linkColor;
+    const linksVisitedColorTheme = config.visitedLinkColor;
+    const textsColorTheme = config.textColor;
+    const fontTheme = config.fontFamily;
 
     if(!isShadowRoot) {
         style.sheet.insertRule("html.pageShadowBackgroundCustom:not(.pageShadowDisableBackgroundStyling) { background: #" + backgroundTheme + " !important; }", 0);
@@ -627,10 +664,21 @@ async function loadPreset(nb) {
         const settingsNames = JSON.parse(JSON.stringify(settingsToSavePresets));
         settingsNames.push("nightModeEnabled");
 
+        // Fix performance issue on Firefox by disabling real time applying of settings to pages
+        // when restoring settings
+        await setSettingItem("liveSettings", "false");
+
+        let liveSettingValue = defaultSettings["liveSettings"];
+
         for(const key of settingsNames) {
             if(typeof(key) === "string") {
                 if(Object.prototype.hasOwnProperty.call(preset, key)) {
-                    await setSettingItem(key, preset[key]);
+                    if(key !== "liveSettings") {
+                        await setSettingItem(key, preset[key]); // invalid data are ignored by the function
+                    } else {
+                        liveSettingValue = preset[key];
+                    }
+
                     settingsRestored++;
                 } else {
                     await setSettingItem(key, defaultSettings[key]); // Restore default setting
@@ -639,6 +687,10 @@ async function loadPreset(nb) {
         }
 
         await migrateSettings();
+
+        setTimeout(() => {
+            setSettingItem("liveSettings", liveSettingValue);
+        }, 500);
 
         if(settingsRestored > 0) {
             return "success";
@@ -763,12 +815,24 @@ async function deletePreset(nb) {
     }
 }
 
-async function presetsEnabledForWebsite(url) {
+async function presetsEnabledForWebsite(url, disableCache) {
     const presetListEnabled = [];
+    let allPresetData;
+
+    if(!disableCache) { // Get preset with cache
+        const response = await sendMessageWithPromise({ "type": "getAllPresets" }, "getAllPresetsResponse");
+        allPresetData = response.data;
+    }
 
     if(url && url.trim() != "") {
         for(let i = 1; i <= nbPresets; i++) {
-            const presetData = await getPresetData(i);
+            let presetData;
+
+            if(disableCache) {
+                presetData = await getPresetData(i);
+            } else {
+                presetData = allPresetData[i];
+            }
 
             if(presetData) {
                 const websiteSettings = presetData.websiteListToApply;
@@ -786,6 +850,7 @@ async function presetsEnabledForWebsite(url) {
                 if(autoEnabledWebsite || autoEnabledPage) {
                     presetListEnabled.push({
                         presetNb: i,
+                        presetData,
                         autoEnabledWebsite: autoEnabledWebsite,
                         autoEnabledPage: autoEnabledPage
                     });
@@ -812,97 +877,84 @@ function getPriorityPresetEnabledForWebsite(presetsEnabled) {
     return presetEnabled;
 }
 
-async function getSettings(url) {
-    const result = await browser.storage.local.get(["sitesInterditPageShadow", "pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertEntirePage", "whiteList", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor", "selectiveInvert", "blueLightReductionEnabled", "percentageBlueLightReduction", "attenuateImageColor"]);
+function getDefaultSettingsToLoad() {
+    const settings = {};
 
-    let pageShadowEnabled = result.pageShadowEnabled;
-    let theme = result.theme;
-    let colorTemp = result.colorTemp;
-    let invertEntirePage = result.invertEntirePage;
-    let invertImageColors = result.invertImageColors;
-    let invertVideoColors = result.invertVideoColors;
-    let invertBgColor = result.invertBgColor;
-    let pageLumEnabled = result.pageLumEnabled;
-    let pourcentageLum = result.pourcentageLum;
-    let nightModeEnabled = result.nightModeEnabled;
-    let blueLightReductionEnabled = result.blueLightReductionEnabled;
-    let percentageBlueLightReduction = result.percentageBlueLightReduction;
-    let invertPageColors = result.invertPageColors;
-    let disableImgBgColor = result.disableImgBgColor;
-    let colorInvert = result.colorInvert;
-    let selectiveInvert = result.selectiveInvert;
-    let attenuateImageColor = result.attenuateImageColor;
+    for(const setting of settingsToLoad) {
+        if(Object.prototype.hasOwnProperty.call(defaultSettings, setting)) {
+            settings[setting] = defaultSettings[setting];
+        }
+    }
+
+    return settings;
+}
+
+function fillSettings(defaultSettings, newSettings) {
+    for(const key of Object.keys(defaultSettings)) {
+        defaultSettings[key] = newSettings[key];
+    }
+}
+
+async function getSettings(url, disableCache) {
+    const settings = getDefaultSettingsToLoad();
+    let loadGlobalSettings = true;
 
     // Automatically enable preset ?
-    const presetsEnabled = await presetsEnabledForWebsite(url);
+    const presetsEnabled = await presetsEnabledForWebsite(url, disableCache);
 
     if(presetsEnabled && presetsEnabled.length > 0) {
         const presetEnabled = getPriorityPresetEnabledForWebsite(presetsEnabled);
 
         if(presetEnabled && presetEnabled.presetNb > 0) {
-            const presetData = await getPresetData(presetEnabled.presetNb);
-
-            pageShadowEnabled = presetData.pageShadowEnabled;
-            theme = presetData.theme;
-            colorTemp = presetData.colorTemp;
-            invertEntirePage = presetData.invertEntirePage;
-            invertImageColors = presetData.invertImageColors;
-            invertVideoColors = presetData.invertVideoColors;
-            invertBgColor = presetData.invertBgColor;
-            pageLumEnabled = presetData.pageLumEnabled;
-            pourcentageLum = presetData.pourcentageLum;
-            nightModeEnabled = presetData.nightModeEnabled;
-            invertPageColors = presetData.invertPageColors;
-            disableImgBgColor = presetData.disableImgBgColor;
-            colorInvert = presetData.colorInvert;
-            selectiveInvert = presetData.selectiveInvert;
-            blueLightReductionEnabled = presetData.blueLightReductionEnabled;
-            percentageBlueLightReduction = presetData.percentageBlueLightReduction;
-            attenuateImageColor = presetData.attenuateImageColor;
+            const presetData = presetEnabled.presetData;
+            fillSettings(settings, presetData);
+            loadGlobalSettings = false;
         }
     }
 
-    if(colorInvert == "true") {
-        colorInvert = "true";
-        invertImageColors = "true";
-    } else if(invertPageColors == "true") {
-        colorInvert = "true";
+    // Else, load the global settings
+    if(loadGlobalSettings) {
+        let newSettings = {};
+
+        if(!disableCache) {
+            const settingsResponse = await sendMessageWithPromise({ "type": "getSettings" }, "getSettingsResponse");
+            newSettings = settingsResponse.data;
+        } else {
+            newSettings = await browser.storage.local.get(settingsToLoad);
+        }
+
+        fillSettings(settings, newSettings);
+    }
+
+    // Migrate deprecated/old settings
+    if(settings.colorInvert == "true") {
+        settings.colorInvert = "true";
+        settings.invertImageColors = "true";
+    } else if(settings.invertPageColors == "true") {
+        settings.colorInvert = "true";
     } else {
-        colorInvert = "false";
+        settings.colorInvert = "false";
     }
 
-    if(nightModeEnabled == "true" && pageLumEnabled == "true") {
-        blueLightReductionEnabled = "true";
-        percentageBlueLightReduction = pourcentageLum;
-        nightModeEnabled = "false";
+    if(settings.nightModeEnabled == "true" && settings.pageLumEnabled == "true") {
+        settings.blueLightReductionEnabled = "true";
+        settings.percentageBlueLightReduction = settings.pourcentageLum;
+        settings.nightModeEnabled = "false";
     }
 
-    return {
-        pageShadowEnabled,
-        theme,
-        pageLumEnabled,
-        pourcentageLum,
-        colorInvert,
-        invertPageColors,
-        invertImageColors,
-        invertEntirePage,
-        colorTemp,
-        globallyEnable: result.globallyEnable,
-        invertVideoColors,
-        disableImgBgColor,
-        invertBgColor,
-        selectiveInvert,
-        blueLightReductionEnabled,
-        percentageBlueLightReduction,
-        attenuateImageColor
-    };
+    return settings;
 }
 
-function hasSettingsChanged(currentSettings, newSettings) {
+function hasSettingsChanged(currentSettings, newSettings, customThemeChanged) {
     if(currentSettings == null) return true;
 
     for(const settingKey of Object.keys(currentSettings)) {
         if(currentSettings[settingKey] !== newSettings[settingKey]) return true;
+    }
+
+    if(currentSettings.theme && newSettings.theme
+        && currentSettings.theme.startsWith("custom") && newSettings.theme.startsWith("custom") && customThemeChanged) {
+        return true;
     }
 
     return false;
@@ -1036,12 +1088,26 @@ function removeClass(element, ...classes) {
 
 function addClass(element, ...classes) {
     if(!element) return;
+    const classToAdd = [];
 
     classes.forEach(c => {
         if(!element.classList.contains(c)) {
-            element.classList.add(c);
+            classToAdd.push(c);
         }
     });
+
+    element.classList.add(...classToAdd);
+}
+
+function addNewStyleAttribute(element, styleToAdd) {
+    const oldStyleAttribute = element.getAttribute("style");
+    let newStyleAttribute = (oldStyleAttribute ? oldStyleAttribute : "");
+    if(newStyleAttribute.trim() != "" && !newStyleAttribute.trim().endsWith(";")) {
+        newStyleAttribute += "; " + styleToAdd;
+    } else {
+        newStyleAttribute += styleToAdd;
+    }
+    element.setAttribute("style", newStyleAttribute);
 }
 
 function isRunningInPopup() {
@@ -1243,4 +1309,76 @@ async function isAutoEnable() {
     return false;
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, isAutoEnable };
+async function sendMessageWithPromise(data, ...expectedMessageType) {
+    return new Promise(resolve => {
+        if(expectedMessageType) {
+            const listener = browser.runtime.onMessage.addListener(message => {
+                if(message && expectedMessageType.includes(message.type)) {
+                    resolve(message);
+                    browser.runtime.onMessage.removeListener(listener);
+                }
+            });
+        }
+
+        browser.runtime.sendMessage(data);
+
+        if(!expectedMessageType) {
+            resolve();
+        }
+    });
+}
+
+function applyContrastPageVariablesWithTheme(theme) {
+    const themeNumber = parseInt(theme) - 1;
+
+    applyContrastPageVariables({
+        backgroundColor: defaultThemesBackgrounds[themeNumber],
+        textColor: defaultThemesTextColors[themeNumber],
+        linkColor: defaultThemesLinkColors[themeNumber],
+        visitedLinkColor: defaultThemesVisitedLinkColors[themeNumber],
+        selectBackgroundColor: defaultThemesSelectBgColors[themeNumber],
+        selectTextColor: defaultThemesSelectTextColors[themeNumber],
+        insBackgroundColor: defaultThemesInsBgColors[themeNumber],
+        insTextColor: defaultThemesInsTextColors[themeNumber],
+        delBackgroundColor: defaultThemesDelBgColors[themeNumber],
+        delTextColor: defaultThemesDelTextColors[themeNumber],
+        markBackgroundColor: defaultThemesMarkBgColors[themeNumber],
+        markTxtColor: defaultThemesMarkTextColors[themeNumber],
+        imageBackgroundColor: defaultThemesImgBgColors[themeNumber],
+        brightColorTextWhite: defaultThemesBrightColorTextWhite[themeNumber],
+        brightColorTextBlack: defaultThemesBrightColorTextBlack[themeNumber]
+    });
+}
+
+function applyContrastPageVariables(config) {
+    document.documentElement.style.setProperty("--page-shadow-bgcolor", config.backgroundColor);
+    document.documentElement.style.setProperty("--page-shadow-txtcolor", config.textColor);
+    document.documentElement.style.setProperty("--page-shadow-lnkcolor", config.linkColor);
+    document.documentElement.style.setProperty("--page-shadow-visitedlnkcolor", config.visitedLinkColor);
+    document.documentElement.style.setProperty("--page-shadow-selectbgcolor", config.selectBackgroundColor);
+    document.documentElement.style.setProperty("--page-shadow-selectxtcolor", config.selectTextColor);
+    document.documentElement.style.setProperty("--page-shadow-insbgcolor", config.insBackgroundColor);
+    document.documentElement.style.setProperty("--page-shadow-instxtcolor", config.insTextColor);
+    document.documentElement.style.setProperty("--page-shadow-delbgcolor", config.delBackgroundColor);
+    document.documentElement.style.setProperty("--page-shadow-deltxtcolor", config.delTextColor);
+    document.documentElement.style.setProperty("--page-shadow-markbgcolor", config.markBackgroundColor);
+    document.documentElement.style.setProperty("--page-shadow-marktxtcolor", config.markTxtColor);
+    document.documentElement.style.setProperty("--page-shadow-imgbgcolor", config.imageBackgroundColor);
+    document.documentElement.style.setProperty("--page-shadow-brightcolortxtwhite", config.brightColorTextWhite);
+    document.documentElement.style.setProperty("--page-shadow-brightcolortxtblack", config.brightColorTextBlack);
+
+    if(config && config.fontFamily && config.fontFamily.trim() != "") {
+        document.documentElement.style.setProperty("--page-shadow-customfontfamily", config.fontFamily);
+    } else {
+        document.documentElement.style.removeProperty("--page-shadow-customfontfamily");
+    }
+}
+
+function rgb2hsl(r, g, b) {
+    const v = Math.max(r, g, b), c = v - Math.min(r, g, b), f = (1 - Math.abs(v + v - c - 1));
+    const h = c && ((v == r) ? (g - b) / c : ((v == g) ? 2 + (b - r) / c : 4 + (r - g) / c));
+
+    return [60 * (h < 0 ? h + 6 : h), f ? c / f : 0, (v + v - c) / 2];
+}
+
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable };

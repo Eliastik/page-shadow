@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.10 (8/18/2022)
+* Latest version: 2.10.1 (9/25/2022)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -34,7 +34,29 @@ Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
 
-### Version 2.10 - Hotfix 2 (20/08/2022) :
+### Version 2.10.1 (9/25/2022) :
+
+* Major performance optimization, which limits the flashes that appeared when navigating between pages or changing settings in real time;
+* Added "Preserve element colors" function (not enabled by default) to "Increase contrast" function. This function preserves the colors of the elements, but replaces colors very close to white or dark colors;
+* Improved user experience when "Modern" popup theme is enabled. This theme is now the default theme for new installations;
+* Minor improvements to the Advanced Settings interface: display of an icon on tabs if changes to settings have not been saved, display of a loading indicator when restoring settings archives;
+* Add the setting "Enable right-click menu" in General settings (enabled by default);
+* Bug fixes and technical improvements:
+    * Fixed bug with Firefox and Mutation Observers;
+    * Changes to custom themes now apply in real time to pages using that theme;
+    * Fixed a bug with some sites using texts with color gradients: texts of this type were not displayed with the "Increase contrast" function;
+    * Fixed a bug with the settings Decrease brightness and Blue light filter: on some websites (like Github), when going back to the previous page with the browser back button, the filter intensity increased randomly;
+    * Fixed bugs when restoring cloud archives, and improved performance for Firefox when restoring archives;
+    * Fixed a bug with the real-time display of settings in Advanced Settings: if a popup setting was changed, and a change to a setting in Advanced Settings had not been saved, that change was lost;
+    * Fixed a bug with presets applying to SPA (Single Page Applications) when different presets where set to different pages;
+    * Simplification and major reorganization of the extension code including:
+        * Use of the same CSS stylesheet for classic themes and custom themes, and use of CSS variables;
+        * Simplification of the code managing the message passing between background page and scripts of the extension;
+        * The Mutation Observer code has been reworked, fixing issues;
+        * Other technical improvements
+    * Update dependencies
+
+### Version 2.10 - Hotfix 2 (8/20/2022) :
 
 * Fix the features Decrease brightness/Blue light reduction filter on Firefox
 * Fix Mutation Observers on Firefox

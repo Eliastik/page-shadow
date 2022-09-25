@@ -16,11 +16,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud, isAutoEnable } from "./util.js";
+import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud, isAutoEnable } from "./utils/util.js";
 import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
 import Filter from "./filters.js";
 import browser from "webextension-polyfill";
+import PresetCache from "./utils/presetCache.js";
+import SettingsCache from "./utils/settingsCache.js";
 
 function setPopup() {
     if(typeof(browser.action) !== "undefined" && typeof(browser.action.setPopup) !== "undefined") {
@@ -80,7 +82,9 @@ function deleteContextMenu(id) {
 async function menu() {
     async function createMenu() {
         if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.local) !== "undefined") {
-            const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]);
+            const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable", "disableRightClickMenu"]);
+            if(result.disableRightClickMenu == "true") return;
+
             let sitesInterdits;
 
             if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
@@ -92,8 +96,13 @@ async function menu() {
             if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.query) !== "undefined") {
                 const tabs = await browser.tabs.query({active: true, currentWindow: true});
                 if(!tabs || tabs.length <= 0) return;
+
                 const tabUrl = tabs[0].url;
                 if(!tabUrl || tabUrl.trim() == "") return;
+
+                // Don't show the right-click menu on extension pages
+                const extensionDomain = browser.runtime.getURL("");
+                if(tabUrl.startsWith(extensionDomain)) return;
 
                 const url_str = normalizeURL(tabUrl);
                 const url = new URL(url_str);
@@ -145,7 +154,8 @@ async function menu() {
     }
 
     async function createMenuOthers() {
-        const data = await browser.storage.local.get(["globallyEnable"]);
+        const data = await browser.storage.local.get(["globallyEnable", "disableRightClickMenu"]);
+        if(data.disableRightClickMenu == "true") return;
 
         if(data.globallyEnable == "false") {
             createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], true);
@@ -228,7 +238,8 @@ async function updateBadge(storageChanged) {
                     type: "websiteUrlUpdated",
                     enabled,
                     storageChanged,
-                    settings: await getSettings(url)
+                    settings: await getSettings(url, true),
+                    url
                 }).catch(() => {
                     if(browser.runtime.lastError) return; // ignore the error messages
                 });
@@ -335,12 +346,21 @@ if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) 
 if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) !== "undefined") {
     browser.runtime.onMessage.addListener((message, sender) => {
         const filters = new Filter();
-        filters.cacheFilters();
+        const presetCache = new PresetCache();
+        const settingsCache = new SettingsCache();
 
         new Promise(resolve => {
             if(message) {
                 if(message.type == "openTab") {
                     openTab(message.url, message.part);
+                }
+
+                if(message.type == "updatePresetCache") {
+                    presetCache.updateCache();
+                }
+
+                if(message.type == "updateSettingsCache") {
+                    settingsCache.updateCache();
                 }
 
                 if(!sender.tab) return;
@@ -349,7 +369,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
 
                 if(message.type == "isEnabledForThisPage" || message.type == "applySettingsChanged") {
                     pageShadowAllowed(tabURL).then(async(enabled) => {
-                        const settings = await getSettings(tabURL);
+                        const settings = await getSettings(tabURL, true);
                         resolve({ type: message.type + "Response", enabled: enabled, settings: settings });
                     });
                 } else if(message.type == "updateAllFilters") {
@@ -453,6 +473,15 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                             });
                         }
                     });
+                } else if(message.type == "getPreset") {
+                    const data = presetCache.getPresetData(message.idPreset);
+                    resolve({ type: "getPresetResponse", data: data });
+                } else if(message.type == "getAllPresets") {
+                    const data = presetCache.getAllPresetsData();
+                    resolve({ type: "getAllPresetsResponse", data: data });
+                } else if(message.type == "getSettings") {
+                    const data = settingsCache.data;
+                    resolve({ type: "getSettingsResponse", data: data });
                 }
             }
         }).then(result => {
@@ -539,12 +568,16 @@ async function openTab(url, part) {
 
         const updateDetails = { active: true };
 
-        if(!tab.url.startsWith(url)) {
+        if(!tab.url.startsWith(completeURL)) {
             updateDetails.url = completeURL;
         }
 
         tab = await browser.tabs.update(tab.id, updateDetails);
         browser.windows.update(tab.windowId, { focused: true });
+
+        if(part) {
+            browser.tabs.sendMessage(tab.id, { type: "hashUpdated" });
+        }
     }
 }
 

@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-const extensionVersion = "2.10";
-const versionDate = new Date(2022, 7, 18);
+const extensionVersion = "2.10.1";
+const versionDate = new Date(2022, 8, 25);
 const nbThemes = 16; // nb of themes for the function Increase the contrast (used globally in the extension)
 const colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"]; // color temperatures available for the function Night Mode (used globally in the extension)
 const minBrightnessPercentage = 0; // the minimum percentage of brightness
@@ -38,8 +38,10 @@ const defaultHourDisable = "7";
 const defaultMinuteDisable = "0";
 const defaultHourDisableFormat = "AM";
 const archiveInfoShowInterval = 7; // 7 days
-const settingNames = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "sitesInterditPageShadow", "liveSettings", "whiteList", "colorTemp", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "globallyEnable", "customThemeInfoDisable", "autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat", "disableImgBgColor", "defaultLoad", "presets", "customThemes", "filtersSettings", "customFilter", "updateNotification", "selectiveInvert", "interfaceDarkTheme", "popupTheme", "advancedOptionsFiltersSettings", "blueLightReductionEnabled", "percentageBlueLightReduction", "nightModeEnabled", "archiveInfoLastShowed", "archiveInfoDisable", "autoBackupCloudInterval", "lastAutoBackupCloud", "lastAutoBackupFailed", "attenuateImageColor"];
-const settingsToSavePresets = ["pageShadowEnabled", "theme", "disableImgBgColor", "pageLumEnabled", "pourcentageLum", "blueLightReductionEnabled", "percentageBlueLightReduction", "colorTemp", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "selectiveInvert", "attenuateImageColor", "autoEnable", "liveSettings"];
+const settingNames = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "sitesInterditPageShadow", "liveSettings", "whiteList", "colorTemp", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "globallyEnable", "customThemeInfoDisable", "autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat", "disableImgBgColor", "defaultLoad", "presets", "customThemes", "filtersSettings", "customFilter", "updateNotification", "selectiveInvert", "interfaceDarkTheme", "popupTheme", "advancedOptionsFiltersSettings", "blueLightReductionEnabled", "percentageBlueLightReduction", "nightModeEnabled", "archiveInfoLastShowed", "archiveInfoDisable", "autoBackupCloudInterval", "lastAutoBackupCloud", "lastAutoBackupFailed", "attenuateImageColor", "brightColorPreservation", "disableRightClickMenu", "increaseContrastInformationShowed"];
+const settingsToSavePresets = ["pageShadowEnabled", "theme", "disableImgBgColor", "brightColorPreservation", "pageLumEnabled", "pourcentageLum", "blueLightReductionEnabled", "percentageBlueLightReduction", "colorTemp", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "selectiveInvert", "attenuateImageColor", "autoEnable", "liveSettings"];
+const settingsToLoad = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor", "selectiveInvert", "blueLightReductionEnabled", "percentageBlueLightReduction", "attenuateImageColor", "brightColorPreservation"];
+const pageShadowClassListsMutationsIgnore = ["pageShadowHasBackgroundImg", "pageShadowHasTransparentBackground", "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText", "pageShadowBackgroundDetected"];
 const nbPresets = 10;
 const defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}};
 const nbCustomThemesSlots = 5;
@@ -150,12 +152,12 @@ const defaultFilters = {
     "enableAutoUpdate": true,
     "lastFailedUpdate": -1
 };
-const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.10.php";
+const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.10.1.php";
 const regexpDetectionPattern = /^((.*)\/(?:[^\\]|\\.)*?\/)(\|)/;
 const regexpDetectionPatternHighlight = /^(\/(?:[^\\]|\\.)*?\/)(\|)/;
 const opacityDetectedAsTransparentThresholdDefault = 0.1;
-const availableFilterRulesType = ["disableContrastFor", "forceTransparentBackground", "disableBackgroundStylingFor", "disableTextColorStylingFor", "disableInputBorderStylingFor", "disableLinkStylingFor", "disableFontFamilyStylingFor", "disableElementInvertFor", "hasBackgroundImg", "forceCustomLinkColorFor", "forceCustomBackgroundColorFor", "forceCustomTextColorFor", "disableShadowRootsCustomStyle", "enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "disableMutationObserverAttributes", "disableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverStyle", "forceCustomVisitedLinkColor", "disableCustomVisitedLinkColor", "forceFontFamilyStylingFor", "forceInputBorderStylingFor", "forceCustomLinkColorAsBackground", "forceCustomTextColorAsBackground", "forceCustomLinkVisitedColorAsBackground", "forceDisableDefaultBackgroundColor", "forceDisableDefaultBackground", "forceDisableDefaultFontColor", "enablePseudoElementsStyling", "enableShadowRootStyleOverride", "disableShadowRootStyleOverride", "overrideShadowRootsCustomStyle", "shadowRootStyleOverrideDelay", "invertElementAsImage", "invertElementAsVideo", "invertElementAsBackground", "enableSelectiveInvert", "enablePseudoElementSelectiveInvert", "invertPseudoElement", "enableThrottleMutationObserverBackgrounds", "disableThrottleMutationObserverBackgrounds", "delayMutationObserverBackgrounds", "disableAutoThrottleMutationObserverBackgrounds", "enableAutoThrottleMutationObserverBackgrounds", "autoThrottleMutationObserverBackgroundsTreshold", "throttledMutationObserverTreatedByCall", "delayApplyMutationObserversSafeTimer", "observeBodyChange", "observeBodyChangeTimerInterval"];
-const specialFilterRules = ["enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverAttributes", "disableMutationObserverClass", "disableMutationObserverStyle", "enableShadowRootStyleOverride", "disableShadowRootStyleOverride", "shadowRootStyleOverrideDelay", "enableThrottleMutationObserverBackgrounds", "disableThrottleMutationObserverBackgrounds", "delayMutationObserverBackgrounds", "disableAutoThrottleMutationObserverBackgrounds", "enableAutoThrottleMutationObserverBackgrounds", "autoThrottleMutationObserverBackgroundsTreshold", "throttledMutationObserverTreatedByCall", "delayApplyMutationObserversSafeTimer", "observeBodyChange", "observeBodyChangeTimerInterval"];
+const availableFilterRulesType = ["disableContrastFor", "forceTransparentBackground", "disableBackgroundStylingFor", "disableTextColorStylingFor", "disableInputBorderStylingFor", "disableLinkStylingFor", "disableFontFamilyStylingFor", "disableElementInvertFor", "hasBackgroundImg", "forceCustomLinkColorFor", "forceCustomBackgroundColorFor", "forceCustomTextColorFor", "disableShadowRootsCustomStyle", "enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "disableMutationObserverAttributes", "disableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverStyle", "forceCustomVisitedLinkColor", "disableCustomVisitedLinkColor", "forceFontFamilyStylingFor", "forceInputBorderStylingFor", "forceCustomLinkColorAsBackground", "forceCustomTextColorAsBackground", "forceCustomLinkVisitedColorAsBackground", "forceDisableDefaultBackgroundColor", "forceDisableDefaultBackground", "forceDisableDefaultFontColor", "enablePseudoElementsStyling", "enableShadowRootStyleOverride", "disableShadowRootStyleOverride", "overrideShadowRootsCustomStyle", "shadowRootStyleOverrideDelay", "invertElementAsImage", "invertElementAsVideo", "invertElementAsBackground", "enableSelectiveInvert", "enablePseudoElementSelectiveInvert", "invertPseudoElement", "enableThrottleMutationObserverBackgrounds", "disableThrottleMutationObserverBackgrounds", "delayMutationObserverBackgrounds", "disableAutoThrottleMutationObserverBackgrounds", "enableAutoThrottleMutationObserverBackgrounds", "autoThrottleMutationObserverBackgroundsTreshold", "throttledMutationObserverTreatedByCall", "delayApplyMutationObserversSafeTimer", "enableObserveBodyChange", "disableObserveBodyChange", "observeBodyChangeTimerInterval", "enableBrightColorDetection", "disableBrightColorDetection", "brightColorLightnessTresholdMin", "brightColorLightnessTresholdMax", "preserveBrightColor", "enableThrottleBackgroundDetection", "disableThrottleBackgroundDetection", "throttleBackgroundDetectionElementsTreatedByCall", "backgroundDetectionStartDelay", "useBackgroundDetectionAlreadyProcessedNodes"];
+const specialFilterRules = ["enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverAttributes", "disableMutationObserverClass", "disableMutationObserverStyle", "enableShadowRootStyleOverride", "disableShadowRootStyleOverride", "shadowRootStyleOverrideDelay", "enableThrottleMutationObserverBackgrounds", "disableThrottleMutationObserverBackgrounds", "delayMutationObserverBackgrounds", "disableAutoThrottleMutationObserverBackgrounds", "enableAutoThrottleMutationObserverBackgrounds", "autoThrottleMutationObserverBackgroundsTreshold", "throttledMutationObserverTreatedByCall", "delayApplyMutationObserversSafeTimer", "enableObserveBodyChange", "disableObserveBodyChange", "observeBodyChangeTimerInterval", "enableBrightColorDetection", "disableBrightColorDetection", "brightColorLightnessTresholdMin", "brightColorLightnessTresholdMax", "enableThrottleBackgroundDetection", "disableThrottleBackgroundDetection", "throttleBackgroundDetectionElementsTreatedByCall", "backgroundDetectionStartDelay", "useBackgroundDetectionAlreadyProcessedNodes"];
 const ruleCategory = {
     STANDARD_RULES: "STANDARD_RULES",
     SPECIAL_RULES: "SPECIAL_RULES"
@@ -176,7 +178,7 @@ const defaultWebsiteSpecialFiltersConfig = {
     opacityDetectedAsTransparentThreshold: opacityDetectedAsTransparentThresholdDefault,
     enableMutationObserverAttributes: true,
     enableMutationObserverStyle: true,
-    enableMutationObserverClass: false,
+    enableMutationObserverClass: true,
     enableShadowRootStyleOverride: true,
     shadowRootStyleOverrideDelay: 100, // <= 0 to disable
     throttleMutationObserverBackgrounds: false,
@@ -186,20 +188,24 @@ const defaultWebsiteSpecialFiltersConfig = {
     throttledMutationObserverTreatedByCall: 50,
     delayApplyMutationObserversSafeTimer: 0,
     observeBodyChange: true,
-    observeBodyChangeTimerInterval: 1
+    observeBodyChangeTimerInterval: 1,
+    enableBrightColorDetection: true,
+    brightColorLightnessTresholdMin: 0.05,
+    brightColorLightnessTresholdMax: 0.9,
+    throttleBackgroundDetection: false,
+    throttleBackgroundDetectionElementsTreatedByCall: 500,
+    backgroundDetectionStartDelay: 0,
+    useBackgroundDetectionAlreadyProcessedNodes: false
 };
-const defaultThemesBackgrounds = ["black", "#142634", "#222", "#263238", "#333a49", "#020315", "#192338", "#1A1A1A", "#1d4e6d", "#272822", "white", "#002b36", "#000D00", "#272822", "#2e3436", "#202124"]; // Colors of the backgrounds
-const defaultThemesTextColors = ["#AAA", "#BDC7C1", "#AAA", "#C3CEE3", "#dfcbd3", "#b9cace", "#6f9bb0", "#FFFFB3", "#BED6FF", "#39B7FF", "black", "#b58901", "#00ca00", "#91e22d", "#d2dde3", "#bdc1c6"];
-const defaultThemesLinkColors = ["#1E90FF", "#7288D4", "#21C7AC", "#C792EA", "#FB77A6", "#d0a00c", "#978FCC", "#A6A6FF", "#F7A92C", "#52D252", "#CC4A00", "#1783d2", "#1e90ff", "#65d9ef", "#6792bf", "#8ab4f8"]; // Colors of the links
-const defaultThemesVisitedLinkColors = ["#FF00FF", "#BC72D4", "#996DF2", "#92BEEA", "#BD8EF0", "#9FD00C", "#8FCCAE", "#E9A6FF", "#B3F72C", "#D2D252", "#6CD96C", "#A471F8", "#9F4AF4", "#7165EF", "#7667BF", "#C58AF9"]; // Colors of the visited links
 const ignoredElementsContentScript = ["style", "script", "br", "head", "link", "meta", "hr"];
 const failedUpdateAutoReupdateDelay = 5 * 60 * 1000; // ms
-const defaultInterfaceDarkTheme = "auto"; // auto/on/off
-const defaultPopupTheme = "switch"; // switch/classic
 
 // Default settings
 const updateNotification = {};
 updateNotification[extensionVersion] = true;
+
+const defaultInterfaceDarkTheme = "auto"; // auto/on/off
+const defaultPopupTheme = "modern"; // switch/classic/modern
 const defaultSettings = {
     "pageShadowEnabled": "false",
     "theme": "1",
@@ -243,7 +249,27 @@ const defaultSettings = {
     "autoBackupCloudInterval": 0,
     "lastAutoBackupCloud": -1,
     "lastAutoBackupFailed": "false",
-    "attenuateImageColor": "false"
+    "attenuateImageColor": "false",
+    "brightColorPreservation": "false",
+    "disableRightClickMenu": "false",
+    "increaseContrastInformationShowed": "false"
 };
 
-export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, regexpDetectionPatternHighlight, ignoredElementsContentScript, failedUpdateAutoReupdateDelay, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue, archiveInfoShowInterval, defaultSettings };
+// Color themes
+const defaultThemesBackgrounds = ["black", "#142634", "#222", "#263238", "#333a49", "#020315", "#192338", "#1A1A1A", "#1d4e6d", "#272822", "white", "#002b36", "#000D00", "#272822", "#2e3436", "#202124"]; // Colors of the backgrounds
+const defaultThemesTextColors = ["#AAA", "#BDC7C1", "#AAA", "#C3CEE3", "#dfcbd3", "#b9cace", "#6f9bb0", "#FFFFB3", "#BED6FF", "#39B7FF", "black", "#b58901", "#00ca00", "#91e22d", "#d2dde3", "#bdc1c6"];
+const defaultThemesLinkColors = ["#1E90FF", "#7288D4", "#21C7AC", "#C792EA", "#FB77A6", "#d0a00c", "#978FCC", "#A6A6FF", "#F7A92C", "#52D252", "#CC4A00", "#1783d2", "#1e90ff", "#65d9ef", "#6792bf", "#8ab4f8"]; // Colors of the links
+const defaultThemesVisitedLinkColors = ["#FF00FF", "#BC72D4", "#996DF2", "#92BEEA", "#BD8EF0", "#9FD00C", "#8FCCAE", "#E9A6FF", "#B3F72C", "#D2D252", "#6CD96C", "#A471F8", "#9F4AF4", "#7165EF", "#7667BF", "#C58AF9"]; // Colors of the visited links
+const defaultThemesSelectBgColors = ["grey", "grey", "grey", "grey", "grey", "grey", "grey", "grey", "grey", "grey", "#424242", "grey", "grey", "grey", "grey", "grey"]; // Background color of the select
+const defaultThemesSelectTextColors = ["black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black"]; // Text color of the select
+const defaultThemesInsBgColors = ["green", "green", "green", "green", "green", "green", "green", "green", "green", "green", "#FF7FFF", "green", "green", "green", "green", "green"]; // Background color of the ins elements
+const defaultThemesInsTextColors = ["white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "black", "white", "white", "white", "white", "white"]; // Text color of the ins elements
+const defaultThemesDelBgColors = ["red", "red", "red", "red", "red", "red", "red", "red", "red", "red", "#00FFFF", "red", "red", "red", "red", "red"]; // Background color of the del elements
+const defaultThemesDelTextColors = ["white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "black", "white", "white", "white", "white", "white"]; // Text color of the del elements
+const defaultThemesMarkBgColors = ["orange", "orange", "orange", "orange", "orange", "orange", "orange", "orange", "orange", "orange", "#005AFF", "orange", "orange", "orange", "orange", "orange"]; // Background color of the mark elements
+const defaultThemesMarkTextColors = ["black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "white", "black", "black", "black", "black", "black"]; // Text color of the mark elements
+const defaultThemesImgBgColors = ["#BDBDBD", "#BDBDBD", "#BDBDBD", "#BDBDBD", "#BDBDBD", "#BDBDBD", "#BDBDBD", "#BDBDBD", "#BDBDBD", "#BDBDBD", "#424242", "#BDBDBD", "#BDBDBD", "#BDBDBD", "#BDBDBD", "#BDBDBD"]; // Background color of the images
+const defaultThemesBrightColorTextWhite = ["white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "white"]; // Background color of the images
+const defaultThemesBrightColorTextBlack = ["black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black"]; // Background color of the images
+
+export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, regexpDetectionPatternHighlight, ignoredElementsContentScript, failedUpdateAutoReupdateDelay, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue, archiveInfoShowInterval, defaultSettings, settingsToLoad, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, pageShadowClassListsMutationsIgnore };

@@ -2,7 +2,29 @@
 
 ## Changelog:
 
-### Version 2.10 - Hotfix 2 (20/08/2022) :
+### Version 2.10.1 (9/25/2022) :
+
+* Major performance optimization, which limits the flashes that appeared when navigating between pages or changing settings in real time;
+* Added "Preserve element colors" function (not enabled by default) to "Increase contrast" function. This function preserves the colors of the elements, but replaces colors very close to white or dark colors;
+* Improved user experience when "Modern" popup theme is enabled. This theme is now the default theme for new installations;
+* Minor improvements to the Advanced Settings interface: display of an icon on tabs if changes to settings have not been saved, display of a loading indicator when restoring settings archives;
+* Add the setting "Enable right-click menu" in General settings (enabled by default);
+* Bug fixes and technical improvements:
+    * Fixed bug with Firefox and Mutation Observers;
+    * Changes to custom themes now apply in real time to pages using that theme;
+    * Fixed a bug with some sites using texts with color gradients: texts of this type were not displayed with the "Increase contrast" function;
+    * Fixed a bug with the settings Decrease brightness and Blue light filter: on some websites (like Github), when going back to the previous page with the browser back button, the filter intensity increased randomly;
+    * Fixed bugs when restoring cloud archives, and improved performance for Firefox when restoring archives;
+    * Fixed a bug with the real-time display of settings in Advanced Settings: if a popup setting was changed, and a change to a setting in Advanced Settings had not been saved, that change was lost;
+    * Fixed a bug with presets applying to SPA (Single Page Applications) when different presets where set to different pages;
+    * Simplification and major reorganization of the extension code including:
+        * Use of the same CSS stylesheet for classic themes and custom themes, and use of CSS variables;
+        * Simplification of the code managing the message passing between background page and scripts of the extension;
+        * The Mutation Observer code has been reworked, fixing issues;
+        * Other technical improvements
+    * Update dependencies
+
+### Version 2.10 - Hotfix 2 (8/20/2022) :
 
 * Fix the features Decrease brightness/Blue light reduction filter on Firefox
 * Fix Mutation Observers on Firefox
@@ -295,6 +317,28 @@
 # Page Shadow - Français
 
 ## Journal des changements :
+
+### Version 2.10.1 (25/09/2022) :
+
+* Optimisation majeure des performances, ce qui permet de limiter l'apparition de flashs lors de la navigation entre pages ou le changement des paramètres en temps réel ;
+* Ajout de la fonction "Préserver les couleurs des éléments" (non activée par défaut) à la fonction "Augmenter le contraste". Cette fonction préserve les couleurs des éléments, mais remplace les couleurs très proches du blanc ou les couleurs sombres ;
+* Amélioration de l'expérience d'utilisation lorsque le thème de la popup "Moderne" est activé. Ce thème est désormais le thème par défaut pour les nouvelles installations ;
+* Améliorations mineures de l'interface des Paramètres avancés : affichage d'une icône sur les onglets si des modifications des paramètres n'ont pas été enregistrées, affichage d'un témoin de chargement lors de la restauration des archives des paramètres ;
+* Ajout du paramètre "Activer le menu du clic droit" (activé par défaut) ;
+* Corrections de bugs et améliorations techniques :
+    * Correction d'un bug avec Firefox et les Mutation Observers ;
+    * Les modifications des thèmes personnalisés s'appliquent désormais en temps réel aux pages utilisant ce thème ;
+    * Correction d'un bug avec certains sites utilisant des textes avec des dégradés de couleur : les textes de ce type ne s'affichaient pas avec la fonction "Augmenter le contraste" ;
+    * Correction d'un bug avec les fonctions Baisser la luminosité et Filtre de réduction de la lumière bleue : sur certains sites (comme Github), lorsque l'on retournait à la page précédente à l'aide du bouton Retour du navigateur, l'intensité des filtres augmentait de manière aléatoire ;
+    * Correction de bugs avec la restauration des archives Cloud, et amélioration des performances pour Firefox lors de la restauration des archives ;
+    * Correction d'un bug avec l'affichage en temps réel des paramètres dans les Paramètres avancés : si un paramètre de la popup était modifié, et qu'une modification d'un paramètre dans les paramètres avancés n'avait pas été sauvegardée, cette modification était écrasée ;
+    * Correction d'un bug avec l'application des pré-réglages aux SPA (Single Page Application) lorsque des pré-réglages différents étaient paramétrés pour les différents pages ;
+    * Simplification et réorganisation majeure du code de l'extension dont :
+        * Utilisation de la même feuille de style CSS pour les thèmes classiques et les thèmes personnalisées, et utilisation des variables CSS ;
+        * Simplification du code gérant les appels entre background page et scripts de l'extension ;
+        * Le code des Mutation Observer ont été remaniés, corrigeant des problèmes ;
+        * Autres améliorations techniques
+    * Mise à jour des dépendences
 
 ### Version 2.10 - Hotfix 2 (20/08/2022) :
 

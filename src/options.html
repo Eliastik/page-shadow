@@ -51,14 +51,14 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
             <div class="well">
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" id="generalTabLink" class="active"><a href="#generalTab" aria-controls="generalTab" role="tab" data-toggle="tab"><i class="fa-solid fa-gears fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.general"></span></a></li>
-                    <li role="presentation" id="listTabLink"><a href="#listTab" aria-controls="listTab" role="tab" data-toggle="tab"><i class="fa-solid fa-rectangle-list fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.lists"></span></a></li>
-                    <li role="presentation" id="customThemeTabLink"><a href="#customThemeTab" aria-controls="customThemeTab" role="tab" data-toggle="tab"><i class="fa-solid fa-palette fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.customThemes"></span></a></li>
-                    <li role="presentation" id="presetsTabLink"><a href="#presetsTab" aria-controls="presetsTab" role="tab" data-toggle="tab"><i class="fa-solid fa-wrench fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.presets"></span></a></li>
+                    <li role="presentation" id="listTabLink"><a href="#listTab" aria-controls="listTab" role="tab" data-toggle="tab"><i class="fa-solid fa-rectangle-list fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.lists"></span> <span class="not-saved" id="not-saved-lists"><i class="fa-solid fa-circle fa-fw"></i></span></a></li>
+                    <li role="presentation" id="customThemeTabLink"><a href="#customThemeTab" aria-controls="customThemeTab" role="tab" data-toggle="tab"><i class="fa-solid fa-palette fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.customThemes"></span> <span class="not-saved" id="not-saved-customThemes"><i class="fa-solid fa-circle fa-fw"></i></span></a></li>
+                    <li role="presentation" id="presetsTabLink"><a href="#presetsTab" aria-controls="presetsTab" role="tab" data-toggle="tab"><i class="fa-solid fa-wrench fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.presets"></span> <span class="not-saved" id="not-saved-presets"><i class="fa-solid fa-circle fa-fw"></i></a></li>
                     <li role="presentation" id="filtersTabLink"><a href="#filtersTab" aria-controls="filtersTab" role="tab" data-toggle="tab"><i class="fa-solid fa-filter fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.filters"></span></a></li>
                     <li role="presentation" id="archiveRestoreTabLink"><a href="#archiveRestoreTab" aria-controls="archiveRestoreTab" role="tab" data-toggle="tab"><i class="fa-solid fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.archive"></span></a></li>
                     <li role="presentation" id="storageTabLink"><a href="#storageTab" aria-controls="storageTab" role="tab" data-toggle="tab"><i class="fa-solid fa-hard-drive fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.storage"></span></a></li>
                     <li role="presentation" id="aboutTabLink"><a href="#aboutTab" aria-controls="aboutTab" role="tab" data-toggle="tab"><i class="fa-solid fa-circle-info fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.about"></span></a></li>
-                    <li role="presentation" id="advancedLink"><a href="#advancedTab" aria-controls="advancedTab" role="tab" data-toggle="tab"><i class="fa-solid fa-code fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.advanced"></span></a></li>
+                    <li role="presentation" id="advancedLink"><a href="#advancedTab" aria-controls="advancedTab" role="tab" data-toggle="tab"><i class="fa-solid fa-code fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.advanced"></span> <span class="not-saved" id="not-saved-advanced"><i class="fa-solid fa-circle fa-fw"></i></span></a></li>
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="generalTab">
@@ -83,10 +83,19 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 <label for="popupThemeSelect" class="col-lg-2 control-label option-label" data-i18n="generalSettings.popupTheme"></label>
                                 <div class="col-lg-10">
                                     <select id="popupThemeSelect" class="form-control" rows="10">
+                                        <option value="modern" data-i18n="generalSettings.popupThemeModern"></option>
                                         <option value="switch" data-i18n="generalSettings.popupThemeSwitch"></option>
                                         <option value="checkbox" data-i18n="generalSettings.popupThemeClassic"></option>
-                                        <option value="modern" data-i18n="generalSettings.popupThemeModern"></option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="enableRightClickMenu" class="col-lg-2 control-label option-label" data-i18n="generalSettings.enableRightClickMenu"></label>
+                                <div class="col-lg-10">
+                                    <div class="checkbox-switch checkbox-switch-sm ml-2 mr-2">
+                                        <input id="enableRightClickMenu" name="enableRightClickMenu" type="checkbox" />
+                                        <label for="enableRightClickMenu" class="label-blue"></label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -318,12 +327,13 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                         <p id="restoreErrorExtension" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreErrorExtension"></span></p>
                                         <p id="restoreErrorArchive" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreErrorArchive"></span></p>
                                         <p id="restoreSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreSuccess"></span></p>
+                                        <p id="restoring" class="blue" style="display: none;"><i class="fa-solid fa-spinner fa-fw fa-circle-notch fa-spin"></i> <span data-i18n="modal.archive.restoring"></span></p>
                                     </div>
                                     <input id="inputFileJSON" type="file" name="inputFileJSON" accept=".json" style="display: none;" />
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="cloudBackupTab">
                                     <p><span data-i18n="modal.archive.descriptionCloudBackup"></span> <strong data-i18n="modal.archive.warningCloudBackup"></strong></p>
-                                    <center><a class="btn btn-success disabled" id="archiveCloudBtn"><i class="fa fa-cloud-upload fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudBtn"></span></a> &nbsp; <a class="btn btn-primary disabled" id="restoreCloudBtn"><i class="fa fa-cloud-download fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreCloudBtn"></span></a></center>
+                                    <center><a class="btn btn-success" id="archiveCloudBtn"><i class="fa fa-cloud-upload fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudBtn"></span></a> &nbsp; <a class="btn btn-primary disabled" id="restoreCloudBtn"><i class="fa fa-cloud-download fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreCloudBtn"></span></a></center>
                                     <div id="infoCloud" class="center">
                                         <p id="infoCloudLastArchive" style="display: none;"><strong data-i18n="modal.archive.infoCloudLastArchive"></strong> <span id="dateCloudArchive"></span></p>
                                         <p id="archiveCloudNotCompatible" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudNotCompatible"></span></p>
@@ -332,6 +342,8 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                         <p id="restoreCloudError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreCloudError"></span></p>
                                         <p id="archiveCloudSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.archiveCloudSuccess"></span></p>
                                         <p id="restoreCloudSuccess" class="green" style="display: none;"><i class="fa fa-fw fa-check-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.restoreCloudSuccess"></span></p>
+                                        <p id="archivingCloud" class="blue" style="display: none;"><i class="fa-solid fa-spinner fa-fw fa-circle-notch fa-spin"></i> <span data-i18n="modal.archive.archivingCloud"></span></p>
+                                        <p id="restoringCloud" class="blue" style="display: none;"><i class="fa-solid fa-spinner fa-fw fa-circle-notch fa-spin"></i> <span data-i18n="modal.archive.restoring"></span></p>
                                         <p id="autoBackupError" class="red" style="display: none;"><i class="fa fa-fw fa-times-circle" aria-hidden="true"></i> <span data-i18n="modal.archive.autoBackupError"></span></p>
                                     </div>
                                     <div class="mt-4">
@@ -401,10 +413,20 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                         <div class="panel panel-default" name="aboutLatestVersion">
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2101" data-i18n="modal.about.changelog.versionNames.2101"></a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapse2101" class="panel-collapse collapse in">
+                                                <div class="panel-body" data-i18n="[html]modal.about.changelog.2101"></div>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
                                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse210" data-i18n="modal.about.changelog.versionNames.210"></a>
                                                 </h4>
                                             </div>
-                                            <div id="collapse210" class="panel-collapse collapse in">
+                                            <div id="collapse210" class="panel-collapse collapse">
                                                 <div class="panel-body" data-i18n="[html]modal.about.changelog.210"></div>
                                             </div>
                                         </div>

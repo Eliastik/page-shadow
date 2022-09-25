@@ -16,6 +16,11 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+/**
+ * Optimized Timer class that uses requestAnimationFrame to
+ * throttle when the page is in idle (for example, when the tab is
+ * inactive) to preserve performance
+ */
 export default class SafeTimer {
     constructor(callback) {
         this.requestAnimationId = this.timeoutId = null;

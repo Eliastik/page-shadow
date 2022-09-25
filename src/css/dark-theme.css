@@ -274,3 +274,15 @@ select:focus, select.form-control:focus {
     background-color: #4f5157 !important;
     color: #e1e7ec !important;
 }
+
+.blue {
+    color: #7EC7FF !important;
+}
+
+.red, #customFilterEditErrorDetected {
+    color: #FFA9A9 !important;
+}
+
+.green {
+    color: #7AFF7A !important;
+}

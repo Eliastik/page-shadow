@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.10 (18/08/2022)
+* Version actuelle : 2.10.1 (25/09/2022)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,28 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.10.1 (25/09/2022) :
+
+* Optimisation majeure des performances, ce qui permet de limiter l'apparition de flashs lors de la navigation entre pages ou le changement des paramètres en temps réel ;
+* Ajout de la fonction "Préserver les couleurs des éléments" (non activée par défaut) à la fonction "Augmenter le contraste". Cette fonction préserve les couleurs des éléments, mais remplace les couleurs très proches du blanc ou les couleurs sombres ;
+* Amélioration de l'expérience d'utilisation lorsque le thème de la popup "Moderne" est activé. Ce thème est désormais le thème par défaut pour les nouvelles installations ;
+* Améliorations mineures de l'interface des Paramètres avancés : affichage d'une icône sur les onglets si des modifications des paramètres n'ont pas été enregistrées, affichage d'un témoin de chargement lors de la restauration des archives des paramètres ;
+* Ajout du paramètre "Activer le menu du clic droit" (activé par défaut) ;
+* Corrections de bugs et améliorations techniques :
+    * Correction d'un bug avec Firefox et les Mutation Observers ;
+    * Les modifications des thèmes personnalisés s'appliquent désormais en temps réel aux pages utilisant ce thème ;
+    * Correction d'un bug avec certains sites utilisant des textes avec des dégradés de couleur : les textes de ce type ne s'affichaient pas avec la fonction "Augmenter le contraste" ;
+    * Correction d'un bug avec les fonctions Baisser la luminosité et Filtre de réduction de la lumière bleue : sur certains sites (comme Github), lorsque l'on retournait à la page précédente à l'aide du bouton Retour du navigateur, l'intensité des filtres augmentait de manière aléatoire ;
+    * Correction de bugs avec la restauration des archives Cloud, et amélioration des performances pour Firefox lors de la restauration des archives ;
+    * Correction d'un bug avec l'affichage en temps réel des paramètres dans les Paramètres avancés : si un paramètre de la popup était modifié, et qu'une modification d'un paramètre dans les paramètres avancés n'avait pas été sauvegardée, cette modification était écrasée ;
+    * Correction d'un bug avec l'application des pré-réglages aux SPA (Single Page Application) lorsque des pré-réglages différents étaient paramétrés pour les différents pages ;
+    * Simplification et réorganisation majeure du code de l'extension dont :
+        * Utilisation de la même feuille de style CSS pour les thèmes classiques et les thèmes personnalisées, et utilisation des variables CSS ;
+        * Simplification du code gérant les appels entre background page et scripts de l'extension ;
+        * Le code des Mutation Observer ont été remaniés, corrigeant des problèmes ;
+        * Autres améliorations techniques
+    * Mise à jour des dépendences
 
 ### Version 2.10 - Hotfix 2 (20/08/2022) :
 

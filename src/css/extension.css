@@ -45,6 +45,7 @@ body.popup {
     overflow-x: hidden;
     overflow-y: auto;
     max-height: 1050px;
+    padding-right: 0 !important;
 }
 body.popup > .navbar {
     margin-bottom: 8px;
@@ -341,11 +342,15 @@ div.navbar-right {
 .orange {
     color: orange;
 }
+.blue {
+    color: blue;
+}
 .hourFormat {
     width: 100%;
 }
 .hourFormatAMPM {
-    width: 32px;
+    width: 40px;
+    height: 29px;
 }
 .tab-content {
     padding: 15px !important;
@@ -380,6 +385,7 @@ div.navbar-right {
 .snackbar {
     display: none;
     min-width: 250px;
+    max-width: 320px;
     background-color: #727272;
     color: white;
     text-align: center;
@@ -403,6 +409,10 @@ div.navbar-right {
     -o-animation-play-state: "running";
     -ms-animation-play-state: "running";
     animation-play-state: "running";
+}
+.snackbar.show#informations {
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 5s;
+    animation: fadein 0.5s, fadeout 0.5s 5s;
 }
 .filterButtons {
     display: flex;
@@ -766,4 +776,14 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 .btn-default.disabled:active, .btn-default[disabled]:active {
     background-color: #FFFFFF;
     color: #444 !important;
+}
+.modal {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.not-saved {
+    color: #2196F3 !important;
+    display: none;
+    font-size: 6pt !important;
+    margin-left: 6px;
 }

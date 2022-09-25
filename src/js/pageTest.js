@@ -21,7 +21,8 @@ import $ from "jquery";
 import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import { init_i18next } from "./locales.js";
-import { toggleTheme } from "./util.js";
+import { toggleTheme } from "./utils/util.js";
+import browser from "webextension-polyfill";
 
 window.$ = $;
 window.jQuery = $;
@@ -46,4 +47,10 @@ $(() => {
     $("#testOpenPopup").on("click", () => {
         window.open("about:blank", "test", "menubar=no,location=yes,resizable=yes,scrollbars=yes,status=yes");
     });
+
+    if(typeof(browser.storage.onChanged) !== "undefined") {
+        browser.storage.onChanged.addListener(() => {
+            toggleTheme();
+        });
+    }
 });

@@ -33,8 +33,8 @@ import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud } from "./util.js";
-import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise } from "./utils/util.js";
+import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, defaultSettings } from "./constants.js";
 import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./filter.codemirror.mode";
@@ -60,6 +60,7 @@ let currentSelectedPresetEdit = 1;
 let changingLanguage = false;
 let alreadyCheckedForUpdateFilters = false;
 let savedAdvancedOptionsTimeout;
+let disableStorageSizeCalculation = false;
 
 init_i18next("options").then(() => translateContent());
 toggleTheme(); // Toggle dark/light theme
@@ -106,8 +107,8 @@ function translateContent() {
         $("#firefoxLinuxBugFonts").show();
     }
 
-    displaySettings(null, changingLanguage);
-    loadAdvancedOptionsUI();
+    displaySettings(null, changingLanguage, null, changingLanguage);
+    loadAdvancedOptionsUI(false, changingLanguage);
 }
 
 async function changeLng(lng) {
@@ -136,86 +137,147 @@ async function resetSettings() {
     localStorage.clear();
 }
 
-async function displaySettings(areaName, dontDisplayThemeAndPresets) {
-    const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "autoBackupCloudInterval", "lastAutoBackupFailed"]);
-
-    if(areaName != "sync") {
-        if(result.sitesInterditPageShadow != undefined) {
-            $("#textareaAssomPage").val(result.sitesInterditPageShadow);
-        }
-
-        if(result.whiteList == "true" && $("#checkWhiteList").is(":checked") == false) {
-            $("#checkWhiteList").prop("checked", true);
-        } else if(result.whiteList !== "true" && $("#checkWhiteList").is(":checked") == true) {
-            $("#checkWhiteList").prop("checked", false);
-        }
-    }
-
-    if(typeof(browser.storage) != "undefined" && typeof(browser.storage.sync) != "undefined") {
-        $("#archiveCloudBtn").removeClass("disabled");
-    } else {
+async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = null, changingLanguage) {
+    if(typeof(browser.storage) == "undefined" || typeof(browser.storage.sync) == "undefined") {
+        $("#archiveCloudBtn").addClass("disabled");
         $("#archiveCloudNotCompatible").show();
     }
 
-    const cloudData = await isArchiveCloudAvailable();
+    if(!areaName || areaName == "sync") {
+        const cloudData = await isArchiveCloudAvailable();
 
-    if(cloudData.available) {
-        $("#restoreCloudBtn").removeClass("disabled");
-        $("#infoCloudLastArchive").show();
-        $("#dateCloudArchive").text(i18next.t("modal.archive.dateCloudLastArchive", { device: cloudData.device, date: new Intl.DateTimeFormat(i18next.language).format(cloudData.date), hour: new Intl.DateTimeFormat(i18next.language, { hour: "numeric", minute: "numeric", second: "numeric", timeZoneName: "short" }).format(cloudData.date), interpolation: { escapeValue: false } }));
-    } else {
-        $("#restoreCloudBtn").addClass("disabled");
-        $("#infoCloudLastArchive").hide();
+        if(cloudData.available) {
+            $("#restoreCloudBtn").removeClass("disabled");
+            $("#infoCloudLastArchive").show();
+            $("#dateCloudArchive").text(i18next.t("modal.archive.dateCloudLastArchive", { device: cloudData.device, date: new Intl.DateTimeFormat(i18next.language).format(cloudData.date), hour: new Intl.DateTimeFormat(i18next.language, { hour: "numeric", minute: "numeric", second: "numeric", timeZoneName: "short" }).format(cloudData.date), interpolation: { escapeValue: false } }));
+        } else {
+            $("#restoreCloudBtn").addClass("disabled");
+            $("#infoCloudLastArchive").hide();
+        }
+
+        if(!disableStorageSizeCalculation) {
+            const sizeCloud = browser.storage.sync.getBytesInUse ? await browser.storage.sync.getBytesInUse(null) : getSizeObject(await browser.storage.sync.get(null));
+            const convertedCloud = convertBytes(sizeCloud);
+            const convertedCloudMax = convertBytes(browser.storage.sync.QUOTA_BYTES);
+            $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
+        }
     }
 
-    const size = browser.storage.local.getBytesInUse ? await browser.storage.local.getBytesInUse(null) : getSizeObject(await browser.storage.local.get(null));
-    const converted = convertBytes(size);
-    $("#infosLocalStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
+    if(!areaName || areaName == "local") {
+        const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "autoBackupCloudInterval", "lastAutoBackupFailed", "disableRightClickMenu"]);
 
-    const sizeCloud = browser.storage.sync.getBytesInUse ? await browser.storage.sync.getBytesInUse(null) : getSizeObject(await browser.storage.sync.get(null));
-    const convertedCloud = convertBytes(sizeCloud);
-    const convertedCloudMax = convertBytes(browser.storage.sync.QUOTA_BYTES);
-    $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
+        if(!disableStorageSizeCalculation) {
+            const size = browser.storage.local.getBytesInUse ? await browser.storage.local.getBytesInUse(null) : getSizeObject(await browser.storage.local.get(null));
+            const converted = convertBytes(size);
+            $("#infosLocalStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
+        }
 
-    if(areaName != "sync") {
-        if(!dontDisplayThemeAndPresets) displayTheme($("#themeSelect").val());
-        $("#restoreDataButton").removeClass("disabled");
-        displayFilters();
+        if(!changingLanguage) {
+            if(result.sitesInterditPageShadow != undefined && (!changes || changes.includes("sitesInterditPageShadow"))) {
+                $("#textareaAssomPage").val(result.sitesInterditPageShadow);
+            }
+
+            if(!changes || changes.includes("whiteList")) {
+                if(result.whiteList == "true" && $("#checkWhiteList").is(":checked") == false) {
+                    $("#checkWhiteList").prop("checked", true);
+                } else if(result.whiteList !== "true" && $("#checkWhiteList").is(":checked") == true) {
+                    $("#checkWhiteList").prop("checked", false);
+                }
+            }
+
+            if((!changes || changes.includes("customThemes")) && (!dontDisplayThemeAndPresets)) {
+                $("#themeSelect").val(currentSelectedTheme);
+                displayTheme($("#themeSelect").val(), null);
+            }
+
+            if((!changes || changes.includes("filtersSettings") || changes.includes("customFilter")) && (!dontDisplayThemeAndPresets)) {
+                displayFilters();
+            }
+
+            if(!changes || changes.includes("presets")) {
+                await loadPresetSelect("loadPresetSelect", i18next);
+                await loadPresetSelect("savePresetSelect", i18next);
+                await loadPresetSelect("deletePresetSelect", i18next);
+                if(!dontDisplayThemeAndPresets) displayPresetSettings(currentSelectedPresetEdit);
+
+                $("#savePresetSelect").val(currentSelectedPresetEdit);
+            }
+
+            if(!changes || changes.includes("interfaceDarkTheme")) {
+                const currentTheme = await browser.storage.local.get(["interfaceDarkTheme"]);
+
+                if (currentTheme.interfaceDarkTheme) {
+                    $("#darkThemeSelect").val(currentTheme.interfaceDarkTheme);
+                }
+
+                toggleTheme(); // Toggle dark/light theme
+            }
+
+            if(!changes || changes.includes("popupTheme")) {
+                const currentPopupTheme = await browser.storage.local.get(["popupTheme"]);
+
+                if (currentPopupTheme.popupTheme) {
+                    $("#popupThemeSelect").val(currentPopupTheme.popupTheme);
+                }
+            }
+
+            if(!changes || changes.includes("autoBackupCloudInterval")) {
+                if(result && result.autoBackupCloudInterval) {
+                    $("#autoBackupCloudSelect").val(result.autoBackupCloudInterval);
+                } else {
+                    $("#autoBackupCloudSelect").val("0");
+                }
+            }
+
+            if(!changes || changes.includes("disableRightClickMenu")) {
+                if(result && result.disableRightClickMenu == "true") {
+                    $("#enableRightClickMenu").prop("checked", false);
+                } else {
+                    $("#enableRightClickMenu").prop("checked", true);
+                }
+            }
+
+            if(!changes || changes.includes("advancedOptionsFiltersSettings")) {
+                checkAdvancedOptions();
+                loadAdvancedOptionsUI();
+            }
+        } else {
+            await loadPresetSelect("loadPresetSelect", i18next);
+            await loadPresetSelect("savePresetSelect", i18next);
+            await loadPresetSelect("deletePresetSelect", i18next);
+
+            displayPresetSettings(currentSelectedPresetEdit, changingLanguage);
+            displayFilters();
+        }
+
+        if(await notifyChangedThemeNotSaved($("#themeSelect").val())) {
+            $("#not-saved-lists").show();
+        } else {
+            $("#not-saved-lists").hide();
+        }
+
+        if(await notifyChangedListNotSaved()) {
+            $("#not-saved-lists").show();
+        } else {
+            $("#not-saved-lists").hide();
+        }
+
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            $("#not-saved-presets").show();
+        } else {
+            $("#not-saved-presets").hide();
+        }
+
+        if(await notifyChangedAdvancedOptionsNotSaved()) {
+            $("#not-saved-advanced").show();
+        } else {
+            $("#not-saved-advanced").hide();
+        }
+
+        if(result && result.lastAutoBackupFailed == "true") {
+            $("#autoBackupError").show();
+        }
     }
-
-    await loadPresetSelect("loadPresetSelect", i18next);
-    await loadPresetSelect("savePresetSelect", i18next);
-    await loadPresetSelect("deletePresetSelect", i18next);
-    if(!dontDisplayThemeAndPresets) displayPresetSettings(currentSelectedPresetEdit);
-
-    $("#savePresetSelect").val(currentSelectedPresetEdit);
-    $("#themeSelect").val(currentSelectedTheme);
-
-    const currentTheme = await browser.storage.local.get(["interfaceDarkTheme"]);
-
-    if (currentTheme.interfaceDarkTheme) {
-        $("#darkThemeSelect").val(currentTheme.interfaceDarkTheme);
-    }
-
-    const currentPopupTheme = await browser.storage.local.get(["popupTheme"]);
-
-    if (currentPopupTheme.popupTheme) {
-        $("#popupThemeSelect").val(currentPopupTheme.popupTheme);
-    }
-
-    toggleTheme(); // Toggle dark/light theme
-
-    if(result && result.autoBackupCloudInterval) {
-        $("#autoBackupCloudSelect").val(result.autoBackupCloudInterval);
-    } else {
-        $("#autoBackupCloudSelect").val("0");
-    }
-
-    if(result && result.lastAutoBackupFailed == "true") {
-        $("#autoBackupError").show();
-    }
-
-    checkAdvancedOptions();
 }
 
 async function displayTheme(nb, defaultSettings) {
@@ -293,6 +355,12 @@ async function displayTheme(nb, defaultSettings) {
     $("#previsualisationDiv").css("font-family", fontTheme);
 
     window.codeMirrorUserCss.getDoc().setValue(customCSS);
+
+    if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+        $("#not-saved-customThemes").show();
+    } else {
+        $("#not-saved-customThemes").hide();
+    }
 }
 
 async function displayFilters() {
@@ -315,16 +383,13 @@ async function displayFilters() {
         checkbox.setAttribute("type", "checkbox");
         if(filter.enabled) checkbox.checked = true;
 
-        checkbox.addEventListener("click", () => {
+        checkbox.addEventListener("click", async() => {
             checkbox.disabled = true;
             let messageType = "enableFilter";
 
             if(!checkbox.checked) messageType = "disableFilter";
 
-            browser.runtime.sendMessage({
-                "type": messageType,
-                "filterId": index
-            });
+            sendMessageWithPromise({ "type": messageType, "filterId": index });
         });
 
         element.appendChild(checkbox);
@@ -344,7 +409,7 @@ async function displayFilters() {
             if(filter.hasError) {
                 const hasError = document.createElement("div");
                 hasError.textContent = i18next.t("modal.filters.errorUpdate");
-                hasError.style.color = "red";
+                hasError.classList.add("red");
                 texts.appendChild(hasError);
             }
 
@@ -371,7 +436,7 @@ async function displayFilters() {
             const divErrorFilterCount = document.createElement("div");
             const errorFilterCount = document.createElement("span");
             errorFilterCount.setAttribute("id", "errorFilterCountCustom");
-            errorFilterCount.style.color = "red";
+            errorFilterCount.classList.add("red");
 
             const buttonSeeErrors = document.createElement("button");
             buttonSeeErrors.setAttribute("class", "btn btn-sm btn-link ml-2");
@@ -379,13 +444,18 @@ async function displayFilters() {
             buttonSeeErrors.setAttribute("data-toggle", "tooltip");
             buttonSeeErrors.setAttribute("title", i18next.t("modal.filters.seeErrorDetails"));
 
-            buttonSeeErrors.addEventListener("click", () => {
+            buttonSeeErrors.addEventListener("click", async() => {
                 buttonSeeErrors.setAttribute("disabled", "disabled");
 
-                browser.runtime.sendMessage({
-                    "type": "getRulesErrors",
-                    "idFilter": "customFilter"
-                });
+                const message = await sendMessageWithPromise({ "type": "getRulesErrors", "idFilter": "customFilter" }, "getRulesErrorsResponse");
+
+                if(message.typeFilter == "custom") {
+                    $("#buttonSeeErrorsCustomFilter").removeAttr("disabled");
+                } else {
+                    $("#buttonSeeErrorsFilter").removeAttr("disabled");
+                }
+
+                displayFilterErrors(message.data, message.typeFilter);
             });
 
             const iconSeeErrors = document.createElement("i");
@@ -430,11 +500,7 @@ async function displayFilters() {
                 buttonHome.appendChild(iconHome);
 
                 buttonHome.addEventListener("click", () => {
-                    browser.runtime.sendMessage({
-                        type: "openTab",
-                        url: filter.homepage,
-                        part: ""
-                    });
+                    sendMessageWithPromise({ type: "openTab", url: filter.homepage, part: "" });
                 });
 
                 buttonContainer.appendChild(buttonHome);
@@ -465,11 +531,7 @@ async function displayFilters() {
 
                 buttonDelete.addEventListener("click", () => {
                     buttonDelete.disabled = true;
-
-                    browser.runtime.sendMessage({
-                        "type": "removeFilter",
-                        "filterId": index
-                    });
+                    sendMessageWithPromise({ "type": "removeFilter", "filterId": index });
                 });
 
                 buttonContainer.appendChild(buttonDelete);
@@ -483,13 +545,11 @@ async function displayFilters() {
             iconUpdate.setAttribute("class", "fa fa-refresh fa-fw");
             buttonUpdate.appendChild(iconUpdate);
 
-            buttonUpdate.addEventListener("click", () => {
+            buttonUpdate.addEventListener("click", async() => {
                 buttonUpdate.disabled = true;
 
-                browser.runtime.sendMessage({
-                    "type": "updateFilter",
-                    "filterId": index
-                });
+                const message = await sendMessageWithPromise({ "type": "updateFilter", "filterId": index }, "updateFilterFinished");
+                if(!message.result) displayFilters();
             });
 
             buttonContainer.appendChild(buttonUpdate);
@@ -515,28 +575,35 @@ async function displayFilters() {
 
     $("[data-toggle=\"tooltip\"]").tooltip();
 
-    browser.runtime.sendMessage({
-        "type": "getNumberOfTotalRules"
-    });
+    const rulesCount = await sendMessageWithPromise({ "type": "getNumberOfTotalRules" }, "getNumberOfTotalRulesResponse");
+    $("#filtersCount").text(i18next.t("modal.filters.filtersCount", { count: rulesCount.count }));
 
-    browser.runtime.sendMessage({
-        "type": "getFiltersSize"
-    });
+    const filtersSize = await sendMessageWithPromise({ "type": "getFiltersSize" }, "getFiltersSizeResponse");
+    const converted = convertBytes(filtersSize.size);
+    $("#filtersStorageSize").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
 
-    browser.runtime.sendMessage({
-        "type": "getNumberOfCustomFilterRules"
-    });
+    const customRulesCount = await sendMessageWithPromise({ "type": "getNumberOfCustomFilterRules" }, "getNumberOfCustomFilterRulesResponse");
+    $("#customFilterCount").text(i18next.t("modal.filters.filtersCount", { count: customRulesCount.count }));
 
-    browser.runtime.sendMessage({
-        "type": "getRulesErrorCustomFilter"
-    });
+    const errorCustomRules = await sendMessageWithPromise({ "type": "getRulesErrorCustomFilter" }, "getRulesErrorCustomFilterResponse");
+    $("#errorFilterCountCustom").text("");
+    $("#buttonSeeErrorsCustomFilter").hide();
+
+    if(errorCustomRules.data && errorCustomRules.data.length > 0) {
+        $("#errorFilterCountCustom").text(i18next.t("modal.filters.filtersWithErrorCount", { count: errorCustomRules.data.length }));
+        $("#buttonSeeErrorsCustomFilter").show();
+    }
 }
 
-async function loadAdvancedOptionsUI(reset) {
+async function loadAdvancedOptionsUI(reset, changingLanguage) {
     let websiteFiltersConfig = JSON.parse(JSON.stringify(defaultWebsiteSpecialFiltersConfig));
 
     if (!reset) {
         websiteFiltersConfig = await loadWebsiteSpecialFiltersConfig();
+    }
+
+    if(changingLanguage) {
+        websiteFiltersConfig = getUpdatedAdvancedOptions();
     }
 
     document.querySelector("#advancedOptionsFiltersWebsiteSettings").textContent = "";
@@ -563,6 +630,13 @@ async function loadAdvancedOptionsUI(reset) {
             input.name = key;
             input.value = value;
             input.classList.add("form-control", "input-font");
+            input.oninput = async() => {
+                if(await notifyChangedAdvancedOptionsNotSaved()) {
+                    $("#not-saved-advanced").show();
+                } else {
+                    $("#not-saved-advanced").hide();
+                }
+            };
             div.appendChild(input);
         } else {
             const divCheckboxSwitch = document.createElement("div");
@@ -572,6 +646,13 @@ async function loadAdvancedOptionsUI(reset) {
             inputCheckbox.id = key;
             inputCheckbox.name = key;
             inputCheckbox.type = "checkbox";
+            inputCheckbox.onchange = async() => {
+                if(await notifyChangedAdvancedOptionsNotSaved()) {
+                    $("#not-saved-advanced").show();
+                } else {
+                    $("#not-saved-advanced").hide();
+                }
+            };
 
             if(value) {
                 inputCheckbox.setAttribute("checked", "checked");
@@ -598,7 +679,7 @@ async function loadAdvancedOptionsUI(reset) {
     $("[data-toggle=\"tooltip\"]").tooltip();
 }
 
-async function saveAdvancedOptions() {
+function getUpdatedAdvancedOptions() {
     const websiteFiltersConfig = JSON.parse(JSON.stringify(defaultWebsiteSpecialFiltersConfig));
 
     Object.keys(websiteFiltersConfig).forEach(key => {
@@ -624,7 +705,11 @@ async function saveAdvancedOptions() {
         }
     });
 
-    await setSettingItem("advancedOptionsFiltersSettings", websiteFiltersConfig);
+    return websiteFiltersConfig;
+}
+
+async function saveAdvancedOptions() {
+    await setSettingItem("advancedOptionsFiltersSettings", getUpdatedAdvancedOptions());
     loadAdvancedOptionsUI();
 
     clearTimeout(savedAdvancedOptionsTimeout);
@@ -637,6 +722,24 @@ async function saveAdvancedOptions() {
     $("#saveAdvancedOptions").attr("data-original-title", i18next.t("advancedOptions.saved"));
     $("#saveAdvancedOptions").tooltip("enable");
     $("#saveAdvancedOptions").tooltip("show");
+}
+
+async function notifyChangedAdvancedOptionsNotSaved() {
+    const result = await browser.storage.local.get("advancedOptionsFiltersSettings");
+    const resultConfig = result.advancedOptionsFiltersSettings;
+    const currentConfigs = resultConfig && Object.keys(resultConfig).length > 0 ? resultConfig : defaultWebsiteSpecialFiltersConfig;
+    const websiteFiltersConfig = getUpdatedAdvancedOptions();
+
+    for(const key of Object.keys(websiteFiltersConfig)) {
+        const currentConfigHasKey = Object.prototype.hasOwnProperty.call(currentConfigs, key);
+        const currentConfig = currentConfigHasKey ? currentConfigs[key] : defaultWebsiteSpecialFiltersConfig[key];
+
+        if(currentConfig != websiteFiltersConfig[key]) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 async function displayDetailsFilter(idFilter) {
@@ -679,21 +782,35 @@ async function displayInfosFilter(idFilter) {
             $("#detailsFilterVersion").text(filter.version && filter.version.trim() != "" ? filter.version : "0");
             $("#detailsFilterLicense").text(filter.license && filter.license.trim() != "" ? filter.license : i18next.t("modal.filters.licenseEmpty"));
 
-            browser.runtime.sendMessage({
-                "type": "getNumberOfRules",
-                "idFilter": idFilter
-            });
 
-            browser.runtime.sendMessage({
-                "type": "getFilterRuleNumberErrors",
-                "idFilter": idFilter
-            });
+            const resultCount = await sendMessageWithPromise({ "type": "getNumberOfRules", "idFilter": idFilter }, "getNumberOfRulesResponse");
+            $("#detailsFilterRulesCount").text(resultCount.count);
 
-            $("#buttonSeeErrorsFilter").on("click", () => {
-                browser.runtime.sendMessage({
-                    "type": "getRulesErrors",
-                    "idFilter": idFilter
-                });
+            const resultErrorsNumber = await sendMessageWithPromise({ "type": "getFilterRuleNumberErrors", "idFilter": idFilter }, "getFilterRuleNumberErrorsResponse");
+
+            if(resultErrorsNumber) {
+                if(resultErrorsNumber.data) {
+                    $("#errorFilterCount").text(i18next.t("modal.filters.filtersWithErrorCount", { count: resultErrorsNumber.data.length }));
+                    $("#buttonSeeErrorsFilter").attr("disabled", "disabled");
+
+                    if(resultErrorsNumber.data && resultErrorsNumber.data.length > 0) {
+                        $("#buttonSeeErrorsFilter").removeAttr("disabled");
+                    }
+                }
+            }
+
+            $("#buttonSeeErrorsFilter").on("click", async() => {
+                const resultErrors = await sendMessageWithPromise({ "type": "getRulesErrors", "idFilter": idFilter }, "getRulesErrorsResponse");
+
+                if(resultErrors) {
+                    if(resultErrors.typeFilter == "custom") {
+                        $("#buttonSeeErrorsCustomFilter").removeAttr("disabled");
+                    } else {
+                        $("#buttonSeeErrorsFilter").removeAttr("disabled");
+                    }
+                }
+
+                displayFilterErrors(resultErrors.data, resultErrors.typeFilter);
             });
         }
     }
@@ -847,20 +964,53 @@ async function displayFilterEdit() {
     if(filter) {
         window.codeMirrorEditFilter.getDoc().setValue(filter);
 
-        browser.runtime.sendMessage({
-            "type": "getRulesErrorsForCustomEdit",
-            "idFilter": "customFilter"
-        });
+        const result = await sendMessageWithPromise({ "type": "getRulesErrorsForCustomEdit", "idFilter": "customFilter" }, "getRulesErrorsForCustomEditResponse");
+
+        displayFilterErrorsOnElement(result.data, document.querySelector("#customFilterEditErrorDetails"));
+
+        if(Object.keys(result.data).length > 0) {
+            $("#customFilterEditErrorDetected").show();
+        } else {
+            $("#customFilterEditErrorDetected").hide();
+            $("#customFilterEditErrorDetails").hide();
+        }
     }
 }
 
-function saveCustomFilter(close) {
+async function saveCustomFilter(close) {
     const text = window.codeMirrorEditFilter.getDoc().getValue();
 
-    browser.runtime.sendMessage({
-        "type": close ? "updateCustomFilterAndClose" : "updateCustomFilter",
-        "text": text
-    });
+    const result = await sendMessageWithPromise({ "type": close ? "updateCustomFilterAndClose" : "updateCustomFilter", "text": text }, "updateCustomFilterFinished", "updateCustomFilterAndCloseFinished");
+
+    if(result) {
+        if(close) {
+            $("#closeAndSaveCustomFilter").removeAttr("disabled", "disabled");
+            $("#editFilter").modal("hide");
+        } else {
+            $("#customFilterSave").removeAttr("disabled", "disabled");
+
+            clearTimeout(filterSavedTimeout);
+            filterSavedTimeout = setTimeout(() => {
+                $("#customFilterSave").attr("data-original-title", "");
+                $("#customFilterSave").tooltip("hide");
+                $("#customFilterSave").tooltip("disable");
+            }, 3000);
+
+            $("#customFilterSave").attr("data-original-title", i18next.t("modal.filters.saved"));
+            $("#customFilterSave").tooltip("enable");
+            $("#customFilterSave").tooltip("show");
+        }
+
+        const resultErrors = await sendMessageWithPromise({ "type": "getRulesErrorsForCustomEdit", "idFilter": "customFilter" }, "getRulesErrorsForCustomEditResponse");
+        displayFilterErrorsOnElement(resultErrors.data, document.querySelector("#customFilterEditErrorDetails"));
+
+        if(Object.keys(resultErrors.data).length > 0) {
+            $("#customFilterEditErrorDetected").show();
+        } else {
+            $("#customFilterEditErrorDetected").hide();
+            $("#customFilterEditErrorDetails").hide();
+        }
+    }
 }
 
 async function saveThemeSettings(nb) {
@@ -896,19 +1046,29 @@ async function notifyChangedThemeNotSaved(nb) {
 
     window.codeMirrorUserCss.save();
 
-    if(customThemes[nb]["customThemeBg"] == null) customThemes[nb]["customThemeBg"] = defaultBGColorCustomTheme;
-    if(customThemes[nb]["customThemeTexts"] == null) customThemes[nb]["customThemeTexts"] = defaultTextsColorCustomTheme;
-    if(customThemes[nb]["customThemeLinks"] == null) customThemes[nb]["customThemeLinks"] = defaultLinksColorCustomTheme;
-    if(customThemes[nb]["customThemeLinksVisited"] == null) customThemes[nb]["customThemeLinksVisited"] = defaultVisitedLinksColorCustomTheme;
-    if(customThemes[nb]["customThemeFont"] == null) customThemes[nb]["customThemeFont"] = defaultFontCustomTheme;
-    if(customThemes[nb]["customCSSCode"] == null) customThemes[nb]["customCSSCode"] = defaultCustomCSSCode;
+    if(customThemes[nb]["customThemeBg"] == null || customThemes[nb]["customThemeBg"].trim() == "") customThemes[nb]["customThemeBg"] = defaultBGColorCustomTheme;
+    if(customThemes[nb]["customThemeTexts"] == null || customThemes[nb]["customThemeTexts"].trim() == "") customThemes[nb]["customThemeTexts"] = defaultTextsColorCustomTheme;
+    if(customThemes[nb]["customThemeLinks"] == null || customThemes[nb]["customThemeLinks"].trim() == "") customThemes[nb]["customThemeLinks"] = defaultLinksColorCustomTheme;
+    if(customThemes[nb]["customThemeLinksVisited"] == null || customThemes[nb]["customThemeLinksVisited"].trim() == "") customThemes[nb]["customThemeLinksVisited"] = defaultVisitedLinksColorCustomTheme;
+    if(customThemes[nb]["customThemeFont"] == null || customThemes[nb]["customThemeFont"].trim() == "") customThemes[nb]["customThemeFont"] = defaultFontCustomTheme;
+    if(customThemes[nb]["customCSSCode"] == null || customThemes[nb]["customCSSCode"].trim() == "") customThemes[nb]["customCSSCode"] = defaultCustomCSSCode;
 
     return customThemes[nb]["customThemeBg"].toLowerCase() != $("#colorpicker1").attr("value").toLowerCase() ||
-    customThemes[nb]["customThemeTexts"].toLowerCase() != $("#colorpicker2").attr("value").toLowerCase() ||
-    customThemes[nb]["customThemeLinks"].toLowerCase() != $("#colorpicker3").attr("value").toLowerCase() ||
-    customThemes[nb]["customThemeLinksVisited"].toLowerCase() != $("#colorpicker4").attr("value").toLowerCase() ||
-    customThemes[nb]["customThemeFont"].toLowerCase() != $("#customThemeFont").val().toLowerCase() ||
-    customThemes[nb]["customCSSCode"] != $("#codeMirrorUserCSSTextarea").val();
+        customThemes[nb]["customThemeTexts"].toLowerCase() != $("#colorpicker2").attr("value").toLowerCase() ||
+        customThemes[nb]["customThemeLinks"].toLowerCase() != $("#colorpicker3").attr("value").toLowerCase() ||
+        customThemes[nb]["customThemeLinksVisited"].toLowerCase() != $("#colorpicker4").attr("value").toLowerCase() ||
+        customThemes[nb]["customThemeFont"].trim().toLowerCase() != $("#customThemeFont").val().trim().toLowerCase() ||
+        customThemes[nb]["customCSSCode"] != $("#codeMirrorUserCSSTextarea").val();
+}
+
+async function notifyChangedListNotSaved() {
+    const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
+    const list = result.sitesInterditPageShadow || "";
+    const whiteListSetting = result.whiteList != null ? result.whiteList : "false";
+    const whiteListChecked = $("#checkWhiteList").is(":checked") ? "true" : "false";
+
+    return list.toLowerCase() != $("#textareaAssomPage").val().toLowerCase() ||
+        whiteListSetting.toLowerCase() != whiteListChecked.toLowerCase();
 }
 
 async function saveList() {
@@ -931,7 +1091,6 @@ async function saveList() {
     }
 
     $("#saved").modal("show");
-    displaySettings("local", true);
 }
 
 async function changeLanguage() {
@@ -951,7 +1110,7 @@ async function changeTheme() {
 
 async function archiveSettings() {
     $("#archiveError").hide();
-    $("#archiveDataButton").addClass("disabled");
+    $("#archiveDataButton").attr("disabled", "disabled");
 
     try {
         const date = new Date();
@@ -963,16 +1122,18 @@ async function archiveSettings() {
         setTimeout(() => window.codeMirrorJSONArchive.refresh(), 50);
         $("#archiveSuggestedName").val(filename);
         $("#helpArchive").show();
-        $("#archiveDataButton").removeClass("disabled");
+        $("#archiveDataButton").removeAttr("disabled");
 
         downloadData(dataStr, filename);
     } catch(e) {
         $("#archiveError").fadeIn(500);
-        $("#archiveDataButton").removeClass("disabled");
+        $("#archiveDataButton").removeAttr("disabled");
     }
 }
 
 async function restoreSettings(object) {
+    disableStorageSizeCalculation = true;
+
     // Check if it's a Page Shadow archive file
     let ispageshadowarchive = false;
 
@@ -990,24 +1151,37 @@ async function restoreSettings(object) {
 
     // Reset data
     await browser.storage.local.clear();
+    // Fix performance issue on Firefox by disabling real time applying of settings to pages
+    // when restoring settings
+    await setSettingItem("liveSettings", "false");
     await setFirstSettings();
+
+    let liveSettingValue = defaultSettings["liveSettings"];
 
     for(const key in object) {
         if(typeof(key) === "string") {
             if(Object.prototype.hasOwnProperty.call(object, key)) {
-                await setSettingItem(key, object[key]); // invalid data are ignored by the function
+                if(key !== "liveSettings") {
+                    await setSettingItem(key, object[key]); // invalid data are ignored by the function
+                } else {
+                    liveSettingValue = object[key];
+                }
             }
         }
     }
 
     await migrateSettings();
 
+    setTimeout(() => {
+        setSettingItem("liveSettings", liveSettingValue);
+    }, 500);
+
     $("#updateAllFilters").attr("disabled", "disabled");
 
-    browser.runtime.sendMessage({
-        "type": "updateAllFilters"
-    });
+    const message = await sendMessageWithPromise({ "type": "updateAllFilters" }, "updateAllFiltersFinished");
+    if(message.result) $("#updateAllFilters").removeAttr("disabled");
 
+    disableStorageSizeCalculation = false;
     return true;
 }
 
@@ -1017,7 +1191,6 @@ function restoreSettingsFile(event) {
     $("#restoreErrorFilesize").hide();
     $("#restoreErrorExtension").hide();
     $("#restoreErrorArchive").hide();
-    $("#restoreDataButton").addClass("disabled");
 
     const oldTextareadValue = $("#textareaAssomPage").val();
 
@@ -1030,28 +1203,34 @@ function restoreSettingsFile(event) {
                 obj = JSON.parse(event.target.result);
             } catch(e) {
                 $("#restoreError").fadeIn(500);
-                displaySettings("local", true);
                 return false;
             }
 
             $("#textareaAssomPage").val("");
             $("#checkWhiteList").prop("checked", false);
+            $("#restoreDataButton").attr("disabled", "disabled");
+            $("#archiveCloudBtn").attr("disabled", "disabled");
+            $("#restoreCloudBtn").attr("disabled", "disabled");
+            $("#restoring").show();
 
             const result = await restoreSettings(obj);
+
+            $("#restoreDataButton").removeAttr("disabled");
+            $("#archiveCloudBtn").removeAttr("disabled");
+            $("#restoreCloudBtn").removeAttr("disabled");
+            $("#restoring").hide();
 
             if(result) {
                 $("#restoreSuccess").fadeIn(500);
             } else {
                 $("#restoreErrorArchive").fadeIn(500);
                 $("#textareaAssomPage").val(oldTextareadValue);
-                displaySettings("local", true);
             }
         };
 
         reader.onerror = function() {
             $("#restoreError").fadeIn(500);
             $("#textareaAssomPage").val(oldTextareadValue);
-            displaySettings("local", true);
         };
 
         const fileExtension = event.target.files[0].name.split(".").pop().toLowerCase();
@@ -1064,13 +1243,11 @@ function restoreSettingsFile(event) {
             } else {
                 $("#restoreErrorFilesize").fadeIn(500);
                 $("#textareaAssomPage").val(oldTextareadValue);
-                displaySettings("local", true);
                 return false;
             }
         } else {
             $("#restoreErrorExtension").fadeIn(500);
             $("#textareaAssomPage").val(oldTextareadValue);
-            displaySettings("local", true);
             return false;
         }
     } else {
@@ -1084,15 +1261,19 @@ async function archiveCloudSettings() {
     $("#archiveCloudSuccess").hide();
     $("#restoreCloudSuccess").hide();
     $("#archiveCloudErrorQuota").hide();
-    $("#archiveCloudBtn").addClass("disabled");
-    $("#restoreCloudBtn").addClass("disabled");
+    $("#archiveCloudBtn").attr("disabled", "disabled");
+    $("#restoreCloudBtn").attr("disabled", "disabled");
+    $("#restoreDataButton").attr("disabled", "disabled");
+    $("#archivingCloud").show();
 
     try {
         await archiveCloud();
 
         $("#archiveCloudSuccess").fadeIn(500);
-        $("#archiveCloudBtn").removeClass("disabled");
-        $("#restoreCloudBtn").removeClass("disabled");
+        $("#archiveCloudBtn").removeAttr("disabled");
+        $("#restoreCloudBtn").removeAttr("disabled");
+        $("#restoreDataButton").removeAttr("disabled");
+        $("#archivingCloud").hide();
     } catch(e) {
         if(e === "quota") {
             $("#archiveCloudErrorQuota").fadeIn(500);
@@ -1100,8 +1281,10 @@ async function archiveCloudSettings() {
             $("#archiveCloudError").fadeIn(500);
         }
 
-        $("#archiveCloudBtn").removeClass("disabled");
-        $("#restoreCloudBtn").removeClass("disabled");
+        $("#archiveCloudBtn").removeAttr("disabled");
+        $("#restoreCloudBtn").removeAttr("disabled");
+        $("#restoreDataButton").removeAttr("disabled");
+        $("#archivingCloud").hide();
     }
 }
 
@@ -1137,8 +1320,6 @@ async function restoreCloudSettings() {
         $("#archiveCloudSuccess").hide();
         $("#restoreCloudSuccess").hide();
         $("#archiveCloudErrorQuota").hide();
-        $("#archiveCloudBtn").addClass("disabled");
-        $("#restoreCloudBtn").addClass("disabled");
 
         const dataSync = await browser.storage.sync.get(null);
         const oldTextareadValue = $("#textareaAssomPage").val();
@@ -1153,25 +1334,34 @@ async function restoreCloudSettings() {
 
                 $("#textareaAssomPage").val("");
                 $("#checkWhiteList").prop("checked", false);
+                $("#restoreCloudBtn").attr("disabled", "disabled");
+                $("#restoreDataButton").attr("disabled", "disabled");
+                $("#archiveCloudBtn").attr("disabled", "disabled");
+                $("#restoringCloud").show();
 
                 const result = await restoreSettings(dataObj);
+
+                $("#archiveCloudBtn").removeAttr("disabled");
+                $("#restoreCloudBtn").removeAttr("disabled");
+                $("#restoreDataButton").removeAttr("disabled");
+                $("#restoringCloud").hide();
 
                 if(result) {
                     $("#restoreCloudSuccess").fadeIn(500);
                 } else {
                     $("#restoreCloudError").fadeIn(500);
                     $("#textareaAssomPage").val(oldTextareadValue);
-                    displaySettings("sync", true);
                 }
             } catch(e) {
                 $("#restoreCloudError").fadeIn(500);
                 $("#textareaAssomPage").val(oldTextareadValue);
-                displaySettings("sync", true);
+                $("#archiveCloudBtn").removeAttr("disabled");
+                $("#restoreCloudBtn").removeAttr("disabled");
+                $("#restoreDataButton").removeAttr("disabled");
             }
         } else {
             $("#restoreCloudError").fadeIn(500);
             $("#textareaAssomPage").val(oldTextareadValue);
-            displaySettings("sync", true);
         }
     }
 }
@@ -1202,18 +1392,24 @@ async function notifyChangedPresetNotSaved(nb) {
     return $("#savePresetTitle").val().trim() != "" || $("#savePresetWebsite").val().trim() != "";
 }
 
-async function displayPresetSettings(id) {
+async function displayPresetSettings(id, changingLanguage) {
     const data = await getPresetData(id);
 
-    $("#savePresetTitle").val("");
-    $("#savePresetWebsite").val("");
-    $("#checkSaveNewSettingsPreset").prop("checked", false);
+    if(!changingLanguage) {
+        $("#savePresetTitle").val("");
+        $("#savePresetWebsite").val("");
+        $("#checkSaveNewSettingsPreset").prop("checked", false);
+    }
+
     $("#checkSaveNewSettingsPreset").removeAttr("disabled");
     $("#presetInfosBtn").removeAttr("disabled");
 
     if(data && data != "error" && Object.keys(data).length > 0) {
-        if(data.name) $("#savePresetTitle").val(data.name);
-        if(data.websiteListToApply) $("#savePresetWebsite").val(data.websiteListToApply);
+        if(!changingLanguage) {
+            if(data.name) $("#savePresetTitle").val(data.name);
+            if(data.websiteListToApply) $("#savePresetWebsite").val(data.websiteListToApply);
+        }
+
         $("#presetCreateEditBtn").text(i18next.t("modal.edit"));
     } else {
         $("#checkSaveNewSettingsPreset").prop("checked", true);
@@ -1223,7 +1419,7 @@ async function displayPresetSettings(id) {
     }
 }
 
-function addFilter() {
+async function addFilter() {
     $("#addFilterBtn").attr("disabled", "disabled");
     $("#filterAddress").attr("disabled", "disabled");
     $("#addFilterCancelBtn").attr("disabled", "disabled");
@@ -1233,10 +1429,33 @@ function addFilter() {
     $("#addFilterErrorAlreadyAdded").hide();
     $("#addFilterErrorEmpty").hide();
 
-    browser.runtime.sendMessage({
-        "type": "addFilter",
-        "address": $("#filterAddress").val()
-    });
+    const response = await sendMessageWithPromise({ "type": "addFilter", "address": $("#filterAddress").val() }, "addFilterFinished", "addFilterError");
+
+    $("#addFilterBtn").removeAttr("disabled");
+    $("#filterAddress").removeAttr("disabled");
+    $("#addFilterCancelBtn").removeAttr("disabled");
+
+    if(response.type == "addFilterError") {
+        switch(response.error) {
+        case "Fetch error":
+            $("#addFilterErrorFetch").show();
+            break;
+        case "Parsing error":
+            $("#addFilterErrorParsing").show();
+            break;
+        case "Unknown error":
+            $("#addFilterErrorUnknown").show();
+            break;
+        case "Already added error":
+            $("#addFilterErrorAlreadyAdded").show();
+            break;
+        case "Empty error":
+            $("#addFilterErrorEmpty").show();
+            break;
+        }
+    } else {
+        $("#addFilterSource").modal("hide");
+    }
 }
 
 async function initColpick() {
@@ -1245,10 +1464,16 @@ async function initColpick() {
         submit: false,
         color: "000000",
         colorScheme: await isInterfaceDarkTheme() ? "dark" : "light",
-        onChange: (hsb, hex) => {
+        onChange: async(hsb, hex) => {
             $("#colorpicker1").css("background-color", "#"+hex);
             $("#previsualisationDiv").css("background-color", "#"+hex);
             $("#colorpicker1").attr("value", hex);
+
+            if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+                $("#not-saved-customThemes").show();
+            } else {
+                $("#not-saved-customThemes").hide();
+            }
         }
     });
 
@@ -1257,10 +1482,16 @@ async function initColpick() {
         submit: false,
         color: "FFFFFF",
         colorScheme: await isInterfaceDarkTheme() ? "dark" : "light",
-        onChange: (hsb, hex) => {
+        onChange: async(hsb, hex) => {
             $("#colorpicker2").css("background-color", "#"+hex);
             $("#textPreview").css("color", "#"+hex);
             $("#colorpicker2").attr("value", hex);
+
+            if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+                $("#not-saved-customThemes").show();
+            } else {
+                $("#not-saved-customThemes").hide();
+            }
         }
     });
 
@@ -1269,10 +1500,16 @@ async function initColpick() {
         submit: false,
         color: "1E90FF",
         colorScheme: await isInterfaceDarkTheme() ? "dark" : "light",
-        onChange: (hsb, hex) => {
+        onChange: async(hsb, hex) => {
             $("#colorpicker3").css("background-color", "#"+hex);
             $("#linkPreview").css("color", "#"+hex);
             $("#colorpicker3").attr("value", hex);
+
+            if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+                $("#not-saved-customThemes").show();
+            } else {
+                $("#not-saved-customThemes").hide();
+            }
         }
     });
 
@@ -1281,10 +1518,16 @@ async function initColpick() {
         submit: false,
         color: "800080",
         colorScheme: await isInterfaceDarkTheme() ? "dark" : "light",
-        onChange: (hsb, hex) => {
+        onChange: async(hsb, hex) => {
             $("#colorpicker4").css("background-color", "#"+hex);
             $("#linkVisitedPreview").css("color", "#"+hex);
             $("#colorpicker4").attr("value", hex);
+
+            if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+                $("#not-saved-customThemes").show();
+            } else {
+                $("#not-saved-customThemes").hide();
+            }
         }
     });
 }
@@ -1296,6 +1539,22 @@ function checkAdvancedOptions() {
     } else {
         $("#advancedOptionsFull").hide();
         $("#advancedOptionsFullWarning").show();
+    }
+}
+
+function openTabByHash() {
+    // Hash
+    if(window.location.hash) {
+        if(window.location.hash == "#customTheme") {
+            $("#customThemeTabLink a").tab("show");
+        } else if(window.location.hash == "#presets") {
+            $("#presetsTabLink a").tab("show");
+        } else if(window.location.hash == "#aboutLatestVersion") {
+            $("#aboutTabLink a").tab("show");
+            $("#changelogTabLink a").tab("show");
+        } else if(window.location.hash == "#archive") {
+            $("#archiveRestoreTabLink a").tab("show");
+        }
     }
 }
 
@@ -1314,6 +1573,10 @@ $(document).ready(() => {
         changeTheme();
     });
 
+    $("#enableRightClickMenu").on("change", async() => {
+        await setSettingItem("disableRightClickMenu", $("#enableRightClickMenu").is(":checked") ? "false" : "true");
+    });
+
     $("#autoBackupCloudSelect").on("change", async() => {
         await setSettingItem("autoBackupCloudInterval", $("#autoBackupCloudSelect").val());
     });
@@ -1330,6 +1593,7 @@ $(document).ready(() => {
             }
         }
 
+        $("#not-saved-customThemes").hide();
         currentSelectedTheme = $("#themeSelect").val();
         displayTheme($("#themeSelect").val());
     });
@@ -1347,6 +1611,7 @@ $(document).ready(() => {
         $("#customThemeSave").attr("data-original-title", i18next.t("modal.customTheme.saved"));
         $("#customThemeSave").tooltip("enable");
         $("#customThemeSave").tooltip("show");
+        $("#not-saved-customThemes").hide();
     });
 
     $("#customThemeCancel").on("click", () => {
@@ -1396,7 +1661,9 @@ $(document).ready(() => {
 
     if(typeof(browser.storage.onChanged) !== "undefined") {
         browser.storage.onChanged.addListener((changes, areaName) => {
-            displaySettings(areaName, changingLanguage);
+            if(changes) {
+                displaySettings(areaName, changingLanguage, Object.keys(changes));
+            }
         });
     }
 
@@ -1415,11 +1682,17 @@ $(document).ready(() => {
         $(this).val("");
     });
 
-    $("#customThemeFont").on("input", () => {
+    $("#customThemeFont").on("input", async() => {
         if($("#customThemeFont").val().trim() !== "") {
             $("#previsualisationDiv").css("font-family", "\"" + $("#customThemeFont").val() + "\"");
         } else {
             $("#previsualisationDiv").css("font-family", "");
+        }
+
+        if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+            $("#not-saved-customThemes").show();
+        } else {
+            $("#not-saved-customThemes").hide();
         }
     });
 
@@ -1438,6 +1711,14 @@ $(document).ready(() => {
         matchBrackets: true,
         scrollbarStyle: "overlay",
         extraKeys: {"Ctrl-Space": "autocomplete"}
+    });
+
+    window.codeMirrorUserCss.on("change", async() => {
+        if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
+            $("#not-saved-customThemes").show();
+        } else {
+            $("#not-saved-customThemes").hide();
+        }
     });
 
     window.codeMirrorJSONArchive = CodeMirror.fromTextArea(document.getElementById("codeMirrorJSONArchiveTextarea"), {
@@ -1476,11 +1757,11 @@ $(document).ready(() => {
 
     window.codeMirrorJSONArchive.setSize(null, 50);
 
-    displaySettings("local");
+    displaySettings();
 
     if(getBrowser() == "Chrome" || getBrowser() == "Opera") {
         $("#keyboardShortcuts").on("click", () => {
-            browser.runtime.sendMessage({
+            sendMessageWithPromise({
                 type: "openTab",
                 url: "chrome://extensions/configureCommands",
                 part: ""
@@ -1488,7 +1769,7 @@ $(document).ready(() => {
         });
     } else if(getBrowser() == "Edge") {
         $("#keyboardShortcuts").on("click", () => {
-            browser.runtime.sendMessage({
+            sendMessageWithPromise({
                 type: "openTab",
                 url: "edge://extensions/shortcuts",
                 part: ""
@@ -1496,26 +1777,12 @@ $(document).ready(() => {
         });
     } else if(getBrowser() == "Firefox") {
         $("#keyboardShortcuts").on("click", () => {
-            browser.runtime.sendMessage({
+            sendMessageWithPromise({
                 type: "openTab",
                 url: "https://support.mozilla.org/" + i18next.language + "/kb/manage-extension-shortcuts-firefox",
                 part: ""
             });
         });
-    }
-
-    // Hash
-    if(window.location.hash) {
-        if(window.location.hash == "#customTheme") {
-            $("#customThemeTabLink a").tab("show");
-        } else if(window.location.hash == "#presets") {
-            $("#presetsTabLink a").tab("show");
-        } else if(window.location.hash == "#aboutLatestVersion") {
-            $("#aboutTabLink a").tab("show");
-            $("#changelogTabLink a").tab("show");
-        } else if(window.location.hash == "#archive") {
-            $("#archiveRestoreTabLink a").tab("show");
-        }
     }
 
     $("#loadPresetValid").on("click", async() => {
@@ -1557,20 +1824,18 @@ $(document).ready(() => {
         }
     });
 
-    $("#updateAllFilters").on("click", () => {
+    $("#updateAllFilters").on("click", async() => {
         $("#updateAllFilters").attr("disabled", "disabled");
 
-        browser.runtime.sendMessage({
-            "type": "updateAllFilters"
-        });
+        const message = await sendMessageWithPromise({ "type": "updateAllFilters" }, "updateAllFiltersFinished");
+        if(message.result) $("#updateAllFilters").removeAttr("disabled");
     });
 
-    $("#cleanAllFilters").on("click", () => {
+    $("#cleanAllFilters").on("click", async() => {
         $("#cleanAllFilters").attr("disabled", "disabled");
 
-        browser.runtime.sendMessage({
-            "type": "cleanAllFilters"
-        });
+        const message = await sendMessageWithPromise({ "type": "cleanAllFilters" }, "cleanAllFiltersFinished");
+        if(message.result) $("#cleanAllFilters").removeAttr("disabled");
     });
 
     $("#addFilterSourceBtnOpen").on("click", () => {
@@ -1614,21 +1879,18 @@ $(document).ready(() => {
         }
     });
 
-    $("#enableFilterAutoUpdate").on("change", () => {
+    $("#enableFilterAutoUpdate").on("change", async() => {
         $("#enableFilterAutoUpdate").attr("disabled", "disabled");
 
-        browser.runtime.sendMessage({
-            "type": "toggleAutoUpdate",
-            "enabled": $("#enableFilterAutoUpdate").is(":checked")
-        });
+        const message = await sendMessageWithPromise({ "type": "toggleAutoUpdate", "enabled": $("#enableFilterAutoUpdate").is(":checked") }, "toggleAutoUpdateFinished");
+        if(message.result) $("#enableFilterAutoUpdate").removeAttr("disabled");
     });
 
-    $("#resetDefaultFiltersBtn").on("click", () => {
+    $("#resetDefaultFiltersBtn").on("click", async() => {
         $("#resetDefaultFiltersBtn").attr("disabled", "disabled");
 
-        browser.runtime.sendMessage({
-            "type": "reinstallDefaultFilters"
-        });
+        const message = await sendMessageWithPromise({ "type": "reinstallDefaultFilters" }, "reinstallDefaultFiltersResponse");
+        if(message.result) $("#resetDefaultFiltersBtn").removeAttr("disabled");
     });
 
     $("#customFilterSave").on("click", () => {
@@ -1664,8 +1926,33 @@ $(document).ready(() => {
             }
         }
 
+        $("#not-saved-presets").hide();
         currentSelectedPresetEdit = $("#savePresetSelect").val();
         displayPresetSettings($("#savePresetSelect").val());
+    });
+
+    $("#savePresetTitle").on("input", async() => {
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            $("#not-saved-presets").show();
+        } else {
+            $("#not-saved-presets").hide();
+        }
+    });
+
+    $("#savePresetWebsite").on("input", async() => {
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            $("#not-saved-presets").show();
+        } else {
+            $("#not-saved-presets").hide();
+        }
+    });
+
+    $("#checkSaveNewSettingsPreset").on("change", async() => {
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            $("#not-saved-presets").show();
+        } else {
+            $("#not-saved-presets").hide();
+        }
     });
 
     $("#syntaxBtn").on("click", () => {
@@ -1691,11 +1978,11 @@ $(document).ready(() => {
     });
 
     // Auto check for filters update
-    $("#filtersTabLink a").on("shown.bs.tab", () => {
+    $("#filtersTabLink a").on("shown.bs.tab", async() => {
         if (!alreadyCheckedForUpdateFilters) {
-            browser.runtime.sendMessage({
-                "type": "checkUpdateNeededForFilters"
-            });
+            await sendMessageWithPromise({ "type": "checkUpdateNeededForFilters" }, "getUpdateNeededForFilterFinished");
+            alreadyCheckedForUpdateFilters = true;
+            displayFilters();
         }
     });
 
@@ -1703,169 +1990,45 @@ $(document).ready(() => {
         checkAdvancedOptions();
     });
 
-    $("#resetAdvancedOptions").on("click", () => {
+    $("#resetAdvancedOptions").on("click", async() => {
         loadAdvancedOptionsUI(true);
+
+        if(await notifyChangedAdvancedOptionsNotSaved()) {
+            $("#not-saved-advanced").show();
+        } else {
+            $("#not-saved-advanced").hide();
+        }
     });
 
     $("#saveAdvancedOptions").on("click", () => {
         saveAdvancedOptions();
     });
-});
 
-// Message/response handling
-browser.runtime.onMessage.addListener(message => {
-    if(message) {
-        switch(message.type) {
-        case "toggleAutoUpdateFinished": {
-            if(message.result) $("#enableFilterAutoUpdate").removeAttr("disabled");
-            break;
+    $("#checkWhiteList").on("change", async() => {
+        if(await notifyChangedListNotSaved()) {
+            $("#not-saved-lists").show();
+        } else {
+            $("#not-saved-lists").hide();
         }
-        case "cleanAllFiltersFinished": {
-            if(message.result) $("#cleanAllFilters").removeAttr("disabled");
-            break;
-        }
-        case "updateAllFiltersFinished": {
-            if(message.result) $("#updateAllFilters").removeAttr("disabled");
-            break;
-        }
-        case "updateFilterFinished": {
-            if(!message.result) displayFilters();
-            break;
-        }
-        case "getNumberOfRulesResponse": {
-            $("#detailsFilterRulesCount").text(message.count);
-            break;
-        }
-        case "getNumberOfTotalRulesResponse": {
-            $("#filtersCount").text(i18next.t("modal.filters.filtersCount", { count: message.count }));
-            break;
-        }
-        case "getNumberOfCustomFilterRulesResponse": {
-            $("#customFilterCount").text(i18next.t("modal.filters.filtersCount", { count: message.count }));
-            break;
-        }
-        case "getRulesErrorCustomFilterResponse": {
-            $("#errorFilterCountCustom").text("");
-            $("#buttonSeeErrorsCustomFilter").hide();
+    });
 
-            if(message.data && message.data.length > 0) {
-                $("#errorFilterCountCustom").text(i18next.t("modal.filters.filtersWithErrorCount", { count: message.data.length }));
-                $("#buttonSeeErrorsCustomFilter").show();
-            }
-            break;
+    $("#textareaAssomPage").on("input", async() => {
+        if(await notifyChangedListNotSaved()) {
+            $("#not-saved-lists").show();
+        } else {
+            $("#not-saved-lists").hide();
         }
-        case "getFilterRuleNumberErrorsResponse": {
-            if(message.data) {
-                $("#errorFilterCount").text(i18next.t("modal.filters.filtersWithErrorCount", { count: message.data.length }));
-                $("#buttonSeeErrorsFilter").attr("disabled", "disabled");
+    });
 
-                if(message.data.length > 0) {
-                    $("#buttonSeeErrorsFilter").removeAttr("disabled");
-                }
-            }
-            break;
-        }
-        case "getRulesErrorsResponse": {
-            if(message.typeFilter == "custom") {
-                $("#buttonSeeErrorsCustomFilter").removeAttr("disabled");
-            } else {
-                $("#buttonSeeErrorsFilter").removeAttr("disabled");
-            }
-
-            displayFilterErrors(message.data, message.typeFilter);
-
-            break;
-        }
-        case "getRulesErrorsForCustomEditResponse": {
-            displayFilterErrorsOnElement(message.data, document.querySelector("#customFilterEditErrorDetails"));
-
-            if(Object.keys(message.data).length > 0) {
-                $("#customFilterEditErrorDetected").show();
-            } else {
-                $("#customFilterEditErrorDetected").hide();
-                $("#customFilterEditErrorDetails").hide();
-            }
-
-            break;
-        }
-        case "getFiltersSizeResponse": {
-            const converted = convertBytes(message.size);
-
-            $("#filtersStorageSize").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
-            break;
-        }
-        case "reinstallDefaultFiltersResponse": {
-            if(message.result) $("#resetDefaultFiltersBtn").removeAttr("disabled");
-            break;
-        }
-        case "addFilterFinished":
-        case "addFilterError": {
-            $("#addFilterBtn").removeAttr("disabled");
-            $("#filterAddress").removeAttr("disabled");
-            $("#addFilterCancelBtn").removeAttr("disabled");
-
-            if(message.type == "addFilterError") {
-                switch(message.error) {
-                case "Fetch error":
-                    $("#addFilterErrorFetch").show();
-                    break;
-                case "Parsing error":
-                    $("#addFilterErrorParsing").show();
-                    break;
-                case "Unknown error":
-                    $("#addFilterErrorUnknown").show();
-                    break;
-                case "Already added error":
-                    $("#addFilterErrorAlreadyAdded").show();
-                    break;
-                case "Empty error":
-                    $("#addFilterErrorEmpty").show();
-                    break;
-                }
-            } else {
-                $("#addFilterSource").modal("hide");
-            }
-            break;
-        }
-        case "updateCustomFilterFinished": {
-            $("#customFilterSave").removeAttr("disabled", "disabled");
-
-            clearTimeout(filterSavedTimeout);
-            filterSavedTimeout = setTimeout(() => {
-                $("#customFilterSave").attr("data-original-title", "");
-                $("#customFilterSave").tooltip("hide");
-                $("#customFilterSave").tooltip("disable");
-            }, 3000);
-
-            $("#customFilterSave").attr("data-original-title", i18next.t("modal.filters.saved"));
-            $("#customFilterSave").tooltip("enable");
-            $("#customFilterSave").tooltip("show");
-
-            browser.runtime.sendMessage({
-                "type": "getRulesErrorsForCustomEdit",
-                "idFilter": "customFilter"
-            });
-            break;
-        }
-        case "updateCustomFilterAndCloseFinished": {
-            $("#closeAndSaveCustomFilter").removeAttr("disabled", "disabled");
-            $("#editFilter").modal("hide");
-
-            browser.runtime.sendMessage({
-                "type": "getRulesErrorsForCustomEdit",
-                "idFilter": "customFilter"
-            });
-            break;
-        }
-        case "getUpdateNeededForFilterFinished": {
-            alreadyCheckedForUpdateFilters = true;
-            displayFilters();
-            break;
-        }
-        }
-    }
+    openTabByHash();
 });
 
 window.onbeforeunload = () => {
     return "";
 };
+
+browser.runtime.onMessage.addListener(message => {
+    if(message && message.type == "hashUpdated") {
+        openTabByHash();
+    }
+});

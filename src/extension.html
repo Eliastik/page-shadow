@@ -102,7 +102,12 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 <div id="previsualisationTheme">
                                     <span data-i18n="container.previsualisationTheme"></span> <div id="previsualisationDiv"><span data-i18n="[html]container.previsualisationThemeText"></span></div>
                                 </div>
-                                <input type="checkbox" id="checkDisableImgBgColor" /> <label for="checkDisableImgBgColor"  data-i18n="container.disableImgBgColor"></label>
+                                <div>
+                                    <input type="checkbox" id="checkDisableImgBgColor" /> <label for="checkDisableImgBgColor"  data-i18n="container.disableImgBgColor"></label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="checkEnableBrightColorPreservation" /> <label for="checkEnableBrightColorPreservation"  data-i18n="container.checkEnableBrightColorPreservation"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-placement="top" data-i18n="[data-original-title]container.titleCheckEnableBrightColorPreservation"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -317,6 +322,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                 </ul>
             </footer>
             <div class="snackbar" id="infoPreset"></div>
+            <div class="snackbar" id="informations"></div>
         </div>
         <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="customThemeInfos" id="customThemeInfos">
             <div class="modal-dialog" role="document">
