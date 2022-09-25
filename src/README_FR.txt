@@ -37,7 +37,7 @@ Soit la compiler vous-même (voir section "Compilation").
 ### Version 2.10.1 (25/09/2022) :
 
 * Optimisation majeure des performances, ce qui permet de limiter l'apparition de flashs lors de la navigation entre pages ou le changement des paramètres en temps réel ;
-* Ajout de la fonction "Préserver les couleurs des éléments" (activée par défaut) à la fonction "Augmenter le contraste". Cette fonction préserve les couleurs des éléments, mais remplace les couleurs très proches du blanc ou les couleurs sombres ;
+* Ajout de la fonction "Préserver les couleurs des éléments" (non activée par défaut) à la fonction "Augmenter le contraste". Cette fonction préserve les couleurs des éléments, mais remplace les couleurs très proches du blanc ou les couleurs sombres ;
 * Amélioration de l'expérience d'utilisation lorsque le thème de la popup "Moderne" est activé. Ce thème est désormais le thème par défaut pour les nouvelles installations ;
 * Améliorations mineures de l'interface des Paramètres avancés : affichage d'une icône sur les onglets si des modifications des paramètres n'ont pas été enregistrées, affichage d'un témoin de chargement lors de la restauration des archives des paramètres ;
 * Ajout du paramètre "Activer le menu du clic droit" (activé par défaut) ;

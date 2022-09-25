@@ -5,7 +5,7 @@
 ### Version 2.10.1 (9/25/2022) :
 
 * Major performance optimization, which limits the flashes that appeared when navigating between pages or changing settings in real time;
-* Added "Preserve element colors" function (enabled by default) to "Increase contrast" function. This function preserves the colors of the elements, but replaces colors very close to white or dark colors;
+* Added "Preserve element colors" function (not enabled by default) to "Increase contrast" function. This function preserves the colors of the elements, but replaces colors very close to white or dark colors;
 * Improved user experience when "Modern" popup theme is enabled. This theme is now the default theme for new installations;
 * Minor improvements to the Advanced Settings interface: display of an icon on tabs if changes to settings have not been saved, display of a loading indicator when restoring settings archives;
 * Add the setting "Enable right-click menu" in General settings (enabled by default);
@@ -321,7 +321,7 @@
 ### Version 2.10.1 (25/09/2022) :
 
 * Optimisation majeure des performances, ce qui permet de limiter l'apparition de flashs lors de la navigation entre pages ou le changement des paramètres en temps réel ;
-* Ajout de la fonction "Préserver les couleurs des éléments" (activée par défaut) à la fonction "Augmenter le contraste". Cette fonction préserve les couleurs des éléments, mais remplace les couleurs très proches du blanc ou les couleurs sombres ;
+* Ajout de la fonction "Préserver les couleurs des éléments" (non activée par défaut) à la fonction "Augmenter le contraste". Cette fonction préserve les couleurs des éléments, mais remplace les couleurs très proches du blanc ou les couleurs sombres ;
 * Amélioration de l'expérience d'utilisation lorsque le thème de la popup "Moderne" est activé. Ce thème est désormais le thème par défaut pour les nouvelles installations ;
 * Améliorations mineures de l'interface des Paramètres avancés : affichage d'une icône sur les onglets si des modifications des paramètres n'ont pas été enregistrées, affichage d'un témoin de chargement lors de la restauration des archives des paramètres ;
 * Ajout du paramètre "Activer le menu du clic droit" (activé par défaut) ;

@@ -37,7 +37,7 @@ Or you can compile it yourself (see Compilation section).
 ### Version 2.10.1 (9/25/2022) :
 
 * Major performance optimization, which limits the flashes that appeared when navigating between pages or changing settings in real time;
-* Added "Preserve element colors" function (enabled by default) to "Increase contrast" function. This function preserves the colors of the elements, but replaces colors very close to white or dark colors;
+* Added "Preserve element colors" function (not enabled by default) to "Increase contrast" function. This function preserves the colors of the elements, but replaces colors very close to white or dark colors;
 * Improved user experience when "Modern" popup theme is enabled. This theme is now the default theme for new installations;
 * Minor improvements to the Advanced Settings interface: display of an icon on tabs if changes to settings have not been saved, display of a loading indicator when restoring settings archives;
 * Add the setting "Enable right-click menu" in General settings (enabled by default);
