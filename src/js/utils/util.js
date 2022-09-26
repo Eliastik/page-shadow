@@ -1300,7 +1300,9 @@ async function sendMessageWithPromise(data, ...expectedMessageType) {
             });
         }
 
-        browser.runtime.sendMessage(data);
+        browser.runtime.sendMessage(data).catch(() => {
+            if(browser.runtime.lastError) return;
+        });
 
         if(!expectedMessageType) {
             resolve();

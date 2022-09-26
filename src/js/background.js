@@ -497,6 +497,8 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
             if(typeof(browser.tabs.sendMessage) !== "undefined") {
                 browser.tabs.sendMessage(sender.tab.id, result, {
                     frameId: sender.frameId
+                }).catch(() => {
+                    if(browser.runtime.lastError) return; // ignore the error messages
                 });
             }
         });
@@ -585,7 +587,11 @@ async function openTab(url, part) {
         browser.windows.update(tab.windowId, { focused: true });
 
         if(part) {
-            browser.tabs.sendMessage(tab.id, { type: "hashUpdated" });
+            browser.tabs.sendMessage(tab.id,{
+                type: "hashUpdated"
+            }).catch(() => {
+                if(browser.runtime.lastError) return; // ignore the error messages
+            });
         }
     }
 }
