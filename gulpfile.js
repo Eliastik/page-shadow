@@ -150,15 +150,17 @@ gulp.task("build", () => {
 });
 
 gulp.task("watch", () => {
-    gulp.watch(["src/js/*.js", "src/css/*.css", "src/css/*.less", "src/locales/**/*.json", "src/filters/*.txt", "src/*.html", "src/*.txt"], gulp.series("build-dev"));
+    gulp.watch(["src/js/*.js", "src/css/*.css", "src/css/*.less", "src/locales/**/*.json", "src/filters/*.txt", "src/*.html", "src/*.txt"], gulp.series("build-directory-dev"));
 });
 
-gulp.task("build-dev", gulp.series("clean", "copy-global", "compile-less", "compile-js", "copyChrome", "copyEdge", "copyFirefox", "copyFirefoxContentCSS", "build", "clean-directories"));
+gulp.task("build-directory-dev", gulp.series("clean", "copy-global", "compile-less", "compile-js", "copyChrome", "copyEdge", "copyFirefox", "copyFirefoxContentCSS"));
 
-gulp.task("default", gulp.series("build-dev"));
+gulp.task("build-dev", gulp.series("build-directory-dev", "build", "clean-directories"));
 
-gulp.task("build-prod", gulp.series("set-prod-mode", "clean", "copy-global", "compile-less", "compile-js", "compress-css", "copyChrome", "copyEdge", "copyFirefox", "copyFirefoxContentCSS", "build", "clean-directories"));
+gulp.task("build-directory-prod", gulp.series("set-prod-mode", "clean", "copy-global", "compile-less", "compile-js", "compress-css", "copyChrome", "copyEdge", "copyFirefox", "copyFirefoxContentCSS"));
 
-gulp.task("build-prod-no-css-compress", gulp.series("set-prod-mode", "clean", "copy-global", "compile-less", "compile-js", "copyChrome", "copyEdge", "copyFirefox", "copyFirefoxContentCSS", "build", "clean-directories"));
+gulp.task("build-prod", gulp.series("build-directory-prod", "build", "clean-directories"));
 
 gulp.task("clean-build", gulp.series("clean"));
+
+gulp.task("default", gulp.series("build-dev"));
