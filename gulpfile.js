@@ -11,6 +11,7 @@ const webpack  = require("webpack-stream");
 const rename   = require("gulp-rename");
 const compiler = require("webpack");
 const eslint   = require("eslint-webpack-plugin");
+const plumber  = require("gulp-plumber");
 
 let currentMode = "development";
 
@@ -103,9 +104,7 @@ gulp.task("compile-js", () => {
             },
             plugins: [new eslint()]
         }, compiler))
-        .on("error", err => {
-            console.error(err);
-        })
+        .pipe(plumber())
         .pipe(gulp.dest("./build/global/js/"));
 });
 
