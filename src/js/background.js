@@ -309,9 +309,11 @@ async function autoEnable(changed) {
 }
 
 if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) !== "undefined") {
-    browser.storage.onChanged.addListener(() => {
-        menu();
-        updateBadge(true);
+    browser.storage.onChanged.addListener((_changes, areaName) => {
+        if(areaName == "local") {
+            menu();
+            updateBadge(true);
+        }
     });
 }
 

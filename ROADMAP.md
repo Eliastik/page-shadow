@@ -67,6 +67,10 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [ ] (Important) Update to Manifest v3 (check manifestv3 branch)
 
+#### Bugs
+
+* [x] (Minor) Performance issue on Firefox when loading a preset or restoring setting archive -> small optimization have already been made
+
 ### Futures versions
 
 ### Common
@@ -89,5 +93,4 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list ?
-* [ ] (Minor) Performance issue on Firefox when loading a preset or restoring setting archive -> small optimization have already been made
 * [ ] (Minor) Fix Preserve bright color on some website (white text color on white background)
