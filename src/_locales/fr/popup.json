@@ -34,7 +34,7 @@
         "titleAutoEnable": "Activer ou désactiver globalement Page Shadow de manière automatique en fonction de l'heure. Sélectionnez l'icône roue dentée afin de régler cette fonction.",
         "liveSettings": "Appliquer les paramètres en temps réel",
         "titleLiveSettings": "Peut réduire les performances du navigateur.",
-        "tempSelect": "Temp. :",
+        "tempSelect": "Température de couleur :",
         "titleTemp": "Sélectionnez la température de couleur du filtre orangé. Plus la température est faible, plus la couleur orangée du filtre sera intense. La température est en Kelvin.",
         "presetAutoEnabledForThisWebsite": "Pré-réglage n°{{count}} automatiquement activé pour ce site/page, remplaçant les paramètres ci-dessous.",
         "autoEnablePresetFor": "Auto activ. du pré-régl. pour :",

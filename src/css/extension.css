@@ -197,7 +197,13 @@ hr.nmt {
     margin-bottom: 0 !important;
 }
 #tempSelectDiv {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px !important;
+}
+#tempSelectDiv label {
+    margin-bottom: 0 !important;
+    margin-right: 2px !important;
 }
 .btn, button {
     margin-bottom: 8px !important;

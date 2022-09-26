@@ -34,7 +34,7 @@
         "titleAutoEnable": "Enable or disable globally Page Shadow automatically according to the time. Select the cog wheel icon to setup this function.",
         "liveSettings": "Apply the settings in real time",
         "titleLiveSettings": "Can reduce browser performance.",
-        "tempSelect": "Temp.:",
+        "tempSelect": "Color temperature:",
         "titleTemp": "Select the color temperature of the orange filter. The lower is the temperature, the more intense is the orange color of the filter. The temperature is in Kelvin.",
         "presetAutoEnabledForThisWebsite": "Preset n°{{count}} automatically enabled for this website/page, overriding the settings below.",
         "autoEnablePresetFor": "Auto enable preset for:",
