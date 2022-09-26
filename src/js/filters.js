@@ -23,14 +23,17 @@ import browser from "webextension-polyfill";
 import { parseHTML } from "linkedom";
 
 export default class FilterProcessor {
+    static instance = null;
+
     rules = [];
     specialRules = []; // Special rules contains rules for adjusting Page Shadow internal processing (performance mode, etc.)
-    static instance = null;
+    isInit = true;
 
     constructor() { // Filter class is a Singleton
         if(!FilterProcessor.instance) {
             FilterProcessor.instance = this;
-            this.cacheFilters();
+        } else {
+            this.isInit = false;
         }
 
         return FilterProcessor.instance;
@@ -425,6 +428,7 @@ export default class FilterProcessor {
 
         this.rules = newRules;
         this.specialRules = newSpecialRules;
+        this.isInit = false;
     }
 
     extractMetadataLine(line) {

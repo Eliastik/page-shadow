@@ -276,7 +276,10 @@ async function checkAutoUpdateFilters() {
     const lastFailedUpdate = filterResults.lastFailedUpdate;
 
     const filters = new Filter();
-    filters.cacheFilters();
+
+    if(filters.isInit) {
+        await filters.cacheFilters();
+    }
 
     if(enableAutoUpdate && updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
         filters.updateAllFilters(true, false);
@@ -346,10 +349,24 @@ if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) 
 }
 
 if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) !== "undefined") {
-    browser.runtime.onMessage.addListener((message, sender) => {
+    browser.runtime.onMessage.addListener(async(message, sender) => {
         const filters = new Filter();
         const presetCache = new PresetCache();
         const settingsCache = new SettingsCache();
+
+        // Update cache if needed
+        if(presetCache.isInit &&
+            (message.type == "getPreset" || message.type == "getAllPresets")) {
+            await presetCache.updateCache();
+        }
+
+        if(settingsCache.isInit && message.type == "getSettings") {
+            await settingsCache.updateCache();
+        }
+
+        if(filters.isInit) {
+            await filters.cacheFilters();
+        }
 
         new Promise(resolve => {
             if(message) {

@@ -20,13 +20,16 @@ import { getPresetData } from "./util.js";
 import { nbPresets } from "../constants.js";
 
 export default class PresetCache {
-    data = [];
     static instance = null;
+
+    data = [];
+    isInit = true;
 
     constructor() { // Singleton
         if(!PresetCache.instance) {
             PresetCache.instance = this;
-            this.updateCache();
+        } else {
+            this.isInit = false;
         }
 
         return PresetCache.instance;
@@ -39,6 +42,8 @@ export default class PresetCache {
             const presetData = await getPresetData(i);
             this.data[i] = presetData;
         }
+
+        this.isInit = false;
 
         return true;
     }

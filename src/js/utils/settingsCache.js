@@ -23,13 +23,16 @@ import browser from "webextension-polyfill";
  * Class to keep settings in cache
  */
 export default class SettingsCache {
-    data = {};
     static instance = null;
+
+    data = {};
+    isInit = true;
 
     constructor() { // Singleton
         if(!SettingsCache.instance) {
             SettingsCache.instance = this;
-            this.updateCache();
+        } else {
+            this.isInit = false;
         }
 
         return SettingsCache.instance;
@@ -37,6 +40,7 @@ export default class SettingsCache {
 
     async updateCache() {
         this.data = await browser.storage.local.get(settingsToLoad);
+        this.isInit = false;
     }
 
     resetCache() {
