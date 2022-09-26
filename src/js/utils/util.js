@@ -187,7 +187,14 @@ async function pageShadowAllowed(url) {
             forbiddenWebsites = result.sitesInterditPageShadow.trim().split("\n");
         }
 
-        const websuteUrl_tmp = new URL(url);
+        let websuteUrl_tmp;
+
+        try {
+            websuteUrl_tmp = new URL(url);
+        } catch(e) {
+            return;
+        }
+
         const domain = websuteUrl_tmp.hostname;
 
         if((result.whiteList == "true" && (in_array_website(domain, forbiddenWebsites) || in_array_website(url, forbiddenWebsites))) || (result.whiteList !== "true" && !in_array_website(domain, forbiddenWebsites) && !in_array_website(url, forbiddenWebsites))) {
@@ -834,7 +841,14 @@ async function presetsEnabledForWebsite(url, disableCache) {
                     websiteList = websiteSettings.trim().split("\n");
                 }
 
-                const websuteUrl_tmp = new URL(url);
+                let websuteUrl_tmp;
+
+                try {
+                    websuteUrl_tmp = new URL(url);
+                } catch(e) {
+                    return;
+                }
+
                 const domain = websuteUrl_tmp.hostname;
                 const autoEnabledWebsite = in_array_website(domain, websiteList);
                 const autoEnabledPage = in_array_website(url, websiteList);

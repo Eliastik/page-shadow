@@ -114,7 +114,14 @@ async function menu() {
                 if(tabUrl.startsWith(extensionDomain)) return;
 
                 const url_str = normalizeURL(tabUrl);
-                const url = new URL(url_str);
+                let url;
+
+                try {
+                    url = new URL(url_str);
+                } catch(e) {
+                    return;
+                }
+
                 const domain = url.hostname;
                 const href = url.href;
                 const isFileURL = url_str.startsWith("file:///") || url_str.startsWith("about:");
@@ -508,7 +515,15 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
 if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.onClicked) !== "undefined") {
     browser.contextMenus.onClicked.addListener(async(info, tab) => {
         const url = normalizeURL(tab.url);
-        await disableEnableToggle(info.menuItemId, info.checked && !info.wasChecked, new URL(url));
+        let urlObj;
+
+        try {
+            urlObj = new URL(url);
+        } catch(e) {
+            return;
+        }
+
+        await disableEnableToggle(info.menuItemId, info.checked && !info.wasChecked, urlObj);
 
         if(info.menuItemId.substring(0, 11) == "load-preset") {
             const nbPreset = info.menuItemId.substr(12, info.menuItemId.length - 11);
