@@ -104,7 +104,7 @@
                 "brightColorLightnessTresholdMax": "Si un élément a une valeur de luminosité inférieure à ce seuil et supérieure à la valeur minimum, l'élément sera détecté comme élément de couleur vive.",
                 "throttleBackgroundDetection": "Applique un délai à la détection des arrière-plans au chargement des pages, ce qui permet d'améliorer les performances sur les grandes pages.",
                 "throttleBackgroundDetectionElementsTreatedByCall": "Défini le nombre d'éléments traités par chaque appel de boucle lorsque la détection des arrière-plans est ralentie. Une valeur élevée peut impacter les performances.",
-                "backgroundDetectionStartDelay": "Applique un délai avant d'appliquer le traitement de l'arrière-plan des éléments. Par défaut 1 ms.",
+                "backgroundDetectionStartDelay": "Applique un délai avant d'appliquer le traitement de l'arrière-plan des éléments. Par défaut 0 ms.",
                 "useBackgroundDetectionAlreadyProcessedNodes": "Utilise une liste d'éléments déjà traités pour le traitement des arrière-plans pour éviter de traiter à nouveau les mêmes éléments. Peut améliorer les performances, mais peut augmenter l'utilisation de la mémoire."
             }
         },
