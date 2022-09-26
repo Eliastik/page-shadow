@@ -366,8 +366,9 @@ npm install
 ````
 Then to compile:
 
-* Dev mode (no compression): `gulp` or `gulp build-dev`
-* Prod mode (compression): `gulp build-prod` or `build-prod-no-css-compress` (only compress js files)
+* Dev mode (no compression): `gulp` or `gulp build-dev` or `gulp build-directory-dev` (only compile as folders)
+* Prod mode (with compression): `gulp build-prod` or `gulp build-directory-prod` (only compile as folders)
+* Watch mode (real-time compilation): `gulp watch` (uses dev mode compilation)
 
 If you encounter the following error message when compiling:
 
