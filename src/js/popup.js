@@ -1493,8 +1493,10 @@ $(document).ready(() => {
     displaySettings();
 
     if(typeof(browser.storage.onChanged) !== "undefined") {
-        browser.storage.onChanged.addListener(() => {
-            displaySettings();
+        browser.storage.onChanged.addListener((_changes, areaName) => {
+            if(areaName == "local") {
+                displaySettings();
+            }
         });
     }
 

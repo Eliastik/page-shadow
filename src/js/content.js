@@ -29,8 +29,10 @@ import ContentProcessor from "./contentProcessor.js";
     precUrl = getCurrentURL();
 
     // If storage/settings have changed
-    browser.storage.onChanged.addListener(changes => {
-        applyIfSettingsChanged(false, true, null, changes.customThemes != null);
+    browser.storage.onChanged.addListener((changes, areaName) => {
+        if(changes && areaName == "local") {
+            applyIfSettingsChanged(false, true, null, changes.customThemes != null);
+        }
     });
 
     // Message/response handling
