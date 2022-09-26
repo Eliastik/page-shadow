@@ -254,7 +254,14 @@ $(document).ready(() => {
 
     async function checkEnable() {
         const url_str = await getCurrentURL();
-        const url = new URL(url_str);
+        let url;
+
+        try {
+            url = new URL(url_str);
+        } catch(e) {
+            return;
+        }
+
         const isFileURL = url_str.startsWith("file:///") || url_str.startsWith("about:");
 
         const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
@@ -385,13 +392,27 @@ $(document).ready(() => {
     }
 
     async function disablePageShadow(type, checked) {
-        const url = new URL(await getCurrentURL());
+        let url;
+
+        try {
+            url = new URL(await getCurrentURL());
+        } catch(e) {
+            return;
+        }
+
         disableEnableToggle(type, checked, url);
         checkEnable();
     }
 
     async function togglePreset(type, id, checked) {
-        const url = new URL(await getCurrentURL());
+        let url;
+
+        try {
+            url = new URL(await getCurrentURL());
+        } catch(e) {
+            return;
+        }
+
         await disableEnablePreset(type, id, checked, url);
         checkAutoEnablePreset(id);
     }

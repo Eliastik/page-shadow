@@ -286,3 +286,8 @@ select:focus, select.form-control:focus {
 .green {
     color: #7AFF7A !important;
 }
+
+hr {
+    border-color: #3e4046;
+    background-color: #3e4046;
+}
