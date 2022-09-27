@@ -65,7 +65,10 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Planned
 
-* [ ] (Important) Update to Manifest v3 (check manifestv3 branch)
+* [x] (Important) Update to Manifest v3 (check manifestv3 branch)
+    * Bugs linked to MV3 migration:
+        * [ ] Filters don't update on the first install of the extension (update also broken ?)
+        * [ ] Auto cloud backup doesn't work: error with window.navigator.platform not available in Background Service Worker
 
 #### Bugs
 
@@ -80,6 +83,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Planned/ideas
 
 * [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
+* [ ] Only display confirmation on Advanced settings page reload/exit when a change of the settings is unsaved (uses existing code for displaying icon)
 * [ ] Comment the code: doc for methods/functions
 * [ ] Simplify code applying Shadow Roots styles?
 * [ ] No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
@@ -94,3 +98,4 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list ?
 * [ ] (Minor) Fix Preserve bright color on some website (white text color on white background)
+* [ ] (Minor) When dark mode is enabled in the OS, the Readme file in the settings appear inverted (black text on white background when Dark theme is enabled)
