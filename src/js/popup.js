@@ -98,7 +98,13 @@ async function checkCurrentPopupTheme() {
         $(".popup-option-container-modern").hide();
         $("#popup-options").removeClass("popup-options-modern");
         currentTheme = "checkbox";
-    } else if (result && result.popupTheme && result.popupTheme == "modern") {
+    } else if (result && result.popupTheme && result.popupTheme == "switch") {
+        $(".popup-option-container").show();
+        $(".popup-option-container-classic").hide();
+        $(".popup-option-container-modern").hide();
+        $("#popup-options").removeClass("popup-options-modern");
+        currentTheme = "switch";
+    } else {
         $(".popup-option-container").hide();
         $(".popup-option-container-classic").hide();
         $(".popup-option-container-modern").show();
@@ -109,12 +115,6 @@ async function checkCurrentPopupTheme() {
         }
 
         currentTheme = "modern";
-    } else {
-        $(".popup-option-container").show();
-        $(".popup-option-container-classic").hide();
-        $(".popup-option-container-modern").hide();
-        $("#popup-options").removeClass("popup-options-modern");
-        currentTheme = "switch";
     }
 }
 
