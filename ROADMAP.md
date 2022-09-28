@@ -73,6 +73,10 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Bugs
 
 * [x] (Minor) Performance issue on Firefox when loading a preset or restoring setting archive -> small optimization have already been made
+* [ ] (Medium) Fix Preserve bright color on some website (wrong background detection)
+    * The function detects extension's theme background color and not actual background colors of some elements, randomly
+* [ ] (Minor) Fix Preserve bright color white text on white background/black text on black background
+    * Similar to the issue of wrong background detection
 
 ### Futures versions
 
@@ -84,18 +88,23 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
 * [ ] Only display confirmation on Advanced settings page reload/exit when a change of the settings is unsaved (uses existing code for displaying icon)
-* [ ] Comment the code: doc for methods/functions
-* [ ] Simplify code applying Shadow Roots styles?
-* [ ] No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
-* [ ] Filters: UI to report a website problem
-* [ ] Filters: Element picker to create custom rule easily
-* [ ] Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditonal filter)
-* [ ] Store filters on a Github repository ?
+* [ ] Improving codebase
+    * [ ] Comment the code: doc for methods/functions
+    * [ ] Simplify code applying Shadow Roots styles?
+    * [ ] Separate code treating mutations of page elements to a separate class?
+    * [ ] Separate method applting mutation observers to another class?
+    * [ ] Modularize content.js classes with less dependencies between classes?
+* [ ] Others codebase improvements
+    * [ ] No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
+* [ ] Filters module improving
+    * [ ] Filters: UI to report a website problem
+    * [ ] Filters: Element picker to create custom rule easily
+    * [ ] Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditonal filter)
+    * [ ] Store filters on a Github repository ?
 
 #### Known issues/bugs
 
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list ?
-* [ ] (Minor) Fix Preserve bright color on some website (white text color on white background)
 * [ ] (Minor) When dark mode is enabled in the OS, the Readme file in the settings appear inverted (black text on white background when Dark theme is enabled)
