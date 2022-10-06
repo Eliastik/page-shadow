@@ -73,6 +73,9 @@ html.pageShadowContrastBlack.pageShadowForceCustomTextColorAsBackground:not(.pag
     background: var(--page-shadow-txtcolor) !important;
     background-image: url();
 }
+.pageShadowContrastBlack.pageShadowDisableStyling *, .pageShadowContrastBlack *.pageShadowElementDisabled {
+    transition: none !important;
+}
 .pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowHasTransparentBackground),
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowHasTransparentBackground):not(.pageShadowHasBrightColorBackground),
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowForceCustomBackgroundColor, .pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::after, .pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::before {

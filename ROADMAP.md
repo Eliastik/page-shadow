@@ -73,7 +73,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Bugs
 
 * [x] (Minor) Performance issue on Firefox when loading a preset or restoring setting archive -> small optimization have already been made
-* [ ] (Medium) Fix Preserve bright color on some website (wrong background detection)
+* [x] (Medium) Fix Preserve bright color on some website (wrong background detection)
     * The function detects extension's theme background color and not actual background colors of some elements, randomly
 * [ ] (Minor) Fix Preserve bright color white text on white background/black text on black background
     * Similar to the issue of wrong background detection
