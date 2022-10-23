@@ -284,14 +284,14 @@ async function checkAutoUpdateFilters() {
 
     const filters = new Filter();
 
-    if(filters.isInit) {
-        await filters.cacheFilters();
-    }
-
     if(enableAutoUpdate && updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
         filters.updateAllFilters(true, false);
     } else if(enableAutoUpdate && lastFailedUpdate != null && lastFailedUpdate > -1 && ((currentDate - lastFailedUpdate) >= failedUpdateAutoReupdateDelay)) {
         filters.updateAllFilters(true, true);
+    }
+
+    if(filters.isInit) {
+        await filters.cacheFilters();
     }
 }
 
@@ -621,6 +621,11 @@ async function openTab(url, part) {
     }
 }
 
+function alarmCheck() {
+    checkAutoEnable();
+    checkAutoUpdateFilters();
+}
+
 setPopup();
 menu();
 updateBadge(false);
@@ -628,10 +633,10 @@ autoEnable();
 checkFirstLoad();
 migrateSettings(new Filter());
 checkAutoBackupCloud();
+alarmCheck();
 
 browser.alarms.create({ periodInMinutes: 1 });
 
 browser.alarms.onAlarm.addListener(() => {
-    checkAutoEnable();
-    checkAutoUpdateFilters();
+    alarmCheck();
 });

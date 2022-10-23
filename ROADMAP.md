@@ -67,8 +67,9 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [x] (Important) Update to Manifest v3 (check manifestv3 branch)
     * Bugs linked to MV3 migration:
-        * [ ] Filters don't update on the first install of the extension (update also broken ?)
+        * [x] Filters don't update on the first install of the extension (update also broken ?)
         * [x] Auto cloud backup doesn't work: error with window.navigator.platform not available in Background Service Worker
+    * [ ] Test on Firefox
 
 #### Bugs
 
