@@ -1286,7 +1286,7 @@ async function archiveCloud() {
                     dateSettings["dateLastBackup"] = Date.now().toString();
 
                     const deviceSettings = {};
-                    deviceSettings["deviceBackup"] = window.navigator.platform;
+                    deviceSettings["deviceBackup"] = navigator.platform;
 
                     Promise.all([browser.storage.sync.set(dateSettings), browser.storage.sync.set(deviceSettings), browser.storage.sync.remove("pageShadowStorageBackup")])
                         .then(() => {

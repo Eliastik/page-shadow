@@ -68,7 +68,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Important) Update to Manifest v3 (check manifestv3 branch)
     * Bugs linked to MV3 migration:
         * [ ] Filters don't update on the first install of the extension (update also broken ?)
-        * [ ] Auto cloud backup doesn't work: error with window.navigator.platform not available in Background Service Worker
+        * [x] Auto cloud backup doesn't work: error with window.navigator.platform not available in Background Service Worker
 
 #### Bugs
 
@@ -77,6 +77,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * The function detects extension's theme background color and not actual background colors of some elements, randomly
 * [ ] (Minor) Fix Preserve bright color white text on white background/black text on black background
     * Similar to the issue of wrong background detection
+* [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
 
 ### Futures versions
 
