@@ -1542,7 +1542,15 @@ function showInformationPopup(result) {
     const updateNotification = result.updateNotification || {};
 
     if (updateNotification[extensionVersion] != true && result.defaultLoad == "0") {
-        if (updateNotification["2.10"] != true) {
+        let updateFromVersionBefore210 = true;
+
+        for(const version of Object.keys(updateNotification)) {
+            if(version.startsWith("2.10")) {
+                updateFromVersionBefore210 = false;
+            }
+        }
+
+        if(updateFromVersionBefore210) {
             $("#modalUIUpdatedMessage").show();
         } else {
             $("#modalUIUpdatedMessage").hide();
