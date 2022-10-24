@@ -89,6 +89,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
 * [ ] Only display confirmation on Advanced settings page reload/exit when a change of the settings is unsaved (uses existing code for displaying icon)
+* [ ] Option to attenuate color of Preserve color function
 * [ ] Improving codebase
     * [ ] Comment the code: doc for methods/functions
     * [ ] Simplify code applying Shadow Roots styles?
