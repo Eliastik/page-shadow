@@ -69,14 +69,13 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * Bugs linked to MV3 migration:
         * [ ] Filters don't update on the first install of the extension (update also broken ?)
         * [x] Auto cloud backup doesn't work: error with window.navigator.platform not available in Background Service Worker
+* [x] Option to attenuate color of Preserve color function
 
 #### Bugs
 
 * [x] (Minor) Performance issue on Firefox when loading a preset or restoring setting archive -> small optimization have already been made
 * [x] (Medium) Fix Preserve bright color on some website (wrong background detection)
     * The function detects extension's theme background color and not actual background colors of some elements, randomly
-* [ ] (Minor) Fix Preserve bright color white text on white background/black text on black background
-    * Similar to the issue of wrong background detection
 * [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
 
 ### Futures versions
@@ -89,7 +88,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
 * [ ] Only display confirmation on Advanced settings page reload/exit when a change of the settings is unsaved (uses existing code for displaying icon)
-* [ ] Option to attenuate color of Preserve color function
 * [ ] Improving codebase
     * [ ] Comment the code: doc for methods/functions
     * [ ] Simplify code applying Shadow Roots styles?
@@ -106,6 +104,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Known issues/bugs
 
+* [ ] (Medium) Fix Preserve bright color white text on white background/black text on black background
+    * Similar to the issue of wrong background detection
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list ?

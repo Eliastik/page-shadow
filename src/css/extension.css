@@ -729,6 +729,11 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     right: none !important;
 }
 
+.popup-options-modern #themeDiv:before, .popup-options-modern #attenuateColorsDiv:before {
+    right: 39px;
+    right: none !important;
+}
+
 .popup-options-modern #invertPageColorsDiv:before, .popup-options-modern #blueLightReductionFilterSettings:before {
     left: 151px;
     right: none !important;

@@ -827,6 +827,7 @@ async function displayPresetInfos(nb) {
 
         for(const setting of settingsToSavePresets) {
             if(setting == "colorInvert") continue;
+            if(setting == "attenuateImageColor") continue;
             const row = document.createElement("div");
             row.setAttribute("class", "row border-bottom");
 
