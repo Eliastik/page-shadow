@@ -942,6 +942,12 @@ async function getSettings(url, disableCache) {
         settings.colorInvert = "false";
     }
 
+    if(settings.attenuateImageColor == "true") {
+        settings.attenuateColors = "true";
+        settings.attenuateImgColors = "true";
+        settings.attenuateBgColors = "true";
+    }
+
     if(settings.nightModeEnabled == "true" && settings.pageLumEnabled == "true") {
         settings.blueLightReductionEnabled = "true";
         settings.percentageBlueLightReduction = settings.pourcentageLum;

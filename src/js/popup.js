@@ -822,53 +822,124 @@ $(document).ready(() => {
         }
     });
 
-    async function checkAttenuateImageColor() {
-        const result = await browser.storage.local.get("attenuateImageColor");
+    async function checkAttenuateColor() {
+        const result = await browser.storage.local.get(["attenuateColors", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors", "attenuateBrightColors"]);
 
-        if(result.attenuateImageColor == "true") {
-            if($("#checkAttenuateImageColor").is(":checked") == false) {
-                $("#checkAttenuateImageColor").prop("checked", true);
+        if(result.attenuateColors == "true") {
+            if(currentTheme != "modern") {
+                $("#attenuateColorsDiv").stop().fadeIn();
             }
 
-            if($("#checkAttenuateImageColorCheckbox").is(":checked") == false) {
-                $("#checkAttenuateImageColorCheckbox").prop("checked", true);
+            if($("#checkAttenuateColor").is(":checked") == false) {
+                $("#checkAttenuateColor").prop("checked", true);
             }
 
-            $("#checkAttenuateImageColorModern").addClass("active");
+            if($("#checkAttenuateColorCheckbox").is(":checked") == false) {
+                $("#checkAttenuateColorCheckbox").prop("checked", true);
+            }
+
+            $("#checkAttenuateColorModern").addClass("active");
         } else {
-            if($("#checkAttenuateImageColor").is(":checked") == true) {
-                $("#checkAttenuateImageColor").prop("checked", false);
+            if(currentTheme != "modern") {
+                $("#attenuateColorsDiv").stop().fadeOut();
             }
 
-            if($("#checkAttenuateImageColorCheckbox").is(":checked") == true) {
-                $("#checkAttenuateImageColorCheckbox").prop("checked", false);
+            if($("#checkAttenuateColor").is(":checked") == true) {
+                $("#checkAttenuateColor").prop("checked", false);
             }
 
-            $("#checkAttenuateImageColorModern").removeClass("active");
+            if($("#checkAttenuateColorCheckbox").is(":checked") == true) {
+                $("#checkAttenuateColorCheckbox").prop("checked", false);
+            }
+
+            $("#checkAttenuateColorModern").removeClass("active");
+        }
+
+        if(result.attenuateImgColors == "true" && $("#checkAttenuateImageColors").is(":checked") == false) {
+            $("#checkAttenuateImageColors").prop("checked", true);
+        } else if(result.attenuateImgColors == "false" && $("#checkAttenuateImageColors").is(":checked") == true) {
+            $("#checkAttenuateImageColors").prop("checked", false);
+        }
+
+        if(result.attenuateBgColors == "false" && $("#checkAttenuateBgColors").is(":checked") == true) {
+            $("#checkAttenuateBgColors").prop("checked", false);
+        } else if(result.attenuateBgColors !== "false" && $("#checkAttenuateBgColors").is(":checked") == false) {
+            $("#checkAttenuateBgColors").prop("checked", true);
+        }
+
+        if(result.attenuateVideoColors == "true" && $("#checkAttenuateVideoColors").is(":checked") == false) {
+            $("#checkAttenuateVideoColors").prop("checked", true);
+        } else if(result.attenuateVideoColors == "false" && $("#checkAttenuateVideoColors").is(":checked") == true) {
+            $("#checkAttenuateVideoColors").prop("checked", false);
+        }
+
+        if(result.attenuateBrightColors == "true" && $("#checkAttenuateBrightColors").is(":checked") == false) {
+            $("#checkAttenuateBrightColors").prop("checked", true);
+        } else if(result.attenuateBrightColors == "false" && $("#checkAttenuateBrightColors").is(":checked") == true) {
+            $("#checkAttenuateBrightColors").prop("checked", false);
         }
     }
 
-    $("#checkAttenuateImageColor").on("change", function() {
+    $("#checkAttenuateColor").on("change", function() {
         if($(this).is(":checked") == true) {
-            setSettingItem("attenuateImageColor", "true");
+            setSettingItem("attenuateColors", "true");
         } else {
-            setSettingItem("attenuateImageColor", "false");
+            setSettingItem("attenuateColors", "false");
         }
     });
 
-    $("#checkAttenuateImageColorCheckbox").on("change", function() {
+    $("#checkAttenuateColorCheckbox").on("change", function() {
         if($(this).is(":checked") == true) {
-            setSettingItem("attenuateImageColor", "true");
+            setSettingItem("attenuateColors", "true");
         } else {
-            setSettingItem("attenuateImageColor", "false");
+            setSettingItem("attenuateColors", "false");
         }
     });
 
-    $("#checkAttenuateImageColorModern .popup-option-modern").on("click", () => {
-        if(!$("#checkAttenuateImageColorModern").hasClass("active") == true) {
-            setSettingItem("attenuateImageColor", "true");
+    $("#checkAttenuateColorModern .popup-option-modern").on("click", () => {
+        if(!$("#checkAttenuateColorModern").hasClass("active") == true) {
+            setSettingItem("attenuateColors", "true");
         } else {
-            setSettingItem("attenuateImageColor", "false");
+            setSettingItem("attenuateColors", "false");
+        }
+    });
+
+    $("#checkAttenuateColorModern .popup-option-modern-complement").on("click", e => {
+        $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
+        $("#attenuateColorsDiv").stop().fadeToggle();
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+    $("#checkAttenuateImageColors").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("attenuateImgColors", "true");
+        } else {
+            setSettingItem("attenuateImgColors", "false");
+        }
+    });
+
+    $("#checkAttenuateBgColors").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("attenuateBgColors", "true");
+        } else {
+            setSettingItem("attenuateBgColors", "false");
+        }
+    });
+
+    $("#checkAttenuateVideoColors").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("attenuateVideoColors", "true");
+        } else {
+            setSettingItem("attenuateVideoColors", "false");
+        }
+    });
+
+    $("#checkAttenuateBrightColors").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("attenuateBrightColors", "true");
+        } else {
+            setSettingItem("attenuateBrightColors", "false");
         }
     });
 
@@ -1476,7 +1547,7 @@ $(document).ready(() => {
         toggleTheme(); // Toggle dark/light theme
         checkContrastMode(!updateNotificationShowed && !archiveInfoShowed && !informationShowed);
         checkColorInvert();
-        checkAttenuateImageColor();
+        checkAttenuateColor();
         checkLiveSettings();
         checkBrightness();
         checkBlueLightReduction();

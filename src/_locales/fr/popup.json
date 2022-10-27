@@ -45,8 +45,9 @@
         "blueLightReduction": "Filtre de réduction de la lumière bleue",
         "titleBlueLightReduction": "Applique un filtre orangé sur la page afin de réduire la lumière bleue émise par l'écran",
         "percentageBlueLight": "Intensité du filtre :",
-        "attenuateImageColor": "Atténuer la couleur des images",
-        "titleAttenuateImageColor": "Atténue la couleur des images pour éviter l'affichage de couleurs trop vives",
+        "attenuateColor": "Atténuer les couleurs",
+        "attenuateBrightColors": "Couleurs vives",
+        "titleAttenuateImageColor": "Atténue les couleurs des éléments pour éviter l'affichage de couleurs trop vives",
         "increaseContrastInformation": "Il est conseillé d'activer la fonction Inverser les couleurs > Sélectif (seul) lorsque vous utilisez la fonction Augmenter le contraste"
     },
     "modal": {

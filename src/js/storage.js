@@ -137,7 +137,15 @@ async function migrateSettings(filters) {
         await setSettingItem("percentageBlueLightReduction", result.pourcentageLum);
     }
 
+    // Migrate Attenuate color settings
+    if(result.attenuateImageColor && result.attenuateImageColor == "true") {
+        await setSettingItem("attenuateColors", "true");
+        await setSettingItem("attenuateImgColors", "true");
+        await setSettingItem("attenuateBgColors", "true");
+    }
+
     removeSettingItem(["nightModeEnabled"]);
+    removeSettingItem(["attenuateImageColor"]);
     sendMessageWithPromise({ "type": "updateSettingsCache" });
 }
 

@@ -90,7 +90,8 @@ export default class ContentProcessor {
         this.websiteSpecialFiltersConfig = await loadWebsiteSpecialFiltersConfig();
     }
 
-    async contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, attenuateImageColor, brightColorPreservation) {
+    async contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, brightColorPreservation,
+        attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors) {
         if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
             if(theme != undefined) {
                 this.resetContrastPage(theme, disableImgBgColor, brightColorPreservation);
@@ -121,7 +122,8 @@ export default class ContentProcessor {
             this.resetContrastPage();
         }
 
-        this.invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert, attenuateImageColor);
+        this.invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert,
+            attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors);
     }
 
     resetContrastPage(themeException, disableImgBgColor, brightColorPreservation) {
@@ -161,7 +163,8 @@ export default class ContentProcessor {
         }
     }
 
-    invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert, attenuateImageColor) {
+    invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert,
+        attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors) {
         document.documentElement.style.setProperty("--page-shadow-invert-filter-image-backgrounds", "invert(100%)");
 
         if(enabled !== null && enabled == "true") {
@@ -222,7 +225,7 @@ export default class ContentProcessor {
             this.resetInvertPage();
         }
 
-        this.attenuateColor(attenuateImageColor);
+        this.attenuateColor(attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors);
     }
 
     resetInvertPage() {
@@ -230,10 +233,34 @@ export default class ContentProcessor {
         removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
     }
 
-    attenuateColor(enabled) {
-        if(enabled == "true") {
-            document.documentElement.style.setProperty("--page-shadow-invert-filter-image-backgrounds", "invert(100%) grayscale(50%)");
-            this.bodyClassBatcher.add("pageShadowAttenuateImageColor");
+    attenuateColor(attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors) {
+        if(attenuateColors == "true") {
+            if(attenuateImgColors == "true") {
+                document.documentElement.style.setProperty("--page-shadow-invert-filter-image-backgrounds", "invert(100%) grayscale(50%)");
+                this.bodyClassBatcher.add("pageShadowAttenuateImageColor");
+            } else {
+                this.bodyClassBatcherRemover.add("pageShadowAttenuateImageColor");
+            }
+
+            if(attenuateBgColors == "true") {
+                document.documentElement.style.setProperty("--page-shadow-invert-filter-bg-backgrounds", "invert(100%) grayscale(50%)");
+                this.bodyClassBatcher.add("pageShadowAttenuateBgColor");
+            } else {
+                this.bodyClassBatcherRemover.add("pageShadowAttenuateBgColor");
+            }
+
+            if(attenuateVideoColors == "true") {
+                document.documentElement.style.setProperty("--page-shadow-invert-filter-video-backgrounds", "invert(100%) grayscale(50%)");
+                this.bodyClassBatcher.add("pageShadowAttenuateVideoColor");
+            } else {
+                this.bodyClassBatcherRemover.add("pageShadowAttenuateVideoColor");
+            }
+
+            if(attenuateBrightColors == "true") {
+                this.bodyClassBatcher.add("pageShadowAttenuateBrightColor");
+            } else {
+                this.bodyClassBatcherRemover.add("pageShadowAttenuateBrightColor");
+            }
         } else {
             this.resetAttenuateColor();
         }
@@ -241,6 +268,9 @@ export default class ContentProcessor {
 
     resetAttenuateColor() {
         this.bodyClassBatcherRemover.add("pageShadowAttenuateImageColor");
+        this.bodyClassBatcherRemover.add("pageShadowAttenuateBgColor");
+        this.bodyClassBatcherRemover.add("pageShadowAttenuateVideoColor");
+        this.bodyClassBatcherRemover.add("pageShadowAttenuateBrightColor");
     }
 
     async applyDetectBackground(type, elements) {
@@ -435,12 +465,32 @@ export default class ContentProcessor {
                             }
                         }
 
-                        if(this.currentSettings && this.currentSettings.attenuateImageColor !== null && this.currentSettings.attenuateImageColor == "true") {
+                        if(this.currentSettings && this.currentSettings.attenuateColors !== null && this.currentSettings.attenuateColors == "true") {
                             if(mutation.type == "attributes" && mutation.attributeName == "class") {
                                 const classList = document.body.classList;
 
-                                if(mutation.oldValue && mutation.oldValue.indexOf("pageShadowAttenuateImageColor") !== -1 && !classList.contains("pageShadowAttenuateImageColor")) {
-                                    reApplyAttenuate = true;
+                                if(this.currentSettings && this.currentSettings.attenuateImgColors !== null && this.currentSettings.attenuateImgColors == "true") {
+                                    if(mutation.oldValue && mutation.oldValue.indexOf("pageShadowAttenuateImageColor") !== -1 && !classList.contains("pageShadowAttenuateImageColor")) {
+                                        reApplyAttenuate = true;
+                                    }
+                                }
+
+                                if(this.currentSettings && this.currentSettings.attenuateBgColors !== null && this.currentSettings.attenuateBgColors == "true") {
+                                    if(mutation.oldValue && mutation.oldValue.indexOf("pageShadowAttenuateBgColor") !== -1 && !classList.contains("pageShadowAttenuateBgColor")) {
+                                        reApplyAttenuate = true;
+                                    }
+                                }
+
+                                if(this.currentSettings && this.currentSettings.attenuateVideoColors !== null && this.currentSettings.attenuateVideoColors == "true") {
+                                    if(mutation.oldValue && mutation.oldValue.indexOf("pageShadowAttenuateVideoColor") !== -1 && !classList.contains("pageShadowAttenuateVideoColor")) {
+                                        reApplyAttenuate = true;
+                                    }
+                                }
+
+                                if(this.currentSettings && this.currentSettings.attenuateBrightColors !== null && this.currentSettings.attenuateBrightColors == "true") {
+                                    if(mutation.oldValue && mutation.oldValue.indexOf("pageShadowAttenuateBrightColor") !== -1 && !classList.contains("pageShadowAttenuateBrightColor")) {
+                                        reApplyAttenuate = true;
+                                    }
                                 }
                             }
                         }
@@ -758,7 +808,7 @@ export default class ContentProcessor {
             }
         }
 
-        if(this.currentSettings && (this.currentSettings.pageShadowEnabled == "true" || this.currentSettings.colorInvert == "true" || this.currentSettings.attenuateImageColor == "true")) {
+        if(this.currentSettings && (this.currentSettings.pageShadowEnabled == "true" || this.currentSettings.colorInvert == "true" || this.currentSettings.attenuateColors == "true")) {
             await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
             this.filterProcessor.doProcessFilters(this.filtersCache);
         }
@@ -812,7 +862,7 @@ export default class ContentProcessor {
                     this.bodyClassBatcherRemover.removeAll();
                     this.htmlClassBatcher.removeAll();
 
-                    this.invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, settings.selectiveInvert, settings.attenuateImageColor);
+                    this.invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, settings.selectiveInvert, settings.attenuateColors, settings.attenuateImgColors, settings.attenuateBgColors, settings.attenuateVideoColors, settings.attenuateBrightColors);
 
                     this.bodyClassBatcher.applyAdd();
                     this.bodyClassBatcherRemover.applyRemove();
@@ -830,7 +880,7 @@ export default class ContentProcessor {
                     this.bodyClassBatcherRemover.removeAll();
                     this.htmlClassBatcher.removeAll();
 
-                    await this.contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, settings.selectiveInvert, settings.attenuateImageColor, settings.brightColorPreservation);
+                    await this.contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, settings.selectiveInvert, settings.brightColorPreservation, settings.attenuateColors, settings.attenuateImgColors, settings.attenuateBgColors, settings.attenuateVideoColors, settings.attenuateBrightColors);
 
                     this.bodyClassBatcher.applyAdd();
                     this.bodyClassBatcherRemover.applyRemove();
@@ -846,7 +896,7 @@ export default class ContentProcessor {
 
                     this.observeBodyChange();
 
-                    if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true" || settings.attenuateImageColor == "true") {
+                    if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true" || settings.attenuateColors == "true") {
                         if(type == this.TYPE_START || !this.pageAnalyzer.backgroundDetected) {
                             this.applyDetectBackground(this.TYPE_LOADING, "*").then(() => {
                                 if(document.readyState == "complete") {
