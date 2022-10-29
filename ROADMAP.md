@@ -69,9 +69,9 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * Bugs linked to MV3 migration:
         * [x] Filters don't update on the first install of the extension (update also broken ?)
         * [x] Auto cloud backup doesn't work: error with window.navigator.platform not available in Background Service Worker
-        * [ ] Filters: CSS selector error test broken
     * [ ] Test on Firefox
 * [x] Option to attenuate color of Preserve color function
+    * [ ] Prevent the attenuation of subelements (when enabling Colored elements attenuation)?
 
 #### Bugs
 

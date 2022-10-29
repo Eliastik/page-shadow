@@ -36,13 +36,13 @@
     "webpack-stream": "^7.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.19.4",
+    "@babel/runtime": "^7.20.0",
     "@fortawesome/fontawesome-free": "^6.2.0",
     "bootstrap-slider": "^11.0.2",
     "codemirror": "^5.65.9",
     "i18next": "^21.10.0",
     "i18next-browser-languagedetector": "^6.1.8",
-    "i18next-http-backend": "^1.4.4",
+    "i18next-http-backend": "^1.4.5",
     "jquery": "^3.6.1",
     "jquery-colpick": "^3.1.0",
     "jquery-i18next": "^1.2.1",

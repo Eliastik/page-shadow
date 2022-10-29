@@ -314,14 +314,16 @@ export default class ContentProcessor {
     brightnessPage(enabled, percentage) {
         this.elementBrightness.setAttribute("class", "");
 
-        if(enabled == "true" && !this.runningInIframe) {
-            this.elementBrightness.style.display = "block";
-            this.elementBrightness.setAttribute("id", "pageShadowBrightness");
+        if(enabled == "true" && !this.runningInIframe && this.elementBrightness) {
+            if(this.elementBrightness.style) {
+                this.elementBrightness.style.display = "block";
+                this.elementBrightness.setAttribute("id", "pageShadowBrightness");
 
-            if(percentage / 100 > maxBrightnessPercentage || percentage / 100 < minBrightnessPercentage || typeof percentage === "undefined" || percentage == null) {
-                this.elementBrightness.style.opacity = brightnessDefaultValue;
-            } else {
-                this.elementBrightness.style.opacity = percentage / 100;
+                if(percentage / 100 > maxBrightnessPercentage || percentage / 100 < minBrightnessPercentage || typeof percentage === "undefined" || percentage == null) {
+                    this.elementBrightness.style.opacity = brightnessDefaultValue;
+                } else {
+                    this.elementBrightness.style.opacity = percentage / 100;
+                }
             }
 
             this.appendBrightnessElement(this.elementBrightness, this.elementBrightnessWrapper);
@@ -339,26 +341,28 @@ export default class ContentProcessor {
     blueLightFilterPage(enabled, percentage, colorTemp) {
         this.elementBlueLightFilter.setAttribute("class", "");
 
-        if(enabled == "true" && !this.runningInIframe) {
-            this.elementBlueLightFilter.style.display = "block";
-            this.elementBlueLightFilter.setAttribute("id", "pageShadowBrightnessNightMode");
-            this.elementBlueLightFilter.setAttribute("class", "");
+        if(enabled == "true" && !this.runningInIframe && this.elementBlueLightFilter) {
+            if(this.elementBlueLightFilter.style) {
+                this.elementBlueLightFilter.style.display = "block";
+                this.elementBlueLightFilter.setAttribute("id", "pageShadowBrightnessNightMode");
+                this.elementBlueLightFilter.setAttribute("class", "");
 
-            let tempColor = "2000";
+                let tempColor = "2000";
 
-            if(colorTemp != undefined) {
-                const tempIndex = parseInt(colorTemp);
-                tempColor = colorTemperaturesAvailable[tempIndex - 1];
+                if(colorTemp != undefined) {
+                    const tempIndex = parseInt(colorTemp);
+                    tempColor = colorTemperaturesAvailable[tempIndex - 1];
 
-                this.elementBlueLightFilter.setAttribute("class", "k" + tempColor);
-            } else {
-                this.elementBlueLightFilter.setAttribute("class", "k2000");
-            }
+                    this.elementBlueLightFilter.setAttribute("class", "k" + tempColor);
+                } else {
+                    this.elementBlueLightFilter.setAttribute("class", "k2000");
+                }
 
-            if(percentage / 100 > maxBrightnessPercentage || percentage / 100 < minBrightnessPercentage || typeof percentage === "undefined" || percentage == null) {
-                this.elementBlueLightFilter.style.opacity = brightnessDefaultValue;
-            } else {
-                this.elementBlueLightFilter.style.opacity = percentage / 100;
+                if(percentage / 100 > maxBrightnessPercentage || percentage / 100 < minBrightnessPercentage || typeof percentage === "undefined" || percentage == null) {
+                    this.elementBlueLightFilter.style.opacity = brightnessDefaultValue;
+                } else {
+                    this.elementBlueLightFilter.style.opacity = percentage / 100;
+                }
             }
 
             this.appendBlueLightElement(this.elementBlueLightFilter, this.elementBrightnessWrapper);
