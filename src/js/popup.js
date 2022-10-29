@@ -896,12 +896,18 @@ $(document).ready(() => {
         }
     });
 
-    $("#checkAttenuateColorModern .popup-option-modern").on("click", () => {
+    $("#checkAttenuateColorModern .popup-option-modern").on("click", e => {
+        $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
+
         if(!$("#checkAttenuateColorModern").hasClass("active") == true) {
             setSettingItem("attenuateColors", "true");
+            $("#attenuateColorsDiv").stop().fadeIn();
         } else {
             setSettingItem("attenuateColors", "false");
         }
+
+        e.preventDefault();
+        e.stopPropagation();
     });
 
     $("#checkAttenuateColorModern .popup-option-modern-complement").on("click", e => {

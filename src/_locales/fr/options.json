@@ -309,7 +309,7 @@
             "attenuateImgColors": "Atténuer les couleurs des images :",
             "attenuateBgColors": "Atténuer les couleurs des images d'arrière-plan :",
             "attenuateVideoColors": "Atténuer les couleurs des vidéos :",
-            "attenuateBrightColors": "Atténuer les couleurs vives :",
+            "attenuateBrightColors": "Atténuer la couleur des éléments :",
             "blueLightReductionEnabled": "Filtre de réduction de la lumière bleue :",
             "percentageBlueLightReduction": "Intensité du filtre de réduction de la lumière bleue :",
             "brightColorPreservation": "Préserver les couleurs des éléments :",

@@ -65,7 +65,7 @@ html.pageShadowInvertEntirePage body.pageShadowAttenuateBgColor .pageShadowHasBa
 }
 
 // Videos
-body.pageShadowAttenuateVideoColor:not(.pageShadowInvertImageColor) video:not(.pageShadowDisableElementInvert), body.pageShadowAttenuateVideoColor:not(.pageShadowInvertImageColor) canvas:not(.pageShadowDisableElementInvert) {
+body.pageShadowAttenuateVideoColor:not(.pageShadowInvertVideoColor) video:not(.pageShadowDisableElementInvert), body.pageShadowAttenuateVideoColor:not(.pageShadowInvertVideoColor) canvas:not(.pageShadowDisableElementInvert) {
     filter: var(--page-shadow-attenuate-filter) !important;
     -moz-filter: var(--page-shadow-attenuate-filter) !important;
     -o-filter: var(--page-shadow-attenuate-filter) !important;
@@ -87,7 +87,7 @@ html.pageShadowInvertEntirePage body.pageShadowAttenuateVideoColor video.pageSha
 }
 
 // Bright color
-body.pageShadowAttenuateBrightColor:not(.pageShadowInvertImageColor) .pageShadowHasBrightColorBackground:not(.pageShadowDisableElementInvert) {
+body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground:not(.pageShadowDisableElementInvert) {
     filter: var(--page-shadow-attenuate-filter) !important;
     -moz-filter: var(--page-shadow-attenuate-filter) !important;
     -o-filter: var(--page-shadow-attenuate-filter) !important;
