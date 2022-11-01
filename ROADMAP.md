@@ -67,18 +67,16 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [x] (Important) Update to Manifest v3 (check manifestv3 branch)
     * Bugs linked to MV3 migration:
-        * [ ] Filters don't update on the first install of the extension (update also broken ?)
+        * [x] Filters don't update on the first install of the extension (update also broken ?)
         * [x] Auto cloud backup doesn't work: error with window.navigator.platform not available in Background Service Worker
-    * [ ] Test on Firefox
 * [x] Option to attenuate color of Preserve color function
-    * [ ] Prevent the attenuation of subelements (when enabling Colored elements attenuation)?
 
 #### Bugs
 
 * [x] (Minor) Performance issue on Firefox when loading a preset or restoring setting archive -> small optimization have already been made
 * [x] (Medium) Fix Preserve bright color on some website (wrong background detection)
     * The function detects extension's theme background color and not actual background colors of some elements, randomly
-* [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
+* [x] (Minor) When dark mode is enabled in the OS, the Readme file in the settings appear inverted (black text on white background when Dark theme is enabled)
 
 ### Futures versions
 
@@ -103,6 +101,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [ ] Filters: Element picker to create custom rule easily
     * [ ] Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditonal filter)
     * [ ] Store filters on a Github repository ?
+* [ ] Prevent the attenuation of subelements (when enabling Colored elements attenuation)?
 
 #### Known issues/bugs
 
@@ -111,4 +110,4 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list ?
-* [ ] (Minor) When dark mode is enabled in the OS, the Readme file in the settings appear inverted (black text on white background when Dark theme is enabled)
+* [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
