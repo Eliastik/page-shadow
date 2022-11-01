@@ -49,8 +49,10 @@ $(() => {
     });
 
     if(typeof(browser.storage.onChanged) !== "undefined") {
-        browser.storage.onChanged.addListener(() => {
-            toggleTheme();
+        browser.storage.onChanged.addListener((_changes, areaName) => {
+            if(areaName == "local") {
+                toggleTheme();
+            }
         });
     }
 });

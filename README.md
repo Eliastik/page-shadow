@@ -4,7 +4,7 @@
 <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen.png" width="300" alt="Page Shadow" /> <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen_2.png" width="300" alt="Page Shadow" />
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.10.1 (9/25/2022)
+* Latest version: 2.10.2 (11/1/2022)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -56,8 +56,9 @@ npm install
 ````
 Then to compile:
 
-* Dev mode (no compression): `gulp` or `gulp build-dev`
-* Prod mode (compression): `gulp build-prod` or `build-prod-no-css-compress` (only compress js files)
+* Dev mode (no compression): `gulp` or `gulp build-dev` or `gulp build-directory-dev` (only compile as folders)
+* Prod mode (with compression): `gulp build-prod` or `gulp build-directory-prod` (only compile as folders)
+* Watch mode (real-time compilation): `gulp watch` (uses dev mode compilation)
 
 If you encounter the following error message when compiling:
 
@@ -112,7 +113,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen_fr.png" width="300" alt="Page Shadow" /> <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen_fr_2.png" width="300" alt="Page Shadow" />
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.10.1 (25/09/2022)
+* Version actuelle : 2.10.2 (01/11/2022)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -164,8 +165,9 @@ npm install
 ````
 Puis pour compiler :
 
-* Mode dev (pas de compression): `gulp` ou `gulp build-dev`
-* Mode prod (compression): `gulp build-prod` ou `build-prod-no-css-compress` (compresse uniquement les fichiers js)
+* Mode dev (pas de compression) : `gulp` ou `gulp build-dev` ou `gulp build-directory-dev` (pour ne builder que sous forme de dossiers)
+* Mode prod (compression) : `gulp build-prod` ou `gulp build-directory-prod` (pour ne builder que sous forme de dossiers)
+* Mode watch (compilation en temps réel) : `gulp watch` (utilise la compilation du mode dev)
 
 Si vous rencontrez l'erreur suivante lors de la compilation :
 

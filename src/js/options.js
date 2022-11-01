@@ -34,7 +34,7 @@ import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
 import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise } from "./utils/util.js";
-import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, defaultSettings } from "./constants.js";
+import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames } from "./constants.js";
 import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./filter.codemirror.mode";
@@ -827,6 +827,7 @@ async function displayPresetInfos(nb) {
 
         for(const setting of settingsToSavePresets) {
             if(setting == "colorInvert") continue;
+            if(setting == "attenuateImageColor") continue;
             const row = document.createElement("div");
             row.setAttribute("class", "row border-bottom");
 
@@ -1151,30 +1152,23 @@ async function restoreSettings(object) {
 
     // Reset data
     await browser.storage.local.clear();
-    // Fix performance issue on Firefox by disabling real time applying of settings to pages
-    // when restoring settings
-    await setSettingItem("liveSettings", "false");
     await setFirstSettings();
 
-    let liveSettingValue = defaultSettings["liveSettings"];
+    const finalRestoreObject = {};
 
     for(const key in object) {
         if(typeof(key) === "string") {
             if(Object.prototype.hasOwnProperty.call(object, key)) {
-                if(key !== "liveSettings") {
-                    await setSettingItem(key, object[key]); // invalid data are ignored by the function
-                } else {
-                    liveSettingValue = object[key];
+                if(key && settingNames.indexOf(key) !== -1) {
+                    finalRestoreObject[key] = object[key];
                 }
             }
         }
     }
 
+    await browser.storage.local.set(finalRestoreObject);
     await migrateSettings();
-
-    setTimeout(() => {
-        setSettingItem("liveSettings", liveSettingValue);
-    }, 500);
+    sendMessageWithPromise({ "type": "updatePresetCache" });
 
     $("#updateAllFilters").attr("disabled", "disabled");
 

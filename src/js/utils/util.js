@@ -187,7 +187,14 @@ async function pageShadowAllowed(url) {
             forbiddenWebsites = result.sitesInterditPageShadow.trim().split("\n");
         }
 
-        const websuteUrl_tmp = new URL(url);
+        let websuteUrl_tmp;
+
+        try {
+            websuteUrl_tmp = new URL(url);
+        } catch(e) {
+            return;
+        }
+
         const domain = websuteUrl_tmp.hostname;
 
         if((result.whiteList == "true" && (in_array_website(domain, forbiddenWebsites) || in_array_website(url, forbiddenWebsites))) || (result.whiteList !== "true" && !in_array_website(domain, forbiddenWebsites) && !in_array_website(url, forbiddenWebsites))) {
@@ -663,34 +670,27 @@ async function loadPreset(nb) {
 
         const settingsNames = JSON.parse(JSON.stringify(settingsToSavePresets));
         settingsNames.push("nightModeEnabled");
+        settingsNames.push("attenuateImageColor");
 
-        // Fix performance issue on Firefox by disabling real time applying of settings to pages
-        // when restoring settings
-        await setSettingItem("liveSettings", "false");
-
-        let liveSettingValue = defaultSettings["liveSettings"];
+        const finalRestoreObject = {};
 
         for(const key of settingsNames) {
             if(typeof(key) === "string") {
                 if(Object.prototype.hasOwnProperty.call(preset, key)) {
-                    if(key !== "liveSettings") {
-                        await setSettingItem(key, preset[key]); // invalid data are ignored by the function
-                    } else {
-                        liveSettingValue = preset[key];
+                    if(key && settingsNames.indexOf(key) !== -1) {
+                        finalRestoreObject[key] = preset[key];
                     }
 
                     settingsRestored++;
                 } else {
-                    await setSettingItem(key, defaultSettings[key]); // Restore default setting
+                    finalRestoreObject[key] = defaultSettings[key];
                 }
             }
         }
 
+        await browser.storage.local.set(finalRestoreObject);
         await migrateSettings();
-
-        setTimeout(() => {
-            setSettingItem("liveSettings", liveSettingValue);
-        }, 500);
+        sendMessageWithPromise({ "type": "updatePresetCache" });
 
         if(settingsRestored > 0) {
             return "success";
@@ -743,6 +743,14 @@ async function getPresetData(nb) {
             preset["nightModeEnabled"] = undefined;
         }
 
+        // Migrate Attenuate image color
+        if(preset["attenuateImageColor"] == "true") {
+            preset["attenuateColors"] = "true";
+            preset["attenuateImgColors"] = "true";
+            preset["attenuateBgColors"] = "true";
+            preset["attenuateImageColor"] = undefined;
+        }
+
         return preset;
     } catch(e) {
         return "error";
@@ -778,6 +786,7 @@ async function savePreset(nb, name, websiteListToApply, saveNewSettings) {
             }
 
             preset[namePreset]["nightModeEnabled"] = false;
+            preset[namePreset]["attenuateImageColor"] = false;
         }
 
         await setSettingItem("presets", preset);
@@ -842,7 +851,14 @@ async function presetsEnabledForWebsite(url, disableCache) {
                     websiteList = websiteSettings.trim().split("\n");
                 }
 
-                const websuteUrl_tmp = new URL(url);
+                let websuteUrl_tmp;
+
+                try {
+                    websuteUrl_tmp = new URL(url);
+                } catch(e) {
+                    return;
+                }
+
                 const domain = websuteUrl_tmp.hostname;
                 const autoEnabledWebsite = in_array_website(domain, websiteList);
                 const autoEnabledPage = in_array_website(url, websiteList);
@@ -934,6 +950,12 @@ async function getSettings(url, disableCache) {
         settings.colorInvert = "true";
     } else {
         settings.colorInvert = "false";
+    }
+
+    if(settings.attenuateImageColor == "true") {
+        settings.attenuateColors = "true";
+        settings.attenuateImgColors = "true";
+        settings.attenuateBgColors = "true";
     }
 
     if(settings.nightModeEnabled == "true" && settings.pageLumEnabled == "true") {
@@ -1280,7 +1302,7 @@ async function archiveCloud() {
                     dateSettings["dateLastBackup"] = Date.now().toString();
 
                     const deviceSettings = {};
-                    deviceSettings["deviceBackup"] = window.navigator.platform;
+                    deviceSettings["deviceBackup"] = navigator.platform;
 
                     Promise.all([browser.storage.sync.set(dateSettings), browser.storage.sync.set(deviceSettings), browser.storage.sync.remove("pageShadowStorageBackup")])
                         .then(() => {
@@ -1308,7 +1330,9 @@ async function sendMessageWithPromise(data, ...expectedMessageType) {
             });
         }
 
-        browser.runtime.sendMessage(data);
+        browser.runtime.sendMessage(data).catch(() => {
+            if(browser.runtime.lastError) return;
+        });
 
         if(!expectedMessageType) {
             resolve();

@@ -576,7 +576,14 @@ export default class FilterProcessor {
         const rulesToCheck = type == ruleCategory.SPECIAL_RULES ? this.specialRules : this.rules;
 
         if(url && url.trim() != "") {
-            const websuteUrl_tmp = new URL(url);
+            let websuteUrl_tmp;
+
+            try {
+                websuteUrl_tmp = new URL(url);
+            } catch(e) {
+                return;
+            }
+
             const domain = websuteUrl_tmp.hostname;
 
             for(let i = 0, len = rulesToCheck.length; i < len; i++) {
