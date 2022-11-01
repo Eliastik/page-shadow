@@ -2,6 +2,24 @@
 
 ## Changelog:
 
+### Version 2.10.2 (11/1/2022) :
+
+* Migration to Manifest v3 API (Chrome/Edge/Opera versions only). The impacts on the features of Page Shadow are very minor:
+    * The timer used for the "Auto enable/disable" feature. is less precise, so it's possible that the enabling/disabling of Page Shadow is done with a few seconds delay
+* Added Attenuate colors feature (replacing Attenuate image colors feature), which allows to attenuate the color of images/backgrounds/videos and colored elements;
+* Bug fixes:
+    * Fixed a bug with the "Preserve element colors" feature where elements colors was incorrectly detected on some animated elements;
+    * Fixed a bug affecting the performance of restoring Cloud archives on Firefox;
+    * Fixed a bug where the default theme was the "Switches and icons" theme instead of "Modern";
+    * Fixed a minor bug where the message "UI has been updated" was displayed on the extension update notification popup in some cases;
+    * Fixed a bug where the Readme file (in advanced settings) was displayed in the wrong dark/light theme depending on the theme set for the device;
+    * Fixed a minor bug when accessing an XML type file;
+    * Other minor UI fixes
+    * Technical improvements:
+        * Improved extension build process with Gulp and added new build commands;
+        * Removed minor error messages in the JavaScript console from the extension's background process;
+        * Update dependencies
+
 ### Version 2.10.1 (9/25/2022) :
 
 * Major performance optimization, which limits the flashes that appeared when navigating between pages or changing settings in real time;
@@ -317,6 +335,24 @@
 # Page Shadow - Français
 
 ## Journal des changements :
+
+### Version 2.10.2 (01/11/2022) :
+
+* Migration vers l'API Manifest v3 (versions Chrome/Edge/Opera uniquement). Les impacts sur les fonctionnalités de Page Shadow sont très mineurs :
+    * Le timer utilisé pour la fonctionnalité "Activer/désactiver auto." est moins précis, donc il est possible que l'activation/désactivation de Page Shadow se fasse avec quelques secondes de retard
+* Ajout de la fonctionnalité Atténuer les couleurs (remplaçant la fonctionnalité Atténuer la couleur des images), qui permet d'atténuer la couleur des images/arrière-plans/vidéos et éléments colorés ;
+* Correction des bugs :
+    * Correction d'un bug avec la fonctionnalité "Conserver les couleurs des éléments" où la couleur des éléments était mal détectée sur certains éléments animés ;
+    * Correction d'un bug affectant les performances de la restauration des archives Cloud sous Firefox ;
+    * Correction d'un bug où le thème par défaut pris en compte était le thème "Switches et icônes" au lieu de "Moderne" ;
+    * Correction d'un bug mineur où le message "L'interface utilisateur a été modifiée" s'affichait sur la popup de notification de mise à jour de l'extension dans certains cas ;
+    * Corection d'un bug où le fichier Lisez-moi (dans les paramètres avancés) s'affichait dans le mauvais thème sombre/clair selon le thème paramétré pour l'appareil ;
+    * Correction d'un bug mineur lors de l'accès à un fichier de type XML ;
+    * Autres correctifs mineurs de l'interface utilisateur
+    * Amélioration techniques :
+        * Amélioration du processus de build de l'extension avec Gulp et ajout de nouvelles commandes de build ;
+        * Suppression des messages d'erreur mineurs dans la console JavaScript du processus en arrière-plan de l'extension ;
+        * Mise à jour des dépendances
 
 ### Version 2.10.1 (25/09/2022) :
 
