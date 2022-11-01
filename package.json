@@ -1,6 +1,6 @@
 {
   "name": "page-shadow",
-  "version": "2.10.1",
+  "version": "2.10.2",
   "description": "Une extension pour Chrome, Firefox, Opera et Edge comprenant une série d'outils pour améliorer la lecture de pages web dans une pièce mal éclairée/autre. Elle vous permet d'augmenter le contraste de la page, de baisser la luminosité de la page et bien d'autres choses en un clic.",
   "main": "gulpfile.js",
   "scripts": {
@@ -12,10 +12,10 @@
   "license": "GPL-3.0",
   "homepage": "https://www.eliastiksofts.com/page-shadow",
   "devDependencies": {
-    "@babel/core": "^7.19.1",
+    "@babel/core": "^7.19.6",
     "@babel/eslint-parser": "^7.19.1",
-    "@babel/plugin-transform-runtime": "^7.19.1",
-    "@babel/preset-env": "^7.19.1",
+    "@babel/plugin-transform-runtime": "^7.19.6",
+    "@babel/preset-env": "^7.19.4",
     "@crxs/gulp-crx": "^1.0.4",
     "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",
@@ -25,6 +25,7 @@
     "gulp-clean": "^0.4.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-less": "^5.0.0",
+    "gulp-plumber": "^1.2.1",
     "gulp-rename": "^2.0.0",
     "gulp-zip": "^5.1.0",
     "ignore-loader": "^0.1.2",
@@ -35,13 +36,13 @@
     "webpack-stream": "^7.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.19.0",
+    "@babel/runtime": "^7.20.1",
     "@fortawesome/fontawesome-free": "^6.2.0",
     "bootstrap-slider": "^11.0.2",
     "codemirror": "^5.65.9",
-    "i18next": "^21.9.2",
-    "i18next-browser-languagedetector": "^6.1.5",
-    "i18next-http-backend": "^1.4.4",
+    "i18next": "^21.10.0",
+    "i18next-browser-languagedetector": "^6.1.8",
+    "i18next-http-backend": "^1.4.5",
     "jquery": "^3.6.1",
     "jquery-colpick": "^3.1.0",
     "jquery-i18next": "^1.2.1",

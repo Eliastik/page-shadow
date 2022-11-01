@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.10.1 (9/25/2022)
+* Latest version: 2.10.2 (11/1/2022)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,24 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.10.2 (11/1/2022) :
+
+* Migration to Manifest v3 API (Chrome/Edge/Opera versions only). The impacts on the features of Page Shadow are very minor:
+    * The timer used for the "Auto enable/disable" feature. is less precise, so it's possible that the enabling/disabling of Page Shadow is done with a few seconds delay
+* Added Attenuate colors feature (replacing Attenuate image colors feature), which allows to attenuate the color of images/backgrounds/videos and colored elements;
+* Bug fixes:
+    * Fixed a bug with the "Preserve element colors" feature where elements colors was incorrectly detected on some animated elements;
+    * Fixed a bug affecting the performance of restoring Cloud archives on Firefox;
+    * Fixed a bug where the default theme was the "Switches and icons" theme instead of "Modern";
+    * Fixed a minor bug where the message "UI has been updated" was displayed on the extension update notification popup in some cases;
+    * Fixed a bug where the Readme file (in advanced settings) was displayed in the wrong dark/light theme depending on the theme set for the device;
+    * Fixed a minor bug when accessing an XML type file;
+    * Other minor UI fixes
+    * Technical improvements:
+        * Improved extension build process with Gulp and added new build commands;
+        * Removed minor error messages in the JavaScript console from the extension's background process;
+        * Update dependencies
 
 ### Version 2.10.1 (9/25/2022) :
 
@@ -366,8 +384,9 @@ npm install
 ````
 Then to compile:
 
-* Dev mode (no compression): `gulp` or `gulp build-dev`
-* Prod mode (compression): `gulp build-prod` or `build-prod-no-css-compress` (only compress js files)
+* Dev mode (no compression): `gulp` or `gulp build-dev` or `gulp build-directory-dev` (only compile as folders)
+* Prod mode (with compression): `gulp build-prod` or `gulp build-directory-prod` (only compile as folders)
+* Watch mode (real-time compilation): `gulp watch` (uses dev mode compilation)
 
 If you encounter the following error message when compiling:
 

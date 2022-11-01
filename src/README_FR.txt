@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.10.1 (25/09/2022)
+* Version actuelle : 2.10.2 (01/11/2022)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,24 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.10.2 (01/11/2022) :
+
+* Migration vers l'API Manifest v3 (versions Chrome/Edge/Opera uniquement). Les impacts sur les fonctionnalités de Page Shadow sont très mineurs :
+    * Le timer utilisé pour la fonctionnalité "Activer/désactiver auto." est moins précis, donc il est possible que l'activation/désactivation de Page Shadow se fasse avec quelques secondes de retard
+* Ajout de la fonctionnalité Atténuer les couleurs (remplaçant la fonctionnalité Atténuer la couleur des images), qui permet d'atténuer la couleur des images/arrière-plans/vidéos et éléments colorés ;
+* Correction des bugs :
+    * Correction d'un bug avec la fonctionnalité "Conserver les couleurs des éléments" où la couleur des éléments était mal détectée sur certains éléments animés ;
+    * Correction d'un bug affectant les performances de la restauration des archives Cloud sous Firefox ;
+    * Correction d'un bug où le thème par défaut pris en compte était le thème "Switches et icônes" au lieu de "Moderne" ;
+    * Correction d'un bug mineur où le message "L'interface utilisateur a été modifiée" s'affichait sur la popup de notification de mise à jour de l'extension dans certains cas ;
+    * Corection d'un bug où le fichier Lisez-moi (dans les paramètres avancés) s'affichait dans le mauvais thème sombre/clair selon le thème paramétré pour l'appareil ;
+    * Correction d'un bug mineur lors de l'accès à un fichier de type XML ;
+    * Autres correctifs mineurs de l'interface utilisateur
+    * Amélioration techniques :
+        * Amélioration du processus de build de l'extension avec Gulp et ajout de nouvelles commandes de build ;
+        * Suppression des messages d'erreur mineurs dans la console JavaScript du processus en arrière-plan de l'extension ;
+        * Mise à jour des dépendances
 
 ### Version 2.10.1 (25/09/2022) :
 
@@ -367,8 +385,9 @@ npm install
 ````
 Puis pour compiler :
 
-* Mode dev (pas de compression): `gulp` ou `gulp build-dev`
-* Mode prod (compression): `gulp build-prod` ou `build-prod-no-css-compress` (compresse uniquement les fichiers js)
+* Mode dev (pas de compression) : `gulp` ou `gulp build-dev` ou `gulp build-directory-dev` (pour ne builder que sous forme de dossiers)
+* Mode prod (compression) : `gulp build-prod` ou `gulp build-directory-prod` (pour ne builder que sous forme de dossiers)
+* Mode watch (compilation en temps réel) : `gulp watch` (utilise la compilation du mode dev)
 
 Si vous rencontrez l'erreur suivante lors de la compilation :
 

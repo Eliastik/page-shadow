@@ -98,7 +98,13 @@ async function checkCurrentPopupTheme() {
         $(".popup-option-container-modern").hide();
         $("#popup-options").removeClass("popup-options-modern");
         currentTheme = "checkbox";
-    } else if (result && result.popupTheme && result.popupTheme == "modern") {
+    } else if (result && result.popupTheme && result.popupTheme == "switch") {
+        $(".popup-option-container").show();
+        $(".popup-option-container-classic").hide();
+        $(".popup-option-container-modern").hide();
+        $("#popup-options").removeClass("popup-options-modern");
+        currentTheme = "switch";
+    } else {
         $(".popup-option-container").hide();
         $(".popup-option-container-classic").hide();
         $(".popup-option-container-modern").show();
@@ -109,12 +115,6 @@ async function checkCurrentPopupTheme() {
         }
 
         currentTheme = "modern";
-    } else {
-        $(".popup-option-container").show();
-        $(".popup-option-container-classic").hide();
-        $(".popup-option-container-modern").hide();
-        $("#popup-options").removeClass("popup-options-modern");
-        currentTheme = "switch";
     }
 }
 
@@ -254,7 +254,14 @@ $(document).ready(() => {
 
     async function checkEnable() {
         const url_str = await getCurrentURL();
-        const url = new URL(url_str);
+        let url;
+
+        try {
+            url = new URL(url_str);
+        } catch(e) {
+            return;
+        }
+
         const isFileURL = url_str.startsWith("file:///") || url_str.startsWith("about:");
 
         const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
@@ -385,13 +392,27 @@ $(document).ready(() => {
     }
 
     async function disablePageShadow(type, checked) {
-        const url = new URL(await getCurrentURL());
+        let url;
+
+        try {
+            url = new URL(await getCurrentURL());
+        } catch(e) {
+            return;
+        }
+
         disableEnableToggle(type, checked, url);
         checkEnable();
     }
 
     async function togglePreset(type, id, checked) {
-        const url = new URL(await getCurrentURL());
+        let url;
+
+        try {
+            url = new URL(await getCurrentURL());
+        } catch(e) {
+            return;
+        }
+
         await disableEnablePreset(type, id, checked, url);
         checkAutoEnablePreset(id);
     }
@@ -801,53 +822,130 @@ $(document).ready(() => {
         }
     });
 
-    async function checkAttenuateImageColor() {
-        const result = await browser.storage.local.get("attenuateImageColor");
+    async function checkAttenuateColor() {
+        const result = await browser.storage.local.get(["attenuateColors", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors", "attenuateBrightColors"]);
 
-        if(result.attenuateImageColor == "true") {
-            if($("#checkAttenuateImageColor").is(":checked") == false) {
-                $("#checkAttenuateImageColor").prop("checked", true);
+        if(result.attenuateColors == "true") {
+            if(currentTheme != "modern") {
+                $("#attenuateColorsDiv").stop().fadeIn();
             }
 
-            if($("#checkAttenuateImageColorCheckbox").is(":checked") == false) {
-                $("#checkAttenuateImageColorCheckbox").prop("checked", true);
+            if($("#checkAttenuateColor").is(":checked") == false) {
+                $("#checkAttenuateColor").prop("checked", true);
             }
 
-            $("#checkAttenuateImageColorModern").addClass("active");
+            if($("#checkAttenuateColorCheckbox").is(":checked") == false) {
+                $("#checkAttenuateColorCheckbox").prop("checked", true);
+            }
+
+            $("#checkAttenuateColorModern").addClass("active");
         } else {
-            if($("#checkAttenuateImageColor").is(":checked") == true) {
-                $("#checkAttenuateImageColor").prop("checked", false);
+            if(currentTheme != "modern") {
+                $("#attenuateColorsDiv").stop().fadeOut();
             }
 
-            if($("#checkAttenuateImageColorCheckbox").is(":checked") == true) {
-                $("#checkAttenuateImageColorCheckbox").prop("checked", false);
+            if($("#checkAttenuateColor").is(":checked") == true) {
+                $("#checkAttenuateColor").prop("checked", false);
             }
 
-            $("#checkAttenuateImageColorModern").removeClass("active");
+            if($("#checkAttenuateColorCheckbox").is(":checked") == true) {
+                $("#checkAttenuateColorCheckbox").prop("checked", false);
+            }
+
+            $("#checkAttenuateColorModern").removeClass("active");
+        }
+
+        if(result.attenuateImgColors == "true" && $("#checkAttenuateImageColors").is(":checked") == false) {
+            $("#checkAttenuateImageColors").prop("checked", true);
+        } else if(result.attenuateImgColors == "false" && $("#checkAttenuateImageColors").is(":checked") == true) {
+            $("#checkAttenuateImageColors").prop("checked", false);
+        }
+
+        if(result.attenuateBgColors == "false" && $("#checkAttenuateBgColors").is(":checked") == true) {
+            $("#checkAttenuateBgColors").prop("checked", false);
+        } else if(result.attenuateBgColors !== "false" && $("#checkAttenuateBgColors").is(":checked") == false) {
+            $("#checkAttenuateBgColors").prop("checked", true);
+        }
+
+        if(result.attenuateVideoColors == "true" && $("#checkAttenuateVideoColors").is(":checked") == false) {
+            $("#checkAttenuateVideoColors").prop("checked", true);
+        } else if(result.attenuateVideoColors == "false" && $("#checkAttenuateVideoColors").is(":checked") == true) {
+            $("#checkAttenuateVideoColors").prop("checked", false);
+        }
+
+        if(result.attenuateBrightColors == "true" && $("#checkAttenuateBrightColors").is(":checked") == false) {
+            $("#checkAttenuateBrightColors").prop("checked", true);
+        } else if(result.attenuateBrightColors == "false" && $("#checkAttenuateBrightColors").is(":checked") == true) {
+            $("#checkAttenuateBrightColors").prop("checked", false);
         }
     }
 
-    $("#checkAttenuateImageColor").on("change", function() {
+    $("#checkAttenuateColor").on("change", function() {
         if($(this).is(":checked") == true) {
-            setSettingItem("attenuateImageColor", "true");
+            setSettingItem("attenuateColors", "true");
         } else {
-            setSettingItem("attenuateImageColor", "false");
+            setSettingItem("attenuateColors", "false");
         }
     });
 
-    $("#checkAttenuateImageColorCheckbox").on("change", function() {
+    $("#checkAttenuateColorCheckbox").on("change", function() {
         if($(this).is(":checked") == true) {
-            setSettingItem("attenuateImageColor", "true");
+            setSettingItem("attenuateColors", "true");
         } else {
-            setSettingItem("attenuateImageColor", "false");
+            setSettingItem("attenuateColors", "false");
         }
     });
 
-    $("#checkAttenuateImageColorModern .popup-option-modern").on("click", () => {
-        if(!$("#checkAttenuateImageColorModern").hasClass("active") == true) {
-            setSettingItem("attenuateImageColor", "true");
+    $("#checkAttenuateColorModern .popup-option-modern").on("click", e => {
+        $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
+
+        if(!$("#checkAttenuateColorModern").hasClass("active") == true) {
+            setSettingItem("attenuateColors", "true");
+            $("#attenuateColorsDiv").stop().fadeIn();
         } else {
-            setSettingItem("attenuateImageColor", "false");
+            setSettingItem("attenuateColors", "false");
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+    $("#checkAttenuateColorModern .popup-option-modern-complement").on("click", e => {
+        $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
+        $("#attenuateColorsDiv").stop().fadeToggle();
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+    $("#checkAttenuateImageColors").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("attenuateImgColors", "true");
+        } else {
+            setSettingItem("attenuateImgColors", "false");
+        }
+    });
+
+    $("#checkAttenuateBgColors").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("attenuateBgColors", "true");
+        } else {
+            setSettingItem("attenuateBgColors", "false");
+        }
+    });
+
+    $("#checkAttenuateVideoColors").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("attenuateVideoColors", "true");
+        } else {
+            setSettingItem("attenuateVideoColors", "false");
+        }
+    });
+
+    $("#checkAttenuateBrightColors").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("attenuateBrightColors", "true");
+        } else {
+            setSettingItem("attenuateBrightColors", "false");
         }
     });
 
@@ -1455,7 +1553,7 @@ $(document).ready(() => {
         toggleTheme(); // Toggle dark/light theme
         checkContrastMode(!updateNotificationShowed && !archiveInfoShowed && !informationShowed);
         checkColorInvert();
-        checkAttenuateImageColor();
+        checkAttenuateColor();
         checkLiveSettings();
         checkBrightness();
         checkBlueLightReduction();
@@ -1493,8 +1591,10 @@ $(document).ready(() => {
     displaySettings();
 
     if(typeof(browser.storage.onChanged) !== "undefined") {
-        browser.storage.onChanged.addListener(() => {
-            displaySettings();
+        browser.storage.onChanged.addListener((_changes, areaName) => {
+            if(areaName == "local") {
+                displaySettings();
+            }
         });
     }
 
@@ -1519,7 +1619,15 @@ function showInformationPopup(result) {
     const updateNotification = result.updateNotification || {};
 
     if (updateNotification[extensionVersion] != true && result.defaultLoad == "0") {
-        if (updateNotification["2.10"] != true) {
+        let updateFromVersionBefore210 = true;
+
+        for(const version of Object.keys(updateNotification)) {
+            if(version.startsWith("2.10")) {
+                updateFromVersionBefore210 = false;
+            }
+        }
+
+        if(updateFromVersionBefore210) {
             $("#modalUIUpdatedMessage").show();
         } else {
             $("#modalUIUpdatedMessage").hide();

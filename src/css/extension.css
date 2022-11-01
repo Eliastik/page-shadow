@@ -196,8 +196,14 @@ hr.nmt {
 .input-group-select-presets .btn {
     margin-bottom: 0 !important;
 }
-#tempSelectDiv {
-    display: inline-block;
+#tempSelectDiv, #themeSelectDiv {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px !important;
+}
+#tempSelectDiv label, #themeSelectDiv label {
+    margin-bottom: 0 !important;
+    margin-right: 2px !important;
 }
 .btn, button {
     margin-bottom: 8px !important;
@@ -723,6 +729,11 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     right: none !important;
 }
 
+.popup-options-modern #themeDiv:before, .popup-options-modern #attenuateColorsDiv:before {
+    right: 39px;
+    right: none !important;
+}
+
 .popup-options-modern #invertPageColorsDiv:before, .popup-options-modern #blueLightReductionFilterSettings:before {
     left: 151px;
     right: none !important;
@@ -786,4 +797,9 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     display: none;
     font-size: 6pt !important;
     margin-left: 6px;
+}
+@media (prefers-color-scheme: dark) {
+    #iframeReadme {
+        filter: invert(100%) !important;
+    }
 }

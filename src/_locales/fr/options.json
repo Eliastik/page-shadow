@@ -104,7 +104,7 @@
                 "brightColorLightnessTresholdMax": "Si un élément a une valeur de luminosité inférieure à ce seuil et supérieure à la valeur minimum, l'élément sera détecté comme élément de couleur vive.",
                 "throttleBackgroundDetection": "Applique un délai à la détection des arrière-plans au chargement des pages, ce qui permet d'améliorer les performances sur les grandes pages.",
                 "throttleBackgroundDetectionElementsTreatedByCall": "Défini le nombre d'éléments traités par chaque appel de boucle lorsque la détection des arrière-plans est ralentie. Une valeur élevée peut impacter les performances.",
-                "backgroundDetectionStartDelay": "Applique un délai avant d'appliquer le traitement de l'arrière-plan des éléments. Par défaut 1 ms.",
+                "backgroundDetectionStartDelay": "Applique un délai avant d'appliquer le traitement de l'arrière-plan des éléments. Par défaut 0 ms.",
                 "useBackgroundDetectionAlreadyProcessedNodes": "Utilise une liste d'éléments déjà traités pour le traitement des arrière-plans pour éviter de traiter à nouveau les mêmes éléments. Peut améliorer les performances, mais peut augmenter l'utilisation de la mémoire."
             }
         },
@@ -137,6 +137,7 @@
             "changelogTitle": "Journal des changements",
             "infos": "Informations",
             "changelog": {
+                "2102": "<ul><li>Migration vers l'API Manifest v3 (versions Chrome/Edge/Opera uniquement). Les impacts sur les fonctionnalités de Page Shadow sont très mineurs (voir le fichier Lisez-moi) ;</li><li>Ajout de la fonctionnalité Atténuer les couleurs (remplaçant la fonctionnalité Atténuer la couleur des images), qui permet d'atténuer la couleur des images/arrière-plans/vidéos et éléments colorés ;</li><li>Correction des bugs (voir le fichier Lisez-moi)</li></ul>",
                 "2101": "<ul><li>Optimisation majeure des performances, ce qui permet de limiter l'apparition de flashs lors de la navigation entre pages ou le changement des paramètres en temps réel ;</li><li>Ajout de la fonction \"Préserver les couleurs des éléments\" (non activée par défaut) à la fonction \"Augmenter le contraste\". Cette fonction préserve les couleurs des éléments, mais remplace les couleurs très proches du blanc ou les couleurs sombres ;</li><li>Amélioration de l'expérience d'utilisation lorsque le thème de la popup \"Moderne\" est activé. Ce thème est désormais le thème par défaut pour les nouvelles installations ;</li><li>Améliorations mineures de l'interface des Paramètres avancés : affichage d'une icône sur les onglets si des modifications des paramètres n'ont pas été enregistrées, affichage d'un témoin de chargement lors de la restauration des archives des paramètres ;</li><li>Ajout du paramètre \"Activer le menu du clic droit\" (activé par défaut) ;</li><li>Corrections de bugs et améliorations techniques (voir le fichier Lisez-moi)</li></ul>",
                 "210": "<ul><li>Page Shadow a subit une refonte de son interface graphique. De nombreuses nouveautés sont disponibles (voir le fichier Lisez-moi) ;</li><li>Séparation du \"Mode nuit\" de la fonction \"Baisser la luminosité de la page\" : le \"Mode nuit\" est désormais une fonction à part, nommée \"Filtre de réduction de la lumière bleue\" ;</li><li>Ajout de la fonction \"Atténuer la couleur des images\" permettant d'éviter d'afficher des couleurs trop vives ;</li><li>Il est désormais possible d'archiver automatiquement les paramètres de Page Shadow dans le Cloud, à un intervalle paramétrable (par défaut, cette fonctionnalité est désactivée) ;</li><li>Un avertissement est désormais affiché pour avertir de l'importance d'effectuer une archive de ses paramètres de l'extension ;</li><li>Optimisation du téléchargement et de la mise à jour automatique des filtres : ceux-ci sont mis à jour uniquement si nécessaire (date de dernière mise à jour du fichier sur le serveur). Si une mise à jour est nécessaire, un message est affiché au niveau de la liste des filtres ;</li><li>Ajout d'options avancées pour les utilisateurs avertis dans les Paramètres avancés ;</li><li>Corrections de bugs et améliorations techniques (voir le fichier Lisez-moi)</li></ul>",
                 "291": "<ul><li>Amélioration des performances lors de l'activation/désactivation de Page Shadow et lors de la modification des paramètres ;</li><li>Amélioration des performances du traitement des pages web par Page Shadow ;</li><li>Il est désormais possible d'indiquer une couleur en RGB ou en HSV dans les paramètres des thèmes personnalisés ;</li><li>Ajout d'une liste optionnelle \"Mode ultra performance\" ;</li><li>Ajout du thème n°16 ;</li><li>Correction de bugs (voir le fichier Lisez-moi) ;</li><li>Améliorations techniques (voir le fichier Lisez-moi)</li></ul>",
@@ -159,6 +160,7 @@
                 "11": "<ul><li>Amélioration de la fonction \"Augmenter le contraste\".</li></ul>",
                 "1": "<ul><li>Version initiale.</li></ul>",
                 "versionNames": {
+                    "2102": "Version 2.10.2 (01/11/2022)",
                     "2101": "Version 2.10.1 (25/09/2022)",
                     "210": "Version 2.10 (18/08/2022)",
                     "291": "Version 2.9.1 (26/12/2021)",
@@ -305,6 +307,11 @@
             "disableImgBgColor": "Désactiver la coloration de l'arrière-plan des images :",
             "selectiveInvert": "Inversion sélective :",
             "attenuateImageColor": "Atténuer la couleur des images :",
+            "attenuateColors": "Atténuer les couleurs :",
+            "attenuateImgColors": "Atténuer les couleurs des images :",
+            "attenuateBgColors": "Atténuer les couleurs des images d'arrière-plan :",
+            "attenuateVideoColors": "Atténuer les couleurs des vidéos :",
+            "attenuateBrightColors": "Atténuer la couleur des éléments :",
             "blueLightReductionEnabled": "Filtre de réduction de la lumière bleue :",
             "percentageBlueLightReduction": "Intensité du filtre de réduction de la lumière bleue :",
             "brightColorPreservation": "Préserver les couleurs des éléments :",
