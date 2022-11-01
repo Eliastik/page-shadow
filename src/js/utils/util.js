@@ -670,6 +670,7 @@ async function loadPreset(nb) {
 
         const settingsNames = JSON.parse(JSON.stringify(settingsToSavePresets));
         settingsNames.push("nightModeEnabled");
+        settingsNames.push("attenuateImageColor");
 
         const finalRestoreObject = {};
 
@@ -742,6 +743,14 @@ async function getPresetData(nb) {
             preset["nightModeEnabled"] = undefined;
         }
 
+        // Migrate Attenuate image color
+        if(preset["attenuateImageColor"] == "true") {
+            preset["attenuateColors"] = "true";
+            preset["attenuateImgColors"] = "true";
+            preset["attenuateBgColors"] = "true";
+            preset["attenuateImageColor"] = undefined;
+        }
+
         return preset;
     } catch(e) {
         return "error";
@@ -777,6 +786,7 @@ async function savePreset(nb, name, websiteListToApply, saveNewSettings) {
             }
 
             preset[namePreset]["nightModeEnabled"] = false;
+            preset[namePreset]["attenuateImageColor"] = false;
         }
 
         await setSettingItem("presets", preset);

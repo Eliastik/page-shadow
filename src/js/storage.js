@@ -144,8 +144,7 @@ async function migrateSettings(filters) {
         await setSettingItem("attenuateBgColors", "true");
     }
 
-    removeSettingItem(["nightModeEnabled"]);
-    removeSettingItem(["attenuateImageColor"]);
+    removeSettingItem(["nightModeEnabled", "attenuateImageColor"]);
     sendMessageWithPromise({ "type": "updateSettingsCache" });
 }
 
