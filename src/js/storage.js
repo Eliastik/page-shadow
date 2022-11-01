@@ -138,14 +138,18 @@ async function migrateSettings(filters) {
     }
 
     // Migrate Attenuate color settings
-    if(result.attenuateImageColor && result.attenuateImageColor == "true") {
-        await setSettingItem("attenuateColors", "true");
+    if(result.attenuateImageColor) {
+        if(result.attenuateImageColor == "true") {
+            await setSettingItem("attenuateColors", "true");
+        } else {
+            await setSettingItem("attenuateColors", "false");
+        }
+
         await setSettingItem("attenuateImgColors", "true");
         await setSettingItem("attenuateBgColors", "true");
     }
 
-    removeSettingItem(["nightModeEnabled"]);
-    removeSettingItem(["attenuateImageColor"]);
+    removeSettingItem(["nightModeEnabled", "attenuateImageColor"]);
     sendMessageWithPromise({ "type": "updateSettingsCache" });
 }
 

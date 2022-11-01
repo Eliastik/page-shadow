@@ -798,3 +798,8 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     font-size: 6pt !important;
     margin-left: 6px;
 }
+@media (prefers-color-scheme: dark) {
+    #iframeReadme {
+        filter: invert(100%) !important;
+    }
+}
