@@ -105,6 +105,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Known issues/bugs
 
+* [x] (Minor) When using the Modern popup theme, if the features Invert colors or Blue light reduction filter are not enabled, when opening the options of these features, the options displayed are not the stored options (no checkbox checked, default color temperature)
 * [ ] (Medium) Fix Preserve bright color white text on white background/black text on black background
     * Similar to the issue of wrong background detection
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots

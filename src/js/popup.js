@@ -92,13 +92,13 @@ async function checkCurrentPopupTheme() {
     const result = await browser.storage.local.get("popupTheme");
 
     // Switch popup theme
-    if (result && result.popupTheme && result.popupTheme == "checkbox") {
+    if(result && result.popupTheme && result.popupTheme == "checkbox") {
         $(".popup-option-container").hide();
         $(".popup-option-container-classic").show();
         $(".popup-option-container-modern").hide();
         $("#popup-options").removeClass("popup-options-modern");
         currentTheme = "checkbox";
-    } else if (result && result.popupTheme && result.popupTheme == "switch") {
+    } else if(result && result.popupTheme && result.popupTheme == "switch") {
         $(".popup-option-container").show();
         $(".popup-option-container-classic").hide();
         $(".popup-option-container-modern").hide();
@@ -673,30 +673,6 @@ $(document).ready(() => {
             }
 
             $("#checkColorInvertModern").addClass("active");
-
-            if(result.invertImageColors == "true" && $("#checkImageInvert").is(":checked") == false) {
-                $("#checkImageInvert").prop("checked", true);
-            } else if(result.invertImageColors == "false" && $("#checkImageInvert").is(":checked") == true) {
-                $("#checkImageInvert").prop("checked", false);
-            }
-
-            if(result.invertBgColor == "false" && $("#checkBgColorInvert").is(":checked") == true) {
-                $("#checkBgColorInvert").prop("checked", false);
-            } else if(result.invertBgColor !== "false" && $("#checkBgColorInvert").is(":checked") == false) {
-                $("#checkBgColorInvert").prop("checked", true);
-            }
-
-            if(result.invertVideoColors == "true" && $("#checkVideoInvert").is(":checked") == false) {
-                $("#checkVideoInvert").prop("checked", true);
-            } else if(result.invertVideoColors == "false" && $("#checkVideoInvert").is(":checked") == true) {
-                $("#checkVideoInvert").prop("checked", false);
-            }
-
-            if(result.selectiveInvert == "true" && $("#checkSelectiveInvert").is(":checked") == false) {
-                $("#checkSelectiveInvert").prop("checked", true);
-            } else if(result.selectiveInvert == "false" && $("#checkSelectiveInvert").is(":checked") == true) {
-                $("#checkSelectiveInvert").prop("checked", false);
-            }
         } else {
             if(currentTheme != "modern") {
                 $("#invertPageColorsDiv").stop().fadeOut();
@@ -711,30 +687,30 @@ $(document).ready(() => {
             }
 
             $("#checkColorInvertModern").removeClass("active");
+        }
 
-            if(result.invertImageColors !== "true") {
-                if($("#checkImageInvert").is(":checked") == true) {
-                    $("#checkImageInvert").prop("checked", false);
-                }
-            }
+        if(result.invertImageColors == "true" && $("#checkImageInvert").is(":checked") == false) {
+            $("#checkImageInvert").prop("checked", true);
+        } else if(result.invertImageColors == "false" && $("#checkImageInvert").is(":checked") == true) {
+            $("#checkImageInvert").prop("checked", false);
+        }
 
-            if(result.invertBgColor == "false") {
-                if($("#checkBgColorInvert").is(":checked") == true) {
-                    $("#checkBgColorInvert").prop("checked", false);
-                }
-            }
+        if(result.invertBgColor == "false" && $("#checkBgColorInvert").is(":checked") == true) {
+            $("#checkBgColorInvert").prop("checked", false);
+        } else if(result.invertBgColor !== "false" && $("#checkBgColorInvert").is(":checked") == false) {
+            $("#checkBgColorInvert").prop("checked", true);
+        }
 
-            if(result.invertVideoColors !== "true") {
-                if($("#checkVideoInvert").is(":checked") == true) {
-                    $("#checkVideoInvert").prop("checked", false);
-                }
-            }
+        if(result.invertVideoColors == "true" && $("#checkVideoInvert").is(":checked") == false) {
+            $("#checkVideoInvert").prop("checked", true);
+        } else if(result.invertVideoColors == "false" && $("#checkVideoInvert").is(":checked") == true) {
+            $("#checkVideoInvert").prop("checked", false);
+        }
 
-            if(result.selectiveInvert !== "true") {
-                if($("#checkSelectiveInvert").is(":checked") == true) {
-                    $("#checkSelectiveInvert").prop("checked", false);
-                }
-            }
+        if(result.selectiveInvert == "true" && $("#checkSelectiveInvert").is(":checked") == false) {
+            $("#checkSelectiveInvert").prop("checked", true);
+        } else if(result.selectiveInvert == "false" && $("#checkSelectiveInvert").is(":checked") == true) {
+            $("#checkSelectiveInvert").prop("checked", false);
         }
 
         if(result.invertEntirePage == "true" && $("#checkEntirePageInvert").is(":checked") == false) {
@@ -1255,14 +1231,6 @@ $(document).ready(() => {
         if(result.blueLightReductionEnabled == "true") {
             elBlueLightReduction.setAttribute("id", "pageShadowBrightnessNightMode");
 
-            if(result.colorTemp != undefined) {
-                $("#tempSelect").val(result.colorTemp);
-                previewTemp(result.colorTemp);
-            } else {
-                $("#tempSelect").val("5");
-                previewTemp("5");
-            }
-
             if(result.percentageBlueLightReduction / 100 > maxBrightnessPercentage || result.percentageBlueLightReduction / 100 < minBrightnessPercentage || typeof result.percentageBlueLightReduction === "undefined" || result.percentageBlueLightReduction == null) {
                 elBlueLightReduction.style.opacity = percentageBlueLightDefaultValue;
                 sliderBlueLightReduction.setValue(percentageBlueLightDefaultValue * 100);
@@ -1290,9 +1258,6 @@ $(document).ready(() => {
                 $("#blueLightReductionFilterSettings").stop().fadeOut();
             }
 
-            elBlueLightReduction.setAttribute("id", "pageShadowBrightnessNightMode");
-            elBlueLightReduction.style.display = "none";
-
             if($("#checkBlueLightReductionFilter").is(":checked") == true) {
                 $("#checkBlueLightReductionFilter").prop("checked", false);
             }
@@ -1302,6 +1267,16 @@ $(document).ready(() => {
             }
 
             $("#checkBlueLightReductionFilterModern").removeClass("active");
+
+            elBlueLightReduction.style.display = "none";
+        }
+
+        if(result.colorTemp != undefined) {
+            $("#tempSelect").val(result.colorTemp);
+            previewTemp(result.colorTemp);
+        } else {
+            $("#tempSelect").val("5");
+            previewTemp("5");
         }
     }
 
