@@ -15,6 +15,8 @@ const plumber  = require("gulp-plumber");
 
 let currentMode = "development";
 
+const zipTimestamp = new Date(2022, 10, 1);
+
 gulp.task("set-prod-mode", () => {
     currentMode = "production";
     return gulp.src("./");
@@ -127,7 +129,7 @@ gulp.task("build", () => {
         distFileName = manifestChrome.name + " v" + manifestChrome.version;
     const codebase = manifestChrome.codebase;
     gulp.src("build/firefox/**/**/*")
-        .pipe(zip(distFileName + ".xpi"))
+        .pipe(zip(distFileName + ".xpi", { compress: true, modifiedTime: zipTimestamp }))
         .pipe(gulp.dest("./build"));
     return gulp.src("./build/chrome/")
         .pipe(crx({
