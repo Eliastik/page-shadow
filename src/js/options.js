@@ -61,6 +61,8 @@ let changingLanguage = false;
 let alreadyCheckedForUpdateFilters = false;
 let savedAdvancedOptionsTimeout;
 let disableStorageSizeCalculation = false;
+let hasGlobalChange = false;
+let filterEditDisplay = false;
 
 init_i18next("options").then(() => translateContent());
 toggleTheme(); // Toggle dark/light theme
@@ -951,10 +953,15 @@ function displayFilterErrorsOnElement(data, domElement) {
 }
 
 async function displayFilterEdit() {
+    filterEditDisplay = true;
     $("#editFilter").modal("show");
 
     $("#editFilter").on("shown.bs.modal", () => {
         window.codeMirrorEditFilter.refresh();
+    });
+
+    $("#editFilter").on("hidden.bs.modal", () => {
+        filterEditDisplay = false;
     });
 
     window.codeMirrorEditFilter.getDoc().setValue("");
@@ -2018,7 +2025,7 @@ $(document).ready(() => {
 });
 
 window.onbeforeunload = () => {
-    return "";
+    return hasGlobalChange || filterEditDisplay ? true : null;
 };
 
 browser.runtime.onMessage.addListener(message => {
@@ -2026,3 +2033,23 @@ browser.runtime.onMessage.addListener(message => {
         openTabByHash();
     }
 });
+
+setInterval(async() => {
+    hasGlobalChange = false;
+
+    if(await notifyChangedThemeNotSaved($("#themeSelect").val())) {
+        hasGlobalChange = true;
+    }
+
+    if(await notifyChangedListNotSaved()) {
+        hasGlobalChange = true;
+    }
+
+    if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+        hasGlobalChange = true;
+    }
+
+    if(await notifyChangedAdvancedOptionsNotSaved()) {
+        hasGlobalChange = true;
+    }
+}, 1000);
