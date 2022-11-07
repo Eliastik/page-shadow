@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, getSettings, getCurrentURL, hasSettingsChanged, sendMessageWithPromise } from "./utils/util.js";
+import { pageShadowAllowed, getSettings, getCurrentURL, hasSettingsChanged, sendMessageWithPromise, sha256 } from "./utils/util.js";
 import browser from "webextension-polyfill";
 import ContentProcessor from "./contentProcessor.js";
 
@@ -36,11 +36,11 @@ import ContentProcessor from "./contentProcessor.js";
     });
 
     // Message/response handling
-    browser.runtime.onMessage.addListener(message => {
+    browser.runtime.onMessage.addListener(async(message) => {
         if(message && message.type == "websiteUrlUpdated") { // Execute when the page URL changes in Single Page Applications
             const currentURL = getCurrentURL();
 
-            if(message && message.url == currentURL) {
+            if(message && message.url == await sha256(currentURL)) {
                 const URLUpdated = precUrl != getCurrentURL();
                 let changed = contentProcessor.hasEnabledStateChanged(message.enabled) || contentProcessor.mutationDetected;
 

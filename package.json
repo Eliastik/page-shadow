@@ -36,6 +36,7 @@
     "webpack-stream": "^7.0.0"
   },
   "dependencies": {
+    "@aws-crypto/sha256-browser": "^2.0.2",
     "@babel/runtime": "^7.20.1",
     "@fortawesome/fontawesome-free": "^6.2.0",
     "bootstrap-slider": "^11.0.2",
