@@ -154,4 +154,6 @@ gulp.task("build-prod", gulp.series("build-directory-prod", "build", "clean-dire
 
 gulp.task("clean-build", gulp.series("clean"));
 
-gulp.task("default", gulp.series("build-dev"));
+gulp.task("default", gulp.series("build-prod"));
+
+gulp.task("build", gulp.series("build-prod"));
