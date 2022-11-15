@@ -129,12 +129,12 @@ gulp.task("build", () => {
         distFileName = manifestChrome.name + " v" + manifestChrome.version;
     const codebase = manifestChrome.codebase;
     gulp.src("build/firefox/**/**/*")
-        .pipe(zip(distFileName + ".xpi", { compress: true, modifiedTime: zipTimestamp }))
+        .pipe(zip(distFileName + " Firefox.xpi", { compress: true, modifiedTime: zipTimestamp }))
         .pipe(gulp.dest("./build"));
     return gulp.src("./build/chrome/")
         .pipe(crx({
             privateKey: fs.readFileSync("./key/key.pem", "utf8"),
-            filename: manifestChrome.name + " v" + manifestChrome.version + ".crx",
+            filename: manifestChrome.name + " v" + manifestChrome.version + " Chromium.crx",
             codebase: codebase,
         }))
         .pipe(gulp.dest("./build"));
