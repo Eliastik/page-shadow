@@ -18,7 +18,7 @@
     "@babel/preset-env": "^7.20.2",
     "@crxs/gulp-crx": "^1.0.4",
     "babel-loader": "^8.3.0",
-    "css-loader": "^6.7.1",
+    "css-loader": "^6.7.2",
     "eslint": "^7.32.0",
     "eslint-webpack-plugin": "^3.2.0",
     "gulp": "^4.0.2",
@@ -31,14 +31,14 @@
     "ignore-loader": "^0.1.2",
     "raw-loader": "^4.0.2",
     "style-loader": "^3.3.1",
-    "webpack": "^5.74.0",
+    "webpack": "^5.75.0",
     "webpack-cli": "^4.10.0",
     "webpack-stream": "^7.0.0"
   },
   "dependencies": {
     "@aws-crypto/sha256-browser": "^2.0.2",
     "@babel/runtime": "^7.20.1",
-    "@fortawesome/fontawesome-free": "^6.2.0",
+    "@fortawesome/fontawesome-free": "^6.2.1",
     "bootstrap-slider": "^11.0.2",
     "codemirror": "^5.65.9",
     "i18next": "^21.10.0",
@@ -47,7 +47,7 @@
     "jquery": "^3.6.1",
     "jquery-colpick": "^3.1.0",
     "jquery-i18next": "^1.2.1",
-    "linkedom": "^0.14.19",
+    "linkedom": "^0.14.20",
     "webextension-polyfill": "^0.10.0"
   }
 }
