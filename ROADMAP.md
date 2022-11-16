@@ -61,7 +61,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * Seems to be fixed on latest Firefox versions
 * [x] (Medium) On Github, when navigating between pages and going back with the browser back button and using the "Decrease brightness" or "Blue light reduction filter", sometimes the effect is increased (double)
 
-### Next version (2.10.2 ?)
+### Next version (2.10.2)
 
 #### Planned
 
@@ -78,6 +78,19 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * The function detects extension's theme background color and not actual background colors of some elements, randomly
 * [x] (Minor) When dark mode is enabled in the OS, the Readme file in the settings appear inverted (black text on white background when Dark theme is enabled)
 
+### Next version (2.10.3)
+
+#### Planned
+
+* [ ] Manifestv3 for Firefox
+* [x] Only display confirmation on Advanced settings page reload/exit when a change of the settings is unsaved (uses existing code for displaying icon)
+* [x] Use SHA-256 to exchange URLs between background script and content script
+
+#### Bugs
+
+* [x] (Minor) When using the Modern popup theme, if the features Invert colors or Blue light reduction filter are not enabled, when opening the options of these features, the options displayed are not the stored options (no checkbox checked, default color temperature)
+* [x] (Medium) Fix displaying of settings with the popup theme "Modern"
+
 ### Futures versions
 
 ### Common
@@ -87,7 +100,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Planned/ideas
 
 * [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
-* [ ] Only display confirmation on Advanced settings page reload/exit when a change of the settings is unsaved (uses existing code for displaying icon)
 * [ ] Improving codebase
     * [ ] Comment the code: doc for methods/functions
     * [ ] Simplify code applying Shadow Roots styles?
