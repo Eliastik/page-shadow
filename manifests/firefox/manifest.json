@@ -37,12 +37,6 @@
     "open_in_tab": true,
     "page": "options.html"
   },
-  "applications": {
-    "gecko": {
-      "id": "page-shadow@eliastiksofts.com",
-      "strict_min_version": "48.0"
-    }
-  },
   "permissions": [
     "storage",
     "contextMenus",
