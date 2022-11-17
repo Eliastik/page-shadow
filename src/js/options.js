@@ -2022,6 +2022,10 @@ $(document).ready(() => {
     });
 
     openTabByHash();
+
+    if(getBrowser() == "Firefox") {
+        $("iframe").addClass("disableFilter");
+    }
 });
 
 window.onbeforeunload = () => {

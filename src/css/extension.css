@@ -799,7 +799,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     margin-left: 6px;
 }
 @media (prefers-color-scheme: dark) {
-    #iframeReadme {
+    #iframeReadme:not(.disableFilter) {
         filter: invert(100%) !important;
     }
 }
