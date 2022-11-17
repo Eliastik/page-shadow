@@ -193,7 +193,7 @@ select:focus, select.form-control:focus {
 }
 
 @media (prefers-color-scheme: dark) {
-    #iframeReadme {
+    #iframeReadme:not(.disableFilter)  {
         filter: invert(0%) !important;
     }
 }
