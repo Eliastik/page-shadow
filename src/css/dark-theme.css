@@ -297,3 +297,7 @@ hr {
     border-color: #3e4046;
     background-color: #3e4046;
 }
+
+.input-group-select-presets {
+    background-color: #303134;
+}
