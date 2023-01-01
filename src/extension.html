@@ -320,6 +320,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
             </div>
             <hr />
             <footer>
+                <a href="#" id="permissionLink" style="display: none;"><i class="fa-solid fa-triangle-exclamation fa-fw" aria-hidden="true"></i> <span data-i18n="footer.permissionLink"></span></a>
                 <ul class="list-inline m0">
                     <li class="list-inline-item"><a href="#" id="linkAdvSettings"><i class="fa fa-cog" aria-hidden="true"></i> <span data-i18n="footer.advancedSettings"></span></a></li>
                     <li class="list-inline-item"><a href="#" id="linkTestExtension"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> <span data-i18n="footer.testExtension"></span></a></li>
@@ -482,6 +483,29 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
                         <button type="button" class="btn btn-primary" id="linkAdvSettings3"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span data-i18n="modal.AdvSettings"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="permissions" tabindex="-1" role="dialog" aria-labelledby="permissions">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="permissionsLabel"><i class="fa-solid fa-triangle-exclamation fa-fw" aria-hidden="true"></i> <span data-i18n="modalPermissionsInfo.title"></span></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p class="largeFontSize" id="permissionsMessage" data-i18n="modalPermissionsInfo.message"></p>
+                        <p id="permissionsMessageMin">
+                            <span data-i18n="modalPermissionsInfo.messageMin"></span>
+                        </p>
+                        <div>
+                            <input type="checkbox" id="permissionsInfoDisable" /> <label for="permissionsInfoDisable" data-i18n="modalPermissionsInfo.disable"></label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="enablePermission"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modalPermissionsInfo.enable"></span></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
                     </div>
                 </div>
             </div>

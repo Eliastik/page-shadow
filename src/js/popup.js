@@ -21,8 +21,8 @@ import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
-import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme, sendMessageWithPromise, applyContrastPageVariablesWithTheme } from "./utils/util.js";
-import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval } from "./constants.js";
+import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme, sendMessageWithPromise, applyContrastPageVariablesWithTheme, checkPermissions } from "./utils/util.js";
+import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval, permissionOrigin } from "./constants.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import browser from "webextension-polyfill";
@@ -43,6 +43,7 @@ let selectedPreset = 1;
 let updateNotificationShowed = false;
 let archiveInfoShowed = false;
 let currentTheme = "checkbox";
+let permissionInfoShowed = false;
 
 init_i18next("popup").then(() => translateContent());
 toggleTheme(); // Toggle dark/light theme
@@ -631,6 +632,14 @@ $(document).ready(() => {
             setSettingItem("archiveInfoDisable", "true");
         } else {
             setSettingItem("archiveInfoDisable", "false");
+        }
+    });
+
+    $("#permissionsInfoDisable").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("permissionsInfoDisable", "true");
+        } else {
+            setSettingItem("permissionsInfoDisable", "false");
         }
     });
 
@@ -1521,7 +1530,7 @@ $(document).ready(() => {
     });
 
     async function displaySettings() {
-        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "percentageBlueLightReduction", "archiveInfoLastShowed", "archiveInfoDisable"]);
+        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "percentageBlueLightReduction", "archiveInfoLastShowed", "archiveInfoDisable", "permissionsInfoDisable"]);
 
         const informationShowed = showInformationPopup(result);
         checkCurrentPopupTheme();
@@ -1561,6 +1570,10 @@ $(document).ready(() => {
             await loadPresetSelect("loadPresetSelect", i18next);
             $("#loadPresetSelect").val(selectedPreset).trigger("change");
         }
+
+        if(!(await checkPermissions())) {
+            $("#permissionLink").show();
+        }
     }
 
     displaySettings();
@@ -1588,9 +1601,28 @@ $(document).ready(() => {
             }
         }
     });
+
+    $("#enablePermission").on("click", () => {
+        browser.permissions.request({
+            origins: permissionOrigin
+        });
+    });
+
+    $("#permissionLink").on("click", () => {
+        browser.permissions.request({
+            origins: permissionOrigin
+        });
+    });
+
+    browser.permissions.onAdded.addListener(async() => {
+        if(await checkPermissions()) {
+            $("#permissions").modal("hide");
+            $("#permissionLink").hide();
+        }
+    });
 });
 
-function showInformationPopup(result) {
+async function showInformationPopup(result) {
     const updateNotification = result.updateNotification || {};
 
     if (updateNotification[extensionVersion] != true && result.defaultLoad == "0") {
@@ -1624,6 +1656,11 @@ function showInformationPopup(result) {
             return true;
         } else if (archiveInfoLastShowed <= 0) {
             setSettingItem("archiveInfoLastShowed", Date.now());
+        }
+
+        if(!archiveInfoShowed && !permissionInfoShowed && !(await checkPermissions()) && result.permissionsInfoDisable != "true") {
+            $("#permissions").modal("show");
+            permissionInfoShowed = true;
         }
     }
 

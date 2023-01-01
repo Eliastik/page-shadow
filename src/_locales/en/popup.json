@@ -106,11 +106,19 @@
         "disableWebsite": "Disable for this website",
         "enableWebsite": "Disable for this website",
         "disableWebpage": "Disable for this page",
-        "enableWebpage": "Disable for this page"
+        "enableWebpage": "Disable for this page",
+        "permissionLink": "Missing permission. Click here to enable."
     },
     "modalArchiveInfo": {
         "title": "Advice",
         "message": "It's recommended to make regular backups of your settings, to avoid their accidental loss. You can backup to your device locally (JSON file) or to the Cloud, from Advanced settings, under the Archive/restore tab.",
         "disable": "Don't show this advice again"
+    },
+    "modalPermissionsInfo": {
+        "title": "Missing permission",
+        "message": "For the extension to work properly, you need to allow access to data on all websites.",
+        "messageMin": "If you do not enable this permission, you will be able to use the extension. However, for the extension to be able to activate on the different websites, you will have to open the extension menu each time.",
+        "enable": "Enable permission",
+        "disable": "Don't show anymore"
     }
 }
