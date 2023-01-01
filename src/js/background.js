@@ -24,6 +24,8 @@ import browser from "webextension-polyfill";
 import PresetCache from "./utils/presetCache.js";
 import SettingsCache from "./utils/settingsCache.js";
 
+const sessionStorage = browser.storage.session ? browser.storage.session : browser.storage.local;
+
 function setPopup() {
     if(typeof(browser.action) !== "undefined" && typeof(browser.action.setPopup) !== "undefined") {
         browser.action.setPopup({
@@ -257,7 +259,7 @@ async function updateBadge(storageChanged) {
 
 async function checkAutoEnable() {
     const autoEnableActivated = await isAutoEnable();
-    const result = await browser.storage.session.get("lastAutoEnableDetected");
+    const result = await sessionStorage.get("lastAutoEnableDetected");
 
     if(autoEnableActivated) {
         const data = await getAutoEnableSavedData();
@@ -265,10 +267,10 @@ async function checkAutoEnable() {
 
         if(enabled && result.lastAutoEnableDetected == "false" || enabled && result.lastAutoEnableDetected == "null") {
             await setSettingItem("globallyEnable", "true");
-            await browser.storage.session.set({ "lastAutoEnableDetected": "true" });
+            await sessionStorage.set({ "lastAutoEnableDetected": "true" });
         } else if(!enabled && result.lastAutoEnableDetected == "true" || !enabled && result.lastAutoEnableDetected == "null") {
             await setSettingItem("globallyEnable", "false");
-            await browser.storage.session.set({ "lastAutoEnableDetected": "false" });
+            await sessionStorage.set({ "lastAutoEnableDetected": "false" });
         }
     }
 }
@@ -313,7 +315,7 @@ async function checkAutoBackupCloud() {
 
 async function autoEnable(changed) {
     if(typeof(changed) === "undefined" || changed == null || checkChangedStorageData(["hourEnable", "minuteEnable", "hourDisable", "minuteDisable"], changed)) {
-        await browser.storage.session.set({ "lastAutoEnableDetected": "null" });
+        await sessionStorage.set({ "lastAutoEnableDetected": "null" });
         checkAutoEnable();
     }
 }
