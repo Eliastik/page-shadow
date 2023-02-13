@@ -12,7 +12,7 @@
   "license": "GPL-3.0",
   "homepage": "https://www.eliastiksofts.com/page-shadow",
   "devDependencies": {
-    "@babel/core": "^7.20.7",
+    "@babel/core": "^7.20.12",
     "@babel/eslint-parser": "^7.19.1",
     "@babel/plugin-transform-runtime": "^7.19.6",
     "@babel/preset-env": "^7.20.2",
@@ -37,8 +37,8 @@
   },
   "dependencies": {
     "@aws-crypto/sha256-browser": "^2.0.2",
-    "@babel/runtime": "^7.20.7",
-    "@fortawesome/fontawesome-free": "^6.2.1",
+    "@babel/runtime": "^7.20.13",
+    "@fortawesome/fontawesome-free": "^6.3.0",
     "bootstrap-slider": "^11.0.2",
     "codemirror": "^5.65.11",
     "i18next": "^21.10.0",
@@ -47,7 +47,7 @@
     "jquery": "^3.6.3",
     "jquery-colpick": "^3.1.0",
     "jquery-i18next": "^1.2.1",
-    "linkedom": "^0.14.21",
+    "linkedom": "^0.14.22",
     "webextension-polyfill": "^0.10.0"
   }
 }
