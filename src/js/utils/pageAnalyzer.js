@@ -220,7 +220,7 @@ export default class PageAnalyzer {
                 } else {
                     removeClass(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText", "pageShadowBrightColorForceCustomTextLinkColor");
 
-                    if(this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement) {
+                    if(this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode) {
                         const closestBright = element.parentNode.closest(".pageShadowHasBrightColorBackground");
 
                         if(closestBright) {
@@ -228,7 +228,7 @@ export default class PageAnalyzer {
                         }
                     }
                 }
-            } else if(this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement) {
+            } else if(this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode) {
                 const closestForceCustom = element.parentNode.closest(".pageShadowBrightColorForceCustomTextLinkColor");
 
                 if(closestForceCustom) {
