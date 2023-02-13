@@ -81,6 +81,7 @@
             "throttleBackgroundDetectionElementsTreatedByCall": "Nombre d'éléments traités par appel lors du ralentissement de la détection des arrière-plans",
             "backgroundDetectionStartDelay": "Délai avant le traitement des arrières-plan",
             "useBackgroundDetectionAlreadyProcessedNodes": "Utiliser une liste d'éléments déjà traités pour le traitement des arrière-plans",
+            "enableBrightColorDetectionSubelement": "Traiter les sous-éléments des éléments avec couleurs vives",
             "help": {
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrière-plans des éléments.",
                 "autoDetectTransparentBackgroundEnabled": "Active la détection des arrière-plans transparents. Désactiver cette fonctionnalité peut provoquer de nombreux problèmes d'affichage.",
@@ -105,7 +106,8 @@
                 "throttleBackgroundDetection": "Applique un délai à la détection des arrière-plans au chargement des pages, ce qui permet d'améliorer les performances sur les grandes pages.",
                 "throttleBackgroundDetectionElementsTreatedByCall": "Défini le nombre d'éléments traités par chaque appel de boucle lorsque la détection des arrière-plans est ralentie. Une valeur élevée peut impacter les performances.",
                 "backgroundDetectionStartDelay": "Applique un délai avant d'appliquer le traitement de l'arrière-plan des éléments. Par défaut 0 ms.",
-                "useBackgroundDetectionAlreadyProcessedNodes": "Utilise une liste d'éléments déjà traités pour le traitement des arrière-plans pour éviter de traiter à nouveau les mêmes éléments. Peut améliorer les performances, mais peut augmenter l'utilisation de la mémoire."
+                "useBackgroundDetectionAlreadyProcessedNodes": "Utilise une liste d'éléments déjà traités pour le traitement des arrière-plans pour éviter de traiter à nouveau les mêmes éléments. Peut améliorer les performances, mais peut augmenter l'utilisation de la mémoire.",
+                "enableBrightColorDetectionSubelement": "Active le traitement des sous-éléments des éléments avec couleurs vives. Désactiver cette option peut potentiellement améliorer les performances, mais des problèmes d'affichage peuvent se produire sur certains sites en utilisant la fonction de préservation des éléments avec couleurs vives."
             }
         },
         "saved": "Sauvegardé !"

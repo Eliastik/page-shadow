@@ -82,15 +82,19 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Planned
 
-* [ ] Manifestv3 for Firefox
-    * [ ] Display an information popup to inform users to allow the permission "Access data on all websites" for the extension to work properly
+* [x] Manifestv3 for Firefox
+    * [x] Display an information popup to inform users to allow the permission "Access data on all websites" for the extension to work properly
+    * [ ] Tests
 * [x] Only display confirmation on Advanced settings page reload/exit when a change of the settings is unsaved (uses existing code for displaying icon)
 * [x] Use SHA-256 to exchange URLs between background script and content script
 
 #### Bugs
 
+* [x] (Medium) Fix Preserve bright color white text on white background/black text on black background
+    * Similar to the issue of wrong background detection
 * [x] (Minor) When using the Modern popup theme, if the features Invert colors or Blue light reduction filter are not enabled, when opening the options of these features, the options displayed are not the stored options (no checkbox checked, default color temperature)
 * [x] (Medium) Fix displaying of settings with the popup theme "Modern"
+* [ ] (Minor) User bug: button to validate the hour of auto enable/disable (popup) for the extension is not displayed and it's not possible to scroll to access it
 
 ### Futures versions
 
@@ -118,8 +122,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Known issues/bugs
 
-* [ ] (Medium) Fix Preserve bright color white text on white background/black text on black background
-    * Similar to the issue of wrong background detection
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list ?
