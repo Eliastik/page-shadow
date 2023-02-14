@@ -223,7 +223,7 @@ export default class PageAnalyzer {
                     if(this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode) {
                         const closestBright = element.parentNode.closest(".pageShadowHasBrightColorBackground");
 
-                        if(closestBright) {
+                        if(closestBright && closestBright != document.body) {
                             addClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
                         }
                     }
@@ -231,7 +231,7 @@ export default class PageAnalyzer {
             } else if(this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode) {
                 const closestForceCustom = element.parentNode.closest(".pageShadowBrightColorForceCustomTextLinkColor");
 
-                if(closestForceCustom) {
+                if(closestForceCustom && closestForceCustom != document.body) {
                     addClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
                 } else {
                     removeClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
