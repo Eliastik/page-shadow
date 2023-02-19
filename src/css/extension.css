@@ -47,7 +47,7 @@ body.popup {
     max-height: 1050px;
     padding-right: 0 !important;
 }
-body.popup > .navbar {
+body.popup .navbar {
     margin-bottom: 8px;
 }
 .container.popup {
@@ -817,4 +817,11 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 }
 .modal-content {
     border-radius: 8px;
+}
+body.force-scroll #popup-wrapper, body.force-scroll .modal {
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+}
+body.force-scroll .modal {
+    height: 100%;
 }
