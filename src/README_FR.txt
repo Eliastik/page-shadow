@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.10.2 (01/11/2022)
+* Version actuelle : 2.10.3 (05/03/2023)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,22 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+## Version 2.10.3 (05/03/2023) :
+
+* Amélioration majeure de l'affichage lorsque la fonction Conserver les couleurs des éléments est activée avec la fonction Augmenter le contraste : des problèmes d'affichage pouvaient se produire, ils ont été corrigés. La fonction de préservation des couleurs est donc activée par défaut pour les nouvelles installations ;
+* Dans le cas où certaines permissions importantes pour le fonctionneemnt de l'extension ne sont pas autorisées, une alerte s'affiche désormais sur la popup proposant de les autoriser ;
+* Petits ajustements de l'interface utilisateur : les éléments ont été rendus plus arrondis, d'autres ajustements ont été effectués ;
+* L'avertissement s'affichant si on quitte/actualise la page des Paramètres avancés ne s'affiche désormais que si des modifications non enregistrées ont été effectuées ;
+* Modifications préparant la sortie de la version basée sur l'API Manifestv3 pour Firefox (cette version fonctionne encore sous Manifestv2 pour ce navigateur, la sortie de la version se basant sur MV3 se fera plus tard) ;
+* Corrections de bugs et améliorations techniques :
+    * Correction d'un bug lors de l'affichage de certains paramètres dans la popup ;
+    * Correction d'un bug rare empêchant le défilement de la popup dans certains cas, notamment en cas de résolution d'écran faible, sous Firefox ;
+    * Correction de la couleur du texte de la fonction Augmenter le contraste qui n'était pas appliquée aux placeholders des éléments input ;
+    * Correction d'un bug aléatoire qui faisait que les requêtes mettant à jour de manière automatique les filtres se faisaient parfois de multiples fois, de manière inutile ;
+    * L'échange de l'URL des pages entre content script/background service worker s'effectue désormais en utilisant le hash SHA-256, pour des raisons de confidentialité ;
+    * Correction de l'affichage du fichier Lisez-moi sous Firefox lorsque le mode sombre de l'interface est activé ;
+    * Mise à jour des dépendances.
 
 ### Version 2.10.2 (01/11/2022) :
 
@@ -414,7 +430,7 @@ Page Shadow est distribué sous licence GNU GPL-3.0 (voir le fichier LICENCE.txt
 
 #### Avis de licence
 
-Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2023 Eliastik (eliastiksofts.com)
 
 Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le
 modifier suivant les termes de la GNU General Public License telle que
