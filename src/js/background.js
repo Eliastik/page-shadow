@@ -26,6 +26,7 @@ import SettingsCache from "./utils/settingsCache.js";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
+let isAutoUpdatingFilters = false;
 const globalPageShadowStyleCache = {};
 const globalPageShadowStyleShadowRootsCache = {};
 
@@ -289,9 +290,11 @@ async function checkAutoUpdateFilters() {
     const lastFailedUpdate = filterResults.lastFailedUpdate;
 
     if(enableAutoUpdate && updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
-        filters.updateAllFilters(true, false);
+        isAutoUpdatingFilters = true;
+        filters.updateAllFilters(true, false).then(() => isAutoUpdatingFilters = false);
     } else if(enableAutoUpdate && lastFailedUpdate != null && lastFailedUpdate > -1 && ((currentDate - lastFailedUpdate) >= failedUpdateAutoReupdateDelay)) {
-        filters.updateAllFilters(true, true);
+        isAutoUpdatingFilters = true;
+        filters.updateAllFilters(true, true).then(() => isAutoUpdatingFilters = false);
     }
 }
 
@@ -621,5 +624,8 @@ checkAutoBackupCloud();
 
 setInterval(() => {
     checkAutoEnable();
-    checkAutoUpdateFilters();
+
+    if(!isAutoUpdatingFilters) {
+        checkAutoUpdateFilters();
+    }
 }, 1000);

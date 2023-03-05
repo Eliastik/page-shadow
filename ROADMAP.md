@@ -95,6 +95,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Minor) When using the Modern popup theme, if the features Invert colors or Blue light reduction filter are not enabled, when opening the options of these features, the options displayed are not the stored options (no checkbox checked, default color temperature)
 * [x] (Medium) Fix displaying of settings with the popup theme "Modern"
 * [x] (Minor) User bug: button to validate the hour of auto enable/disable (popup) for the extension is not displayed and it's not possible to scroll to access it (only on Firefox)
+* [x] (Minor) Page Shadow filters: seem to flood HEAD request
 
 ### Futures versions
 
