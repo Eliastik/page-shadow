@@ -2,6 +2,22 @@
 
 ## Changelog:
 
+## Version 2.10.3 (3/5/2023) :
+
+* Major improvement of the display when the function Preserve element colors is enabled with the function Increase contrast: display problems could occur, they have been fixed. The Color preservation function is now enabled by default for new installations;
+* In case some important permissions for the extension are not allowed, an alert is now displayed on the popup suggesting to allow them;
+* Small adjustments to the user interface: elements have been made more rounded, other adjustments have been made;
+* The warning that appears when exiting/refreshing the Advanced Settings page now only appears if unsaved changes have been made;
+* Changes in preparation for the release of the Manifestv3 API-based version for Firefox (this version still runs on Manifestv2 for this browser, the MV3-based version will be released later);
+* Bug fixes and technical improvements:
+    * Fixed a bug when displaying some settings in the popup;
+    * Fixed a rare bug that prevented the popup from scrolling in some cases, especially in case of low screen resolution, under Firefox;
+    * Fixed the text color of the Increase contrast function that was not applied to the placeholders of the input elements;
+    * Fixed a random bug that caused requests to automatically update filters to occur multiple times, unnecessarily;
+    * The exchange of page URLs between content script/background service worker is now done using the SHA-256 hash, for privacy reasons;
+    * Fixed the display of the Readme file in Firefox when the dark mode of the interface is enabled;
+    * Updated dependencies.
+
 ### Version 2.10.2 (11/1/2022) :
 
 * Migration to Manifest v3 API (Chrome/Edge/Opera versions only). The impacts on the features of Page Shadow are very minor:
@@ -335,6 +351,22 @@
 # Page Shadow - Français
 
 ## Journal des changements :
+
+## Version 2.10.3 (05/03/2023) :
+
+* Amélioration majeure de l'affichage lorsque la fonction Conserver les couleurs des éléments est activée avec la fonction Augmenter le contraste : des problèmes d'affichage pouvaient se produire, ils ont été corrigés. La fonction de préservation des couleurs est donc activée par défaut pour les nouvelles installations ;
+* Dans le cas où certaines permissions importantes pour le fonctionneemnt de l'extension ne sont pas autorisées, une alerte s'affiche désormais sur la popup proposant de les autoriser ;
+* Petits ajustements de l'interface utilisateur : les éléments ont été rendus plus arrondis, d'autres ajustements ont été effectués ;
+* L'avertissement s'affichant si on quitte/actualise la page des Paramètres avancés ne s'affiche désormais que si des modifications non enregistrées ont été effectuées ;
+* Modifications préparant la sortie de la version basée sur l'API Manifestv3 pour Firefox (cette version fonctionne encore sous Manifestv2 pour ce navigateur, la sortie de la version se basant sur MV3 se fera plus tard) ;
+* Corrections de bugs et améliorations techniques :
+    * Correction d'un bug lors de l'affichage de certains paramètres dans la popup ;
+    * Correction d'un bug rare empêchant le défilement de la popup dans certains cas, notamment en cas de résolution d'écran faible, sous Firefox ;
+    * Correction de la couleur du texte de la fonction Augmenter le contraste qui n'était pas appliquée aux placeholders des éléments input ;
+    * Correction d'un bug aléatoire qui faisait que les requêtes mettant à jour de manière automatique les filtres se faisaient parfois de multiples fois, de manière inutile ;
+    * L'échange de l'URL des pages entre content script/background service worker s'effectue désormais en utilisant le hash SHA-256, pour des raisons de confidentialité ;
+    * Correction de l'affichage du fichier Lisez-moi sous Firefox lorsque le mode sombre de l'interface est activé ;
+    * Mise à jour des dépendances.
 
 ### Version 2.10.2 (01/11/2022) :
 
