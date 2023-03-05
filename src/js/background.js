@@ -287,9 +287,11 @@ async function checkAutoUpdateFilters() {
     const filters = new Filter();
 
     if(enableAutoUpdate && updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
-        filters.updateAllFilters(true, false);
+        await sessionStorage.set({ "isAutoUpdatingFilters": "true" });
+        filters.updateAllFilters(true, false).then(() => sessionStorage.set({ "isAutoUpdatingFilters": "false" }));
     } else if(enableAutoUpdate && lastFailedUpdate != null && lastFailedUpdate > -1 && ((currentDate - lastFailedUpdate) >= failedUpdateAutoReupdateDelay)) {
-        filters.updateAllFilters(true, true);
+        await sessionStorage.set({ "isAutoUpdatingFilters": "true" });
+        filters.updateAllFilters(true, true).then(() => sessionStorage.set({ "isAutoUpdatingFilters": "false" }));
     }
 
     if(filters.isInit) {
@@ -623,9 +625,14 @@ async function openTab(url, part) {
     }
 }
 
-function alarmCheck() {
+async function alarmCheck() {
     checkAutoEnable();
-    checkAutoUpdateFilters();
+
+    const result = await sessionStorage.get("isAutoUpdatingFilters");
+
+    if(result.isAutoUpdatingFilters != "true") {
+        checkAutoUpdateFilters();
+    }
 }
 
 setPopup();
