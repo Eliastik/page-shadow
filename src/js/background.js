@@ -16,13 +16,15 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud, isAutoEnable } from "./utils/util.js";
+import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud, isAutoEnable, sha256 } from "./utils/util.js";
 import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
 import Filter from "./filters.js";
 import browser from "webextension-polyfill";
 import PresetCache from "./utils/presetCache.js";
 import SettingsCache from "./utils/settingsCache.js";
+
+const sessionStorage = browser.storage.session ? browser.storage.session : browser.storage.local;
 
 function setPopup() {
     if(typeof(browser.action) !== "undefined" && typeof(browser.action.setPopup) !== "undefined") {
@@ -246,7 +248,7 @@ async function updateBadge(storageChanged) {
                     enabled,
                     storageChanged,
                     settings: await getSettings(url, true),
-                    url
+                    url: await sha256(url)
                 }).catch(() => {
                     if(browser.runtime.lastError) return; // ignore the error messages
                 });
@@ -257,7 +259,7 @@ async function updateBadge(storageChanged) {
 
 async function checkAutoEnable() {
     const autoEnableActivated = await isAutoEnable();
-    const result = await browser.storage.session.get("lastAutoEnableDetected");
+    const result = await sessionStorage.get("lastAutoEnableDetected");
 
     if(autoEnableActivated) {
         const data = await getAutoEnableSavedData();
@@ -265,10 +267,10 @@ async function checkAutoEnable() {
 
         if(enabled && result.lastAutoEnableDetected == "false" || enabled && result.lastAutoEnableDetected == "null") {
             await setSettingItem("globallyEnable", "true");
-            await browser.storage.session.set({ "lastAutoEnableDetected": "true" });
+            await sessionStorage.set({ "lastAutoEnableDetected": "true" });
         } else if(!enabled && result.lastAutoEnableDetected == "true" || !enabled && result.lastAutoEnableDetected == "null") {
             await setSettingItem("globallyEnable", "false");
-            await browser.storage.session.set({ "lastAutoEnableDetected": "false" });
+            await sessionStorage.set({ "lastAutoEnableDetected": "false" });
         }
     }
 }
@@ -285,9 +287,11 @@ async function checkAutoUpdateFilters() {
     const filters = new Filter();
 
     if(enableAutoUpdate && updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
-        filters.updateAllFilters(true, false);
+        await sessionStorage.set({ "isAutoUpdatingFilters": "true" });
+        filters.updateAllFilters(true, false).then(() => sessionStorage.set({ "isAutoUpdatingFilters": "false" }));
     } else if(enableAutoUpdate && lastFailedUpdate != null && lastFailedUpdate > -1 && ((currentDate - lastFailedUpdate) >= failedUpdateAutoReupdateDelay)) {
-        filters.updateAllFilters(true, true);
+        await sessionStorage.set({ "isAutoUpdatingFilters": "true" });
+        filters.updateAllFilters(true, true).then(() => sessionStorage.set({ "isAutoUpdatingFilters": "false" }));
     }
 
     if(filters.isInit) {
@@ -313,7 +317,7 @@ async function checkAutoBackupCloud() {
 
 async function autoEnable(changed) {
     if(typeof(changed) === "undefined" || changed == null || checkChangedStorageData(["hourEnable", "minuteEnable", "hourDisable", "minuteDisable"], changed)) {
-        await browser.storage.session.set({ "lastAutoEnableDetected": "null" });
+        await sessionStorage.set({ "lastAutoEnableDetected": "null" });
         checkAutoEnable();
     }
 }
@@ -621,9 +625,14 @@ async function openTab(url, part) {
     }
 }
 
-function alarmCheck() {
+async function alarmCheck() {
     checkAutoEnable();
-    checkAutoUpdateFilters();
+
+    const result = await sessionStorage.get("isAutoUpdatingFilters");
+
+    if(result.isAutoUpdatingFilters != "true") {
+        checkAutoUpdateFilters();
+    }
 }
 
 setPopup();

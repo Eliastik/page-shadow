@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.10.2 (11/1/2022)
+* Latest version: 2.10.3 (3/5/2023)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,22 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+## Version 2.10.3 (3/5/2023) :
+
+* Major improvement of the display when the function Preserve element colors is enabled with the function Increase contrast: display problems could occur, they have been fixed. The Color preservation function is now enabled by default for new installations;
+* In case some important permissions for the extension are not allowed, an alert is now displayed on the popup suggesting to allow them;
+* Small adjustments to the user interface: elements have been made more rounded, other adjustments have been made;
+* The warning that appears when exiting/refreshing the Advanced Settings page now only appears if unsaved changes have been made;
+* Changes in preparation for the release of the Manifestv3 API-based version for Firefox (this version still runs on Manifestv2 for this browser, the MV3-based version will be released later);
+* Bug fixes and technical improvements:
+    * Fixed a bug when displaying some settings in the popup;
+    * Fixed a rare bug that prevented the popup from scrolling in some cases, especially in case of low screen resolution, under Firefox;
+    * Fixed the text color of the Increase contrast function that was not applied to the placeholders of the input elements;
+    * Fixed a random bug that caused requests to automatically update filters to occur multiple times, unnecessarily;
+    * The exchange of page URLs between content script/background service worker is now done using the SHA-256 hash, for privacy reasons;
+    * Fixed the display of the Readme file in Firefox when the dark mode of the interface is enabled;
+    * Updated dependencies.
 
 ### Version 2.10.2 (11/1/2022) :
 
@@ -413,7 +429,7 @@ Page Shadow is distributed under GPL-3.0 license (see LICENCE.txt file)
 
 #### License notice
 
-Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2023 Eliastik (eliastiksofts.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

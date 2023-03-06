@@ -61,6 +61,8 @@ let changingLanguage = false;
 let alreadyCheckedForUpdateFilters = false;
 let savedAdvancedOptionsTimeout;
 let disableStorageSizeCalculation = false;
+let hasGlobalChange = false;
+let filterEditDisplay = false;
 
 init_i18next("options").then(() => translateContent());
 toggleTheme(); // Toggle dark/light theme
@@ -141,6 +143,7 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
     if(typeof(browser.storage) == "undefined" || typeof(browser.storage.sync) == "undefined") {
         $("#archiveCloudBtn").addClass("disabled");
         $("#archiveCloudNotCompatible").show();
+        $("#infosCloudStorage").text("???");
     }
 
     if(!areaName || areaName == "sync") {
@@ -156,10 +159,14 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
         }
 
         if(!disableStorageSizeCalculation) {
-            const sizeCloud = browser.storage.sync.getBytesInUse ? await browser.storage.sync.getBytesInUse(null) : getSizeObject(await browser.storage.sync.get(null));
-            const convertedCloud = convertBytes(sizeCloud);
-            const convertedCloudMax = convertBytes(browser.storage.sync.QUOTA_BYTES);
-            $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
+            try {
+                const sizeCloud = browser.storage.sync.getBytesInUse ? await browser.storage.sync.getBytesInUse(null) : getSizeObject(await browser.storage.sync.get(null));
+                const convertedCloud = convertBytes(sizeCloud);
+                const convertedCloudMax = convertBytes(browser.storage.sync.QUOTA_BYTES);
+                $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
+            } catch(e) {
+                $("#infosCloudStorage").text("???");
+            }
         }
     }
 
@@ -951,10 +958,15 @@ function displayFilterErrorsOnElement(data, domElement) {
 }
 
 async function displayFilterEdit() {
+    filterEditDisplay = true;
     $("#editFilter").modal("show");
 
     $("#editFilter").on("shown.bs.modal", () => {
         window.codeMirrorEditFilter.refresh();
+    });
+
+    $("#editFilter").on("hidden.bs.modal", () => {
+        filterEditDisplay = false;
     });
 
     window.codeMirrorEditFilter.getDoc().setValue("");
@@ -1291,14 +1303,22 @@ async function isArchiveCloudAvailable() {
         };
     }
 
-    const data = await browser.storage.sync.get(["dateLastBackup", "pageShadowStorageBackup", "deviceBackup"]);
-    if(data.dateLastBackup && data.deviceBackup) {
-        return {
-            "available": true,
-            "date": data.dateLastBackup,
-            "device": data.deviceBackup
-        };
-    } else {
+    try {
+        const data = await browser.storage.sync.get(["dateLastBackup", "pageShadowStorageBackup", "deviceBackup"]);
+        if(data.dateLastBackup && data.deviceBackup) {
+            return {
+                "available": true,
+                "date": data.dateLastBackup,
+                "device": data.deviceBackup
+            };
+        } else {
+            return {
+                "available": false,
+                "date": null,
+                "device": null
+            };
+        }
+    } catch(e) {
         return {
             "available": false,
             "date": null,
@@ -2015,10 +2035,14 @@ $(document).ready(() => {
     });
 
     openTabByHash();
+
+    if(getBrowser() == "Firefox") {
+        $("iframe").addClass("disableFilter");
+    }
 });
 
 window.onbeforeunload = () => {
-    return "";
+    return hasGlobalChange || filterEditDisplay ? true : null;
 };
 
 browser.runtime.onMessage.addListener(message => {
@@ -2026,3 +2050,23 @@ browser.runtime.onMessage.addListener(message => {
         openTabByHash();
     }
 });
+
+setInterval(async() => {
+    hasGlobalChange = false;
+
+    if(await notifyChangedThemeNotSaved($("#themeSelect").val())) {
+        hasGlobalChange = true;
+    }
+
+    if(await notifyChangedListNotSaved()) {
+        hasGlobalChange = true;
+    }
+
+    if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+        hasGlobalChange = true;
+    }
+
+    if(await notifyChangedAdvancedOptionsNotSaved()) {
+        hasGlobalChange = true;
+    }
+}, 1000);

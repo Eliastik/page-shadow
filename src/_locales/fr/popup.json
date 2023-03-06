@@ -106,11 +106,19 @@
         "disableWebsite": "Désactiver pour ce site",
         "enableWebsite": "Désactiver pour ce site",
         "disableWebpage": "Désactiver pour cette page",
-        "enableWebpage": "Désactiver pour cette page"
+        "enableWebpage": "Désactiver pour cette page",
+        "permissionLink": "Permission manquante. Cliquez ici pour l'activer."
     },
     "modalArchiveInfo": {
         "title": "Conseil",
         "message": "Il est conseillé de faire régulièrement des sauvegardes de vos paramètres, pour éviter leur perte accidentelle. Vous pouvez effectuer une sauvegarde sur votre appareil en local (fichier JSON) ou sur le Cloud, depuis les Paramètres avancés, dans l'onglet Archiver/restaurer.",
         "disable": "Ne plus afficher ce conseil"
+    },
+    "modalPermissionsInfo": {
+        "title": "Autorisation manquante",
+        "message": "Pour que l'extension fonctionne correctement, vous devez autoriser l'accès aux données de tous les sites web.",
+        "messageMin": "Si vous n'activez pas cette autorisation, vous pourrez utiliser l'extension. Cependant, pour que l'extension puisse s'activer sur les différents sites web, vous devrez ouvrir à chaque fois le menu de l'extension.",
+        "enable": "Activer l'autorisation",
+        "disable": "Ne plus afficher"
     }
 }
