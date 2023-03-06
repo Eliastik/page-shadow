@@ -193,7 +193,7 @@ select:focus, select.form-control:focus {
 }
 
 @media (prefers-color-scheme: dark) {
-    #iframeReadme {
+    #iframeReadme:not(.disableFilter)  {
         filter: invert(0%) !important;
     }
 }
@@ -296,4 +296,8 @@ select:focus, select.form-control:focus {
 hr {
     border-color: #3e4046;
     background-color: #3e4046;
+}
+
+.input-group-select-presets {
+    background-color: #303134;
 }
