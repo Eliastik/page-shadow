@@ -355,7 +355,7 @@
 ## Version 2.10.3 (05/03/2023) :
 
 * Amélioration majeure de l'affichage lorsque la fonction Conserver les couleurs des éléments est activée avec la fonction Augmenter le contraste : des problèmes d'affichage pouvaient se produire, ils ont été corrigés. La fonction de préservation des couleurs est donc activée par défaut pour les nouvelles installations ;
-* Dans le cas où certaines permissions importantes pour le fonctionneemnt de l'extension ne sont pas autorisées, une alerte s'affiche désormais sur la popup proposant de les autoriser ;
+* Dans le cas où certaines permissions importantes pour le fonctionnement de l'extension ne sont pas autorisées, une alerte s'affiche désormais sur la popup proposant de les autoriser ;
 * Petits ajustements de l'interface utilisateur : les éléments ont été rendus plus arrondis, d'autres ajustements ont été effectués ;
 * L'avertissement s'affichant si on quitte/actualise la page des Paramètres avancés ne s'affiche désormais que si des modifications non enregistrées ont été effectuées ;
 * Modifications préparant la sortie de la version basée sur l'API Manifestv3 pour Firefox (cette version fonctionne encore sous Manifestv2 pour ce navigateur, la sortie de la version se basant sur MV3 se fera plus tard) ;
