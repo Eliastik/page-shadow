@@ -56,13 +56,14 @@ export default class PageAnalyzer {
                     removeClass(document.body, "pageShadowDisableBackgroundStyling");
 
                     const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
-                    let index = elements.length;
+                    const elementsLength = elements.length;
+                    let index = 0;
 
                     if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection || this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay > 0) {
                         const throttledBackgroundDetectionTimer = new SafeTimer(() => {
-                            index = this.detectBackgroundLoop(elements, index);
+                            index = this.detectBackgroundLoop(elements, index, elementsLength);
 
-                            if(index <= 0) {
+                            if(index >= elementsLength) {
                                 detectBackgroundTimer.clear();
                                 resolve();
                             } else {
@@ -72,7 +73,7 @@ export default class PageAnalyzer {
 
                         throttledBackgroundDetectionTimer.start(this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay);
                     } else {
-                        this.detectBackgroundLoop(elements, index);
+                        this.detectBackgroundLoop(elements, index, elementsLength);
                         detectBackgroundTimer.clear();
                         resolve();
                     }
@@ -87,9 +88,10 @@ export default class PageAnalyzer {
         });
     }
 
-    detectBackgroundLoop(elements, i) {
-        while(i--) {
+    detectBackgroundLoop(elements, i, length) {
+        while(i < length) {
             this.detectBackgroundForElement(elements[i], true);
+            i++;
 
             if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection &&
                 i % this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall == 0) {
@@ -97,7 +99,7 @@ export default class PageAnalyzer {
             }
         }
 
-        if(i <= 0) {
+        if(i >= length) {
             removeClass(document.body, "pageShadowDisableStyling");
             addClass(document.body, "pageShadowBackgroundDetected");
 
@@ -144,6 +146,10 @@ export default class PageAnalyzer {
         }
 
         return [false, false];
+    }
+
+    parentHasBrightColor(element) {
+        return element.closest(".pageShadowHasBrightColorBackground") != null;
     }
 
     detectBackgroundForElement(element, disableDestyling) {
@@ -197,21 +203,39 @@ export default class PageAnalyzer {
             }
         }
 
-        if(this.websiteSpecialFiltersConfig.enableBrightColorDetection && !transparentColorDetected && !hasBackgroundImg && !hasTransparentBackgroundClass) {
-            const hasBrightColor = this.elementHasBrightColor(backgroundColor);
+        if(this.websiteSpecialFiltersConfig.enableBrightColorDetection) {
+            if(!transparentColorDetected && !hasTransparentBackgroundClass) {
+                const hasBrightColor = this.elementHasBrightColor(backgroundColor);
 
-            if(hasBrightColor && hasBrightColor[0]) {
-                addClass(element, "pageShadowHasBrightColorBackground");
+                if(hasBrightColor && hasBrightColor[0]) {
+                    addClass(element, "pageShadowHasBrightColorBackground");
 
-                if(hasBrightColor[1]) {
-                    addClass(element, "pageShadowBrightColorWithBlackText");
-                    removeClass(element, "pageShadowBrightColorWithWhiteText");
+                    if(hasBrightColor[1]) {
+                        addClass(element, "pageShadowBrightColorWithBlackText");
+                        removeClass(element, "pageShadowBrightColorWithWhiteText");
+                    } else {
+                        addClass(element, "pageShadowBrightColorWithWhiteText");
+                        removeClass(element, "pageShadowBrightColorWithBlackText");
+                    }
                 } else {
-                    addClass(element, "pageShadowBrightColorWithWhiteText");
-                    removeClass(element, "pageShadowBrightColorWithBlackText");
+                    removeClass(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText", "pageShadowBrightColorForceCustomTextLinkColor");
+
+                    if(this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode) {
+                        const closestBright = element.parentNode.closest(".pageShadowHasBrightColorBackground");
+
+                        if(closestBright && closestBright != document.body) {
+                            addClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
+                        }
+                    }
                 }
-            } else {
-                removeClass(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText");
+            } else if(this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode) {
+                const closestForceCustom = element.parentNode.closest(".pageShadowBrightColorForceCustomTextLinkColor");
+
+                if(closestForceCustom && closestForceCustom != document.body) {
+                    addClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
+                } else {
+                    removeClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
+                }
             }
         }
 

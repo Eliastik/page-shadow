@@ -235,6 +235,8 @@ export default class FilterProcessor {
                 if(type == "throttleBackgroundDetectionElementsTreatedByCall") websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall = rule.filter;
                 if(type == "backgroundDetectionStartDelay") websiteSpecialFiltersConfig.backgroundDetectionStartDelay = rule.filter;
                 if(type == "useBackgroundDetectionAlreadyProcessedNodes") websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes = true;
+                if(type == "enableBrightColorDetectionSubelement") websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement = true;
+                if(type == "disableBrightColorDetectionSubelement") websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement = false;
             });
         });
     }
