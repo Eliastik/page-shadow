@@ -84,7 +84,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [x] Manifestv3 for Firefox
     * [x] Display an information popup to inform users to allow the permission "Access data on all websites" for the extension to work properly
-    * [ ] Tests
 * [x] Only display confirmation on Advanced settings page reload/exit when a change of the settings is unsaved (uses existing code for displaying icon)
 * [x] Use SHA-256 to exchange URLs between background script and content script
 
@@ -96,6 +95,10 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Medium) Fix displaying of settings with the popup theme "Modern"
 * [x] (Minor) User bug: button to validate the hour of auto enable/disable (popup) for the extension is not displayed and it's not possible to scroll to access it (only on Firefox)
 * [x] (Minor) Page Shadow filters: seem to flood HEAD request
+
+### Next release
+
+* [ ] Publish Manifestv3 for Firefox + Tests
 
 ### Futures versions
 
