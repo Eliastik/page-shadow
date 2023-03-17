@@ -32,6 +32,8 @@ import "@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2";
 import "@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2";
 import "@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2";
 import "@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2";
+import popupEN from "../_locales/en/popup.json";
+import popupFR from "../_locales/fr/popup.json";
 
 window.$ = $;
 window.jQuery = $;
@@ -45,7 +47,12 @@ let archiveInfoShowed = false;
 let currentTheme = "checkbox";
 let permissionInfoShowed = false;
 
-init_i18next("popup").then(() => translateContent());
+init_i18next("popup").then(() => {
+    i18next.addResourceBundle("en", "popup", popupEN);
+    i18next.addResourceBundle("fr", "popup", popupFR);
+    translateContent();
+});
+
 toggleTheme(); // Toggle dark/light theme
 
 async function translateContent() {
