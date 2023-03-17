@@ -45,6 +45,8 @@ import "@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2";
 import "@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2";
 import "@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2";
 import "@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2";
+import optionsEN from "../_locales/en/options.json";
+import optionsFR from "../_locales/fr/options.json";
 
 window.$ = $;
 window.jQuery = $;
@@ -64,7 +66,12 @@ let disableStorageSizeCalculation = false;
 let hasGlobalChange = false;
 let filterEditDisplay = false;
 
-init_i18next("options").then(() => translateContent());
+init_i18next("options").then(() => {
+    i18next.addResourceBundle("en", "options", optionsEN);
+    i18next.addResourceBundle("fr", "options", optionsFR);
+    translateContent();
+});
+
 toggleTheme(); // Toggle dark/light theme
 
 function listTranslations(languages) {

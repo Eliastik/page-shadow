@@ -23,11 +23,18 @@ import jqueryI18next from "jquery-i18next";
 import { init_i18next } from "./locales.js";
 import { toggleTheme } from "./utils/util.js";
 import browser from "webextension-polyfill";
+import pageTestEN from "../_locales/en/pageTest.json";
+import pageTestFR from "../_locales/fr/pageTest.json";
 
 window.$ = $;
 window.jQuery = $;
 
-init_i18next("pageTest").then(() => translateContent());
+init_i18next("pageTest").then(() => {
+    i18next.addResourceBundle("en", "pageTest", pageTestEN);
+    i18next.addResourceBundle("fr", "pageTest", pageTestFR);
+    translateContent();
+});
+
 toggleTheme(); // Toggle dark/light theme
 
 function translateContent() {

@@ -19,11 +19,10 @@
 /* translation */
 import i18next from "i18next";
 import i18nextBrowserLanguageDetector from "i18next-browser-languagedetector";
-import i18nextHTTPBackend from "i18next-http-backend";
 
 function init_i18next(ns) {
     return new Promise(resolve => {
-        i18next.use(i18nextBrowserLanguageDetector).use(i18nextHTTPBackend).init({
+        i18next.use(i18nextBrowserLanguageDetector).init({
             fallbackLng: ["en", "fr"],
             ns: ns,
             load: "languageOnly",
