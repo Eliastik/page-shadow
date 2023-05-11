@@ -152,7 +152,7 @@ export default class PageAnalyzer {
         return element.closest(".pageShadowHasBrightColorBackground") != null;
     }
 
-    detectBackgroundForElement(element, disableDestyling) {
+    async detectBackgroundForElement(element, disableDestyling) {
         if(element && element.shadowRoot != null && this.websiteSpecialFiltersConfig.enableShadowRootStyleOverride) {
             if(this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay > 0) {
                 setTimeout(() => this.processShadowRoot(element), this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
@@ -177,7 +177,11 @@ export default class PageAnalyzer {
         const hasBackgroundImg = background.trim().substr(0, 4).toLowerCase().includes("url(") || backgroundImage.trim().substr(0, 4).toLowerCase() == "url(";
         const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
         const hasTransparentBackgroundClass = element.classList.contains("pageShadowHasTransparentBackground");
+        const isDarkImage = await this.detectDarkImages(element, hasBackgroundImg);
 
+        if(isDarkImage) {
+            addClass(element, "pageShadowSelectiveInvert");
+        }
 
         if(hasBackgroundImg && !hasClassImg) {
             addClass(element, "pageShadowHasBackgroundImg");
@@ -413,5 +417,67 @@ export default class PageAnalyzer {
         }
 
         this.processedShadowRoots = [];
+    }
+
+    async detectDarkImages(element, hasBackgroundImg) {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        let darkPixelsCount = 0;
+        let pixelCount = 0;
+        let image = element;
+
+        if(!(element instanceof HTMLImageElement) && hasBackgroundImg) {
+            const style = element.currentStyle || window.getComputedStyle(element, false);
+            const url = style.backgroundImage.slice(4, -1).replace(/"/g, "");
+            image = new Image();
+            image.src = url;
+            await image.decode();
+        }
+
+        try {
+            const width = image.width;
+            const height = image.height;
+
+            if(width <= 0 || height <= 0) {
+                return false;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+
+            ctx.drawImage(image, 0, 0);
+
+            const imgData = ctx.getImageData(0, 0, width, height);
+            const data = imgData.data;
+
+            for(let i = 0; i < data.length; i += 4) {
+                const red = data[i];
+                const green = data[i + 1];
+                const blue = data[i + 2];
+                const alpha = data[i + 3];
+
+                if(alpha > 0) {
+                    const hsl = rgb2hsl(red / 255, green / 255, blue / 255);
+
+                    if(hsl[2] <= 0.15) {
+                        darkPixelsCount++;
+                    }
+
+                    pixelCount++;
+                }
+            }
+
+            if(darkPixelsCount / pixelCount >= 0.5) {
+                canvas.remove();
+                return true;
+            }
+        } catch(e) {
+            canvas.remove();
+            return false;
+        }
+
+        canvas.remove();
+        return false;
     }
 }
