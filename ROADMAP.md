@@ -99,6 +99,9 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 ### Next release
 
 * [ ] Publish Manifestv3 for Firefox + Tests
+* [ ] Compact popup theme
+* [ ] Automatic selective invert image color (for logos and black text images)
+    * [ ] Don't work when the image is not yet loaded (reproduced on this page: https://tungmphung.com/reinforcement-learning-q-learning-deep-q-learning-introduction-with-tensorflow/)
 
 ### Futures versions
 
@@ -126,8 +129,10 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Known issues/bugs
 
+* [x] (Very minor) Fix icon on "Missing permission" popup
+* [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
+* [ ] (Minor) Bug with error in filters: open errors from a built-in filter, then the errors from custom filter: the window will be blank
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list ?
 * [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
-* [ ] (Minor) Bug with error in filters: open errors from a built-in filter, then the errors from custom filter: the window will be blank
