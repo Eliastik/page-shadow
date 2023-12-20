@@ -102,6 +102,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] Compact popup theme
 * [ ] Automatic selective invert image color (for logos and black text images)
     * [ ] Don't work when the image is not yet loaded (reproduced on this page: https://tungmphung.com/reinforcement-learning-q-learning-deep-q-learning-introduction-with-tensorflow/)
+* [ ] Auto cloud saving/backup: display an alert window in the popup if there was an error when auto saving in the cloud + save date/hour when a saving error occurs
+* [ ] Auto cloud saving/backup: don't save the date when an error occurred
 
 ### Futures versions
 
@@ -116,7 +118,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [ ] Comment the code: doc for methods/functions
     * [ ] Simplify code applying Shadow Roots styles?
     * [ ] Separate code treating mutations of page elements to a separate class?
-    * [ ] Separate method applting mutation observers to another class?
+    * [ ] Separate method applying mutation observers to another class?
     * [ ] Modularize content.js classes with less dependencies between classes?
 * [ ] Others codebase improvements
     * [ ] No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
@@ -130,9 +132,12 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Known issues/bugs
 
 * [x] (Very minor) Fix icon on "Missing permission" popup
+* [ ] (Medium) Some websites reset the style attribute of the html, which force the default theme for the Increase contrast feature by deleting the CSS variables
+    * Reproduced on this website (very random, Maj+F5 to reproduce): https://formation.lefebvre-dalloz.fr/actualite/scrum-comment-animer-la-retrospective-du-sprint
+* [ ] (Very minor) Some websites causes an error in the console "e.parentNode.closest is not a function", without visible impacts
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
-* [ ] (Minor) Bug with error in filters: open errors from a built-in filter, then the errors from custom filter: the window will be blank
+* [ ] (Minor) Bug with error in filters: open errors from a built-in filter, then the errors from custom filter: the window will be blank (random)
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
-* [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list ?
+* [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
 * [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
