@@ -104,6 +104,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [ ] Don't work when the image is not yet loaded (reproduced on this page: https://tungmphung.com/reinforcement-learning-q-learning-deep-q-learning-introduction-with-tensorflow/)
 * [ ] Auto cloud saving/backup: display an alert window in the popup if there was an error when auto saving in the cloud + save date/hour when a saving error occurs
 * [ ] Auto cloud saving/backup: don't save the date when an error occurred
+* [ ] Auto cloud saving/backup: fails when there is a long blacklist/whitelist (maybe also for the list of websites for presets?)
 
 ### Futures versions
 
@@ -128,6 +129,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [ ] Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditonal filter)
     * [ ] Store filters on a Github repository ?
 * [ ] Prevent the attenuation of subelements (when enabling Colored elements attenuation)?
+* [ ] Increase the number of presets/custom themes?
 
 #### Known issues/bugs
 
