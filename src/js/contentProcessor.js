@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme } from "./utils/util.js";
+import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme, areAllCSSVariablesDefined } from "./utils/util.js";
 import { colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, ignoredElementsContentScript } from "./constants.js";
 import SafeTimer from "./utils/safeTimer.js";
 import MutationObserverWrapper from "./utils/mutationObserver.js";
@@ -71,6 +71,7 @@ export default class ContentProcessor {
 
     // Timers
     timerObserveBodyChange = null;
+    timerObserveDocumentElementChange = null;
     applyWhenBodyIsAvailableTimer = null;
 
     // Batcher
@@ -706,10 +707,29 @@ export default class ContentProcessor {
 
                     this.oldBody = document.body;
                 }
+
                 this.timerObserveBodyChange.start(this.websiteSpecialFiltersConfig.observeBodyChangeTimerInterval);
             });
 
             this.timerObserveBodyChange.start(this.websiteSpecialFiltersConfig.observeBodyChangeTimerInterval);
+        }
+    }
+
+    observeDocumentElementChange() {
+        if(this.websiteSpecialFiltersConfig.observeDocumentChange) {
+            if(this.timerObserveDocumentElementChange) this.timerObserveDocumentElementChange.clear();
+
+            this.timerObserveDocumentElementChange = new SafeTimer(async () => {
+                const settings = await getSettings(getCurrentURL());
+
+                if(!areAllCSSVariablesDefined(settings.pageShadowEnabled, settings.colorInvert)) {
+                    this.main(this.TYPE_RESET, this.TYPE_ALL);
+                }
+
+                this.timerObserveDocumentElementChange.start(this.websiteSpecialFiltersConfig.observeDocumentChangeTimerInterval);
+            });
+
+            this.timerObserveDocumentElementChange.start(this.websiteSpecialFiltersConfig.observeDocumentChangeTimerInterval);
         }
     }
 
@@ -901,6 +921,7 @@ export default class ContentProcessor {
                     this.filterProcessor.processSpecialRules(specialRules.filters, this.websiteSpecialFiltersConfig);
 
                     this.observeBodyChange();
+                    this.observeDocumentElementChange();
 
                     if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true" || settings.attenuateColors == "true") {
                         if(type == this.TYPE_START || !this.pageAnalyzer.backgroundDetected) {
