@@ -134,7 +134,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Known issues/bugs
 
 * [x] (Very minor) Fix icon on "Missing permission" popup
-* [ ] (Medium) Some websites reset the style attribute of the html, which force the default theme for the Increase contrast feature by deleting the CSS variables
+* [x] (Medium) Some websites reset the style attribute of the html, which force the default theme for the Increase contrast feature by deleting the CSS variables
     * Reproduced on this website (very random, Maj+F5 to reproduce): https://formation.lefebvre-dalloz.fr/actualite/scrum-comment-animer-la-retrospective-du-sprint
 * [ ] (Very minor) Some websites causes an error in the console "e.parentNode.closest is not a function", without visible impacts
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)

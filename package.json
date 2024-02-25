@@ -16,7 +16,7 @@
     "@babel/eslint-parser": "^7.19.1",
     "@babel/plugin-transform-runtime": "^7.21.0",
     "@babel/preset-env": "^7.20.2",
-    "@crxs/gulp-crx": "^1.0.4",
+    "gulp-crx-pack": "^1.0.3",
     "babel-loader": "^8.3.0",
     "css-loader": "^6.7.3",
     "eslint": "^7.32.0",
