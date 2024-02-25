@@ -104,6 +104,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [ ] Don't work when the image is not yet loaded (reproduced on this page: https://tungmphung.com/reinforcement-learning-q-learning-deep-q-learning-introduction-with-tensorflow/)
 * [ ] Auto cloud saving/backup: display an alert window in the popup if there was an error when auto saving in the cloud + save date/hour when a saving error occurs
 * [ ] Auto cloud saving/backup: don't save the date when an error occurred
+* [ ] Auto cloud saving/backup: fails when there is a long blacklist/whitelist (maybe also for the list of websites for presets?)
 
 ### Futures versions
 
@@ -128,11 +129,12 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [ ] Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditonal filter)
     * [ ] Store filters on a Github repository ?
 * [ ] Prevent the attenuation of subelements (when enabling Colored elements attenuation)?
+* [ ] Increase the number of presets/custom themes?
 
 #### Known issues/bugs
 
 * [x] (Very minor) Fix icon on "Missing permission" popup
-* [ ] (Medium) Some websites reset the style attribute of the html, which force the default theme for the Increase contrast feature by deleting the CSS variables
+* [x] (Medium) Some websites reset the style attribute of the html, which force the default theme for the Increase contrast feature by deleting the CSS variables
     * Reproduced on this website (very random, Maj+F5 to reproduce): https://formation.lefebvre-dalloz.fr/actualite/scrum-comment-animer-la-retrospective-du-sprint
 * [ ] (Very minor) Some websites causes an error in the console "e.parentNode.closest is not a function", without visible impacts
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
