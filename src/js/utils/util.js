@@ -1387,6 +1387,54 @@ function applyContrastPageVariables(config) {
     }
 }
 
+function getPageVariablesToApply(contrastEnabled, invertEnabled) {
+    const pageVariablesToApply = [];
+
+    if (contrastEnabled == "true") {
+        pageVariablesToApply.push(
+            "--page-shadow-bgcolor",
+            "--page-shadow-txtcolor",
+            "--page-shadow-lnkcolor",
+            "--page-shadow-visitedlnkcolor",
+            "--page-shadow-selectbgcolor",
+            "--page-shadow-selectxtcolor",
+            "--page-shadow-insbgcolor",
+            "--page-shadow-instxtcolor",
+            "--page-shadow-delbgcolor",
+            "--page-shadow-deltxtcolor",
+            "--page-shadow-markbgcolor",
+            "--page-shadow-marktxtcolor",
+            "--page-shadow-imgbgcolor",
+            "--page-shadow-brightcolortxtwhite",
+            "--page-shadow-brightcolortxtblack"
+        );
+    }
+
+    if(invertEnabled == "true") {
+        pageVariablesToApply.push(
+            "--page-shadow-invert-filter-image-backgrounds",
+            "--page-shadow-invert-filter-bg-backgrounds",
+            "--page-shadow-invert-filter-video-backgrounds"
+        );
+    }
+
+    return pageVariablesToApply;
+}
+
+function areAllCSSVariablesDefined(contrastEnabled, invertEnabled) {
+    const element = document.documentElement;
+
+    if (element) {
+        const styleAttribute = element.getAttribute("style");
+
+        if(!styleAttribute) {
+            return true;
+        }
+
+        return getPageVariablesToApply(contrastEnabled, invertEnabled).every(variable => element.style.getPropertyValue(variable) !== "");
+    }
+}
+
 function rgb2hsl(r, g, b) {
     const v = Math.max(r, g, b), c = v - Math.min(r, g, b), f = (1 - Math.abs(v + v - c - 1));
     const h = c && ((v == r) ? (g - b) / c : ((v == g) ? 2 + (b - r) / c : 4 + (r - g) / c));
@@ -1409,4 +1457,4 @@ async function checkPermissions() {
     });
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, sha256, checkPermissions };
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefined };

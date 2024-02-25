@@ -237,6 +237,9 @@ export default class FilterProcessor {
                 if(type == "useBackgroundDetectionAlreadyProcessedNodes") websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes = true;
                 if(type == "enableBrightColorDetectionSubelement") websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement = true;
                 if(type == "disableBrightColorDetectionSubelement") websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement = false;
+                if(type == "enableObserveDocumentChange") websiteSpecialFiltersConfig.observeDocumentChange = true;
+                if(type == "disableObserveDocumentChange") websiteSpecialFiltersConfig.observeDocumentChange = false;
+                if(type == "observeDocumentChangeTimerInterval") websiteSpecialFiltersConfig.observeDocumentChangeTimerInterval = rule.filter;
             });
         });
     }
