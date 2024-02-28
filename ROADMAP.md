@@ -98,6 +98,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 ### Next release
 
+### Planed
+
 * [ ] Publish Manifestv3 for Firefox + Tests
 * [ ] Compact popup theme
 * [ ] Automatic selective invert image color (for logos and black text images)
@@ -105,15 +107,28 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] Auto cloud saving/backup: display an alert window in the popup if there was an error when auto saving in the cloud + save date/hour when a saving error occurs
 * [ ] Auto cloud saving/backup: don't save the date when an error occurred
 * [ ] Auto cloud saving/backup: fails when there is a long blacklist/whitelist (maybe also for the list of websites for presets?)
+* [ ] Add border radius to select/inputs
+* [ ] Limit flashing when opening a website and detecting colored elements?
+* [ ] Use chrome.session or CacheStorage for background script to store cache (fallback needed for Firefox)? - Manifestv3 only
+* [ ] Merge utils/filterProcessor.js and FilterProcessor class
+
+#### Bugs to fix
+
+* [x] (Very minor) Fix icon on "Missing permission" popup
+* [x] (Medium) Some websites reset the style attribute of the html, which force the default theme for the Increase contrast feature by deleting the CSS variables
+    * Reproduced on this website (very random, Maj+F5 to reproduce): https://formation.lefebvre-dalloz.fr/actualite/scrum-comment-animer-la-retrospective-du-sprint
+* [ ] (Very minor) When classic popup theme is enabled, the help tooltip for the feature "Attenuate colors" is wrong (not complete)
+* [ ] (Medium) Filters for body element not working, add possibility to invert body background image?
 
 ### Futures versions
 
-### Common
+#### Common
 
 * [ ] FAQ for common questions?
 
 #### Planned/ideas
 
+* [ ] Increase the number of presets/custom themes?
 * [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
 * [ ] Improving codebase
     * [ ] Comment the code: doc for methods/functions
@@ -129,13 +144,9 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [ ] Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditonal filter)
     * [ ] Store filters on a Github repository ?
 * [ ] Prevent the attenuation of subelements (when enabling Colored elements attenuation)?
-* [ ] Increase the number of presets/custom themes?
 
 #### Known issues/bugs
 
-* [x] (Very minor) Fix icon on "Missing permission" popup
-* [x] (Medium) Some websites reset the style attribute of the html, which force the default theme for the Increase contrast feature by deleting the CSS variables
-    * Reproduced on this website (very random, Maj+F5 to reproduce): https://formation.lefebvre-dalloz.fr/actualite/scrum-comment-animer-la-retrospective-du-sprint
 * [ ] (Very minor) Some websites causes an error in the console "e.parentNode.closest is not a function", without visible impacts
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
 * [ ] (Minor) Bug with error in filters: open errors from a built-in filter, then the errors from custom filter: the window will be blank (random)
