@@ -720,6 +720,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     width: 334px;
     margin-left: 8px;
     margin-top: -8px;
+    z-index: 1000;
 }
 
 .popup-options-compact-modern .popup-advanced-option-wrapper {
@@ -799,6 +800,12 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 
 .popup-options-compact-modern .popup-option-container-modern.without-complement .popup-option-modern {
     height: 78px;
+}
+
+.popup-options-modern #liveSettingsContainer {
+    width: 320px !important;
+    max-width: 100%;
+    padding-top: 8px;
 }
 
 .btn.disabled, .btn[disabled], fieldset[disabled] .btn {

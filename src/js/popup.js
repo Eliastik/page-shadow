@@ -121,6 +121,8 @@ async function checkCurrentPopupTheme() {
         $(".popup-option-container").hide();
         $(".popup-option-container-classic").hide();
         $(".popup-option-container-modern").show();
+        $("#liveSettingsModern").hide();
+        $("#liveSettingsSwitch").show();
         $("#popup-options").addClass("popup-options-modern");
 
         if(isCompactModern) {
