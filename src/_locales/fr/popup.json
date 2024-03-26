@@ -120,5 +120,9 @@
         "messageMin": "Si vous n'activez pas cette autorisation, vous pourrez utiliser l'extension. Cependant, pour que l'extension puisse s'activer sur les différents sites web, vous devrez ouvrir à chaque fois le menu de l'extension.",
         "enable": "Activer l'autorisation",
         "disable": "Ne plus afficher"
+    },
+    "modalAutoBackupCloudLastFailedMessage": {
+        "title": "Erreur lors la sauvegarde automatique dans le Cloud",
+        "message": "Une erreur est survenue lors de la dernière sauvegarde automatique dans le Cloud de vos paramètres. Vous pouvez essayer d'effectuer la sauvegarde manuellement dans les paramètres avancés. Si le problème persiste, vérifiez que vos paramètres ne dépassent pas le quota maximal autorisé par cette méthode de sauvegarde, puis réessayez. Vous pouvez aussi effectuer une sauvegarde manuelle en local."
     }
 }

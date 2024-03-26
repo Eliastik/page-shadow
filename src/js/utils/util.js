@@ -1276,48 +1276,48 @@ async function getSettingsToArchive() {
 }
 
 async function archiveCloud() {
-    return new Promise((resolve, reject) => {
-        if(typeof(browser.storage) != "undefined" && typeof(browser.storage.sync) != "undefined") {
-            try {
-                getSettingsToArchive().then(dataStr => {
-                    const dataObj = JSON.parse(dataStr);
+    if (typeof browser.storage !== "undefined" && typeof browser.storage.sync !== "undefined") {
+        try {
+            const dataStr = await getSettingsToArchive();
+            const dataObj = JSON.parse(dataStr);
 
-                    for(const key in dataObj) {
-                        if(typeof(key) === "string") {
-                            if(Object.prototype.hasOwnProperty.call(dataObj, key)) {
-                                const settingToSave = {};
-                                settingToSave[key] = dataObj[key];
+            for (const key in dataObj) {
+                if (typeof key === "string" && Object.prototype.hasOwnProperty.call(dataObj, key)) {
+                    const settingToSave = {};
+                    settingToSave[key] = dataObj[key];
 
-                                browser.storage.sync.set(settingToSave).catch(e => {
-                                    if(e && (e.message.indexOf("QUOTA_BYTES_PER_ITEM") != -1 || e.message.indexOf("QuotaExceededError") != -1)) {
-                                        reject("quota");
-                                    } else {
-                                        reject("standard");
-                                    }
-                                });
-                            }
+                    try {
+                        await browser.storage.sync.set(settingToSave);
+                    } catch (e) {
+                        if (e && (e.message.indexOf("QUOTA_BYTES_PER_ITEM") !== -1 || e.message.indexOf("QuotaExceededError") !== -1)) {
+                            throw new Error("quota");
+                        } else {
+                            throw new Error("standard");
                         }
                     }
-
-                    const dateSettings = {};
-                    dateSettings["dateLastBackup"] = Date.now().toString();
-
-                    const deviceSettings = {};
-                    deviceSettings["deviceBackup"] = navigator.platform;
-
-                    Promise.all([browser.storage.sync.set(dateSettings), browser.storage.sync.set(deviceSettings), browser.storage.sync.remove("pageShadowStorageBackup")])
-                        .then(() => {
-                            resolve();
-                        })
-                        .catch(() => {
-                            reject("standard");
-                        });
-                });
-            } catch(e) {
-                reject("standard");
+                }
             }
+
+            const dateSettings = { "dateLastBackup": Date.now().toString() };
+            const deviceSettings = { "deviceBackup": navigator.platform };
+
+            try {
+                await Promise.all([
+                    browser.storage.sync.set(dateSettings),
+                    browser.storage.sync.set(deviceSettings),
+                    browser.storage.sync.remove("pageShadowStorageBackup")
+                ]);
+            } catch {
+                throw new Error("standard");
+            }
+
+            return;
+        } catch {
+            throw new Error("standard");
         }
-    });
+    } else {
+        throw new Error("Browser storage is not supported");
+    }
 }
 
 async function sendMessageWithPromise(data, ...expectedMessageType) {

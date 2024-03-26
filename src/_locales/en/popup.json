@@ -120,5 +120,9 @@
         "messageMin": "If you do not enable this permission, you will be able to use the extension. However, for the extension to be able to activate on the different websites, you will have to open the extension menu each time.",
         "enable": "Enable permission",
         "disable": "Don't show anymore"
+    },
+    "modalAutoBackupCloudLastFailedMessage": {
+        "title": "Error during automatic Cloud backup",
+        "message": "An error occurred during the last automatic Cloud backup of your settings. You can try backing up manually in the advanced settings. If the problem persists, check that your settings do not exceed the maximum quota allowed by this backup method, then try again. You can also perform a manual backup locally."
     }
 }

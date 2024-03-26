@@ -46,6 +46,7 @@ let updateNotificationShowed = false;
 let archiveInfoShowed = false;
 let currentTheme = "checkbox";
 let permissionInfoShowed = false;
+let autoBackupFailedShowed = false;
 
 init_i18next("popup").then(() => {
     i18next.addResourceBundle("en", "popup", popupEN);
@@ -197,6 +198,14 @@ $(document).ready(() => {
     });
 
     $("#linkAdvSettings3").on("click", () => {
+        sendMessageWithPromise({
+            type: "openTab",
+            url: browser.runtime.getURL("options.html"),
+            part: "archive"
+        });
+    });
+
+    $("#linkAdvSettings4").on("click", () => {
         sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
@@ -1537,7 +1546,7 @@ $(document).ready(() => {
     });
 
     async function displaySettings() {
-        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "percentageBlueLightReduction", "archiveInfoLastShowed", "archiveInfoDisable", "permissionsInfoDisable"]);
+        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "percentageBlueLightReduction", "archiveInfoLastShowed", "archiveInfoDisable", "permissionsInfoDisable", "lastAutoBackupFailedLastShowed", "lastAutoBackupFailed"]);
 
         const informationShowed = showInformationPopup(result);
         checkCurrentPopupTheme();
@@ -1661,20 +1670,35 @@ async function showInformationPopup(result) {
         setSettingItem("updateNotification", updateNotification);
         updateNotificationShowed = true;
         return true;
-    } else if (!updateNotificationShowed && !archiveInfoShowed) {
-        const archiveInfoLastShowed = !result.archiveInfoLastShowed ? 0 : result.archiveInfoLastShowed;
+    } else if (!updateNotificationShowed) {
+        if (!archiveInfoShowed) {
+            const archiveInfoLastShowed = !result.archiveInfoLastShowed ? 0 : result.archiveInfoLastShowed;
 
-        if (archiveInfoLastShowed > 0 && archiveInfoLastShowed + (archiveInfoShowInterval * 60 * 60 * 24 * 1000) <= Date.now() && result.archiveInfoDisable !== "true") {
-            $("#archiveInfo").modal("show");
-            setSettingItem("archiveInfoLastShowed", Date.now());
-            archiveInfoShowed = true;
+            if (archiveInfoLastShowed > 0 && archiveInfoLastShowed + (archiveInfoShowInterval * 60 * 60 * 24 * 1000) <= Date.now() && result.archiveInfoDisable !== "true") {
+                $("#archiveInfo").modal("show");
+                setSettingItem("archiveInfoLastShowed", Date.now());
+                archiveInfoShowed = true;
 
-            return true;
-        } else if (archiveInfoLastShowed <= 0) {
-            setSettingItem("archiveInfoLastShowed", Date.now());
+                return true;
+            } else if (archiveInfoLastShowed <= 0) {
+                setSettingItem("archiveInfoLastShowed", Date.now());
+            }
         }
 
-        if(!archiveInfoShowed && !permissionInfoShowed && !(await checkPermissions()) && result.permissionsInfoDisable != "true") {
+        if (!autoBackupFailedShowed) {
+            const lastAutoBackupFailedLastShowed = result.lastAutoBackupFailedLastShowed === "true";
+            const hasErrorLastAutoBackup = result.lastAutoBackupFailed === "true";
+
+            if (hasErrorLastAutoBackup && !lastAutoBackupFailedLastShowed) {
+                $("#autoBackupCloudLastFailed").modal("show");
+                setSettingItem("lastAutoBackupFailedLastShowed", "true");
+                autoBackupFailedShowed = true;
+
+                return true;
+            }
+        }
+
+        if(!archiveInfoShowed && !permissionInfoShowed && !autoBackupFailedShowed && !(await checkPermissions()) && result.permissionsInfoDisable != "true") {
             $("#permissions").modal("show");
             permissionInfoShowed = true;
         }
