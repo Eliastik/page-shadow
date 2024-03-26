@@ -116,7 +116,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Very minor) Fix icon on "Missing permission" popup
 * [x] (Medium) Some websites reset the style attribute of the html, which force the default theme for the Increase contrast feature by deleting the CSS variables
     * Reproduced on this website (very random, Maj+F5 to reproduce): https://formation.lefebvre-dalloz.fr/actualite/scrum-comment-animer-la-retrospective-du-sprint
-* [ ] (Very minor) When classic popup theme is enabled, the help tooltip for the feature "Attenuate colors" is wrong (not complete)
+* [x] (Very minor) When classic popup theme is enabled, the help tooltip for the feature "Attenuate colors" is wrong (not complete)
 * [ ] (Medium) Filters for body element not working, add possibility to invert body background image?
 
 ### Futures versions
