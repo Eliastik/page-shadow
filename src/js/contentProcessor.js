@@ -23,7 +23,7 @@ import MutationObserverWrapper from "./utils/mutationObserver.js";
 import ClassBatcher from "./utils/classBatcher.js";
 import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
 import PageAnalyzer from "./utils/pageAnalyzer.js";
-import FilterProcessor from "./utils/filterProcessor.js";
+import PageFilterProcessor from "./utils/filterProcessor.js";
 
 /**
  * Main class used by the content script
@@ -871,7 +871,7 @@ export default class ContentProcessor {
 
         this.applyWhenBodyIsAvailableTimer = new ApplyBodyAvailable(async() => {
             this.pageAnalyzer = this.pageAnalyzer || new PageAnalyzer(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
-            this.filterProcessor = this.filterProcessor || new FilterProcessor(this.pageAnalyzer);
+            this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer);
 
             this.bodyClassBatcher = this.bodyClassBatcher || new ClassBatcher(document.body);
             this.bodyClassBatcherRemover = this.bodyClassBatcherRemover || new ClassBatcher(document.body);

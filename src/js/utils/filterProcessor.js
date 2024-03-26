@@ -21,7 +21,7 @@ import { addClass, addNewStyleAttribute } from "./util.js";
 /**
  * Class used to process the filter rules
  */
-export default class FilterProcessor {
+export default class PageFilterProcessor {
     pageAnalyzer;
 
     constructor(pageAnalyzer) {
