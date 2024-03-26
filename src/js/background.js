@@ -307,9 +307,12 @@ async function checkAutoBackupCloud() {
         try {
             await archiveCloud();
             await setSettingItem("lastAutoBackupFailed", "false");
+            await setSettingItem("lastAutoBackupFailedLastShowed", "false");
+            await setSettingItem("lastAutoBackupFailedDate", -1);
             await setSettingItem("lastAutoBackupCloud", Date.now());
         } catch(e) {
             await setSettingItem("lastAutoBackupFailed", "true");
+            await setSettingItem("lastAutoBackupFailedDate", Date.now());
             await setSettingItem("lastAutoBackupCloud", Date.now());
         }
     }

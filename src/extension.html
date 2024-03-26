@@ -169,7 +169,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 </div>
                             </div>
                             <div class="popup-option-container-classic">
-                                <input type="checkbox" id="checkAttenuateColorCheckbox" /> <label for="checkAttenuateColorCheckbox"  data-i18n="container.attenuateColor"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.attenuateColor"></i>
+                                <input type="checkbox" id="checkAttenuateColorCheckbox" /> <label for="checkAttenuateColorCheckbox"  data-i18n="container.attenuateColor"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleAttenuateImageColor"></i>
                             </div>
                             <div class="popup-option-container-modern" id="checkAttenuateColorModern">
                                 <div class="popup-option-modern">
@@ -291,8 +291,8 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <div class="popup-option-container">
+                        <div id="liveSettingsContainer">
+                            <div class="popup-option-container" id="liveSettingsSwitch">
                                 <div class="popup-option-container-label">
                                     <label class="popup-option-label" for="liveSettings">
                                         <i class="fa-solid fa-wrench fa-fw popup-option-icon"></i>
@@ -508,6 +508,23 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" id="enablePermission"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modalPermissionsInfo.enable"></span></button>
                         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="autoBackupCloudLastFailed" tabindex="-1" role="dialog" aria-labelledby="autoBackupCloudLastFailed">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="autoBackupCloudLastFailedLabel"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span data-i18n="modalAutoBackupCloudLastFailedMessage.title"></span></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p id="autoBackupCloudLastFailedMessage"><span data-i18n="modalAutoBackupCloudLastFailedMessage.message"></span></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.close"></span></button>
+                        <button type="button" class="btn btn-primary" id="linkAdvSettings4"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span data-i18n="modal.AdvSettings"></span></button>
                     </div>
                 </div>
             </div>

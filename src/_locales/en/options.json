@@ -54,6 +54,7 @@
         "popupThemeSwitch": "Switches and icons",
         "popupThemeClassic": "Checkboxes (classic)",
         "popupThemeModern": "Modern (by default)",
+        "popupThemeCompactModern": "Compact modern",
         "enableRightClickMenu": "Enable right-click menu:"
     },
     "advancedOptions": {

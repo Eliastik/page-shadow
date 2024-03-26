@@ -51,6 +51,7 @@
         "popupThemeSwitch": "Switches et icônes",
         "popupThemeClassic": "Cases à cocher (thème classique)",
         "popupThemeModern": "Moderne (par défaut)",
+        "popupThemeCompactModern": "Moderne compact",
         "enableRightClickMenu": "Activer le menu du clic droit :"
     },
     "advancedOptions": {

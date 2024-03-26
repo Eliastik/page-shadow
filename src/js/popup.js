@@ -46,6 +46,7 @@ let updateNotificationShowed = false;
 let archiveInfoShowed = false;
 let currentTheme = "checkbox";
 let permissionInfoShowed = false;
+let autoBackupFailedShowed = false;
 
 init_i18next("popup").then(() => {
     i18next.addResourceBundle("en", "popup", popupEN);
@@ -105,24 +106,38 @@ async function checkCurrentPopupTheme() {
         $(".popup-option-container-classic").show();
         $(".popup-option-container-modern").hide();
         $("#popup-options").removeClass("popup-options-modern");
+        $("#popup-options").removeClass("popup-options-compact-modern");
         currentTheme = "checkbox";
     } else if(result && result.popupTheme && result.popupTheme == "switch") {
         $(".popup-option-container").show();
         $(".popup-option-container-classic").hide();
         $(".popup-option-container-modern").hide();
         $("#popup-options").removeClass("popup-options-modern");
+        $("#popup-options").removeClass("popup-options-compact-modern");
         currentTheme = "switch";
     } else {
-        $(".popup-option-container").hide();
+        const isCompactModern = result.popupTheme == "compactModern";
+
+        $(".popup-option-container:not(#liveSettingsSwitch)").hide();
         $(".popup-option-container-classic").hide();
         $(".popup-option-container-modern").show();
         $("#popup-options").addClass("popup-options-modern");
 
-        if(currentTheme != "modern") {
+        // Use switch mode for setting "Apply the settings in real time"
+        $("#liveSettingsModern").hide();
+        $("#liveSettingsSwitch").show();
+
+        if(isCompactModern) {
+            $("#popup-options").addClass("popup-options-compact-modern");
+        } else {
+            $("#popup-options").removeClass("popup-options-compact-modern");
+        }
+
+        if(currentTheme != "modern" && currentTheme != "compactModern") {
             $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
         }
 
-        currentTheme = "modern";
+        currentTheme = isCompactModern ? "compactModern" : "modern";
     }
 }
 
@@ -197,6 +212,14 @@ $(document).ready(() => {
     });
 
     $("#linkAdvSettings3").on("click", () => {
+        sendMessageWithPromise({
+            type: "openTab",
+            url: browser.runtime.getURL("options.html"),
+            part: "archive"
+        });
+    });
+
+    $("#linkAdvSettings4").on("click", () => {
         sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
@@ -501,7 +524,7 @@ $(document).ready(() => {
         }
 
         if(result.pageShadowEnabled == "true") {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#themeDiv").stop().fadeIn();
             }
 
@@ -532,7 +555,7 @@ $(document).ready(() => {
                 });
             }
         } else {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#themeDiv").stop().fadeOut();
             }
 
@@ -676,7 +699,7 @@ $(document).ready(() => {
             setSettingItem("invertBgColor", "true");
             checkColorInvert();
         } else if(result.invertPageColors == "true") {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#invertPageColorsDiv").stop().fadeIn();
             }
 
@@ -690,7 +713,7 @@ $(document).ready(() => {
 
             $("#checkColorInvertModern").addClass("active");
         } else {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#invertPageColorsDiv").stop().fadeOut();
             }
 
@@ -818,7 +841,7 @@ $(document).ready(() => {
         const result = await browser.storage.local.get(["attenuateColors", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors", "attenuateBrightColors"]);
 
         if(result.attenuateColors == "true") {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#attenuateColorsDiv").stop().fadeIn();
             }
 
@@ -832,7 +855,7 @@ $(document).ready(() => {
 
             $("#checkAttenuateColorModern").addClass("active");
         } else {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#attenuateColorsDiv").stop().fadeOut();
             }
 
@@ -1209,7 +1232,7 @@ $(document).ready(() => {
 
             elLumB.style.display = "block";
 
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#brightnessSettings").stop().fadeIn();
             }
 
@@ -1223,7 +1246,7 @@ $(document).ready(() => {
 
             $("#checkBrightnessPageModern").addClass("active");
         } else {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#brightnessSettings").stop().fadeOut();
             }
 
@@ -1254,7 +1277,7 @@ $(document).ready(() => {
                 elBlueLightReduction.style.opacity = result.percentageBlueLightReduction / 100;
             }
 
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#blueLightReductionFilterSettings").stop().fadeIn();
             }
 
@@ -1270,7 +1293,7 @@ $(document).ready(() => {
 
             $("#checkBlueLightReductionFilterModern").addClass("active");
         } else {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#blueLightReductionFilterSettings").stop().fadeOut();
             }
 
@@ -1537,7 +1560,7 @@ $(document).ready(() => {
     });
 
     async function displaySettings() {
-        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "percentageBlueLightReduction", "archiveInfoLastShowed", "archiveInfoDisable", "permissionsInfoDisable"]);
+        const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "percentageBlueLightReduction", "archiveInfoLastShowed", "archiveInfoDisable", "permissionsInfoDisable", "lastAutoBackupFailedLastShowed", "lastAutoBackupFailed"]);
 
         const informationShowed = showInformationPopup(result);
         checkCurrentPopupTheme();
@@ -1594,7 +1617,7 @@ $(document).ready(() => {
     }
 
     $("body").on("click", e => {
-        if(currentTheme == "modern") {
+        if(currentTheme == "modern" || currentTheme == "compactModern") {
             let found = false;
 
             $(".popup-advanced-option").each(function() {
@@ -1661,20 +1684,35 @@ async function showInformationPopup(result) {
         setSettingItem("updateNotification", updateNotification);
         updateNotificationShowed = true;
         return true;
-    } else if (!updateNotificationShowed && !archiveInfoShowed) {
-        const archiveInfoLastShowed = !result.archiveInfoLastShowed ? 0 : result.archiveInfoLastShowed;
+    } else if (!updateNotificationShowed) {
+        if (!archiveInfoShowed) {
+            const archiveInfoLastShowed = !result.archiveInfoLastShowed ? 0 : result.archiveInfoLastShowed;
 
-        if (archiveInfoLastShowed > 0 && archiveInfoLastShowed + (archiveInfoShowInterval * 60 * 60 * 24 * 1000) <= Date.now() && result.archiveInfoDisable !== "true") {
-            $("#archiveInfo").modal("show");
-            setSettingItem("archiveInfoLastShowed", Date.now());
-            archiveInfoShowed = true;
+            if (archiveInfoLastShowed > 0 && archiveInfoLastShowed + (archiveInfoShowInterval * 60 * 60 * 24 * 1000) <= Date.now() && result.archiveInfoDisable !== "true") {
+                $("#archiveInfo").modal("show");
+                setSettingItem("archiveInfoLastShowed", Date.now());
+                archiveInfoShowed = true;
 
-            return true;
-        } else if (archiveInfoLastShowed <= 0) {
-            setSettingItem("archiveInfoLastShowed", Date.now());
+                return true;
+            } else if (archiveInfoLastShowed <= 0) {
+                setSettingItem("archiveInfoLastShowed", Date.now());
+            }
         }
 
-        if(!archiveInfoShowed && !permissionInfoShowed && !(await checkPermissions()) && result.permissionsInfoDisable != "true") {
+        if (!autoBackupFailedShowed) {
+            const lastAutoBackupFailedLastShowed = result.lastAutoBackupFailedLastShowed === "true";
+            const hasErrorLastAutoBackup = result.lastAutoBackupFailed === "true";
+
+            if (hasErrorLastAutoBackup && !lastAutoBackupFailedLastShowed) {
+                $("#autoBackupCloudLastFailed").modal("show");
+                setSettingItem("lastAutoBackupFailedLastShowed", "true");
+                autoBackupFailedShowed = true;
+
+                return true;
+            }
+        }
+
+        if(!archiveInfoShowed && !permissionInfoShowed && !autoBackupFailedShowed && !(await checkPermissions()) && result.permissionsInfoDisable != "true") {
             $("#permissions").modal("show");
             permissionInfoShowed = true;
         }
