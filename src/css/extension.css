@@ -649,6 +649,11 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     width: 112px;
 }
 
+.popup-options-compact-modern > div {
+    max-width: 110px;
+    width: 110px;
+}
+
 .popup-option-container-modern {
     padding: 8px;
     font-size: 11.25px;
@@ -657,6 +662,10 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 
 .popup-option-container-modern i {
     font-size: 18px;
+}
+
+.popup-options-compact-modern .popup-option-container-modern {
+    padding: 5px;
 }
 
 .popup-option-modern {
@@ -675,6 +684,12 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     text-align: center;
     padding: 8px;
     cursor: pointer;
+}
+
+.popup-options-compact-modern .popup-option-modern {
+    height: 64px;
+    flex-direction: row;
+    overflow-wrap: break-word;
 }
 
 .popup-option-modern:hover, .popup-option-modern-complement:hover {
@@ -707,6 +722,10 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     margin-top: -8px;
 }
 
+.popup-options-compact-modern .popup-advanced-option-wrapper {
+    padding-top: 3px !important;
+}
+
 .popup-options-modern .popup-advanced-option {
     border-radius: 3px;
     margin-top: 8px;
@@ -727,6 +746,10 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     clear: both;
 }
 
+.popup-options-compact-modern .popup-advanced-option:before {
+    top: 3px;
+}
+
 .popup-options-modern #themeDiv:before, .popup-options-modern #brightnessSettings:before {
     left: 39px;
     right: none !important;
@@ -734,6 +757,11 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 
 .popup-options-modern #themeDiv:before, .popup-options-modern #attenuateColorsDiv:before {
     right: 39px;
+    right: none !important;
+}
+
+.popup-options-compact-modern #themeDiv:before, .popup-options-compact-modern #brightnessSettings:before {
+    left: 42px;
     right: none !important;
 }
 
@@ -767,6 +795,10 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 .popup-option-container-modern.without-complement .popup-option-modern {
     border-radius: 8px !important;
     height: 107px;
+}
+
+.popup-options-compact-modern .popup-option-container-modern.without-complement .popup-option-modern {
+    height: 78px;
 }
 
 .btn.disabled, .btn[disabled], fieldset[disabled] .btn {

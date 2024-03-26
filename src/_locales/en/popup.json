@@ -30,7 +30,7 @@
         "titleBrightness": "Decrease the page brightness. You can choose the percentage of brightness decrease.",
         "percentage": "Percentage of brightness decrease:",
         "nightMode": "Night mode",
-        "autoEnable": "Enable/disable automatically",
+        "autoEnable": "Enable / disable automatically",
         "titleAutoEnable": "Enable or disable globally Page Shadow automatically according to the time. Select the cog wheel icon to setup this function.",
         "liveSettings": "Apply the settings in real time",
         "titleLiveSettings": "Can reduce browser performance.",

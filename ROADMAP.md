@@ -100,13 +100,13 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 ### Planed
 
+* [ ] Publish Manifestv3 for Firefox + Tests
 * [x] Add border radius to select/inputs
 * [x] Merge utils/filterProcessor.js and FilterProcessor class
 * [x] Auto cloud saving/backup: don't save the date when an error occurred
 * [x] Auto cloud saving/backup: display an alert window in the popup if there was an error when auto saving in the cloud + save date/hour when a saving error occurs
-* [ ] Compact popup theme
+* [x] Compact popup theme
 * [ ] Use chrome.session or CacheStorage for background script to store cache (fallback needed for Firefox)? - Manifestv3 only
-* [ ] Publish Manifestv3 for Firefox + Tests
 * [x] Automatic selective invert image color (for logos and black text images)
     * [ ] Don't work when the image is not yet loaded (reproduced on this page: https://tungmphung.com/reinforcement-learning-q-learning-deep-q-learning-introduction-with-tensorflow/)
 * [ ] Limit flashing when opening a website and detecting colored elements?

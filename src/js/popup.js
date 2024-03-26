@@ -106,24 +106,34 @@ async function checkCurrentPopupTheme() {
         $(".popup-option-container-classic").show();
         $(".popup-option-container-modern").hide();
         $("#popup-options").removeClass("popup-options-modern");
+        $("#popup-options").removeClass("popup-options-compact-modern");
         currentTheme = "checkbox";
     } else if(result && result.popupTheme && result.popupTheme == "switch") {
         $(".popup-option-container").show();
         $(".popup-option-container-classic").hide();
         $(".popup-option-container-modern").hide();
         $("#popup-options").removeClass("popup-options-modern");
+        $("#popup-options").removeClass("popup-options-compact-modern");
         currentTheme = "switch";
     } else {
+        const isCompactModern = result.popupTheme == "compactModern";
+
         $(".popup-option-container").hide();
         $(".popup-option-container-classic").hide();
         $(".popup-option-container-modern").show();
         $("#popup-options").addClass("popup-options-modern");
 
-        if(currentTheme != "modern") {
+        if(isCompactModern) {
+            $("#popup-options").addClass("popup-options-compact-modern");
+        } else {
+            $("#popup-options").removeClass("popup-options-compact-modern");
+        }
+
+        if(currentTheme != "modern" && currentTheme != "compactModern") {
             $(".popup-advanced-option-wrapper").find("> div").stop().fadeOut();
         }
 
-        currentTheme = "modern";
+        currentTheme = isCompactModern ? "compactModern" : "modern";
     }
 }
 
@@ -510,7 +520,7 @@ $(document).ready(() => {
         }
 
         if(result.pageShadowEnabled == "true") {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#themeDiv").stop().fadeIn();
             }
 
@@ -541,7 +551,7 @@ $(document).ready(() => {
                 });
             }
         } else {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#themeDiv").stop().fadeOut();
             }
 
@@ -685,7 +695,7 @@ $(document).ready(() => {
             setSettingItem("invertBgColor", "true");
             checkColorInvert();
         } else if(result.invertPageColors == "true") {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#invertPageColorsDiv").stop().fadeIn();
             }
 
@@ -699,7 +709,7 @@ $(document).ready(() => {
 
             $("#checkColorInvertModern").addClass("active");
         } else {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#invertPageColorsDiv").stop().fadeOut();
             }
 
@@ -827,7 +837,7 @@ $(document).ready(() => {
         const result = await browser.storage.local.get(["attenuateColors", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors", "attenuateBrightColors"]);
 
         if(result.attenuateColors == "true") {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#attenuateColorsDiv").stop().fadeIn();
             }
 
@@ -841,7 +851,7 @@ $(document).ready(() => {
 
             $("#checkAttenuateColorModern").addClass("active");
         } else {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#attenuateColorsDiv").stop().fadeOut();
             }
 
@@ -1218,7 +1228,7 @@ $(document).ready(() => {
 
             elLumB.style.display = "block";
 
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#brightnessSettings").stop().fadeIn();
             }
 
@@ -1232,7 +1242,7 @@ $(document).ready(() => {
 
             $("#checkBrightnessPageModern").addClass("active");
         } else {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#brightnessSettings").stop().fadeOut();
             }
 
@@ -1263,7 +1273,7 @@ $(document).ready(() => {
                 elBlueLightReduction.style.opacity = result.percentageBlueLightReduction / 100;
             }
 
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#blueLightReductionFilterSettings").stop().fadeIn();
             }
 
@@ -1279,7 +1289,7 @@ $(document).ready(() => {
 
             $("#checkBlueLightReductionFilterModern").addClass("active");
         } else {
-            if(currentTheme != "modern") {
+            if(currentTheme != "modern" &&  currentTheme != "compactModern") {
                 $("#blueLightReductionFilterSettings").stop().fadeOut();
             }
 
@@ -1603,7 +1613,7 @@ $(document).ready(() => {
     }
 
     $("body").on("click", e => {
-        if(currentTheme == "modern") {
+        if(currentTheme == "modern" || currentTheme == "compactModern") {
             let found = false;
 
             $(".popup-advanced-option").each(function() {
