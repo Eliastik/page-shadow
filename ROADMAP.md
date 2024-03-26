@@ -100,6 +100,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 ### Planed
 
+* [x] Add border radius to select/inputs
 * [ ] Publish Manifestv3 for Firefox + Tests
 * [ ] Compact popup theme
 * [ ] Automatic selective invert image color (for logos and black text images)
@@ -107,7 +108,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] Auto cloud saving/backup: display an alert window in the popup if there was an error when auto saving in the cloud + save date/hour when a saving error occurs
 * [ ] Auto cloud saving/backup: don't save the date when an error occurred
 * [ ] Auto cloud saving/backup: fails when there is a long blacklist/whitelist (maybe also for the list of websites for presets?)
-* [ ] Add border radius to select/inputs
 * [ ] Limit flashing when opening a website and detecting colored elements?
 * [ ] Use chrome.session or CacheStorage for background script to store cache (fallback needed for Firefox)? - Manifestv3 only
 * [ ] Merge utils/filterProcessor.js and FilterProcessor class

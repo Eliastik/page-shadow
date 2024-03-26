@@ -119,6 +119,7 @@ select {
     border: 0;
     width: 100%;
     height: 350px;
+    border-radius: 8px;
 }
 .form-control {
     background-color: white;
@@ -586,17 +587,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 }
 .dropdown-menu-top {
     top: -175%;
-}
-.container.popup #loadPresetSelect {
-    width: 100%;
-    position: relative;
-    top: 1px;
-    height: 24px;
-    border-radius: 8px 0 0 8px;
-}
-.container.popup .well {
-    padding-bottom: 0 !important;
-    margin-bottom: 5px !important;
+    border-radius: 6px;
 }
 #sliderBlueLightReduction {
     width: 185px;
@@ -824,4 +815,29 @@ body.force-scroll #popup-wrapper, body.force-scroll .modal {
 }
 body.force-scroll .modal {
     height: 100%;
+}
+input, select, textarea {
+    border-radius: 8px !important;
+}
+.btn:not(.btn-preset) {
+    border-radius: 6px !important;
+}
+#filtersList .list-group-item:first-child {
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+}
+#filtersList .list-group-item:last-child {
+    border-bottom-left-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+}
+.container.popup #loadPresetSelect {
+    width: 100%;
+    position: relative;
+    top: 1px;
+    height: 24px;
+    border-radius: 8px 0 0 8px !important;
+}
+.container.popup .well {
+    padding-bottom: 0 !important;
+    margin-bottom: 5px !important;
 }
