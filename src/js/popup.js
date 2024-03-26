@@ -118,12 +118,14 @@ async function checkCurrentPopupTheme() {
     } else {
         const isCompactModern = result.popupTheme == "compactModern";
 
-        $(".popup-option-container").hide();
+        $(".popup-option-container:not(#liveSettingsSwitch)").hide();
         $(".popup-option-container-classic").hide();
         $(".popup-option-container-modern").show();
+        $("#popup-options").addClass("popup-options-modern");
+
+        // Use switch mode for setting "Apply the settings in real time"
         $("#liveSettingsModern").hide();
         $("#liveSettingsSwitch").show();
-        $("#popup-options").addClass("popup-options-modern");
 
         if(isCompactModern) {
             $("#popup-options").addClass("popup-options-compact-modern");
