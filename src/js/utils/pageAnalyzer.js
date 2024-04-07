@@ -176,11 +176,13 @@ export default class PageAnalyzer {
 
         // Detect image with dark color (text, logos, etc)
         if(this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
-            this.detectDarkImage(element, hasBackgroundImg).then(isDarkImage => {
-                if(isDarkImage) {
-                    addClass(element, "pageShadowSelectiveInvert");
-                }
-            });
+            if(!element.classList.contains("pageShadowSelectiveInvert")) {
+                this.detectDarkImage(element, hasBackgroundImg).then(isDarkImage => {
+                    if(isDarkImage) {
+                        addClass(element, "pageShadowSelectiveInvert");
+                    }
+                });
+            }
         }
 
         if(hasBackgroundImg && !hasClassImg) {
@@ -231,7 +233,7 @@ export default class PageAnalyzer {
             } else {
                 removeClass(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText", "pageShadowBrightColorForceCustomTextLinkColor");
 
-                if (this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode) {
+                if (this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode && element.parentNode.closest) {
                     const closestBright = element.parentNode.closest(".pageShadowHasBrightColorBackground");
 
                     if (closestBright && closestBright != document.body) {
@@ -239,7 +241,7 @@ export default class PageAnalyzer {
                     }
                 }
             }
-        } else if (this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode) {
+        } else if (this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode && element.parentNode.closest) {
             const closestForceCustom = element.parentNode.closest(".pageShadowBrightColorForceCustomTextLinkColor");
 
             if (closestForceCustom && closestForceCustom != document.body) {
