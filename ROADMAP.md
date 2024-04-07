@@ -117,6 +117,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * Reproduced on this website (very random, Maj+F5 to reproduce): https://formation.lefebvre-dalloz.fr/actualite/scrum-comment-animer-la-retrospective-du-sprint
 * [x] (Very minor) When classic popup theme is enabled, the help tooltip for the feature "Attenuate colors" is wrong (not complete)
 * [ ] (Medium) Filters for body element not working, add possibility to invert body background image?
+* [ ] (Medium) Auto cloud saving/backup: fails when there is a long blacklist/whitelist (maybe also for the list of websites for presets?)
 
 ### Futures versions
 
@@ -145,7 +146,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Known issues/bugs
 
-* [ ] (Medium) Auto cloud saving/backup: fails when there is a long blacklist/whitelist (maybe also for the list of websites for presets?)
 * [ ] (Very minor) Some websites causes an error in the console "e.parentNode.closest is not a function", without visible impacts
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
 * [ ] (Minor) Bug with error in filters: open errors from a built-in filter, then the errors from custom filter: the window will be blank (random)

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsl } from "./util.js";
+import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsl, svgElementToImage, backgroundImageToImage } from "./util.js";
 import SafeTimer from "./safeTimer.js";
 import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, pageShadowClassListsMutationsIgnore, percentDarkImages } from "../constants.js";
 
@@ -438,29 +438,17 @@ export default class PageAnalyzer {
 
     async detectDarkImages(element, hasBackgroundImg) {
         const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-
-        let darkPixelsCount = 0;
-        let pixelCount = 0;
         let image = element;
 
+        // SVG element
         if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
-            const box = element.getBBox();
-            const width = box.width;
-            const height = box.height;
-
-            image = new Image();
-            image.src = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg"
-            width="${width}" height="${height}">${element.outerHTML}</svg>`)}`;
+            image = svgElementToImage(element, image);
         }
 
+        // Image element (or image element with svg file)
         if(!(image instanceof HTMLImageElement) && !(image instanceof SVGImageElement)) {
             if(hasBackgroundImg) {
-                const style = element.currentStyle || window.getComputedStyle(element, false);
-                const url = style.backgroundImage.slice(4, -1).replace(/"/g, "");
-                image = new Image();
-                image.src = url;
-                await image.decode();
+                image = await backgroundImageToImage(element, image);
             } else {
                 return false;
             }
@@ -470,6 +458,20 @@ export default class PageAnalyzer {
         if(!image.complete) {
             await this.awaitImageLoading(image);
         }
+
+        // Check if the image is dark
+        const isDarkImage = this.isImageDark(canvas, image);
+
+        canvas.remove();
+
+        return isDarkImage;
+    }
+
+    isImageDark(canvas, image) {
+        const ctx = canvas.getContext("2d");
+
+        let darkPixelsCount = 0;
+        let pixelCount = 0;
 
         try {
             const width = image.width;
@@ -505,17 +507,13 @@ export default class PageAnalyzer {
             }
 
             if(darkPixelsCount / pixelCount >= percentDarkImages) {
-                canvas.remove();
                 return true;
             }
+
+            return false;
         } catch(e) {
-            console.error(e);
-            canvas.remove();
             return false;
         }
-
-        canvas.remove();
-        return false;
     }
 
     async awaitImageLoading(image) {

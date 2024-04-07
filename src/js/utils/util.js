@@ -1457,4 +1457,33 @@ async function checkPermissions() {
     });
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefined };
+function svgElementToImage(element) {
+    const computedStyles = window.getComputedStyle(element);
+
+    const box = element.getBBox();
+    const width = box.width;
+    const height = box.height;
+    const fill = computedStyles.fill;
+    const stroke = computedStyles.stroke;
+    const color = computedStyles.color;
+
+    const image = new Image();
+    image.src = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg"
+        width="${width}" height="${height}" fill="${fill}" color="${color}" stroke="${stroke}">${element.outerHTML}</svg>`)}`;
+
+    return image;
+}
+
+async function backgroundImageToImage(element) {
+    const style = element.currentStyle || window.getComputedStyle(element, false);
+    const url = style.backgroundImage.slice(4, -1).replace(/"/g, "");
+
+    const image = new Image();
+    image.src = url;
+
+    await image.decode();
+
+    return image;
+}
+
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefined, svgElementToImage, backgroundImageToImage };
