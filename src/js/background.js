@@ -349,6 +349,7 @@ if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onUpdated) !== "u
 
     browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
         if (changeInfo.status === "loading") {
+            const settingsCache = new SettingsCache();
             browser.tabs.sendMessage(tabId, { type: "preApplySettings", settings: settingsCache.data });
         }
     });
