@@ -1411,20 +1411,24 @@ function chunkValue(value) {
 
 async function sendMessageWithPromise(data, ...expectedMessageType) {
     return new Promise(resolve => {
+        const listener = message => {
+            if (message && expectedMessageType.includes(message.type)) {
+                resolve(message);
+                browser.runtime.onMessage.removeListener(listener);
+            }
+        };
+
         if(expectedMessageType) {
-            const listener = browser.runtime.onMessage.addListener(message => {
-                if(message && expectedMessageType.includes(message.type)) {
-                    resolve(message);
-                    browser.runtime.onMessage.removeListener(listener);
-                }
-            });
+            browser.runtime.onMessage.addListener(listener);
         }
 
         browser.runtime.sendMessage(data).catch(() => {
+            browser.runtime.onMessage.removeListener(listener);
             if(browser.runtime.lastError) return;
         });
 
         if(!expectedMessageType) {
+            browser.runtime.onMessage.removeListener(listener);
             resolve();
         }
     });
