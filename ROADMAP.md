@@ -101,6 +101,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 ### Planed
 
 * [ ] Publish Manifestv3 for Firefox + Tests
+* [x] Limit flashing when opening a website and detecting colored elements?
+    * [ ] Experimental - Test needed. Sometimes the "preApplySettings" message is randomly not received
 * [x] Add border radius to select/inputs
 * [x] Merge utils/filterProcessor.js and FilterProcessor class
 * [x] Auto cloud saving/backup: don't save the date when an error occurred
@@ -108,7 +110,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Compact popup theme
 * [x] Automatic selective invert image color (for logos and black text images)
     * [x] Don't work when the image is not yet loaded (reproduced on this page: https://tungmphung.com/reinforcement-learning-q-learning-deep-q-learning-introduction-with-tensorflow/)
-* [ ] Limit flashing when opening a website and detecting colored elements?
 
 #### Bugs to fix
 

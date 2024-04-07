@@ -91,13 +91,20 @@ export default class ContentProcessor {
         this.websiteSpecialFiltersConfig = await loadWebsiteSpecialFiltersConfig();
     }
 
-    async contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, brightColorPreservation,
-        attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors) {
-        if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
-            if(theme != undefined) {
-                this.resetContrastPage(theme, disableImgBgColor, brightColorPreservation);
+    setupClassBatchers() {
+        this.bodyClassBatcher = new ClassBatcher(document.body);
+        this.bodyClassBatcherRemover = new ClassBatcher(document.body);
+        this.htmlClassBatcher = new ClassBatcher(document.getElementsByTagName("html")[0]);
+    }
 
-                if(theme.startsWith("custom")) {
+    async applyContrastPage(init, pageShadowEnabled, theme, disableImgBgColor, brightColorPreservation) {
+        if (pageShadowEnabled != undefined && pageShadowEnabled == "true") {
+            if (theme != undefined) {
+                if(!init) {
+                    this.resetContrastPage(theme, disableImgBgColor, brightColorPreservation);
+                }
+
+                if (theme.startsWith("custom")) {
                     await this.customThemeApply(theme);
                     this.htmlClassBatcher.add("pageShadowBackgroundCustom");
                 } else {
@@ -112,16 +119,28 @@ export default class ContentProcessor {
                 this.resetContrastPage(1, disableImgBgColor, brightColorPreservation);
             }
 
-            if(disableImgBgColor != undefined && disableImgBgColor == "true") {
+            if (disableImgBgColor != undefined && disableImgBgColor == "true") {
                 this.bodyClassBatcher.add("pageShadowDisableImgBgColor");
             }
 
-            if(brightColorPreservation != undefined && brightColorPreservation == "true") {
+            if (brightColorPreservation != undefined && brightColorPreservation == "true") {
                 this.bodyClassBatcher.add("pageShadowPreserveBrightColor");
             }
         } else {
-            this.resetContrastPage();
+            if(!init) {
+                this.resetContrastPage();
+            }
         }
+
+        if(init) {
+            this.bodyClassBatcher.applyAdd();
+            this.htmlClassBatcher.applyAdd();
+        }
+    }
+
+    async contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, brightColorPreservation,
+        attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors) {
+        await this.applyContrastPage(false, pageShadowEnabled, theme, disableImgBgColor, brightColorPreservation);
 
         this.invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert,
             attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors);
@@ -692,9 +711,7 @@ export default class ContentProcessor {
                     if(!this.oldBody) this.oldBody = document.body;
 
                     if(document.body != this.oldBody) {
-                        this.bodyClassBatcher = new ClassBatcher(document.body);
-                        this.bodyClassBatcherRemover = new ClassBatcher(document.body);
-                        this.htmlClassBatcher = new ClassBatcher(document.getElementsByTagName("html")[0]);
+                        this.setupClassBatchers();
 
                         if(this.precUrl == getCurrentURL()) {
                             this.main(this.TYPE_RESET, this.TYPE_ALL);

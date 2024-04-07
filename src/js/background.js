@@ -355,6 +355,12 @@ if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onUpdated) !== "u
         menu();
         updateBadge(false);
     });
+
+    browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
+        if (changeInfo.status === "loading") {
+            browser.tabs.sendMessage(tabId, { type: "preApplySettings", settings: settingsCache.data });
+        }
+    });
 }
 
 if(typeof(browser.windows) !== "undefined" && typeof(browser.windows.onFocusChanged) !== "undefined") {
