@@ -33,7 +33,7 @@ import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise } from "./utils/util.js";
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, getCurrentArchiveCloud } from "./utils/util.js";
 import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames } from "./constants.js";
 import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
@@ -1283,7 +1283,7 @@ async function archiveCloudSettings() {
         $("#restoreDataButton").removeAttr("disabled");
         $("#archivingCloud").hide();
     } catch(e) {
-        if(e === "quota") {
+        if(e.message === "quota") {
             $("#archiveCloudErrorQuota").fadeIn(500);
         } else {
             $("#archiveCloudError").fadeIn(500);
@@ -1329,11 +1329,12 @@ async function restoreCloudSettings() {
         $("#restoreCloudSuccess").hide();
         $("#archiveCloudErrorQuota").hide();
 
-        const dataSync = await browser.storage.sync.get(null);
         const oldTextareadValue = $("#textareaAssomPage").val();
 
-        if(dataSync != undefined) {
-            try {
+        try {
+            const dataSync = await getCurrentArchiveCloud();
+
+            if(dataSync != undefined) {
                 let dataObj = dataSync;
 
                 if(dataSync.pageShadowStorageBackup) {
@@ -1360,16 +1361,16 @@ async function restoreCloudSettings() {
                     $("#restoreCloudError").fadeIn(500);
                     $("#textareaAssomPage").val(oldTextareadValue);
                 }
-            } catch(e) {
+            } else {
                 $("#restoreCloudError").fadeIn(500);
                 $("#textareaAssomPage").val(oldTextareadValue);
-                $("#archiveCloudBtn").removeAttr("disabled");
-                $("#restoreCloudBtn").removeAttr("disabled");
-                $("#restoreDataButton").removeAttr("disabled");
             }
-        } else {
+        } catch(e) {
             $("#restoreCloudError").fadeIn(500);
             $("#textareaAssomPage").val(oldTextareadValue);
+            $("#archiveCloudBtn").removeAttr("disabled");
+            $("#restoreCloudBtn").removeAttr("disabled");
+            $("#restoreDataButton").removeAttr("disabled");
         }
     }
 }

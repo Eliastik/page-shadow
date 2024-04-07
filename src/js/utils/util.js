@@ -1280,26 +1280,27 @@ async function archiveCloud() {
         try {
             const dataStr = await getSettingsToArchive();
             const dataObj = JSON.parse(dataStr);
-
-            for (const key in dataObj) {
-                if (typeof key === "string" && Object.prototype.hasOwnProperty.call(dataObj, key)) {
-                    const settingToSave = {};
-                    settingToSave[key] = dataObj[key];
-
-                    try {
-                        await browser.storage.sync.set(settingToSave);
-                    } catch (e) {
-                        if (e && (e.message.indexOf("QUOTA_BYTES_PER_ITEM") !== -1 || e.message.indexOf("QuotaExceededError") !== -1)) {
-                            throw new Error("quota");
-                        } else {
-                            throw new Error("standard");
-                        }
-                    }
-                }
-            }
+            const currentStorage = await getCurrentArchiveCloud();
 
             const dateSettings = { "dateLastBackup": Date.now().toString() };
             const deviceSettings = { "deviceBackup": navigator.platform };
+
+            const settingToSave = prepareDataForArchiveCloud(dataObj);
+
+            try {
+                await browser.storage.sync.clear();
+                await browser.storage.sync.set(settingToSave);
+            } catch (e) {
+                // In case of error, restore the old cloud archive data
+                await browser.storage.sync.clear();
+                await browser.storage.sync.set(prepareDataForArchiveCloud(currentStorage));
+
+                if (e && (e.message.indexOf("QUOTA_BYTES_PER_ITEM") !== -1 || e.message.indexOf("QUOTA_BYTES") !== -1 || e.message.indexOf("QuotaExceededError") !== -1)) {
+                    throw new Error("quota");
+                } else {
+                    throw new Error("standard");
+                }
+            }
 
             try {
                 await Promise.all([
@@ -1312,11 +1313,99 @@ async function archiveCloud() {
             }
 
             return;
-        } catch {
-            throw new Error("standard");
+        } catch(e) {
+            throw new Error(e.message);
         }
     } else {
         throw new Error("Browser storage is not supported");
+    }
+}
+
+function prepareDataForArchiveCloud(dataObj) {
+    const settingToSave = {};
+
+    for (const key in dataObj) {
+        if (typeof key === "string" && Object.prototype.hasOwnProperty.call(dataObj, key)) {
+            const value = dataObj[key];
+
+            if (JSON.stringify(value).length > browser.storage.sync.QUOTA_BYTES_PER_ITEM) {
+                const [type, chunks] = chunkValue(value);
+
+                for (let i = 0; i < chunks.length; i++) {
+                    settingToSave[`${key}_${i}_${type}`] = chunks[i];
+                }
+            } else {
+                settingToSave[key] = value;
+            }
+        }
+    }
+
+    return settingToSave;
+}
+
+async function getCurrentArchiveCloud() {
+    const dataSync = await browser.storage.sync.get(null);
+    const restoredData = {};
+
+    if (dataSync !== undefined) {
+        Object.keys(dataSync).forEach(key => {
+            if(key.includes("_")) {
+                const originalKey = key.split("_")[0];
+                const index = key.split("_")[1];
+                const type = key.split("_")[2] || "string";
+
+                if (!Array.isArray(restoredData[originalKey])) {
+                    restoredData[originalKey] = [];
+                }
+
+                restoredData[originalKey][parseInt(index)] = {
+                    data: dataSync[key],
+                    type
+                };
+            } else {
+                restoredData[key] = dataSync[key];
+            }
+        });
+
+        Object.keys(restoredData).forEach(key => {
+            const valueChunks = restoredData[key];
+
+            if(Array.isArray(valueChunks)) {
+                const sortedIndices = Object.keys(valueChunks).sort((a, b) => parseInt(a) - parseInt(b));
+                const type = restoredData[key][0].type;
+
+                if(type === "string") {
+                    restoredData[key] = sortedIndices.map(index => valueChunks[index].data).join("");
+                } else {
+                    const data = sortedIndices.map(index => valueChunks[index].data).join("");
+                    restoredData[key] = JSON.parse(data);
+                }
+            }
+        });
+    }
+
+    return restoredData;
+}
+
+function chunkString(str) {
+    const chunks = [];
+    const chunkSize = browser.storage.sync.QUOTA_BYTES_PER_ITEM - 500;
+
+    for(let i = 0; i < str.length; i += chunkSize) {
+        chunks.push(str.substring(i, i + chunkSize));
+    }
+
+    return chunks;
+}
+
+function chunkValue(value) {
+    if(typeof value === "string") {
+        return ["string", chunkString(value)];
+    } else if(typeof value === "object") {
+        const valueString = JSON.stringify(value);
+        return ["object", chunkString(valueString)];
+    } else {
+        throw new Error("Unsupported data type");
     }
 }
 
@@ -1468,8 +1557,7 @@ function svgElementToImage(element) {
     const color = computedStyles.color;
 
     const image = new Image();
-    image.src = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg"
-        width="${width}" height="${height}" fill="${fill}" color="${color}" stroke="${stroke}">${element.outerHTML}</svg>`)}`;
+    image.src = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" fill="${fill}" color="${color}" stroke="${stroke}">${element.outerHTML}</svg>`)}`;
 
     return image;
 }
@@ -1486,4 +1574,4 @@ async function backgroundImageToImage(element) {
     return image;
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefined, svgElementToImage, backgroundImageToImage };
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefined, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud };
