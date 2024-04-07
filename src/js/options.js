@@ -66,14 +66,6 @@ let disableStorageSizeCalculation = false;
 let hasGlobalChange = false;
 let filterEditDisplay = false;
 
-init_i18next("options").then(() => {
-    i18next.addResourceBundle("en", "options", optionsEN);
-    i18next.addResourceBundle("fr", "options", optionsFR);
-    translateContent();
-});
-
-toggleTheme(); // Toggle dark/light theme
-
 function listTranslations(languages) {
     const language = i18next.language.substr(0, 2);
     $("#languageSelect").text("");
@@ -120,6 +112,17 @@ function translateContent() {
     loadAdvancedOptionsUI(false, changingLanguage);
 }
 
+function initI18next() {
+    init_i18next("options").then(() => {
+        i18next.addResourceBundle("en", "options", optionsEN);
+        i18next.addResourceBundle("fr", "options", optionsFR);
+        translateContent();
+    });
+}
+
+initI18next();
+toggleTheme(); // Toggle dark/light theme
+
 async function changeLng(lng) {
     i18next.changeLanguage(lng);
 }
@@ -137,7 +140,9 @@ async function resetSettings() {
 
     $("#textareaAssomPage").val("");
     $("#checkWhiteList").prop("checked", false);
-    init_i18next("options").then(() => translateContent());
+
+    initI18next();
+
     $("#reset").modal("show");
     await loadPresetSelect("loadPresetSelect", i18next);
     await loadPresetSelect("savePresetSelect", i18next);
