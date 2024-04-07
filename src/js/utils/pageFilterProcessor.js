@@ -37,7 +37,7 @@ export default class PageFilterProcessor {
             let elements;
 
             try {
-                elements = (element ? [element] : document.body.querySelectorAll(selector));
+                elements = (element ? [element] : (selector && selector.trim() === "body" ? [document.body] : document.body.querySelectorAll(selector)));
             } catch(e) {
                 continue; // Continue to next filter if selector is not valid
             }
