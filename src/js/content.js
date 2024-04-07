@@ -19,24 +19,30 @@
 import { pageShadowAllowed, getSettings, getCurrentURL, hasSettingsChanged, sendMessageWithPromise, sha256 } from "./utils/util.js";
 import browser from "webextension-polyfill";
 import ContentProcessor from "./contentProcessor.js";
+import SafeTimer from "./utils/safeTimer.js";
+
+function preApplyDarkTheme(settings, contentProcessor) {
+    if(document.body && document.getElementsByTagName("html")[0]) {
+        contentProcessor.setupClassBatchers();
+        contentProcessor.applyContrastPage(true, settings.pageShadowEnabled, settings.theme, "false", "false");
+        return true;
+    }
+
+    return false;
+}
 
 (async function() {
     const contentProcessor = new ContentProcessor();
+
     let precUrl = null;
-
-    // Start the processing of the page
-    contentProcessor.main(contentProcessor.TYPE_START);
-    precUrl = getCurrentURL();
-
-    // If storage/settings have changed
-    browser.storage.onChanged.addListener((changes, areaName) => {
-        if(changes && areaName == "local") {
-            applyIfSettingsChanged(false, true, null, changes.customThemes != null);
-        }
-    });
+    let settings = null;
 
     // Message/response handling
     browser.runtime.onMessage.addListener(async(message) => {
+        if(message && message.type == "preApplySettings") {
+            settings = message.settings;
+        }
+
         if(message && message.type == "websiteUrlUpdated") { // Execute when the page URL changes in Single Page Applications
             const currentURL = getCurrentURL();
 
@@ -59,6 +65,35 @@ import ContentProcessor from "./contentProcessor.js";
             }
         }
     });
+
+    // If storage/settings have changed
+    browser.storage.onChanged.addListener((changes, areaName) => {
+        if(changes && areaName == "local") {
+            applyIfSettingsChanged(false, true, null, changes.customThemes != null);
+        }
+    });
+
+    // Global content processor start function
+    const timerStart = new SafeTimer(() => {
+        contentProcessor.main(contentProcessor.TYPE_START);
+        precUrl = getCurrentURL();
+    });
+
+    // Pre-apply function
+    const timerPreApply = new SafeTimer(async() => {
+        if(settings) {
+            if(preApplyDarkTheme(settings, contentProcessor)) {
+                timerStart.start();
+            } else {
+                timerPreApply.start();
+            }
+        } else {
+            timerStart.start();
+        }
+    });
+
+    // Start apply timer
+    timerPreApply.start();
 
     async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, customThemeChanged) {
         const result = await browser.storage.local.get("liveSettings");
