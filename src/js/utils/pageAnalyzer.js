@@ -177,11 +177,13 @@ export default class PageAnalyzer {
         const hasBackgroundImg = background.trim().substr(0, 4).toLowerCase().includes("url(") || backgroundImage.trim().substr(0, 4).toLowerCase() == "url(";
         const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
         const hasTransparentBackgroundClass = element.classList.contains("pageShadowHasTransparentBackground");
-        const isDarkImage = await this.detectDarkImages(element, hasBackgroundImg);
 
-        if(isDarkImage) {
-            addClass(element, "pageShadowSelectiveInvert");
-        }
+        // Detect image with dark color (text, logos, etc)
+        this.detectDarkImages(element, hasBackgroundImg).then(isDarkImage => {
+            if(isDarkImage) {
+                addClass(element, "pageShadowSelectiveInvert");
+            }
+        });
 
         if(hasBackgroundImg && !hasClassImg) {
             addClass(element, "pageShadowHasBackgroundImg");
@@ -427,12 +429,21 @@ export default class PageAnalyzer {
         let pixelCount = 0;
         let image = element;
 
-        if(!(element instanceof HTMLImageElement) && hasBackgroundImg) {
-            const style = element.currentStyle || window.getComputedStyle(element, false);
-            const url = style.backgroundImage.slice(4, -1).replace(/"/g, "");
-            image = new Image();
-            image.src = url;
-            await image.decode();
+        if(!(element instanceof HTMLImageElement)) {
+            if(hasBackgroundImg) {
+                const style = element.currentStyle || window.getComputedStyle(element, false);
+                const url = style.backgroundImage.slice(4, -1).replace(/"/g, "");
+                image = new Image();
+                image.src = url;
+                await image.decode();
+            } else {
+                return false;
+            }
+        }
+
+        // If the image is not yet loaded, we wait
+        if (!image.complete) {
+            await this.awaitImageLoading(image);
         }
 
         try {
@@ -479,5 +490,13 @@ export default class PageAnalyzer {
 
         canvas.remove();
         return false;
+    }
+
+    async awaitImageLoading(image) {
+        return new Promise(resolve => {
+            image.addEventListener("load", () => {
+                resolve(image);
+            });
+        });
     }
 }
