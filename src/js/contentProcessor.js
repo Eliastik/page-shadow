@@ -23,7 +23,7 @@ import MutationObserverWrapper from "./utils/mutationObserver.js";
 import ClassBatcher from "./utils/classBatcher.js";
 import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
 import PageAnalyzer from "./utils/pageAnalyzer.js";
-import PageFilterProcessor from "./utils/filterProcessor.js";
+import PageFilterProcessor from "./utils/pageFilterProcessor.js";
 
 /**
  * Main class used by the content script

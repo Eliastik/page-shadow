@@ -179,11 +179,13 @@ export default class PageAnalyzer {
         const hasTransparentBackgroundClass = element.classList.contains("pageShadowHasTransparentBackground");
 
         // Detect image with dark color (text, logos, etc)
-        this.detectDarkImages(element, hasBackgroundImg).then(isDarkImage => {
-            if(isDarkImage) {
-                addClass(element, "pageShadowSelectiveInvert");
-            }
-        });
+        if(this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
+            this.detectDarkImages(element, hasBackgroundImg).then(isDarkImage => {
+                if(isDarkImage) {
+                    addClass(element, "pageShadowSelectiveInvert");
+                }
+            });
+        }
 
         if(hasBackgroundImg && !hasClassImg) {
             addClass(element, "pageShadowHasBackgroundImg");

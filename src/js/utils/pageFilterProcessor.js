@@ -240,6 +240,8 @@ export default class PageFilterProcessor {
                 if(type == "enableObserveDocumentChange") websiteSpecialFiltersConfig.observeDocumentChange = true;
                 if(type == "disableObserveDocumentChange") websiteSpecialFiltersConfig.observeDocumentChange = false;
                 if(type == "observeDocumentChangeTimerInterval") websiteSpecialFiltersConfig.observeDocumentChangeTimerInterval = rule.filter;
+                if(type == "enableDarkImageDetection") websiteSpecialFiltersConfig.enableDarkImageDetection = true;
+                if(type == "disableDarkImageDetection") websiteSpecialFiltersConfig.enableDarkImageDetection = false;
             });
         });
     }

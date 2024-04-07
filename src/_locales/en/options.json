@@ -88,6 +88,7 @@
             "backgroundDetectionStartDelay": "Delay before applying background detection",
             "useBackgroundDetectionAlreadyProcessedNodes": "Use an already processed elements list for background detection",
             "enableBrightColorDetectionSubelement": "Process the sub-elements of the elements with bright colors",
+            "enableDarkImageDetection": "Enable detection of images/backgrounds with dark colors",
             "help": {
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
                 "autoDetectTransparentBackgroundEnabled": "Enable detection of transparent backgrounds. Disabling this feature can cause many display issues.",
@@ -115,7 +116,8 @@
                 "throttleBackgroundDetectionElementsTreatedByCall": "Sets the number of elements processed by each loop call when background detection is throttled. A high value can impact performance.",
                 "backgroundDetectionStartDelay": "Apply a delay before applying background detection of the elements. By default 0 ms.",
                 "useBackgroundDetectionAlreadyProcessedNodes": "Use an already processed elements list for background detection to avoid re-processing elements. May increase performance but may increase memory usage.",
-                "enableBrightColorDetectionSubelement": "Enables processing of sub-elements of elements with bright colors. Disabling this option may potentially improve performance, but display problems may occur on some websites when using the feature Preserve element colors."
+                "enableBrightColorDetectionSubelement": "Enables processing of sub-elements of elements with bright colors. Disabling this option may potentially improve performance, but display problems may occur on some websites when using the feature Preserve element colors.",
+                "enableDarkImageDetection": "Enables detection of images/backgrounds with a large number of dark colors (e.g. text and logos), in order to invert their colors if the setting Invert colors > Selective is enabled by the user. Disabling this option improves performance."
             }
         },
         "saved": "Saved!"
