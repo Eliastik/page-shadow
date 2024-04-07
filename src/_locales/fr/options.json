@@ -86,6 +86,8 @@
             "useBackgroundDetectionAlreadyProcessedNodes": "Utiliser une liste d'éléments déjà traités pour le traitement des arrière-plans",
             "enableBrightColorDetectionSubelement": "Traiter les sous-éléments des éléments avec couleurs vives",
             "enableDarkImageDetection": "Activer la détection des images/arrières-plan avec couleurs sombres",
+            "darkImageDetectionHslTreshold": "Seuil de détection d'un pixel d'image comme étant sombre",
+            "darkImageDetectionDarkPixelCountTreshold": "Pourcentage de pixels détectés comme étant sombres pour activer l'inversion sélective d'une image",
             "help": {
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrière-plans des éléments.",
                 "autoDetectTransparentBackgroundEnabled": "Active la détection des arrière-plans transparents. Désactiver cette fonctionnalité peut provoquer de nombreux problèmes d'affichage.",
@@ -107,14 +109,16 @@
                 "observeDocumentChange": "Observe le changement d'état du document (élément HTML), et plus particulièrement de l'attribut style. Corrige des problèmes avec certains sites web qui écrasent la valeur de l'attribut style qui est utilisée pour gérer les variables CSS de Page Shadow. Désactiver cette option peut améliorer les performances.",
                 "observeDocumentChangeTimerInterval": "L'observation du changement d'état du document (élément HTML) s'appuie sur un timer qui s'exécute à un intervalle donné (au lieu d'utiliser les Mutation Observer). L'intervalle est en ms.",
                 "enableBrightColorDetection": "Détecte les éléments avec des couleurs vives et, si l'option est activée par l'utilisateur, désactive la fonction Augmenter le contraste pour ces éléments. La désactivation de cette option peut améliorer les performances.",
-                "brightColorLightnessTresholdMin": "Si un élément a une valeur de luminosité supérieure à ce seuil et inférieure à la valeur maximum, l'élément sera détecté comme élément de couleur vive.",
-                "brightColorLightnessTresholdMax": "Si un élément a une valeur de luminosité inférieure à ce seuil et supérieure à la valeur minimum, l'élément sera détecté comme élément de couleur vive.",
+                "brightColorLightnessTresholdMin": "Si un élément a une valeur de luminosité supérieure à ce seuil et inférieure à la valeur maximum, l'élément sera détecté comme élément de couleur vive. La valeur maximale est 1, la valeur minimale est 0 (pourcentage).",
+                "brightColorLightnessTresholdMax": "Si un élément a une valeur de luminosité inférieure à ce seuil et supérieure à la valeur minimum, l'élément sera détecté comme élément de couleur vive. La valeur maximale est 1, la valeur minimale est 0 (pourcentage).",
                 "throttleBackgroundDetection": "Applique un délai à la détection des arrière-plans au chargement des pages, ce qui permet d'améliorer les performances sur les grandes pages.",
                 "throttleBackgroundDetectionElementsTreatedByCall": "Défini le nombre d'éléments traités par chaque appel de boucle lorsque la détection des arrière-plans est ralentie. Une valeur élevée peut impacter les performances.",
                 "backgroundDetectionStartDelay": "Applique un délai avant d'appliquer le traitement de l'arrière-plan des éléments. Par défaut 0 ms.",
                 "useBackgroundDetectionAlreadyProcessedNodes": "Utilise une liste d'éléments déjà traités pour le traitement des arrière-plans pour éviter de traiter à nouveau les mêmes éléments. Peut améliorer les performances, mais peut augmenter l'utilisation de la mémoire.",
                 "enableBrightColorDetectionSubelement": "Active le traitement des sous-éléments des éléments avec couleurs vives. Désactiver cette option peut potentiellement améliorer les performances, mais des problèmes d'affichage peuvent se produire sur certains sites en utilisant la fonction de préservation des éléments avec couleurs vives.",
-                "enableDarkImageDetection": "Active la détection des images/arrières-plans comportant un grand nombre de couleurs sombres (comme par exemple les textes et logos), afin d'inverser leurs couleurs si le paramètre Inverser les couleurs > Sélectif est activé par l'utilisateur. Désactiver cette option améliore les performances."
+                "enableDarkImageDetection": "Active la détection des images/arrières-plans comportant un grand nombre de couleurs sombres (comme par exemple les textes et logos), afin d'inverser leurs couleurs si le paramètre Inverser les couleurs > Sélectif est activé par l'utilisateur. Désactiver cette option améliore les performances.",
+                "darkImageDetectionHslTreshold": "Si un pixel a une valeur de luminosité inférieure à ce seuil, le pixel sera considéré comme sombre. La valeur maximale est 1, la valeur minimale est 0 (pourcentage).",
+                "darkImageDetectionDarkPixelCountTreshold": "Si le nombre de pixels considérés comme sombre est supérieur à ce pourcentage, l'image sera inversée si l'utilisateur a activé le paramètre Inverser les couleurs > Sélectif. La valeur est en pourcentage décimal (multiplier par 100 pour avoir le pourcentage) correspondant au ratio du nombre de pixels sur le nombre de pixels considérés comme sombres."
             }
         },
         "saved": "Sauvegardé !"

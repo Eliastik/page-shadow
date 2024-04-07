@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsl, svgElementToImage, backgroundImageToImage } from "./util.js";
 import SafeTimer from "./safeTimer.js";
-import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, pageShadowClassListsMutationsIgnore, percentDarkImages } from "../constants.js";
+import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, pageShadowClassListsMutationsIgnore } from "../constants.js";
 
 /**
  * Class used to analyze the pages and detect transparent background,
@@ -176,7 +176,7 @@ export default class PageAnalyzer {
 
         // Detect image with dark color (text, logos, etc)
         if(this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
-            this.detectDarkImages(element, hasBackgroundImg).then(isDarkImage => {
+            this.detectDarkImage(element, hasBackgroundImg).then(isDarkImage => {
                 if(isDarkImage) {
                     addClass(element, "pageShadowSelectiveInvert");
                 }
@@ -436,7 +436,7 @@ export default class PageAnalyzer {
         this.processedShadowRoots = [];
     }
 
-    async detectDarkImages(element, hasBackgroundImg) {
+    async detectDarkImage(element, hasBackgroundImg) {
         const canvas = document.createElement("canvas");
         let image = element;
 
@@ -498,7 +498,7 @@ export default class PageAnalyzer {
                 if(alpha > 0) {
                     const hsl = rgb2hsl(red / 255, green / 255, blue / 255);
 
-                    if(hsl[2] <= 0.15) {
+                    if(hsl[2] <= this.websiteSpecialFiltersConfig.darkImageDetectionHslTreshold) {
                         darkPixelsCount++;
                     }
 
@@ -506,7 +506,7 @@ export default class PageAnalyzer {
                 }
             }
 
-            if(darkPixelsCount / pixelCount >= percentDarkImages) {
+            if(darkPixelsCount / pixelCount >= this.websiteSpecialFiltersConfig.darkImageDetectionDarkPixelCountTreshold) {
                 return true;
             }
 
