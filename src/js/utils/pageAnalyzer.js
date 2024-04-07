@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsl } from "./util.js";
+import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsl, svgElementToImage, backgroundImageToImage } from "./util.js";
 import SafeTimer from "./safeTimer.js";
 import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, pageShadowClassListsMutationsIgnore } from "../constants.js";
 
@@ -154,11 +154,7 @@ export default class PageAnalyzer {
 
     async detectBackgroundForElement(element, disableDestyling) {
         if(element && element.shadowRoot != null && this.websiteSpecialFiltersConfig.enableShadowRootStyleOverride) {
-            if(this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay > 0) {
-                setTimeout(() => this.processShadowRoot(element), this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
-            } else {
-                this.processShadowRoot(element);
-            }
+            this.processShadowRoots(element);
         }
 
         if(!element || (element != document.body && (element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected"))) || this.backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1 || ignoredElementsContentScript.includes(element.localName)) {
@@ -177,10 +173,16 @@ export default class PageAnalyzer {
         const hasBackgroundImg = background.trim().substr(0, 4).toLowerCase().includes("url(") || backgroundImage.trim().substr(0, 4).toLowerCase() == "url(";
         const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
         const hasTransparentBackgroundClass = element.classList.contains("pageShadowHasTransparentBackground");
-        const isDarkImage = await this.detectDarkImages(element, hasBackgroundImg);
 
-        if(isDarkImage) {
-            addClass(element, "pageShadowSelectiveInvert");
+        // Detect image with dark color (text, logos, etc)
+        if(this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
+            if(!element.classList.contains("pageShadowSelectiveInvert")) {
+                this.detectDarkImage(element, hasBackgroundImg).then(isDarkImage => {
+                    if(isDarkImage) {
+                        addClass(element, "pageShadowSelectiveInvert");
+                    }
+                });
+            }
         }
 
         if(hasBackgroundImg && !hasClassImg) {
@@ -190,57 +192,11 @@ export default class PageAnalyzer {
         let transparentColorDetected = false;
 
         if(this.websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled) {
-            const hasTransparentBackground = this.elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg);
-            const backgroundClip = computedStyle.getPropertyValue("background-clip") || computedStyle.getPropertyValue("-webkit-background-clip");
-            const hasBackgroundClipText = backgroundClip && backgroundClip.trim().toLowerCase() == "text";
-
-            if((hasTransparentBackground || hasBackgroundClipText)) {
-                if(!hasTransparentBackgroundClass) {
-                    addClass(element, "pageShadowHasTransparentBackground");
-                    transparentColorDetected = true;
-                }
-            } else {
-                if(hasTransparentBackgroundClass) {
-                    removeClass(element, "pageShadowHasTransparentBackground");
-                    transparentColorDetected = false;
-                }
-            }
+            transparentColorDetected = this.detectTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg, computedStyle, hasTransparentBackgroundClass, element, transparentColorDetected);
         }
 
         if(this.websiteSpecialFiltersConfig.enableBrightColorDetection) {
-            if(!transparentColorDetected && !hasTransparentBackgroundClass) {
-                const hasBrightColor = this.elementHasBrightColor(backgroundColor);
-
-                if(hasBrightColor && hasBrightColor[0]) {
-                    addClass(element, "pageShadowHasBrightColorBackground");
-
-                    if(hasBrightColor[1]) {
-                        addClass(element, "pageShadowBrightColorWithBlackText");
-                        removeClass(element, "pageShadowBrightColorWithWhiteText");
-                    } else {
-                        addClass(element, "pageShadowBrightColorWithWhiteText");
-                        removeClass(element, "pageShadowBrightColorWithBlackText");
-                    }
-                } else {
-                    removeClass(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText", "pageShadowBrightColorForceCustomTextLinkColor");
-
-                    if(this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode) {
-                        const closestBright = element.parentNode.closest(".pageShadowHasBrightColorBackground");
-
-                        if(closestBright && closestBright != document.body) {
-                            addClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
-                        }
-                    }
-                }
-            } else if(this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode) {
-                const closestForceCustom = element.parentNode.closest(".pageShadowBrightColorForceCustomTextLinkColor");
-
-                if(closestForceCustom && closestForceCustom != document.body) {
-                    addClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
-                } else {
-                    removeClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
-                }
-            }
+            this.detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, backgroundColor, element);
         }
 
         if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes) {
@@ -250,6 +206,69 @@ export default class PageAnalyzer {
         if(!disableDestyling) {
             removeClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
         }
+    }
+
+    processShadowRoots(element) {
+        if (this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay > 0) {
+            setTimeout(() => this.processShadowRoot(element), this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
+        } else {
+            this.processShadowRoot(element);
+        }
+    }
+
+    detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, backgroundColor, element) {
+        if (!transparentColorDetected && !hasTransparentBackgroundClass) {
+            const hasBrightColor = this.elementHasBrightColor(backgroundColor);
+
+            if (hasBrightColor && hasBrightColor[0]) {
+                addClass(element, "pageShadowHasBrightColorBackground");
+
+                if (hasBrightColor[1]) {
+                    addClass(element, "pageShadowBrightColorWithBlackText");
+                    removeClass(element, "pageShadowBrightColorWithWhiteText");
+                } else {
+                    addClass(element, "pageShadowBrightColorWithWhiteText");
+                    removeClass(element, "pageShadowBrightColorWithBlackText");
+                }
+            } else {
+                removeClass(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText", "pageShadowBrightColorForceCustomTextLinkColor");
+
+                if (this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode && element.parentNode.closest) {
+                    const closestBright = element.parentNode.closest(".pageShadowHasBrightColorBackground");
+
+                    if (closestBright && closestBright != document.body) {
+                        addClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
+                    }
+                }
+            }
+        } else if (this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode && element.parentNode.closest) {
+            const closestForceCustom = element.parentNode.closest(".pageShadowBrightColorForceCustomTextLinkColor");
+
+            if (closestForceCustom && closestForceCustom != document.body) {
+                addClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
+            } else {
+                removeClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
+            }
+        }
+    }
+
+    detectTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg, computedStyle, hasTransparentBackgroundClass, element, transparentColorDetected) {
+        const hasTransparentBackground = this.elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg);
+        const backgroundClip = computedStyle.getPropertyValue("background-clip") || computedStyle.getPropertyValue("-webkit-background-clip");
+        const hasBackgroundClipText = backgroundClip && backgroundClip.trim().toLowerCase() == "text";
+
+        if ((hasTransparentBackground || hasBackgroundClipText)) {
+            if (!hasTransparentBackgroundClass) {
+                addClass(element, "pageShadowHasTransparentBackground");
+                transparentColorDetected = true;
+            }
+        } else {
+            if (hasTransparentBackgroundClass) {
+                removeClass(element, "pageShadowHasTransparentBackground");
+                transparentColorDetected = false;
+            }
+        }
+        return transparentColorDetected;
     }
 
     mutationForElement(element, attribute, attributeOldValue) {
@@ -419,21 +438,42 @@ export default class PageAnalyzer {
         this.processedShadowRoots = [];
     }
 
-    async detectDarkImages(element, hasBackgroundImg) {
+    async detectDarkImage(element, hasBackgroundImg) {
         const canvas = document.createElement("canvas");
+        let image = element;
+
+        // SVG element
+        if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
+            image = svgElementToImage(element, image);
+        }
+
+        // Image element (or image element with svg file)
+        if(!(image instanceof HTMLImageElement) && !(image instanceof SVGImageElement)) {
+            if(hasBackgroundImg) {
+                image = await backgroundImageToImage(element, image);
+            } else {
+                return false;
+            }
+        }
+
+        // If the image is not yet loaded, we wait
+        if(!image.complete) {
+            await this.awaitImageLoading(image);
+        }
+
+        // Check if the image is dark
+        const isDarkImage = this.isImageDark(canvas, image);
+
+        canvas.remove();
+
+        return isDarkImage;
+    }
+
+    isImageDark(canvas, image) {
         const ctx = canvas.getContext("2d");
 
         let darkPixelsCount = 0;
         let pixelCount = 0;
-        let image = element;
-
-        if(!(element instanceof HTMLImageElement) && hasBackgroundImg) {
-            const style = element.currentStyle || window.getComputedStyle(element, false);
-            const url = style.backgroundImage.slice(4, -1).replace(/"/g, "");
-            image = new Image();
-            image.src = url;
-            await image.decode();
-        }
 
         try {
             const width = image.width;
@@ -460,7 +500,7 @@ export default class PageAnalyzer {
                 if(alpha > 0) {
                     const hsl = rgb2hsl(red / 255, green / 255, blue / 255);
 
-                    if(hsl[2] <= 0.15) {
+                    if(hsl[2] <= this.websiteSpecialFiltersConfig.darkImageDetectionHslTreshold) {
                         darkPixelsCount++;
                     }
 
@@ -468,16 +508,21 @@ export default class PageAnalyzer {
                 }
             }
 
-            if(darkPixelsCount / pixelCount >= 0.5) {
-                canvas.remove();
+            if(darkPixelsCount / pixelCount >= this.websiteSpecialFiltersConfig.darkImageDetectionDarkPixelCountTreshold) {
                 return true;
             }
+
+            return false;
         } catch(e) {
-            canvas.remove();
             return false;
         }
+    }
 
-        canvas.remove();
-        return false;
+    async awaitImageLoading(image) {
+        return new Promise(resolve => {
+            image.addEventListener("load", () => {
+                resolve(image);
+            });
+        });
     }
 }

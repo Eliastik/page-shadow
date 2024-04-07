@@ -33,7 +33,7 @@ import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise } from "./utils/util.js";
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, getCurrentArchiveCloud } from "./utils/util.js";
 import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames } from "./constants.js";
 import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
@@ -65,14 +65,6 @@ let savedAdvancedOptionsTimeout;
 let disableStorageSizeCalculation = false;
 let hasGlobalChange = false;
 let filterEditDisplay = false;
-
-init_i18next("options").then(() => {
-    i18next.addResourceBundle("en", "options", optionsEN);
-    i18next.addResourceBundle("fr", "options", optionsFR);
-    translateContent();
-});
-
-toggleTheme(); // Toggle dark/light theme
 
 function listTranslations(languages) {
     const language = i18next.language.substr(0, 2);
@@ -120,6 +112,17 @@ function translateContent() {
     loadAdvancedOptionsUI(false, changingLanguage);
 }
 
+function initI18next() {
+    init_i18next("options").then(() => {
+        i18next.addResourceBundle("en", "options", optionsEN);
+        i18next.addResourceBundle("fr", "options", optionsFR);
+        translateContent();
+    });
+}
+
+initI18next();
+toggleTheme(); // Toggle dark/light theme
+
 async function changeLng(lng) {
     i18next.changeLanguage(lng);
 }
@@ -137,7 +140,9 @@ async function resetSettings() {
 
     $("#textareaAssomPage").val("");
     $("#checkWhiteList").prop("checked", false);
-    init_i18next("options").then(() => translateContent());
+
+    initI18next();
+
     $("#reset").modal("show");
     await loadPresetSelect("loadPresetSelect", i18next);
     await loadPresetSelect("savePresetSelect", i18next);
@@ -1288,7 +1293,7 @@ async function archiveCloudSettings() {
         $("#restoreDataButton").removeAttr("disabled");
         $("#archivingCloud").hide();
     } catch(e) {
-        if(e === "quota") {
+        if(e.message === "quota") {
             $("#archiveCloudErrorQuota").fadeIn(500);
         } else {
             $("#archiveCloudError").fadeIn(500);
@@ -1342,11 +1347,12 @@ async function restoreCloudSettings() {
         $("#restoreCloudSuccess").hide();
         $("#archiveCloudErrorQuota").hide();
 
-        const dataSync = await browser.storage.sync.get(null);
         const oldTextareadValue = $("#textareaAssomPage").val();
 
-        if(dataSync != undefined) {
-            try {
+        try {
+            const dataSync = await getCurrentArchiveCloud();
+
+            if(dataSync != undefined) {
                 let dataObj = dataSync;
 
                 if(dataSync.pageShadowStorageBackup) {
@@ -1373,16 +1379,16 @@ async function restoreCloudSettings() {
                     $("#restoreCloudError").fadeIn(500);
                     $("#textareaAssomPage").val(oldTextareadValue);
                 }
-            } catch(e) {
+            } else {
                 $("#restoreCloudError").fadeIn(500);
                 $("#textareaAssomPage").val(oldTextareadValue);
-                $("#archiveCloudBtn").removeAttr("disabled");
-                $("#restoreCloudBtn").removeAttr("disabled");
-                $("#restoreDataButton").removeAttr("disabled");
             }
-        } else {
+        } catch(e) {
             $("#restoreCloudError").fadeIn(500);
             $("#textareaAssomPage").val(oldTextareadValue);
+            $("#archiveCloudBtn").removeAttr("disabled");
+            $("#restoreCloudBtn").removeAttr("disabled");
+            $("#restoreDataButton").removeAttr("disabled");
         }
     }
 }

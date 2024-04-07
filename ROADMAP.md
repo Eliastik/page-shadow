@@ -107,7 +107,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Auto cloud saving/backup: display an alert window in the popup if there was an error when auto saving in the cloud + save date/hour when a saving error occurs
 * [x] Compact popup theme
 * [x] Automatic selective invert image color (for logos and black text images)
-    * [ ] Don't work when the image is not yet loaded (reproduced on this page: https://tungmphung.com/reinforcement-learning-q-learning-deep-q-learning-introduction-with-tensorflow/)
+    * [x] Don't work when the image is not yet loaded (reproduced on this page: https://tungmphung.com/reinforcement-learning-q-learning-deep-q-learning-introduction-with-tensorflow/)
 * [ ] Limit flashing when opening a website and detecting colored elements?
 
 #### Bugs to fix
@@ -116,7 +116,9 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Medium) Some websites reset the style attribute of the html, which force the default theme for the Increase contrast feature by deleting the CSS variables
     * Reproduced on this website (very random, Maj+F5 to reproduce): https://formation.lefebvre-dalloz.fr/actualite/scrum-comment-animer-la-retrospective-du-sprint
 * [x] (Very minor) When classic popup theme is enabled, the help tooltip for the feature "Attenuate colors" is wrong (not complete)
-* [ ] (Medium) Filters for body element not working, add possibility to invert body background image?
+* [x] (Medium) Auto cloud saving/backup: fails when there is a long blacklist/whitelist (maybe also for the list of websites for presets?)
+* [x] (Very minor) Some websites causes an error in the console "e.parentNode.closest is not a function", without visible impacts
+* [x] (Medium) Filters for body element not working, add possibility to invert body background image?
 
 ### Futures versions
 
@@ -145,11 +147,9 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Known issues/bugs
 
-* [ ] (Medium) Auto cloud saving/backup: fails when there is a long blacklist/whitelist (maybe also for the list of websites for presets?)
-* [ ] (Very minor) Some websites causes an error in the console "e.parentNode.closest is not a function", without visible impacts
+* [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
 * [ ] (Minor) Bug with error in filters: open errors from a built-in filter, then the errors from custom filter: the window will be blank (random)
-* [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
-* [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
 * [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
+* [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots

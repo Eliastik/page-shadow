@@ -37,7 +37,7 @@ export default class PageFilterProcessor {
             let elements;
 
             try {
-                elements = (element ? [element] : document.body.querySelectorAll(selector));
+                elements = (element ? [element] : (selector && selector.trim() === "body" ? [document.body] : document.body.querySelectorAll(selector)));
             } catch(e) {
                 continue; // Continue to next filter if selector is not valid
             }
@@ -240,6 +240,10 @@ export default class PageFilterProcessor {
                 if(type == "enableObserveDocumentChange") websiteSpecialFiltersConfig.observeDocumentChange = true;
                 if(type == "disableObserveDocumentChange") websiteSpecialFiltersConfig.observeDocumentChange = false;
                 if(type == "observeDocumentChangeTimerInterval") websiteSpecialFiltersConfig.observeDocumentChangeTimerInterval = rule.filter;
+                if(type == "enableDarkImageDetection") websiteSpecialFiltersConfig.enableDarkImageDetection = true;
+                if(type == "disableDarkImageDetection") websiteSpecialFiltersConfig.enableDarkImageDetection = false;
+                if(type == "darkImageDetectionHslTreshold") websiteSpecialFiltersConfig.darkImageDetectionHslTreshold = rule.filter;
+                if(type == "darkImageDetectionDarkPixelCountTreshold") websiteSpecialFiltersConfig.darkImageDetectionDarkPixelCountTreshold = rule.filter;
             });
         });
     }

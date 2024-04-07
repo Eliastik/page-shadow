@@ -88,6 +88,9 @@
             "backgroundDetectionStartDelay": "Delay before applying background detection",
             "useBackgroundDetectionAlreadyProcessedNodes": "Use an already processed elements list for background detection",
             "enableBrightColorDetectionSubelement": "Process the sub-elements of the elements with bright colors",
+            "enableDarkImageDetection": "Enable detection of images/backgrounds with dark colors",
+            "darkImageDetectionHslTreshold": "Threshold for detecting an image pixel as dark",
+            "darkImageDetectionDarkPixelCountTreshold": "Percentage of pixels detected as dark to activate selective image inversion",
             "help": {
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
                 "autoDetectTransparentBackgroundEnabled": "Enable detection of transparent backgrounds. Disabling this feature can cause many display issues.",
@@ -109,13 +112,16 @@
                 "observeDocumentChange": "Observes the change of state of the document (HTML element), and more specifically of the style attribute. Fixes issues with some websites that overwrite the style attribute value used to manage Page Shadow CSS variables. Disabling this option can improve performance.",
                 "observeDocumentChangeTimerInterval": "Observing the state change of the document (HTML) element relies on a timer that runs at a given interval (instead of using Mutation Observers). The interval is in ms.",
                 "enableBrightColorDetection": "Detect element with bright color, and if enabled by the user, disable the Increase contrast function for these elements. Disabling this option may improve performance.",
-                "brightColorLightnessTresholdMin": "If an element has a lightness value that is above this treshold but lower than the maximum, the element will be detected as bright color element.",
-                "brightColorLightnessTresholdMax": "If an element has a lightness value that is lower than this treshold but above the minimum, the element will be detected as bright color element.",
+                "brightColorLightnessTresholdMin": "If an element has a lightness value that is above this treshold but lower than the maximum, the element will be detected as bright color element. The maximum value is 1, the minimum is 0 (percentage).",
+                "brightColorLightnessTresholdMax": "If an element has a lightness value that is lower than this treshold but above the minimum, the element will be detected as bright color element. The maximum value is 1, the minimum is 0 (percentage).",
                 "throttleBackgroundDetection": "Applies a delay to the detection of backgrounds on page load, which can improve performance on large pages.",
                 "throttleBackgroundDetectionElementsTreatedByCall": "Sets the number of elements processed by each loop call when background detection is throttled. A high value can impact performance.",
                 "backgroundDetectionStartDelay": "Apply a delay before applying background detection of the elements. By default 0 ms.",
                 "useBackgroundDetectionAlreadyProcessedNodes": "Use an already processed elements list for background detection to avoid re-processing elements. May increase performance but may increase memory usage.",
-                "enableBrightColorDetectionSubelement": "Enables processing of sub-elements of elements with bright colors. Disabling this option may potentially improve performance, but display problems may occur on some websites when using the feature Preserve element colors."
+                "enableBrightColorDetectionSubelement": "Enables processing of sub-elements of elements with bright colors. Disabling this option may potentially improve performance, but display problems may occur on some websites when using the feature Preserve element colors.",
+                "enableDarkImageDetection": "Enables detection of images/backgrounds with a large number of dark colors (e.g. text and logos), in order to invert their colors if the setting Invert colors > Selective is enabled by the user. Disabling this option improves performance.",
+                "darkImageDetectionHslTreshold": "If a pixel has a lightness value below this threshold, the pixel is considered dark. The maximum value is 1, the minimum is 0 (percentage).",
+                "darkImageDetectionDarkPixelCountTreshold": "If the number of pixels considered dark is greater than this percentage, the image will be inverted if the user enabled the setting Invert colors > Selective. The value is in decimal percentage (multiply by 100 to get the percentage) corresponding to the ratio of the number of pixels to the number of pixels considered dark."
             }
         },
         "saved": "Saved!"
