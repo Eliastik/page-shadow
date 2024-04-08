@@ -29,13 +29,13 @@ import pageTestFR from "../_locales/fr/pageTest.json";
 window.$ = $;
 window.jQuery = $;
 
-init_i18next("pageTest").then(() => {
-    i18next.addResourceBundle("en", "pageTest", pageTestEN);
-    i18next.addResourceBundle("fr", "pageTest", pageTestFR);
-    translateContent();
-});
-
-toggleTheme(); // Toggle dark/light theme
+function initI18next() {
+    init_i18next("pageTest").then(() => {
+        i18next.addResourceBundle("en", "pageTest", pageTestEN);
+        i18next.addResourceBundle("fr", "pageTest", pageTestFR);
+        translateContent();
+    });
+}
 
 function translateContent() {
     jqueryI18next.init(i18next, $, {
@@ -46,9 +46,18 @@ function translateContent() {
     $(".container").localize();
 }
 
+toggleTheme(); // Toggle dark/light theme
+initI18next();
+
 i18next.on("languageChanged", () => {
     translateContent();
 });
+
+window.addEventListener("storage", (e) => {
+    if(e && e.key === "i18nextLng") {
+        initI18next();
+    }
+}, false);
 
 $(() => {
     $("#testOpenPopup").on("click", () => {
