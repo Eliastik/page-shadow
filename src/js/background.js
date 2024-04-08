@@ -358,7 +358,11 @@ if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onUpdated) !== "u
 
     browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
         if (changeInfo.status === "loading") {
-            browser.tabs.sendMessage(tabId, { type: "preApplySettings", settings: settingsCache.data });
+            const settingsCache = new SettingsCache();
+            const presetsCache = new PresetCache();
+            const settings = await getSettings(changeInfo.url, false, settingsCache.data, presetsCache.data);
+
+            browser.tabs.sendMessage(tabId, { type: "preApplySettings", settings });
         }
     });
 }

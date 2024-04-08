@@ -826,7 +826,6 @@ async function deletePreset(nb) {
 }
 
 async function presetsEnabledForWebsite(url, disableCache) {
-    const presetListEnabled = [];
     let allPresetData;
 
     if(!disableCache) { // Get preset with cache
@@ -834,11 +833,17 @@ async function presetsEnabledForWebsite(url, disableCache) {
         allPresetData = response.data;
     }
 
+    return await presetsEnabledForWebsiteWithData(url, allPresetData);
+}
+
+async function presetsEnabledForWebsiteWithData(url, allPresetData) {
+    const presetListEnabled = [];
+
     if(url && url.trim() != "") {
         for(let i = 1; i <= nbPresets; i++) {
             let presetData;
 
-            if(disableCache) {
+            if(!allPresetData) {
                 presetData = await getPresetData(i);
             } else {
                 presetData = allPresetData[i];
@@ -912,12 +917,18 @@ function fillSettings(defaultSettings, newSettings) {
     }
 }
 
-async function getSettings(url, disableCache) {
+async function getSettings(url, disableCache, settingsData, allPresetData) {
     const settings = getDefaultSettingsToLoad();
     let loadGlobalSettings = true;
 
     // Automatically enable preset ?
-    const presetsEnabled = await presetsEnabledForWebsite(url, disableCache);
+    let presetsEnabled;
+
+    if(allPresetData) {
+        presetsEnabled = await presetsEnabledForWebsiteWithData(url, allPresetData);
+    } else {
+        presetsEnabled = await presetsEnabledForWebsite(url, disableCache);
+    }
 
     if(presetsEnabled && presetsEnabled.length > 0) {
         const presetEnabled = getPriorityPresetEnabledForWebsite(presetsEnabled);
@@ -933,7 +944,9 @@ async function getSettings(url, disableCache) {
     if(loadGlobalSettings) {
         let newSettings = {};
 
-        if(!disableCache) {
+        if(settingsData) {
+            newSettings = settingsData;
+        } else if(!disableCache) {
             const settingsResponse = await sendMessageWithPromise({ "type": "getSettings" }, "getSettingsResponse");
             newSettings = settingsResponse.data;
         } else {
