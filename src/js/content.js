@@ -21,7 +21,10 @@ import browser from "webextension-polyfill";
 import ContentProcessor from "./contentProcessor.js";
 import SafeTimer from "./utils/safeTimer.js";
 
-function preApplyDarkTheme(settings, contentProcessor) {
+/**
+ * Execute to pre-apply settings when a page is loaded before full settings are loaded. Limit flash effect.
+ */
+function preApplyContrast(settings, contentProcessor) {
     if(document.body && document.getElementsByTagName("html")[0]) {
         contentProcessor.setupClassBatchers();
         contentProcessor.applyContrastPage(true, settings.pageShadowEnabled, settings.theme, "false", "false");
@@ -82,7 +85,7 @@ function preApplyDarkTheme(settings, contentProcessor) {
     // Pre-apply function
     const timerPreApply = new SafeTimer(async() => {
         if(settings) {
-            if(preApplyDarkTheme(settings, contentProcessor)) {
+            if(preApplyContrast(settings, contentProcessor)) {
                 timerStart.start();
             } else {
                 timerPreApply.start();
