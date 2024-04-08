@@ -703,7 +703,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 .popup-option-container-modern.active > div {
     background-color: #03A9F4;
     border-color: #039BE5;
-    color: #181717;
+    color: #F5F5F5;
 }
 
 .popup-option-container-modern.active > div:hover {

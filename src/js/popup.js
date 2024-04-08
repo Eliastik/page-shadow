@@ -48,14 +48,6 @@ let currentTheme = "checkbox";
 let permissionInfoShowed = false;
 let autoBackupFailedShowed = false;
 
-init_i18next("popup").then(() => {
-    i18next.addResourceBundle("en", "popup", popupEN);
-    i18next.addResourceBundle("fr", "popup", popupFR);
-    translateContent();
-});
-
-toggleTheme(); // Toggle dark/light theme
-
 async function translateContent() {
     i18nextLoaded = true;
     jqueryI18next.init(i18next, $, {
@@ -74,9 +66,26 @@ async function translateContent() {
     $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));
 }
 
+function initI18next() {
+    init_i18next("popup").then(() => {
+        i18next.addResourceBundle("en", "popup", popupEN);
+        i18next.addResourceBundle("fr", "popup", popupFR);
+        translateContent();
+    });
+}
+
 i18next.on("languageChanged", () => {
     translateContent();
 });
+
+toggleTheme(); // Toggle dark/light theme
+initI18next();
+
+window.addEventListener("storage", (e) => {
+    if(e && e.key === "i18nextLng") {
+        initI18next();
+    }
+}, false);
 
 async function getCurrentURL() {
     const matches = window.location.search.match(/[?&]tabId=([^&]+)/);
