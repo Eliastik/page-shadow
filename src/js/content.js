@@ -25,6 +25,8 @@ function preApplyDarkTheme(settings, contentProcessor) {
     if(document.body && document.getElementsByTagName("html")[0]) {
         contentProcessor.setupClassBatchers();
         contentProcessor.applyContrastPage(true, settings.pageShadowEnabled, settings.theme, "false", "false");
+        contentProcessor.started = true;
+
         return true;
     }
 
@@ -41,9 +43,7 @@ function preApplyDarkTheme(settings, contentProcessor) {
     browser.runtime.onMessage.addListener(async(message) => {
         if(message && message.type == "preApplySettings") {
             settings = message.settings;
-        }
-
-        if(message && message.type == "websiteUrlUpdated") { // Execute when the page URL changes in Single Page Applications
+        } else if(message && message.type == "websiteUrlUpdated") { // Execute when the page URL changes in Single Page Applications
             const currentURL = getCurrentURL();
 
             if(message && message.url == await sha256(currentURL)) {
