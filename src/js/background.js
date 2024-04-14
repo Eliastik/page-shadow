@@ -346,16 +346,6 @@ if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onUpdated) !== "u
         menu();
         updateBadge(false);
     });
-
-    browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
-        if (changeInfo.status === "loading") {
-            const settingsCache = new SettingsCache();
-            const presetsCache = new PresetCache();
-            const settings = await getSettings(changeInfo.url, false, settingsCache.data, presetsCache.data);
-
-            browser.tabs.sendMessage(tabId, { type: "preApplySettings", settings });
-        }
-    });
 }
 
 if(typeof(browser.windows) !== "undefined" && typeof(browser.windows.onFocusChanged) !== "undefined") {
@@ -373,6 +363,17 @@ if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) 
 }
 
 if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) !== "undefined") {
+    browser.runtime.onMessage.addListener(async (message, sender) => {
+        if (message && message.type === "ready") {
+            const tabId = sender.tab.id;
+            const settingsCache = new SettingsCache();
+            const presetsCache = new PresetCache();
+            const settings = await getSettings(sender.url, false, settingsCache.data, presetsCache.data);
+
+            browser.tabs.sendMessage(tabId, { type: "preApplySettings", settings });
+        }
+    });
+
     browser.runtime.onMessage.addListener(async(message, sender) => {
         const filters = new Filter();
         const presetCache = new PresetCache();
