@@ -21,6 +21,38 @@ import browser from "webextension-polyfill";
 import ContentProcessor from "./contentProcessor.js";
 import SafeTimer from "./utils/safeTimer.js";
 
+async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, customThemeChanged) {
+    const result = await browser.storage.local.get("liveSettings");
+    const isLiveSettings = result.liveSettings !== "false";
+
+    if(isLiveSettings && contentProcessor.runningInPopup) {
+        const allowed = await pageShadowAllowed(getCurrentURL());
+        statusChanged = contentProcessor.hasEnabledStateChanged(allowed);
+    }
+
+    if(statusChanged && ((!isLiveSettings && !storageChanged) || isLiveSettings)) {
+        contentProcessor.precEnabled = isEnabled;
+        return contentProcessor.main(contentProcessor.TYPE_RESET, contentProcessor.TYPE_ALL);
+    }
+
+    if(isLiveSettings && storageChanged) {
+        if(contentProcessor.runningInIframe) {
+            const response = await sendMessageWithPromise({ "type": "applySettingsChanged" }, "applySettingsChangedResponse");
+            const changed = contentProcessor.hasEnabledStateChanged(response.enabled);
+
+            if(changed || hasSettingsChanged(contentProcessor.currentSettings, response.settings)) {
+                contentProcessor.precEnabled = response.enabled;
+                contentProcessor.main(contentProcessor.TYPE_RESET, contentProcessor.TYPE_ALL, true);
+            }
+        } else {
+            if(hasSettingsChanged(contentProcessor.currentSettings, await getSettings(getCurrentURL(), true), customThemeChanged)) {
+                contentProcessor.precEnabled = isEnabled;
+                contentProcessor.main(contentProcessor.TYPE_RESET, contentProcessor.TYPE_ALL, true);
+            }
+        }
+    }
+}
+
 /**
  * Execute to pre-apply settings when a page is loaded before full settings are loaded. Limit flash effect.
  */
@@ -36,97 +68,65 @@ function preApplyContrast(settings, contentProcessor) {
     return false;
 }
 
-(async function() {
-    const contentProcessor = new ContentProcessor();
+let settings = null;
+let precUrl = null;
 
-    let precUrl = null;
-    let settings = null;
+// Message/response handling
+browser.runtime.onMessage.addListener(async(message) => {
+    if(message && message.type == "preApplySettings") {
+        settings = message.settings;
+    } else if(message && message.type == "websiteUrlUpdated") { // Execute when the page URL changes in Single Page Applications
+        const currentURL = getCurrentURL();
 
-    // Message/response handling
-    browser.runtime.onMessage.addListener(async(message) => {
-        if(message && message.type == "preApplySettings") {
-            settings = message.settings;
-        } else if(message && message.type == "websiteUrlUpdated") { // Execute when the page URL changes in Single Page Applications
-            const currentURL = getCurrentURL();
+        if(message && message.url == await sha256(currentURL)) {
+            const URLUpdated = precUrl != getCurrentURL();
+            let changed = contentProcessor.hasEnabledStateChanged(message.enabled) || contentProcessor.mutationDetected;
 
-            if(message && message.url == await sha256(currentURL)) {
-                const URLUpdated = precUrl != getCurrentURL();
-                let changed = contentProcessor.hasEnabledStateChanged(message.enabled) || contentProcessor.mutationDetected;
-
-                if(URLUpdated) {
-                    contentProcessor.pageAnalyzer.backgroundDetected = false;
-                    precUrl = getCurrentURL();
-                    contentProcessor.precUrl = getCurrentURL();
-                    contentProcessor.filtersCache = null;
-                    changed = true;
-                    contentProcessor.updateFilters();
-                }
-
-                if(changed) {
-                    applyIfSettingsChanged(true, message.storageChanged, message.enabled);
-                }
+            if(URLUpdated) {
+                contentProcessor.pageAnalyzer.backgroundDetected = false;
+                precUrl = getCurrentURL();
+                contentProcessor.precUrl = getCurrentURL();
+                contentProcessor.filtersCache = null;
+                changed = true;
+                contentProcessor.updateFilters();
             }
-        }
-    });
 
-    // If storage/settings have changed
-    browser.storage.onChanged.addListener((changes, areaName) => {
-        if(changes && areaName == "local") {
-            applyIfSettingsChanged(false, true, null, changes.customThemes != null);
-        }
-    });
-
-    // Global content processor start function
-    const timerStart = new SafeTimer(() => {
-        contentProcessor.main(contentProcessor.TYPE_START);
-        precUrl = getCurrentURL();
-    });
-
-    // Pre-apply function
-    const timerPreApply = new SafeTimer(async() => {
-        if(settings) {
-            if(preApplyContrast(settings, contentProcessor)) {
-                timerStart.start();
-            } else {
-                timerPreApply.start();
-            }
-        } else {
-            timerStart.start();
-        }
-    });
-
-    // Start apply timer
-    timerPreApply.start();
-
-    async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, customThemeChanged) {
-        const result = await browser.storage.local.get("liveSettings");
-        const isLiveSettings = result.liveSettings !== "false";
-
-        if(isLiveSettings && contentProcessor.runningInPopup) {
-            const allowed = await pageShadowAllowed(getCurrentURL());
-            statusChanged = contentProcessor.hasEnabledStateChanged(allowed);
-        }
-
-        if(statusChanged && ((!isLiveSettings && !storageChanged) || isLiveSettings)) {
-            contentProcessor.precEnabled = isEnabled;
-            return contentProcessor.main(contentProcessor.TYPE_RESET, contentProcessor.TYPE_ALL);
-        }
-
-        if(isLiveSettings && storageChanged) {
-            if(contentProcessor.runningInIframe) {
-                const response = await sendMessageWithPromise({ "type": "applySettingsChanged" }, "applySettingsChangedResponse");
-                const changed = contentProcessor.hasEnabledStateChanged(response.enabled);
-
-                if(changed || hasSettingsChanged(contentProcessor.currentSettings, response.settings)) {
-                    contentProcessor.precEnabled = response.enabled;
-                    contentProcessor.main(contentProcessor.TYPE_RESET, contentProcessor.TYPE_ALL, true);
-                }
-            } else {
-                if(hasSettingsChanged(contentProcessor.currentSettings, await getSettings(getCurrentURL(), true), customThemeChanged)) {
-                    contentProcessor.precEnabled = isEnabled;
-                    contentProcessor.main(contentProcessor.TYPE_RESET, contentProcessor.TYPE_ALL, true);
-                }
+            if(changed) {
+                applyIfSettingsChanged(true, message.storageChanged, message.enabled);
             }
         }
     }
-}());
+});
+
+browser.runtime.sendMessage({ type: "ready" });
+
+// If storage/settings have changed
+browser.storage.onChanged.addListener((changes, areaName) => {
+    if(changes && areaName == "local") {
+        applyIfSettingsChanged(false, true, null, changes.customThemes != null);
+    }
+});
+
+const contentProcessor = new ContentProcessor();
+
+// Global content processor start function
+const timerStart = new SafeTimer(() => {
+    contentProcessor.main(contentProcessor.TYPE_START);
+    precUrl = getCurrentURL();
+});
+
+// Pre-apply function
+const timerPreApply = new SafeTimer(async() => {
+    if(settings) {
+        if(preApplyContrast(settings, contentProcessor)) {
+            timerStart.start();
+        } else {
+            timerPreApply.start();
+        }
+    } else {
+        timerStart.start();
+    }
+});
+
+// Start apply timer
+timerPreApply.start();
