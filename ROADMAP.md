@@ -100,9 +100,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 ### Planed
 
-* [ ] Publish Manifestv3 for Firefox + Tests
 * [x] Limit flashing when opening a website and detecting colored elements?
-    * [ ] Experimental - Test needed. Sometimes the "preApplySettings" message is randomly not received
+    * [x] Experimental - Test needed. Sometimes the "preApplySettings" message is randomly not received
 * [x] Add border radius to select/inputs
 * [x] Merge utils/filterProcessor.js and FilterProcessor class
 * [x] Auto cloud saving/backup: don't save the date when an error occurred
@@ -121,7 +120,14 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Very minor) Some websites causes an error in the console "e.parentNode.closest is not a function", without visible impacts
 * [x] (Medium) Filters for body element not working, add possibility to invert body background image?
 
+#### Release - Go (version 2.11)
+
+* [ ] Test on Chrome/Edge
+* [ ] Test on Firefox
+
 ### Futures versions
+
+* [ ] Publish Manifestv3 for Firefox + Tests
 
 #### Common
 
