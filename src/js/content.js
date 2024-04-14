@@ -21,6 +21,11 @@ import browser from "webextension-polyfill";
 import ContentProcessor from "./contentProcessor.js";
 import SafeTimer from "./utils/safeTimer.js";
 
+const contentProcessor = new ContentProcessor();
+
+let settings = null;
+let precUrl = null;
+
 async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, customThemeChanged) {
     const result = await browser.storage.local.get("liveSettings");
     const isLiveSettings = result.liveSettings !== "false";
@@ -57,7 +62,7 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
  * Execute to pre-apply settings when a page is loaded before full settings are loaded. Limit flash effect.
  */
 function preApplyContrast(settings, contentProcessor) {
-    if(document.body && document.getElementsByTagName("html")[0]) {
+    if(document.body && document.getElementsByTagName("html")[0] && !contentProcessor.started) {
         contentProcessor.setupClassBatchers();
         contentProcessor.applyContrastPage(true, settings.pageShadowEnabled, settings.theme, "false", "false");
         contentProcessor.started = true;
@@ -68,13 +73,28 @@ function preApplyContrast(settings, contentProcessor) {
     return false;
 }
 
-let settings = null;
-let precUrl = null;
+// Global content processor start function
+const timerStart = new SafeTimer(() => {
+    contentProcessor.main(contentProcessor.TYPE_START);
+    precUrl = getCurrentURL();
+});
+
+// Pre-apply function
+const timerPreApply = new SafeTimer(async() => {
+    if(settings) {
+        if(preApplyContrast(settings, contentProcessor)) {
+            timerStart.start();
+        } else {
+            timerPreApply.start();
+        }
+    }
+});
 
 // Message/response handling
 browser.runtime.onMessage.addListener(async(message) => {
     if(message && message.type == "preApplySettings") {
         settings = message.settings;
+        timerPreApply.start();
     } else if(message && message.type == "websiteUrlUpdated") { // Execute when the page URL changes in Single Page Applications
         const currentURL = getCurrentURL();
 
@@ -98,8 +118,6 @@ browser.runtime.onMessage.addListener(async(message) => {
     }
 });
 
-browser.runtime.sendMessage({ type: "ready" });
-
 // If storage/settings have changed
 browser.storage.onChanged.addListener((changes, areaName) => {
     if(changes && areaName == "local") {
@@ -107,26 +125,4 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     }
 });
 
-const contentProcessor = new ContentProcessor();
-
-// Global content processor start function
-const timerStart = new SafeTimer(() => {
-    contentProcessor.main(contentProcessor.TYPE_START);
-    precUrl = getCurrentURL();
-});
-
-// Pre-apply function
-const timerPreApply = new SafeTimer(async() => {
-    if(settings) {
-        if(preApplyContrast(settings, contentProcessor)) {
-            timerStart.start();
-        } else {
-            timerPreApply.start();
-        }
-    } else {
-        timerStart.start();
-    }
-});
-
-// Start apply timer
-timerPreApply.start();
+browser.runtime.sendMessage({ type: "ready" });
