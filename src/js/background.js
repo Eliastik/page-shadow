@@ -368,9 +368,13 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
             const tabId = sender.tab.id;
             const settingsCache = new SettingsCache();
             const presetsCache = new PresetCache();
-            const settings = await getSettings(sender.url, false, settingsCache.data, presetsCache.data);
 
-            browser.tabs.sendMessage(tabId, { type: "preApplySettings", settings });
+            const data = {
+                settings: await getSettings(sender.url, false, settingsCache.data, presetsCache.data),
+                customThemes: settingsCache.customThemes
+            };
+
+            browser.tabs.sendMessage(tabId, { type: "preApplySettings", data });
         }
     });
 

@@ -210,12 +210,12 @@ function getUImessage(id) {
     return browser.i18n.getMessage(id);
 }
 
-async function getCustomThemeConfig(nb) {
+async function getCustomThemeConfig(nb, customThemesSettings) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
     let customThemes, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme, fontTheme, customCSSCode;
 
-    const result = await browser.storage.local.get("customThemes");
+    const result = customThemesSettings ? customThemesSettings : await browser.storage.local.get("customThemes");
 
     if(result.customThemes != undefined && result.customThemes[nb] != undefined) {
         customThemes = result.customThemes[nb];
@@ -287,11 +287,11 @@ async function getCustomThemeConfig(nb) {
  * @param {*} lnkCssElement link element for applying custom CSS code
  * @returns true if applying custom font family, false otherwise
  */
-async function customTheme(nb, disableCustomCSS, lnkCssElement) {
-    const config = await getCustomThemeConfig(nb);
+async function customTheme(nb, disableCustomCSS, lnkCssElement, customThemesSettings) {
+    const config = await getCustomThemeConfig(nb, customThemesSettings);
     disableCustomCSS = disableCustomCSS == undefined ? false : disableCustomCSS;
 
-    applyContrastPageVariables(config);
+    applyContrastPageVariables(config, customThemesSettings);
 
     // Apply custom CSS
     if(!disableCustomCSS && config.customCSSCode != "") {

@@ -97,7 +97,7 @@ export default class ContentProcessor {
         this.htmlClassBatcher = new ClassBatcher(document.getElementsByTagName("html")[0]);
     }
 
-    async applyContrastPage(init, pageShadowEnabled, theme, disableImgBgColor, brightColorPreservation) {
+    async applyContrastPage(init, pageShadowEnabled, theme, disableImgBgColor, brightColorPreservation, customThemesSettings) {
         if (pageShadowEnabled != undefined && pageShadowEnabled == "true") {
             if (theme != undefined) {
                 if(!init) {
@@ -105,7 +105,7 @@ export default class ContentProcessor {
                 }
 
                 if (theme.startsWith("custom")) {
-                    await this.customThemeApply(theme);
+                    await this.customThemeApply(theme, customThemesSettings);
                     this.htmlClassBatcher.add("pageShadowBackgroundCustom");
                 } else {
                     applyContrastPageVariablesWithTheme(theme);
@@ -171,9 +171,9 @@ export default class ContentProcessor {
         removeBatcherHTML.applyRemove();
     }
 
-    async customThemeApply(theme) {
+    async customThemeApply(theme, customThemesSettings) {
         if(theme != undefined && typeof(theme) == "string" && theme.startsWith("custom")) {
-            const applyCustomFontFamily = await customTheme(theme.replace("custom", ""), false, this.lnkCustomTheme);
+            const applyCustomFontFamily = await customTheme(theme.replace("custom", ""), false, this.lnkCustomTheme, customThemesSettings);
 
             if(applyCustomFontFamily) {
                 this.bodyClassBatcher.add("pageShadowCustomFontFamily");
