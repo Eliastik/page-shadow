@@ -93,7 +93,7 @@ const timerPreApply = new SafeTimer(async() => {
 // Message/response handling
 browser.runtime.onMessage.addListener(async(message) => {
     if(message && message.type == "preApplySettings") {
-        settings = message.settings;
+        settings = message.data;
         timerPreApply.start();
     } else if(message && message.type == "websiteUrlUpdated") { // Execute when the page URL changes in Single Page Applications
         const currentURL = getCurrentURL();
