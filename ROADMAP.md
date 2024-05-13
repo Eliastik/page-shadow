@@ -102,6 +102,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [x] Limit flashing when opening a website and detecting colored elements?
     * [x] Experimental - Test needed. Sometimes the "preApplySettings" message is randomly not received
+    * [x] Not working with custom themes - fixed: cache custom themes settings
 * [x] Add border radius to select/inputs
 * [x] Merge utils/filterProcessor.js and FilterProcessor class
 * [x] Auto cloud saving/backup: don't save the date when an error occurred
