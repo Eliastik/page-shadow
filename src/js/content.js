@@ -62,6 +62,10 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
  * Execute to pre-apply settings when a page is loaded before full settings are loaded. Limit flash effect.
  */
 function preApplyContrast(data, contentProcessor) {
+    if (!data.enabled) {
+        return true;
+    }
+
     if(document.body && document.getElementsByTagName("html")[0] && !contentProcessor.started) {
         contentProcessor.setupClassBatchers();
         contentProcessor.applyContrastPage(true, data.settings.pageShadowEnabled, data.settings.theme, "false", "false", data.customThemes);
