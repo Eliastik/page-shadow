@@ -177,9 +177,9 @@ function commentAllLines(string) {
     return res.join("\n");
 }
 
-// Function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not
-async function pageShadowAllowed(url) {
-    const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]);
+/** Function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not */
+async function pageShadowAllowed(url, settingsCache) {
+    const result = settingsCache || await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]);
 
     if(result.globallyEnable !== "false") {
         let forbiddenWebsites = [];

@@ -366,12 +366,18 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
     browser.runtime.onMessage.addListener(async (message, sender) => {
         if (message && message.type === "ready") {
             const tabId = sender.tab.id;
+            const url = sender.url;
             const settingsCache = new SettingsCache();
             const presetsCache = new PresetCache();
 
             const data = {
-                settings: await getSettings(sender.url, false, settingsCache.data, presetsCache.data),
-                customThemes: settingsCache.customThemes
+                settings: await getSettings(url, false, settingsCache.data, presetsCache.data),
+                customThemes: settingsCache.customThemes,
+                enabled: await pageShadowAllowed(url, {
+                    sitesInterditPageShadow: settingsCache.disabledWebsites,
+                    whiteList: settingsCache.isWhiteList,
+                    globallyEnable: settingsCache.data.globallyEnable
+                })
             };
 
             browser.tabs.sendMessage(tabId, { type: "preApplySettings", data });
@@ -416,7 +422,11 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 const pageURL = normalizeURL(sender.url);
 
                 if(message.type == "isEnabledForThisPage" || message.type == "applySettingsChanged") {
-                    pageShadowAllowed(tabURL).then(async(enabled) => {
+                    pageShadowAllowed(tabURL, {
+                        sitesInterditPageShadow: settingsCache.disabledWebsites,
+                        whiteList: settingsCache.isWhiteList,
+                        globallyEnable: settingsCache.data.globallyEnable
+                    }).then(async(enabled) => {
                         const settings = await getSettings(tabURL, true);
                         resolve({ type: message.type + "Response", enabled: enabled, settings: settings });
                     });
