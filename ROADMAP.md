@@ -96,7 +96,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Minor) User bug: button to validate the hour of auto enable/disable (popup) for the extension is not displayed and it's not possible to scroll to access it (only on Firefox)
 * [x] (Minor) Page Shadow filters: seem to flood HEAD request
 
-### Next release
+### Next release (2.10.4)
 
 ### Planed
 
@@ -155,6 +155,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Known issues/bugs
 
+* [ ] (Minor) Transition background color (background white) blink when Increase page contrast is enabled
+* [ ] (Medium) Website: webdeveloper.beehiiv.com/p/build-react-400-lines-code - text color not applied when Increase page contrast is enabled
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
 * [ ] (Minor) Bug with error in filters: open errors from a built-in filter, then the errors from custom filter: the window will be blank (random)
