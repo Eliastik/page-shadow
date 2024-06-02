@@ -126,6 +126,7 @@ select {
 }
 #previsualisationDiv {
     font-size: 10pt;
+    border-radius: 8px;
 }
 #previsualisationDiv a {
     transition: all 0s;
