@@ -61,7 +61,7 @@ async function translateContent() {
     await checkCurrentPopupTheme();
     if(checkContrastMode) checkContrastMode(false);
     await loadPresetSelect("loadPresetSelect", i18next);
-    checkPresetAutoEnabled(await getCurrentURL());
+    await checkPresetAutoEnabled(await getCurrentURL());
     $("#loadPresetSelect").val(selectedPreset).trigger("change");
     $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));
 }
