@@ -2,7 +2,24 @@
 
 ## Changelog:
 
-## Version 2.10.3 (3/5/2023) :
+### Version 2.10.4 (6/9/2024) :
+
+* Addition of a new popup theme: the "Compact" theme. As its name suggests, the elements of this theme have been optimized to reduce the height of the Page Shadow popup;
+* The "Modern" theme has also been optimized by modifying the "Apply settings in real time" option, which takes up less space;
+* The extension's overall interface has been modified, with most elements rounded off;
+* Improved performance when opening a new page using the "Increase contrast" feature: previously, a flash could sometimes be observed while the feature was being applied to the new page. Thanks to performance optimizations, this flash has been completely eliminated;
+* The functionality for archiving settings in the Cloud has been improved, and a number of bugs have been corrected:
+    * Previously, it was impossible to backup your settings if they were too large. Now, the extension does its best to cut out large settings that didn't meet the quota imposed by web browsers;
+    * An alert is now displayed in the extension popup if the last archiving of settings in the Cloud was not successful, indicating how to remedy the situation.
+* Experimental addition of automatic detection of dark images for Invert colors > Selective. By default, however, this feature is not enabled. It can be enabled in the extension's advanced options;
+* Bug fixes:
+    * Fixed a bug where some websites would reset the HTML element's style attribute, resulting in the Increase contrast feature being applied theme 1 instead of the user-selected theme;
+    * Fixed a bug where filters could not be applied to the body element;
+    * Fixed an icon in the “Missing permission” popup;
+    * Fixed "Attenuate colors" feature help in "Classic" popup mode;
+    * Other minor corrections and code improvements, dependency updates
+
+### Version 2.10.3 (3/5/2023) :
 
 * Major improvement of the display when the function Preserve element colors is enabled with the function Increase contrast: display problems could occur, they have been fixed. The Color preservation function is now enabled by default for new installations;
 * In case some important permissions for the extension are not allowed, an alert is now displayed on the popup suggesting to allow them;
@@ -352,7 +369,24 @@
 
 ## Journal des changements :
 
-## Version 2.10.3 (05/03/2023) :
+### Version 2.10.4 (09/06/2024) :
+
+* Ajout d'un nouveau thème de popup : le thème "Compact". Comme son nom l'indique, les éléments de ce thème ont été optimisés pour réduire la hauteur de la popup de Page Shadow ;
+* Le thème "Moderne" a été également optimisé par la modification de l'option "Appliquer les paramètres en temps réel" qui prend moins de place ;
+* L'interface globable de l'extension a été modifiée, la plupart des éléments ont été arrondis ;
+* Amélioration des performances lors de l'ouverture d'une nouvelle page avec l'utilisation de la fonctionnalité "Augmenter le contraste" : auparavant, un flash pouvait être parfois observé le temps que la fonctionnalité soit appliquée sur la nouvelle page. Grâce à des optimisations de performances, ce flash a complètement été enlevé ;
+* La fonctionnalité d'archivage des paramètres dans le Cloud a été améliorée et des bugs ont été corrigés :
+    * Auparavant, la sauvegarde était impossible si certains de vos paramètres étaient trop volumineux. Désormais, l'extension fait de son mieux pour découper les paramètres volumineux qui ne respectaient pas le quota imposé par les navigateurs web ;
+    * Une alerte s'affiche désormais dans la popup de l'extension si le dernier archivage dans le Cloud des paramètres ne s'est pas passé correctement, et qui indique comment remédier à la situation
+* Ajout expérimentale d'une détection automatique des images sombres pour la fonctionnalité Inverser les couleurs > Sélectif. Par défaut, cette fonctionnalité n'est cependant pas activée. Elle peut être activée dans les options avancées de l'extension ;
+* Correction de bugs :
+    * Correction d'un bug où certains sites réinitialisaient l'attribut style de l'élément HTML, de ce fait la fonctionnalité Augmenter le contraste se voyait appliquer le thème 1 au lieu du thème choisi par l'utilisateur ;
+    * Correction d'un bug où les filtres ne pouvaient pas être appliqués sur l'élément body ;
+    * Correction d'une icône dans la popup "Permission manquante" ;
+    * Correction de l'aide de la fonctionnalité "Atténuer les couleurs" en mode de popup "Classique" ;
+    * Autres corrections mineures et améliorations du code, mise à jour des dépendances
+
+### Version 2.10.3 (05/03/2023) :
 
 * Amélioration majeure de l'affichage lorsque la fonction Conserver les couleurs des éléments est activée avec la fonction Augmenter le contraste : des problèmes d'affichage pouvaient se produire, ils ont été corrigés. La fonction de préservation des couleurs est donc activée par défaut pour les nouvelles installations ;
 * Dans le cas où certaines permissions importantes pour le fonctionnement de l'extension ne sont pas autorisées, une alerte s'affiche désormais sur la popup proposant de les autoriser ;
