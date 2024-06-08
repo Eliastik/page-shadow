@@ -120,6 +120,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Medium) Auto cloud saving/backup: fails when there is a long blacklist/whitelist (maybe also for the list of websites for presets?)
 * [x] (Very minor) Some websites causes an error in the console "e.parentNode.closest is not a function", without visible impacts
 * [x] (Medium) Filters for body element not working, add possibility to invert body background image?
+* [x] (Medium) Website: webdeveloper.beehiiv.com/p/build-react-400-lines-code - text color not applied when Increase page contrast is enabled -> fixed "forceDisableDefaultFontColor" filter
 
 #### Release - Go (version 2.11)
 
@@ -156,7 +157,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Known issues/bugs
 
 * [ ] (Minor) Transition background color (background white) blink when Increase page contrast is enabled
-* [ ] (Medium) Website: webdeveloper.beehiiv.com/p/build-react-400-lines-code - text color not applied when Increase page contrast is enabled
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
 * [ ] (Minor) Bug with error in filters: open errors from a built-in filter, then the errors from custom filter: the window will be blank (random)

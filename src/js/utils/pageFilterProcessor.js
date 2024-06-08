@@ -158,21 +158,21 @@ export default class PageFilterProcessor {
                             break;
                         case "forceDisableDefaultBackgroundColor": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultBackgroundColor")) {
-                                addNewStyleAttribute(element, "background-color: none !important");
+                                addNewStyleAttribute(element, "background-color: unset !important");
                                 addClass(element, "pageShadowforceDisableDefaultBackgroundColor");
                             }
                             break;
                         }
                         case "forceDisableDefaultBackground": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultBackground")) {
-                                addNewStyleAttribute(element, "background: none !important");
+                                addNewStyleAttribute(element, "background: unset !important");
                                 addClass(element, "pageShadowforceDisableDefaultBackground");
                             }
                             break;
                         }
                         case "forceDisableDefaultFontColor": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultFontColor")) {
-                                addNewStyleAttribute(element, "color: none !important");
+                                addNewStyleAttribute(element, "color: unset !important");
                                 addClass(element, "pageShadowforceDisableDefaultFontColor");
                             }
                             break;

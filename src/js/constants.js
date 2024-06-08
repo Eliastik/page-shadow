@@ -156,7 +156,7 @@ const defaultFilters = {
     "enableAutoUpdate": true,
     "lastFailedUpdate": -1
 };
-const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.10.3.php";
+const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.10.4.php";
 const regexpDetectionPattern = /^((.*)\/(?:[^\\]|\\.)*?\/)(\|)/;
 const regexpDetectionPatternHighlight = /^(\/(?:[^\\]|\\.)*?\/)(\|)/;
 const opacityDetectedAsTransparentThresholdDefault = 0.1;
