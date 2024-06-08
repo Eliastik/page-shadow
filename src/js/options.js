@@ -818,7 +818,7 @@ async function displayInfosFilter(idFilter) {
                 }
             }
 
-            $("#buttonSeeErrorsFilter").on("click", async() => {
+            $("#buttonSeeErrorsFilter").off("click").on("click", async() => {
                 const resultErrors = await sendMessageWithPromise({ "type": "getRulesErrors", "idFilter": idFilter }, "getRulesErrorsResponse");
 
                 if(resultErrors) {

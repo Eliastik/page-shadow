@@ -881,3 +881,6 @@ input, select, textarea {
     padding-bottom: 0 !important;
     margin-bottom: 5px !important;
 }
+#buttonSeeErrorsFilter, #buttonSeeErrorsFilter i {
+    cursor: pointer !important;
+}
