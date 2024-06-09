@@ -131,6 +131,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] Publish Manifestv3 for Firefox
     * [ ] Fix Cloud backup on Firefox ; all other feature works
 * [ ] Fix dark image detection (using contours detection?) + enable by default?
+* [ ] Reduce delay applying reduce brightness/blue light reduction filter
 
 #### Bugs to fix
 
