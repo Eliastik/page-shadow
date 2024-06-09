@@ -21,7 +21,7 @@ import { addClass, addNewStyleAttribute } from "./util.js";
 /**
  * Class used to process the filter rules
  */
-export default class FilterProcessor {
+export default class PageFilterProcessor {
     pageAnalyzer;
 
     constructor(pageAnalyzer) {
@@ -37,7 +37,7 @@ export default class FilterProcessor {
             let elements;
 
             try {
-                elements = (element ? [element] : document.body.querySelectorAll(selector));
+                elements = (element ? [element] : (selector && selector.trim() === "body" ? [document.body] : document.body.querySelectorAll(selector)));
             } catch(e) {
                 continue; // Continue to next filter if selector is not valid
             }
@@ -158,21 +158,21 @@ export default class FilterProcessor {
                             break;
                         case "forceDisableDefaultBackgroundColor": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultBackgroundColor")) {
-                                addNewStyleAttribute(element, "background-color: none !important");
+                                addNewStyleAttribute(element, "background-color: unset !important");
                                 addClass(element, "pageShadowforceDisableDefaultBackgroundColor");
                             }
                             break;
                         }
                         case "forceDisableDefaultBackground": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultBackground")) {
-                                addNewStyleAttribute(element, "background: none !important");
+                                addNewStyleAttribute(element, "background: unset !important");
                                 addClass(element, "pageShadowforceDisableDefaultBackground");
                             }
                             break;
                         }
                         case "forceDisableDefaultFontColor": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultFontColor")) {
-                                addNewStyleAttribute(element, "color: none !important");
+                                addNewStyleAttribute(element, "color: unset !important");
                                 addClass(element, "pageShadowforceDisableDefaultFontColor");
                             }
                             break;
@@ -237,6 +237,13 @@ export default class FilterProcessor {
                 if(type == "useBackgroundDetectionAlreadyProcessedNodes") websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes = true;
                 if(type == "enableBrightColorDetectionSubelement") websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement = true;
                 if(type == "disableBrightColorDetectionSubelement") websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement = false;
+                if(type == "enableObserveDocumentChange") websiteSpecialFiltersConfig.observeDocumentChange = true;
+                if(type == "disableObserveDocumentChange") websiteSpecialFiltersConfig.observeDocumentChange = false;
+                if(type == "observeDocumentChangeTimerInterval") websiteSpecialFiltersConfig.observeDocumentChangeTimerInterval = rule.filter;
+                if(type == "enableDarkImageDetection") websiteSpecialFiltersConfig.enableDarkImageDetection = true;
+                if(type == "disableDarkImageDetection") websiteSpecialFiltersConfig.enableDarkImageDetection = false;
+                if(type == "darkImageDetectionHslTreshold") websiteSpecialFiltersConfig.darkImageDetectionHslTreshold = rule.filter;
+                if(type == "darkImageDetectionDarkPixelCountTreshold") websiteSpecialFiltersConfig.darkImageDetectionDarkPixelCountTreshold = rule.filter;
             });
         });
     }

@@ -119,12 +119,14 @@ select {
     border: 0;
     width: 100%;
     height: 350px;
+    border-radius: 8px;
 }
 .form-control {
     background-color: white;
 }
 #previsualisationDiv {
     font-size: 10pt;
+    border-radius: 8px;
 }
 #previsualisationDiv a {
     transition: all 0s;
@@ -586,17 +588,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 }
 .dropdown-menu-top {
     top: -175%;
-}
-.container.popup #loadPresetSelect {
-    width: 100%;
-    position: relative;
-    top: 1px;
-    height: 24px;
-    border-radius: 8px 0 0 8px;
-}
-.container.popup .well {
-    padding-bottom: 0 !important;
-    margin-bottom: 5px !important;
+    border-radius: 6px;
 }
 #sliderBlueLightReduction {
     width: 185px;
@@ -658,6 +650,11 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     width: 112px;
 }
 
+.popup-options-compact-modern > div {
+    max-width: 110px;
+    width: 110px;
+}
+
 .popup-option-container-modern {
     padding: 8px;
     font-size: 11.25px;
@@ -666,6 +663,10 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 
 .popup-option-container-modern i {
     font-size: 18px;
+}
+
+.popup-options-compact-modern .popup-option-container-modern {
+    padding: 5px;
 }
 
 .popup-option-modern {
@@ -686,6 +687,12 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     cursor: pointer;
 }
 
+.popup-options-compact-modern .popup-option-modern {
+    height: 64px;
+    flex-direction: row;
+    overflow-wrap: break-word;
+}
+
 .popup-option-modern:hover, .popup-option-modern-complement:hover {
     background-color: #E0E0E0;
 }
@@ -697,7 +704,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 .popup-option-container-modern.active > div {
     background-color: #03A9F4;
     border-color: #039BE5;
-    color: #181717;
+    color: #F5F5F5;
 }
 
 .popup-option-container-modern.active > div:hover {
@@ -714,6 +721,11 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     width: 334px;
     margin-left: 8px;
     margin-top: -8px;
+    z-index: 1000;
+}
+
+.popup-options-compact-modern .popup-advanced-option-wrapper {
+    padding-top: 3px !important;
 }
 
 .popup-options-modern .popup-advanced-option {
@@ -736,6 +748,10 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     clear: both;
 }
 
+.popup-options-compact-modern .popup-advanced-option:before {
+    top: 3px;
+}
+
 .popup-options-modern #themeDiv:before, .popup-options-modern #brightnessSettings:before {
     left: 39px;
     right: none !important;
@@ -743,6 +759,11 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 
 .popup-options-modern #themeDiv:before, .popup-options-modern #attenuateColorsDiv:before {
     right: 39px;
+    right: none !important;
+}
+
+.popup-options-compact-modern #themeDiv:before, .popup-options-compact-modern #brightnessSettings:before {
+    left: 42px;
     right: none !important;
 }
 
@@ -776,6 +797,16 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 .popup-option-container-modern.without-complement .popup-option-modern {
     border-radius: 8px !important;
     height: 107px;
+}
+
+.popup-options-compact-modern .popup-option-container-modern.without-complement .popup-option-modern {
+    height: 78px;
+}
+
+.popup-options-modern #liveSettingsContainer {
+    width: 320px !important;
+    max-width: 100%;
+    padding-top: 8px;
 }
 
 .btn.disabled, .btn[disabled], fieldset[disabled] .btn {
@@ -824,4 +855,32 @@ body.force-scroll #popup-wrapper, body.force-scroll .modal {
 }
 body.force-scroll .modal {
     height: 100%;
+}
+input, select, textarea {
+    border-radius: 8px !important;
+}
+.btn:not(.btn-preset) {
+    border-radius: 6px !important;
+}
+#filtersList .list-group-item:first-child {
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+}
+#filtersList .list-group-item:last-child {
+    border-bottom-left-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+}
+.container.popup #loadPresetSelect {
+    width: 100%;
+    position: relative;
+    top: 1px;
+    height: 24px;
+    border-radius: 8px 0 0 8px !important;
+}
+.container.popup .well {
+    padding-bottom: 0 !important;
+    margin-bottom: 5px !important;
+}
+#buttonSeeErrorsFilter, #buttonSeeErrorsFilter i {
+    cursor: pointer !important;
 }

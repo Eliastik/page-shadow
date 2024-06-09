@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { extensionVersion, defaultSettings, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingNames, defaultCustomThemes, settingsToLoad } from "./constants.js";
+import { extensionVersion, defaultSettings, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingNames, defaultCustomThemes, settingsToLoad, customThemesKey, disabledWebsitesKey, whitelistKey } from "./constants.js";
 import { sendMessageWithPromise } from "./utils/util.js";
 import browser from "webextension-polyfill";
 
@@ -29,7 +29,8 @@ function setSettingItem(name, value) {
 
         // If we update a website setting (increase contrast, invert colors, etc.)
         // The cache is updated
-        if(settingsToLoad.includes(name)) {
+        if(settingsToLoad.includes(name) || name === customThemesKey
+            || name === disabledWebsitesKey || name === whitelistKey) {
             sendMessageWithPromise({ "type": "updateSettingsCache" });
         }
 
