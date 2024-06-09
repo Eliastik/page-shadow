@@ -16,14 +16,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme } from "./utils/util.js";
+import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme, areAllCSSVariablesDefined } from "./utils/util.js";
 import { colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, ignoredElementsContentScript } from "./constants.js";
 import SafeTimer from "./utils/safeTimer.js";
 import MutationObserverWrapper from "./utils/mutationObserver.js";
 import ClassBatcher from "./utils/classBatcher.js";
 import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
 import PageAnalyzer from "./utils/pageAnalyzer.js";
-import FilterProcessor from "./utils/filterProcessor.js";
+import PageFilterProcessor from "./utils/pageFilterProcessor.js";
 
 /**
  * Main class used by the content script
@@ -71,6 +71,7 @@ export default class ContentProcessor {
 
     // Timers
     timerObserveBodyChange = null;
+    timerObserveDocumentElementChange = null;
     applyWhenBodyIsAvailableTimer = null;
 
     // Batcher
@@ -90,14 +91,21 @@ export default class ContentProcessor {
         this.websiteSpecialFiltersConfig = await loadWebsiteSpecialFiltersConfig();
     }
 
-    async contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, brightColorPreservation,
-        attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors) {
-        if(pageShadowEnabled != undefined && pageShadowEnabled == "true") {
-            if(theme != undefined) {
-                this.resetContrastPage(theme, disableImgBgColor, brightColorPreservation);
+    setupClassBatchers() {
+        this.bodyClassBatcher = new ClassBatcher(document.body);
+        this.bodyClassBatcherRemover = new ClassBatcher(document.body);
+        this.htmlClassBatcher = new ClassBatcher(document.getElementsByTagName("html")[0]);
+    }
 
-                if(theme.startsWith("custom")) {
-                    await this.customThemeApply(theme);
+    async applyContrastPage(init, pageShadowEnabled, theme, disableImgBgColor, brightColorPreservation, customThemesSettings) {
+        if (pageShadowEnabled != undefined && pageShadowEnabled == "true") {
+            if (theme != undefined) {
+                if(!init) {
+                    this.resetContrastPage(theme, disableImgBgColor, brightColorPreservation);
+                }
+
+                if (theme.startsWith("custom")) {
+                    await this.customThemeApply(theme, customThemesSettings);
                     this.htmlClassBatcher.add("pageShadowBackgroundCustom");
                 } else {
                     applyContrastPageVariablesWithTheme(theme);
@@ -111,16 +119,28 @@ export default class ContentProcessor {
                 this.resetContrastPage(1, disableImgBgColor, brightColorPreservation);
             }
 
-            if(disableImgBgColor != undefined && disableImgBgColor == "true") {
+            if (disableImgBgColor != undefined && disableImgBgColor == "true") {
                 this.bodyClassBatcher.add("pageShadowDisableImgBgColor");
             }
 
-            if(brightColorPreservation != undefined && brightColorPreservation == "true") {
+            if (brightColorPreservation != undefined && brightColorPreservation == "true") {
                 this.bodyClassBatcher.add("pageShadowPreserveBrightColor");
             }
         } else {
-            this.resetContrastPage();
+            if(!init) {
+                this.resetContrastPage();
+            }
         }
+
+        if(init) {
+            this.bodyClassBatcher.applyAdd();
+            this.htmlClassBatcher.applyAdd();
+        }
+    }
+
+    async contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, brightColorPreservation,
+        attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors) {
+        await this.applyContrastPage(false, pageShadowEnabled, theme, disableImgBgColor, brightColorPreservation);
 
         this.invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert,
             attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors);
@@ -151,9 +171,9 @@ export default class ContentProcessor {
         removeBatcherHTML.applyRemove();
     }
 
-    async customThemeApply(theme) {
+    async customThemeApply(theme, customThemesSettings) {
         if(theme != undefined && typeof(theme) == "string" && theme.startsWith("custom")) {
-            const applyCustomFontFamily = await customTheme(theme.replace("custom", ""), false, this.lnkCustomTheme);
+            const applyCustomFontFamily = await customTheme(theme.replace("custom", ""), false, this.lnkCustomTheme, customThemesSettings);
 
             if(applyCustomFontFamily) {
                 this.bodyClassBatcher.add("pageShadowCustomFontFamily");
@@ -691,9 +711,7 @@ export default class ContentProcessor {
                     if(!this.oldBody) this.oldBody = document.body;
 
                     if(document.body != this.oldBody) {
-                        this.bodyClassBatcher = new ClassBatcher(document.body);
-                        this.bodyClassBatcherRemover = new ClassBatcher(document.body);
-                        this.htmlClassBatcher = new ClassBatcher(document.getElementsByTagName("html")[0]);
+                        this.setupClassBatchers();
 
                         if(this.precUrl == getCurrentURL()) {
                             this.main(this.TYPE_RESET, this.TYPE_ALL);
@@ -706,10 +724,29 @@ export default class ContentProcessor {
 
                     this.oldBody = document.body;
                 }
+
                 this.timerObserveBodyChange.start(this.websiteSpecialFiltersConfig.observeBodyChangeTimerInterval);
             });
 
             this.timerObserveBodyChange.start(this.websiteSpecialFiltersConfig.observeBodyChangeTimerInterval);
+        }
+    }
+
+    observeDocumentElementChange() {
+        if(this.websiteSpecialFiltersConfig.observeDocumentChange) {
+            if(this.timerObserveDocumentElementChange) this.timerObserveDocumentElementChange.clear();
+
+            this.timerObserveDocumentElementChange = new SafeTimer(async () => {
+                const settings = await getSettings(getCurrentURL());
+
+                if(!areAllCSSVariablesDefined(settings.pageShadowEnabled, settings.colorInvert)) {
+                    this.main(this.TYPE_RESET, this.TYPE_ALL);
+                }
+
+                this.timerObserveDocumentElementChange.start(this.websiteSpecialFiltersConfig.observeDocumentChangeTimerInterval);
+            });
+
+            this.timerObserveDocumentElementChange.start(this.websiteSpecialFiltersConfig.observeDocumentChangeTimerInterval);
         }
     }
 
@@ -851,7 +888,7 @@ export default class ContentProcessor {
 
         this.applyWhenBodyIsAvailableTimer = new ApplyBodyAvailable(async() => {
             this.pageAnalyzer = this.pageAnalyzer || new PageAnalyzer(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
-            this.filterProcessor = this.filterProcessor || new FilterProcessor(this.pageAnalyzer);
+            this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer);
 
             this.bodyClassBatcher = this.bodyClassBatcher || new ClassBatcher(document.body);
             this.bodyClassBatcherRemover = this.bodyClassBatcherRemover || new ClassBatcher(document.body);
@@ -901,6 +938,7 @@ export default class ContentProcessor {
                     this.filterProcessor.processSpecialRules(specialRules.filters, this.websiteSpecialFiltersConfig);
 
                     this.observeBodyChange();
+                    this.observeDocumentElementChange();
 
                     if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true" || settings.attenuateColors == "true") {
                         if(type == this.TYPE_START || !this.pageAnalyzer.backgroundDetected) {

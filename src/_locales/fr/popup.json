@@ -24,13 +24,13 @@
         "bgColorInvert": "Arrière-plans",
         "videoInvert": "Vidéos",
         "selectiveInvert": "Sélectif",
-        "selectiveInvertHelp": "Inverse automatiquement certains éléments (comme les logos) pour qu'ils s'affichent correctement sur un thème sombre de la fonction Augmenter le contraste de la page. Se base sur la fonctionnalité des filtres.",
+        "selectiveInvertHelp": "Inverse automatiquement certains éléments (comme les logos) pour qu'ils s'affichent correctement sur un thème sombre de la fonction Augmenter le contraste. Se base sur la fonctionnalité des filtres ainsi qu'une détection automatique des images sombres ou contenant un logo/texte.",
         "tileEntirePageInvert": "Inverse les couleurs de la page entière.",
         "brightness": "Baisser la luminosité",
         "titleBrightness": "Baisse la luminosité de la page. C'est vous qui choisissez le pourcentage de baisse de luminosité de la page.",
         "percentage": "Pourcentage de baisse de luminosité :",
         "nightMode": "Mode nuit",
-        "autoEnable": "Activer/désactiver auto.",
+        "autoEnable": "Activer / désactiver auto.",
         "titleAutoEnable": "Activer ou désactiver globalement Page Shadow de manière automatique en fonction de l'heure. Sélectionnez l'icône roue dentée afin de régler cette fonction.",
         "liveSettings": "Appliquer les paramètres en temps réel",
         "titleLiveSettings": "Peut réduire les performances du navigateur.",
@@ -120,5 +120,9 @@
         "messageMin": "Si vous n'activez pas cette autorisation, vous pourrez utiliser l'extension. Cependant, pour que l'extension puisse s'activer sur les différents sites web, vous devrez ouvrir à chaque fois le menu de l'extension.",
         "enable": "Activer l'autorisation",
         "disable": "Ne plus afficher"
+    },
+    "modalAutoBackupCloudLastFailedMessage": {
+        "title": "Erreur lors la sauvegarde automatique dans le Cloud",
+        "message": "Une erreur est survenue lors de la dernière sauvegarde automatique dans le Cloud de vos paramètres. Vous pouvez essayer d'effectuer la sauvegarde manuellement dans les paramètres avancés. Si le problème persiste, vérifiez que vos paramètres ne dépassent pas le quota maximal autorisé par cette méthode de sauvegarde, puis réessayez. Vous pouvez aussi effectuer une sauvegarde manuelle en local."
     }
 }

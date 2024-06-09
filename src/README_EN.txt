@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.10.3 (3/5/2023)
+* Latest version: 2.10.4 (6/9/2024)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -34,7 +34,27 @@ Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
 
-## Version 2.10.3 (3/5/2023) :
+### Version 2.10.4 (6/9/2024) :
+
+* Addition of a new popup theme: the "Compact" theme. As its name suggests, the elements of this theme have been optimized to reduce the height of the Page Shadow popup;
+* The "Modern" theme has also been optimized by modifying the "Apply settings in real time" option, which takes up less space;
+* The extension's overall interface has been modified, with most elements rounded off;
+* Improved performance when opening a new page using the "Increase contrast" feature: previously, a flash could sometimes be observed while the feature was being applied to the new page. Thanks to performance optimizations, this flash has been completely eliminated;
+* The functionality for archiving settings in the Cloud has been improved, and a number of bugs have been corrected:
+    * Previously, it was impossible to backup your settings if they were too large. Now, the extension does its best to cut out large settings that didn't meet the quota imposed by web browsers;
+    * An alert is now displayed in the extension popup if the last archiving of settings in the Cloud was not successful, indicating how to remedy the situation.
+* Experimental addition of automatic detection of dark images for Invert colors > Selective. By default, however, this feature is not enabled. It can be enabled in the extension's advanced options;
+* Bug fixes:
+    * Fixed a bug where some websites would reset the HTML element's style attribute, resulting in the Increase contrast feature being applied theme 1 instead of the user-selected theme;
+    * Fixed a bug where filters could not be applied to the body element;
+    * Fixed a bug where transitions flashed white when applying the Increase contrast feature on some websites;
+    * Fixed forceDisableDefaultBackgroundColor, forceDisableDefaultBackground and forceDisableDefaultFontColor filters;
+    * Fixed a bug with the display of filter errors in advanced settings;
+    * Fixed an icon in the “Missing permission” popup;
+    * Fixed "Attenuate colors" feature help in "Classic" popup mode;
+    * Other minor corrections and code improvements, dependency updates
+
+### Version 2.10.3 (3/5/2023) :
 
 * Major improvement of the display when the function Preserve element colors is enabled with the function Increase contrast: display problems could occur, they have been fixed. The Color preservation function is now enabled by default for new installations;
 * In case some important permissions for the extension are not allowed, an alert is now displayed on the popup suggesting to allow them;
@@ -429,7 +449,7 @@ Page Shadow is distributed under GPL-3.0 license (see LICENCE.txt file)
 
 #### License notice
 
-Copyright (C) 2015-2023 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

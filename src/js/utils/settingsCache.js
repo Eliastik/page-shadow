@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { settingsToLoad } from "../constants.js";
+import { settingsToLoad, customThemesKey, disabledWebsitesKey, whitelistKey } from "../constants.js";
 import browser from "webextension-polyfill";
 
 /**
@@ -24,7 +24,10 @@ import browser from "webextension-polyfill";
  */
 export default class SettingsCache {
     data = {};
-    static instance = null;
+    customThemes = {};
+    disabledWebsites = "";
+    isWhiteList = "false";
+    isInit = true;
 
     constructor() { // Singleton
         if(!SettingsCache.instance) {
@@ -37,9 +40,16 @@ export default class SettingsCache {
 
     async updateCache() {
         this.data = await browser.storage.local.get(settingsToLoad);
+        this.customThemes = await browser.storage.local.get(customThemesKey);
+        this.disabledWebsites = (await browser.storage.local.get(disabledWebsitesKey))[disabledWebsitesKey];
+        this.isWhiteList = (await browser.storage.local.get(whitelistKey))[whitelistKey];
+        this.isInit = false;
     }
 
     resetCache() {
-        this.data = [];
+        this.data = {};
+        this.customThemes = {};
+        this.disabledWebsites = "";
+        this.isWhiteList = "false";
     }
 }

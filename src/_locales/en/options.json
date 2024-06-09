@@ -54,6 +54,7 @@
         "popupThemeSwitch": "Switches and icons",
         "popupThemeClassic": "Checkboxes (classic)",
         "popupThemeModern": "Modern (by default)",
+        "popupThemeCompactModern": "Compact modern",
         "enableRightClickMenu": "Enable right-click menu:"
     },
     "advancedOptions": {
@@ -77,6 +78,8 @@
             "delayApplyMutationObserversSafeTimer": "Delay before reapplying Page Shadow settings after detection by Mutation Observers",
             "observeBodyChange": "Observe body element state change",
             "observeBodyChangeTimerInterval": "Interval for the observation of body element state change",
+            "observeDocumentChange": "Observe document (HTML) element state change",
+            "observeDocumentChangeTimerInterval": "Interval for the observation of document (HTML) element state change",
             "enableBrightColorDetection": "Enable detection of bright color",
             "brightColorLightnessTresholdMin": "Minimum lightness treshold for bright color detection",
             "brightColorLightnessTresholdMax": "Maximum lightness treshold for bright color detection",
@@ -85,6 +88,9 @@
             "backgroundDetectionStartDelay": "Delay before applying background detection",
             "useBackgroundDetectionAlreadyProcessedNodes": "Use an already processed elements list for background detection",
             "enableBrightColorDetectionSubelement": "Process the sub-elements of the elements with bright colors",
+            "enableDarkImageDetection": "Enable detection of images/backgrounds with dark colors",
+            "darkImageDetectionHslTreshold": "Threshold for detecting an image pixel as dark",
+            "darkImageDetectionDarkPixelCountTreshold": "Percentage of pixels detected as dark to activate selective image inversion",
             "help": {
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
                 "autoDetectTransparentBackgroundEnabled": "Enable detection of transparent backgrounds. Disabling this feature can cause many display issues.",
@@ -103,14 +109,19 @@
                 "delayApplyMutationObserversSafeTimer": "Applies a delay between Mutation Observers detecting a page change and reapplying Page Shadow settings (increase contrast, invert colors, decrease brightness, or blue light reduction filter). Increasing this timeout may fix issues on some websites.",
                 "observeBodyChange": "Observes the state change of the body element (deletion then creation of a new body element). Fixes issues with some websites (like Github) or SPA applications (Single Page Application). Disabling this option may improve performance.",
                 "observeBodyChangeTimerInterval": "Observing the state change of the body element relies on a timer that runs at a given interval (instead of using Mutation Observers). The interval is in ms.",
+                "observeDocumentChange": "Observes the change of state of the document (HTML element), and more specifically of the style attribute. Fixes issues with some websites that overwrite the style attribute value used to manage Page Shadow CSS variables. Disabling this option can improve performance.",
+                "observeDocumentChangeTimerInterval": "Observing the state change of the document (HTML) element relies on a timer that runs at a given interval (instead of using Mutation Observers). The interval is in ms.",
                 "enableBrightColorDetection": "Detect element with bright color, and if enabled by the user, disable the Increase contrast function for these elements. Disabling this option may improve performance.",
-                "brightColorLightnessTresholdMin": "If an element has a lightness value that is above this treshold but lower than the maximum, the element will be detected as bright color element.",
-                "brightColorLightnessTresholdMax": "If an element has a lightness value that is lower than this treshold but above the minimum, the element will be detected as bright color element.",
+                "brightColorLightnessTresholdMin": "If an element has a lightness value that is above this treshold but lower than the maximum, the element will be detected as bright color element. The maximum value is 1, the minimum is 0 (percentage).",
+                "brightColorLightnessTresholdMax": "If an element has a lightness value that is lower than this treshold but above the minimum, the element will be detected as bright color element. The maximum value is 1, the minimum is 0 (percentage).",
                 "throttleBackgroundDetection": "Applies a delay to the detection of backgrounds on page load, which can improve performance on large pages.",
                 "throttleBackgroundDetectionElementsTreatedByCall": "Sets the number of elements processed by each loop call when background detection is throttled. A high value can impact performance.",
                 "backgroundDetectionStartDelay": "Apply a delay before applying background detection of the elements. By default 0 ms.",
                 "useBackgroundDetectionAlreadyProcessedNodes": "Use an already processed elements list for background detection to avoid re-processing elements. May increase performance but may increase memory usage.",
-                "enableBrightColorDetectionSubelement": "Enables processing of sub-elements of elements with bright colors. Disabling this option may potentially improve performance, but display problems may occur on some websites when using the feature Preserve element colors."
+                "enableBrightColorDetectionSubelement": "Enables processing of sub-elements of elements with bright colors. Disabling this option may potentially improve performance, but display problems may occur on some websites when using the feature Preserve element colors.",
+                "enableDarkImageDetection": "Enables detection of images/backgrounds with a large number of dark colors (e.g. text and logos), in order to invert their colors if the setting Invert colors > Selective is enabled by the user. Disabling this option improves performance.",
+                "darkImageDetectionHslTreshold": "If a pixel has a lightness value below this threshold, the pixel is considered dark. The maximum value is 1, the minimum is 0 (percentage).",
+                "darkImageDetectionDarkPixelCountTreshold": "If the number of pixels considered dark is greater than this percentage, the image will be inverted if the user enabled the setting Invert colors > Selective. The value is in decimal percentage (multiply by 100 to get the percentage) corresponding to the ratio of the number of pixels to the number of pixels considered dark."
             }
         },
         "saved": "Saved!"
@@ -142,6 +153,7 @@
             "changelogTitle": "Changelog",
             "infos": "Informations",
             "changelog": {
+                "2104": "<ul><li>Addition of a new popup theme: the \"Compact\" theme. As its name suggests, the elements of this theme have been optimized to reduce the height of the Page Shadow popup;</li><li>The \"Modern\" theme has also been optimized by modifying the \"Apply settings in real time\" option, which takes up less space;</li><li>The extension's overall interface has been modified, with most elements rounded off;</li><li>Improved performance when opening a new page using the \"Increase contrast\" feature: previously, a flash could sometimes be observed while the feature was being applied to the new page. Thanks to performance optimizations, this flash has been completely eliminated;</li><li>The functionality for archiving settings in the Cloud has been improved, and a number of bugs have been corrected (see README file);</li><li>Experimental addition of automatic detection of dark images for Invert colors > Selective. By default, however, this feature is not enabled. It can be enabled in the extension's advanced options;</li><li>Bug fixes (see README file).</li></ul>",
                 "2103": "<ul><li>Major improvement of the display when the function Preserve element colors is enabled with the function Increase contrast: display problems could occur, they have been fixed. The Color preservation function is now enabled by default for new installations;</li><li>In case some important permissions for the extension are not allowed, an alert is now displayed on the popup suggesting to allow them;</li><li>Small adjustments to the user interface: elements have been made more rounded, other adjustments have been made;</li><li>The warning that appears when exiting/refreshing the Advanced Settings page now only appears if unsaved changes have been made;</li><li>Changes in preparation for the release of the Manifestv3 API-based version for Firefox (this version still runs on Manifestv2 for this browser, the MV3-based version will be released later);</li><li>Bug fixes and technical improvements (see Readme file).</li></ul>",
                 "2102": "<ul><li>Migration to Manifest v3 API (Chrome/Edge/Opera versions only). The impacts on the features of Page Shadow are very minor (see Reame file);</li><li>Added Attenuate colors feature (replacing Attenuate image colors feature), which allows to attenuate the color of images/backgrounds/videos and colored elements;</li><li>Bug fixes (see Readme file)</li></ul>",
                 "2101": "<ul><li>Major performance optimization, which limits the flashes that appeared when navigating between pages or changing settings in real time;</li><li>Added \"Preserve element colors\" function (not enabled by default) to \"Increase contrast\" function. This function preserves the colors of the elements, but replaces colors very close to white or dark colors;</li><li>Improved user experience when \"Modern\" popup theme is enabled. This theme is now the default theme for new installations;</li><li>Minor improvements to the Advanced Settings interface: display of an icon on tabs if changes to settings have not been saved, display of a loading indicator when restoring settings archives;</li><li>Add the setting \"Enable right-click menu\" in General settings (enabled by default);</li><li>Bug fixes and technical improvements (see Readme file)</li></ul>",
@@ -166,6 +178,7 @@
                 "11": "<ul><li>Improved function \"Increase page contrast\"</li></ul>",
                 "1": "<ul><li>Initial version</li></ul>",
                 "versionNames": {
+                    "2104": "Verison 2.10.4 (6/9/2024)",
                     "2103": "Verison 2.10.3 (3/5/2023)",
                     "2102": "Verison 2.10.2 (11/1/2022)",
                     "2101": "Version 2.10.1 (9/25/2022)",
