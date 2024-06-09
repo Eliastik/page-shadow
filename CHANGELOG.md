@@ -15,6 +15,9 @@
 * Bug fixes:
     * Fixed a bug where some websites would reset the HTML element's style attribute, resulting in the Increase contrast feature being applied theme 1 instead of the user-selected theme;
     * Fixed a bug where filters could not be applied to the body element;
+    * Fixed a bug where transitions flashed white when applying the Increase contrast feature on some websites;
+    * Fixed forceDisableDefaultBackgroundColor, forceDisableDefaultBackground and forceDisableDefaultFontColor filters;
+    * Fixed a bug with the display of filter errors in advanced settings;
     * Fixed an icon in the “Missing permission” popup;
     * Fixed "Attenuate colors" feature help in "Classic" popup mode;
     * Other minor corrections and code improvements, dependency updates
@@ -382,6 +385,9 @@
 * Correction de bugs :
     * Correction d'un bug où certains sites réinitialisaient l'attribut style de l'élément HTML, de ce fait la fonctionnalité Augmenter le contraste se voyait appliquer le thème 1 au lieu du thème choisi par l'utilisateur ;
     * Correction d'un bug où les filtres ne pouvaient pas être appliqués sur l'élément body ;
+    * Correction d'un bug où les transitions flashaient en blanc lors de l'application de la fonctionnalité Augmenter le contraste sur certains sites ;
+    * Correction des filtres forceDisableDefaultBackgroundColor, forceDisableDefaultBackground et forceDisableDefaultFontColor ;
+    * Correction d'un bug avec l'affichage des erreurs des filtres dans les paramètres avancés ;
     * Correction d'une icône dans la popup "Permission manquante" ;
     * Correction de l'aide de la fonctionnalité "Atténuer les couleurs" en mode de popup "Classique" ;
     * Autres corrections mineures et améliorations du code, mise à jour des dépendances
