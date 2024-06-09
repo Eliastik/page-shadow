@@ -5,7 +5,7 @@ const clean    = require("gulp-clean");
 const cleanCss = require("gulp-clean-css");
 const less     = require("gulp-less");
 const zip      = require("gulp-zip");
-const crx      = require("@crxs/gulp-crx");
+const crx      = require("gulp-crx-pack");
 const fs       = require("fs");
 const webpack  = require("webpack-stream");
 const rename   = require("gulp-rename");
@@ -37,7 +37,8 @@ gulp.task("clean-directories", () => {
 });
 
 gulp.task("copy-global", () => {
-    return gulp.src(["./src/**", "!./src/img/src/**", "!./src/js/*.js", "!./src/img/icon_old.png", "!./src/img/icon_chrome.png", "!./src/css/src/**", "!./src/css/*.less", "!./src/css/content_old.css", "!./src/js/utils/**"])
+    return gulp.src(["./src/**", "!./src/img/src/**", "!./src/js/*.js", "!./src/img/icon_old.png", "!./src/img/icon_chrome.png", "!./src/css/src/**",
+        "!./src/css/*.less", "!./src/css/content_old.css", "!./src/js/utils/**", "!./src/_locales/**/{options,pageTest,popup}.json"])
         .pipe(gulp.dest("./build/global/"));
 });
 

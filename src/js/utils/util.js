@@ -177,9 +177,9 @@ function commentAllLines(string) {
     return res.join("\n");
 }
 
-// Function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not
-async function pageShadowAllowed(url) {
-    const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]);
+/** Function to know if the execution of Page Shadow is allowed for a page - return true if allowed, false if not */
+async function pageShadowAllowed(url, settingsCache) {
+    const result = settingsCache || await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable"]);
 
     if(result.globallyEnable !== "false") {
         let forbiddenWebsites = [];
@@ -210,12 +210,12 @@ function getUImessage(id) {
     return browser.i18n.getMessage(id);
 }
 
-async function getCustomThemeConfig(nb) {
+async function getCustomThemeConfig(nb, customThemesSettings) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
     let customThemes, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme, fontTheme, customCSSCode;
 
-    const result = await browser.storage.local.get("customThemes");
+    const result = customThemesSettings ? customThemesSettings : await browser.storage.local.get("customThemes");
 
     if(result.customThemes != undefined && result.customThemes[nb] != undefined) {
         customThemes = result.customThemes[nb];
@@ -287,11 +287,11 @@ async function getCustomThemeConfig(nb) {
  * @param {*} lnkCssElement link element for applying custom CSS code
  * @returns true if applying custom font family, false otherwise
  */
-async function customTheme(nb, disableCustomCSS, lnkCssElement) {
-    const config = await getCustomThemeConfig(nb);
+async function customTheme(nb, disableCustomCSS, lnkCssElement, customThemesSettings) {
+    const config = await getCustomThemeConfig(nb, customThemesSettings);
     disableCustomCSS = disableCustomCSS == undefined ? false : disableCustomCSS;
 
-    applyContrastPageVariables(config);
+    applyContrastPageVariables(config, customThemesSettings);
 
     // Apply custom CSS
     if(!disableCustomCSS && config.customCSSCode != "") {
@@ -826,7 +826,6 @@ async function deletePreset(nb) {
 }
 
 async function presetsEnabledForWebsite(url, disableCache) {
-    const presetListEnabled = [];
     let allPresetData;
 
     if(!disableCache) { // Get preset with cache
@@ -834,11 +833,17 @@ async function presetsEnabledForWebsite(url, disableCache) {
         allPresetData = response.data;
     }
 
+    return await presetsEnabledForWebsiteWithData(url, allPresetData);
+}
+
+async function presetsEnabledForWebsiteWithData(url, allPresetData) {
+    const presetListEnabled = [];
+
     if(url && url.trim() != "") {
         for(let i = 1; i <= nbPresets; i++) {
             let presetData;
 
-            if(disableCache) {
+            if(!allPresetData) {
                 presetData = await getPresetData(i);
             } else {
                 presetData = allPresetData[i];
@@ -912,12 +917,18 @@ function fillSettings(defaultSettings, newSettings) {
     }
 }
 
-async function getSettings(url, disableCache) {
+async function getSettings(url, disableCache, settingsData, allPresetData) {
     const settings = getDefaultSettingsToLoad();
     let loadGlobalSettings = true;
 
     // Automatically enable preset ?
-    const presetsEnabled = await presetsEnabledForWebsite(url, disableCache);
+    let presetsEnabled;
+
+    if(allPresetData) {
+        presetsEnabled = await presetsEnabledForWebsiteWithData(url, allPresetData);
+    } else {
+        presetsEnabled = await presetsEnabledForWebsite(url, disableCache);
+    }
 
     if(presetsEnabled && presetsEnabled.length > 0) {
         const presetEnabled = getPriorityPresetEnabledForWebsite(presetsEnabled);
@@ -933,7 +944,9 @@ async function getSettings(url, disableCache) {
     if(loadGlobalSettings) {
         let newSettings = {};
 
-        if(!disableCache) {
+        if(settingsData) {
+            newSettings = settingsData;
+        } else if(!disableCache) {
             const settingsResponse = await sendMessageWithPromise({ "type": "getSettings" }, "getSettingsResponse");
             newSettings = settingsResponse.data;
         } else {
@@ -1276,48 +1289,49 @@ async function getSettingsToArchive() {
 }
 
 async function archiveCloud() {
-    return new Promise((resolve, reject) => {
-        if(typeof(browser.storage) != "undefined" && typeof(browser.storage.sync) != "undefined") {
+    if (typeof browser.storage !== "undefined" && typeof browser.storage.sync !== "undefined") {
+        try {
+            const dataStr = await getSettingsToArchive();
+            const dataObj = JSON.parse(dataStr);
+            const currentStorage = await getCurrentArchiveCloud();
+
+            const dateSettings = { "dateLastBackup": Date.now().toString() };
+            const deviceSettings = { "deviceBackup": navigator.platform };
+
+            const settingToSave = prepareDataForArchiveCloud(dataObj);
+
             try {
-                getSettingsToArchive().then(dataStr => {
-                    const dataObj = JSON.parse(dataStr);
+                await browser.storage.sync.clear();
+                await browser.storage.sync.set(settingToSave);
+            } catch (e) {
+                // In case of error, restore the old cloud archive data
+                await browser.storage.sync.clear();
+                await browser.storage.sync.set(prepareDataForArchiveCloud(currentStorage));
 
-                    for(const key in dataObj) {
-                        if(typeof(key) === "string") {
-                            if(Object.prototype.hasOwnProperty.call(dataObj, key)) {
-                                const settingToSave = {};
-                                settingToSave[key] = dataObj[key];
-
-                                browser.storage.sync.set(settingToSave).catch(e => {
-                                    if(e && (e.message.indexOf("QUOTA_BYTES_PER_ITEM") != -1 || e.message.indexOf("QuotaExceededError") != -1)) {
-                                        reject("quota");
-                                    } else {
-                                        reject("standard");
-                                    }
-                                });
-                            }
-                        }
-                    }
-
-                    const dateSettings = {};
-                    dateSettings["dateLastBackup"] = Date.now().toString();
-
-                    const deviceSettings = {};
-                    deviceSettings["deviceBackup"] = navigator.platform;
-
-                    Promise.all([browser.storage.sync.set(dateSettings), browser.storage.sync.set(deviceSettings), browser.storage.sync.remove("pageShadowStorageBackup")])
-                        .then(() => {
-                            resolve();
-                        })
-                        .catch(() => {
-                            reject("standard");
-                        });
-                });
-            } catch(e) {
-                reject("standard");
+                if (e && (e.message.indexOf("QUOTA_BYTES_PER_ITEM") !== -1 || e.message.indexOf("QUOTA_BYTES") !== -1 || e.message.indexOf("QuotaExceededError") !== -1)) {
+                    throw new Error("quota");
+                } else {
+                    throw new Error("standard");
+                }
             }
+
+            try {
+                await Promise.all([
+                    browser.storage.sync.set(dateSettings),
+                    browser.storage.sync.set(deviceSettings),
+                    browser.storage.sync.remove("pageShadowStorageBackup")
+                ]);
+            } catch {
+                throw new Error("standard");
+            }
+
+            return;
+        } catch(e) {
+            throw new Error(e.message);
         }
-    });
+    } else {
+        throw new Error("Browser storage is not supported");
+    }
 }
 
 async function isAutoEnable() {
@@ -1332,22 +1346,114 @@ async function isAutoEnable() {
     return false;
 }
 
+function prepareDataForArchiveCloud(dataObj) {
+    const settingToSave = {};
+
+    for (const key in dataObj) {
+        if (typeof key === "string" && Object.prototype.hasOwnProperty.call(dataObj, key)) {
+            const value = dataObj[key];
+
+            if (JSON.stringify(value).length > browser.storage.sync.QUOTA_BYTES_PER_ITEM) {
+                const [type, chunks] = chunkValue(value);
+
+                for (let i = 0; i < chunks.length; i++) {
+                    settingToSave[`${key}_${i}_${type}`] = chunks[i];
+                }
+            } else {
+                settingToSave[key] = value;
+            }
+        }
+    }
+
+    return settingToSave;
+}
+
+async function getCurrentArchiveCloud() {
+    const dataSync = await browser.storage.sync.get(null);
+    const restoredData = {};
+
+    if (dataSync !== undefined) {
+        Object.keys(dataSync).forEach(key => {
+            if(key.includes("_")) {
+                const originalKey = key.split("_")[0];
+                const index = key.split("_")[1];
+                const type = key.split("_")[2] || "string";
+
+                if (!Array.isArray(restoredData[originalKey])) {
+                    restoredData[originalKey] = [];
+                }
+
+                restoredData[originalKey][parseInt(index)] = {
+                    data: dataSync[key],
+                    type
+                };
+            } else {
+                restoredData[key] = dataSync[key];
+            }
+        });
+
+        Object.keys(restoredData).forEach(key => {
+            const valueChunks = restoredData[key];
+
+            if(Array.isArray(valueChunks)) {
+                const sortedIndices = Object.keys(valueChunks).sort((a, b) => parseInt(a) - parseInt(b));
+                const type = restoredData[key][0].type;
+
+                if(type === "string") {
+                    restoredData[key] = sortedIndices.map(index => valueChunks[index].data).join("");
+                } else {
+                    const data = sortedIndices.map(index => valueChunks[index].data).join("");
+                    restoredData[key] = JSON.parse(data);
+                }
+            }
+        });
+    }
+
+    return restoredData;
+}
+
+function chunkString(str) {
+    const chunks = [];
+    const chunkSize = browser.storage.sync.QUOTA_BYTES_PER_ITEM - 500;
+
+    for(let i = 0; i < str.length; i += chunkSize) {
+        chunks.push(str.substring(i, i + chunkSize));
+    }
+
+    return chunks;
+}
+
+function chunkValue(value) {
+    if(typeof value === "string") {
+        return ["string", chunkString(value)];
+    } else if(typeof value === "object") {
+        const valueString = JSON.stringify(value);
+        return ["object", chunkString(valueString)];
+    } else {
+        throw new Error("Unsupported data type");
+    }
+}
+
 async function sendMessageWithPromise(data, ...expectedMessageType) {
     return new Promise(resolve => {
+        const listener = message => {
+            if (message && expectedMessageType.includes(message.type)) {
+                resolve(message);
+                browser.runtime.onMessage.removeListener(listener);
+            }
+        };
+
         if(expectedMessageType) {
-            const listener = browser.runtime.onMessage.addListener(message => {
-                if(message && expectedMessageType.includes(message.type)) {
-                    resolve(message);
-                    browser.runtime.onMessage.removeListener(listener);
-                }
-            });
+            browser.runtime.onMessage.addListener(listener);
         }
 
         browser.runtime.sendMessage(data).catch(() => {
+            browser.runtime.onMessage.removeListener(listener);
             if(browser.runtime.lastError) return;
         });
 
         if(!expectedMessageType) {
+            browser.runtime.onMessage.removeListener(listener);
             resolve();
         }
     });
@@ -1399,6 +1505,54 @@ function applyContrastPageVariables(config) {
     }
 }
 
+function getPageVariablesToApply(contrastEnabled, invertEnabled) {
+    const pageVariablesToApply = [];
+
+    if (contrastEnabled == "true") {
+        pageVariablesToApply.push(
+            "--page-shadow-bgcolor",
+            "--page-shadow-txtcolor",
+            "--page-shadow-lnkcolor",
+            "--page-shadow-visitedlnkcolor",
+            "--page-shadow-selectbgcolor",
+            "--page-shadow-selectxtcolor",
+            "--page-shadow-insbgcolor",
+            "--page-shadow-instxtcolor",
+            "--page-shadow-delbgcolor",
+            "--page-shadow-deltxtcolor",
+            "--page-shadow-markbgcolor",
+            "--page-shadow-marktxtcolor",
+            "--page-shadow-imgbgcolor",
+            "--page-shadow-brightcolortxtwhite",
+            "--page-shadow-brightcolortxtblack"
+        );
+    }
+
+    if(invertEnabled == "true") {
+        pageVariablesToApply.push(
+            "--page-shadow-invert-filter-image-backgrounds",
+            "--page-shadow-invert-filter-bg-backgrounds",
+            "--page-shadow-invert-filter-video-backgrounds"
+        );
+    }
+
+    return pageVariablesToApply;
+}
+
+function areAllCSSVariablesDefined(contrastEnabled, invertEnabled) {
+    const element = document.documentElement;
+
+    if (element) {
+        const styleAttribute = element.getAttribute("style");
+
+        if(!styleAttribute) {
+            return true;
+        }
+
+        return getPageVariablesToApply(contrastEnabled, invertEnabled).every(variable => element.style.getPropertyValue(variable) !== "");
+    }
+}
+
 function rgb2hsl(r, g, b) {
     const v = Math.max(r, g, b), c = v - Math.min(r, g, b), f = (1 - Math.abs(v + v - c - 1));
     const h = c && ((v == r) ? (g - b) / c : ((v == g) ? 2 + (b - r) / c : 4 + (r - g) / c));
@@ -1421,4 +1575,32 @@ async function checkPermissions() {
     });
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions };
+function svgElementToImage(element) {
+    const computedStyles = window.getComputedStyle(element);
+
+    const box = element.getBBox();
+    const width = box.width;
+    const height = box.height;
+    const fill = computedStyles.fill;
+    const stroke = computedStyles.stroke;
+    const color = computedStyles.color;
+
+    const image = new Image();
+    image.src = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" fill="${fill}" color="${color}" stroke="${stroke}">${element.outerHTML}</svg>`)}`;
+
+    return image;
+}
+
+async function backgroundImageToImage(element) {
+    const style = element.currentStyle || window.getComputedStyle(element, false);
+    const url = style.backgroundImage.slice(4, -1).replace(/"/g, "");
+
+    const image = new Image();
+    image.src = url;
+
+    await image.decode();
+
+    return image;
+}
+
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefined, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud };

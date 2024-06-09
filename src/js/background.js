@@ -307,9 +307,12 @@ async function checkAutoBackupCloud() {
         try {
             await archiveCloud();
             await setSettingItem("lastAutoBackupFailed", "false");
+            await setSettingItem("lastAutoBackupFailedLastShowed", "false");
+            await setSettingItem("lastAutoBackupFailedDate", -1);
             await setSettingItem("lastAutoBackupCloud", Date.now());
         } catch(e) {
             await setSettingItem("lastAutoBackupFailed", "true");
+            await setSettingItem("lastAutoBackupFailedDate", Date.now());
             await setSettingItem("lastAutoBackupCloud", Date.now());
         }
     }
@@ -360,6 +363,27 @@ if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) 
 }
 
 if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) !== "undefined") {
+    browser.runtime.onMessage.addListener(async (message, sender) => {
+        if (message && message.type === "ready") {
+            const tabId = sender.tab.id;
+            const url = sender.url;
+            const settingsCache = new SettingsCache();
+            const presetsCache = new PresetCache();
+
+            const data = {
+                settings: await getSettings(url, false, settingsCache.data, presetsCache.data),
+                customThemes: settingsCache.customThemes,
+                enabled: await pageShadowAllowed(url, {
+                    sitesInterditPageShadow: settingsCache.disabledWebsites,
+                    whiteList: settingsCache.isWhiteList,
+                    globallyEnable: settingsCache.data.globallyEnable
+                })
+            };
+
+            browser.tabs.sendMessage(tabId, { type: "preApplySettings", data });
+        }
+    });
+
     browser.runtime.onMessage.addListener(async(message, sender) => {
         const filters = new Filter();
         const presetCache = new PresetCache();
@@ -398,7 +422,11 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 const pageURL = normalizeURL(sender.url);
 
                 if(message.type == "isEnabledForThisPage" || message.type == "applySettingsChanged") {
-                    pageShadowAllowed(tabURL).then(async(enabled) => {
+                    pageShadowAllowed(tabURL, {
+                        sitesInterditPageShadow: settingsCache.disabledWebsites,
+                        whiteList: settingsCache.isWhiteList,
+                        globallyEnable: settingsCache.data.globallyEnable
+                    }).then(async(enabled) => {
                         const settings = await getSettings(tabURL, true);
                         resolve({ type: message.type + "Response", enabled: enabled, settings: settings });
                     });

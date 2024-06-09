@@ -56,6 +56,15 @@ module.exports = {
         ],
         "brace-style": [
             "warn"
+        ],
+        "no-unused-vars": [
+            "warn"
+        ],
+        "no-constant-binary-expression": [
+            "warn"
+        ],
+        "valid-typeof": [
+            "warn"
         ]
     },
     parser: "@babel/eslint-parser"
