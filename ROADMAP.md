@@ -124,14 +124,18 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Minor) Bug with error in filters: open errors from a built-in filter, then the errors from custom filter: the window will be blank (random)
 * [x] (Minor) Transition background color (background white) blink when Increase page contrast is enabled - Exemple: https://iq.opengenus.org/lstopo-in-linux/
 
-#### Release - Go (version 2.11)
+### Release - Next
 
-* [ ] Test on Chrome/Edge
-* [ ] Test on Firefox
+#### Features
 
-### Futures versions
+* [ ] Publish Manifestv3 for Firefox
+    * [ ] Fix Cloud backup on Firefox ; all other feature works
+* [ ] Fix dark image detection (using contours detection?) + enable by default?
 
-* [ ] Publish Manifestv3 for Firefox + Tests
+#### Bugs to fix
+
+* [ ] (Minor) Fix transition white that disable some transitions?
+* [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
 
 #### Common
 
@@ -161,5 +165,4 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
-* [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
