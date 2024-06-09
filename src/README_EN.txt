@@ -47,6 +47,9 @@ Or you can compile it yourself (see Compilation section).
 * Bug fixes:
     * Fixed a bug where some websites would reset the HTML element's style attribute, resulting in the Increase contrast feature being applied theme 1 instead of the user-selected theme;
     * Fixed a bug where filters could not be applied to the body element;
+    * Fixed a bug where transitions flashed white when applying the Increase contrast feature on some websites;
+    * Fixed forceDisableDefaultBackgroundColor, forceDisableDefaultBackground and forceDisableDefaultFontColor filters;
+    * Fixed a bug with the display of filter errors in advanced settings;
     * Fixed an icon in the “Missing permission” popup;
     * Fixed "Attenuate colors" feature help in "Classic" popup mode;
     * Other minor corrections and code improvements, dependency updates
