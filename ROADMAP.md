@@ -138,13 +138,18 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] (Minor) Fix transition white that disable some transitions?
 * [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
 
-#### Common
+#### Ideas
+
+* [ ] Add possibility to change the filter intensity for the Attenuate colors feature?
+* [ ] Add possibility to not invert bright color for the Invert colors features?
+* [ ] Increase the number of presets/custom themes?
+
+### Common
 
 * [ ] FAQ for common questions?
 
-#### Planned/ideas
+### Planned/ideas
 
-* [ ] Increase the number of presets/custom themes?
 * [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
 * [ ] Improving codebase
     * [ ] Comment the code: doc for methods/functions
@@ -161,7 +166,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [ ] Store filters on a Github repository ?
 * [ ] Prevent the attenuation of subelements (when enabling Colored elements attenuation)?
 
-#### Known issues/bugs
+### Known issues/bugs
 
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
