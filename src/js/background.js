@@ -366,7 +366,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
     browser.runtime.onMessage.addListener(async (message, sender) => {
         if (message && message.type === "ready") {
             const tabId = sender.tab.id;
-            const url = sender.url;
+            const url = sender.tab.url;
             const settingsCache = new SettingsCache();
             const presetsCache = new PresetCache();
 
