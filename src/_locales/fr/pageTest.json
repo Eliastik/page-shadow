@@ -29,6 +29,8 @@
         "mark": "Élément de marquage",
         "testBackground": "Ceci est un test de la détection automatique des éléments transparents par Page Shadow. Si vous voyez ce message, c'est que cette détection ne fonctionne pas correctement.",
         "testPopup": "Test de l'ouverture d'une popup",
-        "testPopupLink": "Cliquez ici"
+        "testPopupLink": "Cliquez ici",
+        "descriptionIframe": "Ceci est une iframe de test",
+        "testIframe": "Test d'iframe"
     }
 }
