@@ -141,7 +141,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Ideas
 
-* [ ] Add possibility to change the filter intensity for the Attenuate colors feature?
+* [x] Add possibility to change the filter intensity for the Attenuate colors feature?
 * [ ] Add possibility to not invert bright color for the Invert colors features?
 * [ ] Increase the number of presets/custom themes?
 
