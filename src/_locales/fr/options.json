@@ -331,6 +331,7 @@
             "attenuateBrightColors": "Atténuer la couleur des éléments :",
             "blueLightReductionEnabled": "Filtre de réduction de la lumière bleue :",
             "percentageBlueLightReduction": "Intensité du filtre de réduction de la lumière bleue :",
+            "percentageAttenuateColors": "Intensité du filtre d'atténuation des couleurs :",
             "brightColorPreservation": "Préserver les couleurs des éléments :",
             "presetInfosLabel": "Détails du pré-réglage",
             "enabled": "Activé",

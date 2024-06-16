@@ -48,7 +48,8 @@
         "attenuateColor": "Atténuer les couleurs",
         "attenuateBrightColors": "Éléments colorés",
         "titleAttenuateImageColor": "Atténue les couleurs des éléments pour éviter l'affichage de couleurs trop vives",
-        "increaseContrastInformation": "Il est conseillé d'activer la fonction Inverser les couleurs > Sélectif (seul) lorsque vous utilisez la fonction Augmenter le contraste"
+        "increaseContrastInformation": "Il est conseillé d'activer la fonction Inverser les couleurs > Sélectif (seul) lorsque vous utilisez la fonction Augmenter le contraste",
+        "attenuateColorPercent": "Intensité du filtre :"
     },
     "modal": {
         "customThemeTitle": "Information",

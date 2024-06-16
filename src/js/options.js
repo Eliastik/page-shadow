@@ -864,7 +864,7 @@ async function displayPresetInfos(nb) {
                 span.textContent = i18next.t("modal.presets.undefined");
             } else if(value == "true" || value == "false") {
                 span.innerHTML = value == "true" ? "<i class=\"fa-solid fa-check fa-fw\"></i>" : "<i class=\"fa-solid fa-xmark fa-fw\"></i>";
-            } else if(setting == "pourcentageLum" || setting == "percentageBlueLightReduction") {
+            } else if(setting == "pourcentageLum" || setting == "percentageBlueLightReduction" || setting == "percentageAttenuateColors") {
                 span.textContent = value + "%";
             } else if(setting == "theme" && value.startsWith("custom")) {
                 const customThemeId = value.split("custom")[1];

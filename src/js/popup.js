@@ -22,7 +22,7 @@ import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
 import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme, sendMessageWithPromise, applyContrastPageVariablesWithTheme, checkPermissions, getBrowser } from "./utils/util.js";
-import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval, permissionOrigin } from "./constants.js";
+import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval, permissionOrigin, attenuateDefaultValue } from "./constants.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import browser from "webextension-polyfill";
@@ -180,6 +180,10 @@ $(document).ready(() => {
     $("#sliderBlueLightReduction").attr("data-slider-max", maxBrightnessPercentage * 100);
     $("#sliderBlueLightReduction").attr("data-slider-value", brightnessDefaultValue * 100);
 
+    $("#sliderAttenuateColorPercent").attr("data-slider-min", 0);
+    $("#sliderAttenuateColorPercent").attr("data-slider-max", 100);
+    $("#sliderAttenuateColorPercent").attr("data-slider-value", attenuateDefaultValue * 100);
+
     $("[data-toggle=\"tooltip\"]").tooltip({
         trigger: "hover",
         container: "body",
@@ -196,6 +200,15 @@ $(document).ready(() => {
     });
 
     const sliderBlueLightReduction = new Slider("#sliderBlueLightReduction", {
+        tooltip: "show",
+        step: 1,
+        tooltip_position: "top",
+        formatter: value => {
+            return value;
+        }
+    });
+
+    const sliderAttenuateColorPercent = new Slider("#sliderAttenuateColorPercent", {
         tooltip: "show",
         step: 1,
         tooltip_position: "top",
@@ -847,7 +860,13 @@ $(document).ready(() => {
     });
 
     async function checkAttenuateColor() {
-        const result = await browser.storage.local.get(["attenuateColors", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors", "attenuateBrightColors"]);
+        const result = await browser.storage.local.get(["attenuateColors", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors", "attenuateBrightColors", "percentageAttenuateColors"]);
+
+        if(result.percentageAttenuateColors / 100 > 100 || result.percentageAttenuateColors / 100 < 0 || typeof result.percentageAttenuateColors === "undefined" || result.percentageAttenuateColors == null) {
+            sliderBlueLightReduction.setValue(attenuateDefaultValue * 100);
+        } else {
+            sliderBlueLightReduction.setValue(result.percentageAttenuateColors);
+        }
 
         if(result.attenuateColors == "true") {
             if(currentTheme != "modern" &&  currentTheme != "compactModern") {
@@ -1424,6 +1443,12 @@ $(document).ready(() => {
         percentageBlueLightChangedFromThisPage = true;
         elBlueLightReduction.style.opacity = sliderBlueLightReductionValue / 100;
         setSettingItem("percentageBlueLightReduction", sliderBlueLightReductionValue);
+    });
+
+    $("#sliderAttenuateColorPercent").on("slideStop", () => {
+        const sliderAttenuateColorPercentValue = sliderAttenuateColorPercent.getValue();
+        console.log(sliderAttenuateColorPercentValue);
+        setSettingItem("percentageAttenuateColors", sliderAttenuateColorPercentValue);
     });
 
     $( "#checkNighMode" ).on("change", function() {

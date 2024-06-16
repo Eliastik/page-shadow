@@ -48,7 +48,8 @@
         "attenuateColor": "Attenuate colors",
         "attenuateBrightColors": "Colored elements",
         "titleAttenuateImageColor": "Attenuate elements colors to avoid displaying too bright colors",
-        "increaseContrastInformation": "It's recommended to enable the Invert colors > Selective (only) function when using the Increase contrast function"
+        "increaseContrastInformation": "It's recommended to enable the Invert colors > Selective (only) function when using the Increase contrast function",
+        "attenuateColorPercent": "Filter intensity:"
     },
     "modal": {
         "customThemeTitle": "Information",

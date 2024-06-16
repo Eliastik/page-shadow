@@ -590,7 +590,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     top: -175%;
     border-radius: 6px;
 }
-#sliderBlueLightReduction {
+#sliderBlueLightReduction, #sliderAttenuateColorPercent {
     width: 185px;
     margin-left: 10px;
 }

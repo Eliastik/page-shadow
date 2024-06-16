@@ -329,6 +329,7 @@
             "selectiveInvert": "Selective invert:",
             "blueLightReductionEnabled": "Blue light reduction filter:",
             "percentageBlueLightReduction": "Intensity of the blue light reduction filter:",
+            "percentageAttenuateColors": "Intensity of the attenuate color filter:",
             "brightColorPreservation": "Preserve element colors:",
             "attenuateImageColor": "Attenuate image colors:",
             "attenuateColors": "Attenuate colors:",
