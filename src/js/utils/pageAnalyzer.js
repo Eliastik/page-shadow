@@ -217,13 +217,15 @@ export default class PageAnalyzer {
     }
 
     isInlineElement(element) {
-        if (!element || element.nodeType !== Node.ELEMENT_NODE) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE || element.tagName.toLowerCase() === "img") {
             return false;
         }
     
         const computedStyle = window.getComputedStyle(element);
     
-        return computedStyle.display === "inline" || computedStyle.display === "inline-block";
+        const isInline = computedStyle.display === "inline" || computedStyle.display === "inline-block";
+
+        return isInline;
     }
 
     detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, backgroundColor, element) {
