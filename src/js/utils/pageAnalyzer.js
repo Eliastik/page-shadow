@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsl, svgElementToImage, backgroundImageToImage } from "./util.js";
 import SafeTimer from "./safeTimer.js";
-import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, pageShadowClassListsMutationsIgnore } from "../constants.js";
+import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, pageShadowClassListsMutationsIgnore, maxImageSizeDarkImageDetection } from "../constants.js";
 
 /**
  * Class used to analyze the pages and detect transparent background,
@@ -462,6 +462,7 @@ export default class PageAnalyzer {
 
     async detectDarkImage(element, hasBackgroundImg) {
         const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
         let image = element;
 
         // SVG element
@@ -483,12 +484,38 @@ export default class PageAnalyzer {
             await this.awaitImageLoading(image);
         }
 
+        // Draw image on canvas
+        const { newWidth, newHeight } = this.getResizedDimensions(image, maxImageSizeDarkImageDetection, maxImageSizeDarkImageDetection);
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+
+        ctx.drawImage(image, 0, 0, newWidth, newHeight);
+
         // Check if the image is dark
         const isDarkImage = this.isImageDark(canvas, image);
 
         canvas.remove();
 
         return isDarkImage;
+    }
+
+    getResizedDimensions(image, maxWidth, maxHeight) {
+        const width = image.width;
+        const height = image.height;
+    
+        let newWidth = width;
+        let newHeight = height;
+    
+        if (width > maxWidth || height > maxHeight) {
+            const widthRatio = maxWidth / width;
+            const heightRatio = maxHeight / height;
+            const resizeRatio = Math.min(widthRatio, heightRatio);
+    
+            newWidth = Math.round(width * resizeRatio);
+            newHeight = Math.round(height * resizeRatio);
+        }
+    
+        return { newWidth, newHeight };
     }
 
     isImageDark(canvas, image) {
@@ -504,11 +531,6 @@ export default class PageAnalyzer {
             if(width <= 0 || height <= 0) {
                 return false;
             }
-
-            canvas.width = width;
-            canvas.height = height;
-
-            ctx.drawImage(image, 0, 0);
 
             const imgData = ctx.getImageData(0, 0, width, height);
             const data = imgData.data;
