@@ -121,13 +121,13 @@ export default class PageAnalyzer {
         return (hasNoBackgroundColorValue || isTransparentColor || (isRgbaColor && alpha <= this.websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasBackgroundImageValue;
     }
 
-    elementHasBrightColor(backgroundColor) {
-        if(backgroundColor) {
-            const hasGradient = backgroundColor.trim().toLowerCase().indexOf("linear-gradient") != -1
-                || backgroundColor.trim().toLowerCase().indexOf("radial-gradient") != -1 || backgroundColor.trim().toLowerCase().indexOf("conic-gradient") != -1;
+    elementHasBrightColor(color) {
+        if(color) {
+            const hasGradient = color.trim().toLowerCase().indexOf("linear-gradient") != -1
+                || color.trim().toLowerCase().indexOf("radial-gradient") != -1 || color.trim().toLowerCase().indexOf("conic-gradient") != -1;
 
-            if(backgroundColor.trim().startsWith("rgb")) {
-                const rgbValues = backgroundColor.split("(")[1].split(")")[0];
+            if(color.trim().startsWith("rgb")) {
+                const rgbValues = color.split("(")[1].split(")")[0];
                 const rgbValuesList = rgbValues.trim().split(",");
                 const hsl = rgb2hsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
 
@@ -216,22 +216,44 @@ export default class PageAnalyzer {
         }
     }
 
+    isInlineElement(element) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) {
+            return false;
+        }
+    
+        const computedStyle = window.getComputedStyle(element);
+    
+        return computedStyle.display === "inline" || computedStyle.display === "inline-block";
+    }
+
     detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, backgroundColor, element) {
-        if (!transparentColorDetected && !hasTransparentBackgroundClass) {
-            const hasBrightColor = this.elementHasBrightColor(backgroundColor);
+        const isInlineElement = this.isInlineElement(element);
+
+        if ((!transparentColorDetected && !hasTransparentBackgroundClass) || isInlineElement) {
+            let color = backgroundColor;
+
+            if (isInlineElement) {
+                color = window.getComputedStyle(element).color;
+            }
+
+            const hasBrightColor = this.elementHasBrightColor(color);
 
             if (hasBrightColor && hasBrightColor[0]) {
-                addClass(element, "pageShadowHasBrightColorBackground");
-
-                if (hasBrightColor[1]) {
-                    addClass(element, "pageShadowBrightColorWithBlackText");
-                    removeClass(element, "pageShadowBrightColorWithWhiteText");
+                if (!isInlineElement) {
+                    addClass(element, "pageShadowHasBrightColorBackground");
+    
+                    if (hasBrightColor[1]) {
+                        addClass(element, "pageShadowBrightColorWithBlackText");
+                        removeClass(element, "pageShadowBrightColorWithWhiteText");
+                    } else {
+                        addClass(element, "pageShadowBrightColorWithWhiteText");
+                        removeClass(element, "pageShadowBrightColorWithBlackText");
+                    }
                 } else {
-                    addClass(element, "pageShadowBrightColorWithWhiteText");
-                    removeClass(element, "pageShadowBrightColorWithBlackText");
+                    addClass(element, "pageShadowHasBrightColorText");
                 }
             } else {
-                removeClass(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText", "pageShadowBrightColorForceCustomTextLinkColor");
+                removeClass(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText", "pageShadowBrightColorForceCustomTextLinkColor", "pageShadowHasBrightColorText");
 
                 if (this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode && element.parentNode.closest) {
                     const closestBright = element.parentNode.closest(".pageShadowHasBrightColorBackground");
