@@ -130,6 +130,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [ ] Reduce delay applying reduce brightness/blue light reduction filter
 * [ ] Fix dark image detection (using contours detection?) + enable by default?
+    * [x] Optimize by reducing size of the image before analyze
 * [ ] Publish Manifestv3 for Firefox
     * [ ] Fix Cloud backup on Firefox ; all other feature works
 
@@ -143,7 +144,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [x] Add possibility to change the filter intensity for the Attenuate colors feature?
 * [x] Add possibility to not invert bright color for the Invert colors features?
-* [ ] Increase the number of presets/custom themes?
+* [x] Increase the number of presets/custom themes?
+* [ ] Detect bright color text + enable for bright color inversion/color reduction?
 
 ### Common
 
