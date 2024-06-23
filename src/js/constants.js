@@ -47,10 +47,10 @@ const settingNames = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcenta
 const settingsToSavePresets = ["pageShadowEnabled", "theme", "disableImgBgColor", "brightColorPreservation", "pageLumEnabled", "pourcentageLum", "blueLightReductionEnabled", "percentageBlueLightReduction", "colorTemp", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "selectiveInvert", "attenuateImageColor", "autoEnable", "liveSettings", "attenuateColors", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors",  "attenuateBrightColors", "percentageAttenuateColors", "invertBrightColors"];
 const settingsToLoad = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor", "selectiveInvert", "blueLightReductionEnabled", "percentageBlueLightReduction", "attenuateImageColor", "brightColorPreservation", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors",  "attenuateBrightColors", "attenuateColors", "percentageAttenuateColors", "invertBrightColors"];
 const pageShadowClassListsMutationsIgnore = ["pageShadowHasBackgroundImg", "pageShadowHasTransparentBackground", "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText", "pageShadowBackgroundDetected"];
-const nbPresets = 10;
-const defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}};
-const nbCustomThemesSlots = 5;
-const defaultCustomThemes = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
+const nbPresets = 15;
+const defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, 12: {}, 13: {}, 14: {}, 15: {}};
+const nbCustomThemesSlots = 10;
+const defaultCustomThemes = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}};
 // Default filters object
 const defaultFilters = {
     "filters": [
