@@ -139,11 +139,11 @@ export default class ContentProcessor {
     }
 
     async contrastPage(pageShadowEnabled, theme, colorInvert, invertImageColors, invertEntirePage, invertVideoColors, disableImgBgColor, invertBgColors, selectiveInvert, brightColorPreservation,
-        attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors, percentageAttenuateColors) {
+        attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors, percentageAttenuateColors, invertBrightColors) {
         await this.applyContrastPage(false, pageShadowEnabled, theme, disableImgBgColor, brightColorPreservation);
 
         this.invertColor(colorInvert, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert,
-            attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors, percentageAttenuateColors);
+            attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors, percentageAttenuateColors, invertBrightColors);
     }
 
     resetContrastPage(themeException, disableImgBgColor, brightColorPreservation) {
@@ -184,10 +184,11 @@ export default class ContentProcessor {
     }
 
     invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert,
-        attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors, percentageAttenuateColors) {
+        attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors, percentageAttenuateColors, invertBrightColors) {
         document.documentElement.style.setProperty("--page-shadow-invert-filter-image-backgrounds", "invert(100%)");
         document.documentElement.style.setProperty("--page-shadow-invert-filter-bg-backgrounds", "invert(100%)");
         document.documentElement.style.setProperty("--page-shadow-invert-filter-video-backgrounds", "invert(100%)");
+        document.documentElement.style.setProperty("--page-shadow-invert-filter-bright-color-backgrounds", "invert(100%)");
 
         if(enabled !== null && enabled == "true") {
             if(invertEntirePage !== null && invertEntirePage == "true") {
@@ -216,6 +217,12 @@ export default class ContentProcessor {
                 } else {
                     this.bodyClassBatcher.add("pageShadowEnableSelectiveInvert");
                 }
+
+                if(invertBrightColors != null && invertBrightColors == "true") {
+                    this.bodyClassBatcherRemover.add("pageShadowInvertBrightColors");
+                } else {
+                    this.bodyClassBatcher.add("pageShadowInvertBrightColors");
+                }
             } else {
                 removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
 
@@ -241,6 +248,12 @@ export default class ContentProcessor {
                     this.bodyClassBatcher.add("pageShadowEnableSelectiveInvert");
                 } else {
                     this.bodyClassBatcherRemover.add("pageShadowEnableSelectiveInvert");
+                }
+
+                if(invertBrightColors != null && invertBrightColors == "true") {
+                    this.bodyClassBatcher.add("pageShadowInvertBrightColors");
+                } else {
+                    this.bodyClassBatcherRemover.add("pageShadowInvertBrightColors");
                 }
             }
         } else {
@@ -907,7 +920,7 @@ export default class ContentProcessor {
                     this.bodyClassBatcherRemover.removeAll();
                     this.htmlClassBatcher.removeAll();
 
-                    this.invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, settings.selectiveInvert, settings.attenuateColors, settings.attenuateImgColors, settings.attenuateBgColors, settings.attenuateVideoColors, settings.attenuateBrightColors, settings.percentageAttenuateColors);
+                    this.invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, settings.selectiveInvert, settings.attenuateColors, settings.attenuateImgColors, settings.attenuateBgColors, settings.attenuateVideoColors, settings.attenuateBrightColors, settings.percentageAttenuateColors, settings.invertBrightColors);
 
                     this.bodyClassBatcher.applyAdd();
                     this.bodyClassBatcherRemover.applyRemove();
@@ -925,7 +938,7 @@ export default class ContentProcessor {
                     this.bodyClassBatcherRemover.removeAll();
                     this.htmlClassBatcher.removeAll();
 
-                    await this.contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, settings.selectiveInvert, settings.brightColorPreservation, settings.attenuateColors, settings.attenuateImgColors, settings.attenuateBgColors, settings.attenuateVideoColors, settings.attenuateBrightColors, settings.percentageAttenuateColors);
+                    await this.contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, settings.selectiveInvert, settings.brightColorPreservation, settings.attenuateColors, settings.attenuateImgColors, settings.attenuateBgColors, settings.attenuateVideoColors, settings.attenuateBrightColors, settings.percentageAttenuateColors, settings.invertBrightColors);
 
                     this.bodyClassBatcher.applyAdd();
                     this.bodyClassBatcherRemover.applyRemove();

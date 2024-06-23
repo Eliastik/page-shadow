@@ -122,7 +122,7 @@ async function migrateSettings(filters) {
         customThemes["1"]["customThemeFont"] = customThemeFont;
         customThemes["1"]["customCSSCode"] = customCSSCode;
 
-        await setSettingItem("customThemes", customThemes);
+        setSettingItem("customThemes", customThemes);
         removeSettingItem(["customThemeBg", "customThemeTexts", "customThemeLinks", "customThemeLinksVisited", "customThemeFont", "customCSSCode"]);
     }
 
@@ -133,21 +133,26 @@ async function migrateSettings(filters) {
 
     // Migrate Night mode filter
     if(result.nightModeEnabled && result.pageLumEnabled && result.nightModeEnabled == "true" && result.pageLumEnabled == "true") {
-        await setSettingItem("pageLumEnabled", "false");
-        await setSettingItem("blueLightReductionEnabled", "true");
-        await setSettingItem("percentageBlueLightReduction", result.pourcentageLum);
+        setSettingItem("pageLumEnabled", "false");
+        setSettingItem("blueLightReductionEnabled", "true");
+        setSettingItem("percentageBlueLightReduction", result.pourcentageLum);
     }
 
     // Migrate Attenuate color settings
     if(result.attenuateImageColor) {
         if(result.attenuateImageColor == "true") {
-            await setSettingItem("attenuateColors", "true");
+            setSettingItem("attenuateColors", "true");
         } else {
-            await setSettingItem("attenuateColors", "false");
+            setSettingItem("attenuateColors", "false");
         }
 
-        await setSettingItem("attenuateImgColors", "true");
-        await setSettingItem("attenuateBgColors", "true");
+        setSettingItem("attenuateImgColors", "true");
+        setSettingItem("attenuateBgColors", "true");
+    }
+
+    // Migrate Invert colors settings
+    if (!result.invertBrightColors) {
+        setSettingItem("invertBrightColors", "true");
     }
 
     removeSettingItem(["nightModeEnabled", "attenuateImageColor"]);

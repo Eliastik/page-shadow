@@ -323,6 +323,7 @@
             "autoEnable": "Activation automatique selon l'heure :",
             "disableImgBgColor": "Désactiver la coloration de l'arrière-plan des images :",
             "selectiveInvert": "Inversion sélective :",
+            "invertBrightColors": "Inverser les éléments colorés :",
             "attenuateImageColor": "Atténuer la couleur des images :",
             "attenuateColors": "Atténuer les couleurs :",
             "attenuateImgColors": "Atténuer les couleurs des images :",
