@@ -203,13 +203,13 @@ export default class ContentProcessor {
                 if(invertBgColors != null && invertBgColors == "true") {
                     this.bodyClassBatcherRemover.add("pageShadowInvertBgColor");
                 } else {
-                    this.bodyClassBatcher.add("pageShadowInvertVideoColor");
+                    this.bodyClassBatcher.add("pageShadowInvertBgColor");
                 }
 
                 if(invertVideoColors != null && invertVideoColors == "true") {
                     this.bodyClassBatcherRemover.add("pageShadowInvertVideoColor");
                 } else {
-                    this.bodyClassBatcher.add("pageShadowInvertBgColor");
+                    this.bodyClassBatcher.add("pageShadowInvertVideoColor");
                 }
 
                 if(selectiveInvert != null && selectiveInvert == "true") {
