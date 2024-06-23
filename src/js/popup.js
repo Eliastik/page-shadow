@@ -877,9 +877,9 @@ $(document).ready(() => {
         const result = await browser.storage.local.get(["attenuateColors", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors", "attenuateBrightColors", "percentageAttenuateColors"]);
 
         if(result.percentageAttenuateColors / 100 > 100 || result.percentageAttenuateColors / 100 < 0 || typeof result.percentageAttenuateColors === "undefined" || result.percentageAttenuateColors == null) {
-            sliderBlueLightReduction.setValue(attenuateDefaultValue * 100);
+            sliderAttenuateColorPercent.setValue(attenuateDefaultValue * 100);
         } else {
-            sliderBlueLightReduction.setValue(result.percentageAttenuateColors);
+            sliderAttenuateColorPercent.setValue(result.percentageAttenuateColors);
         }
 
         if(result.attenuateColors == "true") {
@@ -1461,7 +1461,6 @@ $(document).ready(() => {
 
     $("#sliderAttenuateColorPercent").on("slideStop", () => {
         const sliderAttenuateColorPercentValue = sliderAttenuateColorPercent.getValue();
-        console.log(sliderAttenuateColorPercentValue);
         setSettingItem("percentageAttenuateColors", sliderAttenuateColorPercentValue);
     });
 
