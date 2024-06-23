@@ -327,6 +327,7 @@
             "autoEnable": "Automatic activation according to time:",
             "disableImgBgColor": "Disable background coloring of images:",
             "selectiveInvert": "Selective invert:",
+            "invertBrightColors": "Invert colored elements:",
             "blueLightReductionEnabled": "Blue light reduction filter:",
             "percentageBlueLightReduction": "Intensity of the blue light reduction filter:",
             "percentageAttenuateColors": "Intensity of the attenuate color filter:",

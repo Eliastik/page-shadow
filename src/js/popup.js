@@ -710,7 +710,7 @@ $(document).ready(() => {
     }
 
     async function checkColorInvert() {
-        const result = await browser.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "selectiveInvert"]);
+        const result = await browser.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "selectiveInvert", "invertBrightColors"]);
 
         if(result.colorInvert == "true") {
             // Convert old settings to new settings
@@ -778,6 +778,12 @@ $(document).ready(() => {
             $("#checkEntirePageInvert").prop("checked", true);
         } else if(result.invertEntirePage !== "true" && $("#checkEntirePageInvert").is(":checked") == true) {
             $("#checkEntirePageInvert").prop("checked", false);
+        }
+
+        if(result.invertBrightColors == "true" && $("#checkInvertBrightColors").is(":checked") == false) {
+            $("#checkInvertBrightColors").prop("checked", true);
+        } else if(result.invertBrightColors == "false" && $("#checkInvertBrightColors").is(":checked") == true) {
+            $("#checkInvertBrightColors").prop("checked", false);
         }
     }
 
@@ -856,6 +862,14 @@ $(document).ready(() => {
             setSettingItem("selectiveInvert", "true");
         } else {
             setSettingItem("selectiveInvert", "false");
+        }
+    });
+
+    $("#checkInvertBrightColors").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("invertBrightColors", "true");
+        } else {
+            setSettingItem("invertBrightColors", "false");
         }
     });
 
