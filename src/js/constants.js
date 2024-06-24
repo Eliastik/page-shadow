@@ -232,7 +232,7 @@ const defaultSettings = {
     "invertEntirePage": "false",
     "invertVideoColors": "false",
     "selectiveInvert": "false",
-    "invertBrightColors": "true",
+    "invertBrightColors": "false",
     "invertBgColor": "true",
     "globallyEnable": "true",
     "customThemeInfoDisable": "false",
