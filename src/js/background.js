@@ -663,14 +663,18 @@ async function alarmCheck() {
     }
 }
 
-setPopup();
-menu();
-updateBadge(false);
-autoEnable();
-checkFirstLoad();
-migrateSettings(new Filter());
-checkAutoBackupCloud();
-alarmCheck();
+async function setupPageShadow() {
+    setPopup();
+    await menu();
+    await checkFirstLoad();
+    await migrateSettings(new Filter());
+    await autoEnable();
+    await alarmCheck();
+    await updateBadge(false);
+    await checkAutoBackupCloud();
+}
+
+setupPageShadow();
 
 browser.alarms.create({ periodInMinutes: 1 });
 
