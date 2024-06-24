@@ -102,7 +102,7 @@ export default class FilterProcessor {
                 }
             }
 
-            setSettingItem("filtersSettings", filters);
+            await setSettingItem("filtersSettings", filters);
         }
     }
 
@@ -181,7 +181,7 @@ export default class FilterProcessor {
             filters.lastFailedUpdate = -1;
         }
 
-        setSettingItem("filtersSettings", filters);
+        await setSettingItem("filtersSettings", filters);
         this.cacheFilters();
 
         return !updateHadErrors;
@@ -198,7 +198,7 @@ export default class FilterProcessor {
             filters.filters[i].needUpdate = false;
         }
 
-        setSettingItem("filtersSettings", filters);
+        await setSettingItem("filtersSettings", filters);
         this.cacheFilters();
 
         return true;
@@ -208,7 +208,7 @@ export default class FilterProcessor {
         const result = await browser.storage.local.get("filtersSettings");
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
         filters.filters[idFilter] = await this.updateFilter(idFilter);
-        setSettingItem("filtersSettings", filters);
+        await setSettingItem("filtersSettings", filters);
         this.cacheFilters();
 
         if(filters.filters[idFilter].hasError) {
@@ -222,7 +222,7 @@ export default class FilterProcessor {
         const result = await browser.storage.local.get("filtersSettings");
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
         filters.filters[idFilter].enabled = enable;
-        setSettingItem("filtersSettings", filters);
+        await setSettingItem("filtersSettings", filters);
         this.cacheFilters();
 
         return true;
@@ -232,7 +232,7 @@ export default class FilterProcessor {
         const result = await browser.storage.local.get("filtersSettings");
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
         filters.enableAutoUpdate = enabled;
-        setSettingItem("filtersSettings", filters);
+        await setSettingItem("filtersSettings", filters);
         this.cacheFilters();
 
         return true;
@@ -514,7 +514,7 @@ export default class FilterProcessor {
                             });
                         }
 
-                        setSettingItem("filtersSettings", filters);
+                        await setSettingItem("filtersSettings", filters);
                         return true;
                     }
 
@@ -535,7 +535,7 @@ export default class FilterProcessor {
 
         if(filters && filters.filters) {
             filters.filters = filters.filters.filter((value, index) => index != idFilter);
-            setSettingItem("filtersSettings", filters);
+            await setSettingItem("filtersSettings", filters);
             this.cacheFilters();
         }
 
@@ -560,8 +560,8 @@ export default class FilterProcessor {
             });
         }
 
-        setSettingItem("customFilter", text);
-        setSettingItem("filtersSettings", filters);
+        await setSettingItem("customFilter", text);
+        await setSettingItem("filtersSettings", filters);
         this.cacheFilters();
 
         return true;
@@ -692,7 +692,7 @@ export default class FilterProcessor {
 
         filters.filters = newFilters;
 
-        setSettingItem("filtersSettings", filters);
+        await setSettingItem("filtersSettings", filters);
 
         if(filterUpdated) {
             this.updateAllFilters(false);

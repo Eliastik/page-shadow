@@ -660,7 +660,7 @@ $(document).ready(() => {
     });
 
     $("#themeSelect").on("change", async function() {
-        setSettingItem("theme", $(this).val());
+        await setSettingItem("theme", $(this).val());
 
         if($(this).val().trim().startsWith("custom")) {
             const result = await browser.storage.local.get("customThemeInfoDisable");
@@ -714,11 +714,11 @@ $(document).ready(() => {
 
         if(result.colorInvert == "true") {
             // Convert old settings to new settings
-            setSettingItem("colorInvert", "false");
-            setSettingItem("invertPageColors", "true");
-            setSettingItem("invertImageColors", "true");
-            setSettingItem("invertVideoColors", "true");
-            setSettingItem("invertBgColor", "true");
+            await setSettingItem("colorInvert", "false");
+            await setSettingItem("invertPageColors", "true");
+            await setSettingItem("invertImageColors", "true");
+            await setSettingItem("invertVideoColors", "true");
+            await setSettingItem("invertBgColor", "true");
             checkColorInvert();
         } else if(result.invertPageColors == "true") {
             if(currentTheme != "modern" &&  currentTheme != "compactModern") {
@@ -1728,7 +1728,7 @@ async function showInformationPopup(result) {
 
         updateNotification[extensionVersion] = true;
         $("#updated").modal("show");
-        setSettingItem("updateNotification", updateNotification);
+        await setSettingItem("updateNotification", updateNotification);
         updateNotificationShowed = true;
         return true;
     } else if (!updateNotificationShowed) {
@@ -1737,12 +1737,12 @@ async function showInformationPopup(result) {
 
             if (archiveInfoLastShowed > 0 && archiveInfoLastShowed + (archiveInfoShowInterval * 60 * 60 * 24 * 1000) <= Date.now() && result.archiveInfoDisable !== "true") {
                 $("#archiveInfo").modal("show");
-                setSettingItem("archiveInfoLastShowed", Date.now());
+                await setSettingItem("archiveInfoLastShowed", Date.now());
                 archiveInfoShowed = true;
 
                 return true;
             } else if (archiveInfoLastShowed <= 0) {
-                setSettingItem("archiveInfoLastShowed", Date.now());
+                await setSettingItem("archiveInfoLastShowed", Date.now());
             }
         }
 
@@ -1752,7 +1752,7 @@ async function showInformationPopup(result) {
 
             if (hasErrorLastAutoBackup && !lastAutoBackupFailedLastShowed) {
                 $("#autoBackupCloudLastFailed").modal("show");
-                setSettingItem("lastAutoBackupFailedLastShowed", "true");
+                await setSettingItem("lastAutoBackupFailedLastShowed", "true");
                 autoBackupFailedShowed = true;
 
                 return true;

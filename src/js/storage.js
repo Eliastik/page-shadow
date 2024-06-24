@@ -20,23 +20,23 @@ import { extensionVersion, defaultSettings, defaultBGColorCustomTheme, defaultTe
 import { sendMessageWithPromise } from "./utils/util.js";
 import browser from "webextension-polyfill";
 
-function setSettingItem(name, value) {
+async function setSettingItem(name, value) {
     if(name && settingNames.indexOf(name) !== -1) {
         const newSetting = {};
         newSetting[name] = value;
 
-        browser.storage.local.set(newSetting);
+        await browser.storage.local.set(newSetting);
 
         // If we update a website setting (increase contrast, invert colors, etc.)
         // The cache is updated
         if(settingsToLoad.includes(name) || name === customThemesKey
             || name === disabledWebsitesKey || name === whitelistKey) {
-            sendMessageWithPromise({ "type": "updateSettingsCache" });
+            await sendMessageWithPromise({ "type": "updateSettingsCache" });
         }
 
         // If the presets are updated, we update the cache
         if(name.toLowerCase() === "presets") {
-            sendMessageWithPromise({ "type": "updatePresetCache" });
+            await sendMessageWithPromise({ "type": "updatePresetCache" });
         }
 
         return true;
@@ -122,7 +122,7 @@ async function migrateSettings(filters) {
         customThemes["1"]["customThemeFont"] = customThemeFont;
         customThemes["1"]["customCSSCode"] = customCSSCode;
 
-        setSettingItem("customThemes", customThemes);
+        await setSettingItem("customThemes", customThemes);
         removeSettingItem(["customThemeBg", "customThemeTexts", "customThemeLinks", "customThemeLinksVisited", "customThemeFont", "customCSSCode"]);
     }
 
@@ -133,26 +133,26 @@ async function migrateSettings(filters) {
 
     // Migrate Night mode filter
     if(result.nightModeEnabled && result.pageLumEnabled && result.nightModeEnabled == "true" && result.pageLumEnabled == "true") {
-        setSettingItem("pageLumEnabled", "false");
-        setSettingItem("blueLightReductionEnabled", "true");
-        setSettingItem("percentageBlueLightReduction", result.pourcentageLum);
+        await setSettingItem("pageLumEnabled", "false");
+        await setSettingItem("blueLightReductionEnabled", "true");
+        await setSettingItem("percentageBlueLightReduction", result.pourcentageLum);
     }
 
     // Migrate Attenuate color settings
     if(result.attenuateImageColor) {
         if(result.attenuateImageColor == "true") {
-            setSettingItem("attenuateColors", "true");
+            await setSettingItem("attenuateColors", "true");
         } else {
-            setSettingItem("attenuateColors", "false");
+            await setSettingItem("attenuateColors", "false");
         }
 
-        setSettingItem("attenuateImgColors", "true");
-        setSettingItem("attenuateBgColors", "true");
+        await setSettingItem("attenuateImgColors", "true");
+        await setSettingItem("attenuateBgColors", "true");
     }
 
     // Migrate Invert colors settings
     if (!result.invertBrightColors && result.invertEntirePage == "true") {
-        setSettingItem("invertBrightColors", "true");
+        await setSettingItem("invertBrightColors", "true");
     }
 
     removeSettingItem(["nightModeEnabled", "attenuateImageColor"]);

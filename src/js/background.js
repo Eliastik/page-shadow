@@ -271,10 +271,10 @@ async function checkAutoEnable() {
         const enabled = checkAutoEnableStartup(data[6], data[4], data[7], data[5]);
 
         if(enabled && !lastAutoEnableDetected || enabled && lastAutoEnableDetected == null) {
-            setSettingItem("globallyEnable", "true");
+            await setSettingItem("globallyEnable", "true");
             lastAutoEnableDetected = true;
         } else if(!enabled && lastAutoEnableDetected || !enabled && lastAutoEnableDetected == null) {
-            setSettingItem("globallyEnable", "false");
+            await setSettingItem("globallyEnable", "false");
             lastAutoEnableDetected = false;
         }
     }
@@ -572,9 +572,9 @@ if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand
             const result = await browser.storage.local.get("globallyEnable");
 
             if(result.globallyEnable == "false") {
-                setSettingItem("globallyEnable", "true");
+                await setSettingItem("globallyEnable", "true");
             } else {
-                setSettingItem("globallyEnable", "false");
+                await setSettingItem("globallyEnable", "false");
             }
             break;
         }
