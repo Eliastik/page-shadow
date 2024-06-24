@@ -137,6 +137,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Bugs to fix
 
 * [x] (Medium) Bug with fast apply mode and iframes + preset: iframe use global settings instead of preset settings from parent page
+* [ ] (Minor) Background gradient not detected as bright colors
 * [ ] (Minor) Fix transition white that disable some transitions?
 * [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
 
