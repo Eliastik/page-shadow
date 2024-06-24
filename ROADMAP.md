@@ -128,7 +128,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Features
 
-* [ ] Reduce delay applying reduce brightness/blue light reduction filter
+* [ ] Reduce delay applying reduce brightness/blue light reduction filter + invert entire page
 * [ ] Fix dark image detection (using contours detection?) + enable by default?
     * [x] Optimize by reducing size of the image before analyze
 * [ ] Publish Manifestv3 for Firefox
