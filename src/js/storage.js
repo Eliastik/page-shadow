@@ -161,7 +161,6 @@ async function migrateSettings(filters) {
     }
 
     await removeSettingItem(["nightModeEnabled", "attenuateImageColor"]);
-    await sendMessageWithPromise({ "type": "updateSettingsCache" });
 }
 
 export { setSettingItem, removeSettingItem, checkFirstLoad, setFirstSettings, migrateSettings };
