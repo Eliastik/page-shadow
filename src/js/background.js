@@ -583,9 +583,9 @@ if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand
             const result = await browser.storage.local.get("globallyEnable");
 
             if(result.globallyEnable == "false") {
-                setSettingItem("globallyEnable", "true");
+                await setSettingItem("globallyEnable", "true");
             } else {
-                setSettingItem("globallyEnable", "false");
+                await setSettingItem("globallyEnable", "false");
             }
             break;
         }

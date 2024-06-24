@@ -1056,7 +1056,7 @@ async function saveThemeSettings(nb) {
     window.codeMirrorUserCss.save();
     customThemes[nb]["customCSSCode"] = $("#codeMirrorUserCSSTextarea").val();
 
-    setSettingItem("customThemes", customThemes);
+    await setSettingItem("customThemes", customThemes);
 }
 
 async function notifyChangedThemeNotSaved(nb) {
@@ -1097,22 +1097,22 @@ async function notifyChangedListNotSaved() {
 }
 
 async function saveList() {
-    setSettingItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
+    await setSettingItem("sitesInterditPageShadow", $("#textareaAssomPage").val());
 
     const result = await browser.storage.local.get(["whiteList", "sitesInterditPageShadow"]);
 
     if($("#checkWhiteList").prop("checked") == true) {
         if(result.whiteList !== "true") {
-            setSettingItem("sitesInterditPageShadow", commentAllLines(result.sitesInterditPageShadow));
+            await setSettingItem("sitesInterditPageShadow", commentAllLines(result.sitesInterditPageShadow));
         }
 
-        setSettingItem("whiteList", "true");
+        await setSettingItem("whiteList", "true");
     } else {
         if(result.whiteList == "true") {
-            setSettingItem("sitesInterditPageShadow", commentAllLines(result.sitesInterditPageShadow));
+            await setSettingItem("sitesInterditPageShadow", commentAllLines(result.sitesInterditPageShadow));
         }
 
-        setSettingItem("whiteList", "false");
+        await setSettingItem("whiteList", "false");
     }
 
     $("#saved").modal("show");
