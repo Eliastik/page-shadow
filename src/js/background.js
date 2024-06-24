@@ -642,13 +642,19 @@ async function openTab(url, part) {
     }
 }
 
-setPopup();
-menu();
-updateBadge(false);
-autoEnable();
-checkFirstLoad();
-migrateSettings(filters);
-checkAutoBackupCloud();
+async function setupPageShadow() {
+    setPopup();
+    await menu();
+    await checkFirstLoad();
+    await migrateSettings(filters);
+    await settingsCache.updateCache();
+    await presetCache.updateCache();
+    await autoEnable();
+    await updateBadge(false);
+    await checkAutoBackupCloud();
+}
+
+setupPageShadow();
 
 setInterval(() => {
     checkAutoEnable();
