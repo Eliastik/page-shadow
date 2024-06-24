@@ -31,12 +31,12 @@ async function setSettingItem(name, value, disableCacheUpdating) {
         // The cache is updated
         if(!disableCacheUpdating && (settingsToLoad.includes(name) || name === customThemesKey
             || name === disabledWebsitesKey || name === whitelistKey)) {
-            await sendMessageWithPromise({ "type": "updateSettingsCache" });
+            sendMessageWithPromise({ "type": "updateSettingsCache" });
         }
 
         // If the presets are updated, we update the cache
         if(!disableCacheUpdating && name.toLowerCase() === "presets") {
-            await sendMessageWithPromise({ "type": "updatePresetCache" });
+            sendMessageWithPromise({ "type": "updatePresetCache" });
         }
 
         return true;
