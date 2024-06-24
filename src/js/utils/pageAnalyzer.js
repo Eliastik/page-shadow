@@ -216,46 +216,33 @@ export default class PageAnalyzer {
         }
     }
 
-    isInlineElement(element) {
+    isTextElement(element) {
         if (!element || element.nodeType !== Node.ELEMENT_NODE || element.tagName.toLowerCase() === "img") {
             return false;
         }
-    
-        const computedStyle = window.getComputedStyle(element);
-    
-        const isInline = computedStyle.display === "inline" || computedStyle.display === "inline-block";
 
-        return isInline;
+        const hasShallowChildren = Array.from(element.children).every(child => child.children.length === 0);
+    
+        return hasShallowChildren;
     }
 
     detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, backgroundColor, element) {
-        const isInlineElement = this.isInlineElement(element);
-
-        if ((!transparentColorDetected && !hasTransparentBackgroundClass) || isInlineElement) {
-            let color = backgroundColor;
-
-            if (isInlineElement) {
-                color = window.getComputedStyle(element).color;
-            }
-
-            const hasBrightColor = this.elementHasBrightColor(color);
+        // Background color
+        if (!transparentColorDetected && !hasTransparentBackgroundClass) {
+            const hasBrightColor = this.elementHasBrightColor(backgroundColor);
 
             if (hasBrightColor && hasBrightColor[0]) {
-                if (!isInlineElement) {
-                    addClass(element, "pageShadowHasBrightColorBackground");
-    
-                    if (hasBrightColor[1]) {
-                        addClass(element, "pageShadowBrightColorWithBlackText");
-                        removeClass(element, "pageShadowBrightColorWithWhiteText");
-                    } else {
-                        addClass(element, "pageShadowBrightColorWithWhiteText");
-                        removeClass(element, "pageShadowBrightColorWithBlackText");
-                    }
+                addClass(element, "pageShadowHasBrightColorBackground");
+
+                if (hasBrightColor[1]) {
+                    addClass(element, "pageShadowBrightColorWithBlackText");
+                    removeClass(element, "pageShadowBrightColorWithWhiteText");
                 } else {
-                    addClass(element, "pageShadowHasBrightColorText");
+                    addClass(element, "pageShadowBrightColorWithWhiteText");
+                    removeClass(element, "pageShadowBrightColorWithBlackText");
                 }
-            } else if(!isInlineElement) {
-                removeClass(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText", "pageShadowBrightColorForceCustomTextLinkColor", "pageShadowHasBrightColorText");
+            } else {
+                removeClass(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText", "pageShadowBrightColorForceCustomTextLinkColor");
 
                 if (this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode && element.parentNode.closest) {
                     const closestBright = element.parentNode.closest(".pageShadowHasBrightColorBackground");
@@ -272,6 +259,20 @@ export default class PageAnalyzer {
                 addClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
             } else {
                 removeClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
+            }
+        }
+
+        // Text color
+        const isTextElement = this.isTextElement(element);
+
+        if (isTextElement) {
+            const textColor = window.getComputedStyle(element).color;
+            const hasBrightColor = this.elementHasBrightColor(textColor);
+
+            if (hasBrightColor && hasBrightColor[0]) {
+                addClass(element, "pageShadowHasBrightColorText");
+            } else {
+                removeClass(element, "pageShadowHasBrightColorText");
             }
         }
     }
