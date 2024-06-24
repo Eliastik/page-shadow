@@ -686,6 +686,7 @@ async function loadPreset(nb) {
 
         await browser.storage.local.set(finalRestoreObject);
         await migrateSettings();
+        sendMessageWithPromise({ "type": "updateSettingsCache" });
         sendMessageWithPromise({ "type": "updatePresetCache" });
 
         if(settingsRestored > 0) {

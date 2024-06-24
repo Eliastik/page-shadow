@@ -1192,6 +1192,7 @@ async function restoreSettings(object) {
 
     await browser.storage.local.set(finalRestoreObject);
     await migrateSettings();
+    sendMessageWithPromise({ "type": "updateSettingsCache" });
     sendMessageWithPromise({ "type": "updatePresetCache" });
 
     $("#updateAllFilters").attr("disabled", "disabled");
