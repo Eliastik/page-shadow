@@ -254,7 +254,7 @@ export default class PageAnalyzer {
                 } else {
                     addClass(element, "pageShadowHasBrightColorText");
                 }
-            } else {
+            } else if(!isInlineElement) {
                 removeClass(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText", "pageShadowBrightColorForceCustomTextLinkColor", "pageShadowHasBrightColorText");
 
                 if (this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode && element.parentNode.closest) {

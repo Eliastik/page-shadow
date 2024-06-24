@@ -656,17 +656,12 @@ async function loadPreset(nb) {
     const data = await browser.storage.local.get("presets");
 
     try {
-        let presets;
-
         if(data.presets == null || typeof(data.presets) == "undefined") {
             await setSettingItem("presets", defaultPresets);
             return "empty";
-        } else {
-            presets = data.presets;
         }
 
-        const namePreset = nb;
-        const preset = presets[namePreset];
+        const preset = await getPresetData(nb);
         let settingsRestored = 0;
 
         const settingsNames = JSON.parse(JSON.stringify(settingsToSavePresets));
@@ -727,6 +722,11 @@ async function getPresetData(nb) {
         }
 
         const settingsNames = JSON.parse(JSON.stringify(settingsToSavePresets));
+
+        // Migrate Invert bright colors
+        if (!preset["invertBrightColors"] && preset["invertEntirePage"] == "true") {
+            preset["invertBrightColors"] = "true";
+        }
 
         for(const key of settingsNames) {
             if(typeof(key) === "string") {

@@ -151,7 +151,7 @@ async function migrateSettings(filters) {
     }
 
     // Migrate Invert colors settings
-    if (!result.invertBrightColors) {
+    if (!result.invertBrightColors && result.invertEntirePage == "true") {
         setSettingItem("invertBrightColors", "true");
     }
 
