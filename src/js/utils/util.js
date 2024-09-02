@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem, migrateSettings } from "../storage.js";
 import browser from "webextension-polyfill";
-import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, permissionOrigin } from "../constants.js";
+import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, permissionOrigin, quotaBytesPerItemMargin } from "../constants.js";
 import { Sha256 } from "@aws-crypto/sha256-browser";
 
 function in_array(needle, haystack) {
@@ -1344,7 +1344,11 @@ async function isAutoEnable() {
         }
     }
 
-    return false;
+    return false;    
+}
+
+function lengthInUtf8Bytes(str) {
+    return new TextEncoder().encode(str).length;
 }
 
 function prepareDataForArchiveCloud(dataObj) {
@@ -1353,9 +1357,10 @@ function prepareDataForArchiveCloud(dataObj) {
     for (const key in dataObj) {
         if (typeof key === "string" && Object.prototype.hasOwnProperty.call(dataObj, key)) {
             const value = dataObj[key];
+            const valueSizeByte = lengthInUtf8Bytes(JSON.stringify(value));
 
-            if (JSON.stringify(value).length > browser.storage.sync.QUOTA_BYTES_PER_ITEM) {
-                const [type, chunks] = chunkValue(value);
+            if (valueSizeByte > browser.storage.sync.QUOTA_BYTES_PER_ITEM - quotaBytesPerItemMargin) {
+                const [type, chunks] = chunkValue(key, value);
 
                 for (let i = 0; i < chunks.length; i++) {
                     settingToSave[`${key}_${i}_${type}`] = chunks[i];
@@ -1413,23 +1418,36 @@ async function getCurrentArchiveCloud() {
     return restoredData;
 }
 
-function chunkString(str) {
+function chunkString(key, str, type) {
     const chunks = [];
-    const chunkSize = browser.storage.sync.QUOTA_BYTES_PER_ITEM - 500;
+    const maxBytesPerItem = browser.storage.sync.QUOTA_BYTES_PER_ITEM - quotaBytesPerItemMargin;
 
-    for(let i = 0; i < str.length; i += chunkSize) {
-        chunks.push(str.substring(i, i + chunkSize));
+    let i = 0;
+
+    while (str.length > 0) {
+        const finalKey = `${key}_${i++}_${type}`;
+        const maxValueBytes = maxBytesPerItem - lengthInUtf8Bytes(finalKey);
+
+        let counter = maxValueBytes;
+        let segment = str.substr(0, counter);
+
+        while (lengthInUtf8Bytes(JSON.stringify(segment)) > maxValueBytes) {
+            segment = str.substr(0, --counter);
+        }
+
+        chunks.push(segment);
+        str = str.substr(counter);
     }
 
     return chunks;
 }
 
-function chunkValue(value) {
+function chunkValue(key, value) {
     if(typeof value === "string") {
-        return ["string", chunkString(value)];
+        return ["string", chunkString(key, value, "string")];
     } else if(typeof value === "object") {
         const valueString = JSON.stringify(value);
-        return ["object", chunkString(valueString)];
+        return ["object", chunkString(key, valueString, "object")];
     } else {
         throw new Error("Unsupported data type");
     }
