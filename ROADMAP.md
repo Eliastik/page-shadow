@@ -136,6 +136,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Bugs to fix
 
+* [x] (Major) Still some errors with QUOTA_BYTES_PER_ITEM in cloud archive. The chunk method need to be fixed
 * [x] (Medium) Bug with fast apply mode and iframes + preset: iframe use global settings instead of preset settings from parent page
 * [ ] (Minor) Background gradient not detected as bright colors
 * [ ] (Minor) Fix transition white that disable some transitions?
