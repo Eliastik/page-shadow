@@ -1,7 +1,7 @@
 {
     "nav": {
         "toggleNavigation": "Toggle navigation",
-        "advancedSettings": "Advanced settings",
+        "advancedSettings": "Settings",
         "testPage": "Test page",
         "actual": "(current)"
     },

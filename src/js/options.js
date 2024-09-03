@@ -1257,7 +1257,7 @@ function restoreSettingsFile(event) {
         if(fileExtension == "json") {
             const filesize = event.target.files[0].size;
 
-            if(filesize <= 5000000) { // max size of 5 MB
+            if(filesize <= 100000000) { // max size of 100 MB
                 reader.readAsText(event.target.files[0]);
             } else {
                 $("#restoreErrorFilesize").fadeIn(500);

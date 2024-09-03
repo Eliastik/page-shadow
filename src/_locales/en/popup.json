@@ -7,16 +7,16 @@
         "loadPreset": "Load the selected preset",
         "settingsPresets": "Presets settings",
         "contrast": "Increase contrast",
-        "titleContrast": "Automatically adjust the graphical theme of the page to get the better possible contrast.",
+        "titleContrast": "Automatically adjust the graphical theme of the page to achieve the best possible contrast.",
         "themeSelect": "Color theme:",
         "theme": "Theme {{count}}",
         "customTheme": "Custom {{count}}",
-        "tileTheme": "Select a color theme used by this function. A theme includes a background color, a text color and a link color unified for each web page.",
+        "titleTheme": "Select a color theme used by this function. A theme includes a background color, a text color and a link color unified for each web page.",
         "previsualisationTheme": "Preview:",
         "previsualisationThemeText": "A text. <a href=\"#\" id=\"pageShadowLinkNotVisited\">A link</a>. <a href=\"#\" id=\"pageShadowLinkVisited\">A visited link</a>.",
         "disableImgBgColor": "Color the background of the images",
         "checkEnableBrightColorPreservation": "Preserve element colors",
-        "titleCheckEnableBrightColorPreservation": "Improves the rendering of the function by only replacing colors that are very close to white or very dark, and keeping the other colors.",
+        "titleCheckEnableBrightColorPreservation": "Improves the rendering of the function by replacing only very light or very dark colors, and preserving others colors.",
         "colorInvert": "Invert colors",
         "titleColorInvert": "Invert the colors of the images, the videos and/or of the entire page to better stand out on the dark theme.",
         "entirePageInvert": "Entire page",
@@ -26,7 +26,7 @@
         "selectiveInvert": "Selective",
         "invertBrightColors": "Colored elements",
         "selectiveInvertHelp": "Automatically invert certain elements (like logos) so that they display correctly on a dark theme of the Increase contrast feature. Based on the Filters functionality as well as automatic detection of dark images or images containing logo/text.",
-        "tileEntirePageInvert": "Invert the colors of the entire page.",
+        "titleEntirePageInvert": "Invert the colors of the entire page.",
         "brightness": "Decrease brightness",
         "titleBrightness": "Decrease the page brightness. You can choose the percentage of brightness decrease.",
         "percentage": "Percentage of brightness decrease:",
@@ -54,10 +54,10 @@
     },
     "modal": {
         "customThemeTitle": "Information",
-        "customThemeInfos": "To setup this custom theme, you have to go to the Advanced settings of Page Shadow.",
+        "customThemeInfos": "To setup this custom theme, you have to go to the Settings of Page Shadow.",
         "customThemeInfoDisable": "Don't show anymore",
         "close": "Close",
-        "AdvSettings": "Advanced settings",
+        "AdvSettings": "Extension settings",
         "archive": {
             "presetTitle": "Preset ",
             "presetEmpty": "Empty",
@@ -93,17 +93,17 @@
         "message": "Page Shadow has just been updated to version {{version}} dated {{date}}!",
         "whatsNew": "What's new?",
         "uiUpdated": "The extension's interface has been redesigned.",
-        "openAdvancedSettings": "Go to advanced settings",
+        "openAdvancedSettings": "Go to extension settings",
         "personnalize": "to customize your interface."
     },
     "createPresetModal": {
         "title": "Create preset",
         "modalTitle": "Title:",
         "infoLead": "The preset will be created with the current settings as displayed in this menu.",
-        "infoAdvanced": "More settings are available when creating/editing a preset in the Advanced settings"
+        "infoAdvanced": "More settings are available when creating/editing a preset in the Extension settings"
     },
     "footer": {
-        "advancedSettings": "Advanced settings",
+        "advancedSettings": "Extension settings",
         "testExtension": "Test the extension",
         "disableWebsite": "Disable for this website",
         "enableWebsite": "Disable for this website",
@@ -113,18 +113,18 @@
     },
     "modalArchiveInfo": {
         "title": "Advice",
-        "message": "It's recommended to make regular backups of your settings, to avoid their accidental loss. You can backup to your device locally (JSON file) or to the Cloud, from Advanced settings, under the Archive/restore tab.",
+        "message": "It's recommended to make regular archives of your settings, to avoid their accidental loss. You can do an archive to your device locally (JSON file) or to the Cloud, from Extension settings, under the Archive/restore tab.",
         "disable": "Don't show this advice again"
     },
     "modalPermissionsInfo": {
         "title": "Missing permission",
         "message": "For the extension to work properly, you need to allow access to data on all websites.",
-        "messageMin": "If you do not enable this permission, you will be able to use the extension. However, for the extension to be able to activate on the different websites, you will have to open the extension menu each time.",
+        "messageMin": "If you don't enable this permission, you will be able to use the extension. However, for the extension to be able to activate on the different websites, you will have to open the extension menu each time.",
         "enable": "Enable permission",
         "disable": "Don't show anymore"
     },
     "modalAutoBackupCloudLastFailedMessage": {
-        "title": "Error during automatic Cloud backup",
-        "message": "An error occurred during the last automatic Cloud backup of your settings. You can try backing up manually in the advanced settings. If the problem persists, check that your settings do not exceed the maximum quota allowed by this backup method, then try again. You can also perform a manual backup locally."
+        "title": "Error during automatic Cloud archive",
+        "message": "An error occurred during the last automatic Cloud archive of your settings. You can try to archive your settings manually in the extension settings. If the problem persists, check that your settings do not exceed the maximum quota allowed by this archive method, then try again. You can also perform a manual archive locally."
     }
 }
