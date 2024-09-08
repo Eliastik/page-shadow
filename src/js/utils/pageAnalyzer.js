@@ -121,28 +121,44 @@ export default class PageAnalyzer {
         return (hasNoBackgroundColorValue || isTransparentColor || (isRgbaColor && alpha <= this.websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasBackgroundImageValue;
     }
 
-    elementHasBrightColor(color) {
-        if(color) {
-            const hasGradient = color.trim().toLowerCase().indexOf("linear-gradient") != -1
-                || color.trim().toLowerCase().indexOf("radial-gradient") != -1 || color.trim().toLowerCase().indexOf("conic-gradient") != -1;
+    elementHasBrightColor(background, backgroundColor) {
+        if(background) {
+            const hasGradient = background && (background.trim().toLowerCase().indexOf("linear-gradient") != -1
+                || background.trim().toLowerCase().indexOf("radial-gradient") != -1 || background.trim().toLowerCase().indexOf("conic-gradient") != -1);
 
-            if(color.trim().startsWith("rgb")) {
-                const rgbValues = color.split("(")[1].split(")")[0];
-                const rgbValuesList = rgbValues.trim().split(",");
-                const hsl = rgb2hsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
+            if (hasGradient) {
+                const pattern = /rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)/g;
+                const matches = [...background.matchAll(pattern)];
+                const rgbValuesLists = matches.map(match => match.slice(1, 4).map(Number));
 
-                // If ligthness is between min and max values
-                if(hsl[2] >= this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMin
-                    && hsl[2] <= this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMax) {
-                    if(hsl[2] >= 0.5) {
-                        return [true, true];
+                for (const rgbValuesList of rgbValuesLists) {
+                    const isBrightColor = this.isBrightColor(rgbValuesList);
+
+                    if (isBrightColor && isBrightColor[0]) {
+                        return isBrightColor;
                     }
-
-                    return [true, false];
                 }
             }
+        }
 
-            return [hasGradient, false];
+        if(backgroundColor && backgroundColor.trim().startsWith("rgb")) {
+            const rgbValues = backgroundColor.split("(")[1].split(")")[0];
+            const rgbValuesList = rgbValues.trim().split(",");
+            return this.isBrightColor(rgbValuesList);
+        }
+    }
+
+    isBrightColor(rgbValuesList) {
+        const hsl = rgb2hsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
+
+        // If ligthness is between min and max values
+        if(hsl[2] >= this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMin
+            && hsl[2] <= this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMax) {
+            if(hsl[2] >= 0.5) {
+                return [true, true];
+            }
+
+            return [true, false];
         }
 
         return [false, false];
@@ -196,7 +212,7 @@ export default class PageAnalyzer {
         }
 
         if(this.websiteSpecialFiltersConfig.enableBrightColorDetection) {
-            this.detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, backgroundColor, element);
+            this.detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element);
         }
 
         if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes) {
@@ -226,10 +242,10 @@ export default class PageAnalyzer {
         return hasShallowChildren;
     }
 
-    detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, backgroundColor, element) {
+    detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element) {
         // Background color
         if (!transparentColorDetected && !hasTransparentBackgroundClass) {
-            const hasBrightColor = this.elementHasBrightColor(backgroundColor);
+            const hasBrightColor = this.elementHasBrightColor(background, backgroundColor);
 
             if (hasBrightColor && hasBrightColor[0]) {
                 addClass(element, "pageShadowHasBrightColorBackground");
@@ -267,7 +283,7 @@ export default class PageAnalyzer {
 
         if (isTextElement) {
             const textColor = window.getComputedStyle(element).color;
-            const hasBrightColor = this.elementHasBrightColor(textColor);
+            const hasBrightColor = this.elementHasBrightColor(textColor, textColor);
 
             if (hasBrightColor && hasBrightColor[0]) {
                 addClass(element, "pageShadowHasBrightColorText");
