@@ -124,22 +124,37 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Minor) Bug with error in filters: open errors from a built-in filter, then the errors from custom filter: the window will be blank (random)
 * [x] (Minor) Transition background color (background white) blink when Increase page contrast is enabled - Exemple: https://iq.opengenus.org/lstopo-in-linux/
 
-#### Release - Go (version 2.11)
+### Release - Next
 
-* [ ] Test on Chrome/Edge
-* [ ] Test on Firefox
+#### Features
 
-### Futures versions
+* [ ] Reduce delay applying reduce brightness/blue light reduction filter + invert entire page
+* [ ] Fix dark image detection (using contours detection?) + enable by default?
+    * [x] Optimize by reducing size of the image before analyze
+* [ ] Publish Manifestv3 for Firefox
+    * [ ] Fix Cloud backup on Firefox ; all other feature works
 
-* [ ] Publish Manifestv3 for Firefox + Tests
+#### Bugs to fix
 
-#### Common
+* [x] (Major) Still some errors with QUOTA_BYTES_PER_ITEM in cloud archive. The chunk method need to be fixed
+* [x] (Medium) Bug with fast apply mode and iframes + preset: iframe use global settings instead of preset settings from parent page
+* [x] (Minor) Background gradient not detected as bright colors
+* [x] (Minor) Fix transition white that disable some transitions? -> no, seems OK
+* [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
+
+#### Ideas
+
+* [x] Add possibility to change the filter intensity for the Attenuate colors feature?
+* [x] Add possibility to not invert bright color for the Invert colors features?
+* [x] Increase the number of presets/custom themes?
+* [ ] Detect bright color text + enable for bright color inversion/color reduction?
+
+### Common
 
 * [ ] FAQ for common questions?
 
-#### Planned/ideas
+### Planned/ideas
 
-* [ ] Increase the number of presets/custom themes?
 * [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
 * [ ] Improving codebase
     * [ ] Comment the code: doc for methods/functions
@@ -156,10 +171,9 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [ ] Store filters on a Github repository ?
 * [ ] Prevent the attenuation of subelements (when enabling Colored elements attenuation)?
 
-#### Known issues/bugs
+### Known issues/bugs
 
 * [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
-* [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
