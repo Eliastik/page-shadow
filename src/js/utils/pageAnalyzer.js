@@ -121,7 +121,7 @@ export default class PageAnalyzer {
         return (hasNoBackgroundColorValue || isTransparentColor || (isRgbaColor && alpha <= this.websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasBackgroundImageValue;
     }
 
-    elementHasBrightColor(background, backgroundColor) {
+    elementHasBrightColor(background, backgroundColor, isText) {
         if(background) {
             const hasGradient = background && (background.trim().toLowerCase().indexOf("linear-gradient") != -1
                 || background.trim().toLowerCase().indexOf("radial-gradient") != -1 || background.trim().toLowerCase().indexOf("conic-gradient") != -1);
@@ -132,7 +132,7 @@ export default class PageAnalyzer {
                 const rgbValuesLists = matches.map(match => match.slice(1, 4).map(Number));
 
                 for (const rgbValuesList of rgbValuesLists) {
-                    const isBrightColor = this.isBrightColor(rgbValuesList);
+                    const isBrightColor = this.isBrightColor(rgbValuesList, isText);
 
                     if (isBrightColor && isBrightColor[0]) {
                         return isBrightColor;
@@ -144,16 +144,18 @@ export default class PageAnalyzer {
         if(backgroundColor && backgroundColor.trim().startsWith("rgb")) {
             const rgbValues = backgroundColor.split("(")[1].split(")")[0];
             const rgbValuesList = rgbValues.trim().split(",");
-            return this.isBrightColor(rgbValuesList);
+            return this.isBrightColor(rgbValuesList, isText);
         }
     }
 
-    isBrightColor(rgbValuesList) {
+    isBrightColor(rgbValuesList, isText) {
         const hsl = rgb2hsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
 
         // If ligthness is between min and max values
-        if(hsl[2] >= this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMin
-            && hsl[2] <= this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMax) {
+        const minLightnessTreshold = isText ? this.websiteSpecialFiltersConfig.brightColorLightnessTresholdTextMin : this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMin;
+        const maxLightnessTreshold = this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMax;
+
+        if(hsl[2] >= minLightnessTreshold && hsl[2] <= maxLightnessTreshold) {
             if(hsl[2] >= 0.5) {
                 return [true, true];
             }
@@ -283,7 +285,7 @@ export default class PageAnalyzer {
 
         if (isTextElement) {
             const textColor = window.getComputedStyle(element).color;
-            const hasBrightColor = this.elementHasBrightColor(textColor, textColor);
+            const hasBrightColor = this.elementHasBrightColor(textColor, textColor, true);
 
             if (hasBrightColor && hasBrightColor[0]) {
                 addClass(element, "pageShadowHasBrightColorText");

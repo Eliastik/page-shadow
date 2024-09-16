@@ -229,6 +229,7 @@ export default class PageFilterProcessor {
                 if(type == "enableBrightColorDetection") websiteSpecialFiltersConfig.enableBrightColorDetection = true;
                 if(type == "disableBrightColorDetection") websiteSpecialFiltersConfig.enableBrightColorDetection = false;
                 if(type == "brightColorLightnessTresholdMin") websiteSpecialFiltersConfig.brightColorLightnessTresholdMin = rule.filter;
+                if(type == "brightColorLightnessTresholdTextMin") websiteSpecialFiltersConfig.brightColorLightnessTresholdTextMin = rule.filter;
                 if(type == "brightColorLightnessTresholdMax") websiteSpecialFiltersConfig.brightColorLightnessTresholdMax = rule.filter;
                 if(type == "enableThrottleBackgroundDetection") websiteSpecialFiltersConfig.throttleBackgroundDetection = true;
                 if(type == "disableThrottleBackgroundDetection") websiteSpecialFiltersConfig.throttleBackgroundDetection = false;
