@@ -97,8 +97,8 @@ export default class ContentProcessor {
         this.htmlClassBatcher = new ClassBatcher(document.getElementsByTagName("html")[0]);
     }
 
-    async applyContrastPage(init, pageShadowEnabled, theme, disableImgBgColor, brightColorPreservation, customThemesSettings) {
-        if (pageShadowEnabled != undefined && pageShadowEnabled == "true") {
+    async applyContrastPage(init, contrastPageEnabled, theme, disableImgBgColor, brightColorPreservation, customThemesSettings) {
+        if (contrastPageEnabled != undefined && contrastPageEnabled == "true") {
             if (theme != undefined) {
                 if(!init) {
                     this.resetContrastPage(theme, disableImgBgColor, brightColorPreservation);
