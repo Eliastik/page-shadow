@@ -68,7 +68,28 @@ function preApplyContrast(data, contentProcessor) {
 
     if(document.body && document.getElementsByTagName("html")[0] && !contentProcessor.started) {
         contentProcessor.setupClassBatchers();
-        contentProcessor.applyContrastPage(true, data.settings.pageShadowEnabled, data.settings.theme, "false", "false", data.customThemes);
+
+        // Pre-apply contrast, brightness, blue light filter and invert entire page
+        if (data.settings.pageShadowEnabled == "true") {
+            contentProcessor.applyContrastPage(true, data.settings.pageShadowEnabled, data.settings.theme, "false", "false", data.customThemes);
+        }
+
+        if (data.settings.pageLumEnabled == "true") {
+            contentProcessor.brightnessPage(data.settings.pageLumEnabled, data.settings.pourcentageLum);
+        }
+
+        if (data.settings.blueLightReductionEnabled == "true") {
+            contentProcessor.blueLightFilterPage(data.settings.blueLightReductionEnabled, data.settings.percentageBlueLightReduction, data.settings.colorTemp);
+        }
+
+        if (data.settings.colorInvert == "true" && data.settings.invertEntirePage == "true") {
+            contentProcessor.invertColor(data.settings.colorInvert, data.settings.invertImageColors, data.settings.invertEntirePage, data.settings.invertVideoColors, data.settings.invertBgColor, data.settings.selectiveInvert, null, null, null, null, null, null, data.settings.invertBrightColors);
+
+            contentProcessor.bodyClassBatcher.applyAdd();
+            contentProcessor.bodyClassBatcherRemover.applyRemove();
+            contentProcessor.htmlClassBatcher.applyAdd();
+        }
+
         contentProcessor.started = true;
 
         return true;
