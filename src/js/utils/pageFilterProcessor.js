@@ -231,6 +231,7 @@ export default class PageFilterProcessor {
                 if(type == "brightColorLightnessTresholdMin") websiteSpecialFiltersConfig.brightColorLightnessTresholdMin = rule.filter;
                 if(type == "brightColorLightnessTresholdTextMin") websiteSpecialFiltersConfig.brightColorLightnessTresholdTextMin = rule.filter;
                 if(type == "brightColorLightnessTresholdMax") websiteSpecialFiltersConfig.brightColorLightnessTresholdMax = rule.filter;
+                if(type == "brightColorSaturationTresholdTextMin") websiteSpecialFiltersConfig.brightColorSaturationTresholdTextMin = rule.filter;
                 if(type == "enableThrottleBackgroundDetection") websiteSpecialFiltersConfig.throttleBackgroundDetection = true;
                 if(type == "disableThrottleBackgroundDetection") websiteSpecialFiltersConfig.throttleBackgroundDetection = false;
                 if(type == "throttleBackgroundDetectionElementsTreatedByCall") websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall = rule.filter;

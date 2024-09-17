@@ -154,13 +154,20 @@ export default class PageAnalyzer {
         // If ligthness is between min and max values
         const minLightnessTreshold = isText ? this.websiteSpecialFiltersConfig.brightColorLightnessTresholdTextMin : this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMin;
         const maxLightnessTreshold = this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMax;
+        const minSaturationTreshold = this.websiteSpecialFiltersConfig.brightColorSaturationTresholdTextMin;
 
-        if(hsl[2] >= minLightnessTreshold && hsl[2] <= maxLightnessTreshold) {
-            if(hsl[2] >= 0.5) {
-                return [true, true];
+        if (isText) {
+            if(hsl[2] >= minLightnessTreshold && hsl[1] >= minSaturationTreshold) {
+                return [true, false];
             }
-
-            return [true, false];
+        } else {
+            if(hsl[2] >= minLightnessTreshold && hsl[2] <= maxLightnessTreshold) {
+                if(hsl[2] >= 0.5) {
+                    return [true, true];
+                }
+    
+                return [true, false];
+            }
         }
 
         return [false, false];
@@ -247,7 +254,7 @@ export default class PageAnalyzer {
     detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element) {
         // Background color
         if (!transparentColorDetected && !hasTransparentBackgroundClass) {
-            const hasBrightColor = this.elementHasBrightColor(background, backgroundColor);
+            const hasBrightColor = this.elementHasBrightColor(background, backgroundColor, false);
 
             if (hasBrightColor && hasBrightColor[0]) {
                 addClass(element, "pageShadowHasBrightColorBackground");
