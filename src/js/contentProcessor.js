@@ -20,10 +20,11 @@ import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningIn
 import { colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, ignoredElementsContentScript, attenuateDefaultValue } from "./constants.js";
 import SafeTimer from "./utils/safeTimer.js";
 import MutationObserverWrapper from "./utils/mutationObserver.js";
-import ClassBatcher from "./utils/classBatcher.js";
+import ElementClassBatcher from "./utils/elementClassBatcher.js";
 import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
 import PageAnalyzer from "./utils/pageAnalyzer.js";
 import PageFilterProcessor from "./utils/pageFilterProcessor.js";
+import MultipleElementClassBatcher from "./utils/multipleElementClassBatcher.js";
 
 /**
  * Main class used by the content script
@@ -72,12 +73,15 @@ export default class ContentProcessor {
     // Timers
     timerObserveBodyChange = null;
     timerObserveDocumentElementChange = null;
+    timerApplyMutationObserverClassChanges = null;
     applyWhenBodyIsAvailableTimer = null;
 
     // Batcher
     bodyClassBatcher;
     htmlClassBatcher;
     bodyClassBatcherRemover;
+    multipleElementClassBatcherAdd;
+    multipleElementClassBatcherRemove;
 
     // Page and Filter processors
     pageAnalyzer;
@@ -92,9 +96,11 @@ export default class ContentProcessor {
     }
 
     setupClassBatchers() {
-        this.bodyClassBatcher = new ClassBatcher(document.body);
-        this.bodyClassBatcherRemover = new ClassBatcher(document.body);
-        this.htmlClassBatcher = new ClassBatcher(document.getElementsByTagName("html")[0]);
+        this.bodyClassBatcher = new ElementClassBatcher(document.body);
+        this.bodyClassBatcherRemover = new ElementClassBatcher(document.body);
+        this.htmlClassBatcher = new ElementClassBatcher(document.getElementsByTagName("html")[0]);
+        this.multipleElementClassBatcherAdd = new MultipleElementClassBatcher();
+        this.multipleElementClassBatcherRemove = new MultipleElementClassBatcher();
     }
 
     async applyContrastPage(init, contrastPageEnabled, theme, disableImgBgColor, brightColorPreservation, customThemesSettings) {
@@ -147,7 +153,7 @@ export default class ContentProcessor {
     }
 
     resetContrastPage(themeException, disableImgBgColor, brightColorPreservation) {
-        const removeBatcherHTML = new ClassBatcher(document.getElementsByTagName("html")[0]);
+        const removeBatcherHTML = new ElementClassBatcher(document.getElementsByTagName("html")[0]);
 
         if(!themeException || !themeException.startsWith("custom")) {
             if(typeof this.lnkCustomTheme !== "undefined") this.lnkCustomTheme.setAttribute("href", "");
@@ -326,7 +332,9 @@ export default class ContentProcessor {
                 const timerBackgrounds = new SafeTimer(async() => {
                     timerBackgrounds.clear();
                     await this.pageAnalyzer.detectBackground(elements);
+
                     this.mutationObserve(this.MUTATION_TYPE_BACKGROUNDS);
+
                     resolve();
                 });
 
@@ -339,7 +347,9 @@ export default class ContentProcessor {
                             const timerBackgrounds = new SafeTimer(async() => {
                                 timerBackgrounds.clear();
                                 await this.pageAnalyzer.detectBackground(elements);
+
                                 this.mutationObserve(this.MUTATION_TYPE_BACKGROUNDS);
+                                
                                 resolve();
                             });
 
@@ -771,6 +781,19 @@ export default class ContentProcessor {
         }
     }
 
+    timerApplyMutationClassChanges() {
+        if(this.timerApplyMutationObserverClassChanges) this.timerApplyMutationObserverClassChanges.clear();
+
+        this.timerApplyMutationObserverClassChanges = new SafeTimer(async () => {
+            this.multipleElementClassBatcherAdd.applyAdd();
+            this.multipleElementClassBatcherRemove.applyRemove();
+
+            this.timerApplyMutationObserverClassChanges.start(100);
+        });
+
+        this.timerApplyMutationObserverClassChanges.start(100);
+    }
+
     async treatMutationObserverBackgroundCalls() {
         if(this.delayedMutationObserversCalls.length > 0) {
             let i = this.delayedMutationObserversCalls.length;
@@ -825,7 +848,10 @@ export default class ContentProcessor {
                 this.mutationObserverAddedNodes.push(nodeList);
             }
         } else if(mutation.type == "attributes") {
-            if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) this.pageAnalyzer.mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
+            if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
+                this.pageAnalyzer.mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
+            }
+
             this.filterProcessor.doProcessFilters(this.filtersCache, mutation.target, false);
         }
     }
@@ -857,7 +883,10 @@ export default class ContentProcessor {
         }
 
         for(const node of addedNodes) {
-            if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) this.pageAnalyzer.mutationForElement(node, null, null);
+            if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
+                this.pageAnalyzer.mutationForElement(node, null, null);
+            }
+
             this.filterProcessor.doProcessFilters(this.filtersCache, node, true);
         }
     }
@@ -908,12 +937,14 @@ export default class ContentProcessor {
         if(this.applyWhenBodyIsAvailableTimer) this.applyWhenBodyIsAvailableTimer.clear();
 
         this.applyWhenBodyIsAvailableTimer = new ApplyBodyAvailable(async() => {
-            this.pageAnalyzer = this.pageAnalyzer || new PageAnalyzer(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
-            this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer);
+            this.bodyClassBatcher = this.bodyClassBatcher || new ElementClassBatcher(document.body);
+            this.bodyClassBatcherRemover = this.bodyClassBatcherRemover || new ElementClassBatcher(document.body);
+            this.htmlClassBatcher = this.htmlClassBatcher || new ElementClassBatcher(document.getElementsByTagName("html")[0]);
+            this.multipleElementClassBatcherAdd = this.multipleElementClassBatcherAdd || new MultipleElementClassBatcher();
+            this.multipleElementClassBatcherRemove = this.multipleElementClassBatcherRemove || new MultipleElementClassBatcher();
 
-            this.bodyClassBatcher = this.bodyClassBatcher || new ClassBatcher(document.body);
-            this.bodyClassBatcherRemover = this.bodyClassBatcherRemover || new ClassBatcher(document.body);
-            this.htmlClassBatcher = this.htmlClassBatcher || new ClassBatcher(document.getElementsByTagName("html")[0]);
+            this.pageAnalyzer = this.pageAnalyzer || new PageAnalyzer(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove);
+            this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer);
 
             if(allowed) {
                 const settings = this.newSettingsToApply || await getSettings(getCurrentURL(), disableCache);
@@ -960,6 +991,7 @@ export default class ContentProcessor {
 
                     this.observeBodyChange();
                     this.observeDocumentElementChange();
+                    this.timerApplyMutationClassChanges();
 
                     if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true" || settings.attenuateColors == "true") {
                         if(type == this.TYPE_START || !this.pageAnalyzer.backgroundDetected) {

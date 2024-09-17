@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -16,11 +16,11 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { addClass, removeClass } from "../utils/util.js";
+import { addClass, removeClass } from "./util.js";
 /**
  * Class used to apply or remove CSS classes in batch to an element
  */
-export default class ClassBatcher {
+export default class ElementClassBatcher {
     element = null;
     classList = [];
 
