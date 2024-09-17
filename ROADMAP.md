@@ -132,6 +132,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Detect bright color text + enable for bright color inversion/color reduction?
 * [ ] Fix dark image detection (using contours detection?) + enable by default?
     * [x] Optimize by reducing size of the image before analyze
+* [ ] Optimize performance
 
 #### Bugs to fix
 
@@ -146,7 +147,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Add possibility to change the filter intensity for the Attenuate colors feature?
 * [x] Add possibility to not invert bright color for the Invert colors features?
 * [x] Increase the number of presets/custom themes?
-* [ ] Optimize performance
 
 ### Release - future
 
