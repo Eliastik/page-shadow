@@ -16,6 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+
+/* This is the dark theme of the extension interface. Not used on websites */
 body, html {
     background-color: #202124;
 }
