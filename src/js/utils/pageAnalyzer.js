@@ -195,7 +195,7 @@ export default class PageAnalyzer {
         const backgroundColor = computedStyle.getPropertyValue("background-color");
         const backgroundImage = computedStyle.getPropertyValue("background-image");
 
-        const hasBackgroundImg = background.trim().substr(0, 4).toLowerCase().includes("url(") || backgroundImage.trim().substr(0, 4).toLowerCase() == "url(";
+        const hasBackgroundImg = background.trim().substring(0, 4).toLowerCase().includes("url(") || backgroundImage.trim().substring(0, 4).toLowerCase() == "url(";
         const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
         const hasTransparentBackgroundClass = element.classList.contains("pageShadowHasTransparentBackground");
 
@@ -247,8 +247,9 @@ export default class PageAnalyzer {
         }
 
         const hasShallowChildren = Array.from(element.children).every(child => child.children.length === 0);
+        const notAllChildrenAreImg = Array.from(element.children).every(child => child.tagName.toLowerCase() !== "img");
     
-        return hasShallowChildren;
+        return hasShallowChildren && notAllChildrenAreImg;
     }
 
     detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element) {
