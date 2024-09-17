@@ -91,21 +91,24 @@ html.pageShadowInvertEntirePage body.pageShadowAttenuateVideoColor video.pageSha
 }
 
 // Bright color
-body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground:not(.pageShadowDisableElementInvert) {
+body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground:not(.pageShadowDisableElementInvert),
+body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert) {
     filter: var(--page-shadow-attenuate-filter) !important;
     -moz-filter: var(--page-shadow-attenuate-filter) !important;
     -o-filter: var(--page-shadow-attenuate-filter) !important;
     -webkit-filter: var(--page-shadow-attenuate-filter) !important;
 }
 
-html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground.pageShadowDisableElementInvert {
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground.pageShadowDisableElementInvert,
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorText.pageShadowDisableElementInvert {
     filter: var(--page-shadow-attenuate-filter) !important;
     -moz-filter: var(--page-shadow-attenuate-filter) !important;
     -o-filter: var(--page-shadow-attenuate-filter) !important;
     -webkit-filter: var(--page-shadow-attenuate-filter) !important;
 }
 
-html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground.pageShadowDisableElementInvert {
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground.pageShadowDisableElementInvert,
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorText.pageShadowDisableElementInvert {
     filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
     -moz-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
     -o-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
