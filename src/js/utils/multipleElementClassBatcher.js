@@ -31,7 +31,7 @@ export default class MultipleElementClassBatcher {
         const currentElement = this.classListsWithElement.find(v => v.element === element);
 
         if (currentElement) {
-            currentElement.classList = [...new Set(currentElement.classList, new Set(classList))];
+            currentElement.classList = [...new Set([...currentElement.classList, ...classList])];
         } else {
             this.classListsWithElement.push({
                 element,
