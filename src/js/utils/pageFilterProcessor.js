@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -24,8 +24,11 @@ import { addClass, addNewStyleAttribute } from "./util.js";
 export default class PageFilterProcessor {
     pageAnalyzer;
 
-    constructor(pageAnalyzer) {
+    multipleElementClassBatcherAdd = null;
+
+    constructor(pageAnalyzer, multipleElementClassBatcherAdd) {
         this.pageAnalyzer = pageAnalyzer;
+        this.multipleElementClassBatcherAdd = multipleElementClassBatcherAdd;
     }
 
     doProcessFilters(filters, element, applyToChildrens) {
@@ -79,101 +82,101 @@ export default class PageFilterProcessor {
                     filterTypes.forEach(filterType => {
                         switch(filterType) {
                         case "disableContrastFor":
-                            if(!element.classList.contains("pageShadowElementDisabled")) addClass(element, "pageShadowElementDisabled");
+                            if(!element.classList.contains("pageShadowElementDisabled")) this.multipleElementClassBatcherAdd.add(element, "pageShadowElementDisabled");
                             break;
                         case "forceTransparentBackground":
-                            if(!element.classList.contains("pageShadowElementForceTransparentBackground")) addClass(element, "pageShadowElementForceTransparentBackground");
+                            if(!element.classList.contains("pageShadowElementForceTransparentBackground")) this.multipleElementClassBatcherAdd.add(element, "pageShadowElementForceTransparentBackground");
                             break;
                         case "disableBackgroundStylingFor":
-                            if(!element.classList.contains("pageShadowDisableBackgroundStyling")) addClass(element, "pageShadowDisableBackgroundStyling");
+                            if(!element.classList.contains("pageShadowDisableBackgroundStyling")) this.multipleElementClassBatcherAdd.add(element, "pageShadowDisableBackgroundStyling");
                             break;
                         case "disableTextColorStylingFor":
-                            if(!element.classList.contains("pageShadowDisableColorStyling")) addClass(element, "pageShadowDisableColorStyling");
+                            if(!element.classList.contains("pageShadowDisableColorStyling")) this.multipleElementClassBatcherAdd.add(element, "pageShadowDisableColorStyling");
                             break;
                         case "disableInputBorderStylingFor":
-                            if(!element.classList.contains("pageShadowDisableInputBorderStyling")) addClass(element, "pageShadowDisableInputBorderStyling");
+                            if(!element.classList.contains("pageShadowDisableInputBorderStyling")) this.multipleElementClassBatcherAdd.add(element, "pageShadowDisableInputBorderStyling");
                             break;
                         case "forceInputBorderStylingFor":
-                            if(!element.classList.contains("pageShadowForceInputBorderStyling")) addClass(element, "pageShadowForceInputBorderStyling");
+                            if(!element.classList.contains("pageShadowForceInputBorderStyling")) this.multipleElementClassBatcherAdd.add(element, "pageShadowForceInputBorderStyling");
                             break;
                         case "disableLinkStylingFor":
-                            if(!element.classList.contains("pageShadowDisableLinkStyling")) addClass(element, "pageShadowDisableLinkStyling");
+                            if(!element.classList.contains("pageShadowDisableLinkStyling")) this.multipleElementClassBatcherAdd.add(element, "pageShadowDisableLinkStyling");
                             break;
                         case "disableFontFamilyStylingFor":
-                            if(!element.classList.contains("pageShadowDisableFontFamilyStyling")) addClass(element, "pageShadowDisableFontFamilyStyling");
+                            if(!element.classList.contains("pageShadowDisableFontFamilyStyling")) this.multipleElementClassBatcherAdd.add(element, "pageShadowDisableFontFamilyStyling");
                             break;
                         case "forceFontFamilyStylingFor":
-                            if(!element.classList.contains("pageShadowForceFontFamilyStyling")) addClass(element, "pageShadowForceFontFamilyStyling");
+                            if(!element.classList.contains("pageShadowForceFontFamilyStyling")) this.multipleElementClassBatcherAdd.add(element, "pageShadowForceFontFamilyStyling");
                             break;
                         case "disableElementInvertFor":
-                            if(!element.classList.contains("pageShadowDisableElementInvert")) addClass(element, "pageShadowDisableElementInvert");
+                            if(!element.classList.contains("pageShadowDisableElementInvert")) this.multipleElementClassBatcherAdd.add(element, "pageShadowDisableElementInvert");
                             break;
                         case "hasBackgroundImg":
-                            if(!element.classList.contains("pageShadowHasBackgroundImg")) addClass(element, "pageShadowHasBackgroundImg");
+                            if(!element.classList.contains("pageShadowHasBackgroundImg")) this.multipleElementClassBatcherAdd.add(element, "pageShadowHasBackgroundImg");
                             break;
                         case "forceCustomLinkColorFor":
-                            if(!element.classList.contains("pageShadowForceCustomLinkColor")) addClass(element, "pageShadowForceCustomLinkColor");
+                            if(!element.classList.contains("pageShadowForceCustomLinkColor")) this.multipleElementClassBatcherAdd.add(element, "pageShadowForceCustomLinkColor");
                             break;
                         case "forceCustomBackgroundColorFor":
-                            if(!element.classList.contains("pageShadowForceCustomBackgroundColor")) addClass(element, "pageShadowForceCustomBackgroundColor");
+                            if(!element.classList.contains("pageShadowForceCustomBackgroundColor")) this.multipleElementClassBatcherAdd.add(element, "pageShadowForceCustomBackgroundColor");
                             break;
                         case "forceCustomTextColorFor":
-                            if(!element.classList.contains("pageShadowForceCustomTextColor")) addClass(element, "pageShadowForceCustomTextColor");
+                            if(!element.classList.contains("pageShadowForceCustomTextColor")) this.multipleElementClassBatcherAdd.add(element, "pageShadowForceCustomTextColor");
                             break;
                         case "forceCustomVisitedLinkColor":
-                            if(!element.classList.contains("pageShadowForceCustomVisitedLinkColor")) addClass(element, "pageShadowForceCustomVisitedLinkColor");
+                            if(!element.classList.contains("pageShadowForceCustomVisitedLinkColor")) this.multipleElementClassBatcherAdd.add(element, "pageShadowForceCustomVisitedLinkColor");
                             break;
                         case "disableCustomVisitedLinkColor":
-                            if(!element.classList.contains("pageShadowDisableCustomVisitedLinkColor")) addClass(element, "pageShadowDisableCustomVisitedLinkColor");
+                            if(!element.classList.contains("pageShadowDisableCustomVisitedLinkColor")) this.multipleElementClassBatcherAdd.add(element, "pageShadowDisableCustomVisitedLinkColor");
                             break;
                         case "forceCustomLinkColorAsBackground":
-                            if(!element.classList.contains("pageShadowForceCustomLinkColorAsBackground")) addClass(element, "pageShadowForceCustomLinkColorAsBackground");
+                            if(!element.classList.contains("pageShadowForceCustomLinkColorAsBackground")) this.multipleElementClassBatcherAdd.add(element, "pageShadowForceCustomLinkColorAsBackground");
                             break;
                         case "forceCustomTextColorAsBackground":
-                            if(!element.classList.contains("pageShadowForceCustomTextColorAsBackground")) addClass(element, "pageShadowForceCustomTextColorAsBackground");
+                            if(!element.classList.contains("pageShadowForceCustomTextColorAsBackground")) this.multipleElementClassBatcherAdd.add(element, "pageShadowForceCustomTextColorAsBackground");
                             break;
                         case "forceCustomLinkVisitedColorAsBackground":
-                            if(!element.classList.contains("pageShadowForceCustomLinkVisitedColorAsBackground")) addClass(element, "pageShadowForceCustomLinkVisitedColorAsBackground");
+                            if(!element.classList.contains("pageShadowForceCustomLinkVisitedColorAsBackground")) this.multipleElementClassBatcherAdd.add(element, "pageShadowForceCustomLinkVisitedColorAsBackground");
                             break;
                         case "enablePseudoElementsStyling":
-                            if(!element.classList.contains("pageShadowEnablePseudoElementStyling")) addClass(element, "pageShadowEnablePseudoElementStyling");
+                            if(!element.classList.contains("pageShadowEnablePseudoElementStyling")) this.multipleElementClassBatcherAdd.add(element, "pageShadowEnablePseudoElementStyling");
                             break;
                         case "invertElementAsImage":
-                            if(!element.classList.contains("pageShadowInvertElementAsImage")) addClass(element, "pageShadowInvertElementAsImage");
+                            if(!element.classList.contains("pageShadowInvertElementAsImage")) this.multipleElementClassBatcherAdd.add(element, "pageShadowInvertElementAsImage");
                             break;
                         case "invertElementAsVideo":
-                            if(!element.classList.contains("pageShadowInvertElementAsVideo")) addClass(element, "pageShadowInvertElementAsVideo");
+                            if(!element.classList.contains("pageShadowInvertElementAsVideo")) this.multipleElementClassBatcherAdd.add(element, "pageShadowInvertElementAsVideo");
                             break;
                         case "invertElementAsBackground":
-                            if(!element.classList.contains("pageShadowInvertElementAsBackground")) addClass(element, "pageShadowInvertElementAsBackground");
+                            if(!element.classList.contains("pageShadowInvertElementAsBackground")) this.multipleElementClassBatcherAdd.add(element, "pageShadowInvertElementAsBackground");
                             break;
                         case "enableSelectiveInvert":
-                            if(!element.classList.contains("pageShadowSelectiveInvert")) addClass(element, "pageShadowSelectiveInvert");
+                            if(!element.classList.contains("pageShadowSelectiveInvert")) this.multipleElementClassBatcherAdd.add(element, "pageShadowSelectiveInvert");
                             break;
                         case "enablePseudoElementSelectiveInvert":
-                            if(!element.classList.contains("pageShadowSelectiveInvertPseudoElement")) addClass(element, "pageShadowSelectiveInvertPseudoElement");
+                            if(!element.classList.contains("pageShadowSelectiveInvertPseudoElement")) this.multipleElementClassBatcherAdd.add(element, "pageShadowSelectiveInvertPseudoElement");
                             break;
                         case "invertPseudoElement":
-                            if(!element.classList.contains("pageShadowInvertPseudoElement")) addClass(element, "pageShadowInvertPseudoElement");
+                            if(!element.classList.contains("pageShadowInvertPseudoElement")) this.multipleElementClassBatcherAdd.add(element, "pageShadowInvertPseudoElement");
                             break;
                         case "forceDisableDefaultBackgroundColor": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultBackgroundColor")) {
                                 addNewStyleAttribute(element, "background-color: unset !important");
-                                addClass(element, "pageShadowforceDisableDefaultBackgroundColor");
+                                this.multipleElementClassBatcherAdd.add(element, "pageShadowforceDisableDefaultBackgroundColor");
                             }
                             break;
                         }
                         case "forceDisableDefaultBackground": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultBackground")) {
                                 addNewStyleAttribute(element, "background: unset !important");
-                                addClass(element, "pageShadowforceDisableDefaultBackground");
+                                this.multipleElementClassBatcherAdd.add(element, "pageShadowforceDisableDefaultBackground");
                             }
                             break;
                         }
                         case "forceDisableDefaultFontColor": {
                             if(!element.classList.contains("pageShadowforceDisableDefaultFontColor")) {
                                 addNewStyleAttribute(element, "color: unset !important");
-                                addClass(element, "pageShadowforceDisableDefaultFontColor");
+                                this.multipleElementClassBatcherAdd.add(element, "pageShadowforceDisableDefaultFontColor");
                             }
                             break;
                         }
@@ -182,7 +185,7 @@ export default class PageFilterProcessor {
                             if(element.shadowRoot != null) this.pageAnalyzer.processShadowRoot(element);
                             break;
                         case "preserveBrightColor":
-                            if(!element.classList.contains("pageShadowHasBrightColorBackground")) addClass(element, "pageShadowHasBrightColorBackground");
+                            if(!element.classList.contains("pageShadowHasBrightColorBackground")) this.multipleElementClassBatcherAdd.add(element, "pageShadowHasBrightColorBackground");
                             break;
                         }
                     });

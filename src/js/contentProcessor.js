@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -788,10 +788,10 @@ export default class ContentProcessor {
             this.multipleElementClassBatcherAdd.applyAdd();
             this.multipleElementClassBatcherRemove.applyRemove();
 
-            this.timerApplyMutationObserverClassChanges.start(100);
+            this.timerApplyMutationObserverClassChanges.start(50);
         });
 
-        this.timerApplyMutationObserverClassChanges.start(100);
+        this.timerApplyMutationObserverClassChanges.start(50);
     }
 
     async treatMutationObserverBackgroundCalls() {
@@ -944,7 +944,7 @@ export default class ContentProcessor {
             this.multipleElementClassBatcherRemove = this.multipleElementClassBatcherRemove || new MultipleElementClassBatcher();
 
             this.pageAnalyzer = this.pageAnalyzer || new PageAnalyzer(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove);
-            this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer);
+            this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer, this.multipleElementClassBatcherAdd);
 
             if(allowed) {
                 const settings = this.newSettingsToApply || await getSettings(getCurrentURL(), disableCache);

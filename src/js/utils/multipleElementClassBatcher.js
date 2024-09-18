@@ -16,43 +16,47 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+
 import { addClass, removeClass } from "./util.js";
+
 /**
  * Class used to apply or remove CSS classes in batch to one or multiple elements
  */
 export default class MultipleElementClassBatcher {
     classListsWithElement = [];
+    
+    maxElementsTreatedByCall = 800;
 
     add(element, ...classList) {
         const currentElement = this.classListsWithElement.find(v => v.element === element);
 
         if (currentElement) {
-            currentElement.classList.push(...classList);
+            currentElement.classList = [...new Set(currentElement.classList, new Set(classList))];
         } else {
             this.classListsWithElement.push({
                 element,
-                classList: [...classList]
+                classList: [...new Set(classList)]
             });
         }
     }
 
     removeAll() {
-        this.classListWithElement = [];
+        this.classListsWithElement = [];
     }
 
     applyAdd() {
-        this.classListsWithElement.forEach(classListWithElement => {
-            addClass(classListWithElement.element, ...classListWithElement.classList);
-        });
+        for (let i = 0; i < this.maxElementsTreatedByCall && i < this.classListsWithElement.length; i++) {
+            const classListWithElement = this.classListsWithElement.shift();
 
-        this.removeAll();
+            addClass(classListWithElement.element, ...classListWithElement.classList);
+        }
     }
 
     applyRemove() {
-        this.classListsWithElement.forEach(classListWithElement => {
+        for (let i = 0; i < this.maxElementsTreatedByCall && i < this.classListsWithElement.length; i++) {
+            const classListWithElement = this.classListsWithElement.shift();
+            
             removeClass(classListWithElement.element, ...classListWithElement.classList);
-        });
-
-        this.removeAll();
+        }
     }
 }
