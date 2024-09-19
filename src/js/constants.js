@@ -299,6 +299,41 @@ const permissionOrigin = [
 // Max size used to detect dark image. If the image size is above this size, we resize the image before analyze
 const maxImageSizeDarkImageDetection = 150;
 
+// Margin used to calculate the max quota bytes per item limit in cloud backup
 const quotaBytesPerItemMargin = 100;
 
-export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, regexpDetectionPatternHighlight, ignoredElementsContentScript, failedUpdateAutoReupdateDelay, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue, archiveInfoShowInterval, defaultSettings, settingsToLoad, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, pageShadowClassListsMutationsIgnore, permissionOrigin, customThemesKey, disabledWebsitesKey, whitelistKey, attenuateDefaultValue, maxImageSizeDarkImageDetection, quotaBytesPerItemMargin };
+// Map between filters and applied class
+const mapFiltersCSSClass = {
+    "disableContrastFor": "pageShadowElementDisabled",
+    "forceTransparentBackground": "pageShadowElementForceTransparentBackground",
+    "disableBackgroundStylingFor": "pageShadowDisableBackgroundStyling",
+    "disableTextColorStylingFor": "pageShadowDisableColorStyling",
+    "disableInputBorderStylingFor": "pageShadowDisableInputBorderStyling",
+    "forceInputBorderStylingFor": "pageShadowForceInputBorderStyling",
+    "disableLinkStylingFor": "pageShadowDisableLinkStyling",
+    "disableFontFamilyStylingFor": "pageShadowDisableFontFamilyStyling",
+    "forceFontFamilyStylingFor": "pageShadowForceFontFamilyStyling",
+    "disableElementInvertFor": "pageShadowDisableElementInvert",
+    "hasBackgroundImg": "pageShadowHasBackgroundImg",
+    "forceCustomLinkColorFor": "pageShadowForceCustomLinkColor",
+    "forceCustomBackgroundColorFor": "pageShadowForceCustomBackgroundColor",
+    "forceCustomTextColorFor": "pageShadowForceCustomTextColor",
+    "forceCustomVisitedLinkColor": "pageShadowForceCustomVisitedLinkColor",
+    "disableCustomVisitedLinkColor": "pageShadowDisableCustomVisitedLinkColor",
+    "forceCustomLinkColorAsBackground": "pageShadowForceCustomLinkColorAsBackground",
+    "forceCustomTextColorAsBackground": "pageShadowForceCustomTextColorAsBackground",
+    "forceCustomLinkVisitedColorAsBackground": "pageShadowForceCustomLinkVisitedColorAsBackground",
+    "enablePseudoElementsStyling": "pageShadowEnablePseudoElementStyling",
+    "invertElementAsImage": "pageShadowInvertElementAsImage",
+    "invertElementAsVideo": "pageShadowInvertElementAsVideo",
+    "invertElementAsBackground": "pageShadowInvertElementAsBackground",
+    "enableSelectiveInvert": "pageShadowSelectiveInvert",
+    "enablePseudoElementSelectiveInvert": "pageShadowSelectiveInvertPseudoElement",
+    "invertPseudoElement": "pageShadowInvertPseudoElement",
+    "forceDisableDefaultBackgroundColor": "pageShadowforceDisableDefaultBackgroundColor",
+    "forceDisableDefaultBackground": "pageShadowforceDisableDefaultBackground",
+    "forceDisableDefaultFontColor": "pageShadowforceDisableDefaultFontColor",
+    "preserveBrightColor": "pageShadowHasBrightColorBackground"
+};
+
+export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, regexpDetectionPatternHighlight, ignoredElementsContentScript, failedUpdateAutoReupdateDelay, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue, archiveInfoShowInterval, defaultSettings, settingsToLoad, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, pageShadowClassListsMutationsIgnore, permissionOrigin, customThemesKey, disabledWebsitesKey, whitelistKey, attenuateDefaultValue, maxImageSizeDarkImageDetection, quotaBytesPerItemMargin, mapFiltersCSSClass };
