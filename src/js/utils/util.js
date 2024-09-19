@@ -1147,20 +1147,6 @@ function addNewStyleAttribute(element, styleToAdd) {
     element.setAttribute("style", newStyleAttribute);
 }
 
-function removeStyleAttribute(element, styleToRemove) {
-    const oldStyleAttribute = element.getAttribute("style");
-    if (!oldStyleAttribute) return;
-    const stylesArray = oldStyleAttribute.split(";").map(s => s.trim()).filter(s => s.length > 0);
-    const newStylesArray = stylesArray.filter(style => !style.startsWith(styleToRemove.split(":")[0].trim()));
-    const newStyleAttribute = newStylesArray.join("; ");
-
-    if (newStyleAttribute.trim() === "") {
-        element.removeAttribute("style");
-    } else {
-        element.setAttribute("style", newStyleAttribute);
-    }
-}
-
 function isRunningInPopup() {
     try {
         return window.opener && window.opener !== window;
@@ -1636,4 +1622,4 @@ async function backgroundImageToImage(element) {
     return image;
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefined, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud, removeStyleAttribute };
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefined, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud };

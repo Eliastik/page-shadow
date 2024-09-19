@@ -90,7 +90,6 @@
             "enableDarkImageDetection": "Activer la détection des images/arrières-plan avec couleurs sombres",
             "darkImageDetectionHslTreshold": "Seuil de détection d'un pixel d'image comme étant sombre",
             "darkImageDetectionDarkPixelCountTreshold": "Pourcentage de pixels détectés comme étant sombres pour activer l'inversion sélective d'une image",
-            "enableNotMatchingFiltersDetection": "Activer la détection des éléments ne correspondant plus aux filtres",
             "help": {
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrière-plans des éléments.",
                 "autoDetectTransparentBackgroundEnabled": "Active la détection des arrière-plans transparents. Désactiver cette fonctionnalité peut provoquer de nombreux problèmes d'affichage.",
@@ -123,8 +122,7 @@
                 "enableBrightColorDetectionSubelement": "Active le traitement des sous-éléments des éléments avec couleurs vives. Désactiver cette option peut potentiellement améliorer les performances, mais des problèmes d'affichage peuvent se produire sur certains sites en utilisant la fonction de préservation des éléments avec couleurs vives.",
                 "enableDarkImageDetection": "Active la détection des images/arrières-plans comportant un grand nombre de couleurs sombres (comme par exemple les textes et logos), afin d'inverser leurs couleurs si le paramètre Inverser les couleurs > Sélectif est activé par l'utilisateur. Désactiver cette option améliore les performances.",
                 "darkImageDetectionHslTreshold": "Si un pixel a une valeur de luminosité inférieure à ce seuil, le pixel sera considéré comme sombre. La valeur maximale est 1, la valeur minimale est 0 (pourcentage).",
-                "darkImageDetectionDarkPixelCountTreshold": "Si le nombre de pixels considérés comme sombre est supérieur à ce pourcentage, l'image sera inversée si l'utilisateur a activé le paramètre Inverser les couleurs > Sélectif. La valeur est en pourcentage décimal (multiplier par 100 pour avoir le pourcentage) correspondant au ratio du nombre de pixels sur le nombre de pixels considérés comme sombres.",
-                "enableNotMatchingFiltersDetection": "Si un élément ne correspond plus à l'un des filtres qui lui a été appliqué précédemment, le filtre est retiré de l'élément. Activer cette option peut réduire les performances et augmenter la consommation de mémoire, car Page Shadow doit stocker les informations sur les éléments qui correspondaient précédemment à un filtre donné."
+                "darkImageDetectionDarkPixelCountTreshold": "Si le nombre de pixels considérés comme sombre est supérieur à ce pourcentage, l'image sera inversée si l'utilisateur a activé le paramètre Inverser les couleurs > Sélectif. La valeur est en pourcentage décimal (multiplier par 100 pour avoir le pourcentage) correspondant au ratio du nombre de pixels sur le nombre de pixels considérés comme sombres."
             }
         },
         "saved": "Sauvegardé !"

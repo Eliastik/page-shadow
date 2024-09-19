@@ -897,7 +897,7 @@ export default class ContentProcessor {
 
             if(response.filters) {
                 this.filtersCache = response.filters;
-                this.filterProcessor.processSpecialRules(response.specialFilters);
+                this.filterProcessor.processSpecialRules(response.specialFilters, this.websiteSpecialFiltersConfig);
             }
         }
 
@@ -944,7 +944,7 @@ export default class ContentProcessor {
             this.multipleElementClassBatcherRemove = this.multipleElementClassBatcherRemove || new MultipleElementClassBatcher();
 
             this.pageAnalyzer = this.pageAnalyzer || new PageAnalyzer(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove);
-            this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove, this.websiteSpecialFiltersConfig);
+            this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer, this.multipleElementClassBatcherAdd);
 
             if(allowed) {
                 const settings = this.newSettingsToApply || await getSettings(getCurrentURL(), disableCache);
@@ -987,7 +987,7 @@ export default class ContentProcessor {
                     this.blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
 
                     const specialRules = await sendMessageWithPromise({ "type": "getSpecialRules" }, "getSpecialRulesResponse");
-                    this.filterProcessor.processSpecialRules(specialRules.filters);
+                    this.filterProcessor.processSpecialRules(specialRules.filters, this.websiteSpecialFiltersConfig);
 
                     this.observeBodyChange();
                     this.observeDocumentElementChange();

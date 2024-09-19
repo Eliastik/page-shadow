@@ -140,7 +140,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Medium) Bug with fast apply mode and iframes + preset: iframe use global settings instead of preset settings from parent page
 * [x] (Minor) Background gradient not detected as bright colors
 * [x] (Minor) Fix transition white that disable some transitions? -> no, seems OK
-* [x] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element -> disabled by default
 * [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
 
 #### Ideas
@@ -177,6 +176,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 ### Known issues/bugs
 
+* [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
