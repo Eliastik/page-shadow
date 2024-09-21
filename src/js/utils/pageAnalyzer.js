@@ -272,7 +272,7 @@ export default class PageAnalyzer {
             const hasBrightColor = this.elementHasBrightColor(background, backgroundColor, false);
 
             if (hasBrightColor && hasBrightColor[0]) {
-                this.multipleElementClassBatcherAdd.add(element, "pageShadowHasBrightColorBackground");
+                addClass(element, "pageShadowHasBrightColorBackground");
 
                 if (hasBrightColor[1]) {
                     this.multipleElementClassBatcherAdd.add(element, "pageShadowBrightColorWithBlackText");
@@ -288,7 +288,7 @@ export default class PageAnalyzer {
                     const closestBright = element.parentNode.closest(".pageShadowHasBrightColorBackground");
 
                     if (closestBright && closestBright != document.body) {
-                        this.multipleElementClassBatcherAdd.add(element, "pageShadowBrightColorForceCustomTextLinkColor");
+                        addClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
                     }
                 }
             }
@@ -296,7 +296,7 @@ export default class PageAnalyzer {
             const closestForceCustom = element.parentNode.closest(".pageShadowBrightColorForceCustomTextLinkColor");
 
             if (closestForceCustom && closestForceCustom != document.body) {
-                this.multipleElementClassBatcherAdd.add(element, "pageShadowBrightColorForceCustomTextLinkColor");
+                addClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
             } else {
                 this.multipleElementClassBatcherRemove.add(element, "pageShadowBrightColorForceCustomTextLinkColor");
             }
