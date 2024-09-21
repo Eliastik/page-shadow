@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 
 import { mapFiltersCSSClass } from "../constants.js";
-import { addNewStyleAttribute, removeStyleAttribute } from "./util.js";
+import { addNewStyleAttribute, removeStyleAttribute, sha256 } from "./util.js";
 
 /**
  * Class used to process the filter rules
@@ -30,7 +30,7 @@ export default class PageFilterProcessor {
     multipleElementClassBatcherRemove = null;
     websiteSpecialFiltersConfig = null;
 
-    filterMatchingHistory = [];
+    filterMatchingHistory = new Map();
 
     constructor(pageAnalyzer, multipleElementClassBatcherAdd, multipleElementClassBatcherRemove, websiteSpecialFiltersConfig) {
         this.pageAnalyzer = pageAnalyzer;
@@ -39,16 +39,23 @@ export default class PageFilterProcessor {
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
     }
 
-    doProcessFilters(filters, element, applyToChildrens) {
+    async doProcessFilters(filters, element, applyToChildrens) {
         if(!filters) return;
+
+        const enableNotMatchingFiltersDetection = this.websiteSpecialFiltersConfig.enableNotMatchingFiltersDetection;
 
         for(const filter of filters) {
             const selector = filter.filter;
             const filterTypes = filter.type.split(",");
-            const previousMatched = this.filterMatchingHistory.find(v => v.element === element && v.selector === selector && !v.children);
 
             const elementsNotMatching = [];
             let elementsMatching = [];
+
+            let filterHash = "";
+
+            if (enableNotMatchingFiltersDetection) {
+                filterHash = await sha256(selector);
+            }
 
             try {
                 elementsMatching = (element ? [element] : (selector && selector.trim() === "body" ? [document.body] : document.body.querySelectorAll(selector)));
@@ -61,19 +68,33 @@ export default class PageFilterProcessor {
                     try {
                         if(element.matches) {
                             if (element.matches(selector)) {
-                                if (this.enableNotMatchingFiltersDetection.enableNotMatchingFiltersDetection) {
-                                    this.filterMatchingHistory.push({
+                                if (enableNotMatchingFiltersDetection) {
+                                    const newValue = {
                                         element,
-                                        selector,
                                         children: false
-                                    });
+                                    };
+
+                                    const currentValue = this.filterMatchingHistory.get(filterHash);
+
+                                    if (currentValue) {
+                                        currentValue.push(newValue);
+                                    } else {
+                                        this.filterMatchingHistory.set(filterHash, [newValue]);
+                                    }
+
                                 }
                             } else {
                                 elementsMatching = [];
 
-                                if (this.enableNotMatchingFiltersDetection.enableNotMatchingFiltersDetection && previousMatched) {
-                                    elementsNotMatching.push(element);
-                                    this.filterMatchingHistory.splice(previousMatched, 1);
+                                if (enableNotMatchingFiltersDetection) {
+                                    const previousMatchedFilter = this.filterMatchingHistory.get(filterHash);
+                                    const previousMatched = previousMatchedFilter
+                                        .find(v => v.element === element && !v.children);
+
+                                    if (previousMatched) {
+                                        elementsNotMatching.push(element);
+                                        previousMatchedFilter.splice(previousMatched, 1);
+                                    }
                                 }
                             }
                         }
@@ -88,24 +109,36 @@ export default class PageFilterProcessor {
                     if(elementChildrens && elementChildrens.length > 0) {
                         for(let i = 0, len = elementChildrens.length; i < len; i++) {
                             const childrenElement = elementChildrens[i];
-                            const previousMatchedChildren = this.filterMatchingHistory.find(v => v.element === childrenElement && v.selector === selector && v.children);
 
                             try {
                                 if(childrenElement.matches) {
                                     if (childrenElement.matches(selector)) {
                                         elementsMatching.push(childrenElement);
 
-                                        if (this.enableNotMatchingFiltersDetection.enableNotMatchingFiltersDetection) {
-                                            this.filterMatchingHistory.push({
+                                        if (enableNotMatchingFiltersDetection) {
+                                            const newValue = {
                                                 childrenElement,
-                                                selector,
                                                 children: true
-                                            });
+                                            };
+        
+                                            const currentValue = this.filterMatchingHistory.get(filterHash);
+        
+                                            if (currentValue) {
+                                                currentValue.push(newValue);
+                                            } else {
+                                                this.filterMatchingHistory.set(filterHash, [newValue]);
+                                            }
                                         }
                                     } else {
-                                        if (previousMatchedChildren && this.enableNotMatchingFiltersDetection.enableNotMatchingFiltersDetection) {
-                                            elementsNotMatching.push(childrenElement);
-                                            this.filterMatchingHistory.splice(previousMatchedChildren, 1);
+                                        if (enableNotMatchingFiltersDetection) {
+                                            const previousMatchedFilter = this.filterMatchingHistory.get(filterHash);
+                                            const previousMatchedChildren = previousMatchedFilter
+                                                .find(v => v.element === childrenElement && v.children);
+
+                                            if (previousMatchedChildren) {
+                                                elementsNotMatching.push(childrenElement);
+                                                previousMatchedFilter.splice(previousMatchedChildren, 1);
+                                            }
                                         }
                                     }
                                 }
