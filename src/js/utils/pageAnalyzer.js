@@ -57,17 +57,25 @@ export default class PageAnalyzer {
         return new Promise(resolve => {
             if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
                 const detectBackgroundTimer = new SafeTimer(() => {
+                    const throttledBackgroundDetection = this.websiteSpecialFiltersConfig.throttleBackgroundDetection || this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay > 0;
+
                     addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
+
                     this.detectBackgroundForElement(document.body, true);
-                    removeClass(document.body, "pageShadowDisableBackgroundStyling");
+
+                    if (throttledBackgroundDetection) {
+                        removeClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
+                    } else {
+                        removeClass(document.body, "pageShadowDisableBackgroundStyling");
+                    }
 
                     const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
                     const elementsLength = elements.length;
                     let index = 0;
 
-                    if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection || this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay > 0) {
+                    if(throttledBackgroundDetection) {
                         const throttledBackgroundDetectionTimer = new SafeTimer(() => {
-                            index = this.detectBackgroundLoop(elements, index, elementsLength);
+                            index = this.detectBackgroundLoop(elements, index, elementsLength, false);
 
                             if(index >= elementsLength) {
                                 detectBackgroundTimer.clear();
@@ -79,7 +87,7 @@ export default class PageAnalyzer {
 
                         throttledBackgroundDetectionTimer.start(this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay);
                     } else {
-                        this.detectBackgroundLoop(elements, index, elementsLength);
+                        this.detectBackgroundLoop(elements, index, elementsLength, true);
                         detectBackgroundTimer.clear();
                         resolve();
                     }
@@ -94,9 +102,9 @@ export default class PageAnalyzer {
         });
     }
 
-    detectBackgroundLoop(elements, i, length) {
+    detectBackgroundLoop(elements, i, length, disableDestyling) {
         while(i < length) {
-            this.detectBackgroundForElement(elements[i], true);
+            this.detectBackgroundForElement(elements[i], disableDestyling);
             i++;
 
             if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection &&
