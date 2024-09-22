@@ -146,7 +146,7 @@ export default class PageAnalyzer {
                 const rgbValuesLists = matches.map(match => match.slice(1, 4).map(Number));
 
                 for (const rgbValuesList of rgbValuesLists) {
-                    const isBrightColor = this.isBrightColor(rgbValuesList, isText);
+                    const isBrightColor = this.isBrightColor(rgbValuesList, isText, true);
 
                     if (isBrightColor && isBrightColor[0]) {
                         return isBrightColor;
@@ -158,24 +158,26 @@ export default class PageAnalyzer {
         if(backgroundColor && backgroundColor.trim().startsWith("rgb")) {
             const rgbValues = backgroundColor.split("(")[1].split(")")[0];
             const rgbValuesList = rgbValues.trim().split(",");
-            return this.isBrightColor(rgbValuesList, isText);
+            return this.isBrightColor(rgbValuesList, isText, false);
         }
     }
 
-    isBrightColor(rgbValuesList, isText) {
+    isBrightColor(rgbValuesList, isText, isGradient) {
         const hsl = rgb2hsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
 
         // If ligthness is between min and max values
         const minLightnessTreshold = isText ? this.websiteSpecialFiltersConfig.brightColorLightnessTresholdTextMin : this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMin;
         const maxLightnessTreshold = this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMax;
-        const minSaturationTreshold = this.websiteSpecialFiltersConfig.brightColorSaturationTresholdTextMin;
+        const minSaturationTreshold = this.websiteSpecialFiltersConfig.brightColorSaturationTresholdMin;
 
         if (isText) {
             if(hsl[2] >= minLightnessTreshold && hsl[1] >= minSaturationTreshold) {
                 return [true, false];
             }
         } else {
-            if(hsl[2] >= minLightnessTreshold && hsl[2] <= maxLightnessTreshold) {
+            if(hsl[2] >= minLightnessTreshold && hsl[2] <= maxLightnessTreshold &&
+                ((isGradient && hsl[1] >= minSaturationTreshold) || !isGradient)
+            ) {
                 if(hsl[2] >= 0.5) {
                     return [true, true];
                 }
