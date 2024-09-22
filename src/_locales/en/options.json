@@ -94,6 +94,8 @@
             "darkImageDetectionHslTreshold": "Threshold for detecting an image pixel as dark",
             "darkImageDetectionDarkPixelCountTreshold": "Percentage of pixels detected as dark to activate selective image inversion",
             "enableNotMatchingFiltersDetection": "Enable detection of elements no longer matching filters",
+            "intervalApplyClassChanges": "Interval for applying CSS class changes to elements",
+            "classChangeMaxElementsTreatedByCall": "Number of elements processed when changing CSS classes",
             "help": {
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
                 "autoDetectTransparentBackgroundEnabled": "Enable detection of transparent backgrounds. Disabling this feature can cause many display issues.",
@@ -127,7 +129,9 @@
                 "enableDarkImageDetection": "Enables detection of images/backgrounds with a large number of dark colors (e.g. text and logos), in order to invert their colors if the setting Invert colors > Selective is enabled by the user. Disabling this option improves performance.",
                 "darkImageDetectionHslTreshold": "If a pixel has a lightness value below this threshold, the pixel is considered dark. The maximum value is 1, the minimum is 0 (percentage).",
                 "darkImageDetectionDarkPixelCountTreshold": "If the number of pixels considered dark is greater than this percentage, the image will be inverted if the user enabled the setting Invert colors > Selective. The value is in decimal percentage (multiply by 100 to get the percentage) corresponding to the ratio of the number of pixels to the number of pixels considered dark.",
-                "enableNotMatchingFiltersDetection": "If an element no longer matches one of the filters previously applied to it, the filter is removed from the element. Enabling this option may reduce performance and increase memory consumption, as Page Shadow needs to store the informations of the elements that previously matched a given filter."
+                "enableNotMatchingFiltersDetection": "If an element no longer matches one of the filters previously applied to it, the filter is removed from the element. Enabling this option may reduce performance and increase memory consumption, as Page Shadow needs to store the informations of the elements that previously matched a given filter.",
+                "intervalApplyClassChanges": "Sets the interval (in ms) between CSS class changes on elements. Reducing the interval may reduce performance.",
+                "classChangeMaxElementsTreatedByCall": "Number of elements processed (CSS class changes) at each interval. Increasing this number may reduce performance."
             }
         },
         "saved": "Saved!"

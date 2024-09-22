@@ -266,6 +266,8 @@ export default class PageFilterProcessor {
                 if(type == "darkImageDetectionDarkPixelCountTreshold") this.websiteSpecialFiltersConfig.darkImageDetectionDarkPixelCountTreshold = rule.filter;
                 if(type == "enableNotMatchingFiltersDetection") this.websiteSpecialFiltersConfig.enableNotMatchingFiltersDetection = true;
                 if(type == "disableNotMatchingFiltersDetection") this.websiteSpecialFiltersConfig.enableNotMatchingFiltersDetection = false;
+                if(type == "intervalApplyClassChanges") this.websiteSpecialFiltersConfig.intervalApplyClassChanges = rule.filter;
+                if(type == "classChangeMaxElementsTreatedByCall") this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall = rule.filter;
             });
         });
     }
