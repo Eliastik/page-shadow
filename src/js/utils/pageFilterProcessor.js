@@ -249,7 +249,7 @@ export default class PageFilterProcessor {
                 if(type == "brightColorLightnessTresholdMin") this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMin = rule.filter;
                 if(type == "brightColorLightnessTresholdTextMin") this.websiteSpecialFiltersConfig.brightColorLightnessTresholdTextMin = rule.filter;
                 if(type == "brightColorLightnessTresholdMax") this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMax = rule.filter;
-                if(type == "brightColorSaturationTresholdTextMin") this.websiteSpecialFiltersConfig.brightColorSaturationTresholdTextMin = rule.filter;
+                if(type == "brightColorSaturationTresholdMin") this.websiteSpecialFiltersConfig.brightColorSaturationTresholdMin = rule.filter;
                 if(type == "enableThrottleBackgroundDetection") this.websiteSpecialFiltersConfig.throttleBackgroundDetection = true;
                 if(type == "disableThrottleBackgroundDetection") this.websiteSpecialFiltersConfig.throttleBackgroundDetection = false;
                 if(type == "throttleBackgroundDetectionElementsTreatedByCall") this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall = rule.filter;
