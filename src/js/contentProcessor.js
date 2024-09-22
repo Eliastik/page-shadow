@@ -99,8 +99,8 @@ export default class ContentProcessor {
         this.bodyClassBatcher = new ElementClassBatcher(document.body);
         this.bodyClassBatcherRemover = new ElementClassBatcher(document.body);
         this.htmlClassBatcher = new ElementClassBatcher(document.getElementsByTagName("html")[0]);
-        this.multipleElementClassBatcherAdd = new MultipleElementClassBatcher();
-        this.multipleElementClassBatcherRemove = new MultipleElementClassBatcher();
+        this.multipleElementClassBatcherAdd = new MultipleElementClassBatcher(this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall);
+        this.multipleElementClassBatcherRemove = new MultipleElementClassBatcher(this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall);
     }
 
     async applyContrastPage(init, contrastPageEnabled, theme, disableImgBgColor, brightColorPreservation, customThemesSettings) {
@@ -788,10 +788,10 @@ export default class ContentProcessor {
             this.multipleElementClassBatcherAdd.applyAdd();
             this.multipleElementClassBatcherRemove.applyRemove();
 
-            this.timerApplyMutationObserverClassChanges.start(50);
+            this.timerApplyMutationObserverClassChanges.start(this.websiteSpecialFiltersConfig.intervalApplyClassChanges);
         });
 
-        this.timerApplyMutationObserverClassChanges.start(50);
+        this.timerApplyMutationObserverClassChanges.start(this.websiteSpecialFiltersConfig.intervalApplyClassChanges);
     }
 
     async treatMutationObserverBackgroundCalls() {
@@ -940,8 +940,8 @@ export default class ContentProcessor {
             this.bodyClassBatcher = this.bodyClassBatcher || new ElementClassBatcher(document.body);
             this.bodyClassBatcherRemover = this.bodyClassBatcherRemover || new ElementClassBatcher(document.body);
             this.htmlClassBatcher = this.htmlClassBatcher || new ElementClassBatcher(document.getElementsByTagName("html")[0]);
-            this.multipleElementClassBatcherAdd = this.multipleElementClassBatcherAdd || new MultipleElementClassBatcher();
-            this.multipleElementClassBatcherRemove = this.multipleElementClassBatcherRemove || new MultipleElementClassBatcher();
+            this.multipleElementClassBatcherAdd = this.multipleElementClassBatcherAdd || new MultipleElementClassBatcher(this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall);
+            this.multipleElementClassBatcherRemove = this.multipleElementClassBatcherRemove || new MultipleElementClassBatcher(this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall);
 
             this.pageAnalyzer = this.pageAnalyzer || new PageAnalyzer(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove);
             this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove, this.websiteSpecialFiltersConfig);

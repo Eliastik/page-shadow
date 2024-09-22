@@ -25,7 +25,11 @@ import { addClass, removeClass } from "./util.js";
 export default class MultipleElementClassBatcher {
     classListsWithElement = [];
     
-    maxElementsTreatedByCall = 800;
+    maxElementsTreatedByCall = 500;
+
+    constructor(maxElementsTreatedByCall) {
+        this.maxElementsTreatedByCall = maxElementsTreatedByCall;
+    }
 
     add(element, ...classList) {
         const currentElement = this.classListsWithElement.find(v => v.element === element);
@@ -33,7 +37,7 @@ export default class MultipleElementClassBatcher {
         if (currentElement) {
             currentElement.classList = [...new Set([...currentElement.classList, ...classList])];
         } else {
-            this.classListsWithElement.push({
+            this.classListsWithElement.unshift({
                 element,
                 classList: [...new Set(classList)]
             });
@@ -46,7 +50,7 @@ export default class MultipleElementClassBatcher {
 
     applyAdd() {
         for (let i = 0; i < this.maxElementsTreatedByCall && i < this.classListsWithElement.length; i++) {
-            const classListWithElement = this.classListsWithElement.shift();
+            const classListWithElement = this.classListsWithElement.pop();
 
             addClass(classListWithElement.element, ...classListWithElement.classList);
         }
@@ -54,7 +58,7 @@ export default class MultipleElementClassBatcher {
 
     applyRemove() {
         for (let i = 0; i < this.maxElementsTreatedByCall && i < this.classListsWithElement.length; i++) {
-            const classListWithElement = this.classListsWithElement.shift();
+            const classListWithElement = this.classListsWithElement.pop();
             
             removeClass(classListWithElement.element, ...classListWithElement.classList);
         }
