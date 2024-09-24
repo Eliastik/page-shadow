@@ -284,14 +284,18 @@ export default class PageAnalyzer {
                     this.multipleElementClassBatcherRemove.add(element, "pageShadowBrightColorWithBlackText");
                 }
             } else {
-                this.multipleElementClassBatcherRemove.add(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText", "pageShadowBrightColorForceCustomTextLinkColor");
+                this.multipleElementClassBatcherRemove.add(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText");
 
                 if (this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode && element.parentNode.closest) {
                     const closestBright = element.parentNode.closest(".pageShadowHasBrightColorBackground");
 
                     if (closestBright && closestBright != document.body) {
                         addClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
+                    } else {
+                        this.multipleElementClassBatcherRemove.add(element, "pageShadowBrightColorForceCustomTextLinkColor");
                     }
+                } else {
+                    this.multipleElementClassBatcherRemove.add(element, "pageShadowBrightColorForceCustomTextLinkColor");
                 }
             }
         } else if (this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode && element.parentNode.closest) {
