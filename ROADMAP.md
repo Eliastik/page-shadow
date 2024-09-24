@@ -131,10 +131,11 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Reduce delay applying reduce brightness/blue light reduction filter + invert entire page
 * [x] Detect bright color text + enable for bright color inversion/color reduction?
 * [x] Optimize performance
-    * [ ] Continue to test and adjust advanced settings
 * [x] Debug mode
-* [ ] Fix dark image detection (using contours detection?) + enable by default?
+* [x] Fix dark image detection (using contours detection?) + enable by default?
     * [x] Optimize by reducing size of the image before analyze
+* [ ] Continue to test and adjust advanced settings for: performance optimizations and dark image detection
+    * [ ] Then release version 2.11
 
 #### Bugs to fix
 
