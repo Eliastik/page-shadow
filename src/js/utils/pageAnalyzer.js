@@ -36,11 +36,14 @@ export default class PageAnalyzer {
     multipleElementClassBatcherAdd = null;
     multipleElementClassBatcherRemove = null;
 
-    constructor(websiteSpecialFiltersConfig, currentSettings, isEnabled, multipleElementClassBatcherAdd, multipleElementClassBatcherRemove) {
+    debugLogger;
+
+    constructor(websiteSpecialFiltersConfig, currentSettings, isEnabled, multipleElementClassBatcherAdd, multipleElementClassBatcherRemove, debugLogger) {
         this.setSettings(websiteSpecialFiltersConfig, currentSettings, isEnabled);
 
         this.multipleElementClassBatcherAdd = multipleElementClassBatcherAdd;
         this.multipleElementClassBatcherRemove = multipleElementClassBatcherRemove;
+        this.debugLogger = debugLogger;
     }
 
     async setSettings(websiteSpecialFiltersConfig, currentSettings, isEnabled) {
@@ -517,7 +520,11 @@ export default class PageAnalyzer {
 
         // SVG element
         if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
-            image = svgElementToImage(element, image);
+            try {
+                image = svgElementToImage(element, image);
+            } catch(e) {
+                return false;
+            }
         }
         
         // Image element (or image element with svg file)
@@ -545,6 +552,10 @@ export default class PageAnalyzer {
         const isDarkImage = this.isImageDark(canvas, newWidth, newHeight);
 
         canvas.remove();
+
+        if (isDarkImage) {
+            this.debugLogger.log(`Detected dark image - image URL: ${image.src}`);
+        }
 
         return isDarkImage;
     }
