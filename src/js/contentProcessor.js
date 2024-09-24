@@ -331,7 +331,8 @@ export default class ContentProcessor {
             if(document.readyState === "complete") {
                 const timerBackgrounds = new SafeTimer(async() => {
                     timerBackgrounds.clear();
-                    await this.pageAnalyzer.detectBackground(elements);
+
+                    this.pageAnalyzer.detectBackground(elements);
 
                     this.mutationObserve(this.MUTATION_TYPE_BACKGROUNDS);
 
@@ -341,19 +342,12 @@ export default class ContentProcessor {
                 timerBackgrounds.start(1);
             } else {
                 if(type == this.TYPE_LOADING) {
-                    window.addEventListener("load", () => {
-                        // when the page is entirely loaded
+                    const eventDetectBackground = document.addEventListener("readystatechange", (event) => {
                         if(document.readyState === "complete") {
-                            const timerBackgrounds = new SafeTimer(async() => {
-                                timerBackgrounds.clear();
-                                await this.pageAnalyzer.detectBackground(elements);
-
-                                this.mutationObserve(this.MUTATION_TYPE_BACKGROUNDS);
-                                
-                                resolve();
-                            });
-
-                            timerBackgrounds.start(250);
+                            document.removeEventListener("readystatechange", eventDetectBackground);
+                            
+                            this.applyDetectBackground(this.TYPE_LOADING, elements);
+                            resolve();
                         }
                     });
                 } else {
@@ -573,8 +567,11 @@ export default class ContentProcessor {
                         if(document.readyState == "complete" || document.readyState == "interactive") {
                             this.mutationObserve(this.MUTATION_TYPE_BODY);
                         } else {
-                            window.addEventListener("load", () => {
-                                this.mutationObserve(this.MUTATION_TYPE_BODY);
+                            const eventReadyStateMutationObserverBody = document.addEventListener("readystatechange", () => {
+                                if (document.readyState === "interactive" ||  document.readyState == "complete") {
+                                    document.removeEventListener("readystatechange", eventReadyStateMutationObserverBody);
+                                    this.mutationObserve(this.MUTATION_TYPE_BODY);
+                                }
                             });
                         }
                     }
@@ -635,8 +632,11 @@ export default class ContentProcessor {
                         if(document.readyState == "complete" || document.readyState == "interactive") {
                             this.mutationObserve(this.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
                         } else {
-                            window.addEventListener("load", () => {
-                                this.mutationObserve(this.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+                            const eventReadyStateMutationObserverBrightnessBluelight = document.addEventListener("readystatechange", () => {
+                                if (document.readyState === "interactive" ||  document.readyState == "complete") {
+                                    document.removeEventListener("readystatechange", eventReadyStateMutationObserverBrightnessBluelight);
+                                    this.mutationObserve(this.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+                                }
                             });
                         }
                     }
@@ -716,8 +716,11 @@ export default class ContentProcessor {
                         if(document.readyState == "complete" || document.readyState == "interactive") {
                             this.mutationObserve(this.MUTATION_TYPE_BRIGHTNESSWRAPPER);
                         } else {
-                            window.addEventListener("load", () => {
-                                this.mutationObserve(this.MUTATION_TYPE_BRIGHTNESSWRAPPER);
+                            const eventReadyStateMutationObserverBrightnessWrapper = document.addEventListener("readystatechange", () => {
+                                if (document.readyState === "interactive" ||  document.readyState == "complete") {
+                                    document.removeEventListener("readystatechange", eventReadyStateMutationObserverBrightnessWrapper);
+                                    this.mutationObserve(this.MUTATION_TYPE_BRIGHTNESSWRAPPER);
+                                }
                             });
                         }
                     }
@@ -996,11 +999,14 @@ export default class ContentProcessor {
                     if(settings.pageShadowEnabled == "true" || settings.colorInvert == "true" || settings.attenuateColors == "true") {
                         if(type == this.TYPE_START || !this.pageAnalyzer.backgroundDetected) {
                             this.applyDetectBackground(this.TYPE_LOADING, "*").then(() => {
-                                if(document.readyState == "complete") {
+                                if(document.readyState === "complete") {
                                     this.updateFilters();
                                 } else {
-                                    window.addEventListener("load", () => {
-                                        this.updateFilters();
+                                    const eventReadyStateFilters = document.addEventListener("readystatechange", () => {
+                                        if (document.readyState === "complete") {
+                                            document.removeEventListener("readystatechange", eventReadyStateFilters);
+                                            this.updateFilters();
+                                        }
                                     });
                                 }
                             });
