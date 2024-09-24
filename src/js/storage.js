@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { extensionVersion, defaultSettings, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingNames, defaultCustomThemes, settingsToLoad, customThemesKey, disabledWebsitesKey, whitelistKey, attenuateDefaultValue } from "./constants.js";
+import { extensionVersion, defaultSettings, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingNames, defaultCustomThemes, settingsToLoad, customThemesKey, disabledWebsitesKey, whitelistKey, attenuateDefaultValue, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
 import { sendMessageWithPromise } from "./utils/util.js";
 import browser from "webextension-polyfill";
 
@@ -161,6 +161,26 @@ async function migrateSettings(filters) {
     }
 
     await removeSettingItem(["nightModeEnabled", "attenuateImageColor"]);
+
+    // Migrate advanced options
+    const currentMigratedAdvancedOptions = result.migratedAdvancedOptions;
+
+    if(!currentMigratedAdvancedOptions || !currentMigratedAdvancedOptions[extensionVersion]) {
+        const currentAdvancedOptions = result.advancedOptionsFiltersSettings;
+
+        if (currentAdvancedOptions) {
+            currentAdvancedOptions.throttleBackgroundDetection = defaultWebsiteSpecialFiltersConfig.throttleBackgroundDetection;
+            currentAdvancedOptions.throttleBackgroundDetectionElementsTreatedByCall = defaultWebsiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall;
+            currentAdvancedOptions.enableDarkImageDetection = defaultWebsiteSpecialFiltersConfig.enableDarkImageDetection;
+        }
+
+        await setSettingItem("advancedOptionsFiltersSettings", currentAdvancedOptions);
+
+        const newMigratedAdvancedOptions = currentMigratedAdvancedOptions || {};
+        newMigratedAdvancedOptions[extensionVersion] = true;
+
+        await setSettingItem("migratedAdvancedOptions", newMigratedAdvancedOptions);
+    }
 }
 
 export { setSettingItem, removeSettingItem, checkFirstLoad, setFirstSettings, migrateSettings };
