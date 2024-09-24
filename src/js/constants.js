@@ -209,7 +209,7 @@ const defaultWebsiteSpecialFiltersConfig = {
     throttleBackgroundDetectionElementsTreatedByCall: 50,
     backgroundDetectionStartDelay: 0,
     useBackgroundDetectionAlreadyProcessedNodes: false,
-    enableDarkImageDetection: false,
+    enableDarkImageDetection: true,
     darkImageDetectionHslTreshold: 0.15,
     darkImageDetectionDarkPixelCountTreshold: 0.5,
     enableNotMatchingFiltersDetection: false,

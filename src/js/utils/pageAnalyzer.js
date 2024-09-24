@@ -519,7 +519,7 @@ export default class PageAnalyzer {
         if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
             image = svgElementToImage(element, image);
         }
-
+        
         // Image element (or image element with svg file)
         if(!(image instanceof HTMLImageElement) && !(image instanceof SVGImageElement)) {
             if(hasBackgroundImg) {
@@ -542,7 +542,7 @@ export default class PageAnalyzer {
         ctx.drawImage(image, 0, 0, newWidth, newHeight);
 
         // Check if the image is dark
-        const isDarkImage = this.isImageDark(canvas, image);
+        const isDarkImage = this.isImageDark(canvas, newWidth, newHeight);
 
         canvas.remove();
 
@@ -568,15 +568,11 @@ export default class PageAnalyzer {
         return { newWidth, newHeight };
     }
 
-    isImageDark(canvas, image) {
+    isImageDark(canvas, width, height) {
         const ctx = canvas.getContext("2d");
 
-        let darkPixelsCount = 0;
-        let pixelCount = 0;
-
         try {
-            const width = image.width;
-            const height = image.height;
+            const blockSize = 16;
 
             if(width <= 0 || height <= 0) {
                 return false;
@@ -585,31 +581,63 @@ export default class PageAnalyzer {
             const imgData = ctx.getImageData(0, 0, width, height);
             const data = imgData.data;
 
-            for(let i = 0; i < data.length; i += 4) {
-                const red = data[i];
-                const green = data[i + 1];
-                const blue = data[i + 2];
-                const alpha = data[i + 3];
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const index = (y * width + x) * 4;
+                    const red = data[index];
+                    const green = data[index + 1];
+                    const blue = data[index + 2];
+                    const alpha = data[index + 3];
 
-                if(alpha > 0) {
-                    const hsl = rgb2hsl(red / 255, green / 255, blue / 255);
-
-                    if(hsl[2] <= this.websiteSpecialFiltersConfig.darkImageDetectionHslTreshold) {
-                        darkPixelsCount++;
+                    if (this.isPixelDark(red, green, blue, alpha)) {
+                        if (this.hasTransparentSurroundingPixels(x, y, data, width, height, blockSize)) {
+                            return true;
+                        }
                     }
-
-                    pixelCount++;
                 }
-            }
-
-            if(darkPixelsCount / pixelCount >= this.websiteSpecialFiltersConfig.darkImageDetectionDarkPixelCountTreshold) {
-                return true;
             }
 
             return false;
         } catch(e) {
             return false;
         }
+    }
+
+    isPixelDark(red, green, blue, alpha) {
+        if (alpha >= 0.5) {
+            const hsl = rgb2hsl(red / 255, green / 255, blue / 255);
+
+            if(hsl[2] <= this.websiteSpecialFiltersConfig.darkImageDetectionHslTreshold) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    hasTransparentSurroundingPixels(x, y, data, width, height, blockSize) {
+        let transparentPixelCount = 0;
+        let totalPixelCount = 0;
+    
+        const startX = Math.max(0, x - blockSize / 2);
+        const startY = Math.max(0, y - blockSize / 2);
+        const endX = Math.min(width, x + blockSize / 2);
+        const endY = Math.min(height, y + blockSize / 2);
+    
+        for (let j = startY; j < endY; j++) {
+            for (let i = startX; i < endX; i++) {
+                const index = (j * width + i) * 4;
+                const alpha = data[index + 3];
+    
+                if (alpha === 0) {
+                    transparentPixelCount++;
+                }
+
+                totalPixelCount++;
+            }
+        }
+    
+        return transparentPixelCount / totalPixelCount > 0.5;
     }
 
     async awaitImageLoading(image) {
