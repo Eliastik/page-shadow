@@ -58,6 +58,7 @@
         "checkbox": "J'ai compris et je souhaite accéder aux options avancées",
         "warning": "Attention, ces options sont destinées aux utilisateurs avertis et aux développeurs afin d'effectuer des tests. Les modifier pourrait compromettre le fonctionnement normal de l'extension. Ne les modifiez seulement si vous savez ce que vous faîtes.",
         "filtersConfig": {
+            "debugMode": "Mode de débogage",
             "performanceModeEnabled": "Mode performance",
             "autoDetectTransparentBackgroundEnabled": "Détection automatique des arrière-plans transparents",
             "enableMutationObserversForSubChilds": "Mutation Observers activés pour les sous-enfants",
@@ -94,6 +95,7 @@
             "intervalApplyClassChanges": "Intervalle d'application des changements de classes CSS des éléments",
             "classChangeMaxElementsTreatedByCall": "Nombre d'éléments traités lors du changements des classes CSS",
             "help": {
+                "debugMode": "Active le mode de débogage qui affiche des informations de débogage dans la console JavaScript sur les pages traitées par Page Shadow, ou sur les pages de l'extension.",
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrière-plans des éléments.",
                 "autoDetectTransparentBackgroundEnabled": "Active la détection des arrière-plans transparents. Désactiver cette fonctionnalité peut provoquer de nombreux problèmes d'affichage.",
                 "enableMutationObserversForSubChilds": "Lorsque les Mutation Observers analysent un élément, ils traversent et analysent les enfants de cet élément. Désactiver cela peut améliorer les performances, mais provoquer des problèmes d'affichage.",

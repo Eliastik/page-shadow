@@ -61,6 +61,7 @@
         "checkbox": "I understand and I want to access to the advanced options",
         "warning": "Please note that these options are intended for experienced users and developers in order to test the extension. Modifying them could compromise the normal operation of the extension. Only modify them if you know what you are doing.",
         "filtersConfig": {
+            "debugMode": "Debug mode",
             "performanceModeEnabled": "Performance mode",
             "autoDetectTransparentBackgroundEnabled": "Automatic transparent background detection",
             "enableMutationObserversForSubChilds": "Mutation Observers enabled for sub-childs elements",
@@ -97,6 +98,7 @@
             "intervalApplyClassChanges": "Interval for applying CSS class changes to elements",
             "classChangeMaxElementsTreatedByCall": "Number of elements processed when changing CSS classes",
             "help": {
+                "debugMode": "Enables debug mode, which displays debugging information in the JavaScript console on pages processed by Page Shadow, or on extension pages.",
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
                 "autoDetectTransparentBackgroundEnabled": "Enable detection of transparent backgrounds. Disabling this feature can cause many display issues.",
                 "enableMutationObserversForSubChilds": "When Mutation Observers analyze an element, they traverse and analyze the children of that element. Disabling this may improve performance, but cause display issues.",

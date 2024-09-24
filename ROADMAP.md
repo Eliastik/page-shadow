@@ -130,7 +130,9 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [x] Reduce delay applying reduce brightness/blue light reduction filter + invert entire page
 * [x] Detect bright color text + enable for bright color inversion/color reduction?
-* [ ] Optimize performance
+* [x] Optimize performance
+    * [ ] Continue to test and adjust advanced settings
+* [x] Debug mode
 * [ ] Fix dark image detection (using contours detection?) + enable by default?
     * [x] Optimize by reducing size of the image before analyze
 
@@ -141,7 +143,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Minor) Background gradient not detected as bright colors
 * [x] (Minor) Fix transition white that disable some transitions? -> no, seems OK
 * [x] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element -> disabled by default
-* [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
 
 #### Ideas
 
@@ -157,7 +158,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [ ] FAQ for common questions?
 
-### Planned/ideas
+### Ideas
 
 * [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
 * [ ] Improving codebase
@@ -180,3 +181,4 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
+* [ ] (Very minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
