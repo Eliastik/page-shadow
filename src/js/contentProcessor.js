@@ -25,6 +25,7 @@ import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
 import PageAnalyzer from "./utils/pageAnalyzer.js";
 import PageFilterProcessor from "./utils/pageFilterProcessor.js";
 import MultipleElementClassBatcher from "./utils/multipleElementClassBatcher.js";
+import DebugLogger from "./utils/debugLogger.js";
 
 /**
  * Main class used by the content script
@@ -87,6 +88,8 @@ export default class ContentProcessor {
     pageAnalyzer;
     filterProcessor;
 
+    debugLogger;
+
     constructor() {
         this.setup();
     }
@@ -101,10 +104,13 @@ export default class ContentProcessor {
         this.htmlClassBatcher = new ElementClassBatcher(document.getElementsByTagName("html")[0]);
         this.multipleElementClassBatcherAdd = new MultipleElementClassBatcher(this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall);
         this.multipleElementClassBatcherRemove = new MultipleElementClassBatcher(this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall);
+        this.debugLogger = new DebugLogger();
     }
 
     async applyContrastPage(init, contrastPageEnabled, theme, disableImgBgColor, brightColorPreservation, customThemesSettings) {
         if (contrastPageEnabled != undefined && contrastPageEnabled == "true") {
+            this.debugLogger.log(`Applying contrast page with settings : theme = ${theme} / disableImgBgColor = ${disableImgBgColor} / brightColorPreservation = ${brightColorPreservation}`);
+
             if (theme != undefined) {
                 if(!init) {
                     this.resetContrastPage(theme, disableImgBgColor, brightColorPreservation);
@@ -132,6 +138,8 @@ export default class ContentProcessor {
             if (brightColorPreservation != undefined && brightColorPreservation == "true") {
                 this.bodyClassBatcher.add("pageShadowPreserveBrightColor");
             }
+
+            this.debugLogger.log("Applied contrast page");
         } else {
             if(!init) {
                 this.resetContrastPage();
@@ -153,6 +161,8 @@ export default class ContentProcessor {
     }
 
     resetContrastPage(themeException, disableImgBgColor, brightColorPreservation) {
+        this.debugLogger.log("Resetting contrast page");
+
         const removeBatcherHTML = new ElementClassBatcher(document.getElementsByTagName("html")[0]);
 
         if(!themeException || !themeException.startsWith("custom")) {
@@ -175,6 +185,8 @@ export default class ContentProcessor {
         }
 
         removeBatcherHTML.applyRemove();
+
+        this.debugLogger.log("Contrast page reseted");
     }
 
     async customThemeApply(theme, customThemesSettings) {
@@ -191,6 +203,7 @@ export default class ContentProcessor {
 
     invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert,
         attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors, percentageAttenuateColors, invertBrightColors) {
+
         document.documentElement.style.setProperty("--page-shadow-invert-filter", "invert(100%)");
         document.documentElement.style.setProperty("--page-shadow-invert-filter-image-backgrounds", "invert(100%)");
         document.documentElement.style.setProperty("--page-shadow-invert-filter-bg-backgrounds", "invert(100%)");
@@ -198,6 +211,8 @@ export default class ContentProcessor {
         document.documentElement.style.setProperty("--page-shadow-invert-filter-bright-color-backgrounds", "invert(100%)");
 
         if(enabled !== null && enabled == "true") {
+            this.debugLogger.log(`Applying invert color with settings : invertImageColors = ${invertImageColors} / invertEntirePage = ${invertEntirePage} / invertVideoColors = ${invertVideoColors} / invertBgColors = ${invertBgColors} / selectiveInvert = ${selectiveInvert} / attenuateColors = ${attenuateColors} / attenuateImgColors = ${attenuateImgColors} / attenuateBgColors = ${attenuateBgColors} / attenuateVideoColors = ${attenuateVideoColors} / attenuateBrightColors = ${attenuateBrightColors} / percentageAttenuateColors = ${percentageAttenuateColors} / invertBrightColors = ${invertBrightColors}`);
+
             if(invertEntirePage !== null && invertEntirePage == "true") {
                 this.htmlClassBatcher.add("pageShadowInvertEntirePage", "pageShadowBackground");
 
@@ -263,6 +278,8 @@ export default class ContentProcessor {
                     this.bodyClassBatcherRemover.add("pageShadowInvertBrightColors");
                 }
             }
+
+            this.debugLogger.log("Applied invert color");
         } else {
             this.resetInvertPage();
         }
@@ -271,8 +288,12 @@ export default class ContentProcessor {
     }
 
     resetInvertPage() {
+        this.debugLogger.log("Resetting invert color");
+
         this.bodyClassBatcherRemover.add("pageShadowInvertImageColor", "pageShadowInvertVideoColor", "pageShadowInvertBgColor", "pageShadowEnableSelectiveInvert", "pageShadowInvertBrightColors");
         removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
+
+        this.debugLogger.log("Reseted invert color");
     }
 
     attenuateColor(attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors, percentageAttenuateColors) {
@@ -281,6 +302,8 @@ export default class ContentProcessor {
         }
 
         if(attenuateColors == "true") {
+            this.debugLogger.log(`Applying invert color with settings : attenuateColors = ${attenuateColors} / attenuateImgColors = ${attenuateImgColors} / attenuateBgColors = ${attenuateBgColors} / attenuateVideoColors = ${attenuateVideoColors} / attenuateBrightColors = ${attenuateBrightColors} / percentageAttenuateColors = ${percentageAttenuateColors}`);
+
             document.documentElement.style.setProperty("--page-shadow-attenuate-filter", "grayscale(" + percentageAttenuateColors + "%)");
 
             if(attenuateImgColors == "true") {
@@ -310,16 +333,22 @@ export default class ContentProcessor {
             } else {
                 this.bodyClassBatcherRemover.add("pageShadowAttenuateBrightColor");
             }
+
+            this.debugLogger.log("Applied attenuate color");
         } else {
             this.resetAttenuateColor();
         }
     }
 
     resetAttenuateColor() {
+        this.debugLogger.log("Resetting attenuate color");
+
         this.bodyClassBatcherRemover.add("pageShadowAttenuateImageColor");
         this.bodyClassBatcherRemover.add("pageShadowAttenuateBgColor");
         this.bodyClassBatcherRemover.add("pageShadowAttenuateVideoColor");
         this.bodyClassBatcherRemover.add("pageShadowAttenuateBrightColor");
+
+        this.debugLogger.log("Reseted attenuate color");
     }
 
     async applyDetectBackground(type, elements) {
@@ -329,6 +358,8 @@ export default class ContentProcessor {
             if(this.pageAnalyzer.backgroundDetected) resolve();
 
             if(document.readyState === "complete") {
+                this.debugLogger.log("Page is now ready, we can start to analyze the elements");
+
                 const timerBackgrounds = new SafeTimer(async() => {
                     timerBackgrounds.clear();
 
@@ -342,7 +373,9 @@ export default class ContentProcessor {
                 timerBackgrounds.start(1);
             } else {
                 if(type == this.TYPE_LOADING) {
-                    const eventDetectBackground = document.addEventListener("readystatechange", (event) => {
+                    this.debugLogger.log("Page is not ready, waiting for the page to be ready to analyze the elements");
+
+                    const eventDetectBackground = document.addEventListener("readystatechange", () => {
                         if(document.readyState === "complete") {
                             document.removeEventListener("readystatechange", eventDetectBackground);
                             
@@ -362,6 +395,8 @@ export default class ContentProcessor {
         this.elementBrightness.setAttribute("class", "");
 
         if(enabled == "true" && !this.runningInIframe && this.elementBrightness) {
+            this.debugLogger.log("Applying bright reduction");
+
             if(this.elementBrightness.style) {
                 this.elementBrightness.style.display = "block";
                 this.elementBrightness.setAttribute("id", "pageShadowBrightness");
@@ -374,6 +409,8 @@ export default class ContentProcessor {
             }
 
             this.appendBrightnessElement(this.elementBrightness, this.elementBrightnessWrapper);
+
+            this.debugLogger.log("Applied bright reduction");
         } else {
             this.resetBrightnessPage();
         }
@@ -389,6 +426,8 @@ export default class ContentProcessor {
         this.elementBlueLightFilter.setAttribute("class", "");
 
         if(enabled == "true" && !this.runningInIframe && this.elementBlueLightFilter) {
+            this.debugLogger.log("Applying blue light reduction");
+
             if(this.elementBlueLightFilter.style) {
                 this.elementBlueLightFilter.style.display = "block";
                 this.elementBlueLightFilter.setAttribute("id", "pageShadowBrightnessNightMode");
@@ -413,6 +452,8 @@ export default class ContentProcessor {
             }
 
             this.appendBlueLightElement(this.elementBlueLightFilter, this.elementBrightnessWrapper);
+
+            this.debugLogger.log("Applied blue light reduction");
         } else {
             this.resetBlueLightPage();
         }
@@ -426,6 +467,8 @@ export default class ContentProcessor {
 
     appendBrightnessElement(elementBrightness, elementWrapper) {
         if(document.body) {
+            this.debugLogger.log("Appending brightness reduction element");
+
             const brightnessPageElement = document.getElementById("pageShadowBrightness");
 
             if(elementWrapper && document.body.contains(elementWrapper) && elementWrapper.contains(elementBrightness)) {
@@ -441,10 +484,14 @@ export default class ContentProcessor {
         }
 
         elementWrapper.appendChild(elementBrightness);
+
+        this.debugLogger.log("Appended brightness reduction element");
     }
 
     appendBlueLightElement(elementBlueLightFilter, elementWrapper) {
         if(document.body) {
+            this.debugLogger.log("Appending blue light reduction element");
+
             const blueLightPageElement = document.getElementById("pageShadowBrightnessNightMode");
 
             if(elementWrapper && document.body.contains(elementWrapper) && elementWrapper.contains(elementBlueLightFilter)) {
@@ -460,10 +507,14 @@ export default class ContentProcessor {
         }
 
         elementWrapper.appendChild(elementBlueLightFilter);
+
+        this.debugLogger.log("Appended blue light reduction element");
     }
 
     mutationObserve(type, forceReset) {
         // Mutation Observer for the body element classList (contrast/invert/attenuate)
+        this.debugLogger.log(`Applying mutation observer for type = ${type} / forceReset ? ${forceReset}`);
+
         if(type == this.MUTATION_TYPE_BODY) {
             if(this.mut_body != null && !forceReset) {
                 this.mut_body.start();
@@ -738,6 +789,8 @@ export default class ContentProcessor {
 
     observeBodyChange() {
         if(this.websiteSpecialFiltersConfig.observeBodyChange) {
+            this.debugLogger.log("Applying body change observer");
+
             if(this.timerObserveBodyChange) this.timerObserveBodyChange.clear();
 
             this.timerObserveBodyChange = new SafeTimer(() => {
@@ -768,6 +821,8 @@ export default class ContentProcessor {
 
     observeDocumentElementChange() {
         if(this.websiteSpecialFiltersConfig.observeDocumentChange) {
+            this.debugLogger.log("Applying document element change observer");
+
             if(this.timerObserveDocumentElementChange) this.timerObserveDocumentElementChange.clear();
 
             this.timerObserveDocumentElementChange = new SafeTimer(async () => {
@@ -896,6 +951,8 @@ export default class ContentProcessor {
 
     async updateFilters() {
         if(this.filtersCache == null) {
+            this.debugLogger.log("Caching page filters");
+
             const response = await sendMessageWithPromise({ "type": "getFiltersForThisWebsite" }, "getFiltersResponse");
 
             if(response.filters) {
@@ -905,6 +962,8 @@ export default class ContentProcessor {
         }
 
         if(this.currentSettings && (this.currentSettings.pageShadowEnabled == "true" || this.currentSettings.colorInvert == "true" || this.currentSettings.attenuateColors == "true")) {
+            this.debugLogger.log("Applying page filters");
+
             await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
             this.filterProcessor.doProcessFilters(this.filtersCache);
         }
@@ -923,6 +982,8 @@ export default class ContentProcessor {
         if(typeof this.mut_brightness_bluelight_wrapper !== "undefined" && (mutation == this.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT || mutation == this.TYPE_ALL)) this.mut_brightness_bluelight_wrapper.pause();
 
         if(this.runningInIframe) {
+            this.debugLogger.log("Detected this page as running in an iframe");
+
             const responseEnabled = await sendMessageWithPromise({ "type": "isEnabledForThisPage" }, "isEnabledForThisPageResponse");
 
             if(responseEnabled.enabled) {
@@ -937,6 +998,8 @@ export default class ContentProcessor {
     }
 
     async process(allowed, type, disableCache) {
+        this.debugLogger.log(`Starting processing page - allowed ? ${allowed} / type ? ${type} / disableCache ? ${disableCache}`);
+
         if(this.applyWhenBodyIsAvailableTimer) this.applyWhenBodyIsAvailableTimer.clear();
 
         this.applyWhenBodyIsAvailableTimer = new ApplyBodyAvailable(async() => {

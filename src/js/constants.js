@@ -178,6 +178,7 @@ const filterSyntaxErrorTypes = {
 };
 // Internal options that change how Page Shadow works internally (pages processing)
 const defaultWebsiteSpecialFiltersConfig = {
+    debugMode: false,
     performanceModeEnabled: false,
     autoDetectTransparentBackgroundEnabled: true,
     enableMutationObserversForSubChilds: true,
