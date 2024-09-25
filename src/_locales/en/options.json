@@ -91,12 +91,14 @@
             "backgroundDetectionStartDelay": "Delay before applying background detection",
             "useBackgroundDetectionAlreadyProcessedNodes": "Use an already processed elements list for background detection",
             "enableBrightColorDetectionSubelement": "Process the sub-elements of the elements with bright colors",
-            "enableDarkImageDetection": "Enable detection of images/backgrounds with dark colors",
-            "darkImageDetectionHslTreshold": "Threshold for detecting an image pixel as dark",
-            "darkImageDetectionDarkPixelCountTreshold": "Percentage of pixels detected as dark to activate selective image inversion",
             "enableNotMatchingFiltersDetection": "Enable detection of elements no longer matching filters",
             "intervalApplyClassChanges": "Interval for applying CSS class changes to elements",
             "classChangeMaxElementsTreatedByCall": "Number of elements processed when changing CSS classes",
+            "enableDarkImageDetection": "Enable detection of images/backgrounds with dark colors",
+            "darkImageDetectionHslTreshold": "Threshold (brightness, percentage) for detecting an image pixel as dark",
+            "darkImageDetectionMinAlpha": "Minimum alpha channel value (percentage) for analyzing an image pixel",
+            "darkImageDetectionBlockSize": "Size (pixels) of the block analyzing a detected dark pixel",
+            "darkImageDetectionTransparentPixelsRatio": "Ratio (percentage) of transparent pixels to normal pixels for detecting an image as dark",
             "help": {
                 "debugMode": "Enables debug mode, which displays debugging information in the JavaScript console on pages processed by Page Shadow, or on extension pages.",
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
@@ -128,12 +130,14 @@
                 "backgroundDetectionStartDelay": "Apply a delay before applying background detection of the elements. By default 0 ms.",
                 "useBackgroundDetectionAlreadyProcessedNodes": "Use an already processed elements list for background detection to avoid re-processing elements. May increase performance but may increase memory usage.",
                 "enableBrightColorDetectionSubelement": "Enables processing of sub-elements of elements with bright colors. Disabling this option may potentially improve performance, but display problems may occur on some websites when using the feature Preserve element colors.",
-                "enableDarkImageDetection": "Enables detection of images/backgrounds with a large number of dark colors (e.g. text and logos), in order to invert their colors if the setting Invert colors > Selective is enabled by the user. Disabling this option improves performance.",
-                "darkImageDetectionHslTreshold": "If a pixel has a lightness value below this threshold, the pixel is considered dark. The maximum value is 1, the minimum is 0 (percentage).",
-                "darkImageDetectionDarkPixelCountTreshold": "If the number of pixels considered dark is greater than this percentage, the image will be inverted if the user enabled the setting Invert colors > Selective. The value is in decimal percentage (multiply by 100 to get the percentage) corresponding to the ratio of the number of pixels to the number of pixels considered dark.",
                 "enableNotMatchingFiltersDetection": "If an element no longer matches one of the filters previously applied to it, the filter is removed from the element. Enabling this option may reduce performance and increase memory consumption, as Page Shadow needs to store the informations of the elements that previously matched a given filter.",
                 "intervalApplyClassChanges": "Sets the interval (in ms) between CSS class changes on elements. Reducing the interval may reduce performance.",
-                "classChangeMaxElementsTreatedByCall": "Number of elements processed (CSS class changes) at each interval. Increasing this number may reduce performance."
+                "classChangeMaxElementsTreatedByCall": "Number of elements processed (CSS class changes) at each interval. Increasing this number may reduce performance.",
+                "enableDarkImageDetection": "Enables detection of transparent images/backgrounds with a large number of dark colors (e.g. logos), in order to invert their colors if the setting Invert colors > Selective is enabled by the user. Disabling this option improves performance.",
+                "darkImageDetectionHslTreshold": "If a pixel has a lightness value below this threshold, the pixel is considered dark. The maximum value is 1, the minimum is 0 (percentage).",
+                "darkImageDetectionMinAlpha": "The minimum alpha channel value (percentage) required to analyze an image pixel. If the value is below this threshold, the pixel is ignored. Default is 0.5 (for 50%).",
+                "darkImageDetectionBlockSize": "When a pixel is detected as dark based on lightness value, its neighborhood is analyzed for transparent pixels. This value sets the number of pixels to analyze around the detected pixel.",
+                "darkImageDetectionTransparentPixelsRatio": "When analyzing the neighborhood of the detected dark pixel, this sets the minimum ratio of transparent pixels required. If this ratio is exceeded, the image is detected as a dark image."
             }
         },
         "saved": "Saved!"
