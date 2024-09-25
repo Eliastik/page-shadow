@@ -521,8 +521,13 @@ export default class PageAnalyzer {
         // SVG element
         if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
             try {
+                removeClass(image, "pageShadowDisableStyling", "pageShadowElementDisabled");
+
                 image = svgElementToImage(element, image);
+                
+                addClass(image, "pageShadowDisableStyling", "pageShadowElementDisabled");
             } catch(e) {
+                this.debugLogger?.log(e.message, "error");
                 return false;
             }
         }
@@ -530,7 +535,12 @@ export default class PageAnalyzer {
         // Image element (or image element with svg file)
         if(!(image instanceof HTMLImageElement) && !(image instanceof SVGImageElement)) {
             if(hasBackgroundImg) {
-                image = await backgroundImageToImage(element, image);
+                try {
+                    image = await backgroundImageToImage(element, image);
+                } catch(e) {
+                    this.debugLogger?.log(e.message, "error");
+                    return false;
+                }
             } else {
                 return false;
             }
@@ -546,7 +556,12 @@ export default class PageAnalyzer {
         canvas.width = newWidth;
         canvas.height = newHeight;
 
-        ctx.drawImage(image, 0, 0, newWidth, newHeight);
+        try {
+            ctx.drawImage(image, 0, 0, newWidth, newHeight);
+        } catch(e) {
+            this.debugLogger?.log(e.message, "error");
+            return false;
+        }
 
         // Check if the image is dark
         const isDarkImage = this.isImageDark(canvas, newWidth, newHeight);
@@ -554,7 +569,7 @@ export default class PageAnalyzer {
         canvas.remove();
 
         if (isDarkImage) {
-            this.debugLogger.log(`Detected dark image - image URL: ${image.src}`);
+            this.debugLogger?.log(`Detected dark image - image URL: ${image.src}`);
         }
 
         return isDarkImage;
@@ -610,6 +625,7 @@ export default class PageAnalyzer {
 
             return false;
         } catch(e) {
+            this.debugLogger?.log(e.message, "error");
             return false;
         }
     }

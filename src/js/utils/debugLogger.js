@@ -34,12 +34,33 @@ export default class DebugLogger {
         }
     }
 
-    log(message) {
+    log(message, type = "debug") {
         if (this.debugModeEnabled) {
             const timestamp = new Date().getTime();
             const pageURL = document.URL;
 
-            console.debug(`[PAGE SHADOW DEBUG] - Timestamp: ${timestamp} / Page URL: ${pageURL}\nMessage: ${message}`);
+            const stack = new Error().stack.split("\n");
+            const stackLine = stack[2].trim();
+
+            const match = stackLine.match(/\((.*):(\d+):(\d+)\)/);
+            let link = "";
+            
+            if (match) {
+                const file = match[1];
+                const line = match[2];
+                const column = match[3];
+                link = `${file}:${line}:${column}`;
+            }
+
+            const log = `[PAGE SHADOW ${type.toUpperCase()}] - Timestamp: ${timestamp} / Page URL: ${pageURL}\nMessage: ${message}\nCaller: ${link}`;
+
+            switch(type) {
+            case "debug":
+                console.debug(log);
+                break;
+            case "error":
+                console.error(log);
+            }
         }
     }
 

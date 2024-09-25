@@ -1614,12 +1614,31 @@ function svgElementToImage(element) {
     const box = element.getBBox();
     const width = box.width;
     const height = box.height;
-    const fill = computedStyles.fill;
     const stroke = computedStyles.stroke;
     const color = computedStyles.color;
 
+    let fill = computedStyles.fill;
+
+    if (fill === "rgb(0, 0, 0)" && !element.hasAttribute("fill")) {
+        const childElements = element.children;
+
+        fill = "none";
+
+        for(const childrenElement of childElements) {
+            if (childrenElement.tagName.toLowerCase() !== "title") {
+                const computedStyles = window.getComputedStyle(childrenElement);
+                const subFill = computedStyles.fill;
+
+                if (subFill !== "none") {
+                    fill = subFill;
+                    break;
+                }
+            }
+        }
+    }
+
     const image = new Image();
-    image.src = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" fill="${fill}" color="${color}" stroke="${stroke}">${element.outerHTML}</svg>`)}`;
+    image.src = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" fill="${fill}" color="${color}" stroke="${stroke}">${element.innerHTML}</svg>`)}`;
 
     return image;
 }
