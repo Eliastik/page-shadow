@@ -598,7 +598,7 @@ export default class PageAnalyzer {
         const ctx = canvas.getContext("2d");
 
         try {
-            const blockSize = 16;
+            const blockSize = this.websiteSpecialFiltersConfig.darkImageDetectionBlockSize;
 
             if(width <= 0 || height <= 0) {
                 return false;
@@ -631,7 +631,7 @@ export default class PageAnalyzer {
     }
 
     isPixelDark(red, green, blue, alpha) {
-        if (alpha >= 0.5) {
+        if (alpha >= this.websiteSpecialFiltersConfig.darkImageDetectionMinAlpha) {
             const hsl = rgb2hsl(red / 255, green / 255, blue / 255);
 
             if(hsl[2] <= this.websiteSpecialFiltersConfig.darkImageDetectionHslTreshold) {
@@ -664,7 +664,7 @@ export default class PageAnalyzer {
             }
         }
     
-        return transparentPixelCount / totalPixelCount > 0.5;
+        return transparentPixelCount / totalPixelCount > this.websiteSpecialFiltersConfig.darkImageDetectionTransparentPixelsRatio;
     }
 
     async awaitImageLoading(image) {
