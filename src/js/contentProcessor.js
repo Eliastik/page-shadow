@@ -872,7 +872,7 @@ export default class ContentProcessor {
 
                         if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds && treatedCount > this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall) {
                             if(this.mutationObserverAddedNodes.length > 0) {
-                                this.safeTimerMutationBackgrounds.start(this.mutationObserverAddedNodes.length < 100 ? 1 : undefined);
+                                this.safeTimerMutationBackgrounds.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
                             }
 
                             this.safeTimerMutationDelayed.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
@@ -891,7 +891,7 @@ export default class ContentProcessor {
             }
 
             if(this.mutationObserverAddedNodes.length > 0) {
-                this.safeTimerMutationBackgrounds.start(this.mutationObserverAddedNodes.length < 100 ? 1 : undefined);
+                this.safeTimerMutationBackgrounds.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
             }
 
             this.delayedMutationObserversCalls = [];
@@ -903,7 +903,7 @@ export default class ContentProcessor {
             const nodeList = mutation.addedNodes;
 
             if(nodeList.length > 0) {
-                this.mutationObserverAddedNodes.push(nodeList);
+                this.mutationObserverAddedNodes.push(...Array.prototype.slice.call(nodeList));
             }
         } else if(mutation.type == "attributes") {
             if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
@@ -916,37 +916,44 @@ export default class ContentProcessor {
 
     mutationElementsBackgrounds() {
         let i = this.mutationObserverAddedNodes.length;
-        const addedNodes = [];
+        let treatedCount = 0;
 
         while(i--) {
-            const nodeList = this.mutationObserverAddedNodes[i];
+            const node = this.mutationObserverAddedNodes[i];
 
-            let k = nodeList.length;
+            if(!node || !node.classList || node == document.body || ignoredElementsContentScript.includes(node.localName) || node.nodeType != 1 || node.shadowRoot) {
+                continue;
+            }
 
-            while(k--) {
-                const node = nodeList[k];
-
-                if(!node || !node.classList || node == document.body || ignoredElementsContentScript.includes(node.localName) || node.nodeType != 1 || node.shadowRoot) {
-                    continue;
+            this.treatOneMutationObserverAddedNode(this.mutationObserverAddedNodes.shift());
+            treatedCount++;
+            
+            if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds && treatedCount > this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall) {
+                if(this.mutationObserverAddedNodes.length > 0) {
+                    this.safeTimerMutationBackgrounds.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
                 }
 
-                addedNodes.push(node);
+                return;
             }
+
+            if(this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount > this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
+                this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = true;
+            }
+        }
+
+        if(this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount <= this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
+            this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = false;
         }
 
         this.mutationObserverAddedNodes = [];
+    }
 
-        if(addedNodes.length <= 0) {
-            return;
+    treatOneMutationObserverAddedNode(node) {
+        if (!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
+            this.pageAnalyzer.mutationForElement(node, null, null);
         }
 
-        for(const node of addedNodes) {
-            if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
-                this.pageAnalyzer.mutationForElement(node, null, null);
-            }
-
-            this.filterProcessor.doProcessFilters(this.filtersCache, node, true);
-        }
+        this.filterProcessor.doProcessFilters(this.filtersCache, node, true);
     }
 
     async updateFilters() {
