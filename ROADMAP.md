@@ -135,7 +135,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Fix dark image detection (using contours detection?) + enable by default?
     * [x] Optimize by reducing size of the image before analyze
 * [ ] Finalization: continue to test and adjust advanced settings for: performance optimizations and dark image detection
-    * [ ] Add advanced settings for dark image detection?
+    * [x] Add advanced settings for dark image detection?
     * [ ] Then release version 2.11
 
 #### Bugs to fix
