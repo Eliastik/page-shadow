@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsl, svgElementToImage, backgroundImageToImage } from "./util.js";
 import SafeTimer from "./safeTimer.js";
-import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, pageShadowClassListsMutationsIgnore, maxImageSizeDarkImageDetection } from "../constants.js";
+import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, pageShadowClassListsMutationsIgnore, maxImageSizeDarkImageDetection, ignoredElementsBrightTextColorDetection } from "../constants.js";
 
 /**
  * Class used to analyze the pages and detect transparent background,
@@ -261,12 +261,12 @@ export default class PageAnalyzer {
     }
 
     isTextElement(element) {
-        if (!element || element.nodeType !== Node.ELEMENT_NODE || element.tagName.toLowerCase() === "img") {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE || ignoredElementsBrightTextColorDetection.includes(element.tagName.toLowerCase())) {
             return false;
         }
 
         const hasShallowChildren = Array.from(element.children).every(child => child.children.length === 0);
-        const notAllChildrenAreImg = Array.from(element.children).every(child => child.tagName.toLowerCase() !== "img");
+        const notAllChildrenAreImg = Array.from(element.children).every(child => !ignoredElementsBrightTextColorDetection.includes(child.tagName.toLowerCase()));
     
         return hasShallowChildren && notAllChildrenAreImg;
     }
