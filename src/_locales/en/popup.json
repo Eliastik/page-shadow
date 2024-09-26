@@ -25,7 +25,7 @@
         "videoInvert": "Videos",
         "selectiveInvert": "Selective",
         "invertBrightColors": "Colored elements",
-        "selectiveInvertHelp": "Automatically invert certain elements (like logos) so that they display correctly on a dark theme of the Increase contrast feature. Based on the Filters functionality as well as automatic detection of dark images or images containing logo/text.",
+        "selectiveInvertHelp": "Automatically invert certain elements (like logos) so that they display correctly on a dark theme of the Increase contrast feature. Based on the Filters functionality as well as automatic detection of images containing dark logo/text.",
         "titleEntirePageInvert": "Invert the colors of the entire page.",
         "brightness": "Decrease brightness",
         "titleBrightness": "Decrease the page brightness. You can choose the percentage of brightness decrease.",

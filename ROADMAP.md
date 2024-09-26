@@ -145,6 +145,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Minor) Background gradient not detected as bright colors
 * [x] (Minor) Fix transition white that disable some transitions? -> no, seems OK
 * [x] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element -> disabled by default
+* [ ] (Medium) Dark image detection not working on image from cross-origin domain (cf Wikipedia articles)
 
 #### Ideas
 
