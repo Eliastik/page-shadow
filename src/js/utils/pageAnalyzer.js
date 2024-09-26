@@ -214,7 +214,7 @@ export default class PageAnalyzer {
         const backgroundColor = computedStyle.getPropertyValue("background-color");
         const backgroundImage = computedStyle.getPropertyValue("background-image");
 
-        const hasBackgroundImg = background.trim().substring(0, 4).toLowerCase().includes("url(") || backgroundImage.trim().substring(0, 4).toLowerCase() == "url(";
+        const hasBackgroundImg = background.split(" ").some(v => v.trim().substring(0, 4).toLowerCase().includes("url(")) || backgroundImage.split(" ").some(v => v.trim().substring(0, 4).toLowerCase().includes("url("));
         const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
         const hasTransparentBackgroundClass = element.classList.contains("pageShadowHasTransparentBackground");
 
