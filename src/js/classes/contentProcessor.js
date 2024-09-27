@@ -19,7 +19,7 @@
 import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme, areAllCSSVariablesDefined } from "../utils/util.js";
 import { colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, ignoredElementsContentScript, attenuateDefaultValue } from "../constants.js";
 import SafeTimer from "./safeTimer.js";
-import MutationObserverWrapper from "./mutationObserver.js";
+import MutationObserverWrapper from "./mutationObserverWrapper.js";
 import ElementClassBatcher from "./elementClassBatcher.js";
 import ApplyBodyAvailable from "./applyBodyAvailable.js";
 import PageAnalyzer from "./pageAnalyzer.js";
