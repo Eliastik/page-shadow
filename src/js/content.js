@@ -131,7 +131,11 @@ browser.runtime.onMessage.addListener(async(message) => {
                 contentProcessor.pageAnalyzer.backgroundDetected = false;
                 precUrl = getCurrentURL();
                 contentProcessor.precUrl = getCurrentURL();
-                contentProcessor.filtersCache = null;
+
+                if (contentProcessor.filterProcessor) {
+                    contentProcessor.filterProcessor.filtersCache = null;
+                }
+                
                 changed = true;
                 contentProcessor.updateFilters();
             }
