@@ -919,12 +919,6 @@ export default class ContentProcessor {
         let treatedCount = 0;
 
         while(i--) {
-            const node = this.mutationObserverAddedNodes[i];
-
-            if(!node || !node.classList || node == document.body || ignoredElementsContentScript.includes(node.localName) || node.nodeType != 1 || node.shadowRoot) {
-                continue;
-            }
-
             this.treatOneMutationObserverAddedNode(this.mutationObserverAddedNodes.shift());
             treatedCount++;
             
@@ -949,6 +943,10 @@ export default class ContentProcessor {
     }
 
     treatOneMutationObserverAddedNode(node) {
+        if(!node || !node.classList || node == document.body || ignoredElementsContentScript.includes(node.localName) || node.nodeType != 1 || node.shadowRoot) {
+            return;
+        }
+
         if (!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
             this.pageAnalyzer.mutationForElement(node, null, null);
         }
