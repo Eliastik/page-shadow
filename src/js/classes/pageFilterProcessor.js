@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 
 import { mapFiltersCSSClass } from "../constants.js";
-import { addNewStyleAttribute, removeStyleAttribute, sha256 } from "./util.js";
+import { addNewStyleAttribute, removeStyleAttribute, sha256 } from "../utils/util.js";
 
 /**
  * Class used to process the filter rules

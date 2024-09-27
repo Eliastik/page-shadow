@@ -16,16 +16,16 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme, areAllCSSVariablesDefined } from "./utils/util.js";
-import { colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, ignoredElementsContentScript, attenuateDefaultValue } from "./constants.js";
-import SafeTimer from "./utils/safeTimer.js";
-import MutationObserverWrapper from "./utils/mutationObserver.js";
-import ElementClassBatcher from "./utils/elementClassBatcher.js";
-import ApplyBodyAvailable from "./utils/applyBodyAvailable.js";
-import PageAnalyzer from "./utils/pageAnalyzer.js";
-import PageFilterProcessor from "./utils/pageFilterProcessor.js";
-import MultipleElementClassBatcher from "./utils/multipleElementClassBatcher.js";
-import DebugLogger from "./utils/debugLogger.js";
+import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme, areAllCSSVariablesDefined } from "../utils/util.js";
+import { colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, ignoredElementsContentScript, attenuateDefaultValue } from "../constants.js";
+import SafeTimer from "./safeTimer.js";
+import MutationObserverWrapper from "./mutationObserver.js";
+import ElementClassBatcher from "./elementClassBatcher.js";
+import ApplyBodyAvailable from "./applyBodyAvailable.js";
+import PageAnalyzer from "./pageAnalyzer.js";
+import PageFilterProcessor from "./pageFilterProcessor.js";
+import MultipleElementClassBatcher from "./multipleElementClassBatcher.js";
+import DebugLogger from "./debugLogger.js";
 
 /**
  * Main class used by the content script

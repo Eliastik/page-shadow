@@ -18,8 +18,8 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { pageShadowAllowed, getSettings, getCurrentURL, hasSettingsChanged, sendMessageWithPromise, sha256 } from "./utils/util.js";
 import browser from "webextension-polyfill";
-import ContentProcessor from "./contentProcessor.js";
-import SafeTimer from "./utils/safeTimer.js";
+import ContentProcessor from "./classes/contentProcessor.js";
+import SafeTimer from "./classes/safeTimer.js";
 
 const contentProcessor = new ContentProcessor();
 
