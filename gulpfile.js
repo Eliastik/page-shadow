@@ -40,7 +40,7 @@ gulp.task("clean-directories", () => {
 
 gulp.task("copy-global", () => {
     return gulp.src(["./src/**", "!./src/img/src/**", "!./src/js/*.js", "!./src/img/icon_old.png", "!./src/img/icon_chrome.png", "!./src/css/src/**",
-        "!./src/css/*.less", "!./src/css/content_old.css", "!./src/js/utils/**", "!./src/_locales/**/{options,pageTest,popup}.json"])
+        "!./src/css/*.less", "!./src/css/content_old.css", "!./src/js/classes/**", "!./src/_locales/**/{options,pageTest,popup}.json"])
         .pipe(gulp.dest("./build/global/"));
 });
 
@@ -144,7 +144,7 @@ gulp.task("build", () => {
 });
 
 gulp.task("watch", () => {
-    gulp.watch(["src/js/*.js", "src/js/utils/*.js", "src/css/*.css", "src/css/*.less", "src/locales/**/*.json", "src/*.html", "src/*.txt", "manifests/**/*.json"], gulp.series("build-directory-dev"));
+    gulp.watch(["src/js/*.js", "src/js/classes/*.js", "src/css/*.css", "src/css/*.less", "src/locales/**/*.json", "src/*.html", "src/*.txt", "manifests/**/*.json"], gulp.series("build-directory-dev"));
 });
 
 gulp.task("build-directory-dev", gulp.series("clean", "copy-global", "compile-less", "compile-js", "copyChrome", "copyFirefox", "copyFirefoxContentCSS"));

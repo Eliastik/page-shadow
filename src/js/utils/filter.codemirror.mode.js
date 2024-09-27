@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/ */
-import { availableFilterRulesType, specialFilterRules, regexpDetectionPatternHighlight } from "./constants.js";
+import { availableFilterRulesType, specialFilterRules, regexpDetectionPatternHighlight } from "../constants.js";
 
 function filtersHint(CodeMirror, editor, keywords, getToken) {
     const Pos = CodeMirror.Pos;

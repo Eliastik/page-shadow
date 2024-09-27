@@ -19,10 +19,10 @@
 import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud, sha256 } from "./utils/util.js";
 import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
-import Filter from "./filters.js";
+import Filter from "./classes/filters.js";
 import browser from "webextension-polyfill";
-import PresetCache from "./utils/presetCache.js";
-import SettingsCache from "./utils/settingsCache.js";
+import PresetCache from "./classes/presetCache.js";
+import SettingsCache from "./classes/settingsCache.js";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;

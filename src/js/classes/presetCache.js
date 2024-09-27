@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getPresetData } from "./util.js";
+import { getPresetData } from "../utils/util.js";
 import { nbPresets } from "../constants.js";
 
 export default class PresetCache {
