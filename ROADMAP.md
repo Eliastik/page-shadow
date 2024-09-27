@@ -167,8 +167,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] Improving codebase
     * [ ] Comment the code: doc for methods/functions
     * [ ] Simplify code applying Shadow Roots styles?
-    * [ ] Separate code treating mutations of page elements to a separate class?
-    * [ ] Separate method applying mutation observers to another class?
+    * [x] Separate code treating mutations of page elements to a separate class?
+    * [x] Separate method applying mutation observers to another class?
     * [ ] Modularize content.js classes with less dependencies between classes?
 * [ ] Others codebase improvements
     * [ ] No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)

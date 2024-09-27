@@ -24,8 +24,10 @@ import { addNewStyleAttribute, removeStyleAttribute, sha256 } from "../utils/uti
  * Class used to process the filter rules
  */
 export default class PageFilterProcessor {
+
     pageAnalyzer;
 
+    filtersCache = null;
     multipleElementClassBatcherAdd = null;
     multipleElementClassBatcherRemove = null;
     websiteSpecialFiltersConfig = null;
@@ -39,12 +41,12 @@ export default class PageFilterProcessor {
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
     }
 
-    async doProcessFilters(filters, element, applyToChildrens) {
-        if(!filters) return;
+    async doProcessFilters(element, applyToChildrens) {
+        if(!this.filtersCache) return;
 
         const enableNotMatchingFiltersDetection = this.websiteSpecialFiltersConfig.enableNotMatchingFiltersDetection;
 
-        for(const filter of filters) {
+        for(const filter of this.filtersCache) {
             const selector = filter.filter;
             const filterTypes = filter.type.split(",");
 
