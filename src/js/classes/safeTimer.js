@@ -22,6 +22,11 @@
  * inactive) to preserve performance
  */
 export default class SafeTimer {
+
+    timeoutId = null;
+    requestAnimationId = null;
+    callback = null;
+
     constructor(callback) {
         this.requestAnimationId = this.timeoutId = null;
         this.callback = callback;
@@ -39,7 +44,7 @@ export default class SafeTimer {
         }
 
         if(!this.requestAnimationId && !this.timeoutId) {
-            this.timeoutid = setTimeout(() => {
+            this.timeoutId = setTimeout(() => {
                 this.macroToMicro();
             }, delay);
         }
@@ -51,14 +56,14 @@ export default class SafeTimer {
             this.requestAnimationId = null;
         }
 
-        if(this.timeoutid) {
-            clearTimeout(this.timeoutid);
-            this.timeoutid = null;
+        if(this.timeoutId) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = null;
         }
     }
 
     macroToMicro() {
-        this.timeoutid = null;
+        this.timeoutId = null;
         this.start();
     }
 

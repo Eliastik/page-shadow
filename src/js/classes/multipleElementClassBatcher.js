@@ -23,8 +23,9 @@ import { addClass, removeClass } from "../utils/util.js";
  * Class used to apply or remove CSS classes in batch to one or multiple elements
  */
 export default class MultipleElementClassBatcher {
-    classListsWithElement = [];
-    
+
+    classListsWithElement = new Map();
+
     maxElementsTreatedByCall = 500;
 
     constructor(maxElementsTreatedByCall) {
@@ -32,35 +33,33 @@ export default class MultipleElementClassBatcher {
     }
 
     add(element, ...classList) {
-        const currentElement = this.classListsWithElement.find(v => v.element === element);
-
-        if (currentElement) {
-            currentElement.classList = [...new Set([...currentElement.classList, ...classList])];
-        } else {
-            this.classListsWithElement.unshift({
-                element,
-                classList: [...new Set(classList)]
-            });
-        }
+        const currentClassList = this.classListsWithElement.get(element) || [];
+        this.classListsWithElement.set(element, [...new Set([...currentClassList, ...classList])]);
     }
 
     removeAll() {
-        this.classListsWithElement = [];
+        this.classListsWithElement.clear();
     }
 
     applyAdd() {
-        for (let i = 0; i < this.maxElementsTreatedByCall && i < this.classListsWithElement.length; i++) {
-            const classListWithElement = this.classListsWithElement.pop();
+        let count = 0;
 
-            addClass(classListWithElement.element, ...classListWithElement.classList);
+        for(const [element, classList] of this.classListsWithElement) {
+            if(count >= this.maxElementsTreatedByCall) break;
+            addClass(element, ...classList);
+            this.classListsWithElement.delete(element);
+            count++;
         }
     }
 
     applyRemove() {
-        for (let i = 0; i < this.maxElementsTreatedByCall && i < this.classListsWithElement.length; i++) {
-            const classListWithElement = this.classListsWithElement.pop();
-            
-            removeClass(classListWithElement.element, ...classListWithElement.classList);
+        let count = 0;
+
+        for(const [element, classList] of this.classListsWithElement) {
+            if(count >= this.maxElementsTreatedByCall) break;
+            removeClass(element, ...classList);
+            this.classListsWithElement.delete(element);
+            count++;
         }
     }
 }
