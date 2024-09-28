@@ -518,7 +518,7 @@ export default class PageAnalyzer {
 
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-        let image = element.cloneNode();
+        let image = element;
 
         // SVG element
         if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
@@ -561,6 +561,7 @@ export default class PageAnalyzer {
         try {
             image.crossOrigin = "Anonymous";
             ctx.drawImage(image, 0, 0, newWidth, newHeight);
+            image.crossOrigin = null;
         } catch(e) {
             this.debugLogger?.log(e.message, "error");
             return false;
