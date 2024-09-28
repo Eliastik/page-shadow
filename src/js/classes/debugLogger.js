@@ -40,19 +40,10 @@ export default class DebugLogger {
             const pageURL = document.URL;
 
             const stack = new Error().stack.split("\n");
-            const stackLine = stack[2].trim();
+            const link = this.getStackLink(stack, 3);
+            const link2 = this.getStackLink(stack, 2);
 
-            const match = stackLine.match(/\((.*):(\d+):(\d+)\)/);
-            let link = "";
-            
-            if (match) {
-                const file = match[1];
-                const line = match[2];
-                const column = match[3];
-                link = `${file}:${line}:${column}`;
-            }
-
-            const log = `[PAGE SHADOW ${type.toUpperCase()}] - Timestamp: ${timestamp} / Page URL: ${pageURL}\nMessage: ${message}\nCaller: ${link}`;
+            const log = `[PAGE SHADOW ${type.toUpperCase()}] - Timestamp: ${timestamp} / Page URL: ${pageURL}\nMessage: ${message}\nCaller: ${link} > ${link2}`;
 
             switch(type) {
             case "debug":
@@ -64,4 +55,19 @@ export default class DebugLogger {
         }
     }
 
+    getStackLink(stack, index) {
+        const stackLine = stack[index].trim();
+
+        const match = stackLine.match(/\((.*):(\d+):(\d+)\)/);
+        let link = "";
+
+        if (match) {
+            const file = match[1];
+            const line = match[2];
+            const column = match[3];
+            link = `${file}:${line}:${column}`;
+        }
+
+        return link;
+    }
 }
