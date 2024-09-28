@@ -514,9 +514,11 @@ export default class PageAnalyzer {
     }
 
     async detectDarkImage(element, hasBackgroundImg) {
+        if(!element) return;
+
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-        let image = element;
+        let image = element.cloneNode();
 
         // SVG element
         if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
@@ -557,6 +559,7 @@ export default class PageAnalyzer {
         canvas.height = newHeight;
 
         try {
+            image.crossOrigin = "Anonymous";
             ctx.drawImage(image, 0, 0, newWidth, newHeight);
         } catch(e) {
             this.debugLogger?.log(e.message, "error");
