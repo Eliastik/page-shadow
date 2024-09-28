@@ -136,17 +136,17 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Optimize by reducing size of the image before analyze
 * [ ] Finalization: continue to test and adjust advanced settings for: performance optimizations and dark image detection
     * [x] Add advanced settings for dark image detection?
+    * [ ] Optimize performance settings
     * [ ] Then release version 2.11
 
 #### Bugs to fix
 
+* [x] (Medium) Dark image detection not working on image from cross-origin domain (cf Wikipedia articles)
 * [x] (Major) Still some errors with QUOTA_BYTES_PER_ITEM in cloud archive. The chunk method need to be fixed
 * [x] (Medium) Bug with fast apply mode and iframes + preset: iframe use global settings instead of preset settings from parent page
 * [x] (Minor) Background gradient not detected as bright colors
 * [x] (Minor) Fix transition white that disable some transitions? -> no, seems OK
 * [x] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element -> disabled by default
-* [ ] (Medium) Dark image detection not working on image from cross-origin domain (cf Wikipedia articles)
-
 #### Ideas
 
 * [x] Add possibility to change the filter intensity for the Attenuate colors feature?
