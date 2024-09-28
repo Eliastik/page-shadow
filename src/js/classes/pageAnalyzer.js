@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsl, svgElementToImage, backgroundImageToImage } from "../utils/util.js";
+import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsl, svgElementToImage, backgroundImageToImage, isCrossOrigin } from "../utils/util.js";
 import SafeTimer from "./safeTimer.js";
 import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, pageShadowClassListsMutationsIgnore, maxImageSizeDarkImageDetection, ignoredElementsBrightTextColorDetection } from "../constants.js";
 
@@ -520,6 +520,12 @@ export default class PageAnalyzer {
         const ctx = canvas.getContext("2d");
         let image = element;
 
+        // Image element
+        if (image instanceof HTMLImageElement && isCrossOrigin(image.src)) {
+            image = image.cloneNode();
+            image.crossOrigin = "Anonymous";
+        }
+
         // SVG element
         if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
             try {
@@ -534,7 +540,7 @@ export default class PageAnalyzer {
             }
         }
         
-        // Image element (or image element with svg file)
+        // Background image element
         if(!(image instanceof HTMLImageElement) && !(image instanceof SVGImageElement)) {
             if(hasBackgroundImg) {
                 try {
@@ -559,9 +565,7 @@ export default class PageAnalyzer {
         canvas.height = newHeight;
 
         try {
-            image.crossOrigin = "Anonymous";
             ctx.drawImage(image, 0, 0, newWidth, newHeight);
-            image.crossOrigin = null;
         } catch(e) {
             this.debugLogger?.log(e.message, "error");
             return false;
