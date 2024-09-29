@@ -24,11 +24,11 @@
 export default class SafeTimer {
 
     timeoutId = null;
+    timeoutIdleId = null;
     requestAnimationId = null;
     callback = null;
 
     constructor(callback) {
-        this.requestAnimationId = this.timeoutId = null;
         this.callback = callback;
     }
 
@@ -43,10 +43,16 @@ export default class SafeTimer {
             return;
         }
 
-        if(!this.requestAnimationId && !this.timeoutId) {
-            this.timeoutId = setTimeout(() => {
-                this.macroToMicro();
-            }, delay);
+        if(!this.requestAnimationId) {
+            if ("requestIdleCallback" in window && !this.timeoutIdleId) {
+                this.timeoutIdleId = requestIdleCallback(() => {
+                    this.macroToMicro();
+                });
+            } else if(!this.timeoutId) {
+                this.timeoutId = setTimeout(() => {
+                    this.macroToMicro();
+                }, delay);
+            }
         }
     }
 
@@ -60,10 +66,16 @@ export default class SafeTimer {
             clearTimeout(this.timeoutId);
             this.timeoutId = null;
         }
+
+        if(this.timeoutIdleId) {
+            cancelIdleCallback(this.timeoutIdleId);
+            this.timeoutIdleId = null;
+        }
     }
 
     macroToMicro() {
         this.timeoutId = null;
+        this.timeoutIdleId = null;
         this.start();
     }
 
