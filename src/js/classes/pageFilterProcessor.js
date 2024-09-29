@@ -214,6 +214,7 @@ export default class PageFilterProcessor {
     processSpecialRules(rules) {
         rules.forEach(rule => {
             const filterTypes = rule.type.split(",");
+            const filterRule = rule.filter ? parseFloat(rule.filter) : null;
 
             filterTypes.forEach(type => {
                 if(type == "enablePerformanceMode") this.websiteSpecialFiltersConfig.performanceModeEnabled = true;
@@ -222,7 +223,7 @@ export default class PageFilterProcessor {
                 if(type == "disableTransparentBackgroundAutoDetect") this.websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled = false;
                 if(type == "enableMutationObserversForSubChilds") this.websiteSpecialFiltersConfig.enableMutationObserversForSubChilds = true;
                 if(type == "disableMutationObserversForSubChilds") this.websiteSpecialFiltersConfig.enableMutationObserversForSubChilds = false;
-                if(type == "opacityDetectedAsTransparentThreshold") this.websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold = rule.filter;
+                if(type == "opacityDetectedAsTransparentThreshold") this.websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold = filterRule;
                 if(type == "enableMutationObserverAttributes") this.websiteSpecialFiltersConfig.enableMutationObserverAttributes = true;
                 if(type == "disableMutationObserverAttributes") this.websiteSpecialFiltersConfig.enableMutationObserverAttributes = false;
                 if(type == "enableMutationObserverClass") this.websiteSpecialFiltersConfig.enableMutationObserverClass = true;
@@ -231,48 +232,48 @@ export default class PageFilterProcessor {
                 if(type == "disableMutationObserverStyle") this.websiteSpecialFiltersConfig.enableMutationObserverStyle = false;
                 if(type == "enableShadowRootStyleOverride") this.websiteSpecialFiltersConfig.enableShadowRootStyleOverride = true;
                 if(type == "disableShadowRootStyleOverride") this.websiteSpecialFiltersConfig.enableShadowRootStyleOverride = false;
-                if(type == "shadowRootStyleOverrideDelay") this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay = rule.filter;
+                if(type == "shadowRootStyleOverrideDelay") this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay = filterRule;
                 if(type == "enableThrottleMutationObserverBackgrounds") {
                     this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = true;
                     this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled = false;
                 }
                 if(type == "disableThrottleMutationObserverBackgrounds") this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = false;
-                if(type == "delayMutationObserverBackgrounds") this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds = rule.filter;
-                if(type == "autoThrottleMutationObserverBackgroundsTreshold") this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold = rule.filter;
-                if(type == "throttledMutationObserverTreatedByCall") this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall = rule.filter;
+                if(type == "delayMutationObserverBackgrounds") this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds = filterRule;
+                if(type == "autoThrottleMutationObserverBackgroundsTreshold") this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold = filterRule;
+                if(type == "throttledMutationObserverTreatedByCall") this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall = filterRule;
                 if(type == "enableAutoThrottleMutationObserverBackgrounds") this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled = true;
                 if(type == "disableAutoThrottleMutationObserverBackgrounds") this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled = false;
-                if(type == "delayApplyMutationObserversSafeTimer") this.websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer = rule.filter;
+                if(type == "delayApplyMutationObserversSafeTimer") this.websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer = filterRule;
                 if(type == "enableObserveBodyChange") this.websiteSpecialFiltersConfig.observeBodyChange = true;
                 if(type == "disableObserveBodyChange") this.websiteSpecialFiltersConfig.observeBodyChange = false;
-                if(type == "observeBodyChangeTimerInterval") this.websiteSpecialFiltersConfig.observeBodyChangeTimerInterval = rule.filter;
+                if(type == "observeBodyChangeTimerInterval") this.websiteSpecialFiltersConfig.observeBodyChangeTimerInterval = filterRule;
                 if(type == "enableBrightColorDetection") this.websiteSpecialFiltersConfig.enableBrightColorDetection = true;
                 if(type == "disableBrightColorDetection") this.websiteSpecialFiltersConfig.enableBrightColorDetection = false;
-                if(type == "brightColorLightnessTresholdMin") this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMin = rule.filter;
-                if(type == "brightColorLightnessTresholdTextMin") this.websiteSpecialFiltersConfig.brightColorLightnessTresholdTextMin = rule.filter;
-                if(type == "brightColorLightnessTresholdMax") this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMax = rule.filter;
-                if(type == "brightColorSaturationTresholdMin") this.websiteSpecialFiltersConfig.brightColorSaturationTresholdMin = rule.filter;
+                if(type == "brightColorLightnessTresholdMin") this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMin = filterRule;
+                if(type == "brightColorLightnessTresholdTextMin") this.websiteSpecialFiltersConfig.brightColorLightnessTresholdTextMin = filterRule;
+                if(type == "brightColorLightnessTresholdMax") this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMax = filterRule;
+                if(type == "brightColorSaturationTresholdMin") this.websiteSpecialFiltersConfig.brightColorSaturationTresholdMin = filterRule;
                 if(type == "enableThrottleBackgroundDetection") this.websiteSpecialFiltersConfig.throttleBackgroundDetection = true;
                 if(type == "disableThrottleBackgroundDetection") this.websiteSpecialFiltersConfig.throttleBackgroundDetection = false;
-                if(type == "throttleBackgroundDetectionElementsTreatedByCall") this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall = rule.filter;
-                if(type == "backgroundDetectionStartDelay") this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay = rule.filter;
+                if(type == "throttleBackgroundDetectionElementsTreatedByCall") this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall = filterRule;
+                if(type == "backgroundDetectionStartDelay") this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay = filterRule;
                 if(type == "useBackgroundDetectionAlreadyProcessedNodes") this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes = true;
                 if(type == "enableBrightColorDetectionSubelement") this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement = true;
                 if(type == "disableBrightColorDetectionSubelement") this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement = false;
                 if(type == "enableObserveDocumentChange") this.websiteSpecialFiltersConfig.observeDocumentChange = true;
                 if(type == "disableObserveDocumentChange") this.websiteSpecialFiltersConfig.observeDocumentChange = false;
-                if(type == "observeDocumentChangeTimerInterval") this.websiteSpecialFiltersConfig.observeDocumentChangeTimerInterval = rule.filter;
+                if(type == "observeDocumentChangeTimerInterval") this.websiteSpecialFiltersConfig.observeDocumentChangeTimerInterval = filterRule;
                 if(type == "enableDarkImageDetection") this.websiteSpecialFiltersConfig.enableDarkImageDetection = true;
                 if(type == "disableDarkImageDetection") this.websiteSpecialFiltersConfig.enableDarkImageDetection = false;
-                if(type == "darkImageDetectionHslTreshold") this.websiteSpecialFiltersConfig.darkImageDetectionHslTreshold = rule.filter;
+                if(type == "darkImageDetectionHslTreshold") this.websiteSpecialFiltersConfig.darkImageDetectionHslTreshold = filterRule;
                 if(type == "enableNotMatchingFiltersDetection") this.websiteSpecialFiltersConfig.enableNotMatchingFiltersDetection = true;
                 if(type == "disableNotMatchingFiltersDetection") this.websiteSpecialFiltersConfig.enableNotMatchingFiltersDetection = false;
-                if(type == "intervalApplyClassChanges") this.websiteSpecialFiltersConfig.intervalApplyClassChanges = rule.filter;
-                if(type == "classChangeMaxElementsTreatedByCall") this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall = rule.filter;
-                if(type == "darkImageDetectionMinAlpha") this.websiteSpecialFiltersConfig.darkImageDetectionMinAlpha = rule.filter;
-                if(type == "darkImageDetectionBlockSize") this.websiteSpecialFiltersConfig.darkImageDetectionBlockSize = rule.filter;
-                if(type == "darkImageDetectionTransparentPixelsRatio") this.websiteSpecialFiltersConfig.darkImageDetectionTransparentPixelsRatio = rule.filter;
-                if(type == "darkImageDetectionDarkPixelsRatio") this.websiteSpecialFiltersConfig.darkImageDetectionDarkPixelsRatio = rule.filter;
+                if(type == "intervalApplyClassChanges") this.websiteSpecialFiltersConfig.intervalApplyClassChanges = filterRule;
+                if(type == "classChangeMaxElementsTreatedByCall") this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall = filterRule;
+                if(type == "darkImageDetectionMinAlpha") this.websiteSpecialFiltersConfig.darkImageDetectionMinAlpha = filterRule;
+                if(type == "darkImageDetectionBlockSize") this.websiteSpecialFiltersConfig.darkImageDetectionBlockSize = filterRule;
+                if(type == "darkImageDetectionTransparentPixelsRatio") this.websiteSpecialFiltersConfig.darkImageDetectionTransparentPixelsRatio = filterRule;
+                if(type == "darkImageDetectionDarkPixelsRatio") this.websiteSpecialFiltersConfig.darkImageDetectionDarkPixelsRatio = filterRule;
             });
         });
     }
