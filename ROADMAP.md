@@ -136,7 +136,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Optimize by reducing size of the image before analyze
 * [ ] Finalization: continue to test and adjust advanced settings for: performance optimizations and dark image detection
     * [x] Add advanced settings for dark image detection?
-    * [ ] Optimize performance settings
+    * [ ] Optimize performance settings, dynamic throttling?
     * [ ] Then release version 2.11
 
 #### Bugs to fix
