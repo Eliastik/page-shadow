@@ -213,7 +213,7 @@ const defaultWebsiteSpecialFiltersConfig = {
     intervalApplyClassChanges: 500,
     classChangeMaxElementsTreatedByCall: 2500,
     enableDarkImageDetection: true,
-    darkImageDetectionHslTreshold: 0.15,
+    darkImageDetectionHslTreshold: 0.18,
     darkImageDetectionMinAlpha: 0.5,
     darkImageDetectionBlockSize: 16,
     darkImageDetectionTransparentPixelsRatio: 0.5,

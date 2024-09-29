@@ -132,23 +132,55 @@ export default class PageAnalyzer {
         const isRgbaColor = backgroundColor.trim().startsWith("rgba");
         const isTransparentColor = backgroundColor.trim().startsWith("rgba(0, 0, 0, 0)");
         const alpha = isRgbaColor ? parseFloat(backgroundColor.split(",")[3]) : -1;
-        const hasBackgroundImageValue = backgroundImage && (backgroundImage.trim().toLowerCase() != "none" && backgroundImage.trim() != "");
+        const hasBackgroundImageValue = this.elementHasBackgroundImageValue(backgroundImage);
         const hasNoBackgroundColorValue = backgroundColor && (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "");
 
         return (hasNoBackgroundColorValue || isTransparentColor || (isRgbaColor && alpha <= this.websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasBackgroundImageValue;
     }
 
+    elementHasBackgroundImageValue(backgroundImage) {
+        const hasBackgroundImageValue = backgroundImage && (backgroundImage.trim().toLowerCase() != "none" && backgroundImage.trim() != "");
+
+        if(hasBackgroundImageValue) {
+            const hasGradientValue = this.hasGradient(backgroundImage);
+
+            if(hasGradientValue) {
+                const rgbValuesLists = this.extractGradientRGBValues(backgroundImage);
+                return !rgbValuesLists.every(([, , , alpha = 1]) => alpha <= this.websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    hasGradient(background) {
+        return background && (background.trim().toLowerCase().indexOf("linear-gradient") != -1
+            || background.trim().toLowerCase().indexOf("radial-gradient") != -1 || background.trim().toLowerCase().indexOf("conic-gradient") != -1);
+    }
+
+    extractGradientRGBValues(background) {
+        const pattern = /rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})(?:,\s*(\d*\.?\d+))?\)/g;
+        const matches = [...background.matchAll(pattern)];
+        
+        const rgbaValuesLists = matches.map(match => {
+            const rgb = match.slice(1, 4).map(Number);
+            const alpha = match[4] !== undefined ? parseFloat(match[4]) : 1;
+            return [...rgb, alpha];
+        });
+        
+        return rgbaValuesLists;
+    }
+
     elementHasBrightColor(background, backgroundColor, isText) {
         if(background) {
-            const hasGradient = background && (background.trim().toLowerCase().indexOf("linear-gradient") != -1
-                || background.trim().toLowerCase().indexOf("radial-gradient") != -1 || background.trim().toLowerCase().indexOf("conic-gradient") != -1);
+            const hasGradient = this.hasGradient(background);
 
-            if (hasGradient) {
-                const pattern = /rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)/g;
-                const matches = [...background.matchAll(pattern)];
-                const rgbValuesLists = matches.map(match => match.slice(1, 4).map(Number));
+            if(hasGradient) {
+                const rgbValuesLists = this.extractGradientRGBValues(background);
 
-                for (const rgbValuesList of rgbValuesLists) {
+                for(const rgbValuesList of rgbValuesLists) {
                     const isBrightColor = this.isBrightColor(rgbValuesList, isText, true);
 
                     if (isBrightColor && isBrightColor[0]) {
