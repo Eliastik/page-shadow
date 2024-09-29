@@ -272,6 +272,7 @@ export default class PageFilterProcessor {
                 if(type == "darkImageDetectionMinAlpha") this.websiteSpecialFiltersConfig.darkImageDetectionMinAlpha = rule.filter;
                 if(type == "darkImageDetectionBlockSize") this.websiteSpecialFiltersConfig.darkImageDetectionBlockSize = rule.filter;
                 if(type == "darkImageDetectionTransparentPixelsRatio") this.websiteSpecialFiltersConfig.darkImageDetectionTransparentPixelsRatio = rule.filter;
+                if(type == "darkImageDetectionDarkPixelsRatio") this.websiteSpecialFiltersConfig.darkImageDetectionDarkPixelsRatio = rule.filter;
             });
         });
     }

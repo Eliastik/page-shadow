@@ -99,6 +99,7 @@
             "darkImageDetectionMinAlpha": "Minimum alpha channel value (percentage) for analyzing an image pixel",
             "darkImageDetectionBlockSize": "Size (pixels) of the block analyzing a detected dark pixel",
             "darkImageDetectionTransparentPixelsRatio": "Ratio (percentage) of transparent pixels to normal pixels for detecting an image as dark",
+            "darkImageDetectionDarkPixelsRatio": "Ratio (percentage) of transparent pixels to dark pixels for detecting an image as dark",
             "help": {
                 "debugMode": "Enables debug mode, which displays debugging information in the JavaScript console on pages processed by Page Shadow, or on extension pages.",
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
@@ -137,7 +138,8 @@
                 "darkImageDetectionHslTreshold": "If a pixel has a lightness value below this threshold, the pixel is considered dark. The maximum value is 1, the minimum is 0 (percentage).",
                 "darkImageDetectionMinAlpha": "The minimum alpha channel value (percentage) required to analyze an image pixel. If the value is below this threshold, the pixel is ignored. Default is 0.5 (for 50%).",
                 "darkImageDetectionBlockSize": "When a pixel is detected as dark based on lightness value, its neighborhood is analyzed for transparent pixels. This value sets the number of pixels to analyze around the detected pixel.",
-                "darkImageDetectionTransparentPixelsRatio": "When analyzing the neighborhood of the detected dark pixel, this sets the minimum ratio of transparent pixels required. If this ratio is exceeded, the image is detected as a dark image."
+                "darkImageDetectionTransparentPixelsRatio": "When analyzing the neighborhood of the detected dark pixel, this sets the minimum ratio of transparent pixels required. If this ratio is exceeded, the image is detected as a dark image.",
+                "darkImageDetectionDarkPixelsRatio": "When analyzing the neighborhood of the detected dark pixel, this sets the minimum ratio of dark pixels required (compared with non-transparent pixels). If this ratio is exceeded, the image is detected as a dark image."
             }
         },
         "saved": "Saved!"

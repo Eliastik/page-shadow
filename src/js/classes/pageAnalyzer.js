@@ -652,6 +652,8 @@ export default class PageAnalyzer {
 
     hasTransparentSurroundingPixels(x, y, data, width, height, blockSize) {
         let transparentPixelCount = 0;
+        let darkPixelCount = 0;
+        let nonTransparentPixelCount = 0;
         let totalPixelCount = 0;
     
         const startX = Math.max(0, x - blockSize / 2);
@@ -662,17 +664,27 @@ export default class PageAnalyzer {
         for (let j = startY; j < endY; j++) {
             for (let i = startX; i < endX; i++) {
                 const index = (j * width + i) * 4;
+                const red = data[index];
+                const green = data[index + 1];
+                const blue = data[index + 2];
                 const alpha = data[index + 3];
     
                 if (alpha === 0) {
                     transparentPixelCount++;
+                } else {
+                    nonTransparentPixelCount++;
+                }
+
+                if (this.isPixelDark(red, green, blue, alpha)) {
+                    darkPixelCount++;
                 }
 
                 totalPixelCount++;
             }
         }
     
-        return transparentPixelCount / totalPixelCount > this.websiteSpecialFiltersConfig.darkImageDetectionTransparentPixelsRatio;
+        return transparentPixelCount / totalPixelCount > this.websiteSpecialFiltersConfig.darkImageDetectionTransparentPixelsRatio
+            && darkPixelCount / nonTransparentPixelCount > this.websiteSpecialFiltersConfig.darkImageDetectionDarkPixelsRatio;
     }
 
     async awaitImageLoading(image) {
