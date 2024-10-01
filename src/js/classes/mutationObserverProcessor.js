@@ -174,6 +174,109 @@ export default class MutationObserverProcessor {
         }
     }
 
+    async treatMutationObserverBackgroundCalls() {
+        if(this.delayedMutationObserversCalls.length > 0) {
+            let i = this.delayedMutationObserversCalls.length;
+            let treatedCount = 0;
+
+            await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
+
+            while(i--) {
+                const mutationList = this.delayedMutationObserversCalls[i];
+
+                let k = mutationList.length;
+
+                if(k <= 0) {
+                    this.delayedMutationObserversCalls.pop();
+                } else {
+                    while(k--) {
+                        this.treatOneMutationObserverBackgroundCall(mutationList.shift());
+                        treatedCount++;
+
+                        if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds && treatedCount > this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall) {
+                            if(this.mutationObserverAddedNodes.length > 0) {
+                                this.safeTimerMutationBackgrounds.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
+                            }
+
+                            this.safeTimerMutationDelayed.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
+                            return;
+                        }
+
+                        if(this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount > this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
+                            this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = true;
+                        }
+                    }
+                }
+            }
+
+            if(this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount <= this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
+                this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = false;
+            }
+
+            if(this.mutationObserverAddedNodes.length > 0) {
+                this.safeTimerMutationBackgrounds.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
+            }
+
+            this.delayedMutationObserversCalls = [];
+        }
+    }
+
+    treatOneMutationObserverBackgroundCall(mutation) {
+        if(mutation.type == "childList") {
+            const nodeList = mutation.addedNodes;
+
+            if(nodeList.length > 0) {
+                this.mutationObserverAddedNodes.push(...Array.prototype.slice.call(nodeList));
+            }
+        } else if(mutation.type == "attributes") {
+            if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
+                this.pageAnalyzer.mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
+            }
+
+            this.filterProcessor.doProcessFilters(mutation.target, false);
+        }
+    }
+
+    mutationElementsBackgrounds() {
+        let i = this.mutationObserverAddedNodes.length;
+        let treatedCount = 0;
+
+        while(i--) {
+            this.treatOneMutationObserverAddedNode(this.mutationObserverAddedNodes.shift());
+            treatedCount++;
+            
+            if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds && treatedCount > this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall) {
+                if(this.mutationObserverAddedNodes.length > 0) {
+                    this.safeTimerMutationBackgrounds.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
+                }
+
+                return;
+            }
+
+            if(this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount > this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
+                this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = true;
+            }
+        }
+
+        if(this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount <= this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
+            this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = false;
+        }
+
+        this.mutationObserverAddedNodes = [];
+    }
+
+    treatOneMutationObserverAddedNode(node) {
+        if(!node || !node.classList || node == document.body || ignoredElementsContentScript.includes(node.localName) || node.nodeType != 1 || node.shadowRoot) {
+            return;
+        }
+
+        if (!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
+            this.pageAnalyzer.mutationForElement(node, null, null);
+        }
+
+        this.filterProcessor.doProcessFilters(node, true);
+    }
+
     setupMutationObserverBrightnessBluelight(forceReset) {
         if (this.mutationObserverBrightnessBluelight != null && !forceReset) {
             this.mutationObserverBrightnessBluelight.start();
@@ -363,108 +466,5 @@ export default class MutationObserverProcessor {
 
             this.mutationObserverBody.start();
         }
-    }
-
-    async treatMutationObserverBackgroundCalls() {
-        if(this.delayedMutationObserversCalls.length > 0) {
-            let i = this.delayedMutationObserversCalls.length;
-            let treatedCount = 0;
-
-            await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
-
-            while(i--) {
-                const mutationList = this.delayedMutationObserversCalls[i];
-
-                let k = mutationList.length;
-
-                if(k <= 0) {
-                    this.delayedMutationObserversCalls.pop();
-                } else {
-                    while(k--) {
-                        this.treatOneMutationObserverBackgroundCall(mutationList.shift());
-                        treatedCount++;
-
-                        if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds && treatedCount > this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall) {
-                            if(this.mutationObserverAddedNodes.length > 0) {
-                                this.safeTimerMutationBackgrounds.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
-                            }
-
-                            this.safeTimerMutationDelayed.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
-                            return;
-                        }
-
-                        if(this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount > this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
-                            this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = true;
-                        }
-                    }
-                }
-            }
-
-            if(this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount <= this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
-                this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = false;
-            }
-
-            if(this.mutationObserverAddedNodes.length > 0) {
-                this.safeTimerMutationBackgrounds.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
-            }
-
-            this.delayedMutationObserversCalls = [];
-        }
-    }
-
-    treatOneMutationObserverBackgroundCall(mutation) {
-        if(mutation.type == "childList") {
-            const nodeList = mutation.addedNodes;
-
-            if(nodeList.length > 0) {
-                this.mutationObserverAddedNodes.push(...Array.prototype.slice.call(nodeList));
-            }
-        } else if(mutation.type == "attributes") {
-            if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
-                this.pageAnalyzer.mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
-            }
-
-            this.filterProcessor.doProcessFilters(mutation.target, false);
-        }
-    }
-
-    mutationElementsBackgrounds() {
-        let i = this.mutationObserverAddedNodes.length;
-        let treatedCount = 0;
-
-        while(i--) {
-            this.treatOneMutationObserverAddedNode(this.mutationObserverAddedNodes.shift());
-            treatedCount++;
-            
-            if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds && treatedCount > this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall) {
-                if(this.mutationObserverAddedNodes.length > 0) {
-                    this.safeTimerMutationBackgrounds.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
-                }
-
-                return;
-            }
-
-            if(this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount > this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
-                this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = true;
-            }
-        }
-
-        if(this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount <= this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
-            this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = false;
-        }
-
-        this.mutationObserverAddedNodes = [];
-    }
-
-    treatOneMutationObserverAddedNode(node) {
-        if(!node || !node.classList || node == document.body || ignoredElementsContentScript.includes(node.localName) || node.nodeType != 1 || node.shadowRoot) {
-            return;
-        }
-
-        if (!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
-            this.pageAnalyzer.mutationForElement(node, null, null);
-        }
-
-        this.filterProcessor.doProcessFilters(node, true);
     }
 }

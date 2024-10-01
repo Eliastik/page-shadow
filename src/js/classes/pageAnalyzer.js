@@ -59,7 +59,7 @@ export default class PageAnalyzer {
     async detectBackground(tagName) {
         return new Promise(resolve => {
             if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
-                const throttledBackgroundDetection = this.websiteSpecialFiltersConfig.throttleBackgroundDetection || this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay > 0;
+                const throttledBackgroundDetection = this.websiteSpecialFiltersConfig.throttleBackgroundDetection;
 
                 addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
 
@@ -77,7 +77,7 @@ export default class PageAnalyzer {
                 if(throttledBackgroundDetection) {
                     const throttledTask = new ThrottledTask(
                         (element) => this.detectBackgroundForElement(element, false),
-                        1,
+                        this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay,
                         this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall 
                     );
     
@@ -236,11 +236,15 @@ export default class PageAnalyzer {
         // Detect image with dark color (text, logos, etc)
         if(this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
             if(!element.classList.contains("pageShadowSelectiveInvert")) {
-                this.detectDarkImage(element, hasBackgroundImg).then(isDarkImage => {
-                    if(isDarkImage) {
-                        this.multipleElementClassBatcherAdd.add(element, "pageShadowSelectiveInvert");
-                    }
+                const safeTimerTaskDarkImageDetection = new SafeTimer((element) => {
+                    this.detectDarkImage(element, hasBackgroundImg).then(isDarkImage => {
+                        if(isDarkImage) {
+                            this.multipleElementClassBatcherAdd.add(element, "pageShadowSelectiveInvert");
+                        }
+                    });
                 });
+
+                safeTimerTaskDarkImageDetection.start(5);
             }
         }
 
@@ -431,8 +435,8 @@ export default class PageAnalyzer {
 
                 const throttledTask = new ThrottledTask(
                     (element) => this.detectBackgroundForElement(element, false),
-                    1,
-                    50
+                    100,
+                    5
                 );
 
                 throttledTask.start(elementChildrens);

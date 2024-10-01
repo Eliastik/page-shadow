@@ -26,7 +26,7 @@ export default class MultipleElementClassBatcher {
 
     classListsWithElement = new Map();
 
-    maxElementsTreatedByCall = 500;
+    maxElementsTreatedByCall = 5000;
 
     constructor(maxElementsTreatedByCall) {
         this.maxElementsTreatedByCall = maxElementsTreatedByCall;
