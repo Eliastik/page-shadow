@@ -235,14 +235,10 @@ export default class PageFilterProcessor {
                 if(type == "shadowRootStyleOverrideDelay") this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay = filterRule;
                 if(type == "enableThrottleMutationObserverBackgrounds") {
                     this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = true;
-                    this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled = false;
                 }
                 if(type == "disableThrottleMutationObserverBackgrounds") this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = false;
                 if(type == "delayMutationObserverBackgrounds") this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds = filterRule;
-                if(type == "autoThrottleMutationObserverBackgroundsTreshold") this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold = filterRule;
                 if(type == "throttledMutationObserverTreatedByCall") this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall = filterRule;
-                if(type == "enableAutoThrottleMutationObserverBackgrounds") this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled = true;
-                if(type == "disableAutoThrottleMutationObserverBackgrounds") this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled = false;
                 if(type == "delayApplyMutationObserversSafeTimer") this.websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer = filterRule;
                 if(type == "enableObserveBodyChange") this.websiteSpecialFiltersConfig.observeBodyChange = true;
                 if(type == "disableObserveBodyChange") this.websiteSpecialFiltersConfig.observeBodyChange = false;
