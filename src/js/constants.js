@@ -211,7 +211,7 @@ const defaultWebsiteSpecialFiltersConfig = {
     useBackgroundDetectionAlreadyProcessedNodes: false,
     enableNotMatchingFiltersDetection: false,
     intervalApplyClassChanges: 500,
-    classChangeMaxElementsTreatedByCall: 2500,
+    classChangeMaxElementsTreatedByCall: 2000,
     enableDarkImageDetection: true,
     darkImageDetectionHslTreshold: 0.18,
     darkImageDetectionMinAlpha: 0.5,

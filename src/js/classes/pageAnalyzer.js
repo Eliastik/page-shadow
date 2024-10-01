@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsl, svgElementToImage, backgroundImageToImage, isCrossOrigin } from "../utils/util.js";
-import SafeTimer from "./safeTimer.js";
 import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, pageShadowClassListsMutationsIgnore, maxImageSizeDarkImageDetection, ignoredElementsBrightTextColorDetection } from "../constants.js";
+import ThrottledTask from "./throttledTask.js";
 
 /**
  * Class used to analyze the pages and detect transparent background,
@@ -59,71 +59,54 @@ export default class PageAnalyzer {
     async detectBackground(tagName) {
         return new Promise(resolve => {
             if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
-                const detectBackgroundTimer = new SafeTimer(() => {
-                    const throttledBackgroundDetection = this.websiteSpecialFiltersConfig.throttleBackgroundDetection || this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay > 0;
+                const throttledBackgroundDetection = this.websiteSpecialFiltersConfig.throttleBackgroundDetection || this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay > 0;
 
-                    addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
+                addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
 
-                    this.detectBackgroundForElement(document.body, true);
+                this.detectBackgroundForElement(document.body, true);
 
-                    if (throttledBackgroundDetection) {
-                        removeClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
-                    } else {
-                        removeClass(document.body, "pageShadowDisableBackgroundStyling");
-                    }
+                if (throttledBackgroundDetection) {
+                    removeClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
+                } else {
+                    removeClass(document.body, "pageShadowDisableBackgroundStyling");
+                }
 
-                    const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
-                    const elementsLength = elements.length;
-                    let index = 0;
+                const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
+                const elementsLength = elements.length;
 
-                    if(throttledBackgroundDetection) {
-                        const throttledBackgroundDetectionTimer = new SafeTimer(() => {
-                            index = this.detectBackgroundLoop(elements, index, elementsLength, false);
-
-                            if(index >= elementsLength) {
-                                detectBackgroundTimer.clear();
-                                resolve();
-                            } else {
-                                throttledBackgroundDetectionTimer.start(1);
-                            }
-                        });
-
-                        throttledBackgroundDetectionTimer.start(this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay);
-                    } else {
-                        this.detectBackgroundLoop(elements, index, elementsLength, true);
-                        detectBackgroundTimer.clear();
+                if(throttledBackgroundDetection) {
+                    const throttledTask = new ThrottledTask(
+                        (element) => this.detectBackgroundForElement(element, false),
+                        1,
+                        this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall 
+                    );
+    
+                    throttledTask.start(elements).then(() => {
+                        this.setBackgroundDetectionFinished();
                         resolve();
+                    });
+                } else {
+                    let i = 0;
+                    
+                    while(i < elementsLength) {
+                        this.detectBackgroundForElement(elements[i], true);
+                        i++;
                     }
-                });
 
-                detectBackgroundTimer.start();
+                    this.setBackgroundDetectionFinished();
+                    resolve();
+                }
             } else {
-                addClass(document.body, "pageShadowBackgroundDetected");
-                this.backgroundDetected = true;
+                this.setBackgroundDetectionFinished();
                 resolve();
             }
         });
     }
 
-    detectBackgroundLoop(elements, i, length, disableDestyling) {
-        while(i < length) {
-            this.detectBackgroundForElement(elements[i], disableDestyling);
-            i++;
-
-            if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection &&
-                i % this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall == 0) {
-                break;
-            }
-        }
-
-        if(i >= length) {
-            removeClass(document.body, "pageShadowDisableStyling");
-            addClass(document.body, "pageShadowBackgroundDetected");
-
-            this.backgroundDetected = true;
-        }
-
-        return i;
+    setBackgroundDetectionFinished() {
+        removeClass(document.body, "pageShadowDisableStyling");
+        addClass(document.body, "pageShadowBackgroundDetected");
+        this.backgroundDetected = true;
     }
 
     elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
@@ -446,13 +429,13 @@ export default class PageAnalyzer {
             if(element.getElementsByTagName) {
                 const elementChildrens = element.getElementsByTagName("*");
 
-                if(elementChildrens && elementChildrens.length > 0) {
-                    let i = elementChildrens.length;
+                const throttledTask = new ThrottledTask(
+                    (element) => this.detectBackgroundForElement(element, false),
+                    1,
+                    50
+                );
 
-                    while(i--) {
-                        this.detectBackgroundForElement(elementChildrens[i], false);
-                    }
-                }
+                throttledTask.start(elementChildrens);
             }
         }
     }
