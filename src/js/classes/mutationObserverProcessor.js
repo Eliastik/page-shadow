@@ -25,10 +25,8 @@ import ContentProcessorConstants from "./contentProcessorConstants.js";
 
 export default class MutationObserverProcessor {
 
-    safeTimerMutationBackgrounds = null;
     mutationObserverAddedNodes = [];
     delayedMutationObserversCalls = [];
-    safeTimerMutationDelayed = null;
     mutationDetected = false;
 
     elementBrightnessWrapper;
@@ -144,18 +142,12 @@ export default class MutationObserverProcessor {
             this.mutationObserverBackgrounds.start();
         } else {
             // Clear old mutation timers
-            if (this.safeTimerMutationBackgrounds) this.safeTimerMutationBackgrounds.clear();
-            if (this.safeTimerMutationDelayed) this.safeTimerMutationDelayed.clear();
             if (this.mutationObserverBackgrounds) this.mutationObserverBackgrounds.disconnect();
 
             this.mutationObserverBackgrounds = new MutationObserverWrapper(mutations => {
                 this.delayedMutationObserversCalls.push(...mutations);
-
-                if (this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds) {
-                    this.safeTimerMutationDelayed.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
-                } else {
-                    this.treatAllMutations();
-                }
+                
+                this.treatAllMutations();
 
                 this.mutationObserverBackgrounds.start();
             }, {
@@ -168,9 +160,6 @@ export default class MutationObserverProcessor {
                 "characterDataOldValue": false
             }, null, true);
 
-            this.safeTimerMutationBackgrounds = new SafeTimer(() => this.treatAllMutationsAddedNodes());
-            this.safeTimerMutationDelayed = new SafeTimer(() => this.treatAllMutations());
-
             this.mutationObserverBackgrounds.start();
         }
     }
@@ -179,16 +168,24 @@ export default class MutationObserverProcessor {
         if(this.delayedMutationObserversCalls.length > 0) {
             await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
 
-            const throttledTask = new ThrottledTask(
-                (mutation) => this.treatOneMutation(mutation),
-                this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
-                this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall
-            );
-        
-            throttledTask.start(this.delayedMutationObserversCalls).then(() => {
-                this.safeTimerMutationBackgrounds.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
-            });
+            if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds) {
+                const throttledTask = new ThrottledTask(
+                    (mutation) => this.treatOneMutation(mutation),
+                    this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
+                    this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall
+                );
+            
+                throttledTask.start(this.delayedMutationObserversCalls).then(() => {
+                    this.treatAllMutationsAddedNodes();
+                });
+            } else {
+                for(const mutation of this.delayedMutationObserversCalls) {
+                    this.treatOneMutation(mutation);
+                }
 
+                this.treatAllMutationsAddedNodes();
+            }
+    
             this.delayedMutationObserversCalls = [];
         }
     }
@@ -210,13 +207,19 @@ export default class MutationObserverProcessor {
     }
 
     treatAllMutationsAddedNodes() {
-        const throttledTask = new ThrottledTask(
-            (node) => this.treatOneMutationAddedNode(node),
-            this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
-            this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall
-        );
-    
-        throttledTask.start(this.mutationObserverAddedNodes);
+        if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds) {
+            const throttledTask = new ThrottledTask(
+                (node) => this.treatOneMutationAddedNode(node),
+                this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
+                this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall
+            );
+        
+            throttledTask.start(this.mutationObserverAddedNodes);
+        } else {
+            for(const node of this.mutationObserverAddedNodes) {
+                this.treatOneMutationAddedNode(node);
+            }
+        }
     
         this.mutationObserverAddedNodes = [];
     }
@@ -237,11 +240,7 @@ export default class MutationObserverProcessor {
         if (this.mutationObserverBrightnessBluelight != null && !forceReset) {
             this.mutationObserverBrightnessBluelight.start();
 
-            this.safeTimerMutationBackgrounds = null;
-            this.mutationObserverAddedNodes = [];
-            this.delayedMutationObserversCalls = [];
-
-            this.safeTimerMutationDelayed = MutationObserverWrapper(mutations => {
+            this.mutationObserverBrightnessBluelight = MutationObserverWrapper(mutations => {
                 let reApplyBrightness = false;
                 let reApplyBlueLight = false;
 

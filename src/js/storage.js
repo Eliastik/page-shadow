@@ -168,7 +168,9 @@ async function migrateSettings(filters) {
     if(!currentMigratedAdvancedOptions || !currentMigratedAdvancedOptions[extensionVersion]) {
         const currentAdvancedOptions = result.advancedOptionsFiltersSettings;
 
+        // TODO migrate other importants settings
         if (currentAdvancedOptions) {
+            currentAdvancedOptions.throttleMutationObserverBackgrounds = defaultWebsiteSpecialFiltersConfig.throttleMutationObserverBackgrounds;
             currentAdvancedOptions.throttleBackgroundDetection = defaultWebsiteSpecialFiltersConfig.throttleBackgroundDetection;
             currentAdvancedOptions.throttleBackgroundDetectionElementsTreatedByCall = defaultWebsiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall;
             currentAdvancedOptions.enableDarkImageDetection = defaultWebsiteSpecialFiltersConfig.enableDarkImageDetection;
