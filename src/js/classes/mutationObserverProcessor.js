@@ -20,6 +20,7 @@ import { getCurrentURL } from "../utils/util.js";
 import { ignoredElementsContentScript } from "../constants.js";
 import MutationObserverWrapper from "./mutationObserverWrapper.js";
 import SafeTimer from "./safeTimer.js";
+import ThrottledTask from "./throttledTask.js";
 import ContentProcessorConstants from "./contentProcessorConstants.js";
 
 export default class MutationObserverProcessor {
@@ -148,12 +149,12 @@ export default class MutationObserverProcessor {
             if (this.mutationObserverBackgrounds) this.mutationObserverBackgrounds.disconnect();
 
             this.mutationObserverBackgrounds = new MutationObserverWrapper(mutations => {
-                this.delayedMutationObserversCalls.push(mutations);
+                this.delayedMutationObserversCalls.push(...mutations);
 
                 if (this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds) {
                     this.safeTimerMutationDelayed.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
                 } else {
-                    this.treatMutationObserverBackgroundCalls();
+                    this.treatAllMutations();
                 }
 
                 this.mutationObserverBackgrounds.start();
@@ -167,61 +168,32 @@ export default class MutationObserverProcessor {
                 "characterDataOldValue": false
             }, null, true);
 
-            this.safeTimerMutationBackgrounds = new SafeTimer(() => this.mutationElementsBackgrounds());
-            this.safeTimerMutationDelayed = new SafeTimer(() => this.treatMutationObserverBackgroundCalls());
+            this.safeTimerMutationBackgrounds = new SafeTimer(() => this.treatAllMutationsAddedNodes());
+            this.safeTimerMutationDelayed = new SafeTimer(() => this.treatAllMutations());
 
             this.mutationObserverBackgrounds.start();
         }
     }
 
-    async treatMutationObserverBackgroundCalls() {
+    async treatAllMutations() {
         if(this.delayedMutationObserversCalls.length > 0) {
-            let i = this.delayedMutationObserversCalls.length;
-            let treatedCount = 0;
-
             await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
 
-            while(i--) {
-                const mutationList = this.delayedMutationObserversCalls[i];
-
-                let k = mutationList.length;
-
-                if(k <= 0) {
-                    this.delayedMutationObserversCalls.pop();
-                } else {
-                    while(k--) {
-                        this.treatOneMutationObserverBackgroundCall(mutationList.shift());
-                        treatedCount++;
-
-                        if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds && treatedCount > this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall) {
-                            if(this.mutationObserverAddedNodes.length > 0) {
-                                this.safeTimerMutationBackgrounds.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
-                            }
-
-                            this.safeTimerMutationDelayed.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
-                            return;
-                        }
-
-                        if(this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount > this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
-                            this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = true;
-                        }
-                    }
-                }
-            }
-
-            if(this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount <= this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
-                this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = false;
-            }
-
-            if(this.mutationObserverAddedNodes.length > 0) {
+            const throttledTask = new ThrottledTask(
+                (mutation) => this.treatOneMutation(mutation),
+                this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
+                this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall
+            );
+        
+            throttledTask.start(this.delayedMutationObserversCalls).then(() => {
                 this.safeTimerMutationBackgrounds.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
-            }
+            });
 
             this.delayedMutationObserversCalls = [];
         }
     }
 
-    treatOneMutationObserverBackgroundCall(mutation) {
+    treatOneMutation(mutation) {
         if(mutation.type == "childList") {
             const nodeList = mutation.addedNodes;
 
@@ -237,35 +209,19 @@ export default class MutationObserverProcessor {
         }
     }
 
-    mutationElementsBackgrounds() {
-        let i = this.mutationObserverAddedNodes.length;
-        let treatedCount = 0;
-
-        while(i--) {
-            this.treatOneMutationObserverAddedNode(this.mutationObserverAddedNodes.shift());
-            treatedCount++;
-            
-            if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds && treatedCount > this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall) {
-                if(this.mutationObserverAddedNodes.length > 0) {
-                    this.safeTimerMutationBackgrounds.start(this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds);
-                }
-
-                return;
-            }
-
-            if(this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount > this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
-                this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = true;
-            }
-        }
-
-        if(this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsEnabled && treatedCount <= this.websiteSpecialFiltersConfig.autoThrottleMutationObserverBackgroundsTreshold) {
-            this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds = false;
-        }
-
+    treatAllMutationsAddedNodes() {
+        const throttledTask = new ThrottledTask(
+            (node) => this.treatOneMutationAddedNode(node),
+            this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
+            this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall
+        );
+    
+        throttledTask.start(this.mutationObserverAddedNodes);
+    
         this.mutationObserverAddedNodes = [];
     }
 
-    treatOneMutationObserverAddedNode(node) {
+    treatOneMutationAddedNode(node) {
         if(!node || !node.classList || node == document.body || ignoredElementsContentScript.includes(node.localName) || node.nodeType != 1 || node.shadowRoot) {
             return;
         }
