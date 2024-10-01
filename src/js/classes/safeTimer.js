@@ -24,7 +24,6 @@
 export default class SafeTimer {
 
     timeoutId = null;
-    timeoutIdleId = null;
     requestAnimationId = null;
     callback = null;
 
@@ -44,15 +43,9 @@ export default class SafeTimer {
         }
 
         if(!this.requestAnimationId) {
-            if ("requestIdleCallback" in window && !this.timeoutIdleId) {
-                this.timeoutIdleId = requestIdleCallback(() => {
-                    this.macroToMicro();
-                });
-            } else if(!this.timeoutId) {
-                this.timeoutId = setTimeout(() => {
-                    this.macroToMicro();
-                }, delay);
-            }
+            this.timeoutId = setTimeout(() => {
+                this.macroToMicro();
+            }, delay);
         }
     }
 
@@ -66,16 +59,10 @@ export default class SafeTimer {
             clearTimeout(this.timeoutId);
             this.timeoutId = null;
         }
-
-        if(this.timeoutIdleId) {
-            cancelIdleCallback(this.timeoutIdleId);
-            this.timeoutIdleId = null;
-        }
     }
 
     macroToMicro() {
         this.timeoutId = null;
-        this.timeoutIdleId = null;
         this.start();
     }
 
