@@ -19,6 +19,7 @@
 import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsl, svgElementToImage, backgroundImageToImage, isCrossOrigin } from "../utils/util.js";
 import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, pageShadowClassListsMutationsIgnore, maxImageSizeDarkImageDetection, ignoredElementsBrightTextColorDetection } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
+import SafeTimer from "./safeTimer.js";
 
 /**
  * Class used to analyze the pages and detect transparent background,
@@ -236,7 +237,7 @@ export default class PageAnalyzer {
         // Detect image with dark color (text, logos, etc)
         if(this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
             if(!element.classList.contains("pageShadowSelectiveInvert")) {
-                const safeTimerTaskDarkImageDetection = new SafeTimer((element) => {
+                const safeTimerTaskDarkImageDetection = new SafeTimer(() => {
                     this.detectDarkImage(element, hasBackgroundImg).then(isDarkImage => {
                         if(isDarkImage) {
                             this.multipleElementClassBatcherAdd.add(element, "pageShadowSelectiveInvert");
@@ -433,9 +434,10 @@ export default class PageAnalyzer {
             if(element.getElementsByTagName) {
                 const elementChildrens = element.getElementsByTagName("*");
 
+                // TODO values as constants for advanced options
                 const throttledTask = new ThrottledTask(
                     (element) => this.detectBackgroundForElement(element, false),
-                    100,
+                    50,
                     5
                 );
 
