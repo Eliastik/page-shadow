@@ -29,6 +29,8 @@ export default class MutationObserverProcessor {
     delayedMutationObserversCalls = [];
     mutationDetected = false;
 
+    elementBrightness;
+    elementBlueLightFilter;
     elementBrightnessWrapper;
 
     mutationObserverBody;
@@ -42,18 +44,24 @@ export default class MutationObserverProcessor {
     pageAnalyzer;
     filterProcessor;
     debugLogger;
+    precUrl;
 
-    constructor(pageAnalyzer, filterProcessor, debugLogger, elementBrightnessWrapper, websiteSpecialFiltersConfig) {
+    reApplyCallback = (type, mutationType) => {};
+
+    constructor(pageAnalyzer, filterProcessor, debugLogger, elementBrightnessWrapper, websiteSpecialFiltersConfig, elementBrightness, elementBlueLightFilter) {
         this.pageAnalyzer = pageAnalyzer;
         this.filterProcessor = filterProcessor;
         this.debugLogger = debugLogger;
         this.elementBrightnessWrapper = elementBrightnessWrapper;
+        this.elementBrightness = elementBrightness;
+        this.elementBlueLightFilter = elementBlueLightFilter;
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
     }
 
-    setSettings(websiteSpecialFiltersConfig, currentSettings) {
+    setSettings(websiteSpecialFiltersConfig, currentSettings, precUrl) {
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
         this.currentSettings = currentSettings;
+        this.precUrl = precUrl;
     }
 
     pause(mutationType) {
@@ -267,11 +275,11 @@ export default class MutationObserverProcessor {
 
                         if (this.precUrl == getCurrentURL()) {
                             if (reApplyBrightness && reApplyBlueLight) {
-                                this.main(ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT, ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+                                this.reApplyCallback(ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT, ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
                             } else if (reApplyBrightness) {
-                                this.main(ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS, ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+                                this.reApplyCallback(ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS, ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
                             } else if (reApplyBlueLight) {
-                                this.main(ContentProcessorConstants.TYPE_ONLY_BLUELIGHT, ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+                                this.reApplyCallback(ContentProcessorConstants.TYPE_ONLY_BLUELIGHT, ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
                             }
                         } else {
                             this.mutationDetected = true;
@@ -391,9 +399,9 @@ export default class MutationObserverProcessor {
 
                         if (this.precUrl == getCurrentURL()) {
                             if (!reApplyContrast && (reApplyInvert || reApplyAttenuate)) {
-                                this.main(ContentProcessorConstants.TYPE_ONLY_INVERT, ContentProcessorConstants.MUTATION_TYPE_BODY);
+                                this.reApplyCallback(ContentProcessorConstants.TYPE_ONLY_INVERT, ContentProcessorConstants.MUTATION_TYPE_BODY);
                             } else {
-                                this.main(ContentProcessorConstants.TYPE_ONLY_CONTRAST, ContentProcessorConstants.MUTATION_TYPE_BODY);
+                                this.reApplyCallback(ContentProcessorConstants.TYPE_ONLY_CONTRAST, ContentProcessorConstants.MUTATION_TYPE_BODY);
                             }
                         } else {
                             this.mutationDetected = true;

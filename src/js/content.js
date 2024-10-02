@@ -125,7 +125,7 @@ browser.runtime.onMessage.addListener(async(message) => {
 
         if(message && message.url == await sha256(currentURL)) {
             const URLUpdated = precUrl != getCurrentURL();
-            let changed = contentProcessor.hasEnabledStateChanged(message.enabled) || contentProcessor.mutationDetected;
+            let changed = contentProcessor.hasEnabledStateChanged(message.enabled) || contentProcessor.mutationObserverProcessor?.mutationDetected;
 
             if(URLUpdated) {
                 contentProcessor.pageAnalyzer.backgroundDetected = false;

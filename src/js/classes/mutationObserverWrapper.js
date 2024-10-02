@@ -95,7 +95,7 @@ export default class MutationObserverWrapper {
             if(!this.mutationObserver) {
                 this.setupMutationObserver(this.callback);
             }
-
+            
             this.observe(this.target, this.options);
         }
     }
