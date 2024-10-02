@@ -617,7 +617,7 @@ export default class ContentProcessor {
             this.pageAnalyzer = this.pageAnalyzer || new PageAnalyzer(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove, this.debugLogger);
             this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove, this.websiteSpecialFiltersConfig);
             
-            this.mutationObserverProcessor = new MutationObserverProcessor(this.pageAnalyzer, this.filterProcessor, this.debugLogger, this.elementBrightnessWrapper, this.websiteSpecialFiltersConfig);
+            this.mutationObserverProcessor = this.mutationObserverProcessor || new MutationObserverProcessor(this.pageAnalyzer, this.filterProcessor, this.debugLogger, this.elementBrightnessWrapper, this.websiteSpecialFiltersConfig);
 
             this.debugLogger?.log(`Starting processing page - allowed ? ${allowed} / type ? ${type} / disableCache ? ${disableCache}`);
 
@@ -638,6 +638,8 @@ export default class ContentProcessor {
                     this.bodyClassBatcherRemover.applyRemove();
                     this.htmlClassBatcher.applyAdd();
                 } else if(type == ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT || type == ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS || type == ContentProcessorConstants.TYPE_ONLY_BLUELIGHT) {
+                    this.mutationObserverProcessor?.pause(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+
                     if(type == ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT || type == ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS) {
                         this.brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
                     }
@@ -658,6 +660,8 @@ export default class ContentProcessor {
                 }
 
                 if(type !== ContentProcessorConstants.TYPE_ONLY_CONTRAST && type !== ContentProcessorConstants.TYPE_ONLY_INVERT && type !== ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS && type !== ContentProcessorConstants.TYPE_ONLY_BLUELIGHT) {
+                    this.mutationObserverProcessor?.pause(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+
                     this.brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
                     this.blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
 
@@ -693,6 +697,8 @@ export default class ContentProcessor {
                 if(typeof this.lnkCustomTheme !== "undefined") this.lnkCustomTheme.setAttribute("href", "");
 
                 if(this.started) {
+                    this.mutationObserverProcessor?.pause(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+
                     this.bodyClassBatcherRemover.removeAll();
 
                     this.resetContrastPage();
