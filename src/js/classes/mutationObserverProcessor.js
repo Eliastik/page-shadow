@@ -90,10 +90,7 @@ export default class MutationObserverProcessor {
             this.setupMutationObserverBrightnessBluelight(forceReset);
         } else if(type == ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS) { // Mutation Observer for analyzing whole page elements (detecting backgrounds and applying filters)
             this.setupMutationObserverBackgrounds(forceReset);
-        }
-
-        // Mutation for the brigthness wrapper element
-        if(type === ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT || type === ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESSWRAPPER) { // Mutation for the brightness/bluelight wrapper element
+        } else if(type === ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESSWRAPPER) { // Mutation for the brightness/bluelight wrapper element
             this.setupMutationObserverBrightnessBluelightWrapper(forceReset);
         }
     }
@@ -254,6 +251,8 @@ export default class MutationObserverProcessor {
             this.mutationObserverBrightnessBluelight = new MutationObserverWrapper(mutations => {
                 let reApplyBrightness = false;
                 let reApplyBlueLight = false;
+
+                this.mutationObserverBrightnessBluelight.pause();
 
                 mutations.forEach(mutation => {
                     if (this.currentSettings && this.currentSettings.pageLumEnabled != undefined && this.currentSettings.pageLumEnabled === "true") {

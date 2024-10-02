@@ -330,7 +330,6 @@ export default class ContentProcessor {
 
     async applyDetectBackground(type, elements) {
         await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
-        await this.mutationObserverProcessor.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precUrl);
 
         return new Promise(resolve => {
             if(this.pageAnalyzer.backgroundDetected) resolve();
@@ -644,8 +643,10 @@ export default class ContentProcessor {
         const settings = this.newSettingsToApply || await getSettings(getCurrentURL(), disableCache);
         this.currentSettings = settings;
         this.precEnabled = true;
+
+        await this.mutationObserverProcessor.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precUrl);
     
-        switch (type) {
+        switch(type) {
         case ContentProcessorConstants.TYPE_ONLY_INVERT:
             this.removeAllBodyBatchers();
         
@@ -674,12 +675,13 @@ export default class ContentProcessor {
             this.applyAllBodyBatchers();
         }
     
-        if (![ContentProcessorConstants.TYPE_ONLY_CONTRAST, ContentProcessorConstants.TYPE_ONLY_INVERT, ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS, ContentProcessorConstants.TYPE_ONLY_BLUELIGHT].includes(type)) {
+        if(![ContentProcessorConstants.TYPE_ONLY_CONTRAST, ContentProcessorConstants.TYPE_ONLY_INVERT, ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS, ContentProcessorConstants.TYPE_ONLY_BLUELIGHT].includes(type)) {
             await this.applyBackgroundAndFilters(settings, type);
         }
     
         this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BODY);
         this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+        this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESSWRAPPER);
     }
     
     applyAllBodyBatchers() {
@@ -696,6 +698,7 @@ export default class ContentProcessor {
 
     async applyBackgroundAndFilters(settings, type) {
         this.mutationObserverProcessor?.pause(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+
         this.brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
         this.blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
     
