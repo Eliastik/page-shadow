@@ -57,6 +57,8 @@ export default class MutationObserverProcessor {
     }
 
     pause(mutationType) {
+        this.debugLogger?.log(`Pausing mutation observer for type = ${mutationType}`);
+
         if(this.mutationObserverBody && (mutationType == ContentProcessorConstants.MUTATION_TYPE_BODY || mutationType == ContentProcessorConstants.TYPE_ALL)) {
             this.mutationObserverBody.pause();
         }
@@ -92,7 +94,7 @@ export default class MutationObserverProcessor {
         if (this.mutationObserverBluelightWrapper != null && !forceReset) {
             this.mutationObserverBluelightWrapper.start();
         } else {
-            if (typeof this.mutationObserverBluelightWrapper !== "undefined") this.mutationObserverBluelightWrapper.disconnect();
+            if(this.mutationObserverBluelightWrapper) this.mutationObserverBluelightWrapper.disconnect();
 
             this.mutationObserverBluelightWrapper = new MutationObserverWrapper(mutations => {
                 let reStart = true;
@@ -141,8 +143,7 @@ export default class MutationObserverProcessor {
         if (this.mutationObserverBackgrounds != null && !forceReset) {
             this.mutationObserverBackgrounds.start();
         } else {
-            // Clear old mutation timers
-            if (this.mutationObserverBackgrounds) this.mutationObserverBackgrounds.disconnect();
+            if(this.mutationObserverBackgrounds) this.mutationObserverBackgrounds.disconnect();
 
             this.mutationObserverBackgrounds = new MutationObserverWrapper(mutations => {
                 this.delayedMutationObserversCalls.push(...mutations);
@@ -239,8 +240,10 @@ export default class MutationObserverProcessor {
     setupMutationObserverBrightnessBluelight(forceReset) {
         if (this.mutationObserverBrightnessBluelight != null && !forceReset) {
             this.mutationObserverBrightnessBluelight.start();
+        } else {
+            if(this.mutationObserverBrightnessBluelight) this.mutationObserverBrightnessBluelight.disconnect();
 
-            this.mutationObserverBrightnessBluelight = MutationObserverWrapper(mutations => {
+            this.mutationObserverBrightnessBluelight = new MutationObserverWrapper(mutations => {
                 let reApplyBrightness = false;
                 let reApplyBlueLight = false;
 
@@ -303,7 +306,7 @@ export default class MutationObserverProcessor {
         if (this.mutationObserverBody != null && !forceReset) {
             this.mutationObserverBody.start();
         } else {
-            if (typeof this.mutationObserverBody !== "undefined") this.mutationObserverBody.disconnect();
+            if(this.mutationObserverBody) this.mutationObserverBody.disconnect();
 
             this.mutationObserverBody = new MutationObserverWrapper(mutations => {
                 const classList = document.body.classList;
