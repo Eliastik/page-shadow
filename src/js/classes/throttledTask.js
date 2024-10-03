@@ -22,14 +22,18 @@ import SafeTimer from "./safeTimer.js";
  * Class used to throttle task working on DOM elements
  */
 export default class ThrottledTask {
-    constructor(callback, delay, elementsPerBatch = 1) {
+    constructor(callback, delay, elementsPerBatch = 1, minDelay = 5, maxDelay = 250) {
         this.callback = callback;
+        this.initialDelay = delay;
         this.delay = delay;
         this.elementsPerBatch = elementsPerBatch;
+        this.minDelay = minDelay;
+        this.maxDelay = maxDelay;
         this.index = 0;
         this.elements = [];
         this.timer = new SafeTimer(() => this.processBatch());
         this.resolve = null;
+        this.lastBatchTime = 0;
     }
 
     start(elements) {
@@ -42,18 +46,33 @@ export default class ThrottledTask {
     }
 
     processBatch() {
-        const batchEnd = Math.min(this.index + this.elementsPerBatch, this.elements.length);
+        const startTime = performance.now();
 
+        const batchEnd = Math.min(this.index + this.elementsPerBatch, this.elements.length);
+        
         for(let i = this.index; i < batchEnd; i++) {
             this.callback(this.elements[i]);
         }
 
         this.index = batchEnd;
 
-        if(this.index < this.elements.length) {
+        const batchDuration = performance.now() - startTime;
+        this.adjustThrottling(batchDuration);
+
+        if (this.index < this.elements.length) {
             this.timer.start(this.delay);
         } else {
             this.clear();
+        }
+    }
+
+    adjustThrottling(batchDuration) {
+        if (batchDuration > 20 && this.delay < this.maxDelay) {
+            this.delay = Math.min(this.maxDelay, this.delay + 10);
+            this.elementsPerBatch = Math.max(1, this.elementsPerBatch - 1);
+        } else if (batchDuration < 10 && this.delay > this.minDelay) {
+            this.delay = Math.max(this.minDelay, this.delay - 5);
+            this.elementsPerBatch += 1;
         }
     }
 
