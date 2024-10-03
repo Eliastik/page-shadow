@@ -437,8 +437,8 @@ export default class PageAnalyzer {
                 // TODO values as constants for advanced options
                 const throttledTask = new ThrottledTask(
                     (element) => this.detectBackgroundForElement(element, false),
-                    50,
-                    5
+                    150,
+                    15
                 );
 
                 throttledTask.start(elementChildrens);
