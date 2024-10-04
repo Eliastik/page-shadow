@@ -73,7 +73,7 @@ export default class PageAnalyzer {
         this.throttledTaskAnalyzeSubchilds = new ThrottledTask(
             (element) => this.detectBackgroundForElement(element, false),
             "throttledTaskAnalyzeSubchilds",
-            150,
+            50,
             15
         );
 
@@ -85,7 +85,7 @@ export default class PageAnalyzer {
             });
         },
         "throttledTaskAnalyzeImages",
-        5,
+        150,
         5
         );
     }
@@ -650,6 +650,10 @@ export default class PageAnalyzer {
             const imgData = ctx.getImageData(0, 0, width, height);
             const data = imgData.data;
 
+            let totalDarkPixels = 0;
+            let totalTransparentPixels = 0;
+            let totalOtherPixels = 0;
+
             for (let y = 0; y < height; y++) {
                 for (let x = 0; x < width; x++) {
                     const index = (y * width + x) * 4;
@@ -662,8 +666,21 @@ export default class PageAnalyzer {
                         if (this.hasTransparentSurroundingPixels(x, y, data, width, height, blockSize)) {
                             return true;
                         }
+
+                        totalDarkPixels++;
+                    } else {
+                        if(alpha == 0) {
+                            totalTransparentPixels++;
+                        } else {
+                            totalOtherPixels++;
+                        }
                     }
                 }
+            }
+
+            // Fallback for all black images with transparent background only, not detected by the algorithm
+            if(totalDarkPixels > 0 && totalTransparentPixels > 0 && totalOtherPixels == 0) {
+                return true;
             }
 
             return false;

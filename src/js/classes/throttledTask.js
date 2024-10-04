@@ -55,10 +55,20 @@ export default class ThrottledTask {
 
     processBatch() {
         const startTime = performance.now();
-        const batchEnd = Math.min(this.index + this.elementsPerBatch, this.elements.length);
+        const maxExecutionTime = 25;
+
+        let batchEnd = Math.min(this.index + this.elementsPerBatch, this.elements.length);
         
         for(let i = this.index; i < batchEnd; i++) {
             this.callback(this.elements[i]);
+            
+            const currentTime = performance.now();
+
+            if(currentTime - startTime >= maxExecutionTime) {
+                batchEnd = i + 1;
+                this.debugLogger.log(`ThrottledTask ${this.name} - Stopping early task to respect maxExecutionTime = ${maxExecutionTime} ms`);
+                break;
+            }
         }
 
         this.index = batchEnd;
