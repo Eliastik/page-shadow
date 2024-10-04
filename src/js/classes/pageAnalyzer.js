@@ -39,12 +39,17 @@ export default class PageAnalyzer {
 
     debugLogger;
 
+    throttledTaskDetectBackgrounds;
+    throttledTaskAnalyzeSubchilds;
+
     constructor(websiteSpecialFiltersConfig, currentSettings, isEnabled, multipleElementClassBatcherAdd, multipleElementClassBatcherRemove, debugLogger) {
         this.setSettings(websiteSpecialFiltersConfig, currentSettings, isEnabled);
 
         this.multipleElementClassBatcherAdd = multipleElementClassBatcherAdd;
         this.multipleElementClassBatcherRemove = multipleElementClassBatcherRemove;
         this.debugLogger = debugLogger;
+
+        this.initializeThrottledTasks();
     }
 
     async setSettings(websiteSpecialFiltersConfig, currentSettings, isEnabled) {
@@ -55,6 +60,20 @@ export default class PageAnalyzer {
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
         this.currentSettings = currentSettings;
         this.isEnabled = isEnabled;
+    }
+
+    initializeThrottledTasks() {
+        this.throttledTaskDetectBackgrounds = new ThrottledTask(
+            (element) => this.detectBackgroundForElement(element, false),
+            this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay,
+            this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall 
+        );
+
+        this.throttledTaskAnalyzeSubchilds = new ThrottledTask(
+            (element) => this.detectBackgroundForElement(element, false),
+            150,
+            15
+        );
     }
 
     async detectBackground(tagName) {
@@ -76,13 +95,7 @@ export default class PageAnalyzer {
                 const elementsLength = elements.length;
 
                 if(throttledBackgroundDetection) {
-                    const throttledTask = new ThrottledTask(
-                        (element) => this.detectBackgroundForElement(element, false),
-                        this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay,
-                        this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall 
-                    );
-    
-                    throttledTask.start(elements).then(() => {
+                    this.throttledTaskDetectBackgrounds.start(elements).then(() => {
                         this.setBackgroundDetectionFinished();
                         resolve();
                     });
@@ -433,15 +446,7 @@ export default class PageAnalyzer {
         if(!attribute && this.websiteSpecialFiltersConfig.enableMutationObserversForSubChilds) {
             if(element.getElementsByTagName) {
                 const elementChildrens = element.getElementsByTagName("*");
-
-                // TODO values as constants for advanced options
-                const throttledTask = new ThrottledTask(
-                    (element) => this.detectBackgroundForElement(element, false),
-                    150,
-                    15
-                );
-
-                throttledTask.start(elementChildrens);
+                this.throttledTaskAnalyzeSubchilds.start(elementChildrens);
             }
         }
     }
