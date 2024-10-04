@@ -202,7 +202,7 @@ const defaultWebsiteSpecialFiltersConfig = {
     brightColorLightnessTresholdMax: 0.9,
     brightColorLightnessTresholdTextMin: 0.25,
     brightColorSaturationTresholdMin: 0.25,
-    throttleBackgroundDetection: false,
+    throttleBackgroundDetection: true,
     throttleBackgroundDetectionElementsTreatedByCall: 50,
     backgroundDetectionStartDelay: 5,
     useBackgroundDetectionAlreadyProcessedNodes: false,
