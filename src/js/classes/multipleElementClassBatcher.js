@@ -18,6 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 
 import { addClass, removeClass } from "../utils/util.js";
+import ThrottledTask from "./throttledTask.js";
 
 /**
  * Class used to apply or remove CSS classes in batch to one or multiple elements
@@ -28,8 +29,25 @@ export default class MultipleElementClassBatcher {
 
     maxElementsTreatedByCall = 5000;
 
+    throttledTaskClassApplyAdd;
+    throttledTaskClassApplyRemove;
+
     constructor(maxElementsTreatedByCall) {
         this.maxElementsTreatedByCall = maxElementsTreatedByCall;
+
+        this.throttledTaskClassApplyAdd = new ThrottledTask(
+            (task) => addClass(task.element, ...task.classList),
+            "throttledTaskClassApplyAdd",
+            5,
+            this.maxElementsTreatedByCall
+        );
+
+        this.throttledTaskClassApplyRemove = new ThrottledTask(
+            (task) => removeClass(task.element, ...task.classList),
+            "throttledTaskClassApplyRemove",
+            5,
+            this.maxElementsTreatedByCall
+        );
     }
 
     add(element, ...classList) {
@@ -42,24 +60,21 @@ export default class MultipleElementClassBatcher {
     }
 
     applyAdd() {
-        let count = 0;
-
-        for(const [element, classList] of this.classListsWithElement) {
-            if(count >= this.maxElementsTreatedByCall) break;
-            addClass(element, ...classList);
-            this.classListsWithElement.delete(element);
-            count++;
-        }
+        const tasks = this.mapToTasks();
+        this.throttledTaskClassApplyAdd.start(tasks);
+        this.removeAll();
     }
 
     applyRemove() {
-        let count = 0;
+        const tasks = this.mapToTasks();
+        this.throttledTaskClassApplyRemove.start(tasks);
+        this.removeAll();
+    }
 
-        for(const [element, classList] of this.classListsWithElement) {
-            if(count >= this.maxElementsTreatedByCall) break;
-            removeClass(element, ...classList);
-            this.classListsWithElement.delete(element);
-            count++;
-        }
+    mapToTasks() {
+        return Array.from(this.classListsWithElement.entries()).map(([element, classList]) => ({
+            element,
+            classList,
+        }));
     }
 }

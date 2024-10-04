@@ -23,10 +23,11 @@ import DebugLogger from "./debugLogger.js";
  * Class used to throttle task working on DOM elements
  */
 export default class ThrottledTask {
-    constructor(callback, delay, elementsPerBatch = 1, minDelay = 5, maxDelay = 250) {
+    constructor(callback, name, delay, elementsPerBatch = 1, minDelay = 5, maxDelay = 250) {
         this.callback = callback;
         this.initialDelay = delay;
         this.delay = delay;
+        this.name = name;
         this.elementsPerBatch = elementsPerBatch;
         this.minDelay = minDelay;
         this.maxDelay = maxDelay;
@@ -75,11 +76,11 @@ export default class ThrottledTask {
         if(batchDuration > 20 && this.delay < this.maxDelay) {
             this.delay = Math.min(this.maxDelay, this.delay + 5);
             this.elementsPerBatch = Math.max(1, this.elementsPerBatch - 5);
-            this.debugLogger.log(`Increased throttling delay and reduced elementsPerBatch - Delay = ${this.delay} / ElementsPerBatch = ${this.elementsPerBatch}`);
+            this.debugLogger.log(`ThrottledTask ${this.name} - Increased throttling delay and reduced elementsPerBatch - Delay = ${this.delay} / ElementsPerBatch = ${this.elementsPerBatch}`);
         } else if (batchDuration < 10 && this.delay > this.minDelay) {
             this.delay = Math.max(this.minDelay, this.delay - 5);
             this.elementsPerBatch += 5;
-            this.debugLogger.log(`Reduced throttling delay and increased elementsPerBatch - Delay = ${this.delay} / ElementsPerBatch = ${this.elementsPerBatch}`);
+            this.debugLogger.log(`ThrottledTask ${this.name} - Reduced throttling delay and increased elementsPerBatch - Delay = ${this.delay} / ElementsPerBatch = ${this.elementsPerBatch}`);
         }
     }
 
