@@ -25,8 +25,6 @@ import ContentProcessorConstants from "./contentProcessorConstants.js";
 
 export default class MutationObserverProcessor {
 
-    mutationObserverAddedNodes = [];
-    delayedMutationObserversCalls = [];
     mutationDetected = false;
 
     elementBrightness;
@@ -46,6 +44,9 @@ export default class MutationObserverProcessor {
     debugLogger;
     precUrl;
 
+    throttledTaskTreatMutations;
+    throttledTaskTreatMutationsAddedNodes;
+
     reApplyCallback = (type, mutationType) => {};
 
     constructor(pageAnalyzer, filterProcessor, debugLogger, elementBrightnessWrapper, websiteSpecialFiltersConfig, elementBrightness, elementBlueLightFilter) {
@@ -56,12 +57,28 @@ export default class MutationObserverProcessor {
         this.elementBrightness = elementBrightness;
         this.elementBlueLightFilter = elementBlueLightFilter;
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
+
+        this.initializeThrottledTasks();
     }
 
     setSettings(websiteSpecialFiltersConfig, currentSettings, precUrl) {
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
         this.currentSettings = currentSettings;
         this.precUrl = precUrl;
+    }
+
+    initializeThrottledTasks() {
+        this.throttledTaskTreatMutations = new ThrottledTask(
+            (mutation) => this.treatOneMutation(mutation),
+            this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
+            this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall
+        );
+
+        this.throttledTaskTreatMutationsAddedNodes = new ThrottledTask(
+            (node) => this.treatOneMutationAddedNode(node),
+            this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
+            this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall
+        );
     }
 
     pause(mutationType) {
@@ -151,10 +168,7 @@ export default class MutationObserverProcessor {
             if(this.mutationObserverBackgrounds) this.mutationObserverBackgrounds.disconnect();
 
             this.mutationObserverBackgrounds = new MutationObserverWrapper(mutations => {
-                this.delayedMutationObserversCalls.push(...mutations);
-                
-                this.treatAllMutations();
-
+                this.treatAllMutations(mutations);
                 this.mutationObserverBackgrounds.start();
             }, {
                 "attributes": true,
@@ -170,64 +184,44 @@ export default class MutationObserverProcessor {
         }
     }
 
-    async treatAllMutations() {
-        if(this.delayedMutationObserversCalls.length > 0) {
+    async treatAllMutations(mutations) {
+        if(mutations.length > 0) {
             await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
 
             if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds) {
-                const throttledTask = new ThrottledTask(
-                    (mutation) => this.treatOneMutation(mutation),
-                    this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
-                    this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall
-                );
-            
-                throttledTask.start(this.delayedMutationObserversCalls).then(() => {
-                    this.treatAllMutationsAddedNodes();
-                });
+                this.throttledTaskTreatMutations.start(mutations);
             } else {
-                for(const mutation of this.delayedMutationObserversCalls) {
+                for(const mutation of mutations) {
                     this.treatOneMutation(mutation);
                 }
-
-                this.treatAllMutationsAddedNodes();
             }
-    
-            this.delayedMutationObserversCalls = [];
         }
     }
 
     treatOneMutation(mutation) {
         if(mutation.type == "childList") {
-            const nodeList = mutation.addedNodes;
+            const nodeList = Array.prototype.slice.call(mutation.addedNodes);
 
-            if(nodeList.length > 0) {
-                this.mutationObserverAddedNodes.push(...Array.prototype.slice.call(nodeList));
+            if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds) {
+                if(nodeList.length > 0) {
+                    this.throttledTaskTreatMutationsAddedNodes.start(nodeList);
+                }
+            } else {
+                for(const node of nodeList) {
+                    this.treatOneMutationAddedNode(node);
+                }
             }
         } else if(mutation.type == "attributes") {
-            if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
-                this.pageAnalyzer.mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
-            }
-
-            this.filterProcessor.doProcessFilters(mutation.target, false);
+            this.treatOneMutationAttributes(mutation);
         }
     }
 
-    treatAllMutationsAddedNodes() {
-        if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds) {
-            const throttledTask = new ThrottledTask(
-                (node) => this.treatOneMutationAddedNode(node),
-                this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
-                this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall
-            );
-        
-            throttledTask.start(this.mutationObserverAddedNodes);
-        } else {
-            for(const node of this.mutationObserverAddedNodes) {
-                this.treatOneMutationAddedNode(node);
-            }
+    treatOneMutationAttributes(mutation) {
+        if (!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
+            this.pageAnalyzer.mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
         }
-    
-        this.mutationObserverAddedNodes = [];
+
+        this.filterProcessor.doProcessFilters(mutation.target, false);
     }
 
     treatOneMutationAddedNode(node) {
