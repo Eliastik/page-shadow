@@ -19,7 +19,6 @@
 import { getCustomThemeConfig, processRules, removeClass, addClass, processRulesInvert, loadWebsiteSpecialFiltersConfig, rgb2hsl, svgElementToImage, backgroundImageToImage, isCrossOrigin } from "../utils/util.js";
 import { ignoredElementsContentScript, defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, pageShadowClassListsMutationsIgnore, maxImageSizeDarkImageDetection, ignoredElementsBrightTextColorDetection } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
-import SafeTimer from "./safeTimer.js";
 
 /**
  * Class used to analyze the pages and detect transparent background,
@@ -41,6 +40,7 @@ export default class PageAnalyzer {
 
     throttledTaskDetectBackgrounds;
     throttledTaskAnalyzeSubchilds;
+    throttledTaskAnalyzeImages;
 
     constructor(websiteSpecialFiltersConfig, currentSettings, isEnabled, multipleElementClassBatcherAdd, multipleElementClassBatcherRemove, debugLogger) {
         this.setSettings(websiteSpecialFiltersConfig, currentSettings, isEnabled);
@@ -65,14 +65,28 @@ export default class PageAnalyzer {
     initializeThrottledTasks() {
         this.throttledTaskDetectBackgrounds = new ThrottledTask(
             (element) => this.detectBackgroundForElement(element, false),
+            "throttledTaskDetectBackgrounds",
             this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay,
             this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall 
         );
 
         this.throttledTaskAnalyzeSubchilds = new ThrottledTask(
             (element) => this.detectBackgroundForElement(element, false),
+            "throttledTaskAnalyzeSubchilds",
             150,
             15
+        );
+
+        this.throttledTaskAnalyzeImages = new ThrottledTask((task) => {
+            this.detectDarkImage(task.image, task.hasBackgroundImg).then(isDarkImage => {
+                if(isDarkImage) {
+                    this.multipleElementClassBatcherAdd.add(task.image, "pageShadowSelectiveInvert");
+                }
+            });
+        },
+        "throttledTaskAnalyzeImages",
+        5,
+        5
         );
     }
 
@@ -250,15 +264,10 @@ export default class PageAnalyzer {
         // Detect image with dark color (text, logos, etc)
         if(this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
             if(!element.classList.contains("pageShadowSelectiveInvert")) {
-                const safeTimerTaskDarkImageDetection = new SafeTimer(() => {
-                    this.detectDarkImage(element, hasBackgroundImg).then(isDarkImage => {
-                        if(isDarkImage) {
-                            this.multipleElementClassBatcherAdd.add(element, "pageShadowSelectiveInvert");
-                        }
-                    });
-                });
-
-                safeTimerTaskDarkImageDetection.start(5);
+                this.throttledTaskAnalyzeImages.start([{
+                    image: element,
+                    hasBackgroundImg
+                }]);
             }
         }
 
