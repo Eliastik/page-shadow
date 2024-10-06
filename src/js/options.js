@@ -616,15 +616,70 @@ async function loadAdvancedOptionsUI(reset, changingLanguage) {
         websiteFiltersConfig = await loadWebsiteSpecialFiltersConfig();
     }
 
-    if(changingLanguage) {
+    if (changingLanguage) {
         websiteFiltersConfig = getUpdatedAdvancedOptions();
     }
 
+    const currentOpenedPanels = Array.from(document.querySelectorAll("#accordionAdvancedOptions .panel-collapse.in"));
+
     document.querySelector("#advancedOptionsFiltersWebsiteSettings").textContent = "";
+
+    const accordion = document.createElement("div");
+    accordion.classList.add("panel-group");
+    accordion.id = "accordionAdvancedOptions";
+
+    let currentCategory = null;
+    let currentCategoryIndex = 0;
+    let currentPanelBody = null;
 
     Object.keys(websiteFiltersConfig).forEach(key => {
         const value = websiteFiltersConfig[key];
+        const category = websiteSpecialFiltersConfigThemes[key];
+        const panelId = `collapse${category}`;
 
+        // Process category
+        if (category && category !== currentCategory) {
+            currentCategory = category;
+
+            const panel = document.createElement("div");
+            panel.classList.add("panel", "panel-default");
+            panel.name = category;
+
+            const panelHeading = document.createElement("div");
+            panelHeading.classList.add("panel-heading");
+
+            const panelTitle = document.createElement("h4");
+            panelTitle.classList.add("panel-title", "panel-title-large-text");
+
+            const panelLink = document.createElement("a");
+            panelLink.setAttribute("data-toggle", "collapse");
+            panelLink.href = `#${panelId}`;
+            panelLink.textContent = i18next.t("advancedOptions.filtersConfigCategories." + category);
+
+            panelTitle.appendChild(panelLink);
+            panelHeading.appendChild(panelTitle);
+            panel.appendChild(panelHeading);
+
+            const panelCollapse = document.createElement("div");
+            panelCollapse.classList.add("panel-collapse", "collapse");
+            panelCollapse.id = panelId;
+
+            if((currentOpenedPanels && currentOpenedPanels.length > 0 && currentOpenedPanels.some(e => e.id === panelId))
+                || ((!currentOpenedPanels || currentOpenedPanels.length === 0) && currentCategoryIndex === 0)) {
+                panelCollapse.classList.add("in");
+            }
+
+            currentPanelBody = document.createElement("div");
+            currentPanelBody.classList.add("panel-body");
+
+            panelCollapse.appendChild(currentPanelBody);
+            panel.appendChild(panelCollapse);
+            accordion.appendChild(panel);
+
+            currentCategoryIndex++;
+        }
+
+        // Create form elements for the current option
         const formGroup = document.createElement("div");
         formGroup.classList.add("form-group");
 
@@ -687,26 +742,10 @@ async function loadAdvancedOptionsUI(reset, changingLanguage) {
         help.setAttribute("title", i18next.t("advancedOptions.filtersConfig.help." + key));
         div.appendChild(help);
 
-        // Append category title if present
-        const category = websiteSpecialFiltersConfigThemes[key];
-
-        if(category) {
-            const divTitle = document.createElement("div");
-            divTitle.classList.add("mb12");
-
-            const title = document.createElement("h5");
-            title.innerText = i18next.t("advancedOptions.filtersConfigCategories." + category);
-
-            const hrTitle = document.createElement("hr");
-
-            divTitle.appendChild(title);
-            divTitle.appendChild(hrTitle);
-
-            document.querySelector("#advancedOptionsFiltersWebsiteSettings").appendChild(divTitle);
-        }
-
-        document.querySelector("#advancedOptionsFiltersWebsiteSettings").appendChild(formGroup);
+        currentPanelBody.appendChild(formGroup);
     });
+
+    document.querySelector("#advancedOptionsFiltersWebsiteSettings").appendChild(accordion);
 
     $("[data-toggle=\"tooltip\"]").tooltip();
 }
