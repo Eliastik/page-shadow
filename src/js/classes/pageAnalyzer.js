@@ -290,7 +290,7 @@ export default class PageAnalyzer {
         }
 
         if(this.websiteSpecialFiltersConfig.enableBrightColorDetection) {
-            this.detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element);
+            this.detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyle);
         }
 
         if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes) {
@@ -321,7 +321,7 @@ export default class PageAnalyzer {
         return hasShallowChildren && notAllChildrenAreImg;
     }
 
-    detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element) {
+    detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyle) {
         // Background color
         if (!transparentColorDetected && !hasTransparentBackgroundClass) {
             const hasBrightColor = this.elementHasBrightColor(background, backgroundColor, false);
@@ -365,7 +365,7 @@ export default class PageAnalyzer {
         const isTextElement = this.isTextElement(element);
 
         if (isTextElement) {
-            const textColor = window.getComputedStyle(element).color;
+            const textColor = computedStyle.color;
             const hasBrightColor = this.elementHasBrightColor(textColor, textColor, true);
 
             if (hasBrightColor && hasBrightColor[0]) {
