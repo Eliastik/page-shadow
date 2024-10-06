@@ -157,16 +157,21 @@ const defaultFilters = {
     "enableAutoUpdate": true,
     "lastFailedUpdate": -1
 };
+
 const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.10.4.php";
 const regexpDetectionPattern = /^((.*)\/(?:[^\\]|\\.)*?\/)(\|)/;
 const regexpDetectionPatternHighlight = /^(\/(?:[^\\]|\\.)*?\/)(\|)/;
 const opacityDetectedAsTransparentThresholdDefault = 0.1;
+
 const availableFilterRulesType = ["disableContrastFor", "forceTransparentBackground", "disableBackgroundStylingFor", "disableTextColorStylingFor", "disableInputBorderStylingFor", "disableLinkStylingFor", "disableFontFamilyStylingFor", "disableElementInvertFor", "hasBackgroundImg", "forceCustomLinkColorFor", "forceCustomBackgroundColorFor", "forceCustomTextColorFor", "disableShadowRootsCustomStyle", "enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "disableMutationObserverAttributes", "disableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverStyle", "forceCustomVisitedLinkColor", "disableCustomVisitedLinkColor", "forceFontFamilyStylingFor", "forceInputBorderStylingFor", "forceCustomLinkColorAsBackground", "forceCustomTextColorAsBackground", "forceCustomLinkVisitedColorAsBackground", "forceDisableDefaultBackgroundColor", "forceDisableDefaultBackground", "forceDisableDefaultFontColor", "enablePseudoElementsStyling", "enableShadowRootStyleOverride", "disableShadowRootStyleOverride", "overrideShadowRootsCustomStyle", "shadowRootStyleOverrideDelay", "invertElementAsImage", "invertElementAsVideo", "invertElementAsBackground", "enableSelectiveInvert", "enablePseudoElementSelectiveInvert", "invertPseudoElement", "enableThrottleMutationObserverBackgrounds", "disableThrottleMutationObserverBackgrounds", "delayMutationObserverBackgrounds", "throttledMutationObserverTreatedByCall", "delayApplyMutationObserversSafeTimer", "enableObserveBodyChange", "disableObserveBodyChange", "observeBodyChangeTimerInterval", "enableBrightColorDetection", "disableBrightColorDetection", "brightColorLightnessTresholdMin", "brightColorLightnessTresholdTextMin", "brightColorLightnessTresholdMax", "preserveBrightColor", "enableThrottleBackgroundDetection", "disableThrottleBackgroundDetection", "throttleBackgroundDetectionElementsTreatedByCall", "backgroundDetectionStartDelay", "useBackgroundDetectionAlreadyProcessedNodes", "enableBrightColorDetectionSubelement", "disableBrightColorDetectionSubelement", "observeDocumentChange", "observeDocumentChangeTimerInterval", "enableDarkImageDetection", "disableDarkImageDetection", "darkImageDetectionHslTreshold", "brightColorSaturationTresholdMin", "enableNotMatchingFiltersDetection", "disableNotMatchingFiltersDetection", "intervalApplyClassChanges", "classChangeMaxElementsTreatedByCall", "darkImageDetectionMinAlpha", "darkImageDetectionBlockSize", "darkImageDetectionTransparentPixelsRatio", "darkImageDetectionDarkPixelsRatio", "forcePseudoElementsTransparentBackground"];
+
 const specialFilterRules = ["enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverAttributes", "disableMutationObserverClass", "disableMutationObserverStyle", "enableShadowRootStyleOverride", "disableShadowRootStyleOverride", "shadowRootStyleOverrideDelay", "enableThrottleMutationObserverBackgrounds", "disableThrottleMutationObserverBackgrounds", "delayMutationObserverBackgrounds", "throttledMutationObserverTreatedByCall", "delayApplyMutationObserversSafeTimer", "enableObserveBodyChange", "disableObserveBodyChange", "observeBodyChangeTimerInterval", "enableBrightColorDetection", "disableBrightColorDetection", "brightColorLightnessTresholdMin", "brightColorLightnessTresholdTextMin", "brightColorLightnessTresholdMax", "enableThrottleBackgroundDetection", "disableThrottleBackgroundDetection", "throttleBackgroundDetectionElementsTreatedByCall", "backgroundDetectionStartDelay", "useBackgroundDetectionAlreadyProcessedNodes", "enableBrightColorDetectionSubelement", "disableBrightColorDetectionSubelement", "observeDocumentChange", "observeDocumentChangeTimerInterval", "enableDarkImageDetection", "disableDarkImageDetection", "darkImageDetectionHslTreshold", "brightColorSaturationTresholdMin", "enableNotMatchingFiltersDetection", "disableNotMatchingFiltersDetection", "intervalApplyClassChanges", "classChangeMaxElementsTreatedByCall", "darkImageDetectionMinAlpha", "darkImageDetectionBlockSize", "darkImageDetectionTransparentPixelsRatio", "darkImageDetectionDarkPixelsRatio"];
+
 const ruleCategory = {
     STANDARD_RULES: "STANDARD_RULES",
     SPECIAL_RULES: "SPECIAL_RULES"
 };
+
 const filterSyntaxErrorTypes = {
     "NO_TYPE": "NO_TYPE",
     "NO_FILTER": "NO_FILTER",
@@ -176,18 +181,33 @@ const filterSyntaxErrorTypes = {
     "EMPTY": "EMPTY",
     "UNKNOWN": "UNKNOWN"
 };
+
 // Internal options that change how Page Shadow works internally (pages processing)
 const defaultWebsiteSpecialFiltersConfig = {
     debugMode: false,
     performanceModeEnabled: false,
     autoDetectTransparentBackgroundEnabled: true,
-    enableMutationObserversForSubChilds: true,
     opacityDetectedAsTransparentThreshold: opacityDetectedAsTransparentThresholdDefault,
+    throttleBackgroundDetection: true,
+    throttleBackgroundDetectionElementsTreatedByCall: 50,
+    backgroundDetectionStartDelay: 5,
+    useBackgroundDetectionAlreadyProcessedNodes: false,
+    enableBrightColorDetection: true,
+    enableBrightColorDetectionSubelement: true,
+    brightColorLightnessTresholdMin: 0.05,
+    brightColorLightnessTresholdMax: 0.9,
+    brightColorLightnessTresholdTextMin: 0.25,
+    brightColorSaturationTresholdMin: 0.25,
+    enableDarkImageDetection: true,
+    darkImageDetectionHslTreshold: 0.18,
+    darkImageDetectionMinAlpha: 0.5,
+    darkImageDetectionBlockSize: 16,
+    darkImageDetectionTransparentPixelsRatio: 0.5,
+    darkImageDetectionDarkPixelsRatio: 0.8,
+    enableMutationObserversForSubChilds: true,
     enableMutationObserverAttributes: true,
     enableMutationObserverStyle: true,
     enableMutationObserverClass: true,
-    enableShadowRootStyleOverride: true,
-    shadowRootStyleOverrideDelay: 100, // <= 0 to disable
     throttleMutationObserverBackgrounds: true,
     delayMutationObserverBackgrounds: 5,
     throttledMutationObserverTreatedByCall: 50,
@@ -196,26 +216,25 @@ const defaultWebsiteSpecialFiltersConfig = {
     observeBodyChangeTimerInterval: 1,
     observeDocumentChange: true,
     observeDocumentChangeTimerInterval: 100,
-    enableBrightColorDetection: true,
-    enableBrightColorDetectionSubelement: true,
-    brightColorLightnessTresholdMin: 0.05,
-    brightColorLightnessTresholdMax: 0.9,
-    brightColorLightnessTresholdTextMin: 0.25,
-    brightColorSaturationTresholdMin: 0.25,
-    throttleBackgroundDetection: true,
-    throttleBackgroundDetectionElementsTreatedByCall: 50,
-    backgroundDetectionStartDelay: 5,
-    useBackgroundDetectionAlreadyProcessedNodes: false,
-    enableNotMatchingFiltersDetection: true,
     intervalApplyClassChanges: 5,
     classChangeMaxElementsTreatedByCall: 5000,
-    enableDarkImageDetection: true,
-    darkImageDetectionHslTreshold: 0.18,
-    darkImageDetectionMinAlpha: 0.5,
-    darkImageDetectionBlockSize: 16,
-    darkImageDetectionTransparentPixelsRatio: 0.5,
-    darkImageDetectionDarkPixelsRatio: 0.8
+    enableShadowRootStyleOverride: true,
+    shadowRootStyleOverrideDelay: 100, // <= 0 to disable
+    enableNotMatchingFiltersDetection: true
 };
+
+const websiteSpecialFiltersConfigThemes = {
+    "enableMutationObserversForSubChilds": "mutationsObservers",
+    "debugMode": "general",
+    "enableShadowRootStyleOverride": "shadowRoots",
+    "observeBodyChange": "observePageChanges",
+    "enableBrightColorDetection": "brightColorAnalyze",
+    "autoDetectTransparentBackgroundEnabled": "backgroundAnalyze",
+    "enableNotMatchingFiltersDetection": "filterEngine",
+    "enableDarkImageDetection": "imageAnalyze",
+    "intervalApplyClassChanges": "applyCssTimer"
+};
+
 const ignoredElementsContentScript = ["style", "script", "br", "head", "link", "meta", "hr"];
 const ignoredElementsBrightTextColorDetection = ["img", "g", "path", "svg"];
 const failedUpdateAutoReupdateDelay = 5 * 60 * 1000; // ms
@@ -226,6 +245,7 @@ updateNotification[extensionVersion] = true;
 
 const defaultInterfaceDarkTheme = "auto"; // auto/on/off
 const defaultPopupTheme = "modern"; // switch/classic/modern
+
 const defaultSettings = {
     "pageShadowEnabled": "false",
     "theme": "1",
@@ -344,4 +364,4 @@ const mapFiltersCSSClass = {
     "forcePseudoElementsTransparentBackground": "pageShadowForcePseudoElementTransparentBackground"
 };
 
-export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, regexpDetectionPatternHighlight, ignoredElementsContentScript, failedUpdateAutoReupdateDelay, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue, archiveInfoShowInterval, defaultSettings, settingsToLoad, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, pageShadowClassListsMutationsIgnore, permissionOrigin, customThemesKey, disabledWebsitesKey, whitelistKey, attenuateDefaultValue, maxImageSizeDarkImageDetection, quotaBytesPerItemMargin, mapFiltersCSSClass, ignoredElementsBrightTextColorDetection };
+export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, regexpDetectionPatternHighlight, ignoredElementsContentScript, failedUpdateAutoReupdateDelay, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue, archiveInfoShowInterval, defaultSettings, settingsToLoad, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, pageShadowClassListsMutationsIgnore, permissionOrigin, customThemesKey, disabledWebsitesKey, whitelistKey, attenuateDefaultValue, maxImageSizeDarkImageDetection, quotaBytesPerItemMargin, mapFiltersCSSClass, ignoredElementsBrightTextColorDetection, websiteSpecialFiltersConfigThemes };
