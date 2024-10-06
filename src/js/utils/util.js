@@ -1276,6 +1276,14 @@ async function loadWebsiteSpecialFiltersConfig() {
             if (Object.prototype.hasOwnProperty.call(websiteSpecialFiltersConfig, key)) {
                 websiteSpecialFiltersConfig[key] = settings.advancedOptionsFiltersSettings[key];
             }
+
+            const config = websiteSpecialFiltersConfig[key];
+
+            if(typeof config === "string") {
+                websiteSpecialFiltersConfig[key] = parseFloat(config);
+            } else {
+                websiteSpecialFiltersConfig[key] = config;
+            }
         });
     }
 
