@@ -214,7 +214,7 @@ export default class PageFilterProcessor {
     processSpecialRules(rules) {
         rules.forEach(rule => {
             const filterTypes = rule.type.split(",");
-            const filterRule = rule.filter ? parseFloat(rule.filter) : null;
+            const filterRule = !isNaN(rule.filter) ? parseFloat(rule.filter) : null;
 
             filterTypes.forEach(type => {
                 if(type == "enablePerformanceMode") this.websiteSpecialFiltersConfig.performanceModeEnabled = true;
