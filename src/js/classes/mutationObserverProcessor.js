@@ -25,6 +25,7 @@ import ContentProcessorConstants from "./contentProcessorConstants.js";
 
 export default class MutationObserverProcessor {
 
+    precEnabled = false;
     mutationDetected = false;
 
     elementBrightness;
@@ -61,7 +62,7 @@ export default class MutationObserverProcessor {
         this.initializeThrottledTasks();
     }
 
-    async setSettings(websiteSpecialFiltersConfig, currentSettings, precUrl) {
+    async setSettings(websiteSpecialFiltersConfig, currentSettings, precUrl, precEnabled) {
         if(!websiteSpecialFiltersConfig) {
             this.websiteSpecialFiltersConfig = await loadWebsiteSpecialFiltersConfig();
         }
@@ -69,6 +70,7 @@ export default class MutationObserverProcessor {
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
         this.currentSettings = currentSettings;
         this.precUrl = precUrl;
+        this.precEnabled = precEnabled;
     }
 
     initializeThrottledTasks() {

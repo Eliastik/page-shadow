@@ -66,7 +66,7 @@ export default class PageFilterProcessor {
             }
 
             if(element) {
-                if(!filterTypes.includes("disableShadowRootsCustomStyle")) {
+                if(!filterTypes.includes("disableShadowRootsCustomStyle") && !filterTypes.includes("overrideShadowRootsCustomStyle")) {
                     try {
                         if(element.matches) {
                             if (element.matches(selector)) {
@@ -161,7 +161,7 @@ export default class PageFilterProcessor {
         for (let i = 0, len = elements.length; i < len; i++) {
             const element = elements[i];
 
-            if (element && element.classList) {
+            if (element) {
                 filterTypes.forEach(filterType => {
                     this.processElement(filterType, element, remove);
                 });
@@ -172,13 +172,15 @@ export default class PageFilterProcessor {
     processElement(filterType, element, remove) {
         const classToAddOrRemove = mapFiltersCSSClass[filterType];
 
-        if (remove) {
-            if (element.classList.contains(classToAddOrRemove)) {
-                this.multipleElementClassBatcherRemove.add(element, classToAddOrRemove);
-            }
-        } else {
-            if (!element.classList.contains(classToAddOrRemove)) {
-                this.multipleElementClassBatcherAdd.add(element, classToAddOrRemove);
+        if (classToAddOrRemove) {
+            if (remove) {
+                if (element.classList && element.classList.contains(classToAddOrRemove)) {
+                    this.multipleElementClassBatcherRemove.add(element, classToAddOrRemove);
+                }
+            } else {
+                if (element.classList && !element.classList.contains(classToAddOrRemove)) {
+                    this.multipleElementClassBatcherAdd.add(element, classToAddOrRemove);
+                }
             }
         }
 
@@ -207,7 +209,11 @@ export default class PageFilterProcessor {
         }
 
         if (filterType == "disableShadowRootsCustomStyle" || filterType == "overrideShadowRootsCustomStyle") {
-            if (element.shadowRoot != null) this.pageAnalyzer.processShadowRoot(element);
+            setTimeout(() => {
+                if(element.shadowRoot != null) {
+                    this.pageAnalyzer.processShadowRoot(element);
+                }
+            }, this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
         }
     }
 

@@ -644,7 +644,7 @@ export default class ContentProcessor {
         this.currentSettings = settings;
         this.precEnabled = true;
 
-        await this.mutationObserverProcessor.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precUrl);
+        await this.mutationObserverProcessor.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precUrl, this.precEnabled);
     
         switch(type) {
         case ContentProcessorConstants.TYPE_ONLY_INVERT:
