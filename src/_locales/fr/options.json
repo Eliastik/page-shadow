@@ -88,7 +88,7 @@
             "enableBrightColorDetectionSubelement": "Traiter les sous-éléments des éléments avec couleurs vives",
             "enableNotMatchingFiltersDetection": "Activer la détection des éléments ne correspondant plus aux filtres",
             "intervalApplyClassChanges": "Intervalle d'application des changements de classes CSS des éléments",
-            "delayApplyClassChanges": "Délai avant d'éappliquer les changements des classes CSS des éléments",
+            "delayApplyClassChanges": "Délai avant d'appliquer les changements des classes CSS des éléments",
             "classChangeMaxElementsTreatedByCall": "Nombre d'éléments traités lors du changements des classes CSS",
             "enableDarkImageDetection": "Activer la détection des images/arrières-plan avec couleurs sombres",
             "darkImageDetectionHslTreshold": "Seuil (luminosité, pourcentage) de détection d'un pixel d'image comme étant sombre",
