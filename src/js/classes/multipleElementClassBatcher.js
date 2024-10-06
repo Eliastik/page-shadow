@@ -28,24 +28,26 @@ export default class MultipleElementClassBatcher {
     classListsWithElement = new Map();
 
     maxElementsTreatedByCall = 5000;
+    delayApplyClassChanges = 5;
 
     throttledTaskClassApplyAdd;
     throttledTaskClassApplyRemove;
 
-    constructor(maxElementsTreatedByCall) {
+    constructor(maxElementsTreatedByCall, delayApplyClassChanges) {
         this.maxElementsTreatedByCall = maxElementsTreatedByCall;
+        this.delayApplyClassChanges = delayApplyClassChanges;
 
         this.throttledTaskClassApplyAdd = new ThrottledTask(
             (task) => addClass(task.element, ...task.classList),
             "throttledTaskClassApplyAdd",
-            5,
+            this.delayApplyClassChanges,
             this.maxElementsTreatedByCall
         );
 
         this.throttledTaskClassApplyRemove = new ThrottledTask(
             (task) => removeClass(task.element, ...task.classList),
             "throttledTaskClassApplyRemove",
-            5,
+            this.delayApplyClassChanges,
             this.maxElementsTreatedByCall
         );
     }
