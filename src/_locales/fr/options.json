@@ -98,6 +98,9 @@
             "throttleDarkImageDetection": "Ralentir l'analyse des images",
             "throttleDarkImageDetectionDelay": "Délai avant l'exécution de l'analyse d'images",
             "throttleDarkImageDetectionBatchSize": "Nombre d'images traitées par appel",
+            "throttleMutationObserverBackgroundsSubChilds": "Ralentir l'analyse des sous-enfants lors d'une détection d'un élément par Mutation Observer",
+            "delayMutationObserverBackgroundsSubchilds": "Délai avant l'exécution de l'analyse des sous-enfants d'un élément",
+            "throttledMutationObserverSubchildsTreatedByCall": "Nombre de sous-enfants analysés par appel lorsque l'analyse est ralentie",
             "help": {
                 "debugMode": "Active le mode de débogage qui affiche des informations de débogage dans la console JavaScript sur les pages traitées par Page Shadow, ou sur les pages de l'extension.",
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrière-plans des éléments.",
@@ -138,7 +141,10 @@
                 "darkImageDetectionDarkPixelsRatio": "Lors de l'analyse du voisinnage du pixel détecté comme étant sombre, paramètre le ratio minimum de pixels sombres supplémentaires nécessaires (par rapport aux pixels non transparents). Si ce ratio est dépassé, alors l'image est détectée comme étant une image sombre.",
                 "throttleDarkImageDetection": "Ralenti l'analyse des images des pages, ce qui soulage le processeur et améliore les performances.",
                 "throttleDarkImageDetectionDelay": "Paramètre le délai avant d'exécuter l'analyse des images mises en file d'attente. Augmenter ce délai peut améliorer les performances.",
-                "throttleDarkImageDetectionBatchSize": "Paramètre le nombre d'images en file d'attente à analyser en une fois."
+                "throttleDarkImageDetectionBatchSize": "Paramètre le nombre d'images en file d'attente à analyser en une fois.",
+                "throttleMutationObserverBackgroundsSubChilds": "Ralenti l'analyse des sous-enfants d'un élément détecté par les mutation observers. Cela soulage le processeur et améliore les performances.",
+                "delayMutationObserverBackgroundsSubchilds": "Paramètre le délai avant d'exécuter l'analyse des sous-enfants d'un élément. Augmenter ce délai peut améliorer les performances.",
+                "throttledMutationObserverSubchildsTreatedByCall": "Paramètre le nombre de sous-enfants en file d'attente à analyser en une fois."
             }
         },
         "filtersConfigCategories": {

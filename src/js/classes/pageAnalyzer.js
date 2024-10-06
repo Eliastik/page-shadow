@@ -73,8 +73,8 @@ export default class PageAnalyzer {
         this.throttledTaskAnalyzeSubchilds = new ThrottledTask(
             (element) => this.detectBackgroundForElement(element, false),
             "throttledTaskAnalyzeSubchilds",
-            50,
-            15
+            this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds,
+            this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall
         );
 
         this.throttledTaskAnalyzeImages = new ThrottledTask((task) => {
@@ -463,7 +463,14 @@ export default class PageAnalyzer {
         if(!attribute && this.websiteSpecialFiltersConfig.enableMutationObserversForSubChilds) {
             if(element.getElementsByTagName) {
                 const elementChildrens = element.getElementsByTagName("*");
-                this.throttledTaskAnalyzeSubchilds.start(elementChildrens);
+
+                if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgroundsSubChilds) {
+                    this.throttledTaskAnalyzeSubchilds.start(elementChildrens);
+                } else {
+                    for(const element of elementChildrens) {
+                        this.detectBackgroundForElement(element);
+                    }
+                }
             }
         }
     }
