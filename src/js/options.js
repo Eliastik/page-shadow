@@ -617,11 +617,11 @@ async function displayFilters() {
 async function loadAdvancedOptionsUI(reset, changingLanguage) {
     let websiteFiltersConfig = JSON.parse(JSON.stringify(defaultWebsiteSpecialFiltersConfig));
 
-    if (!reset) {
+    if(!reset) {
         websiteFiltersConfig = await loadWebsiteSpecialFiltersConfig();
     }
 
-    if (changingLanguage) {
+    if(changingLanguage) {
         websiteFiltersConfig = getUpdatedAdvancedOptions();
     }
 
@@ -682,6 +682,20 @@ async function loadAdvancedOptionsUI(reset, changingLanguage) {
             accordion.appendChild(panel);
 
             currentCategoryIndex++;
+
+            const descriptionDiv = document.createElement("div");
+            descriptionDiv.classList.add("advancedOptionsCategoryDescriptionContainer");
+            
+            const infoIcon = document.createElement("i");
+            infoIcon.classList.add("fa-solid", "fa-circle-info");
+            descriptionDiv.appendChild(infoIcon);
+
+            const descriptionP = document.createElement("p");
+            descriptionP.classList.add("advancedOptionsCategoryDescription");
+            descriptionP.innerText = i18next.t("advancedOptions.filtersConfigCategories.descriptions." + category);
+            descriptionDiv.appendChild(descriptionP);
+
+            currentPanelBody.appendChild(descriptionDiv);
         }
 
         // Create form elements for the current option

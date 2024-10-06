@@ -890,3 +890,20 @@ input, select, textarea {
 .panel-title-large-text {
     font-size: 13pt;
 }
+.advancedOptionsCategoryDescription {
+    font-size: 12pt;
+}
+.advancedOptionsCategoryDescriptionContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
+    margin-bottom: 16px;
+}
+.advancedOptionsCategoryDescriptionContainer p {
+    margin: 0 !important;
+}
+.advancedOptionsCategoryDescriptionContainer .fa-solid {
+    font-size: 13pt !important;
+    margin-right: 8px;
+}

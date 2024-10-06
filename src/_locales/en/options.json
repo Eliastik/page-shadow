@@ -147,7 +147,18 @@
             "backgroundAnalyze": "Page analysis engine - backgrounds",
             "filterEngine": "Filter engine",
             "imageAnalyze": "Page analysis engine - images",
-            "applyCssTimer": "CSS class change application timer"
+            "applyCssTimer": "CSS class change application timer",
+            "descriptions": {
+                "general": "Global options affecting the overall behavior of the extension.",
+                "mutationsObservers": "Mutation observers are used to monitor and react to dynamic changes on web pages. For example, this allows the extension to detect and respond to changes in style and attributes of web page elements or modifications in the structure of pages.",
+                "shadowRoots": "These settings control Page Shadow's interaction with Shadow DOM. Use them to define how styles are applied and changes are monitored in Shadow DOM components.",
+                "observePageChanges": "These options manage the functioning of timers used to observe certain changes on web pages.",
+                "brightColorAnalyze": "These options manage the engine responsible for analyzing the bright colors present on web pages.",
+                "backgroundAnalyze": "These options manage the engine responsible for analyzing the backgrounds of elements present on web pages.",
+                "filterEngine": "These options manage the Page Shadow filter engine.",
+                "imageAnalyze": "These options manage the engine responsible for analyzing images and detecting images with text or other dark elements.",
+                "applyCssTimer": "These options control the functioning of the timer responsible for applying CSS class changes to elements by Page Shadow on web pages."
+            }
         },
         "saved": "Saved!"
     },
