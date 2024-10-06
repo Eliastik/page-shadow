@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getCurrentURL } from "../utils/util.js";
+import { getCurrentURL, loadWebsiteSpecialFiltersConfig } from "../utils/util.js";
 import { ignoredElementsContentScript } from "../constants.js";
 import MutationObserverWrapper from "./mutationObserverWrapper.js";
 import SafeTimer from "./safeTimer.js";
@@ -61,7 +61,11 @@ export default class MutationObserverProcessor {
         this.initializeThrottledTasks();
     }
 
-    setSettings(websiteSpecialFiltersConfig, currentSettings, precUrl) {
+    async setSettings(websiteSpecialFiltersConfig, currentSettings, precUrl) {
+        if(!websiteSpecialFiltersConfig) {
+            this.websiteSpecialFiltersConfig = await loadWebsiteSpecialFiltersConfig();
+        }
+
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
         this.currentSettings = currentSettings;
         this.precUrl = precUrl;
