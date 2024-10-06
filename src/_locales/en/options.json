@@ -138,6 +138,17 @@
                 "darkImageDetectionDarkPixelsRatio": "When analyzing the neighborhood of the detected dark pixel, this sets the minimum ratio of dark pixels required (compared with non-transparent pixels). If this ratio is exceeded, the image is detected as a dark image."
             }
         },
+        "filtersConfigCategories": {
+            "general": "General",
+            "mutationsObservers": "Mutation observers",
+            "shadowRoots": "Shadow DOM",
+            "observePageChanges": "Page observation timers",
+            "brightColorAnalyze": "Page analysis engine - bright colors",
+            "backgroundAnalyze": "Page analysis engine - backgrounds",
+            "filterEngine": "Filter engine",
+            "imageAnalyze": "Page analysis engine - images",
+            "applyCssTimer": "CSS class change application timer"
+        },
         "saved": "Saved!"
     },
     "modal": {

@@ -34,7 +34,7 @@ import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
 import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, getCurrentArchiveCloud } from "./utils/util.js";
-import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames } from "./constants.js";
+import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes } from "./constants.js";
 import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./utils/filter.codemirror.mode";
@@ -691,6 +691,24 @@ async function loadAdvancedOptionsUI(reset, changingLanguage) {
         help.setAttribute("data-toggle", "tooltip");
         help.setAttribute("title", i18next.t("advancedOptions.filtersConfig.help." + key));
         div.appendChild(help);
+
+        // Append category title if present
+        const category = websiteSpecialFiltersConfigThemes[key];
+
+        if(category) {
+            const divTitle = document.createElement("div");
+            divTitle.classList.add("mb12");
+
+            const title = document.createElement("h5");
+            title.innerText = i18next.t("advancedOptions.filtersConfigCategories." + category);
+
+            const hrTitle = document.createElement("hr");
+
+            divTitle.appendChild(title);
+            divTitle.appendChild(hrTitle);
+
+            document.querySelector("#advancedOptionsFiltersWebsiteSettings").appendChild(divTitle);
+        }
 
         document.querySelector("#advancedOptionsFiltersWebsiteSettings").appendChild(formGroup);
     });

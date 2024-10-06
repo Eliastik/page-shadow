@@ -135,6 +135,17 @@
                 "darkImageDetectionDarkPixelsRatio": "Lors de l'analyse du voisinnage du pixel détecté comme étant sombre, paramètre le ratio minimum de pixels sombres supplémentaires nécessaires (par rapport aux pixels non transparents). Si ce ratio est dépassé, alors l'image est détectée comme étant une image sombre."
             }
         },
+        "filtersConfigCategories": {
+            "general": "Général",
+            "mutationsObservers": "Mutation observers",
+            "shadowRoots": "Shadow DOM",
+            "observePageChanges": "Minuteurs d'observation de la page",
+            "brightColorAnalyze": "Moteur d'analyse des pages - couleurs vives",
+            "backgroundAnalyze": "Moteur d'analyse des pages - arrières-plans",
+            "filterEngine": "Moteur des filtres",
+            "imageAnalyze": "Moteur d'analyse des pages - images",
+            "applyCssTimer": "Minuteur d'application des changements de classes CSS"
+        },
         "saved": "Sauvegardé !"
     },
     "modal": {
