@@ -78,16 +78,20 @@ export default class PageAnalyzer {
         );
 
         this.throttledTaskAnalyzeImages = new ThrottledTask((task) => {
-            this.detectDarkImage(task.image, task.hasBackgroundImg).then(isDarkImage => {
-                if(isDarkImage) {
-                    this.multipleElementClassBatcherAdd.add(task.image, "pageShadowSelectiveInvert");
-                }
-            });
+            this.taskAnalyzeImage(task.image, task.hasBackgroundImg);
         },
         "throttledTaskAnalyzeImages",
-        150,
-        5
+        this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay,
+        this.websiteSpecialFiltersConfig.throttleDarkImageDetectionBatchSize
         );
+    }
+
+    taskAnalyzeImage(image, hasBackgroundImg) {
+        this.detectDarkImage(image, hasBackgroundImg).then(isDarkImage => {
+            if (isDarkImage) {
+                this.multipleElementClassBatcherAdd.add(image, "pageShadowSelectiveInvert");
+            }
+        });
     }
 
     async detectBackground(tagName) {
@@ -264,10 +268,14 @@ export default class PageAnalyzer {
         // Detect image with dark color (text, logos, etc)
         if(this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
             if(!element.classList.contains("pageShadowSelectiveInvert")) {
-                this.throttledTaskAnalyzeImages.start([{
-                    image: element,
-                    hasBackgroundImg
-                }]);
+                if(this.websiteSpecialFiltersConfig.throttleDarkImageDetection) {
+                    this.throttledTaskAnalyzeImages.start([{
+                        image: element,
+                        hasBackgroundImg
+                    }]);
+                } else {
+                    this.taskAnalyzeImage(element, hasBackgroundImg);
+                }
             }
         }
 
