@@ -270,6 +270,10 @@ export default class PageFilterProcessor {
                 if(type == "darkImageDetectionBlockSize") this.websiteSpecialFiltersConfig.darkImageDetectionBlockSize = filterRule;
                 if(type == "darkImageDetectionTransparentPixelsRatio") this.websiteSpecialFiltersConfig.darkImageDetectionTransparentPixelsRatio = filterRule;
                 if(type == "darkImageDetectionDarkPixelsRatio") this.websiteSpecialFiltersConfig.darkImageDetectionDarkPixelsRatio = filterRule;
+                if(type == "throttleDarkImageDetectionDelay") this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay = filterRule;
+                if(type == "throttleDarkImageDetectionBatchSize") this.websiteSpecialFiltersConfig.throttleDarkImageDetectionBatchSize = filterRule;
+                if(type == "enableThrottleDarkImageDetection") this.websiteSpecialFiltersConfig.throttleDarkImageDetection = true;
+                if(type == "disableThrottleDarkImageDetection") this.websiteSpecialFiltersConfig.throttleDarkImageDetection = false;
             });
         });
     }

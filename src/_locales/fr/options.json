@@ -95,6 +95,9 @@
             "darkImageDetectionBlockSize": "Taille (pixels) du bloc d'analyse d'un pixel détecté comme sombre",
             "darkImageDetectionTransparentPixelsRatio": "Ratio (pourcentage) pixel transparent/pixel normal pour détecter une image comme étant sombre",
             "darkImageDetectionDarkPixelsRatio": "Ratio (pourcentage) pixel sombre/pixel normal pour détecter une image comme étant sombre",
+            "throttleDarkImageDetection": "Ralentir l'analyse des images",
+            "throttleDarkImageDetectionDelay": "Délai avant l'exécution de l'analyse d'images",
+            "throttleDarkImageDetectionBatchSize": "Nombre d'images traitées par appel",
             "help": {
                 "debugMode": "Active le mode de débogage qui affiche des informations de débogage dans la console JavaScript sur les pages traitées par Page Shadow, ou sur les pages de l'extension.",
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrière-plans des éléments.",
@@ -132,7 +135,10 @@
                 "darkImageDetectionMinAlpha": "La valeur minimale (en pourcentage) du canal alpha nécessaire pour analyser le pixel d'une image. Si la valeur est sous ce seuil, le pixel est ignoré. Par défaut 0.5 (pour 50%).",
                 "darkImageDetectionBlockSize": "Lorsqu'un pixel est détecté comme étant sombre selon la valeur de luminosité, son voisinnage est analysé à la recherche de pixels transparents. Cette valeur paramètre le nombre de pixels à analyser autour du pixel détecté.",
                 "darkImageDetectionTransparentPixelsRatio": "Lors de l'analyse du voisinnage du pixel détecté comme étant sombre, paramètre le ratio minimum de pixels transparents nécessaires. Si ce ratio est dépassé, alors l'image est détectée comme étant une image sombre.",
-                "darkImageDetectionDarkPixelsRatio": "Lors de l'analyse du voisinnage du pixel détecté comme étant sombre, paramètre le ratio minimum de pixels sombres supplémentaires nécessaires (par rapport aux pixels non transparents). Si ce ratio est dépassé, alors l'image est détectée comme étant une image sombre."
+                "darkImageDetectionDarkPixelsRatio": "Lors de l'analyse du voisinnage du pixel détecté comme étant sombre, paramètre le ratio minimum de pixels sombres supplémentaires nécessaires (par rapport aux pixels non transparents). Si ce ratio est dépassé, alors l'image est détectée comme étant une image sombre.",
+                "throttleDarkImageDetection": "Ralenti l'analyse des images des pages, ce qui soulage le processeur et améliore les performances.",
+                "throttleDarkImageDetectionDelay": "Paramètre le délai avant d'exécuter l'analyse des images mises en file d'attente. Augmenter ce délai peut améliorer les performances.",
+                "throttleDarkImageDetectionBatchSize": "Paramètre le nombre d'images en file d'attente à analyser en une fois."
             }
         },
         "filtersConfigCategories": {
