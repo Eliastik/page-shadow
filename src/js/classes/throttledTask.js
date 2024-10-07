@@ -93,11 +93,14 @@ export default class ThrottledTask {
     }
 
     adjustThrottling(batchDuration) {
+        const oldDelay = this.delay;
+        const oldElementsPerBatch = this.elementsPerBatch;
+
         if(batchDuration >= this.maxExecutionTime && this.delay < this.maxDelay) {
             const overTimeRatio = batchDuration / this.maxExecutionTime;
             this.delay = Math.min(this.maxDelay, Math.floor(this.delay * overTimeRatio));
             this.elementsPerBatch = Math.max(1, Math.floor(this.elementsPerBatch * (1 - this.autoThrottlingAdjustmentFactor)));
-            this.debugLogger.log(`ThrottledTask ${this.name} - Increased throttling: Delay = ${this.delay}, ElementsPerBatch = ${this.elementsPerBatch}`);
+            this.debugLogger.log(`ThrottledTask ${this.name} - Increased throttling - Delay: ${oldDelay} > ${this.delay}, ElementsPerBatch: ${oldElementsPerBatch} > ${this.elementsPerBatch}`);
         } else if(batchDuration < this.maxExecutionTime && this.delay > this.minDelay) {
             this.delay = Math.max(this.minDelay, Math.floor(this.delay * (1 - this.autoThrottlingAdjustmentFactor)));
             this.elementsPerBatch = Math.min(this.initialElementsPerBatch, Math.floor(this.elementsPerBatch * (1 + this.autoThrottlingAdjustmentFactor)));
@@ -107,7 +110,7 @@ export default class ThrottledTask {
                 Math.floor(this.elementsPerBatch * 2)
             );
 
-            this.debugLogger.log(`ThrottledTask ${this.name} - Reduced throttling: Delay = ${this.delay}, ElementsPerBatch = ${this.elementsPerBatch}`);
+            this.debugLogger.log(`ThrottledTask ${this.name} - Reduced throttling - Delay: ${oldDelay} > ${this.delay}, ElementsPerBatch: ${oldElementsPerBatch} > ${this.elementsPerBatch}`);
         }
 
         this.delay = Math.max(this.minDelay, Math.min(this.delay, this.maxDelay));
