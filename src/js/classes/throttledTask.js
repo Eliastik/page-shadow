@@ -36,7 +36,7 @@ export default class ThrottledTask {
         this.initialDelay = delay;
         this.initialElementsPerBatch = elementsPerBatch;
 
-        this.maxElementsPerBatch = Math.floor(elementsPerBatch * 2);
+        this.maxElementsPerBatch = Math.floor(elementsPerBatch * 3);
 
         this.index = 0;
         this.elements = [];
