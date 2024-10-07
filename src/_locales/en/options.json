@@ -105,6 +105,11 @@
             "throttleMutationObserverBackgroundsSubChilds": "Throttle the analysis of sub-childs when an element is detected by a Mutation Observer",
             "delayMutationObserverBackgroundsSubchilds": "Delay before executing the analysis of an element's sub-childs",
             "throttledMutationObserverSubchildsTreatedByCall": "Number of sub-childs analyzed per call when the analysis is throttled",
+            "throttleBackgroundDetectionMaxExecutionTime": "Maximum execution time for a call when background detection is throttled",
+            "throttleDarkImageDetectionMaxExecutionTime": "Maximum execution time for a call during image analysis when throttled",
+            "throttledMutationObserverMaxExecutionTime": "Maximum execution time for a call to Mutation Observers when they are throttled",
+            "throttledMutationObserverSubchildsMaxExecutionTime": "Maximum execution time for a call when sub-child analysis is throttled",
+            "applyClassChangesMaxExecutionTime": "Maximum execution time for a call when applying CSS class changes to elements",
             "help": {
                 "debugMode": "Enables debug mode, which displays debugging information in the JavaScript console on pages processed by Page Shadow, or on extension pages.",
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
@@ -149,7 +154,12 @@
                 "throttleDarkImageDetectionBatchSize": "Sets the number of queued images to analyze at once.",
                 "throttleMutationObserverBackgroundsSubChilds": "Throttles the analysis of sub-childs of an element detected by mutation observers. This reduce CPU usage and improves performance.",
                 "delayMutationObserverBackgroundsSubchilds": "Sets the delay (in ms) before executing the analysis of an element's sub-childs. Increasing this delay may improve performance.",
-                "throttledMutationObserverSubchildsTreatedByCall": "Sets the number of queued sub-childs to analyze at once."
+                "throttledMutationObserverSubchildsTreatedByCall": "Sets the number of queued sub-childs to analyze at once.",
+                "throttleBackgroundDetectionMaxExecutionTime": "If the execution of the call exceeds this execution time (in ms), the call is interrupted to free up resources. This considerably improves performance.",
+                "throttleDarkImageDetectionMaxExecutionTime": "If the execution of the call exceeds this execution time (in ms), the call is interrupted to free up resources. This considerably improves performance.",
+                "throttledMutationObserverMaxExecutionTime": "If the execution of the call exceeds this execution time (in ms), the call is interrupted to free up resources. This considerably improves performance.",
+                "throttledMutationObserverSubchildsMaxExecutionTime": "If the execution of the call exceeds this execution time (in ms), the call is interrupted to free up resources. This considerably improves performance.",
+                "applyClassChangesMaxExecutionTime": "If the execution of the call exceeds this execution time (in ms), the call is interrupted to free up resources. This considerably improves performance."
 
             }
         },

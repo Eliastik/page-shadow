@@ -102,6 +102,11 @@
             "throttleMutationObserverBackgroundsSubChilds": "Ralentir l'analyse des sous-enfants lors d'une détection d'un élément par Mutation Observer",
             "delayMutationObserverBackgroundsSubchilds": "Délai avant l'exécution de l'analyse des sous-enfants d'un élément",
             "throttledMutationObserverSubchildsTreatedByCall": "Nombre de sous-enfants analysés par appel lorsque l'analyse est ralentie",
+            "throttleBackgroundDetectionMaxExecutionTime": "Temps d'exécution maximum d'un appel lorsque la détection des arrières-plans est ralentie",
+            "throttleDarkImageDetectionMaxExecutionTime": "Temps d'exécution maximum d'un appel lors de l'analyse des images si elle est ralentie",
+            "throttledMutationObserverMaxExecutionTime": "Temps d'exécution maximum d'un appel aux Mutation Observers lorsqu'ils sont ralentis",
+            "throttledMutationObserverSubchildsMaxExecutionTime": "Temps d'exécution maximum d'un appel lorsque l'analyse des sous-enfants est ralentie",
+            "applyClassChangesMaxExecutionTime": "Temps d'exécution maximum lors d'un appel à l'application des classes CSS des éléments",
             "help": {
                 "debugMode": "Active le mode de débogage qui affiche des informations de débogage dans la console JavaScript sur les pages traitées par Page Shadow, ou sur les pages de l'extension.",
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrière-plans des éléments.",
@@ -146,7 +151,12 @@
                 "throttleDarkImageDetectionBatchSize": "Paramètre le nombre d'images en file d'attente à analyser en une fois.",
                 "throttleMutationObserverBackgroundsSubChilds": "Ralenti l'analyse des sous-enfants d'un élément détecté par les mutation observers. Cela soulage le processeur et améliore les performances.",
                 "delayMutationObserverBackgroundsSubchilds": "Paramètre le délai (en ms) avant d'exécuter l'analyse des sous-enfants d'un élément. Augmenter ce délai peut améliorer les performances.",
-                "throttledMutationObserverSubchildsTreatedByCall": "Paramètre le nombre de sous-enfants en file d'attente à analyser en une fois."
+                "throttledMutationObserverSubchildsTreatedByCall": "Paramètre le nombre de sous-enfants en file d'attente à analyser en une fois.",
+                "throttleBackgroundDetectionMaxExecutionTime": "Si l'exécution de l'appel dépasse ce temps d'exécution (en ms), l'appel est interrompu pour libérer des ressources. Cela améliore considérablement les performances.",
+                "throttleDarkImageDetectionMaxExecutionTime": "Si l'exécution de l'appel dépasse ce temps d'exécution (en ms), l'appel est interrompu pour libérer des ressources. Cela améliore considérablement les performances.",
+                "throttledMutationObserverMaxExecutionTime": "Si l'exécution de l'appel dépasse ce temps d'exécution (en ms), l'appel est interrompu pour libérer des ressources. Cela améliore considérablement les performances.",
+                "throttledMutationObserverSubchildsMaxExecutionTime": "Si l'exécution de l'appel dépasse ce temps d'exécution (en ms), l'appel est interrompu pour libérer des ressources. Cela améliore considérablement les performances.",
+                "applyClassChangesMaxExecutionTime": "Si l'exécution de l'appel dépasse ce temps d'exécution (en ms), l'appel est interrompu pour libérer des ressources. Cela améliore considérablement les performances."
             }
         },
         "filtersConfigCategories": {
