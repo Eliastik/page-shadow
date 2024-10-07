@@ -55,7 +55,7 @@ export default class ThrottledTask {
             if(!this.isRunning) {
                 this.index = 0;
                 this.isRunning = true;
-                this.processBatch();
+                this.timer.start(this.delay);
             }
         });
     }
