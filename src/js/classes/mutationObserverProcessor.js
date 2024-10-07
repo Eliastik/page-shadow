@@ -210,7 +210,7 @@ export default class MutationObserverProcessor {
 
     treatOneMutation(mutation) {
         if(mutation.type == "childList") {
-            const nodeList = Array.prototype.slice.call(mutation.addedNodes);
+            const nodeList = mutation.addedNodes;
 
             if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds) {
                 if(nodeList.length > 0) {
