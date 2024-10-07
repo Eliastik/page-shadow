@@ -67,14 +67,16 @@ export default class PageAnalyzer {
             (element) => this.detectBackgroundForElement(element, false),
             "throttledTaskDetectBackgrounds",
             this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay,
-            this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall 
+            this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall,
+            this.websiteSpecialFiltersConfig.throttleBackgroundDetectionMaxExecutionTime
         );
 
         this.throttledTaskAnalyzeSubchilds = new ThrottledTask(
             (element) => this.detectBackgroundForElement(element, false),
             "throttledTaskAnalyzeSubchilds",
             this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds,
-            this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall
+            this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall,
+            this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime
         );
 
         this.throttledTaskAnalyzeImages = new ThrottledTask((task) => {
@@ -82,7 +84,8 @@ export default class PageAnalyzer {
         },
         "throttledTaskAnalyzeImages",
         this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay,
-        this.websiteSpecialFiltersConfig.throttleDarkImageDetectionBatchSize
+        this.websiteSpecialFiltersConfig.throttleDarkImageDetectionBatchSize,
+        this.websiteSpecialFiltersConfig.throttleDarkImageDetectionMaxExecutionTime
         );
     }
 

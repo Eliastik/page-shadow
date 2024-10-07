@@ -285,6 +285,11 @@ export default class PageFilterProcessor {
                 if(type == "delayMutationObserverBackgroundsSubchilds") this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds = filterRule;
                 if(type == "throttledMutationObserverSubchildsTreatedByCall") this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall = filterRule;
                 if(type == "delayApplyClassChanges") this.websiteSpecialFiltersConfig.delayApplyClassChanges = filterRule;
+                if(type == "throttleBackgroundDetectionMaxExecutionTime") this.websiteSpecialFiltersConfig.throttleBackgroundDetectionMaxExecutionTime = filterRule;
+                if(type == "throttleDarkImageDetectionMaxExecutionTime") this.websiteSpecialFiltersConfig.throttleDarkImageDetectionMaxExecutionTime = filterRule;
+                if(type == "throttledMutationObserverMaxExecutionTime") this.websiteSpecialFiltersConfig.throttledMutationObserverMaxExecutionTime = filterRule;
+                if(type == "throttledMutationObserverSubchildsMaxExecutionTime") this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime = filterRule;
+                if(type == "applyClassChangesMaxExecutionTime") this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime = filterRule;
             });
         });
     }
