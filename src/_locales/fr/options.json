@@ -107,6 +107,7 @@
             "throttledMutationObserverMaxExecutionTime": "Temps d'exécution maximum d'un appel aux Mutation Observers lorsqu'ils sont ralentis",
             "throttledMutationObserverSubchildsMaxExecutionTime": "Temps d'exécution maximum d'un appel lorsque l'analyse des sous-enfants est ralentie",
             "applyClassChangesMaxExecutionTime": "Temps d'exécution maximum lors d'un appel à l'application des classes CSS des éléments",
+            "autoThrottleBackgroundDetectionTime": "Temps d'exécution maximum pour activer automatiquement le ralentissement des arrières-plans",
             "help": {
                 "debugMode": "Active le mode de débogage qui affiche des informations de débogage dans la console JavaScript sur les pages traitées par Page Shadow, ou sur les pages de l'extension.",
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrière-plans des éléments.",
@@ -156,7 +157,8 @@
                 "throttleDarkImageDetectionMaxExecutionTime": "Si l'exécution de l'appel dépasse ce temps d'exécution (en ms), l'appel est interrompu pour libérer des ressources. Cela améliore considérablement les performances.",
                 "throttledMutationObserverMaxExecutionTime": "Si l'exécution de l'appel dépasse ce temps d'exécution (en ms), l'appel est interrompu pour libérer des ressources. Cela améliore considérablement les performances.",
                 "throttledMutationObserverSubchildsMaxExecutionTime": "Si l'exécution de l'appel dépasse ce temps d'exécution (en ms), l'appel est interrompu pour libérer des ressources. Cela améliore considérablement les performances.",
-                "applyClassChangesMaxExecutionTime": "Si l'exécution de l'appel dépasse ce temps d'exécution (en ms), l'appel est interrompu pour libérer des ressources. Cela améliore considérablement les performances."
+                "applyClassChangesMaxExecutionTime": "Si l'exécution de l'appel dépasse ce temps d'exécution (en ms), l'appel est interrompu pour libérer des ressources. Cela améliore considérablement les performances.",
+                "autoThrottleBackgroundDetectionTime": "Si le ralentissement de l'analyse des arrières-plans n'est pas activé, il est activé automatiquement si le temps d'exécution dépasse cette valeur (en ms). Cela permet d'éviter de bloquer les pages web si le temps d'exécution initial de l'analyse est trop long."
             }
         },
         "filtersConfigCategories": {

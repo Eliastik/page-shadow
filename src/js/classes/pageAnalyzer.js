@@ -117,36 +117,16 @@ export default class PageAnalyzer {
     async detectBackground(tagName) {
         return new Promise(resolve => {
             if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
-                const throttledBackgroundDetection = this.websiteSpecialFiltersConfig.throttleBackgroundDetection;
-
                 addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
-
+    
                 this.detectBackgroundForElement(document.body, true);
-
-                if (throttledBackgroundDetection) {
-                    removeClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
+    
+                const elements = Array.from(document.body.getElementsByTagName(tagName));
+    
+                if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection) {
+                    this.runThrottledBackgroundDetection(elements).then(resolve);
                 } else {
-                    removeClass(document.body, "pageShadowDisableBackgroundStyling");
-                }
-
-                const elements = Array.prototype.slice.call(document.body.getElementsByTagName(tagName));
-                const elementsLength = elements.length;
-
-                if(throttledBackgroundDetection) {
-                    this.throttledTaskDetectBackgrounds.start(elements).then(() => {
-                        this.setBackgroundDetectionFinished();
-                        resolve();
-                    });
-                } else {
-                    let i = 0;
-                    
-                    while(i < elementsLength) {
-                        this.detectBackgroundForElement(elements[i], true);
-                        i++;
-                    }
-
-                    this.setBackgroundDetectionFinished();
-                    resolve();
+                    this.runNormalBackgroundDetection(elements).then(resolve);
                 }
             } else {
                 this.setBackgroundDetectionFinished();
@@ -154,9 +134,50 @@ export default class PageAnalyzer {
             }
         });
     }
+    
+    async runNormalBackgroundDetection(elements) {
+        return new Promise(resolve => {
+            removeClass(document.body, "pageShadowDisableBackgroundStyling");
+
+            const elementsLength = elements.length;
+            const startTime = performance.now();
+
+            let currentIndex = 0;
+            let totalExecutionTime = 0;
+    
+            while(currentIndex < elementsLength) {
+                this.detectBackgroundForElement(elements[currentIndex], true);
+                currentIndex++;
+
+                const addTime = performance.now() - startTime;
+                totalExecutionTime += addTime;
+    
+                if(totalExecutionTime >= this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime) {
+                    this.debugLogger.log(`PageAnalyzer detectBackground - Stopping early task to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`);
+                    this.runThrottledBackgroundDetection(elements.slice(currentIndex)).then(resolve);
+
+                    return;
+                }
+            }
+    
+            this.setBackgroundDetectionFinished();
+            resolve();
+        });
+    }
+    
+    async runThrottledBackgroundDetection(elements) {
+        return new Promise(resolve => {
+            removeClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
+
+            this.throttledTaskDetectBackgrounds.start(elements).then(() => {
+                this.setBackgroundDetectionFinished();
+                resolve();
+            });
+        });
+    }
 
     setBackgroundDetectionFinished() {
-        removeClass(document.body, "pageShadowDisableStyling");
+        removeClass(document.body, "pageShadowDisableBackgroundStyling", "pageShadowDisableStyling");
         addClass(document.body, "pageShadowBackgroundDetected");
         this.backgroundDetected = true;
     }
@@ -268,7 +289,7 @@ export default class PageAnalyzer {
             this.processShadowRoots(element);
         }
 
-        if(!element || (element != document.body && (element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected"))) || this.backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1 || ignoredElementsContentScript.includes(element.localName)) {
+        if(!element || (element != document.body && (element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected"))) || this.backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1 || ignoredElementsContentScript.includes(element.localName) || !element.isConnected) {
             return;
         }
 
@@ -277,9 +298,9 @@ export default class PageAnalyzer {
         }
 
         const computedStyle = window.getComputedStyle(element, null);
-        const background = computedStyle.getPropertyValue("background");
-        const backgroundColor = computedStyle.getPropertyValue("background-color");
-        const backgroundImage = computedStyle.getPropertyValue("background-image");
+        const background = computedStyle.background;
+        const backgroundColor = computedStyle.backgroundColor;
+        const backgroundImage = computedStyle.backgroundImage;
 
         const hasBackgroundImg = background.split(" ").some(v => v.trim().substring(0, 4).toLowerCase().includes("url(")) || backgroundImage.split(" ").some(v => v.trim().substring(0, 4).toLowerCase().includes("url("));
         const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
