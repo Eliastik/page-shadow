@@ -35,6 +35,7 @@ export default class PageAnalyzer {
     isEnabled = false;
     currentSettings = {};
 
+    processingBackgrounds = false;
     backgroundDetected = false;
     backgroundDetectionAlreadyProcessedNodes = [];
     processedShadowRoots = [];
@@ -115,8 +116,17 @@ export default class PageAnalyzer {
     }
 
     async detectBackground(tagName) {
+        this.debugLogger.log(`PageAnalyzer detectBackground - Beginning analyzing page elements - elements tagName: ${tagName}`);
+
         return new Promise(resolve => {
             if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
+                if(this.processingBackgrounds) {
+                    this.debugLogger.log("PageAnalyzer detectBackground - Already analyzing page elements, exiting");
+                    resolve();
+                }
+
+                this.processingBackgrounds = true;
+
                 addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
     
                 this.detectBackgroundForElement(document.body, true);
@@ -124,9 +134,15 @@ export default class PageAnalyzer {
                 const elements = Array.from(document.body.getElementsByTagName(tagName));
     
                 if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection) {
-                    this.runThrottledBackgroundDetection(elements).then(resolve);
+                    this.runThrottledBackgroundDetection(elements).then(() => {
+                        this.processingBackgrounds = false;
+                        resolve();
+                    });
                 } else {
-                    this.runNormalBackgroundDetection(elements).then(resolve);
+                    this.runNormalBackgroundDetection(elements).then(() => {
+                        this.processingBackgrounds = false;
+                        resolve();
+                    });
                 }
             } else {
                 this.setBackgroundDetectionFinished();
@@ -154,9 +170,7 @@ export default class PageAnalyzer {
     
                 if(totalExecutionTime >= this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime) {
                     this.debugLogger.log(`PageAnalyzer detectBackground - Stopping early task to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`);
-                    this.runThrottledBackgroundDetection(elements.slice(currentIndex)).then(resolve);
-
-                    return;
+                    return this.runThrottledBackgroundDetection(elements.slice(currentIndex)).then(resolve);
                 }
             }
     
