@@ -290,6 +290,7 @@ export default class PageFilterProcessor {
                 if(type == "throttledMutationObserverMaxExecutionTime") this.websiteSpecialFiltersConfig.throttledMutationObserverMaxExecutionTime = filterRule;
                 if(type == "throttledMutationObserverSubchildsMaxExecutionTime") this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime = filterRule;
                 if(type == "applyClassChangesMaxExecutionTime") this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime = filterRule;
+                if(type == "autoThrottleBackgroundDetectionTime") this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime = filterRule;
             });
         });
     }

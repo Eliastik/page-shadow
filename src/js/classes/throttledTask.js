@@ -36,7 +36,7 @@ export default class ThrottledTask {
         this.initialDelay = delay;
         this.initialElementsPerBatch = elementsPerBatch;
 
-        this.maxElementsPerBatch = Math.floor(elementsPerBatch * 3);
+        this.maxElementsPerBatch = Math.min(10000, elementsPerBatch * 100);
 
         this.index = 0;
         this.elements = [];
@@ -96,25 +96,22 @@ export default class ThrottledTask {
         const oldDelay = this.delay;
         const oldElementsPerBatch = this.elementsPerBatch;
 
-        if(batchDuration >= this.maxExecutionTime && this.delay < this.maxDelay) {
-            const overTimeRatio = batchDuration / this.maxExecutionTime;
-            this.delay = Math.min(this.maxDelay, Math.floor(this.delay * overTimeRatio));
-            this.elementsPerBatch = Math.max(1, Math.floor(this.elementsPerBatch * (1 - this.autoThrottlingAdjustmentFactor)));
-            this.debugLogger.log(`ThrottledTask ${this.name} - Increased throttling - Delay: ${oldDelay} > ${this.delay}, ElementsPerBatch: ${oldElementsPerBatch} > ${this.elementsPerBatch}`);
-        } else if(batchDuration < this.maxExecutionTime && this.delay > this.minDelay) {
+        if(batchDuration >= this.maxExecutionTime) {
+            this.delay = Math.max(this.minDelay, Math.floor(this.delay * (1 + this.autoThrottlingAdjustmentFactor)));
+            this.elementsPerBatch = Math.max(2, Math.floor(this.elementsPerBatch * (1 - this.autoThrottlingAdjustmentFactor)));
+        } else if(batchDuration < this.maxExecutionTime) {
             this.delay = Math.max(this.minDelay, Math.floor(this.delay * (1 - this.autoThrottlingAdjustmentFactor)));
-            this.elementsPerBatch = Math.min(this.initialElementsPerBatch, Math.floor(this.elementsPerBatch * (1 + this.autoThrottlingAdjustmentFactor)));
-
-            this.elementsPerBatch = Math.min(
-                this.maxElementsPerBatch, 
-                Math.floor(this.elementsPerBatch * 2)
-            );
-
-            this.debugLogger.log(`ThrottledTask ${this.name} - Reduced throttling - Delay: ${oldDelay} > ${this.delay}, ElementsPerBatch: ${oldElementsPerBatch} > ${this.elementsPerBatch}`);
+            this.elementsPerBatch = Math.max(this.initialElementsPerBatch, Math.floor(this.elementsPerBatch * (1 + this.autoThrottlingAdjustmentFactor)));
         }
 
         this.delay = Math.max(this.minDelay, Math.min(this.delay, this.maxDelay));
-        this.elementsPerBatch = Math.max(1, Math.min(this.elementsPerBatch, this.maxElementsPerBatch));
+        this.elementsPerBatch = Math.max(2, Math.min(this.elementsPerBatch, this.maxElementsPerBatch));
+
+        if(oldDelay < this.delay || oldElementsPerBatch > this.elementsPerBatch) {
+            this.debugLogger.log(`ThrottledTask ${this.name} - Increased throttling - Delay: ${oldDelay} > ${this.delay}, ElementsPerBatch: ${oldElementsPerBatch} > ${this.elementsPerBatch}`);
+        } else if(oldDelay > this.delay || oldElementsPerBatch < this.elementsPerBatch) {
+            this.debugLogger.log(`ThrottledTask ${this.name} - Reduced throttling - Delay: ${oldDelay} > ${this.delay}, ElementsPerBatch: ${oldElementsPerBatch} > ${this.elementsPerBatch}`);
+        }
     }
 
     clear() {
