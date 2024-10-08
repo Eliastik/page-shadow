@@ -619,6 +619,21 @@ if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand
         case "enablePresetTen":
             loadPreset(10);
             break;
+        case "enablePresetEleven":
+            loadPreset(11);
+            break;
+        case "enablePresetTwelve":
+            loadPreset(12);
+            break;
+        case "enablePresetThirteen":
+            loadPreset(13);
+            break;
+        case "enablePresetFourteen":
+            loadPreset(14);
+            break;
+        case "enablePresetFifteen":
+            loadPreset(15);
+            break;
         }
     });
 }
