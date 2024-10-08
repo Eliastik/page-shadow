@@ -99,6 +99,21 @@
     },
     "enablePresetTen": {
       "description": "__MSG_enablePresetTen__"
+    },
+    "enablePresetEleven": {
+      "description": "__MSG_enablePresetEleven__"
+    },
+    "enablePresetTwelve": {
+      "description": "__MSG_enablePresetTwelve__"
+    },
+    "enablePresetThirteen": {
+      "description": "__MSG_enablePresetThirteen__"
+    },
+    "enablePresetFourteen": {
+      "description": "__MSG_enablePresetFourteen__"
+    },
+    "enablePresetFifteen": {
+      "description": "__MSG_enablePresetFifteen__"
     }
   }
 }
