@@ -139,16 +139,18 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Optimize performance settings, dynamic throttling?
     * [x] Prepare release 2.11: Readme, Changelog, etc...
 * [ ] Release 2.11 - don't forget to change version date
+    * [ ] Adjust throttling algorithm, and performance settings
+    * [ ] (Minor) Shadow DOM is not always detected => example comments on Franceinfo website
 
 #### Bugs to fix
 
-* [ ] (Minor) Shadow DOM is not always detected => example comments on Franceinfo website
 * [x] (Medium) Dark image detection not working on image from cross-origin domain (cf Wikipedia articles)
 * [x] (Major) Still some errors with QUOTA_BYTES_PER_ITEM in cloud archive. The chunk method need to be fixed
 * [x] (Medium) Bug with fast apply mode and iframes + preset: iframe use global settings instead of preset settings from parent page
 * [x] (Minor) Background gradient not detected as bright colors
 * [x] (Minor) Fix transition white that disable some transitions? -> no, seems OK
 * [x] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element -> disabled by default
+
 #### Ideas
 
 * [x] Add possibility to change the filter intensity for the Attenuate colors feature?
@@ -159,11 +161,11 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
 
-### Common
+#### Common
 
 * [ ] FAQ for common questions?
 
-### Ideas
+#### Ideas
 
 * [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
 * [ ] Improving codebase
@@ -181,7 +183,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [ ] Store filters on a Github repository ?
 * [ ] Prevent the attenuation of subelements (when enabling Colored elements attenuation)?
 
-### Known issues/bugs
+#### Known issues/bugs
 
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
