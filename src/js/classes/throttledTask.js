@@ -16,6 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+import { maxElementsPerBatch, throttledTaskReduceThrottleMargin } from "../constants.js";
 import SafeTimer from "./safeTimer.js";
 import DebugLogger from "./debugLogger.js";
 
@@ -23,7 +24,7 @@ import DebugLogger from "./debugLogger.js";
  * Class used to throttle task working on DOM elements
  */
 export default class ThrottledTask {
-    constructor(callback, name, delay, elementsPerBatch = 1, maxExecutionTime = 25, minDelay = 5, maxDelay = 500, autoThrottlingAdjustmentFactor = 0.5) {
+    constructor(callback, name, delay, elementsPerBatch = 1, maxExecutionTime = 25, minDelay = 2, maxDelay = 500, autoThrottlingAdjustmentFactor = 0.5) {
         this.callback = callback;
         this.name = name;
         this.delay = delay;
@@ -36,7 +37,7 @@ export default class ThrottledTask {
         this.initialDelay = delay;
         this.initialElementsPerBatch = elementsPerBatch;
 
-        this.maxElementsPerBatch = Math.min(10000, elementsPerBatch * 100);
+        this.maxElementsPerBatch = Math.min(maxElementsPerBatch, elementsPerBatch * 100);
 
         this.index = 0;
         this.elements = [];
@@ -99,7 +100,7 @@ export default class ThrottledTask {
         if(batchDuration >= this.maxExecutionTime) {
             this.delay = Math.max(this.minDelay, Math.floor(this.delay * (1 + this.autoThrottlingAdjustmentFactor)));
             this.elementsPerBatch = Math.max(2, Math.floor(this.elementsPerBatch * (1 - this.autoThrottlingAdjustmentFactor)));
-        } else if(batchDuration < this.maxExecutionTime) {
+        } else if(batchDuration < this.maxExecutionTime * throttledTaskReduceThrottleMargin) {
             this.delay = Math.max(this.minDelay, Math.floor(this.delay * (1 - this.autoThrottlingAdjustmentFactor)));
             this.elementsPerBatch = Math.max(this.initialElementsPerBatch, Math.floor(this.elementsPerBatch * (1 + this.autoThrottlingAdjustmentFactor)));
         }

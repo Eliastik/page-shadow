@@ -307,6 +307,8 @@ export default class PageAnalyzer {
             return;
         }
 
+        const elementWasAlreadyDisabled = element.classList.contains("pageShadowElementDisabled");
+
         if(!disableDestyling) {
             addClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
         }
@@ -322,7 +324,7 @@ export default class PageAnalyzer {
 
         // Detect image with dark color (text, logos, etc)
         if(this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
-            if(!element.classList.contains("pageShadowSelectiveInvert")) {
+            if(!element.classList.contains("pageShadowSelectiveInvert") && this.imageProcessor.elementIsImage(element, hasBackgroundImg)) {
                 if(this.websiteSpecialFiltersConfig.throttleDarkImageDetection) {
                     this.throttledTaskAnalyzeImages.start([{
                         image: element,
@@ -353,7 +355,11 @@ export default class PageAnalyzer {
         }
 
         if(!disableDestyling) {
-            removeClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
+            if(elementWasAlreadyDisabled) {
+                removeClass(element, "pageShadowDisableStyling");
+            } else {
+                removeClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
+            }
         }
     }
 
