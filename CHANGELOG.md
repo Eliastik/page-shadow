@@ -2,6 +2,36 @@
 
 ## Changelog:
 
+### Version 2.11 (10/9/2024) :
+
+* Added the ability to enable the inversion or attenuation of colored elements. This allows users to disable the inversion of colored elements while enabling entire page inversion, providing an alternative dark mode to the Increase contrast function;
+* Added the ability to adjust the filter intensity for the Attenuate colors function;
+* Colored text elements are now detected by Page Shadow. They are thus taken into account by the various functions managing colored elements: Increase contrast, Invert colors, and Attenuate colors;
+* When opening a new page, the Decrease brightness and Blue light reduction filter features are now applied faster to prevent the appearance of a potentially unpleasant flash, thanks to performance optimization;
+* The algorithm detecting images containing text/logos or other dark elements has been revised and improved: it is much more effective and efficient. It is now enabled by default in this version. To take advantage of this feature, you need to enable the Invert colors > Selective function so that detected images are inverted, making them more readable on a dark background;
+    * The algorithm analyzes images on the page to detect dark pixels patterns surrounded by transparent backgrounds;
+    * The algorithm can be configured via the advanced options of the extension, for advanced users only, or via the Filters functionality;
+* Special attention was paid to optimizing the performance of the extension: it now adapts to the device's performance and the complexity of web pages for the page analysis engine. The number of elements analyzed automatically adjusts based on the context for better performance. Other optimizations have also been made, significantly improving the extension’s performance:
+    * The Page Shadow web page analysis engine's features now have a maximum execution time: if the execution time exceeds a threshold, it temporarily pauses execution to free up resources;
+    * The features of the Page Shadow web page analysis engine now execute asynchronously;
+    * CSS class changes are now applied in batches;
+    * Other code optimizations have been made to improve performance;
+    * All these optimizations can be adjusted in the advanced options of the extension, for advanced users only. These optimizations can also be managed via the extension’s Filters feature;
+* Fixed issues with Cloud archiving of Page Shadow settings: in some cases, archiving could fail due to the chunking algorithm used by Page Shadow. The algorithm has been corrected, resolving these issues. Existing Cloud archives are not affected;
+* Added 5 additional preset slots (bringing the total to 15) and 5 additional custom theme slots (bringing the total to 10);
+* The extension now detects elements where a filter was applied but, due to certain changes, the filter no longer needs to be applied. Filters are now properly removed from the element in this case;
+* Gradient-colored backgrounds are now detected by the extension;
+* The advanced options interface has been revamped, with options now grouped by category;
+* Fixed other bugs and technical improvements:
+    * Added a debug mode, which can be enabled in the advanced options;
+    * Fixed a bug with the quick application of the "Increase Contrast" feature, an improvement introduced in version 2.10.4: it was sometimes incorrectly applied to iframes on the page, even when the feature was disabled on the parent page;
+    * Fixed the detection of transparent backgrounds on certain websites;
+    * Fixed a bug with some filters;
+    * Fixed a bug with changing the settings of the Invert colors function when applying real-time changes to the settings;
+    * Corrected the wording of some extension texts for better clarity;
+    * General code improvements, some parts of the code have been dispatched into separate classes, and other code improvements for better readability;
+    * Other minor bug fixes.
+
 ### Version 2.10.4 (6/9/2024) :
 
 * Addition of a new popup theme: the "Compact" theme. As its name suggests, the elements of this theme have been optimized to reduce the height of the Page Shadow popup;
@@ -371,6 +401,36 @@
 # Page Shadow - Français
 
 ## Journal des changements :
+
+### Version 2.11 (09/10/2024) :
+
+* Ajout de la possibilité d'activer l'inversion ou l'atténuation des éléments colorés. Il est possible ainsi de désactiver l'inversion des éléments colorés en activant l'inversion de la page entière, pour un mode sombre alternatif à la fonction Augmenter le contraste ;
+* Ajout de la possibilité de modifier l'intensité du filtre de la fonction Atténuer les couleurs ;
+* Les éléments textuels colorés sont désormais détectés par Page Shadow. Ainsi, ils sont pris en compte par les différentes fonctions gérant les éléments colorés : Augmenter le contraste, Inverser les couleurs et Atténuer les couleurs ;
+* Lors de l'ouverture d'une nouvelle page, les fonctionnalités Baisser la luminosité et Filtre de réduction de la lumière bleue sont appliquées plus rapidement afin d'éviter l'affichage d'un flash pouvant être désagréable, grâce à une optimisation des performances ;
+* L'algorithme de détection des images comportant des textes/logos ou autres éléments sombres a été revu et amélioré : il est beaucoup plus efficace et plus performant. Il est désormais activé par défaut dans cette version. Pour profiter de cette fonctionnalité, il faut activer la fonction Inverser les couleurs > Sélectif afin d'inverser les images détectées, afin qu'elles soient plus lisibles sur un fond sombre ;
+    * L'algorithme analyse les images sur les pages à la recherche de motifs sombres entourés d'un fond transparent ;
+    * L'algorithme peut être réglé grâce aux options avancées de l'extension, pour les utilisateurs avertis uniquement, ou via la fonctionnalité des Filtres ;
+* Une attention particulière a été portée à l'optimisation des performances de l'extension : l'extension s'adapte désormais aux performances de l'appareil et la complexité des pages web pour le moteur d'analyse des pages. Ainsi, le nombre d'éléments analysés s'adapte automatiquement en fonction du contexte pour de meilleures performances. D'autres optimisations ont également été apportées, améliorant considérablement les performances de l'extension :
+    * Les fonctionnalités du moteur d'analyse des pages web de Page Shadow ont désormais un temps d'exécution maximal : si le temps d'exécution dépasse un seuil, l'exécution s'arrête temporairement afin de libérer des ressources ;
+    * Les fonctionnalités du moteur d'analyse des pages web de Page Shadow s'exécutent désormais de manière asynchrone ;
+    * Les changements de classes CSS des éléments s'effectue désormais en batch ;
+    * D'autres optimisations du code ont été apportées afin d'améliorer les performances ;
+    * Toutes ces optimisations sont réglables dans les options avancés de l'extension, pour les utilisteurs avertis seulement. Ces optimisations peuvent également être réglées via la fonctionnalité Filtres de l'extension ;
+* Correction de problèmes avec l'archivage Cloud des paramètres de Page Shadow : dans certains cas, il était possible que l'archivage échoue, à cause de l'algorithme de chunking utilisé par Page Shadow. L'algorithme a été corrigé, ce qui corrige ces problèmes. Les archives Cloud existantes ne sont pas impactées ;
+* Ajout de 5 slots de pré-réglages supplémentaires (portant leur nombre à 15) ainsi que 5 slots de thèmes personnalisés supplémentaires (portant leur nombre à 10) ;
+* L'extension détecte désormais les éléments sur lesquels un filtre était appliqué, mais suite à certains changements, si le filtre ne doit plus s'appliquer à l'élément, celui-ci est désormais retiré ;
+* Les arrières-plans sous forme de dégradés colorés sont désormais détectés par l'extension ;
+* L'interface des options avancées de l'extension a été revues, les options sont désormais groupées par catégories ;
+* Correction d'autres bugs et améliorations techniques :
+    * Ajout d'un mode de débogage, activable dans les options avancées ;
+    * Correction d'un bug avec l'application rapide de la fonctionnalité "Augmenter le contraste", amélioration apportée par la version 2.10.4 : elle était parfois appliquée aux iframes des pages à tort, de manière aléatoire, alors que la fonction était désactivée sur la page parent ;
+    * Correction de la détection des arrière-plans transparents sur certains sites web ;
+    * Correction d'un bug avec certains filtres ;
+    * Correction d'un bug avec la modification des paramètres de la fonction Inverser les couleurs, lors de l'application en temps réel des changements des paramètres ;
+    * Correction du wording de certains textes de l'extension pour plus de clarté ;
+    * Amélioration générale du code, dispatch de certaines parties du code dans des classes séparées, autres améliorations du code pour plus de lisibilité ;
+    * Autres corrections de bugs mineurs.
 
 ### Version 2.10.4 (09/06/2024) :
 

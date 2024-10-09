@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-const extensionVersion = "2.10.4";
-const versionDate = new Date(2024, 5, 9);
+const extensionVersion = "2.11";
+const versionDate = new Date(2024, 9, 9);
 const nbThemes = 16; // nb of themes for the function Increase the contrast (used globally in the extension)
 const colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"]; // color temperatures available for the function Night Mode (used globally in the extension)
 const minBrightnessPercentage = 0; // the minimum percentage of brightness
@@ -158,7 +158,7 @@ const defaultFilters = {
     "lastFailedUpdate": -1
 };
 
-const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.10.4.php";
+const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.11.php";
 const regexpDetectionPattern = /^((.*)\/(?:[^\\]|\\.)*?\/)(\|)/;
 const regexpDetectionPatternHighlight = /^(\/(?:[^\\]|\\.)*?\/)(\|)/;
 const opacityDetectedAsTransparentThresholdDefault = 0.1;
