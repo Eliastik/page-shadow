@@ -136,11 +136,12 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Optimize by reducing size of the image before analyze
 * [ ] Finalization: continue to test and adjust advanced settings for: performance optimizations and dark image detection
     * [x] Add advanced settings for dark image detection?
-    * [ ] Optimize performance settings, dynamic throttling?
-    * [ ] Then release version 2.11
+    * [x] Optimize performance settings, dynamic throttling?
+    * [ ] Then release version 2.11: Readme, Changelog, etc...
 
 #### Bugs to fix
 
+* [ ] (Minor) Shadow DOM is not always detected => example comments on Franceinfo website
 * [x] (Medium) Dark image detection not working on image from cross-origin domain (cf Wikipedia articles)
 * [x] (Major) Still some errors with QUOTA_BYTES_PER_ITEM in cloud archive. The chunk method need to be fixed
 * [x] (Medium) Bug with fast apply mode and iframes + preset: iframe use global settings instead of preset settings from parent page
@@ -181,7 +182,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 ### Known issues/bugs
 
-* [ ] (Minor) Shadow DOM is not always detected => example comments on Franceinfo website
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots

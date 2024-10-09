@@ -227,4 +227,8 @@ export default class ImageProcessor {
             });
         });
     }
+
+    elementIsImage(element, hasBackgroundImg) {
+        return element instanceof HTMLImageElement || element instanceof SVGImageElement || hasBackgroundImg;
+    }
 }
