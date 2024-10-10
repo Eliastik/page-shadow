@@ -106,15 +106,15 @@ export default class ThrottledTask {
     adjustThrottling(batchDuration) {
         const oldDelay = this.delay;
         const oldElementsPerBatch = this.elementsPerBatch;
-
+    
         if(batchDuration >= this.maxExecutionTime) {
-            this.delay = Math.max(this.minDelay, Math.ceil(this.delay * (1 + (this.autoThrottlingAdjustmentFactor / 2))));
+            this.delay = Math.min(this.maxDelay, Math.ceil(this.delay * Math.exp(this.autoThrottlingAdjustmentFactor * 2)));
             this.elementsPerBatch = Math.max(2, Math.floor(this.elementsPerBatch * (1 - this.autoThrottlingAdjustmentFactor)));
         } else if(batchDuration < this.maxExecutionTime * throttledTaskReduceThrottleMargin) {
-            this.delay = Math.max(this.minDelay, Math.floor(this.delay * (1 - (this.autoThrottlingAdjustmentFactor / 2))));
+            this.delay = Math.max(this.minDelay, Math.floor(this.delay * Math.exp(-this.autoThrottlingAdjustmentFactor * 2)));
             this.elementsPerBatch = Math.max(this.initialElementsPerBatch, Math.floor(this.elementsPerBatch * (1 + this.autoThrottlingAdjustmentFactor)));
         }
-
+    
         this.delay = Math.max(this.minDelay, Math.min(this.delay, this.maxDelay));
         this.elementsPerBatch = Math.max(2, Math.min(this.elementsPerBatch, this.maxElementsPerBatch));
 
