@@ -53,7 +53,7 @@ Soit la compiler vous-même (voir section "Compilation").
 * Ajout de 5 slots de pré-réglages supplémentaires (portant leur nombre à 15) ainsi que 5 slots de thèmes personnalisés supplémentaires (portant leur nombre à 10) ;
 * L'extension détecte désormais les éléments sur lesquels un filtre était appliqué, mais suite à certains changements, si le filtre ne doit plus s'appliquer à l'élément, celui-ci est désormais retiré ;
 * Les arrières-plans sous forme de dégradés colorés sont désormais détectés par l'extension ;
-* L'interface des options avancées de l'extension a été revues, les options sont désormais groupées par catégories ;
+* L'interface des options avancées de l'extension a été revue, les options sont désormais groupées par catégories ;
 * Correction d'autres bugs et améliorations techniques :
     * Ajout d'un mode de débogage, activable dans les options avancées ;
     * Correction d'un bug avec l'application rapide de la fonctionnalité "Augmenter le contraste", amélioration apportée par la version 2.10.4 : elle était parfois appliquée aux iframes des pages à tort, de manière aléatoire, alors que la fonction était désactivée sur la page parent ;
