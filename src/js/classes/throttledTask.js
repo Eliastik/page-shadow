@@ -24,7 +24,7 @@ import DebugLogger from "./debugLogger.js";
  * Class used to throttle task working on DOM elements
  */
 export default class ThrottledTask {
-    constructor(callback, name, delay, elementsPerBatch = 1, maxExecutionTime = 25, minDelay = 2, maxDelay = 500, autoThrottlingAdjustmentFactor = 0.5) {
+    constructor(callback, name, delay, elementsPerBatch = 1, maxExecutionTime = 25, minDelay = 1, maxDelay = 500, autoThrottlingAdjustmentFactor = 0.5) {
         this.callback = callback;
         this.name = name;
         this.delay = delay;
@@ -46,6 +46,9 @@ export default class ThrottledTask {
         this.isRunning = false;
         this.lastBatchTime = 0;
         this.debugLogger = new DebugLogger();
+
+        this.averageBatchDuration = 0;
+        this.batchCounter = 0;
     }
 
     start(newElements) {
@@ -72,10 +75,8 @@ export default class ThrottledTask {
             } catch(e) {
                 this.debugLogger.error(`ThrottledTask ${this.name} - Error executing task: ${e}`);
             }
-            
-            const currentTime = performance.now();
 
-            if(currentTime - startTime >= this.maxExecutionTime) {
+            if(performance.now() - startTime >= this.maxExecutionTime) {
                 batchEnd = i + 1;
                 this.debugLogger.log(`ThrottledTask ${this.name} - Stopping early task to respect maxExecutionTime = ${this.maxExecutionTime} ms`);
                 break;
@@ -84,7 +85,16 @@ export default class ThrottledTask {
 
         this.index = batchEnd;
         const batchDuration = performance.now() - startTime;
-        this.adjustThrottling(batchDuration);
+
+        this.averageBatchDuration = this.averageBatchDuration
+            ? (this.averageBatchDuration * 0.9) + (batchDuration * 0.1)
+            : batchDuration;
+
+        // Adjust throttling each 3 iterations
+        if (++this.batchCounter >= 3) {
+            this.adjustThrottling(this.averageBatchDuration);
+            this.batchCounter = 0;
+        }
 
         if(this.index < this.elements.length) {
             this.timer.start(this.delay);
@@ -98,10 +108,10 @@ export default class ThrottledTask {
         const oldElementsPerBatch = this.elementsPerBatch;
 
         if(batchDuration >= this.maxExecutionTime) {
-            this.delay = Math.max(this.minDelay, Math.floor(this.delay * (1 + this.autoThrottlingAdjustmentFactor)));
+            this.delay = Math.max(this.minDelay, Math.ceil(this.delay * (1 + (this.autoThrottlingAdjustmentFactor / 2))));
             this.elementsPerBatch = Math.max(2, Math.floor(this.elementsPerBatch * (1 - this.autoThrottlingAdjustmentFactor)));
         } else if(batchDuration < this.maxExecutionTime * throttledTaskReduceThrottleMargin) {
-            this.delay = Math.max(this.minDelay, Math.floor(this.delay * (1 - this.autoThrottlingAdjustmentFactor)));
+            this.delay = Math.max(this.minDelay, Math.floor(this.delay * (1 - (this.autoThrottlingAdjustmentFactor / 2))));
             this.elementsPerBatch = Math.max(this.initialElementsPerBatch, Math.floor(this.elementsPerBatch * (1 + this.autoThrottlingAdjustmentFactor)));
         }
 
