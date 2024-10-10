@@ -202,7 +202,7 @@ export default class PageFilterProcessor {
 
         if (filterType == "forceDisableDefaultFontColor") {
             if (remove) {
-                removeStyleAttribute(element, "background: unset !important");
+                removeStyleAttribute(element, "color: unset !important");
             } else {
                 addNewStyleAttribute(element, "color: unset !important");
             }

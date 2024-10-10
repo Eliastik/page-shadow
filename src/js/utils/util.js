@@ -1137,14 +1137,25 @@ function addClass(element, ...classes) {
 }
 
 function addNewStyleAttribute(element, styleToAdd) {
-    const oldStyleAttribute = element.getAttribute("style");
-    let newStyleAttribute = (oldStyleAttribute ? oldStyleAttribute : "");
-    if(newStyleAttribute.trim() != "" && !newStyleAttribute.trim().endsWith(";")) {
-        newStyleAttribute += "; " + styleToAdd;
-    } else {
-        newStyleAttribute += styleToAdd;
+    const oldStyleAttribute = element.getAttribute("style") || "";
+
+    const styleToAddParts = styleToAdd.split(";").map(part => part.trim()).filter(Boolean);
+    const oldStyleParts = oldStyleAttribute.split(";").map(part => part.trim()).filter(Boolean);
+
+    const stylesToActuallyAdd = styleToAddParts.filter(newStyle => {
+        return !oldStyleParts.some(oldStyle => oldStyle === newStyle);
+    });
+
+    if(stylesToActuallyAdd.length > 0) {
+        let newStyleAttribute = oldStyleAttribute.trim();
+
+        if(newStyleAttribute && !newStyleAttribute.endsWith(";")) {
+            newStyleAttribute += "; ";
+        }
+
+        newStyleAttribute += stylesToActuallyAdd.join("; ");
+        element.setAttribute("style", newStyleAttribute);
     }
-    element.setAttribute("style", newStyleAttribute);
 }
 
 function removeStyleAttribute(element, styleToRemove) {

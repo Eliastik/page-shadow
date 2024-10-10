@@ -218,7 +218,7 @@ const defaultWebsiteSpecialFiltersConfig = {
     throttleMutationObserverBackgrounds: true,
     delayMutationObserverBackgrounds: 5,
     throttledMutationObserverTreatedByCall: 500,
-    throttledMutationObserverMaxExecutionTime: 25,
+    throttledMutationObserverMaxExecutionTime: 50,
     throttleMutationObserverBackgroundsSubChilds: true,
     delayMutationObserverBackgroundsSubchilds: 50,
     throttledMutationObserverSubchildsTreatedByCall: 250,
