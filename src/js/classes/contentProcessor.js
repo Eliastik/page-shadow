@@ -719,9 +719,9 @@ export default class ContentProcessor {
                     if (document.readyState === "complete") {
                         this.updateFilters();
                     } else {
-                        document.addEventListener("readystatechange", () => {
+                        const readyStateChangeApplyFilters = document.addEventListener("readystatechange", () => {
                             if (document.readyState === "complete") {
-                                document.removeEventListener("readystatechange", arguments.callee);
+                                document.removeEventListener("readystatechange", readyStateChangeApplyFilters);
                                 this.updateFilters();
                             }
                         });
