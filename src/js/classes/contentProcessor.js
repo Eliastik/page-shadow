@@ -80,9 +80,9 @@ export default class ContentProcessor {
         this.bodyClassBatcher = new ElementClassBatcher(document.body);
         this.bodyClassBatcherRemover = new ElementClassBatcher(document.body);
         this.htmlClassBatcher = new ElementClassBatcher(document.getElementsByTagName("html")[0]);
-        this.multipleElementClassBatcherAdd = new MultipleElementClassBatcher(this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
+        this.multipleElementClassBatcherAdd = new MultipleElementClassBatcher("add", this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
             this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime);
-        this.multipleElementClassBatcherRemove = new MultipleElementClassBatcher(this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
+        this.multipleElementClassBatcherRemove = new MultipleElementClassBatcher("remove", this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
             this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime);
     }
 
@@ -546,8 +546,8 @@ export default class ContentProcessor {
         if(this.timerApplyMutationObserverClassChanges) this.timerApplyMutationObserverClassChanges.clear();
 
         this.timerApplyMutationObserverClassChanges = new SafeTimer(async () => {
-            this.multipleElementClassBatcherAdd.applyAdd();
-            this.multipleElementClassBatcherRemove.applyRemove();
+            this.multipleElementClassBatcherAdd.apply();
+            this.multipleElementClassBatcherRemove.apply();
 
             this.timerApplyMutationObserverClassChanges.start(this.websiteSpecialFiltersConfig.intervalApplyClassChanges);
         });
@@ -630,9 +630,9 @@ export default class ContentProcessor {
         this.bodyClassBatcher = this.bodyClassBatcher || new ElementClassBatcher(document.body);
         this.bodyClassBatcherRemover = this.bodyClassBatcherRemover || new ElementClassBatcher(document.body);
         this.htmlClassBatcher = this.htmlClassBatcher || new ElementClassBatcher(document.getElementsByTagName("html")[0]);
-        this.multipleElementClassBatcherAdd = this.multipleElementClassBatcherAdd || new MultipleElementClassBatcher(this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
+        this.multipleElementClassBatcherAdd = this.multipleElementClassBatcherAdd || new MultipleElementClassBatcher("add", this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
             this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime);
-        this.multipleElementClassBatcherRemove = this.multipleElementClassBatcherRemove || new MultipleElementClassBatcher(this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
+        this.multipleElementClassBatcherRemove = this.multipleElementClassBatcherRemove || new MultipleElementClassBatcher("remove", this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
             this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime);
     }
     
