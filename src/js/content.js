@@ -20,6 +20,7 @@ import { pageShadowAllowed, getSettings, getCurrentURL, hasSettingsChanged, send
 import browser from "webextension-polyfill";
 import ContentProcessor from "./classes/contentProcessor.js";
 import SafeTimer from "./classes/safeTimer.js";
+import ContentProcessorConstants from "./classes/contentProcessorConstants.js";
 
 const contentProcessor = new ContentProcessor();
 
@@ -37,7 +38,7 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
 
     if(statusChanged && ((!isLiveSettings && !storageChanged) || isLiveSettings)) {
         contentProcessor.precEnabled = isEnabled;
-        return contentProcessor.main(contentProcessor.TYPE_RESET, contentProcessor.TYPE_ALL);
+        return contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
     }
 
     if(isLiveSettings && storageChanged) {
@@ -47,12 +48,12 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
 
             if(changed || hasSettingsChanged(contentProcessor.currentSettings, response.settings)) {
                 contentProcessor.precEnabled = response.enabled;
-                contentProcessor.main(contentProcessor.TYPE_RESET, contentProcessor.TYPE_ALL, true);
+                contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
             }
         } else {
             if(hasSettingsChanged(contentProcessor.currentSettings, await getSettings(getCurrentURL(), true), customThemeChanged)) {
                 contentProcessor.precEnabled = isEnabled;
-                contentProcessor.main(contentProcessor.TYPE_RESET, contentProcessor.TYPE_ALL, true);
+                contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
             }
         }
     }
@@ -100,7 +101,7 @@ function preApplyContrast(data, contentProcessor) {
 
 // Global content processor start function
 const timerStart = new SafeTimer(() => {
-    contentProcessor.main(contentProcessor.TYPE_START);
+    contentProcessor.main(ContentProcessorConstants.TYPE_START);
     precUrl = getCurrentURL();
 });
 
@@ -137,7 +138,6 @@ browser.runtime.onMessage.addListener(async(message) => {
                 }
                 
                 changed = true;
-                contentProcessor.updateFilters();
             }
 
             if(changed) {

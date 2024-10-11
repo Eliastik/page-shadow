@@ -342,7 +342,7 @@ export default class ContentProcessor {
                 const timerBackgrounds = new SafeTimer(async() => {
                     timerBackgrounds.clear();
 
-                    this.pageAnalyzer.detectBackground(elements);
+                    this.pageAnalyzer.detectBackground(elements, type === ContentProcessorConstants.TYPE_RESET);
 
                     this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS);
 
@@ -715,7 +715,7 @@ export default class ContentProcessor {
     
         if (settings.pageShadowEnabled === "true" || settings.colorInvert === "true" || settings.attenuateColors === "true") {
             if (type === ContentProcessorConstants.TYPE_START || !this.pageAnalyzer.backgroundDetected) {
-                this.applyDetectBackground(ContentProcessorConstants.TYPE_LOADING, "*").then(() => {
+                this.applyDetectBackground(type, "*").then(() => {
                     if (document.readyState === "complete") {
                         this.updateFilters();
                     } else {
