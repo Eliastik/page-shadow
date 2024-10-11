@@ -115,7 +115,7 @@ export default class PageAnalyzer {
         });
     }
 
-    async detectBackground(tagName) {
+    async detectBackground(tagName, forceDisableThrottle) {
         this.debugLogger.log(`PageAnalyzer detectBackground - Beginning analyzing page elements - elements tagName: ${tagName}`);
 
         return new Promise(resolve => {
@@ -133,13 +133,13 @@ export default class PageAnalyzer {
     
                 const elements = Array.from(document.body.getElementsByTagName(tagName));
     
-                if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection) {
+                if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection && !forceDisableThrottle) {
                     this.runThrottledBackgroundDetection(elements).then(() => {
                         this.processingBackgrounds = false;
                         resolve();
                     });
                 } else {
-                    this.runNormalBackgroundDetection(elements).then(() => {
+                    this.runNormalBackgroundDetection(elements, forceDisableThrottle).then(() => {
                         this.processingBackgrounds = false;
                         resolve();
                     });
@@ -151,7 +151,7 @@ export default class PageAnalyzer {
         });
     }
     
-    async runNormalBackgroundDetection(elements) {
+    async runNormalBackgroundDetection(elements, forceDisableThrottle) {
         return new Promise(resolve => {
             removeClass(document.body, "pageShadowDisableBackgroundStyling");
 
@@ -168,7 +168,7 @@ export default class PageAnalyzer {
                 const addTime = performance.now() - startTime;
                 totalExecutionTime += addTime;
     
-                if(totalExecutionTime >= this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime) {
+                if(!forceDisableThrottle && totalExecutionTime >= this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime) {
                     this.debugLogger.log(`PageAnalyzer detectBackground - Stopping early task to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`);
                     return this.runThrottledBackgroundDetection(elements.slice(currentIndex)).then(resolve);
                 }
