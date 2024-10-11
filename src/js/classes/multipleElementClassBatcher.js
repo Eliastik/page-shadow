@@ -33,9 +33,15 @@ export default class MultipleElementClassBatcher {
     throttledTaskClassApplyAdd;
     throttledTaskClassApplyRemove;
 
-    constructor(maxElementsTreatedByCall, delayApplyClassChanges) {
+    constructor(type = "add", maxElementsTreatedByCall, delayApplyClassChanges, throttleClassApply = true) {
+        this.type = type;
         this.maxElementsTreatedByCall = maxElementsTreatedByCall;
         this.delayApplyClassChanges = delayApplyClassChanges;
+        this.throttleClassApply = throttleClassApply;
+
+        if(this.type !== "add" && this.type !== "remove") {
+            throw new Error("[PAGE SHADOW ERROR] MultipleElementClassBatcher - type need to be either 'add' or 'remove' in constructor");
+        }
 
         this.throttledTaskClassApplyAdd = new ThrottledTask(
             (task) => addClass(task.element, ...task.classList),
@@ -55,24 +61,42 @@ export default class MultipleElementClassBatcher {
     }
 
     add(element, ...classList) {
-        const currentClassList = this.classListsWithElement.get(element) || [];
-        this.classListsWithElement.set(element, [...new Set([...currentClassList, ...classList])]);
+        if(!this.throttleClassApply) {
+            if(this.type === "add") {
+                addClass(element, ...classList);
+            } else {
+                removeClass(element, ...classList);
+            }
+        } else {
+            const currentClassList = this.classListsWithElement.get(element) || [];
+            this.classListsWithElement.set(element, [...new Set([...currentClassList, ...classList])]);
+        }
     }
 
     removeAll() {
         this.classListsWithElement.clear();
     }
 
-    applyAdd() {
+    doAddAllClasses() {
         const tasks = this.mapToTasks();
         this.throttledTaskClassApplyAdd.start(tasks);
         this.removeAll();
     }
 
-    applyRemove() {
+    doRemoveAllClasses() {
         const tasks = this.mapToTasks();
         this.throttledTaskClassApplyRemove.start(tasks);
         this.removeAll();
+    }
+
+    apply() {
+        if(this.throttleClassApply) {
+            if(this.type === "add") {
+                this.doAddAllClasses();
+            } else {
+                this.doRemoveAllClasses();
+            }
+        }
     }
 
     mapToTasks() {
