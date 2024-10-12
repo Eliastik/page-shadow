@@ -112,6 +112,7 @@
             "applyClassChangesMaxExecutionTime": "Maximum execution time for a call when applying CSS class changes to elements",
             "autoThrottleBackgroundDetectionTime": "Maximum execution time to automatically enable background throttling",
             "enableThrottleApplyClassChanges": "Throttle applying CSS classes changes to elements",
+            "enableURLChangeDetection": "Enable URL change detection",
             "help": {
                 "debugMode": "Enables debug mode, which displays debugging information in the JavaScript console on pages processed by Page Shadow, or on extension pages.",
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
@@ -163,7 +164,8 @@
                 "throttledMutationObserverSubchildsMaxExecutionTime": "If the execution of the call exceeds this execution time (in ms), the call is interrupted to free up resources. This considerably improves performance.",
                 "applyClassChangesMaxExecutionTime": "If the execution of the call exceeds this execution time (in ms), the call is interrupted to free up resources. This considerably improves performance.",
                 "autoThrottleBackgroundDetectionTime": "If background analysis throttling is not enabled, it is enabled automatically if the execution time exceeds this value (in ms). This avoids blocking web pages if the initial runtime of the analysis is too long.",
-                "enableThrottleApplyClassChanges": "Throttle Page Shadow's application of CSS class changes to elements. This can improve performance in certain scenarios."
+                "enableThrottleApplyClassChanges": "Throttle Page Shadow's application of CSS class changes to elements. This can improve performance in certain scenarios.",
+                "enableURLChangeDetection": "Enables URL change detection on SPA (single page application) applications, allowing Page Shadow to reapply settings and filters based on the new URL. Disabling this option can improve performance on some websites that frequently change their URL."
 
             }
         },
@@ -177,6 +179,7 @@
             "filterEngine": "Filter engine",
             "imageAnalyze": "Page analysis engine - images",
             "applyCssTimer": "CSS class change application timer",
+            "others": "Others options",
             "descriptions": {
                 "general": "Global options affecting the overall behavior of the extension.",
                 "mutationsObservers": "Mutation observers are used to monitor and react to dynamic changes on web pages. For example, this allows the extension to detect and respond to changes in style and attributes of web page elements or modifications in the structure of pages.",
@@ -186,7 +189,8 @@
                 "backgroundAnalyze": "These options manage the engine responsible for analyzing the backgrounds of elements present on web pages.",
                 "filterEngine": "These options manage the Page Shadow filter engine.",
                 "imageAnalyze": "These options manage the engine responsible for analyzing images and detecting images with text or other dark elements.",
-                "applyCssTimer": "These options control the functioning of the timer responsible for applying CSS class changes to elements by Page Shadow on web pages."
+                "applyCssTimer": "These options control the functioning of the timer responsible for applying CSS class changes to elements by Page Shadow on web pages.",
+                "others": "Others advanced options"
             }
         },
         "saved": "Saved!"

@@ -293,6 +293,8 @@ export default class PageFilterProcessor {
                 if(type == "autoThrottleBackgroundDetectionTime") this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime = filterRule;
                 if(type == "enableThrottleApplyClassChanges") this.websiteSpecialFiltersConfig.enableThrottleApplyClassChanges = true;
                 if(type == "disableThrottleApplyClassChanges") this.websiteSpecialFiltersConfig.enableThrottleApplyClassChanges = false;
+                if(type == "enableURLChangeDetection") this.websiteSpecialFiltersConfig.enableURLChangeDetection = true;
+                if(type == "disableURLChangeDetection") this.websiteSpecialFiltersConfig.enableURLChangeDetection = false;
             });
         });
     }

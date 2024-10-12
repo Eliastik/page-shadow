@@ -109,6 +109,7 @@
             "applyClassChangesMaxExecutionTime": "Temps d'exécution maximum lors d'un appel à l'application des classes CSS des éléments",
             "autoThrottleBackgroundDetectionTime": "Temps d'exécution maximum pour activer automatiquement le ralentissement des arrières-plans",
             "enableThrottleApplyClassChanges": "Ralentir l'application des changements de classes CSS aux éléments",
+            "enableURLChangeDetection": "Activer la détection du changement d'adresse URL",
             "help": {
                 "debugMode": "Active le mode de débogage qui affiche des informations de débogage dans la console JavaScript sur les pages traitées par Page Shadow, ou sur les pages de l'extension.",
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrière-plans des éléments.",
@@ -160,7 +161,8 @@
                 "throttledMutationObserverSubchildsMaxExecutionTime": "Si l'exécution de l'appel dépasse ce temps d'exécution (en ms), l'appel est interrompu pour libérer des ressources. Cela améliore considérablement les performances.",
                 "applyClassChangesMaxExecutionTime": "Si l'exécution de l'appel dépasse ce temps d'exécution (en ms), l'appel est interrompu pour libérer des ressources. Cela améliore considérablement les performances.",
                 "autoThrottleBackgroundDetectionTime": "Si le ralentissement de l'analyse des arrières-plans n'est pas activé, il est activé automatiquement si le temps d'exécution dépasse cette valeur (en ms). Cela permet d'éviter de bloquer les pages web si le temps d'exécution initial de l'analyse est trop long.",
-                "enableThrottleApplyClassChanges": "Ralenti l'application par Page Shadow des changements de classes CSS aux éléments. Cela peut améliorer les performances dans certains scénarios."
+                "enableThrottleApplyClassChanges": "Ralenti l'application par Page Shadow des changements de classes CSS aux éléments. Cela peut améliorer les performances dans certains scénarios.",
+                "enableURLChangeDetection": "Active la détection du changement d'adresse URL sur les applications SPA (single page application), ce qui permet à Page Shadow de réappliquer les paramètres et filtres selon la nouvelle URL. Désactiver cette option peut améliorer les performances sur certains sites web qui modifient souvent leur URL."
             }
         },
         "filtersConfigCategories": {
@@ -173,6 +175,7 @@
             "filterEngine": "Moteur des filtres",
             "imageAnalyze": "Moteur d'analyse des pages - images",
             "applyCssTimer": "Minuteur d'application des changements de classes CSS",
+            "others": "Others options",
             "descriptions": {
                 "general": "Options globales affectant le comportement général de l'extension.",
                 "mutationsObservers": "Les mutation observers sont utilisés pour surveiller et réagir aux changements dynamiques des pages web. Par exemple, cela permet à l'extension de détecter et réagir aux modifications de style et d'attributs des éléments des pages web, ou des modifications de la structure des pages.",
@@ -182,7 +185,8 @@
                 "backgroundAnalyze": "Ces options gèrent le moteur chargé d'analyser les arrières-plans des éléments présents sur les pages web.",
                 "filterEngine": "Ces options gèrent le fonctionnement du moteur de filtre de Page Shadow.",
                 "imageAnalyze": "Ces options gèrent le moteur chargé d'analyser les images et chargé de détecter les images avec du texte ou autres éléments sombres.",
-                "applyCssTimer": "Ces options gèrent le fonctionnement du minteur chargé d'appliquer les changements de classes CSS des éléments par Page Shadow sur les pages web."
+                "applyCssTimer": "Ces options gèrent le fonctionnement du minteur chargé d'appliquer les changements de classes CSS des éléments par Page Shadow sur les pages web.",
+                "options": "Autres options avancées"
             }
         },
         "saved": "Sauvegardé !"
