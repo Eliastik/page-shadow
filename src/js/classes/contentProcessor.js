@@ -81,9 +81,11 @@ export default class ContentProcessor {
         this.bodyClassBatcherRemover = new ElementClassBatcher(document.body);
         this.htmlClassBatcher = new ElementClassBatcher(document.getElementsByTagName("html")[0]);
         this.multipleElementClassBatcherAdd = new MultipleElementClassBatcher("add", this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
-            this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime);
+            this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime,
+            this.websiteSpecialFiltersConfig.enableThrottleApplyClassChanges);
         this.multipleElementClassBatcherRemove = new MultipleElementClassBatcher("remove", this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
-            this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime);
+            this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime,
+            this.websiteSpecialFiltersConfig.enableThrottleApplyClassChanges);
     }
 
     async applyContrastPage(init, contrastPageEnabled, theme, disableImgBgColor, brightColorPreservation, customThemesSettings) {
@@ -631,9 +633,11 @@ export default class ContentProcessor {
         this.bodyClassBatcherRemover = this.bodyClassBatcherRemover || new ElementClassBatcher(document.body);
         this.htmlClassBatcher = this.htmlClassBatcher || new ElementClassBatcher(document.getElementsByTagName("html")[0]);
         this.multipleElementClassBatcherAdd = this.multipleElementClassBatcherAdd || new MultipleElementClassBatcher("add", this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
-            this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime);
+            this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime,
+            this.websiteSpecialFiltersConfig.enableThrottleApplyClassChanges);
         this.multipleElementClassBatcherRemove = this.multipleElementClassBatcherRemove || new MultipleElementClassBatcher("remove", this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
-            this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime);
+            this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime,
+            this.websiteSpecialFiltersConfig.enableThrottleApplyClassChanges);
     }
     
     initProcessors() {
