@@ -175,7 +175,7 @@
             "filterEngine": "Moteur des filtres",
             "imageAnalyze": "Moteur d'analyse des pages - images",
             "applyCssTimer": "Minuteur d'application des changements de classes CSS",
-            "others": "Others options",
+            "others": "Autres options",
             "descriptions": {
                 "general": "Options globales affectant le comportement général de l'extension.",
                 "mutationsObservers": "Les mutation observers sont utilisés pour surveiller et réagir aux changements dynamiques des pages web. Par exemple, cela permet à l'extension de détecter et réagir aux modifications de style et d'attributs des éléments des pages web, ou des modifications de la structure des pages.",
