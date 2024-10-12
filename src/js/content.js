@@ -124,7 +124,8 @@ browser.runtime.onMessage.addListener(async(message) => {
     } else if(message && message.type == "websiteUrlUpdated") { // Execute when the page URL changes in Single Page Applications
         const currentURL = getCurrentURL();
 
-        if(message && message.url == await sha256(currentURL)) {
+        if(contentProcessor && contentProcessor.websiteSpecialFiltersConfig.enableURLChangeDetection &&
+            message && message.url == await sha256(currentURL)) {
             const URLUpdated = precUrl != getCurrentURL();
             let changed = contentProcessor.hasEnabledStateChanged(message.enabled) || contentProcessor.mutationObserverProcessor?.mutationDetected;
 
