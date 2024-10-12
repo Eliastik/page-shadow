@@ -291,6 +291,8 @@ export default class PageFilterProcessor {
                 if(type == "throttledMutationObserverSubchildsMaxExecutionTime") this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime = filterRule;
                 if(type == "applyClassChangesMaxExecutionTime") this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime = filterRule;
                 if(type == "autoThrottleBackgroundDetectionTime") this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime = filterRule;
+                if(type == "enableThrottleApplyClassChanges") this.websiteSpecialFiltersConfig.enableThrottleApplyClassChanges = true;
+                if(type == "disableThrottleApplyClassChanges") this.websiteSpecialFiltersConfig.enableThrottleApplyClassChanges = false;
             });
         });
     }
