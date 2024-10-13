@@ -642,7 +642,7 @@ export default class ContentProcessor {
     
     initProcessors() {
         this.pageAnalyzer = this.pageAnalyzer || new PageAnalyzer(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove, this.debugLogger);
-        this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove, this.websiteSpecialFiltersConfig);
+        this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove, this.websiteSpecialFiltersConfig, this.debugLogger);
         this.mutationObserverProcessor = this.mutationObserverProcessor || new MutationObserverProcessor(this.pageAnalyzer, this.filterProcessor, this.debugLogger, this.elementBrightnessWrapper, this.websiteSpecialFiltersConfig, this.elementBrightness, this.elementBlueLightFilter);
         this.mutationObserverProcessor.reApplyCallback = (type, mutation) => this.main(type, mutation);
     }
