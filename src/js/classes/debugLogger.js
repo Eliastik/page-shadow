@@ -51,6 +51,10 @@ export default class DebugLogger {
                 break;
             case "error":
                 console.error(log);
+                break;
+            case "warn":
+                console.warn(log);
+                break;
             }
         }
     }
