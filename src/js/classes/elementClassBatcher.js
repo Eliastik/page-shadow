@@ -28,7 +28,7 @@ export default class ElementClassBatcher {
         this.type = type;
 
         if(this.type !== "add" && this.type !== "remove") {
-            throw new Error("[PAGE SHADOW ERROR] MultipleElementClassBatcher - type need to be either 'add' or 'remove' in constructor");
+            throw new Error("[PAGE SHADOW ERROR] ElementClassBatcher - type need to be either 'add' or 'remove' in constructor");
         }
 
         this.element = element;
