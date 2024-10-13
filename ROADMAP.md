@@ -139,7 +139,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Optimize performance settings, dynamic throttling?
     * [x] Prepare release 2.11: Readme, Changelog, etc...
 * [ ] Release 2.11 - don't forget to change version date
-    * [ ] Adjust throttling algorithm, and performance settings
+    * [x] Adjust throttling algorithm, and performance settings
     * [ ] (Minor) Shadow DOM is not always detected => example comments on Franceinfo website
 
 #### Bugs to fix

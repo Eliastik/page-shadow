@@ -24,7 +24,13 @@ export default class ElementClassBatcher {
     element = null;
     classList = [];
 
-    constructor(element, ...classList) {
+    constructor(type = "add", element, ...classList) {
+        this.type = type;
+
+        if(this.type !== "add" && this.type !== "remove") {
+            throw new Error("[PAGE SHADOW ERROR] MultipleElementClassBatcher - type need to be either 'add' or 'remove' in constructor");
+        }
+
         this.element = element;
         this.add(...classList);
     }
@@ -37,13 +43,21 @@ export default class ElementClassBatcher {
         this.classList = [];
     }
 
-    applyAdd() {
+    doAddAllClasses() {
         addClass(this.element, ...this.classList);
         this.removeAll();
     }
 
-    applyRemove() {
+    doRemoveAllClasses() {
         removeClass(this.element, ...this.classList);
         this.removeAll();
+    }
+
+    apply() {
+        if(this.type === "add") {
+            this.doAddAllClasses();
+        } else {
+            this.doRemoveAllClasses();
+        }
     }
 }
