@@ -77,9 +77,9 @@ export default class ContentProcessor {
     }
 
     setupClassBatchers() {
-        this.bodyClassBatcher = new ElementClassBatcher(document.body);
-        this.bodyClassBatcherRemover = new ElementClassBatcher(document.body);
-        this.htmlClassBatcher = new ElementClassBatcher(document.getElementsByTagName("html")[0]);
+        this.bodyClassBatcher = new ElementClassBatcher("add", document.body);
+        this.bodyClassBatcherRemover = new ElementClassBatcher("remove", document.body);
+        this.htmlClassBatcher = new ElementClassBatcher("add", document.getElementsByTagName("html")[0]);
         this.multipleElementClassBatcherAdd = new MultipleElementClassBatcher("add", this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
             this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime,
             this.websiteSpecialFiltersConfig.enableThrottleApplyClassChanges);
@@ -128,8 +128,8 @@ export default class ContentProcessor {
         }
 
         if(init) {
-            this.bodyClassBatcher.applyAdd();
-            this.htmlClassBatcher.applyAdd();
+            this.bodyClassBatcher.apply();
+            this.htmlClassBatcher.apply();
         }
     }
 
@@ -144,7 +144,7 @@ export default class ContentProcessor {
     resetContrastPage(themeException, disableImgBgColor, brightColorPreservation) {
         this.debugLogger?.log("Resetting contrast page");
 
-        const removeBatcherHTML = new ElementClassBatcher(document.getElementsByTagName("html")[0]);
+        const removeBatcherHTML = new ElementClassBatcher("remove", document.getElementsByTagName("html")[0]);
 
         if(!themeException || !themeException.startsWith("custom")) {
             if(typeof this.lnkCustomTheme !== "undefined") this.lnkCustomTheme.setAttribute("href", "");
@@ -165,7 +165,7 @@ export default class ContentProcessor {
             this.bodyClassBatcherRemover.add("pageShadowPreserveBrightColor");
         }
 
-        removeBatcherHTML.applyRemove();
+        removeBatcherHTML.apply();
 
         this.debugLogger?.log("Contrast page reseted");
     }
@@ -629,9 +629,9 @@ export default class ContentProcessor {
     }
     
     initBatchers() {
-        this.bodyClassBatcher = this.bodyClassBatcher || new ElementClassBatcher(document.body);
-        this.bodyClassBatcherRemover = this.bodyClassBatcherRemover || new ElementClassBatcher(document.body);
-        this.htmlClassBatcher = this.htmlClassBatcher || new ElementClassBatcher(document.getElementsByTagName("html")[0]);
+        this.bodyClassBatcher = this.bodyClassBatcher || new ElementClassBatcher("add", document.body);
+        this.bodyClassBatcherRemover = this.bodyClassBatcherRemover || new ElementClassBatcher("remove", document.body);
+        this.htmlClassBatcher = this.htmlClassBatcher || new ElementClassBatcher("add", document.getElementsByTagName("html")[0]);
         this.multipleElementClassBatcherAdd = this.multipleElementClassBatcherAdd || new MultipleElementClassBatcher("add", this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
             this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime,
             this.websiteSpecialFiltersConfig.enableThrottleApplyClassChanges);
@@ -693,9 +693,9 @@ export default class ContentProcessor {
     }
     
     applyAllBodyBatchers() {
-        this.bodyClassBatcher.applyAdd();
-        this.bodyClassBatcherRemover.applyRemove();
-        this.htmlClassBatcher.applyAdd();
+        this.bodyClassBatcher.apply();
+        this.bodyClassBatcherRemover.apply();
+        this.htmlClassBatcher.apply();
     }
 
     removeAllBodyBatchers() {
@@ -748,7 +748,7 @@ export default class ContentProcessor {
             this.resetBrightnessPage();
             this.resetBlueLightPage();
             this.pageAnalyzer.resetShadowRoots();
-            this.bodyClassBatcherRemover.applyRemove();
+            this.bodyClassBatcherRemover.apply();
         }
     }    
 

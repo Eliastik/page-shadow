@@ -86,9 +86,9 @@ function preApplyContrast(data, contentProcessor) {
         if (data.settings.colorInvert == "true" && data.settings.invertEntirePage == "true") {
             contentProcessor.invertColor(data.settings.colorInvert, data.settings.invertImageColors, data.settings.invertEntirePage, data.settings.invertVideoColors, data.settings.invertBgColor, data.settings.selectiveInvert, null, null, null, null, null, null, data.settings.invertBrightColors);
 
-            contentProcessor.bodyClassBatcher.applyAdd();
-            contentProcessor.bodyClassBatcherRemover.applyRemove();
-            contentProcessor.htmlClassBatcher.applyAdd();
+            contentProcessor.bodyClassBatcher.apply();
+            contentProcessor.bodyClassBatcherRemover.apply();
+            contentProcessor.htmlClassBatcher.apply();
         }
 
         contentProcessor.started = true;
