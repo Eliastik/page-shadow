@@ -138,12 +138,12 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Add advanced settings for dark image detection?
     * [x] Optimize performance settings, dynamic throttling?
     * [x] Prepare release 2.11: Readme, Changelog, etc...
-* [ ] Release 2.11 - don't forget to change version date
+* Release 2.11 - don't forget to change version date
     * [x] Adjust throttling algorithm, and performance settings
-    * [ ] (Minor) Shadow DOM is not always detected => example comments on Franceinfo website
 
 #### Bugs to fix
 
+* [x] (Minor) Shadow DOM is not always detected => example comments on Franceinfo website
 * [x] (Medium) Dark image detection not working on image from cross-origin domain (cf Wikipedia articles)
 * [x] (Major) Still some errors with QUOTA_BYTES_PER_ITEM in cloud archive. The chunk method need to be fixed
 * [x] (Medium) Bug with fast apply mode and iframes + preset: iframe use global settings instead of preset settings from parent page

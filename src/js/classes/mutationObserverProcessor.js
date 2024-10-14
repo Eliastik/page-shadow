@@ -235,7 +235,7 @@ export default class MutationObserverProcessor {
     }
 
     treatOneMutationAddedNode(node) {
-        if(!node || !node.classList || node == document.body || ignoredElementsContentScript.includes(node.localName) || node.nodeType != 1 || node.shadowRoot) {
+        if(!node || !node.classList || node == document.body || ignoredElementsContentScript.includes(node.localName) || node.nodeType != Node.ELEMENT_NODE) {
             return;
         }
 
