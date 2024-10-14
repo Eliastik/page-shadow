@@ -91,9 +91,9 @@ export default class ShadowDomProcessor {
                         } else {
                             themeConfig = {
                                 backgroundColor: defaultThemesBackgrounds[currentTheme - 1].replace("#", ""),
-                                textColor: defaultThemesLinkColors[currentTheme - 1].replace("#", ""),
-                                linkColor: defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", ""),
-                                visitedLinkColor: defaultThemesTextColors[currentTheme - 1].replace("#", "")
+                                textColor: defaultThemesTextColors[currentTheme - 1].replace("#", ""),
+                                linkColor: defaultThemesLinkColors[currentTheme - 1].replace("#", ""),
+                                visitedLinkColor: defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", "")
                             };
                         }
 
