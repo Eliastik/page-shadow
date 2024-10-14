@@ -56,7 +56,7 @@ export default class PageAnalyzer {
         this.multipleElementClassBatcherRemove = multipleElementClassBatcherRemove;
         this.debugLogger = debugLogger;
         this.imageProcessor = new ImageProcessor(this.debugLogger, websiteSpecialFiltersConfig);
-        this.shadowDomProcessor = new ShadowDomProcessor(currentSettings, isEnabled);
+        this.shadowDomProcessor = new ShadowDomProcessor(currentSettings, websiteSpecialFiltersConfig, isEnabled);
 
         this.initializeThrottledTasks();
     }
@@ -77,6 +77,7 @@ export default class PageAnalyzer {
         if(this.shadowDomProcessor) {
             this.shadowDomProcessor.currentSettings = currentSettings;
             this.shadowDomProcessor.isEnabled = isEnabled;
+            this.shadowDomProcessor.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
         }
     }
 
