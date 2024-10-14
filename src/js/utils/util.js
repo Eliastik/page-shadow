@@ -330,6 +330,20 @@ async function processRules(style, themeConfig, isShadowRoot) {
     }
 }
 
+function processShadowRootStyle(style) {
+    let newStyle = style.replaceAll(/html\.pageShadowBackgroundContrast\b/g, ":host");
+    newStyle = newStyle.replaceAll(/html\.pageShadowContrastBlack\b/g, ":host");
+    newStyle = newStyle.replaceAll(/body\.pageShadowInvertImageColor\b/g, ":host(.pageShadowInvertImageColor)");
+    newStyle = newStyle.replaceAll(/body\.pageShadowInvertBgColor\b/g, ":host(.pageShadowInvertBgColor)");
+    newStyle = newStyle.replaceAll(/body\.pageShadowInvertVideoColor\b/g, ":host(.pageShadowInvertVideoColor)");
+    newStyle = newStyle.replaceAll(/\.pageShadowContrastBlack(?=[\s\S]*\{)/g, ":host");
+    newStyle = newStyle.replaceAll(/:root/g, ":host");
+    newStyle = newStyle.replaceAll(/:host:host/g, ":host");
+    newStyle = newStyle.replaceAll(/:host(?:\s*:\s*not\([^)]+\))+\s/g, ":host ");
+
+    return newStyle;
+}
+
 function processRulesConfig(style, themeConfig) {
     const colorMap = {
         "--page-shadow-bgcolor": "#" + themeConfig.backgroundColor,
@@ -1094,20 +1108,6 @@ function getCurrentURL() {
     }
 
     return normalizeURL(url);
-}
-
-function processShadowRootStyle(style) {
-    let newStyle = style.replaceAll(/html\.pageShadowBackgroundContrast\b/g, ":host");
-    newStyle = newStyle.replaceAll(/html\.pageShadowContrastBlack\b/g, ":host");
-    newStyle = newStyle.replaceAll(/body\.pageShadowInvertImageColor\b/g, ":host(.pageShadowInvertImageColor)");
-    newStyle = newStyle.replaceAll(/body\.pageShadowInvertBgColor\b/g, ":host(.pageShadowInvertBgColor)");
-    newStyle = newStyle.replaceAll(/body\.pageShadowInvertVideoColor\b/g, ":host(.pageShadowInvertVideoColor)");
-    newStyle = newStyle.replaceAll(/\.pageShadowContrastBlack(?=[\s\S]*\{)/g, ":host");
-    newStyle = newStyle.replaceAll(/:root/g, ":host");
-    newStyle = newStyle.replaceAll(/:host:host/g, ":host");
-    newStyle = newStyle.replaceAll(/:host(?:\s*:\s*not\([^)]+\))+\s/g, ":host ");
-
-    return newStyle;
 }
 
 function removeClass(element, ...classes) {
