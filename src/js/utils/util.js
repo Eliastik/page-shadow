@@ -310,58 +310,49 @@ async function customTheme(nb, disableCustomCSS, lnkCssElement, customThemesSett
     return false;
 }
 
-function processRules(style, config, isShadowRoot) {
+async function processRules(style, themeConfig, isShadowRoot) {
     if(!style.sheet) return;
+
     if(style.cssRules) { // Remove all rules
         for(let i = 0; i < style.cssRules.length; i++) {
             style.sheet.deleteRule(i);
         }
     }
 
-    const ruleSelector = isShadowRoot ? ":host" : ".pageShadowContrastBlackCustom:not(.pageShadowDisableStyling)";
-    const backgroundTheme = config.backgroundColor;
-    const linksColorTheme = config.linkColor;
-    const linksVisitedColorTheme = config.visitedLinkColor;
-    const textsColorTheme = config.textColor;
-    const fontTheme = config.fontFamily;
+    const response = await sendMessageWithPromise({ "type": "getGlobalPageShadowStyle" }, "getGlobalPageShadowStyleResponse");
 
-    if(!isShadowRoot) {
-        style.sheet.insertRule("html.pageShadowBackgroundCustom:not(.pageShadowDisableBackgroundStyling) { background: #" + backgroundTheme + " !important; }", 0);
-        style.sheet.insertRule("html.pageShadowBackgroundCustom.pageShadowForceCustomLinkColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + linksColorTheme + " !important; }", 0);
-        style.sheet.insertRule("html.pageShadowBackgroundCustom.pageShadowForceCustomLinkVisitedColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + linksVisitedColorTheme + " !important; }", 0);
-        style.sheet.insertRule("html.pageShadowBackgroundCustom.pageShadowForceCustomTextColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + textsColorTheme + " !important; }", 0);
+    style.textContent = processRulesConfig(response.data, themeConfig);
+    
+    if(style.sheet) {
+        if(isShadowRoot) {
+            style.sheet.insertRule(":host { color: unset !important; background: unset !important; }");
+        }
     }
+}
 
-    style.sheet.insertRule(ruleSelector + ":not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg) { background: #" + backgroundTheme + " !important; background-image: url(); color: #" + textsColorTheme + "; }", 0);
-    style.sheet.insertRule(ruleSelector + ".pageShadowHasBackgroundImg:not(.pageShadowDisableBackgroundStyling) { background-color: #" + backgroundTheme + " !important; color: #" + textsColorTheme + "; }", 0);
-    style.sheet.insertRule(ruleSelector + ".pageShadowForceCustomLinkColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + linksColorTheme + " !important; background-image: url(); }", 0);
-    style.sheet.insertRule(ruleSelector + ".pageShadowForceCustomLinkVisitedColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + linksVisitedColorTheme + " !important; background-image: url(); }", 0);
-    style.sheet.insertRule(ruleSelector + ".pageShadowForceCustomTextColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + textsColorTheme + " !important; background-image: url(); }", 0);
-    style.sheet.insertRule(ruleSelector + " *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling):not(.pageShadowHasTransparentBackground), " + ruleSelector + " *.pageShadowForceCustomBackgroundColor, " + ruleSelector + " *.pageShadowEnablePseudoElementStyling::after, " + ruleSelector + " *.pageShadowEnablePseudoElementStyling::before { background-color: #" + backgroundTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor), " + ruleSelector + " *.pageShadowForceCustomTextColor, " + ruleSelector + " *.pageShadowEnablePseudoElementStyling::after, " + ruleSelector + " *.pageShadowEnablePseudoElementStyling::before { color: #" + textsColorTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " input:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling), " + ruleSelector + " textarea:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling) { border-color: #" + textsColorTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " input.pageShadowForceInputBorderStyling, " + ruleSelector + " textarea.pageShadowForceInputBorderStyling { border: 1px solid #" + textsColorTheme + " !important; }", 0);
-    if(!isShadowRoot) style.sheet.insertRule(ruleSelector + " *:not(.pageShadowElementDisabled):not(.pageShadowDisableFontFamilyStyling), " + ruleSelector + " *.pageShadowForceFontFamilyStyling { font-family: " + fontTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " :not(.pageShadowInvertImageColor) svg:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor) { color: #" + textsColorTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " a:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomTextColor), " + ruleSelector + " *.pageShadowForceCustomLinkColor { color: #" + linksColorTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected a:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowDisableStyling) { background-color: transparent !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " img, " + ruleSelector + " video, " + ruleSelector + " canvas { filter: invert(0%); }", 0);
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected * > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground), " + ruleSelector + " *.pageShadowForceCustomBackgroundColor, " + ruleSelector + " *.pageShadowEnablePseudoElementStyling::after, " + ruleSelector + " *.pageShadowEnablePseudoElementStyling::before { background: #" + backgroundTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) { background: #" + backgroundTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor), " + ruleSelector + " #pageShadowLinkVisited:not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor), " + ruleSelector + " *:visited.pageShadowForceCustomLinkColor, " + ruleSelector + " *.pageShadowForceCustomVisitedLinkColor { color: #" + linksVisitedColorTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " *.pageShadowForceCustomLinkColorAsBackground:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling):not(.pageShadowHasTransparentBackground) { background-color: #" + linksColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + " *.pageShadowForceCustomLinkVisitedColorAsBackground:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling):not(.pageShadowHasTransparentBackground) { background-color: #" + linksVisitedColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + " *.pageShadowForceCustomTextColorAsBackground:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling):not(.pageShadowHasTransparentBackground) { background-color: #" + textsColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected * > *.pageShadowForceCustomLinkColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) { background: #" + linksColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected * > *.pageShadowForceCustomLinkVisitedColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) { background: #" + linksVisitedColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected * > *.pageShadowForceCustomTextColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) { background: #" + textsColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected > *.pageShadowForceCustomLinkColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) { background: #" + linksColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected > *.pageShadowForceCustomLinkVisitedColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) { background: #" + linksVisitedColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected > *.pageShadowForceCustomTextColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) { background: #" + textsColorTheme + " !important; }");
+function processRulesConfig(style, themeConfig) {
+    const colorMap = {
+        "--page-shadow-bgcolor": "#" + themeConfig.backgroundColor,
+        "--page-shadow-txtcolor": "#" + themeConfig.textColor,
+        "--page-shadow-lnkcolor": "#" + themeConfig.linkColor,
+        "--page-shadow-visitedlnkcolor": "#" + themeConfig.visitedLinkColor,
+        "--page-shadow-selectbgcolor": "grey",
+        "--page-shadow-selecttxtcolor": "black",
+        "--page-shadow-insbgcolor": "green",
+        "--page-shadow-instcolor": "white",
+        "--page-shadow-delbgcolor": "red",
+        "--page-shadow-deltcolor": "white",
+        "--page-shadow-markbgcolor": "orange",
+        "--page-shadow-marktxtcolor": "black",
+        "--page-shadow-imgbgcolor": "#BDBDBD",
+        "--page-shadow-customfontfamily": "initial",
+        "--page-shadow-brightcolorxtwhite": "white",
+        "--page-shadow-brightcolortxtblack": "black"
+    };
 
-    if(isShadowRoot) {
-        style.sheet.insertRule(":host { color: unset !important; background: unset !important; }");
-    }
+    return style.replace(/var\((--page-shadow-[a-zA-Z-]+)\)/g, (match, varName) => {
+        return colorMap[varName] || match;
+    });
 }
 
 function processRulesInvert(style, enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert) {
@@ -1106,9 +1097,15 @@ function getCurrentURL() {
 }
 
 function processShadowRootStyle(style) {
-    let newStyle = style.replaceAll(/body\.pageShadowInvertImageColor.*?/g, ":host(.pageShadowInvertImageColor)");
-    newStyle = newStyle.replaceAll(/body\.pageShadowInvertBgColor.*?/g, ":host(.pageShadowInvertBgColor)");
-    newStyle = newStyle.replaceAll(/body\.pageShadowInvertVideoColor.*?/g, ":host(.pageShadowInvertVideoColor)");
+    let newStyle = style.replaceAll(/html\.pageShadowBackgroundContrast\b/g, ":host");
+    newStyle = newStyle.replaceAll(/html\.pageShadowContrastBlack\b/g, ":host");
+    newStyle = newStyle.replaceAll(/body\.pageShadowInvertImageColor\b/g, ":host(.pageShadowInvertImageColor)");
+    newStyle = newStyle.replaceAll(/body\.pageShadowInvertBgColor\b/g, ":host(.pageShadowInvertBgColor)");
+    newStyle = newStyle.replaceAll(/body\.pageShadowInvertVideoColor\b/g, ":host(.pageShadowInvertVideoColor)");
+    newStyle = newStyle.replaceAll(/\.pageShadowContrastBlack(?=[\s\S]*\{)/g, ":host");
+    newStyle = newStyle.replaceAll(/:root/g, ":host");
+    newStyle = newStyle.replaceAll(/:host:host/g, ":host");
+    newStyle = newStyle.replaceAll(/:host(?:\s*:\s*not\([^)]+\))+\s/g, ":host ");
 
     return newStyle;
 }

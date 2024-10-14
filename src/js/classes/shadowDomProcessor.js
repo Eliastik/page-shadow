@@ -16,30 +16,47 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getCustomThemeConfig, processRules, processRulesInvert } from "../utils/util.js";
+import { getCustomThemeConfig, processRules, processRulesInvert, sendMessageWithPromise } from "../utils/util.js";
 import { defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors } from "../constants.js";
+import ThrottledTask from "./throttledTask.js";
 
 export default class ShadowDomProcessor {
 
     currentSettings;
+    websiteSpecialFiltersConfig;
     isEnabled;
+
     processedShadowRoots = [];
 
-    constructor(currentSettings, isEnabled) {
+    throttledTaskAnalyzeSubchildsShadowRoot;
+
+    constructor(currentSettings, websiteSpecialFiltersConfig, isEnabled) {
         this.currentSettings = currentSettings;
         this.isEnabled = isEnabled;
+        this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
+
+        this.initializeThrottledTasks();
+    }
+
+    initializeThrottledTasks() {
+        this.throttledTaskAnalyzeSubchildsShadowRoot = new ThrottledTask(
+            (element) => this.processShadowRoot(element),
+            "throttledTaskAnalyzeSubchildsShadowRoot",
+            this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds,
+            this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall,
+            this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime
+        );
     }
 
     processShadowRoot(currentElement) {
         if(currentElement) {
             if(currentElement.shadowRoot != null) {
                 this.processOneShadowRoot(currentElement);
+
                 const elementChildrens = currentElement.shadowRoot.querySelectorAll("*");
 
                 if(elementChildrens && elementChildrens.length > 0) {
-                    for(let i = 0, len = elementChildrens.length; i < len; i++) {
-                        this.processShadowRoot(elementChildrens[i]);
-                    }
+                    this.throttledTaskAnalyzeSubchildsShadowRoot.start(elementChildrens);
                 }
             }
         }
@@ -80,7 +97,7 @@ export default class ShadowDomProcessor {
                             };
                         }
 
-                        processRules(styleTag, themeConfig, true);
+                        await processRules(styleTag, themeConfig, true);
                     }
                 }
 
