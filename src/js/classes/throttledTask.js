@@ -25,7 +25,7 @@ import DebugLogger from "./debugLogger.js";
  */
 export default class ThrottledTask {
     
-    constructor(callback, name, delay, elementsPerBatch = 1, maxExecutionTime = 25, minDelay = 1, maxDelay = 500, autoThrottlingAdjustmentFactor = 0.5) {
+    constructor(callback, name, delay, elementsPerBatch = 1, maxExecutionTime = 25, minDelay = 1, maxDelay = 1000, autoThrottlingAdjustmentFactor = 0.5) {
         this.callback = callback;
         this.name = name;
         this.delay = delay;

@@ -19,6 +19,7 @@
 
 import { mapFiltersCSSClass, websiteSpecialFiltersProcessingConfig } from "../constants.js";
 import { addNewStyleAttribute, removeStyleAttribute, sha256 } from "../utils/util.js";
+import SafeTimer from "./safeTimer.js";
 
 /**
  * Class used to process the filter rules
@@ -68,43 +69,41 @@ export default class PageFilterProcessor {
             }
 
             if(element) {
-                if(!filterTypes.includes("disableShadowRootsCustomStyle") && !filterTypes.includes("overrideShadowRootsCustomStyle")) {
-                    try {
-                        if(element.matches) {
-                            if (element.matches(selector)) {
-                                if (enableNotMatchingFiltersDetection) {
-                                    const newValue = {
-                                        element,
-                                        children: false
-                                    };
+                try {
+                    if(element.matches) {
+                        if (element.matches(selector)) {
+                            if (enableNotMatchingFiltersDetection) {
+                                const newValue = {
+                                    element,
+                                    children: false
+                                };
 
-                                    const currentValue = this.filterMatchingHistory.get(filterHash);
+                                const currentValue = this.filterMatchingHistory.get(filterHash);
 
-                                    if (currentValue) {
-                                        currentValue.push(newValue);
-                                    } else {
-                                        this.filterMatchingHistory.set(filterHash, [newValue]);
-                                    }
-
+                                if (currentValue) {
+                                    currentValue.push(newValue);
+                                } else {
+                                    this.filterMatchingHistory.set(filterHash, [newValue]);
                                 }
-                            } else {
-                                elementsMatching = [];
 
-                                if (enableNotMatchingFiltersDetection) {
-                                    const previousMatchedFilter = this.filterMatchingHistory.get(filterHash);
-                                    const previousMatched = previousMatchedFilter
-                                        .find(v => v.element === element && !v.children);
+                            }
+                        } else {
+                            elementsMatching = [];
 
-                                    if (previousMatched) {
-                                        elementsNotMatching.push(element);
-                                        previousMatchedFilter.splice(previousMatched, 1);
-                                    }
+                            if (enableNotMatchingFiltersDetection) {
+                                const previousMatchedFilter = this.filterMatchingHistory.get(filterHash);
+                                const previousMatched = previousMatchedFilter
+                                    .find(v => v.element === element && !v.children);
+
+                                if (previousMatched) {
+                                    elementsNotMatching.push(element);
+                                    previousMatchedFilter.splice(previousMatched, 1);
                                 }
                             }
                         }
-                    } catch(e) {
-                        continue;
                     }
+                } catch(e) {
+                    continue;
                 }
 
                 if(element.getElementsByTagName && applyToChildrens) {
@@ -211,11 +210,17 @@ export default class PageFilterProcessor {
         }
 
         if (filterType == "disableShadowRootsCustomStyle" || filterType == "overrideShadowRootsCustomStyle") {
-            setTimeout(() => {
+            const safeTimerApplyShadowRootsCustomStyle = new SafeTimer(() => {
+                safeTimerApplyShadowRootsCustomStyle.clear();
+
                 if(element.shadowRoot != null) {
                     this.pageAnalyzer.processShadowRoot(element);
+                } else {
+                    safeTimerApplyShadowRootsCustomStyle.start(this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
                 }
-            }, this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
+            });
+
+            safeTimerApplyShadowRootsCustomStyle.start(this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
         }
     }
 
