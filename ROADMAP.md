@@ -140,6 +140,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Prepare release 2.11: Readme, Changelog, etc...
 * Release 2.11 - don't forget to change version date
     * [x] Adjust throttling algorithm, and performance settings
+    * [x] Bug with iframes => example comments on Franceinfo website
 
 #### Bugs to fix
 
