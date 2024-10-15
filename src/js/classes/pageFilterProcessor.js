@@ -153,24 +153,24 @@ export default class PageFilterProcessor {
                 }
             }
 
-            this.processElementsList(elementsMatching, filterTypes, false);
-            this.processElementsList(elementsNotMatching, filterTypes, true);
+            await this.processElementsList(elementsMatching, filterTypes, false);
+            await this.processElementsList(elementsNotMatching, filterTypes, true);
         }
     }
 
-    processElementsList(elements, filterTypes, remove) {
+    async processElementsList(elements, filterTypes, remove) {
         for (let i = 0, len = elements.length; i < len; i++) {
             const element = elements[i];
 
             if (element) {
-                filterTypes.forEach(filterType => {
-                    this.processElement(filterType, element, remove);
-                });
+                for(const filterType of filterTypes) {
+                    await this.processElement(filterType, element, remove);
+                }
             }
         }
     }
 
-    processElement(filterType, element, remove) {
+    async processElement(filterType, element, remove) {
         const classToAddOrRemove = mapFiltersCSSClass[filterType];
 
         if (classToAddOrRemove) {
@@ -210,11 +210,11 @@ export default class PageFilterProcessor {
         }
 
         if (filterType == "disableShadowRootsCustomStyle" || filterType == "overrideShadowRootsCustomStyle") {
-            const safeTimerApplyShadowRootsCustomStyle = new SafeTimer(() => {
+            const safeTimerApplyShadowRootsCustomStyle = new SafeTimer(async () => {
                 safeTimerApplyShadowRootsCustomStyle.clear();
 
                 if(element.shadowRoot != null) {
-                    this.pageAnalyzer.processShadowRoot(element);
+                    await this.pageAnalyzer.processShadowRoot(element);
                 } else {
                     safeTimerApplyShadowRootsCustomStyle.start(this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
                 }
