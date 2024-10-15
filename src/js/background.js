@@ -413,14 +413,24 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 const pageURL = normalizeURL(sender.url);
 
                 if(message.type == "isEnabledForThisPage" || message.type == "applySettingsChanged") {
-                    pageShadowAllowed(tabURL, {
-                        sitesInterditPageShadow: settingsCache.disabledWebsites,
-                        whiteList: settingsCache.isWhiteList,
-                        globallyEnable: settingsCache.data.globallyEnable
-                    }).then(async(enabled) => {
-                        const settings = await getSettings(tabURL, true);
-                        resolve({ type: message.type + "Response", enabled: enabled, settings: settings });
-                    });
+                    const checkEnabledForThisPage = () => {
+                        pageShadowAllowed(tabURL, {
+                            sitesInterditPageShadow: settingsCache.disabledWebsites,
+                            whiteList: settingsCache.isWhiteList,
+                            globallyEnable: settingsCache.data.globallyEnable
+                        }).then(async(enabled) => {
+                            const settings = await getSettings(tabURL, true);
+                            resolve({ type: message.type + "Response", enabled, settings: settings });
+                        });
+                    };
+
+                    if(message.type == "applySettingsChanged") {
+                        settingsCache.updateCache().then(() => {
+                            checkEnabledForThisPage();
+                        });
+                    } else {
+                        checkEnabledForThisPage();
+                    }
                 } else if(message.type == "updateAllFilters") {
                     filters.updateAllFilters().then(() => {
                         resolve({ type: "updateAllFiltersFinished", result: true });
