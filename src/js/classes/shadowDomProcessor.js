@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getCustomThemeConfig, processRules, processRulesInvert, sendMessageWithPromise } from "../utils/util.js";
+import { getCustomThemeConfig, processRules, processRulesInvert } from "../utils/util.js";
 import { defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
 
@@ -26,7 +26,7 @@ export default class ShadowDomProcessor {
     websiteSpecialFiltersConfig;
     isEnabled;
 
-    processedShadowRoots = [];
+    processedShadowRoots = new Set();
 
     throttledTaskAnalyzeSubchildsShadowRoot;
 
@@ -48,10 +48,10 @@ export default class ShadowDomProcessor {
         );
     }
 
-    processShadowRoot(currentElement) {
+    async processShadowRoot(currentElement) {
         if(currentElement) {
             if(currentElement.shadowRoot != null) {
-                this.processOneShadowRoot(currentElement);
+                await this.processOneShadowRoot(currentElement);
 
                 const elementChildrens = currentElement.shadowRoot.querySelectorAll("*");
 
@@ -63,17 +63,8 @@ export default class ShadowDomProcessor {
     }
 
     async processOneShadowRoot(element) {
-        if(element.shadowRoot) {
-            const currentCSSStyle = element.shadowRoot.querySelector(".pageShadowCSSShadowRoot");
-            const currentCSSStyleInvert = element.shadowRoot.querySelector(".pageShadowCSSShadowRootInvert");
-
-            if(currentCSSStyle) {
-                element.shadowRoot.removeChild(currentCSSStyle);
-            }
-
-            if(currentCSSStyleInvert) {
-                element.shadowRoot.removeChild(currentCSSStyleInvert);
-            }
+        if(element && element.shadowRoot) {
+            const oldStyles = element.shadowRoot.querySelectorAll(".pageShadowCSSShadowRoot, .pageShadowCSSShadowRootInvert");
 
             if(this.isEnabled && ((this.currentSettings.pageShadowEnabled != undefined && this.currentSettings.pageShadowEnabled == "true") || (this.currentSettings.colorInvert != undefined && this.currentSettings.colorInvert == "true") || (this.currentSettings.attenuateColors != undefined && this.currentSettings.attenuateColors == "true"))) {
                 if(this.currentSettings.pageShadowEnabled != undefined && this.currentSettings.pageShadowEnabled == "true") {
@@ -90,10 +81,10 @@ export default class ShadowDomProcessor {
                             themeConfig = await getCustomThemeConfig(this.currentSettings.theme.replace("custom", ""));
                         } else {
                             themeConfig = {
-                                backgroundColor: defaultThemesBackgrounds[currentTheme - 1].replace("#", ""),
-                                textColor: defaultThemesTextColors[currentTheme - 1].replace("#", ""),
-                                linkColor: defaultThemesLinkColors[currentTheme - 1].replace("#", ""),
-                                visitedLinkColor: defaultThemesVisitedLinkColors[currentTheme - 1].replace("#", "")
+                                backgroundColor: defaultThemesBackgrounds[currentTheme - 1],
+                                textColor: defaultThemesTextColors[currentTheme - 1],
+                                linkColor: defaultThemesLinkColors[currentTheme - 1],
+                                visitedLinkColor: defaultThemesVisitedLinkColors[currentTheme - 1]
                             };
                         }
 
@@ -108,30 +99,35 @@ export default class ShadowDomProcessor {
 
                     processRulesInvert(styleTagInvert, this.currentSettings.colorInvert, this.currentSettings.invertImageColors, this.currentSettings.invertEntirePage, this.currentSettings.invertVideoColors, this.currentSettings.invertBgColor, this.currentSettings.selectiveInvert);
                 }
+            }
+            
+            this.removeOldShadowRootStyle(element, oldStyles);
 
-                this.processedShadowRoots.push(element.shadowRoot);
+            this.processedShadowRoots.add(element);
+        }
+    }
+
+    removeOldShadowRootStyle(element, oldStyles) {
+        if(element && element.shadowRoot) {
+            const styles = oldStyles || element.shadowRoot.querySelectorAll(".pageShadowCSSShadowRoot, .pageShadowCSSShadowRootInvert");
+
+            for(const style of styles) {
+                if(element.shadowRoot.contains(style)) {
+                    element.shadowRoot.removeChild(style);
+                }
             }
         }
     }
 
-    resetShadowRoots() {
-        for(let i = 0, len = this.processedShadowRoots.length; i < len; i++) {
-            const shadowRoot = this.processedShadowRoots[i];
-
-            if(shadowRoot) {
-                const currentCSSStyle = shadowRoot.querySelector(".pageShadowCSSShadowRoot");
-                const currentCSSStyleInvert = shadowRoot.querySelector(".pageShadowCSSShadowRootInvert");
-
-                if(currentCSSStyle) {
-                    shadowRoot.removeChild(currentCSSStyle);
-                }
-
-                if(currentCSSStyleInvert) {
-                    shadowRoot.removeChild(currentCSSStyleInvert);
-                }
-            }
+    clearShadowRoots() {
+        for(const element of this.processedShadowRoots) {
+            this.removeOldShadowRootStyle(element);
         }
+    }
 
-        this.processedShadowRoots = [];
+    async resetShadowRoots() {
+        for(const element of this.processedShadowRoots) {
+            await this.processOneShadowRoot(element);
+        }
     }
 }

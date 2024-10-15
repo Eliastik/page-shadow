@@ -333,8 +333,6 @@ export default class ContentProcessor {
     }
 
     async applyDetectBackground(type, elements) {
-        await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
-
         return new Promise(resolve => {
             if(this.pageAnalyzer.backgroundDetected) resolve();
 
@@ -653,6 +651,7 @@ export default class ContentProcessor {
         this.precEnabled = true;
 
         await this.mutationObserverProcessor.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precUrl, this.precEnabled);
+        await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
     
         switch(type) {
         case ContentProcessorConstants.TYPE_ONLY_INVERT:
@@ -690,6 +689,8 @@ export default class ContentProcessor {
         this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BODY);
         this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
         this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESSWRAPPER);
+
+        await this.pageAnalyzer.resetShadowRoots();
     }
     
     applyAllBodyBatchers() {
@@ -747,7 +748,7 @@ export default class ContentProcessor {
             this.resetAttenuateColor();
             this.resetBrightnessPage();
             this.resetBlueLightPage();
-            this.pageAnalyzer.resetShadowRoots();
+            this.pageAnalyzer.clearShadowRoots();
             this.bodyClassBatcherRemover.apply();
         }
     }    

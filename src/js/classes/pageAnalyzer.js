@@ -301,7 +301,7 @@ export default class PageAnalyzer {
 
     async detectBackgroundForElement(element, disableDestyling) {
         if(element && element.shadowRoot != null && this.websiteSpecialFiltersConfig.enableShadowRootStyleOverride) {
-            this.processShadowRoots(element);
+            await this.processShadowRoots(element);
         }
 
         if(!element || (element != document.body && (element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected"))) || this.backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1 || ignoredElementsContentScript.includes(element.localName) || !element.isConnected) {
@@ -364,20 +364,24 @@ export default class PageAnalyzer {
         }
     }
 
-    processShadowRoots(element) {
+    async processShadowRoots(element) {
         if (this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay > 0) {
-            setTimeout(() => this.processShadowRoot(element), this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
+            setTimeout(async () => await this.processShadowRoot(element), this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
         } else {
-            this.processShadowRoot(element);
+            await this.processShadowRoot(element);
         }
     }
 
-    processShadowRoot(currentElement) {
-        this.shadowDomProcessor.processShadowRoot(currentElement);
+    async processShadowRoot(currentElement) {
+        await this.shadowDomProcessor.processShadowRoot(currentElement);
     }
 
-    resetShadowRoots() {
-        this.shadowDomProcessor.resetShadowRoots();
+    clearShadowRoots() {
+        this.shadowDomProcessor.clearShadowRoots();
+    }
+
+    async resetShadowRoots() {
+        await this.shadowDomProcessor.resetShadowRoots();
     }
 
     isTextElement(element) {

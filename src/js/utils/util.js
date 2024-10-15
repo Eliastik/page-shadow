@@ -346,10 +346,10 @@ function processShadowRootStyle(style) {
 
 function processRulesConfig(style, themeConfig) {
     const colorMap = {
-        "--page-shadow-bgcolor": "#" + themeConfig.backgroundColor,
-        "--page-shadow-txtcolor": "#" + themeConfig.textColor,
-        "--page-shadow-lnkcolor": "#" + themeConfig.linkColor,
-        "--page-shadow-visitedlnkcolor": "#" + themeConfig.visitedLinkColor,
+        "--page-shadow-bgcolor": themeConfig.backgroundColor,
+        "--page-shadow-txtcolor": themeConfig.textColor,
+        "--page-shadow-lnkcolor": themeConfig.linkColor,
+        "--page-shadow-visitedlnkcolor": themeConfig.visitedLinkColor,
         "--page-shadow-selectbgcolor": "grey",
         "--page-shadow-selecttxtcolor": "black",
         "--page-shadow-insbgcolor": "green",
