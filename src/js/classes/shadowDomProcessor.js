@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { getCustomThemeConfig, processRules, processRulesInvert } from "../utils/util.js";
-import { defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors } from "../constants.js";
+import { defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
 
 export default class ShadowDomProcessor {
@@ -84,7 +84,18 @@ export default class ShadowDomProcessor {
                                 backgroundColor: defaultThemesBackgrounds[currentTheme - 1],
                                 textColor: defaultThemesTextColors[currentTheme - 1],
                                 linkColor: defaultThemesLinkColors[currentTheme - 1],
-                                visitedLinkColor: defaultThemesVisitedLinkColors[currentTheme - 1]
+                                visitedLinkColor: defaultThemesVisitedLinkColors[currentTheme - 1],
+                                selectBackgroundColor: defaultThemesSelectBgColors[currentTheme - 1],
+                                selectTextColor: defaultThemesSelectTextColors[currentTheme - 1],
+                                insBackgroundColor: defaultThemesInsBgColors[currentTheme - 1],
+                                insTextColor: defaultThemesInsTextColors[currentTheme - 1],
+                                delBackgroundColor: defaultThemesDelBgColors[currentTheme - 1],
+                                delTextColor: defaultThemesDelTextColors[currentTheme - 1],
+                                markBackgroundColor: defaultThemesMarkBgColors[currentTheme - 1],
+                                markTxtColor: defaultThemesMarkTextColors[currentTheme - 1],
+                                imageBackgroundColor: defaultThemesImgBgColors[currentTheme - 1],
+                                brightColorTextWhite: defaultThemesBrightColorTextWhite[currentTheme - 1],
+                                brightColorTextBlack: defaultThemesBrightColorTextBlack[currentTheme - 1]
                             };
                         }
 

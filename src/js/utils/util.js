@@ -336,6 +336,7 @@ function processShadowRootStyle(style) {
     newStyle = newStyle.replaceAll(/body\.pageShadowInvertImageColor\b/g, ":host(.pageShadowInvertImageColor)");
     newStyle = newStyle.replaceAll(/body\.pageShadowInvertBgColor\b/g, ":host(.pageShadowInvertBgColor)");
     newStyle = newStyle.replaceAll(/body\.pageShadowInvertVideoColor\b/g, ":host(.pageShadowInvertVideoColor)");
+    newStyle = newStyle.replaceAll(/.pageShadowCustomFontFamily\b/g, ":host");
     newStyle = newStyle.replaceAll(/\.pageShadowContrastBlack(?=[\s\S]*\{)/g, ":host");
     newStyle = newStyle.replaceAll(/:root/g, ":host");
     newStyle = newStyle.replaceAll(/:host:host/g, ":host");
@@ -350,18 +351,18 @@ function processRulesConfig(style, themeConfig) {
         "--page-shadow-txtcolor": themeConfig.textColor,
         "--page-shadow-lnkcolor": themeConfig.linkColor,
         "--page-shadow-visitedlnkcolor": themeConfig.visitedLinkColor,
-        "--page-shadow-selectbgcolor": "grey",
-        "--page-shadow-selecttxtcolor": "black",
-        "--page-shadow-insbgcolor": "green",
-        "--page-shadow-instcolor": "white",
-        "--page-shadow-delbgcolor": "red",
-        "--page-shadow-deltcolor": "white",
-        "--page-shadow-markbgcolor": "orange",
-        "--page-shadow-marktxtcolor": "black",
-        "--page-shadow-imgbgcolor": "#BDBDBD",
-        "--page-shadow-customfontfamily": "initial",
-        "--page-shadow-brightcolorxtwhite": "white",
-        "--page-shadow-brightcolortxtblack": "black"
+        "--page-shadow-selectbgcolor": themeConfig.selectBackgroundColor || defaultThemesSelectBgColors[0],
+        "--page-shadow-selecttxtcolor": themeConfig.selectTextColor || defaultThemesSelectTextColors[0],
+        "--page-shadow-insbgcolor": themeConfig.insBackgroundColor || defaultThemesInsBgColors[0],
+        "--page-shadow-instcolor": themeConfig.insTextColor || defaultThemesInsTextColors[0],
+        "--page-shadow-delbgcolor": themeConfig.delBackgroundColor || defaultThemesDelBgColors[0],
+        "--page-shadow-deltcolor": themeConfig.delTextColor || defaultThemesDelTextColors[0],
+        "--page-shadow-markbgcolor": themeConfig.markBackgroundColor || defaultThemesMarkBgColors[0],
+        "--page-shadow-marktxtcolor": themeConfig.markTxtColor || defaultThemesMarkTextColors[0],
+        "--page-shadow-imgbgcolor": themeConfig.imageBackgroundColor || defaultThemesImgBgColors[0],
+        "--page-shadow-customfontfamily": themeConfig.fontFamily || "default",
+        "--page-shadow-brightcolorxtwhite": themeConfig.brightColorTextWhite || defaultThemesBrightColorTextWhite[0],
+        "--page-shadow-brightcolortxtblack": themeConfig.brightColorTextBlack || defaultThemesBrightColorTextBlack[0]
     };
 
     return style.replace(/var\((--page-shadow-[a-zA-Z-]+)\)/g, (match, varName) => {
