@@ -319,7 +319,7 @@ export default class PageAnalyzer {
         const backgroundColor = computedStyle.backgroundColor;
         const backgroundImage = computedStyle.backgroundImage;
 
-        const hasBackgroundImg = background.split(" ").some(v => v.trim().substring(0, 4).toLowerCase().includes("url(")) || backgroundImage.split(" ").some(v => v.trim().substring(0, 4).toLowerCase().includes("url("));
+        const hasBackgroundImg = this.hasBackgroundImage(element, background, backgroundImage);
         const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
         const hasTransparentBackgroundClass = element.classList.contains("pageShadowHasTransparentBackground");
 
@@ -362,6 +362,14 @@ export default class PageAnalyzer {
                 removeClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
             }
         }
+    }
+
+    hasBackgroundImage(element, background, backgroundImage) {
+        if(element.tagName.toLowerCase() === "img" || element.tagName.toLowerCase() === "picture") {
+            return false;
+        }
+
+        return background.split(" ").some(v => v.trim().substring(0, 4).toLowerCase().includes("url(")) || backgroundImage.split(" ").some(v => v.trim().substring(0, 4).toLowerCase().includes("url("));
     }
 
     async processShadowRoots(element) {
