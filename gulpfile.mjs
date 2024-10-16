@@ -1,17 +1,17 @@
 "use strict";
 
-const gulp               = require("gulp");
-const clean              = require("gulp-clean");
-const less               = require("gulp-less");
-const zip                = require("gulp-zip");
-const crx                = require("gulp-crx-pack");
-const fs                 = require("fs");
-const webpack            = require("webpack-stream");
-const rename             = require("gulp-rename");
-const compiler           = require("webpack");
-const eslint             = require("eslint-webpack-plugin");
-const plumber            = require("gulp-plumber");
-const LessPluginCleanCSS = require("less-plugin-clean-css");
+import gulp               from "gulp";
+import zip                from "gulp-zip";
+import clean              from "gulp-clean";
+import less               from "gulp-less";
+import crx                from "gulp-crx-pack";
+import fs                 from "fs";
+import webpack            from "webpack-stream";
+import rename             from "gulp-rename";
+import compiler           from "webpack";
+import eslint             from "eslint-webpack-plugin";
+import plumber            from "gulp-plumber";
+import LessPluginCleanCSS from "less-plugin-clean-css";
 
 let currentMode = "development";
 
@@ -23,18 +23,12 @@ gulp.task("set-prod-mode", () => {
 });
 
 gulp.task("clean", () => {
-    return gulp.src("./build/*", {read: false})
+    return gulp.src("./build/", { read: false, allowEmpty: true })
         .pipe(clean());
 });
 
 gulp.task("clean-directories", () => {
-    gulp.src("./build/chrome/*", {read: false})
-        .pipe(clean());
-    gulp.src("./build/edge/*", {read: false})
-        .pipe(clean());
-    gulp.src("./build/firefox/*", {read: false})
-        .pipe(clean());
-    return gulp.src("./build/global/*", {read: false})
+    return gulp.src(["./build/chrome/", "./build/firefox/", "./build/global/"], { read: false, allowEmpty: true })
         .pipe(clean());
 });
 
@@ -132,8 +126,8 @@ gulp.task("copyFirefoxContentCSS", () => {
 });
 
 gulp.task("build", () => {
-    const manifestChrome = require("./manifests/chrome/manifest.json"),
-        distFileName = manifestChrome.name + " v" + manifestChrome.version;
+    const manifestChrome = JSON.parse(fs.readFileSync("./manifests/chrome/manifest.json", "utf8"));
+    const distFileName = manifestChrome.name + " v" + manifestChrome.version;
     const codebase = manifestChrome.codebase;
     gulp.src("build/firefox/**/**/*")
         .pipe(zip(distFileName + " Firefox.xpi", { compress: true, modifiedTime: zipTimestamp }))
