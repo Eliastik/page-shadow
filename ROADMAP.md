@@ -141,6 +141,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * Release 2.11 - don't forget to change version date
     * [x] Adjust throttling algorithm, and performance settings
     * [x] Bug with iframes => example comments on Franceinfo website
+    * [x] Bug with invert entire page when the extension is built in prod mode => was caused by the gulp-clean-css plugin
 
 #### Bugs to fix
 
