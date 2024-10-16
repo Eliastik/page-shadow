@@ -1,17 +1,17 @@
 "use strict";
 
-const gulp     = require("gulp");
-const clean    = require("gulp-clean");
-const cleanCss = require("gulp-clean-css");
-const less     = require("gulp-less");
-const zip      = require("gulp-zip");
-const crx      = require("gulp-crx-pack");
-const fs       = require("fs");
-const webpack  = require("webpack-stream");
-const rename   = require("gulp-rename");
-const compiler = require("webpack");
-const eslint   = require("eslint-webpack-plugin");
-const plumber  = require("gulp-plumber");
+const gulp               = require("gulp");
+const clean              = require("gulp-clean");
+const less               = require("gulp-less");
+const zip                = require("gulp-zip");
+const crx                = require("gulp-crx-pack");
+const fs                 = require("fs");
+const webpack            = require("webpack-stream");
+const rename             = require("gulp-rename");
+const compiler           = require("webpack");
+const eslint             = require("eslint-webpack-plugin");
+const plumber            = require("gulp-plumber");
+const LessPluginCleanCSS = require("less-plugin-clean-css");
 
 let currentMode = "development";
 
@@ -48,9 +48,13 @@ gulp.task("compile-less", () => {
         .pipe(gulp.dest("./build/global/css/"));
 });
 
-gulp.task("compress-css", () => {
-    return gulp.src("./build/global/css/*.css")
-        .pipe(cleanCss())
+gulp.task("compile-less-compressed", () => {
+    const cleanCSSPlugin = new LessPluginCleanCSS({advanced: true});
+
+    return gulp.src("./src/css/*.less")
+        .pipe(less({
+            plugins: [cleanCSSPlugin]
+        }))
         .pipe(gulp.dest("./build/global/css/"));
 });
 
@@ -149,7 +153,7 @@ gulp.task("build-directory-dev", gulp.series("clean", "copy-global", "compile-le
 
 gulp.task("build-dev", gulp.series("build-directory-dev", "build", "clean-directories"));
 
-gulp.task("build-directory-prod", gulp.series("set-prod-mode", "clean", "copy-global", "compile-less", "compile-js", "compress-css", "copyChrome", "copyFirefox", "copyFirefoxContentCSS"));
+gulp.task("build-directory-prod", gulp.series("set-prod-mode", "clean", "copy-global", "compile-less-compressed", "compile-js", "copyChrome", "copyFirefox", "copyFirefoxContentCSS"));
 
 gulp.task("build-prod", gulp.series("build-directory-prod", "build", "clean-directories"));
 
