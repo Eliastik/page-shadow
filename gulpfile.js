@@ -40,7 +40,7 @@ gulp.task("clean-directories", () => {
 
 gulp.task("copy-global", () => {
     return gulp.src(["./src/**", "!./src/img/src/**", "!./src/js/*.js", "!./src/img/icon_old.png", "!./src/img/icon_chrome.png", "!./src/css/src/**",
-        "!./src/css/*.less", "!./src/css/content_old.css", "!./src/js/classes/**", "!./src/_locales/**/{options,pageTest,popup}.json"])
+        "!./src/css/*.less", "!./src/css/content_old.css", "!./src/js/classes/**", "!./src/js/utils/**", "!./src/_locales/**/{options,pageTest,popup}.json"])
         .pipe(gulp.dest("./build/global/"));
 });
 
