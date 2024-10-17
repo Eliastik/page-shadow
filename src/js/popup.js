@@ -665,7 +665,7 @@ $(document).ready(() => {
         if($(this).val().trim().startsWith("custom")) {
             const result = await browser.storage.local.get("customThemeInfoDisable");
 
-            if(typeof result.customThemeInfoDisable == undefined || result.customThemeInfoDisable !== "true") {
+            if(typeof result.customThemeInfoDisable == "undefined" || result.customThemeInfoDisable !== "true") {
                 $("#customThemeInfos").modal("show");
             }
         }

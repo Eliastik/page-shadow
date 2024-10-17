@@ -357,7 +357,7 @@ export default class ContentProcessor {
                     const eventDetectBackground = document.addEventListener("readystatechange", () => {
                         if(document.readyState === "complete") {
                             document.removeEventListener("readystatechange", eventDetectBackground);
-                            
+
                             this.applyDetectBackground(ContentProcessorConstants.TYPE_LOADING, elements);
                             resolve();
                         }
@@ -607,25 +607,25 @@ export default class ContentProcessor {
 
     async process(allowed, type, disableCache) {
         if(this.applyWhenBodyIsAvailableTimer) this.applyWhenBodyIsAvailableTimer.clear();
-    
+
         this.applyWhenBodyIsAvailableTimer = new ApplyBodyAvailable(async () => {
             this.initBatchers();
             this.initProcessors();
-            
+
             this.debugLogger?.log(`Starting processing page - allowed? ${allowed} / type? ${type} / disableCache? ${disableCache}`);
-    
+
             if(allowed) {
                 await this.handleAllowedState(type, disableCache);
             } else {
                 this.resetPage();
             }
-    
+
             this.started = true;
         });
-    
+
         this.applyWhenBodyIsAvailableTimer.start();
     }
-    
+
     initBatchers() {
         this.bodyClassBatcher = this.bodyClassBatcher || new ElementClassBatcher("add", document.body);
         this.bodyClassBatcherRemover = this.bodyClassBatcherRemover || new ElementClassBatcher("remove", document.body);
@@ -637,14 +637,14 @@ export default class ContentProcessor {
             this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime,
             this.websiteSpecialFiltersConfig.enableThrottleApplyClassChanges);
     }
-    
+
     initProcessors() {
         this.pageAnalyzer = this.pageAnalyzer || new PageAnalyzer(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove, this.debugLogger);
         this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove, this.websiteSpecialFiltersConfig, this.debugLogger);
         this.mutationObserverProcessor = this.mutationObserverProcessor || new MutationObserverProcessor(this.pageAnalyzer, this.filterProcessor, this.debugLogger, this.elementBrightnessWrapper, this.websiteSpecialFiltersConfig, this.elementBrightness, this.elementBlueLightFilter);
         this.mutationObserverProcessor.reApplyCallback = (type, mutation) => this.main(type, mutation);
     }
-    
+
     async handleAllowedState(type, disableCache) {
         const settings = this.newSettingsToApply || await getSettings(getCurrentURL(), disableCache);
         this.currentSettings = settings;
@@ -652,47 +652,47 @@ export default class ContentProcessor {
 
         await this.mutationObserverProcessor.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precUrl, this.precEnabled);
         await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
-    
+
         switch(type) {
         case ContentProcessorConstants.TYPE_ONLY_INVERT:
             this.removeAllBodyBatchers();
-        
+
             this.invertColor(settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.invertBgColor, settings.selectiveInvert, settings.attenuateColors, settings.attenuateImgColors, settings.attenuateBgColors, settings.attenuateVideoColors, settings.attenuateBrightColors, settings.percentageAttenuateColors, settings.invertBrightColors);
-        
+
             this.applyAllBodyBatchers();
             break;
         case ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT:
         case ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS:
         case ContentProcessorConstants.TYPE_ONLY_BLUELIGHT:
             this.mutationObserverProcessor?.pause(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
-    
+
             if ([ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT, ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS].includes(type)) {
                 this.brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
             }
-        
+
             if ([ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT, ContentProcessorConstants.TYPE_ONLY_BLUELIGHT].includes(type)) {
                 this.blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
             }
             break;
         default:
             this.removeAllBodyBatchers();
-        
+
             await this.contrastPage(settings.pageShadowEnabled, settings.theme, settings.colorInvert, settings.invertImageColors, settings.invertEntirePage, settings.invertVideoColors, settings.disableImgBgColor, settings.invertBgColor, settings.selectiveInvert, settings.brightColorPreservation, settings.attenuateColors, settings.attenuateImgColors, settings.attenuateBgColors, settings.attenuateVideoColors, settings.attenuateBrightColors, settings.percentageAttenuateColors, settings.invertBrightColors);
-        
+
             this.applyAllBodyBatchers();
         }
-    
+
         if(![ContentProcessorConstants.TYPE_ONLY_CONTRAST, ContentProcessorConstants.TYPE_ONLY_INVERT, ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS, ContentProcessorConstants.TYPE_ONLY_BLUELIGHT].includes(type)) {
             await this.applyBackgroundAndFilters(settings, type);
         }
-    
+
         this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BODY);
         this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
         this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESSWRAPPER);
 
         await this.pageAnalyzer.resetShadowRoots();
     }
-    
+
     applyAllBodyBatchers() {
         this.bodyClassBatcher.apply();
         this.bodyClassBatcherRemover.apply();
@@ -710,14 +710,14 @@ export default class ContentProcessor {
 
         this.brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
         this.blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
-    
+
         const specialRules = await sendMessageWithPromise({ "type": "getSpecialRules" }, "getSpecialRulesResponse");
         this.filterProcessor.processSpecialRules(specialRules.filters);
-    
+
         this.observeBodyChange();
         this.observeDocumentElementChange();
         this.timerApplyMutationClassChanges();
-    
+
         if (settings.pageShadowEnabled === "true" || settings.colorInvert === "true" || settings.attenuateColors === "true") {
             if (type === ContentProcessorConstants.TYPE_START || !this.pageAnalyzer.backgroundDetected) {
                 this.applyDetectBackground(type, "*").then(() => {
@@ -735,11 +735,11 @@ export default class ContentProcessor {
             }
         }
     }
-    
+
     resetPage() {
         this.precEnabled = false;
         if(typeof this.lnkCustomTheme !== "undefined") this.lnkCustomTheme.setAttribute("href", "");
-    
+
         if(this.started) {
             this.mutationObserverProcessor?.pause(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
             this.bodyClassBatcherRemover.removeAll();
@@ -751,7 +751,7 @@ export default class ContentProcessor {
             this.pageAnalyzer.clearShadowRoots();
             this.bodyClassBatcherRemover.apply();
         }
-    }    
+    }
 
     hasEnabledStateChanged(isEnabled) {
         return this.started && ((isEnabled && !this.precEnabled) || (!isEnabled && this.precEnabled));

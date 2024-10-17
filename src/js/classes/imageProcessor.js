@@ -48,14 +48,14 @@ export default class ImageProcessor {
                 removeClass(image, "pageShadowDisableStyling", "pageShadowElementDisabled");
 
                 image = svgElementToImage(element, image);
-                
+
                 addClass(image, "pageShadowDisableStyling", "pageShadowElementDisabled");
             } catch(e) {
                 this.debugLogger?.log(e.message, "error");
                 return false;
             }
         }
-        
+
         // Background image element
         if(!(image instanceof HTMLImageElement) && !(image instanceof SVGImageElement)) {
             if(hasBackgroundImg) {
@@ -102,19 +102,19 @@ export default class ImageProcessor {
     getResizedDimensions(image, maxWidth, maxHeight) {
         const width = image.width;
         const height = image.height;
-    
+
         let newWidth = width;
         let newHeight = height;
-    
+
         if (width > maxWidth || height > maxHeight) {
             const widthRatio = maxWidth / width;
             const heightRatio = maxHeight / height;
             const resizeRatio = Math.min(widthRatio, heightRatio);
-    
+
             newWidth = Math.round(width * resizeRatio);
             newHeight = Math.round(height * resizeRatio);
         }
-    
+
         return { newWidth, newHeight };
     }
 
@@ -188,12 +188,12 @@ export default class ImageProcessor {
         let darkPixelCount = 0;
         let nonTransparentPixelCount = 0;
         let totalPixelCount = 0;
-    
+
         const startX = Math.max(0, x - blockSize / 2);
         const startY = Math.max(0, y - blockSize / 2);
         const endX = Math.min(width, x + blockSize / 2);
         const endY = Math.min(height, y + blockSize / 2);
-    
+
         for (let j = startY; j < endY; j++) {
             for (let i = startX; i < endX; i++) {
                 const index = (j * width + i) * 4;
@@ -201,7 +201,7 @@ export default class ImageProcessor {
                 const green = data[index + 1];
                 const blue = data[index + 2];
                 const alpha = data[index + 3];
-    
+
                 if (alpha === 0) {
                     transparentPixelCount++;
                 } else {
@@ -215,7 +215,7 @@ export default class ImageProcessor {
                 totalPixelCount++;
             }
         }
-    
+
         return transparentPixelCount / totalPixelCount > this.websiteSpecialFiltersConfig.darkImageDetectionTransparentPixelsRatio
             && darkPixelCount / nonTransparentPixelCount > this.websiteSpecialFiltersConfig.darkImageDetectionDarkPixelsRatio;
     }

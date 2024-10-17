@@ -129,11 +129,11 @@ export default class PageAnalyzer {
                 this.processingBackgrounds = true;
 
                 addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
-    
+
                 this.detectBackgroundForElement(document.body, true);
-    
+
                 const elements = Array.from(document.body.getElementsByTagName(tagName));
-    
+
                 if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection && !forceDisableThrottle) {
                     this.runThrottledBackgroundDetection(elements).then(() => {
                         this.processingBackgrounds = false;
@@ -151,7 +151,7 @@ export default class PageAnalyzer {
             }
         });
     }
-    
+
     async runNormalBackgroundDetection(elements, forceDisableThrottle) {
         return new Promise(resolve => {
             removeClass(document.body, "pageShadowDisableBackgroundStyling");
@@ -161,25 +161,25 @@ export default class PageAnalyzer {
 
             let currentIndex = 0;
             let totalExecutionTime = 0;
-    
+
             while(currentIndex < elementsLength) {
                 this.detectBackgroundForElement(elements[currentIndex], true);
                 currentIndex++;
 
                 const addTime = performance.now() - startTime;
                 totalExecutionTime += addTime;
-    
+
                 if(!forceDisableThrottle && totalExecutionTime >= this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime) {
                     this.debugLogger.log(`PageAnalyzer detectBackground - Stopping early task to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`);
                     return this.runThrottledBackgroundDetection(elements.slice(currentIndex)).then(resolve);
                 }
             }
-    
+
             this.setBackgroundDetectionFinished();
             resolve();
         });
     }
-    
+
     async runThrottledBackgroundDetection(elements) {
         return new Promise(resolve => {
             removeClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
@@ -234,13 +234,13 @@ export default class PageAnalyzer {
     extractGradientRGBValues(background) {
         const pattern = /rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})(?:,\s*(\d*\.?\d+))?\)/g;
         const matches = [...background.matchAll(pattern)];
-        
+
         const rgbaValuesLists = matches.map(match => {
             const rgb = match.slice(1, 4).map(Number);
             const alpha = match[4] !== undefined ? parseFloat(match[4]) : 1;
             return [...rgb, alpha];
         });
-        
+
         return rgbaValuesLists;
     }
 
@@ -287,7 +287,7 @@ export default class PageAnalyzer {
                 if(hsl[2] >= 0.5) {
                     return [true, true];
                 }
-    
+
                 return [true, false];
             }
         }
@@ -399,7 +399,7 @@ export default class PageAnalyzer {
 
         const hasShallowChildren = Array.from(element.children).every(child => child.children.length === 0);
         const notAllChildrenAreImg = Array.from(element.children).every(child => !ignoredElementsBrightTextColorDetection.includes(child.tagName.toLowerCase()));
-    
+
         return hasShallowChildren && notAllChildrenAreImg;
     }
 

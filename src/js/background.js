@@ -526,7 +526,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                             response.text().then(text => {
                                 globalPageShadowStyleCache[url] = processShadowRootStyle(text);
                                 globalPageShadowStyleShadowRootsCache[url] = processShadowRootStyle(text);
-                                
+
                                 resolve({ type: message.type + "Response", data: message.type == "getGlobalShadowRootPageShadowStyle" ? globalPageShadowStyleShadowRootsCache[url] : globalPageShadowStyleCache[url] });
                             });
                         }

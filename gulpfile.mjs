@@ -103,7 +103,10 @@ gulp.task("compile-js", () => {
                     name: "shared"
                 }
             },
-            plugins: [new eslint()]
+            plugins: [new eslint({
+                overrideConfigFile: "./eslint.config.mjs",
+                configType: "flat"
+            })]
         }, compiler))
         .pipe(plumber())
         .pipe(gulp.dest("./build/global/js/", { encoding: false }));
