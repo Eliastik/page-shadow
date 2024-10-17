@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* Page Shadow
  *
  * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)

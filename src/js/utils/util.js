@@ -322,7 +322,7 @@ async function processRules(style, themeConfig, isShadowRoot) {
     const response = await sendMessageWithPromise({ "type": "getGlobalPageShadowStyle" }, "getGlobalPageShadowStyleResponse");
 
     style.textContent = processRulesConfig(response.data, themeConfig);
-    
+
     if(style.sheet) {
         if(isShadowRoot) {
             style.sheet.insertRule(":host { color: unset !important; background: unset !important; }");
@@ -1375,7 +1375,7 @@ async function isAutoEnable() {
         }
     }
 
-    return false;    
+    return false;
 }
 
 function lengthInUtf8Bytes(str) {

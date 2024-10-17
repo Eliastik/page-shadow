@@ -123,9 +123,9 @@ export default class PageFilterProcessor {
                                                 childrenElement,
                                                 children: true
                                             };
-        
+
                                             const currentValue = this.filterMatchingHistory.get(filterHash);
-        
+
                                             if (currentValue) {
                                                 currentValue.push(newValue);
                                             } else {

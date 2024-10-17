@@ -685,7 +685,7 @@ async function loadAdvancedOptionsUI(reset, changingLanguage) {
 
             const descriptionDiv = document.createElement("div");
             descriptionDiv.classList.add("advancedOptionsCategoryDescriptionContainer");
-            
+
             const infoIcon = document.createElement("i");
             infoIcon.classList.add("fa-solid", "fa-circle-info");
             descriptionDiv.appendChild(infoIcon);

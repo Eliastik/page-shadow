@@ -137,7 +137,7 @@ browser.runtime.onMessage.addListener(async(message) => {
                 if (contentProcessor.filterProcessor) {
                     contentProcessor.filterProcessor.filtersCache = null;
                 }
-                
+
                 changed = true;
             }
 

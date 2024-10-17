@@ -48,6 +48,7 @@ export default class MutationObserverProcessor {
     throttledTaskTreatMutations;
     throttledTaskTreatMutationsAddedNodes;
 
+    // eslint-disable-next-line no-unused-vars
     reApplyCallback = (type, mutationType) => {};
 
     constructor(pageAnalyzer, filterProcessor, debugLogger, elementBrightnessWrapper, websiteSpecialFiltersConfig, elementBrightness, elementBlueLightFilter) {
