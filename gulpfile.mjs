@@ -34,7 +34,7 @@ gulp.task("clean-directories", () => {
 
 gulp.task("copy-global", () => {
     return gulp.src(["./src/**", "!./src/img/src/**", "!./src/js/*.js", "!./src/img/icon_old.png", "!./src/img/icon_chrome.png", "!./src/css/src/**",
-        "!./src/css/*.less", "!./src/css/content_old.css", "!./src/js/classes/**", "!./src/js/utils/**", "!./src/_locales/**/{options,pageTest,popup}.json"])
+        "!./src/css/*.less", "!./src/css/content_old.css", "!./src/js/classes/**", "!./src/js/utils/**", "!./src/_locales/**/{options,pageTest,popup}.json"], { encoding: false })
         .pipe(gulp.dest("./build/global/"));
 });
 
@@ -45,7 +45,7 @@ gulp.task("compile-less", () => {
 });
 
 gulp.task("compile-less-compressed", () => {
-    const cleanCSSPlugin = new LessPluginCleanCSS({advanced: true});
+    const cleanCSSPlugin = new LessPluginCleanCSS({ advanced: true });
 
     return gulp.src("./src/css/*.less")
         .pipe(less({
@@ -106,16 +106,16 @@ gulp.task("compile-js", () => {
             plugins: [new eslint()]
         }, compiler))
         .pipe(plumber())
-        .pipe(gulp.dest("./build/global/js/"));
+        .pipe(gulp.dest("./build/global/js/", { encoding: false }));
 });
 
 gulp.task("copyChrome", () => {
-    return gulp.src(["./build/global/**", "./manifests/chrome/**/*", "!./build/global/css/content_invert_firefox.css"])
+    return gulp.src(["./build/global/**", "./manifests/chrome/**/*", "!./build/global/css/content_invert_firefox.css"], { encoding: false })
         .pipe(gulp.dest("./build/chrome/"));
 });
 
 gulp.task("copyFirefox", () => {
-    return gulp.src(["./build/global/**", "./manifests/firefox/**/*", "!./build/global/css/content_invert_firefox.css", "!./build/global/css/content_invert.css"])
+    return gulp.src(["./build/global/**", "./manifests/firefox/**/*", "!./build/global/css/content_invert_firefox.css", "!./build/global/css/content_invert.css"], { encoding: false })
         .pipe(gulp.dest("./build/firefox/"));
 });
 
