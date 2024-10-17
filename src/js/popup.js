@@ -34,6 +34,7 @@ import "@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2";
 import "@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2";
 import popupEN from "../_locales/en/popup.json";
 import popupFR from "../_locales/fr/popup.json";
+import DebugLogger from "./classes/debugLogger.js";
 
 window.$ = $;
 window.jQuery = $;
@@ -47,6 +48,8 @@ let archiveInfoShowed = false;
 let currentTheme = "checkbox";
 let permissionInfoShowed = false;
 let autoBackupFailedShowed = false;
+
+const debugLogger = new DebugLogger();
 
 async function translateContent() {
     i18nextLoaded = true;
@@ -312,6 +315,7 @@ $(document).ready(() => {
         try {
             url = new URL(url_str);
         } catch(e) {
+            debugLogger.log(e, "error");
             return;
         }
 
@@ -450,6 +454,7 @@ $(document).ready(() => {
         try {
             url = new URL(await getCurrentURL());
         } catch(e) {
+            debugLogger.log(e, "error");
             return;
         }
 
@@ -463,6 +468,7 @@ $(document).ready(() => {
         try {
             url = new URL(await getCurrentURL());
         } catch(e) {
+            debugLogger.log(e, "error");
             return;
         }
 

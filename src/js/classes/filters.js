@@ -20,15 +20,18 @@ import { setSettingItem } from "../storage.js";
 import { matchWebsite, getSizeObject } from "../utils/util.js";
 import { defaultFilters, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory } from "../constants.js";
 import browser from "webextension-polyfill";
+import DebugLogger from "./debugLogger.js";
 
 export default class FilterProcessor {
     rules = [];
     specialRules = []; // Special rules contains rules for adjusting Page Shadow internal processing (performance mode, etc.)
     static instance = null;
+    debugLogger;
 
     constructor() { // Filter class is a Singleton
         if(!FilterProcessor.instance) {
             FilterProcessor.instance = this;
+            this.debugLogger = new DebugLogger();
             this.cacheFilters();
         }
 
@@ -78,6 +81,7 @@ export default class FilterProcessor {
 
                     return true;
                 } catch(e) {
+                    this.debugLogger.log(e, "error");
                     return false;
                 }
             }
@@ -147,10 +151,12 @@ export default class FilterProcessor {
                             filterToUpdate.hasError = true;
                         }
                     } catch(error2) {
+                        this.debugLogger.log(error2, "error");
                         filterToUpdate.hasError = true;
                     }
                 }
             } catch(error) {
+                this.debugLogger.log(error, "error");
                 filterToUpdate.hasError = true;
             }
         }
@@ -581,6 +587,7 @@ export default class FilterProcessor {
             try {
                 websuteUrl_tmp = new URL(url);
             } catch(e) {
+                this.debugLogger.log(e, "error");
                 return;
             }
 

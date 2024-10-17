@@ -65,6 +65,7 @@ export default class PageFilterProcessor {
             try {
                 elementsMatching = (element ? [element] : (selector && selector.trim() === "body" ? [document.body] : document.body.querySelectorAll(selector)));
             } catch(e) {
+                this.debugLogger.log(e, "error");
                 continue; // Continue to next filter if selector is not valid
             }
 
@@ -92,17 +93,21 @@ export default class PageFilterProcessor {
 
                             if (enableNotMatchingFiltersDetection) {
                                 const previousMatchedFilter = this.filterMatchingHistory.get(filterHash);
-                                const previousMatched = previousMatchedFilter
-                                    .find(v => v.element === element && !v.children);
 
-                                if (previousMatched) {
-                                    elementsNotMatching.push(element);
-                                    previousMatchedFilter.splice(previousMatched, 1);
+                                if (previousMatchedFilter) {
+                                    const previousMatched = previousMatchedFilter
+                                        .find(v => v.element === element && !v.children);
+
+                                    if (previousMatched) {
+                                        elementsNotMatching.push(element);
+                                        previousMatchedFilter.splice(previousMatched, 1);
+                                    }
                                 }
                             }
                         }
                     }
                 } catch(e) {
+                    this.debugLogger.log(e, "error");
                     continue;
                 }
 
@@ -135,17 +140,21 @@ export default class PageFilterProcessor {
                                     } else {
                                         if (enableNotMatchingFiltersDetection) {
                                             const previousMatchedFilter = this.filterMatchingHistory.get(filterHash);
-                                            const previousMatchedChildren = previousMatchedFilter
-                                                .find(v => v.element === childrenElement && v.children);
 
-                                            if (previousMatchedChildren) {
-                                                elementsNotMatching.push(childrenElement);
-                                                previousMatchedFilter.splice(previousMatchedChildren, 1);
+                                            if (previousMatchedFilter) {
+                                                const previousMatchedChildren = previousMatchedFilter
+                                                    .find(v => v.element === childrenElement && v.children);
+
+                                                if (previousMatchedChildren) {
+                                                    elementsNotMatching.push(childrenElement);
+                                                    previousMatchedFilter.splice(previousMatchedChildren, 1);
+                                                }
                                             }
                                         }
                                     }
                                 }
                             } catch(e) {
+                                this.debugLogger.log(e, "error");
                                 break;
                             }
                         }

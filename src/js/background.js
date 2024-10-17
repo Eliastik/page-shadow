@@ -23,6 +23,7 @@ import Filter from "./classes/filters.js";
 import browser from "webextension-polyfill";
 import PresetCache from "./classes/presetCache.js";
 import SettingsCache from "./classes/settingsCache.js";
+import DebugLogger from "./classes/debugLogger.js";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
@@ -33,6 +34,7 @@ const globalPageShadowStyleShadowRootsCache = {};
 const filters = new Filter();
 const presetCache = new PresetCache();
 const settingsCache = new SettingsCache();
+const debugLogger = new DebugLogger();
 
 function setPopup() {
     if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setPopup) !== "undefined") {
@@ -120,6 +122,7 @@ async function menu() {
                 try {
                     url = new URL(url_str);
                 } catch(e) {
+                    debugLogger.log(e, "error");
                     return;
                 }
 
@@ -310,6 +313,7 @@ async function checkAutoBackupCloud() {
             await setSettingItem("lastAutoBackupFailedDate", -1);
             await setSettingItem("lastAutoBackupCloud", Date.now());
         } catch(e) {
+            debugLogger.log(e, "error");
             await setSettingItem("lastAutoBackupFailed", "true");
             await setSettingItem("lastAutoBackupFailedDate", Date.now());
             await setSettingItem("lastAutoBackupCloud", Date.now());
@@ -562,6 +566,7 @@ if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.o
         try {
             urlObj = new URL(url);
         } catch(e) {
+            debugLogger.log(e, "error");
             return;
         }
 

@@ -20,6 +20,9 @@ import { setSettingItem, migrateSettings } from "../storage.js";
 import browser from "webextension-polyfill";
 import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, permissionOrigin, quotaBytesPerItemMargin } from "../constants.js";
 import { Sha256 } from "@aws-crypto/sha256-browser";
+import DebugLogger from "./../classes/debugLogger.js";
+
+const debugLogger = new DebugLogger();
 
 function in_array(needle, haystack) {
     for(const key in haystack) {
@@ -58,6 +61,7 @@ function matchWebsite(needle, rule) {
                     return true;
                 }
             } catch(e) {
+                debugLogger.log(e, "error");
                 return false;
             }
         } else {
@@ -193,6 +197,7 @@ async function pageShadowAllowed(url, settingsCache) {
         try {
             websuteUrl_tmp = new URL(url);
         } catch(e) {
+            debugLogger.log(e, "error");
             return;
         }
 
@@ -650,6 +655,7 @@ async function presetsEnabled() {
 
         return listPreset;
     } catch(e) {
+        debugLogger.log(e, "error");
         throw "";
     }
 }
@@ -701,6 +707,7 @@ async function loadPreset(nb) {
             return "empty";
         }
     } catch(e) {
+        debugLogger.log(e, "error");
         return "error";
     }
 }
@@ -761,6 +768,7 @@ async function getPresetData(nb) {
 
         return preset;
     } catch(e) {
+        debugLogger.log(e, "error");
         return "error";
     }
 }
@@ -801,6 +809,7 @@ async function savePreset(nb, name, websiteListToApply, saveNewSettings) {
 
         return "success";
     } catch(e) {
+        debugLogger.log(e, "error");
         return "error";
     }
 }
@@ -828,6 +837,7 @@ async function deletePreset(nb) {
 
         return "success";
     } catch(e) {
+        debugLogger.log(e, "error");
         return "error";
     }
 }
@@ -869,6 +879,7 @@ async function presetsEnabledForWebsiteWithData(url, allPresetData) {
                 try {
                     websuteUrl_tmp = new URL(url);
                 } catch(e) {
+                    debugLogger.log(e, "error");
                     return;
                 }
 
@@ -1050,6 +1061,7 @@ async function disableEnablePreset(type, nb, checked, url) {
 
         return "success";
     } catch(e) {
+        debugLogger.log(e, "error");
         return "error";
     }
 }
@@ -1105,6 +1117,7 @@ function getCurrentURL() {
     try {
         url = window.opener ? window.opener.location.href : window.location.href;
     } catch(e) {
+        debugLogger.log(e, "error");
         url = window.location.href;
     }
 
@@ -1174,6 +1187,7 @@ function isRunningInPopup() {
     try {
         return window.opener && window.opener !== window;
     } catch(e) {
+        debugLogger.log(e, "error");
         return false;
     }
 }
@@ -1182,6 +1196,7 @@ function isRunningInIframe() {
     try {
         return window !== window.top;
     } catch(e) {
+        debugLogger.log(e, "error");
         return false;
     }
 }
@@ -1316,6 +1331,7 @@ async function getSettingsToArchive() {
         const dataStr = JSON.stringify(data);
         return dataStr;
     } catch(e) {
+        debugLogger.log(e, "error");
         throw "";
     }
 }
@@ -1359,6 +1375,7 @@ async function archiveCloud() {
 
             return;
         } catch(e) {
+            debugLogger.log(e, "error");
             throw new Error(e.message);
         }
     } else {
@@ -1669,6 +1686,7 @@ function isCrossOrigin(imageSrc) {
         const url = new URL(imageSrc);
         return window.location.origin !== url.origin;
     } catch (e) {
+        debugLogger.log(e, "error");
         return false;
     }
 }
