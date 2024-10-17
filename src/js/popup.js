@@ -52,7 +52,6 @@ let autoBackupFailedShowed = false;
 const debugLogger = new DebugLogger();
 
 async function translateContent() {
-    i18nextLoaded = true;
     jqueryI18next.init(i18next, $, {
         handleName: "localize",
         selectorAttr: "data-i18n"
@@ -67,6 +66,7 @@ async function translateContent() {
     await checkPresetAutoEnabled(await getCurrentURL());
     $("#loadPresetSelect").val(selectedPreset).trigger("change");
     $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));
+    i18nextLoaded = true;
 }
 
 function initI18next() {
