@@ -68,12 +68,12 @@ export default class ContentProcessor {
     debugLogger;
 
     constructor() {
+        this.debugLogger = new DebugLogger();
         this.setup();
     }
 
     async setup() {
         this.websiteSpecialFiltersConfig = await loadWebsiteSpecialFiltersConfig();
-        this.debugLogger = new DebugLogger();
     }
 
     setupClassBatchers() {

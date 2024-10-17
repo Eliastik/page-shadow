@@ -47,6 +47,7 @@ import "@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2";
 import "@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2";
 import optionsEN from "../_locales/en/options.json";
 import optionsFR from "../_locales/fr/options.json";
+import DebugLogger from "./classes/debugLogger.js";
 
 window.$ = $;
 window.jQuery = $;
@@ -65,6 +66,8 @@ let savedAdvancedOptionsTimeout;
 let disableStorageSizeCalculation = false;
 let hasGlobalChange = false;
 let filterEditDisplay = false;
+
+const debugLogger = new DebugLogger();
 
 function listTranslations(languages) {
     const language = i18next.language.substr(0, 2);
@@ -1222,6 +1225,7 @@ async function archiveSettings() {
 
         downloadData(dataStr, filename);
     } catch(e) {
+        debugLogger.log(e, "error");
         $("#archiveError").fadeIn(500);
         $("#archiveDataButton").removeAttr("disabled");
     }
@@ -1292,6 +1296,7 @@ function restoreSettingsFile(event) {
             try {
                 obj = JSON.parse(event.target.result);
             } catch(e) {
+                debugLogger.log(e, "error");
                 $("#restoreError").fadeIn(500);
                 return false;
             }
@@ -1365,6 +1370,8 @@ async function archiveCloudSettings() {
         $("#restoreDataButton").removeAttr("disabled");
         $("#archivingCloud").hide();
     } catch(e) {
+        debugLogger.log(e, "error");
+
         if(e.message === "quota") {
             $("#archiveCloudErrorQuota").fadeIn(500);
         } else {
@@ -1456,6 +1463,8 @@ async function restoreCloudSettings() {
                 $("#textareaAssomPage").val(oldTextareadValue);
             }
         } catch(e) {
+            debugLogger.log(e, "error");
+
             $("#restoreCloudError").fadeIn(500);
             $("#textareaAssomPage").val(oldTextareadValue);
             $("#archiveCloudBtn").removeAttr("disabled");

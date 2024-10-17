@@ -23,8 +23,10 @@ import Filter from "./classes/filters.js";
 import browser from "webextension-polyfill";
 import PresetCache from "./classes/presetCache.js";
 import SettingsCache from "./classes/settingsCache.js";
+import DebugLogger from "./classes/debugLogger.js";
 
 const sessionStorage = browser.storage.session ? browser.storage.session : browser.storage.local;
+const debugLogger = new DebugLogger();
 
 function setPopup() {
     if(typeof(browser.action) !== "undefined" && typeof(browser.action.setPopup) !== "undefined") {
@@ -112,6 +114,7 @@ async function menu() {
                 try {
                     url = new URL(url_str);
                 } catch(e) {
+                    debugLogger.log(e, "error");
                     return;
                 }
 
@@ -311,6 +314,7 @@ async function checkAutoBackupCloud() {
             await setSettingItem("lastAutoBackupFailedDate", -1);
             await setSettingItem("lastAutoBackupCloud", Date.now());
         } catch(e) {
+            debugLogger.log(e, "error");
             await setSettingItem("lastAutoBackupFailed", "true");
             await setSettingItem("lastAutoBackupFailedDate", Date.now());
             await setSettingItem("lastAutoBackupCloud", Date.now());
@@ -573,6 +577,7 @@ if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.o
         try {
             urlObj = new URL(url);
         } catch(e) {
+            debugLogger.log(e, "error");
             return;
         }
 
