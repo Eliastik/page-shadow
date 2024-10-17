@@ -600,13 +600,15 @@ function downloadData(data, name) {
 }
 
 async function loadPresetSelect(selectId, i18next) {
-    let presetSelected = document.getElementById(selectId).value;
+    const selectElement = document.getElementById(selectId);
+
+    let presetSelected = selectElement.value;
 
     if(!presetSelected) {
-        presetSelected = 1;
+        presetSelected = "1";
     }
 
-    document.getElementById(selectId).innerHTML = "";
+    selectElement.innerHTML = "";
 
     let optionTitle = "";
 
@@ -614,20 +616,26 @@ async function loadPresetSelect(selectId, i18next) {
         const preset = await getPresetData(i);
 
         if(!preset || !Object.prototype.hasOwnProperty.call(preset, "name")) {
-            optionTitle = optionTitle + "<option value=\"" + i + "\">" + i18next.t("modal.archive.presetTitle") + i + " : " + i18next.t("modal.archive.presetEmpty") + "</option>";
+            optionTitle += `<option value="${i}">${i18next.t("modal.archive.presetTitle")}${i} : ${i18next.t("modal.archive.presetEmpty")}</option>`;
         } else {
-            if(preset["name"].trim() == "") {
-                optionTitle = optionTitle + "<option value=\"" + i+ "\">" + i18next.t("modal.archive.presetTitle") + i + " : " + i18next.t("modal.archive.presetTitleEmpty") + "</option>";
-            } else {
-                const element = document.createElement("div");
-                element.textContent = preset["name"].substring(0, 50);
-                optionTitle = optionTitle + "<option value=\"" + i + "\">" + i18next.t("modal.archive.presetTitle") + i  + " : " + element.innerHTML + "</option>";
-            }
+            const presetName = preset["name"].trim() === ""
+                ? i18next.t("modal.archive.presetTitleEmpty")
+                : preset["name"].substring(0, 50);
+
+            const element = document.createElement("div");
+            element.textContent = presetName;
+
+            optionTitle += `<option value="${i}">${i18next.t("modal.archive.presetTitle")}${i} : ${element.innerHTML}</option>`;
         }
     }
 
-    document.getElementById(selectId).innerHTML = optionTitle;
-    document.getElementById(selectId).value = presetSelected;
+    selectElement.innerHTML = optionTitle;
+
+    if(Array.from(selectElement.options).some(option => option.value === presetSelected)) {
+        selectElement.value = presetSelected;
+    } else {
+        selectElement.value = selectElement.options[0]?.value || "1";
+    }
 }
 
 async function presetsEnabled() {
