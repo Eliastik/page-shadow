@@ -209,7 +209,7 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
 
             if((!changes || changes.includes("customThemes")) && (!dontDisplayThemeAndPresets)) {
                 $("#themeSelect").val(currentSelectedTheme);
-                displayTheme($("#themeSelect").val(), null);
+                await displayTheme($("#themeSelect").val(), null);
             }
 
             if((!changes || changes.includes("filtersSettings") || changes.includes("customFilter")) && (!dontDisplayThemeAndPresets)) {
