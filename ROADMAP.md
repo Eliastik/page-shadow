@@ -145,6 +145,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Bugs to fix
 
+* [x] (Very minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
 * [x] (Minor) Shadow DOM is not always detected => example comments on Franceinfo website
 * [x] (Medium) Dark image detection not working on image from cross-origin domain (cf Wikipedia articles)
 * [x] (Major) Still some errors with QUOTA_BYTES_PER_ITEM in cloud archive. The chunk method need to be fixed
@@ -190,4 +191,3 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
 * [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
-* [ ] (Very minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
