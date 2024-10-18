@@ -65,7 +65,7 @@ export default class PageFilterProcessor {
             try {
                 elementsMatching = (element ? [element] : (selector && selector.trim() === "body" ? [document.body] : document.body.querySelectorAll(selector)));
             } catch(e) {
-                this.debugLogger.log(e, "error");
+                this.debugLogger?.log(e, "error");
                 continue; // Continue to next filter if selector is not valid
             }
 
@@ -107,7 +107,7 @@ export default class PageFilterProcessor {
                         }
                     }
                 } catch(e) {
-                    this.debugLogger.log(e, "error");
+                    this.debugLogger?.log(e, "error");
                     continue;
                 }
 
@@ -154,7 +154,7 @@ export default class PageFilterProcessor {
                                     }
                                 }
                             } catch(e) {
-                                this.debugLogger.log(e, "error");
+                                this.debugLogger?.log(e, "error");
                                 break;
                             }
                         }
@@ -186,6 +186,7 @@ export default class PageFilterProcessor {
             if (remove) {
                 if (element.classList && element.classList.contains(classToAddOrRemove)) {
                     this.multipleElementClassBatcherRemove.add(element, classToAddOrRemove);
+                    this.debugLogger?.log(`PageFilterProcessor - Removing class ${classToAddOrRemove} on element`, "debug", element);
                 }
             } else {
                 if (element.classList && !element.classList.contains(classToAddOrRemove)) {
@@ -197,6 +198,7 @@ export default class PageFilterProcessor {
         if (filterType == "forceDisableDefaultBackgroundColor") {
             if (remove) {
                 removeStyleAttribute(element, "background-color: unset !important");
+                this.debugLogger?.log("PageFilterProcessor - Removing unset style background-color on element", "debug", element);
             } else {
                 addNewStyleAttribute(element, "background-color: unset !important");
             }
@@ -205,6 +207,7 @@ export default class PageFilterProcessor {
         if (filterType == "forceDisableDefaultBackground") {
             if (remove) {
                 removeStyleAttribute(element, "background: unset !important");
+                this.debugLogger?.log("PageFilterProcessor - Removing unset style background on element", "debug", element);
             } else {
                 addNewStyleAttribute(element, "background: unset !important");
             }
@@ -213,6 +216,7 @@ export default class PageFilterProcessor {
         if (filterType == "forceDisableDefaultFontColor") {
             if (remove) {
                 removeStyleAttribute(element, "color: unset !important");
+                this.debugLogger?.log("PageFilterProcessor - Removing unset style color on element", "debug", element);
             } else {
                 addNewStyleAttribute(element, "color: unset !important");
             }
@@ -254,7 +258,7 @@ export default class PageFilterProcessor {
                         break;
                     }
                 } else {
-                    this.debugLogger.warn(`Unknown special filter rule: ${filterConfig}`);
+                    this.debugLogger?.warn(`Unknown special filter rule: ${filterConfig}`);
                 }
             });
         });

@@ -58,6 +58,10 @@ export default class PageAnalyzer {
         this.imageProcessor = new ImageProcessor(this.debugLogger, websiteSpecialFiltersConfig);
         this.shadowDomProcessor = new ShadowDomProcessor(currentSettings, websiteSpecialFiltersConfig, isEnabled);
 
+        this.shadowDomProcessor.analyzeSubElementsCallback = (currentElement) => {
+            this.analyzeElementChildrens(currentElement);
+        };
+
         this.initializeThrottledTasks();
     }
 
@@ -117,12 +121,12 @@ export default class PageAnalyzer {
     }
 
     async detectBackground(tagName, forceDisableThrottle) {
-        this.debugLogger.log(`PageAnalyzer detectBackground - Beginning analyzing page elements - elements tagName: ${tagName}`);
+        this.debugLogger?.log(`PageAnalyzer detectBackground - Beginning analyzing page elements - elements tagName: ${tagName}`);
 
         return new Promise(resolve => {
             if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
                 if(this.processingBackgrounds) {
-                    this.debugLogger.log("PageAnalyzer detectBackground - Already analyzing page elements, exiting");
+                    this.debugLogger?.log("PageAnalyzer detectBackground - Already analyzing page elements, exiting");
                     resolve();
                 }
 
@@ -170,7 +174,7 @@ export default class PageAnalyzer {
                 totalExecutionTime += addTime;
 
                 if(!forceDisableThrottle && totalExecutionTime >= this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime) {
-                    this.debugLogger.log(`PageAnalyzer detectBackground - Stopping early task to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`);
+                    this.debugLogger?.log(`PageAnalyzer detectBackground - Stopping early task to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`);
                     return this.runThrottledBackgroundDetection(elements.slice(currentIndex)).then(resolve);
                 }
             }
@@ -542,16 +546,20 @@ export default class PageAnalyzer {
         this.detectBackgroundForElement(element, false);
 
         // Detect element childrens
-        if(!attribute && this.websiteSpecialFiltersConfig.enableMutationObserversForSubChilds) {
-            if(element.getElementsByTagName) {
-                const elementChildrens = element.getElementsByTagName("*");
+        if (!attribute && this.websiteSpecialFiltersConfig.enableMutationObserversForSubChilds) {
+            this.analyzeElementChildrens(attribute, element);
+        }
+    }
 
-                if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgroundsSubChilds) {
-                    this.throttledTaskAnalyzeSubchilds.start(elementChildrens);
-                } else {
-                    for(const element of elementChildrens) {
-                        this.detectBackgroundForElement(element);
-                    }
+    analyzeElementChildrens(element) {
+        if (element.getElementsByTagName || element.querySelectorAll) {
+            const elementChildrens = element.getElementsByTagName ? element.getElementsByTagName("*") : element.querySelectorAll("*");
+
+            if (this.websiteSpecialFiltersConfig.throttleMutationObserverBackgroundsSubChilds) {
+                this.throttledTaskAnalyzeSubchilds.start(elementChildrens);
+            } else {
+                for (const element of elementChildrens) {
+                    this.detectBackgroundForElement(element);
                 }
             }
         }

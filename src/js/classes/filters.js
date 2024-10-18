@@ -86,7 +86,7 @@ export default class FilterProcessor {
 
                     return true;
                 } catch(e) {
-                    this.debugLogger.log(e, "error");
+                    this.debugLogger?.log(e, "error");
                     return false;
                 }
             }
@@ -156,12 +156,12 @@ export default class FilterProcessor {
                             filterToUpdate.hasError = true;
                         }
                     } catch(error2) {
-                        this.debugLogger.log(error2, "error");
+                        this.debugLogger?.log(error2, "error");
                         filterToUpdate.hasError = true;
                     }
                 }
             } catch(error) {
-                this.debugLogger.log(error, "error");
+                this.debugLogger?.log(error, "error");
                 filterToUpdate.hasError = true;
             }
         }
@@ -602,7 +602,7 @@ export default class FilterProcessor {
             try {
                 websuteUrl_tmp = new URL(url);
             } catch(e) {
-                this.debugLogger.log(e, "error");
+                this.debugLogger?.log(e, "error");
                 return;
             }
 

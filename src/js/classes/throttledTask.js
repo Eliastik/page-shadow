@@ -74,12 +74,12 @@ export default class ThrottledTask {
             try {
                 this.callback(this.elements[i]);
             } catch(e) {
-                this.debugLogger.error(`ThrottledTask ${this.name} - Error executing task: ${e}`);
+                this.debugLogger?.log(`ThrottledTask ${this.name} - Error executing task: ${e}`);
             }
 
             if(performance.now() - startTime >= this.maxExecutionTime) {
                 batchEnd = i + 1;
-                this.debugLogger.log(`ThrottledTask ${this.name} - Stopping early task to respect maxExecutionTime = ${this.maxExecutionTime} ms`);
+                this.debugLogger?.log(`ThrottledTask ${this.name} - Stopping early task to respect maxExecutionTime = ${this.maxExecutionTime} ms`);
                 break;
             }
         }
@@ -122,9 +122,9 @@ export default class ThrottledTask {
         this.elementsPerBatch = Math.max(2, Math.min(this.elementsPerBatch, this.maxElementsPerBatch));
 
         if(oldDelay < this.delay || oldElementsPerBatch > this.elementsPerBatch) {
-            this.debugLogger.log(`ThrottledTask ${this.name} - Increased throttling - Delay: ${oldDelay} > ${this.delay}, ElementsPerBatch: ${oldElementsPerBatch} > ${this.elementsPerBatch}`);
+            this.debugLogger?.log(`ThrottledTask ${this.name} - Increased throttling - Delay: ${oldDelay} > ${this.delay}, ElementsPerBatch: ${oldElementsPerBatch} > ${this.elementsPerBatch}`);
         } else if(oldDelay > this.delay || oldElementsPerBatch < this.elementsPerBatch) {
-            this.debugLogger.log(`ThrottledTask ${this.name} - Reduced throttling - Delay: ${oldDelay} > ${this.delay}, ElementsPerBatch: ${oldElementsPerBatch} > ${this.elementsPerBatch}`);
+            this.debugLogger?.log(`ThrottledTask ${this.name} - Reduced throttling - Delay: ${oldDelay} > ${this.delay}, ElementsPerBatch: ${oldElementsPerBatch} > ${this.elementsPerBatch}`);
         }
     }
 
