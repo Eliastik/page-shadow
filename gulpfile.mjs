@@ -15,7 +15,7 @@ import LessPluginCleanCSS from "less-plugin-clean-css";
 
 let currentMode = "development";
 
-const zipTimestamp = new Date(2022, 10, 1);
+const zipTimestamp = new Date(2024, 9, 18);
 
 gulp.task("set-prod-mode", () => {
     currentMode = "production";

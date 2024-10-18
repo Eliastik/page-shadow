@@ -158,6 +158,7 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
     if(typeof(browser.storage) == "undefined" || typeof(browser.storage.sync) == "undefined") {
         $("#archiveCloudBtn").addClass("disabled");
         $("#archiveCloudNotCompatible").show();
+        $("#infosCloudStorage").text("???");
     }
 
     if(!areaName || areaName == "sync") {
@@ -173,10 +174,15 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
         }
 
         if(!disableStorageSizeCalculation) {
-            const sizeCloud = browser.storage.sync.getBytesInUse ? await browser.storage.sync.getBytesInUse(null) : getSizeObject(await browser.storage.sync.get(null));
-            const convertedCloud = convertBytes(sizeCloud);
-            const convertedCloudMax = convertBytes(browser.storage.sync.QUOTA_BYTES);
-            $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
+            try {
+                const sizeCloud = browser.storage.sync.getBytesInUse ? await browser.storage.sync.getBytesInUse(null) : getSizeObject(await browser.storage.sync.get(null));
+                const convertedCloud = convertBytes(sizeCloud);
+                const convertedCloudMax = convertBytes(browser.storage.sync.QUOTA_BYTES);
+                $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
+            } catch(e) {
+                debugLogger.log(e, "error");
+                $("#infosCloudStorage").text("???");
+            }
         }
     }
 
@@ -1389,14 +1395,24 @@ async function isArchiveCloudAvailable() {
         };
     }
 
-    const data = await browser.storage.sync.get(["dateLastBackup", "pageShadowStorageBackup", "deviceBackup"]);
-    if(data.dateLastBackup && data.deviceBackup) {
-        return {
-            "available": true,
-            "date": data.dateLastBackup,
-            "device": data.deviceBackup
-        };
-    } else {
+    try {
+        const data = await browser.storage.sync.get(["dateLastBackup", "pageShadowStorageBackup", "deviceBackup"]);
+        if(data.dateLastBackup && data.deviceBackup) {
+            return {
+                "available": true,
+                "date": data.dateLastBackup,
+                "device": data.deviceBackup
+            };
+        } else {
+            return {
+                "available": false,
+                "date": null,
+                "device": null
+            };
+        }
+    } catch(e) {
+        debugLogger.log(e, "error");
+
         return {
             "available": false,
             "date": null,
