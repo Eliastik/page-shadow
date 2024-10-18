@@ -34,12 +34,12 @@ gulp.task("clean-directories", () => {
 
 gulp.task("copy-global", () => {
     return gulp.src(["./src/**", "!./src/img/src/**", "!./src/js/*.js", "!./src/img/icon_old.png", "!./src/img/icon_chrome.png", "!./src/css/src/**",
-        "!./src/css/*.less", "!./src/css/content_old.css", "!./src/js/classes/**", "!./src/js/utils/**", "!./src/_locales/**/{options,pageTest,popup}.json"], { encoding: false })
+        "!./src/css/*.less", "!./src/css/*.css", "!./src/js/classes/**", "!./src/js/utils/**", "!./src/_locales/**/{options,pageTest,popup}.json"], { encoding: false })
         .pipe(gulp.dest("./build/global/"));
 });
 
 gulp.task("compile-less", () => {
-    return gulp.src("./src/css/*.less")
+    return gulp.src(["./src/css/*.less", "./src/css/*.css"])
         .pipe(less())
         .pipe(gulp.dest("./build/global/css/"));
 });
@@ -47,7 +47,7 @@ gulp.task("compile-less", () => {
 gulp.task("compile-less-compressed", () => {
     const cleanCSSPlugin = new LessPluginCleanCSS({ advanced: true });
 
-    return gulp.src("./src/css/*.less")
+    return gulp.src(["./src/css/*.less", "./src/css/*.css"])
         .pipe(less({
             plugins: [cleanCSSPlugin]
         }))
@@ -132,9 +132,15 @@ gulp.task("build", () => {
     const manifestChrome = JSON.parse(fs.readFileSync("./manifests/chrome/manifest.json", "utf8"));
     const distFileName = manifestChrome.name + " v" + manifestChrome.version;
     const codebase = manifestChrome.codebase;
+
     gulp.src("build/firefox/**/**/*")
         .pipe(zip(distFileName + " Firefox.xpi", { compress: true, modifiedTime: zipTimestamp }))
         .pipe(gulp.dest("./build"));
+
+    gulp.src("build/chrome/**/**/*")
+        .pipe(zip(distFileName + " Chrome.zip", { compress: true, modifiedTime: zipTimestamp }))
+        .pipe(gulp.dest("./build"));
+
     return gulp.src("./build/chrome/")
         .pipe(crx({
             privateKey: fs.readFileSync("./key/key.pem", "utf8"),
