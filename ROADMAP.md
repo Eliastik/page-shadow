@@ -142,6 +142,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Adjust throttling algorithm, and performance settings
     * [x] Bug with iframes => example comments on Franceinfo website
     * [x] Bug with invert entire page when the extension is built in prod mode => was caused by the gulp-clean-css plugin
+    * [ ] Final tests (Chrome/Firefox) + compare code between MV2/MV3
 
 #### Bugs to fix
 
