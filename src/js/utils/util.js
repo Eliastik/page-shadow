@@ -1690,12 +1690,19 @@ async function backgroundImageToImage(element) {
     const url = style.backgroundImage.slice(4, -1).replace(/"/g, "");
 
     const image = new Image();
+
+    const imageLoadPromise = new Promise((resolve, reject) => {
+        image.onload = resolve;
+        image.onerror = reject;
+    });
+
     image.src = url;
 
     if (isCrossOrigin(url)) {
         image.crossOrigin = "anonymous";
     }
 
+    await imageLoadPromise;
     await image.decode();
 
     return image;
