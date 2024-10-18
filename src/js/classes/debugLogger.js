@@ -35,7 +35,7 @@ export default class DebugLogger {
         }
     }
 
-    log(message, type = "debug") {
+    log(message, type = "debug", element) {
         if (this.debugModeEnabled) {
             const timestamp = new Date().getTime();
             const pageURL = document.URL;
@@ -48,13 +48,13 @@ export default class DebugLogger {
 
             switch(type) {
             case "debug":
-                console.debug(log);
+                console.debug(log, element ? element : "");
                 break;
             case "error":
-                console.error(log);
+                console.error(log, element ? element : "");
                 break;
             case "warn":
-                console.warn(log);
+                console.warn(log, element ? element : "");
                 break;
             }
         }

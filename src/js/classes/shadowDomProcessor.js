@@ -30,6 +30,9 @@ export default class ShadowDomProcessor {
 
     throttledTaskAnalyzeSubchildsShadowRoot;
 
+    // eslint-disable-next-line no-unused-vars
+    analyzeSubElementsCallback = (currentElement) => {};
+
     constructor(currentSettings, websiteSpecialFiltersConfig, isEnabled) {
         this.currentSettings = currentSettings;
         this.isEnabled = isEnabled;
@@ -115,6 +118,10 @@ export default class ShadowDomProcessor {
             this.removeOldShadowRootStyle(element, oldStyles);
 
             this.processedShadowRoots.add(element);
+
+            if(this.analyzeSubElementsCallback) {
+                this.analyzeSubElementsCallback(element.shadowRoot);
+            }
         }
     }
 
