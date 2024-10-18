@@ -59,7 +59,9 @@ export default class PageAnalyzer {
         this.shadowDomProcessor = new ShadowDomProcessor(currentSettings, websiteSpecialFiltersConfig, isEnabled);
 
         this.shadowDomProcessor.analyzeSubElementsCallback = (currentElement) => {
-            this.analyzeElementChildrens(currentElement);
+            if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
+                this.analyzeElementChildrens(currentElement);
+            }
         };
 
         this.initializeThrottledTasks();
