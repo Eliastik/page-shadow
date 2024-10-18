@@ -69,7 +69,9 @@
     }
   ],
   "background": {
-    "scripts": ["js/background.js"]
+    "scripts": [
+      "js/background.js"
+    ]
   },
   "commands": {
     "enableDisable": {

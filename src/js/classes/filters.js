@@ -36,8 +36,9 @@ export default class FilterProcessor {
             FilterProcessor.instance = this;
         } else {
             this.isInit = false;
-            this.debugLogger = new DebugLogger();
         }
+
+        this.debugLogger = new DebugLogger();
 
         return FilterProcessor.instance;
     }

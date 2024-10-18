@@ -180,6 +180,7 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
                 const convertedCloudMax = convertBytes(browser.storage.sync.QUOTA_BYTES);
                 $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
             } catch(e) {
+                debugLogger.log(e, "error");
                 $("#infosCloudStorage").text("???");
             }
         }
@@ -1410,6 +1411,8 @@ async function isArchiveCloudAvailable() {
             };
         }
     } catch(e) {
+        debugLogger.log(e, "error");
+
         return {
             "available": false,
             "date": null,
