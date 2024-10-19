@@ -1638,9 +1638,7 @@ async function checkPermissions() {
     });
 }
 
-function svgElementToImage(element) {
-    const computedStyles = window.getComputedStyle(element);
-
+function svgElementToImage(element, computedStyles) {
     const box = element.getBBox();
     const width = box.width;
     const height = box.height;
@@ -1673,9 +1671,10 @@ function svgElementToImage(element) {
     return image;
 }
 
-async function backgroundImageToImage(element) {
-    const style = element.currentStyle || window.getComputedStyle(element, false);
-    const url = style.backgroundImage.slice(4, -1).replace(/"/g, "");
+async function backgroundImageToImage(element, computedStyles) {
+    const style = element.currentStyle || computedStyles;
+    const urlMatch = style.backgroundImage.match(/url\((['"]?)(.*?)\1\)/);
+    const url = urlMatch ? urlMatch[2] : null;
 
     const image = new Image();
 
@@ -1701,7 +1700,7 @@ function isCrossOrigin(imageSrc) {
         const url = new URL(imageSrc);
         return window.location.origin !== url.origin;
     } catch (e) {
-        debugLogger.log(e, "error");
+        debugLogger.log(e + " - URL: " + imageSrc, "error");
         return false;
     }
 }

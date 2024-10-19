@@ -105,7 +105,7 @@ export default class PageAnalyzer {
         );
 
         this.throttledTaskAnalyzeImages = new ThrottledTask((task) => {
-            this.taskAnalyzeImage(task.image, task.hasBackgroundImg);
+            this.taskAnalyzeImage(task.image, task.hasBackgroundImg, task.computedStyles);
         },
         "throttledTaskAnalyzeImages",
         this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay,
@@ -114,8 +114,8 @@ export default class PageAnalyzer {
         );
     }
 
-    taskAnalyzeImage(image, hasBackgroundImg) {
-        this.imageProcessor.detectDarkImage(image, hasBackgroundImg).then(isDarkImage => {
+    taskAnalyzeImage(image, hasBackgroundImg, computedStyles) {
+        this.imageProcessor.detectDarkImage(image, hasBackgroundImg, computedStyles).then(isDarkImage => {
             if (isDarkImage) {
                 this.multipleElementClassBatcherAdd.add(image, "pageShadowSelectiveInvert");
             }
@@ -320,10 +320,10 @@ export default class PageAnalyzer {
             addClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
         }
 
-        const computedStyle = window.getComputedStyle(element, null);
-        const background = computedStyle.background;
-        const backgroundColor = computedStyle.backgroundColor;
-        const backgroundImage = computedStyle.backgroundImage;
+        const computedStyles = window.getComputedStyle(element, null);
+        const background = computedStyles.background;
+        const backgroundColor = computedStyles.backgroundColor;
+        const backgroundImage = computedStyles.backgroundImage;
 
         const hasBackgroundImg = this.hasBackgroundImage(element, background, backgroundImage);
         const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
@@ -335,10 +335,11 @@ export default class PageAnalyzer {
                 if(this.websiteSpecialFiltersConfig.throttleDarkImageDetection) {
                     this.throttledTaskAnalyzeImages.start([{
                         image: element,
+                        computedStyles,
                         hasBackgroundImg
                     }]);
                 } else {
-                    this.taskAnalyzeImage(element, hasBackgroundImg);
+                    this.taskAnalyzeImage(element, hasBackgroundImg, computedStyles);
                 }
             }
         }
@@ -350,11 +351,11 @@ export default class PageAnalyzer {
         let transparentColorDetected = false;
 
         if(this.websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled) {
-            transparentColorDetected = this.detectTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg, computedStyle, hasTransparentBackgroundClass, element, transparentColorDetected);
+            transparentColorDetected = this.detectTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg, computedStyles, hasTransparentBackgroundClass, element, transparentColorDetected);
         }
 
         if(this.websiteSpecialFiltersConfig.enableBrightColorDetection) {
-            this.detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyle);
+            this.detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyles);
         }
 
         if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes) {
@@ -409,7 +410,7 @@ export default class PageAnalyzer {
         return hasShallowChildren && notAllChildrenAreImg;
     }
 
-    detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyle) {
+    detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyles) {
         // Background color
         if (!transparentColorDetected && !hasTransparentBackgroundClass) {
             const hasBrightColor = this.elementHasBrightColor(background, backgroundColor, false);
@@ -453,7 +454,7 @@ export default class PageAnalyzer {
         const isTextElement = this.isTextElement(element);
 
         if (isTextElement) {
-            const textColor = computedStyle.color;
+            const textColor = computedStyles.color;
             const hasBrightColor = this.elementHasBrightColor(textColor, textColor, true);
 
             if (hasBrightColor && hasBrightColor[0]) {
@@ -464,9 +465,9 @@ export default class PageAnalyzer {
         }
     }
 
-    detectTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg, computedStyle, hasTransparentBackgroundClass, element, transparentColorDetected) {
+    detectTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg, computedStyles, hasTransparentBackgroundClass, element, transparentColorDetected) {
         const hasTransparentBackground = this.elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg);
-        const backgroundClip = computedStyle.getPropertyValue("background-clip") || computedStyle.getPropertyValue("-webkit-background-clip");
+        const backgroundClip = computedStyles.getPropertyValue("background-clip") || computedStyles.getPropertyValue("-webkit-background-clip");
         const hasBackgroundClipText = backgroundClip && backgroundClip.trim().toLowerCase() == "text";
 
         if ((hasTransparentBackground || hasBackgroundClipText)) {
