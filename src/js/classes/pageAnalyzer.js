@@ -550,13 +550,13 @@ export default class PageAnalyzer {
 
         // Detect element childrens
         if (!attribute && this.websiteSpecialFiltersConfig.enableMutationObserversForSubChilds) {
-            this.analyzeElementChildrens(attribute, element);
+            this.analyzeElementChildrens(element);
         }
     }
 
-    analyzeElementChildrens(element) {
-        if (element.getElementsByTagName || element.querySelectorAll) {
-            const elementChildrens = element.getElementsByTagName ? element.getElementsByTagName("*") : element.querySelectorAll("*");
+    analyzeElementChildrens(currentElement) {
+        if (currentElement.getElementsByTagName || currentElement.querySelectorAll) {
+            const elementChildrens = currentElement.getElementsByTagName ? currentElement.getElementsByTagName("*") : currentElement.querySelectorAll("*");
 
             if (this.websiteSpecialFiltersConfig.throttleMutationObserverBackgroundsSubChilds) {
                 this.throttledTaskAnalyzeSubchilds.start(elementChildrens);

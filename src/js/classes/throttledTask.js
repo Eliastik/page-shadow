@@ -74,7 +74,7 @@ export default class ThrottledTask {
             try {
                 this.callback(this.elements[i]);
             } catch(e) {
-                this.debugLogger?.log(`ThrottledTask ${this.name} - Error executing task: ${e}`);
+                this.debugLogger?.log(`ThrottledTask ${this.name} - Error executing task: ${e}`, "error");
             }
 
             if(performance.now() - startTime >= this.maxExecutionTime) {
