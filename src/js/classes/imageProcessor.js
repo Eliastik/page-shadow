@@ -29,7 +29,7 @@ export default class ImageProcessor {
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
     }
 
-    async detectDarkImage(element, hasBackgroundImg) {
+    async detectDarkImage(element, hasBackgroundImg, computedStyles) {
         if(!element) return;
 
         const canvas = document.createElement("canvas");
@@ -37,7 +37,7 @@ export default class ImageProcessor {
         let image = element;
 
         // Image element
-        if (image instanceof HTMLImageElement && isCrossOrigin(image.src)) {
+        if(image instanceof HTMLImageElement && isCrossOrigin(image.src)) {
             image = image.cloneNode();
             image.crossOrigin = "Anonymous";
         }
@@ -47,7 +47,7 @@ export default class ImageProcessor {
             try {
                 removeClass(image, "pageShadowDisableStyling", "pageShadowElementDisabled");
 
-                image = svgElementToImage(element, image);
+                image = svgElementToImage(image, computedStyles);
 
                 addClass(image, "pageShadowDisableStyling", "pageShadowElementDisabled");
             } catch(e) {
@@ -60,7 +60,7 @@ export default class ImageProcessor {
         if(!(image instanceof HTMLImageElement) && !(image instanceof SVGImageElement)) {
             if(hasBackgroundImg) {
                 try {
-                    image = await backgroundImageToImage(element, image);
+                    image = await backgroundImageToImage(image, computedStyles);
                 } catch(e) {
                     this.debugLogger?.log(e.message, "error");
                     return false;
