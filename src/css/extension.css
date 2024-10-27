@@ -907,3 +907,13 @@ input, select, textarea {
     font-size: 13pt !important;
     margin-right: 8px;
 }
+body.popup .modal-header {
+    padding-bottom: 8px !important;
+}
+body.popup .modal-body {
+    padding-top: 0 !important;
+    padding-bottom: 8px !important;
+}
+body.popup .modal-footer {
+    padding-top: 0px !important;
+}
