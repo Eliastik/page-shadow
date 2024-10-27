@@ -1736,7 +1736,10 @@ async function reportWebsiteProblem() {
         settings
     };
 
-    const base64dataToSend = btoa(JSON.stringify(dataToSend));
+    const base64dataToSend = btoa(JSON.stringify(dataToSend))
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
 
     sendMessageWithPromise({
         type: "openTab",
