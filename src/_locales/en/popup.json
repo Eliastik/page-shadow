@@ -58,6 +58,8 @@
         "customThemeInfoDisable": "Don't show anymore",
         "close": "Close",
         "AdvSettings": "Extension settings",
+        "continue": "Continue",
+        "cancel": "Cancel",
         "archive": {
             "presetTitle": "Preset ",
             "presetEmpty": "Empty",
@@ -109,7 +111,8 @@
         "enableWebsite": "Disable for this website",
         "disableWebpage": "Disable for this page",
         "enableWebpage": "Disable for this page",
-        "permissionLink": "Missing permission. Click here to enable."
+        "permissionLink": "Missing permission. Click here to enable.",
+        "reportProblemLink": "Report a display problem with this page"
     },
     "modalArchiveInfo": {
         "title": "Advice",
@@ -126,5 +129,13 @@
     "modalAutoBackupCloudLastFailedMessage": {
         "title": "Error during automatic Cloud archive",
         "message": "An error occurred during the last automatic Cloud archive of your settings. You can try to archive your settings manually in the extension settings. If the problem persists, check that your settings do not exceed the maximum quota allowed by this archive method, then try again. You can also perform a manual archive locally."
+    },
+    "modalReportProblem": {
+        "reportProblemModalTitle": "Report a problem with this page",
+        "reportProblemModalDescription": "You can report a display issue on this page using Page Shadow's features to the extension developer. By continuing, the following data will be sent to the extension developer:",
+        "data1": "Full URL of the current web page",
+        "data2": "Settings as displayed on extension popup",
+        "reportProblemModalDescription2": "This data will be used by the developer to investigate and resolve the problem, for example by updating the extension's filters.",
+        "confirmation": "By continuing, you consent to the transmission of this data to the developer of the extension."
     }
 }

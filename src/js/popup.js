@@ -22,7 +22,7 @@ import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
 import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme, sendMessageWithPromise, applyContrastPageVariablesWithTheme, checkPermissions, getBrowser } from "./utils/util.js";
-import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval, permissionOrigin, attenuateDefaultValue } from "./constants.js";
+import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval, permissionOrigin, attenuateDefaultValue, settingsToLoad, enableReportWebsiteProblem, reportWebsiteProblemBackendURL } from "./constants.js";
 import { setSettingItem } from "./storage.js";
 import { init_i18next } from "./locales.js";
 import browser from "webextension-polyfill";
@@ -101,7 +101,7 @@ async function getCurrentURL() {
             return normalizeURL(tabInfos.url);
         }
     } else {
-        const tabs = await browser.tabs.query({active: true, currentWindow: true});
+        const tabs = await browser.tabs.query({ active: true, currentWindow: true });
 
         if(!browser.runtime.lastError) {
             return normalizeURL(tabs[0].url);
@@ -1712,7 +1712,38 @@ $(document).ready(() => {
             document.getElementById("popup-wrapper").style.maxHeight = (resolHeight - 120) + "px";
         }
     }
+
+    $("#reportProblemLink").on("click", () => {
+        $("#reportProblemModal").modal("show");
+    });
+
+    $("#reportProblemButton").on("click", async () => {
+        await reportWebsiteProblem();
+        $("#reportProblemModal").modal("hide");
+    });
+
+    if(enableReportWebsiteProblem) {
+        $("#reportProblemLink").show();
+    }
 });
+
+async function reportWebsiteProblem() {
+    const currentURL = await getCurrentURL();
+    const settings = await browser.storage.local.get(settingsToLoad);
+
+    const dataToSend = {
+        currentURL,
+        settings
+    };
+
+    const base64dataToSend = btoa(JSON.stringify(dataToSend));
+
+    sendMessageWithPromise({
+        type: "openTab",
+        url: reportWebsiteProblemBackendURL + encodeURIComponent(base64dataToSend),
+        part: ""
+    });
+}
 
 async function showInformationPopup(result) {
     const updateNotification = result.updateNotification || {};

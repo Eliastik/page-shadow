@@ -58,6 +58,8 @@
         "customThemeInfoDisable": "Ne plus afficher",
         "close": "Fermer",
         "AdvSettings": "Paramètres de l'extension",
+        "continue": "Continuer",
+        "cancel": "Annuler",
         "archive": {
             "presetTitle": "Pré-régl. ",
             "presetEmpty": "Vide",
@@ -109,7 +111,8 @@
         "enableWebsite": "Désactiver pour ce site",
         "disableWebpage": "Désactiver pour cette page",
         "enableWebpage": "Désactiver pour cette page",
-        "permissionLink": "Permission manquante. Cliquez ici pour l'activer."
+        "permissionLink": "Permission manquante. Cliquez ici pour l'activer.",
+        "reportProblemLink": "Signaler un problème d'affichage pour cette page"
     },
     "modalArchiveInfo": {
         "title": "Conseil",
@@ -126,5 +129,13 @@
     "modalAutoBackupCloudLastFailedMessage": {
         "title": "Erreur lors l'archivage automatique dans le Cloud",
         "message": "Une erreur est survenue lors de la dernière archive automatique dans le Cloud de vos paramètres. Vous pouvez essayer d'effectuer l'archivage manuellement dans les paramètres de l'extension. Si le problème persiste, vérifiez que vos paramètres ne dépassent pas le quota maximal autorisé par cette méthode d'archivage, puis réessayez. Vous pouvez aussi effectuer une archive manuelle en local."
+    },
+    "modalReportProblem": {
+        "reportProblemModalTitle": "Reporter un problème sur cette page",
+        "reportProblemModalDescription": "Vous pouvez signaler au développeur de l'extension un problème d'affichage sur cette page en utilisant les fonctionnalités de Page Shadow. En continuant, les données suivantes seront transmises au développeur de l'extension :",
+        "data1": "Adresse URL complète de la page web actuelle",
+        "data2": "Paramètres tels qu'affichés sur la popup de l'extension",
+        "reportProblemModalDescription2": "Ces données seront utilisées par le développeur pour investiguer et résoudre le problème, par exemple à travers la mise à jour des filtres de l'extension.",
+        "confirmation": "En continuant, vous consentez à la transmission de ces données au développeur de l'extension."
     }
 }
