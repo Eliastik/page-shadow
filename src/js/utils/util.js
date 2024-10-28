@@ -608,8 +608,6 @@ async function loadPresetSelect(selectId, i18next) {
         presetSelected = "1";
     }
 
-    selectElement.innerHTML = "";
-
     let optionTitle = "";
 
     for(let i = 1; i <= nbPresets; i++) {
