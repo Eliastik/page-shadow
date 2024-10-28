@@ -150,7 +150,7 @@ async function resetSettings() {
     await loadPresetSelect("loadPresetSelect", i18next);
     await loadPresetSelect("savePresetSelect", i18next);
     await loadPresetSelect("deletePresetSelect", i18next);
-    displayPresetSettings(currentSelectedPresetEdit);
+    await displayPresetSettings(currentSelectedPresetEdit);
     localStorage.clear();
 }
 
@@ -214,14 +214,14 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
             }
 
             if((!changes || changes.includes("filtersSettings") || changes.includes("customFilter")) && (!dontDisplayThemeAndPresets)) {
-                displayFilters();
+                await displayFilters();
             }
 
             if(!changes || changes.includes("presets")) {
                 await loadPresetSelect("loadPresetSelect", i18next);
                 await loadPresetSelect("savePresetSelect", i18next);
                 await loadPresetSelect("deletePresetSelect", i18next);
-                if(!dontDisplayThemeAndPresets) displayPresetSettings(currentSelectedPresetEdit);
+                if(!dontDisplayThemeAndPresets) await displayPresetSettings(currentSelectedPresetEdit);
 
                 $("#savePresetSelect").val(currentSelectedPresetEdit);
             }
@@ -262,15 +262,15 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
 
             if(!changes || changes.includes("advancedOptionsFiltersSettings")) {
                 checkAdvancedOptions();
-                loadAdvancedOptionsUI();
+                await loadAdvancedOptionsUI();
             }
         } else {
             await loadPresetSelect("loadPresetSelect", i18next);
             await loadPresetSelect("savePresetSelect", i18next);
             await loadPresetSelect("deletePresetSelect", i18next);
 
-            displayPresetSettings(currentSelectedPresetEdit, changingLanguage);
-            displayFilters();
+            await displayPresetSettings(currentSelectedPresetEdit, changingLanguage);
+            await displayFilters();
         }
 
         if(await notifyChangedThemeNotSaved($("#themeSelect").val())) {
@@ -377,7 +377,11 @@ async function displayTheme(nb, defaultSettings) {
     $("#customThemeFont").val(fontName);
     $("#previsualisationDiv").css("font-family", fontTheme);
 
-    window.codeMirrorUserCss.getDoc().setValue(customCSS);
+    const userCsss = window.codeMirrorUserCss;
+
+    if(userCsss) {
+        userCsss.getDoc().setValue(customCSS);
+    }
 
     if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
         $("#not-saved-customThemes").show();
@@ -478,7 +482,7 @@ async function displayFilters() {
                     $("#buttonSeeErrorsFilter").removeAttr("disabled");
                 }
 
-                displayFilterErrors(message.data, message.typeFilter);
+                await displayFilterErrors(message.data, message.typeFilter);
             });
 
             const iconSeeErrors = document.createElement("i");
@@ -804,7 +808,7 @@ function getUpdatedAdvancedOptions() {
 
 async function saveAdvancedOptions() {
     await setSettingItem("advancedOptionsFiltersSettings", getUpdatedAdvancedOptions());
-    loadAdvancedOptionsUI();
+    await loadAdvancedOptionsUI();
 
     clearTimeout(savedAdvancedOptionsTimeout);
     savedAdvancedOptionsTimeout = setTimeout(() => {
@@ -904,7 +908,7 @@ async function displayInfosFilter(idFilter) {
                     }
                 }
 
-                displayFilterErrors(resultErrors.data, resultErrors.typeFilter);
+                await displayFilterErrors(resultErrors.data, resultErrors.typeFilter);
             });
         }
     }
@@ -1128,7 +1132,13 @@ async function saveThemeSettings(nb) {
     customThemes[nb]["customThemeLinks"] = $("#colorpicker3").attr("value");
     customThemes[nb]["customThemeLinksVisited"] = $("#colorpicker4").attr("value");
     customThemes[nb]["customThemeFont"] = $("#customThemeFont").val();
-    window.codeMirrorUserCss.save();
+
+    const userCsss = window.codeMirrorUserCss;
+
+    if(userCsss) {
+        userCsss.save();
+    }
+
     customThemes[nb]["customCSSCode"] = $("#codeMirrorUserCSSTextarea").val();
 
     await setSettingItem("customThemes", customThemes);
@@ -1144,7 +1154,11 @@ async function notifyChangedThemeNotSaved(nb) {
         customThemes = result.customThemes;
     }
 
-    window.codeMirrorUserCss.save();
+    const userCsss = window.codeMirrorUserCss;
+
+    if(userCsss) {
+        userCsss.save();
+    }
 
     if(customThemes[nb]["customThemeBg"] == null || customThemes[nb]["customThemeBg"].trim() == "") customThemes[nb]["customThemeBg"] = defaultBGColorCustomTheme;
     if(customThemes[nb]["customThemeTexts"] == null || customThemes[nb]["customThemeTexts"].trim() == "") customThemes[nb]["customThemeTexts"] = defaultTextsColorCustomTheme;
@@ -1196,7 +1210,7 @@ async function saveList() {
 async function changeLanguage() {
     changingLanguage = true;
 
-    changeLng($("#languageSelect").val());
+    await changeLng($("#languageSelect").val());
     $("span[data-toggle=\"tooltip\"]").tooltip("hide");
     $("i[data-toggle=\"tooltip\"]").tooltip("hide");
 
@@ -1669,7 +1683,7 @@ function openTabByHash() {
     }
 }
 
-$(document).ready(() => {
+$(document).ready(async () => {
     let savedTimeout;
 
     $("#saveListButton").on("click", () => {
@@ -1706,11 +1720,11 @@ $(document).ready(() => {
 
         $("#not-saved-customThemes").hide();
         currentSelectedTheme = $("#themeSelect").val();
-        displayTheme($("#themeSelect").val());
+        await displayTheme($("#themeSelect").val());
     });
 
-    $("#customThemeSave").on("click", () => {
-        saveThemeSettings($("#themeSelect").val());
+    $("#customThemeSave").on("click", async () => {
+        await saveThemeSettings($("#themeSelect").val());
 
         clearTimeout(savedTimeout);
         savedTimeout = setTimeout(() => {
@@ -1771,14 +1785,14 @@ $(document).ready(() => {
     $("#updateBtn").attr("href", "http://www.eliastiksofts.com/page-shadow/update.php?v="+ extensionVersion);
 
     if(typeof(browser.storage.onChanged) !== "undefined") {
-        browser.storage.onChanged.addListener((changes, areaName) => {
+        browser.storage.onChanged.addListener(async (changes, areaName) => {
             if(changes) {
-                displaySettings(areaName, changingLanguage, Object.keys(changes));
+                await displaySettings(areaName, changingLanguage, Object.keys(changes));
             }
         });
     }
 
-    initColpick();
+    await initColpick();
 
     $("#archiveDataButton").on("click", () => {
         archiveSettings();
@@ -1868,7 +1882,7 @@ $(document).ready(() => {
 
     window.codeMirrorJSONArchive.setSize(null, 50);
 
-    displaySettings();
+    await displaySettings();
 
     if(getBrowser() == "Chrome" || getBrowser() == "Opera") {
         $("#keyboardShortcuts").on("click", () => {
@@ -2039,7 +2053,7 @@ $(document).ready(() => {
 
         $("#not-saved-presets").hide();
         currentSelectedPresetEdit = $("#savePresetSelect").val();
-        displayPresetSettings($("#savePresetSelect").val());
+        await displayPresetSettings($("#savePresetSelect").val());
     });
 
     $("#savePresetTitle").on("input", async() => {
@@ -2093,7 +2107,7 @@ $(document).ready(() => {
         if (!alreadyCheckedForUpdateFilters) {
             await sendMessageWithPromise({ "type": "checkUpdateNeededForFilters" }, "getUpdateNeededForFilterFinished");
             alreadyCheckedForUpdateFilters = true;
-            displayFilters();
+            await displayFilters();
         }
     });
 
@@ -2102,7 +2116,7 @@ $(document).ready(() => {
     });
 
     $("#resetAdvancedOptions").on("click", async() => {
-        loadAdvancedOptionsUI(true);
+        await loadAdvancedOptionsUI(true);
 
         if(await notifyChangedAdvancedOptionsNotSaved()) {
             $("#not-saved-advanced").show();
