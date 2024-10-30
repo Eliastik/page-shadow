@@ -306,50 +306,50 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
 async function displayTheme(nb, defaultSettings) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
     defaultSettings = defaultSettings == undefined ? false : defaultSettings;
-    let customThemes, fontTheme, fontName, customCSS, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme;
+    let customTheme, fontTheme, fontName, customCSS, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme;
 
     const result = await browser.storage.local.get("customThemes");
 
-    if(result.customThemes != undefined && result.customThemes[nb] != undefined) {
-        customThemes = result.customThemes[nb];
+    if(result.customThemes && result.customThemes[nb]) {
+        customTheme = result.customThemes[nb];
     } else {
-        customThemes = defaultCustomThemes[nb];
+        customTheme = defaultCustomThemes[nb];
     }
 
-    if(!defaultSettings && customThemes["customThemeBg"] != undefined) {
-        backgroundTheme = customThemes["customThemeBg"];
+    if(!defaultSettings && customTheme && customTheme["customThemeBg"] != undefined) {
+        backgroundTheme = customTheme["customThemeBg"];
     } else {
         backgroundTheme = defaultBGColorCustomTheme;
     }
 
-    if(!defaultSettings && customThemes["customThemeTexts"] != undefined) {
-        textsColorTheme = customThemes["customThemeTexts"];
+    if(!defaultSettings && customTheme && customTheme["customThemeTexts"] != undefined) {
+        textsColorTheme = customTheme["customThemeTexts"];
     } else {
         textsColorTheme = defaultTextsColorCustomTheme;
     }
 
-    if(!defaultSettings && customThemes["customThemeLinks"] != undefined) {
-        linksColorTheme = customThemes["customThemeLinks"];
+    if(!defaultSettings && customTheme && customTheme["customThemeLinks"] != undefined) {
+        linksColorTheme = customTheme["customThemeLinks"];
     } else {
         linksColorTheme = defaultLinksColorCustomTheme;
     }
 
-    if(!defaultSettings && customThemes["customThemeLinksVisited"] != undefined) {
-        linksVisitedColorTheme = customThemes["customThemeLinksVisited"];
+    if(!defaultSettings && customTheme && customTheme["customThemeLinksVisited"] != undefined) {
+        linksVisitedColorTheme = customTheme["customThemeLinksVisited"];
     } else {
         linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
     }
 
-    if(!defaultSettings && customThemes["customThemeFont"] != undefined && customThemes["customThemeFont"].trim() != "") {
-        fontTheme = "\"" + customThemes["customThemeFont"] + "\"";
-        fontName = customThemes["customThemeFont"];
+    if(!defaultSettings && customTheme && customTheme["customThemeFont"] != undefined && customTheme["customThemeFont"].trim() != "") {
+        fontTheme = "\"" + customTheme["customThemeFont"] + "\"";
+        fontName = customTheme["customThemeFont"];
     } else {
         fontTheme = defaultFontCustomTheme;
         fontName = defaultFontCustomTheme;
     }
 
-    if(!defaultSettings && customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
-        customCSS = customThemes["customCSSCode"];
+    if(!defaultSettings && customTheme && customTheme["customCSSCode"] != undefined && typeof(customTheme["customCSSCode"]) == "string" && customTheme["customCSSCode"].trim() != "") {
+        customCSS = customTheme["customCSSCode"];
     } else {
         customCSS = defaultCustomCSSCode;
     }
@@ -1123,7 +1123,7 @@ async function saveThemeSettings(nb) {
     const result = await browser.storage.local.get("customThemes");
     let customThemes = defaultCustomThemes;
 
-    if(result.customThemes != undefined) {
+    if(result.customThemes) {
         customThemes = result.customThemes;
     }
 
@@ -1148,10 +1148,18 @@ async function notifyChangedThemeNotSaved(nb) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
     const result = await browser.storage.local.get("customThemes");
-    let customThemes = JSON.parse(JSON.stringify(defaultCustomThemes));
 
-    if(result.customThemes != undefined) {
+    let customThemes = JSON.parse(JSON.stringify(defaultCustomThemes));
+    let currentCustomTheme = null;
+
+    if(result.customThemes) {
         customThemes = result.customThemes;
+    }
+
+    if(customThemes && customThemes[nb]) {
+        currentCustomTheme = customThemes[nb];
+    } else {
+        currentCustomTheme = defaultCustomThemes[nb];
     }
 
     const userCsss = window.codeMirrorUserCss;
@@ -1160,19 +1168,19 @@ async function notifyChangedThemeNotSaved(nb) {
         userCsss.save();
     }
 
-    if(customThemes[nb]["customThemeBg"] == null || customThemes[nb]["customThemeBg"].trim() == "") customThemes[nb]["customThemeBg"] = defaultBGColorCustomTheme;
-    if(customThemes[nb]["customThemeTexts"] == null || customThemes[nb]["customThemeTexts"].trim() == "") customThemes[nb]["customThemeTexts"] = defaultTextsColorCustomTheme;
-    if(customThemes[nb]["customThemeLinks"] == null || customThemes[nb]["customThemeLinks"].trim() == "") customThemes[nb]["customThemeLinks"] = defaultLinksColorCustomTheme;
-    if(customThemes[nb]["customThemeLinksVisited"] == null || customThemes[nb]["customThemeLinksVisited"].trim() == "") customThemes[nb]["customThemeLinksVisited"] = defaultVisitedLinksColorCustomTheme;
-    if(customThemes[nb]["customThemeFont"] == null || customThemes[nb]["customThemeFont"].trim() == "") customThemes[nb]["customThemeFont"] = defaultFontCustomTheme;
-    if(customThemes[nb]["customCSSCode"] == null || customThemes[nb]["customCSSCode"].trim() == "") customThemes[nb]["customCSSCode"] = defaultCustomCSSCode;
+    if(currentCustomTheme["customThemeBg"] == null || currentCustomTheme["customThemeBg"].trim() == "") currentCustomTheme["customThemeBg"] = defaultBGColorCustomTheme;
+    if(currentCustomTheme["customThemeTexts"] == null || currentCustomTheme["customThemeTexts"].trim() == "") currentCustomTheme["customThemeTexts"] = defaultTextsColorCustomTheme;
+    if(currentCustomTheme["customThemeLinks"] == null || currentCustomTheme["customThemeLinks"].trim() == "") currentCustomTheme["customThemeLinks"] = defaultLinksColorCustomTheme;
+    if(currentCustomTheme["customThemeLinksVisited"] == null || currentCustomTheme["customThemeLinksVisited"].trim() == "") currentCustomTheme["customThemeLinksVisited"] = defaultVisitedLinksColorCustomTheme;
+    if(currentCustomTheme["customThemeFont"] == null || currentCustomTheme["customThemeFont"].trim() == "") currentCustomTheme["customThemeFont"] = defaultFontCustomTheme;
+    if(currentCustomTheme["customCSSCode"] == null || currentCustomTheme["customCSSCode"].trim() == "") currentCustomTheme["customCSSCode"] = defaultCustomCSSCode;
 
-    return customThemes[nb]["customThemeBg"].toLowerCase() != $("#colorpicker1").attr("value").toLowerCase() ||
-        customThemes[nb]["customThemeTexts"].toLowerCase() != $("#colorpicker2").attr("value").toLowerCase() ||
-        customThemes[nb]["customThemeLinks"].toLowerCase() != $("#colorpicker3").attr("value").toLowerCase() ||
-        customThemes[nb]["customThemeLinksVisited"].toLowerCase() != $("#colorpicker4").attr("value").toLowerCase() ||
-        customThemes[nb]["customThemeFont"].trim().toLowerCase() != $("#customThemeFont").val().trim().toLowerCase() ||
-        customThemes[nb]["customCSSCode"] != $("#codeMirrorUserCSSTextarea").val();
+    return currentCustomTheme["customThemeBg"].toLowerCase() != $("#colorpicker1").attr("value").toLowerCase() ||
+        currentCustomTheme["customThemeTexts"].toLowerCase() != $("#colorpicker2").attr("value").toLowerCase() ||
+        currentCustomTheme["customThemeLinks"].toLowerCase() != $("#colorpicker3").attr("value").toLowerCase() ||
+        currentCustomTheme["customThemeLinksVisited"].toLowerCase() != $("#colorpicker4").attr("value").toLowerCase() ||
+        currentCustomTheme["customThemeFont"].trim().toLowerCase() != $("#customThemeFont").val().trim().toLowerCase() ||
+        currentCustomTheme["customCSSCode"] != $("#codeMirrorUserCSSTextarea").val();
 }
 
 async function notifyChangedListNotSaved() {
