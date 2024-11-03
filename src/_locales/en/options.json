@@ -215,7 +215,8 @@
             "contact": {
                 "title": "Contact the developer",
                 "email": "By email",
-                "github": "Via Github (issues)"
+                "github": "Via Github (issues)",
+                "report": "Report a display problem on a webpage"
             },
             "version": "Current version:",
             "browser": "Your web browser:",
