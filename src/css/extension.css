@@ -589,9 +589,8 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 .well .well {
     background-color: #e7e4e4;
 }
-.dropdown-menu-top {
-    top: -175%;
-    border-radius: 6px;
+.container-option .tab-content {
+    overflow: visible !important;
 }
 #sliderBlueLightReduction, #sliderAttenuateColorPercent {
     width: 185px;

@@ -210,7 +210,8 @@
             "contact": {
                 "title": "Contacter le développeur",
                 "email": "Par e-mail",
-                "github": "Via Github (issues)"
+                "github": "Via Github (issues)",
+                "report": "Signaler un problème d'affichage sur une page web"
             },
             "webpage": "Page web de Page Shadow :",
             "version": "Version actuelle :",
