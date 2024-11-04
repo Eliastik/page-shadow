@@ -650,6 +650,12 @@ async function loadAdvancedOptionsUI(reset, changingLanguage) {
         const category = websiteSpecialFiltersConfigThemes[key];
         const panelId = `collapse${category}`;
 
+        // If the current advanced option is unknown, we stop here
+        if(!Object.keys(defaultWebsiteSpecialFiltersConfig).includes(key)) {
+            debugLogger.log(`Options.js loadAdvancedOptionsUI - Unknown advanced option "${key}"`, "warn");
+            return;
+        }
+
         // Process category
         if (category && category !== currentCategory) {
             currentCategory = category;

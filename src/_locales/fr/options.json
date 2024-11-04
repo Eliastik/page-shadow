@@ -186,7 +186,7 @@
                 "filterEngine": "Ces options gèrent le fonctionnement du moteur de filtre de Page Shadow.",
                 "imageAnalyze": "Ces options gèrent le moteur chargé d'analyser les images et chargé de détecter les images avec du texte ou autres éléments sombres.",
                 "applyCssTimer": "Ces options gèrent le fonctionnement du minteur chargé d'appliquer les changements de classes CSS des éléments par Page Shadow sur les pages web.",
-                "others": "Autres options avancées"
+                "others": "Autres options avancées."
             }
         },
         "saved": "Sauvegardé !"
