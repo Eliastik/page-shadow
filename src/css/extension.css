@@ -589,8 +589,8 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 .well .well {
     background-color: #e7e4e4;
 }
-.container-option .tab-content {
-    overflow: visible !important;
+.container-option .tab-content:not(.tab-content-no-overflow) {
+    overflow: visible;
 }
 #sliderBlueLightReduction, #sliderAttenuateColorPercent {
     width: 185px;

@@ -190,7 +190,7 @@
                 "filterEngine": "These options manage the Page Shadow filter engine.",
                 "imageAnalyze": "These options manage the engine responsible for analyzing images and detecting images with text or other dark elements.",
                 "applyCssTimer": "These options control the functioning of the timer responsible for applying CSS class changes to elements by Page Shadow on web pages.",
-                "others": "Others advanced options"
+                "others": "Others advanced options."
             }
         },
         "saved": "Saved!"
