@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getCustomThemeConfig, processRules, processRulesInvert } from "../utils/util.js";
+import { getCustomThemeConfig, processRules, processRulesInvert, processRulesAttenuate } from "../utils/util.js";
 import { defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
 
@@ -67,7 +67,7 @@ export default class ShadowDomProcessor {
 
     async processOneShadowRoot(element) {
         if(element && element.shadowRoot) {
-            const oldStyles = element.shadowRoot.querySelectorAll(".pageShadowCSSShadowRoot, .pageShadowCSSShadowRootInvert");
+            const oldStyles = element.shadowRoot.querySelectorAll(".pageShadowCSSShadowRoot, .pageShadowCSSShadowRootInvert, .pageShadowCSSShadowRootAttenuate");
 
             if(this.isEnabled && ((this.currentSettings.pageShadowEnabled != undefined && this.currentSettings.pageShadowEnabled == "true") || (this.currentSettings.colorInvert != undefined && this.currentSettings.colorInvert == "true") || (this.currentSettings.attenuateColors != undefined && this.currentSettings.attenuateColors == "true"))) {
                 if(this.currentSettings.pageShadowEnabled != undefined && this.currentSettings.pageShadowEnabled == "true") {
@@ -111,7 +111,15 @@ export default class ShadowDomProcessor {
                     styleTagInvert.classList.add("pageShadowCSSShadowRootInvert");
                     element.shadowRoot.appendChild(styleTagInvert);
 
-                    processRulesInvert(element, styleTagInvert, this.currentSettings.colorInvert, this.currentSettings.invertImageColors, this.currentSettings.invertEntirePage, this.currentSettings.invertVideoColors, this.currentSettings.invertBgColor, this.currentSettings.selectiveInvert, this.currentSettings.invertBrightColors);
+                    processRulesInvert(element, styleTagInvert, this.currentSettings);
+                }
+
+                if(this.currentSettings.attenuateColors != undefined && this.currentSettings.attenuateColors == "true") {
+                    const styleTagAttenuate = document.createElement("style");
+                    styleTagAttenuate.classList.add("pageShadowCSSShadowRootAttenuate");
+                    element.shadowRoot.appendChild(styleTagAttenuate);
+
+                    processRulesAttenuate(styleTagAttenuate, this.currentSettings);
                 }
             }
 
@@ -127,7 +135,7 @@ export default class ShadowDomProcessor {
 
     removeOldShadowRootStyle(element, oldStyles) {
         if(element && element.shadowRoot) {
-            const styles = oldStyles || element.shadowRoot.querySelectorAll(".pageShadowCSSShadowRoot, .pageShadowCSSShadowRootInvert");
+            const styles = oldStyles || element.shadowRoot.querySelectorAll(".pageShadowCSSShadowRoot, .pageShadowCSSShadowRootInvert, .pageShadowCSSShadowRootAttenuate");
 
             for(const style of styles) {
                 if(element.shadowRoot.contains(style)) {

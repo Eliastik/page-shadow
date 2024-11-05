@@ -91,8 +91,8 @@ html.pageShadowInvertEntirePage body.pageShadowAttenuateVideoColor video.pageSha
 }
 
 // Bright color
-body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground:not(.pageShadowDisableElementInvert),
-body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert) {
+body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowHasBrightColorBackground:not(.pageShadowDisableElementInvert),
+body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert) {
     filter: var(--page-shadow-attenuate-filter) !important;
     -moz-filter: var(--page-shadow-attenuate-filter) !important;
     -o-filter: var(--page-shadow-attenuate-filter) !important;
