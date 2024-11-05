@@ -111,7 +111,7 @@ export default class ShadowDomProcessor {
                     styleTagInvert.classList.add("pageShadowCSSShadowRootInvert");
                     element.shadowRoot.appendChild(styleTagInvert);
 
-                    processRulesInvert(styleTagInvert, this.currentSettings.colorInvert, this.currentSettings.invertImageColors, this.currentSettings.invertEntirePage, this.currentSettings.invertVideoColors, this.currentSettings.invertBgColor, this.currentSettings.selectiveInvert);
+                    processRulesInvert(element, styleTagInvert, this.currentSettings.colorInvert, this.currentSettings.invertImageColors, this.currentSettings.invertEntirePage, this.currentSettings.invertVideoColors, this.currentSettings.invertBgColor, this.currentSettings.selectiveInvert, this.currentSettings.invertBrightColors);
                 }
             }
 
