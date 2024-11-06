@@ -98,6 +98,14 @@ html:not(.pageShadowInvertEntirePage) body.pageShadowInvertBrightColors .pageSha
     -webkit-filter: var(--page-shadow-invert-filter-bright-color-backgrounds) !important;
 }
 
+/* Bright color texts - Invert childs of a bright color text */
+body.pageShadowInvertBrightColors .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorText *):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(body.pageShadowInvertBgColor .pageShadowHasBackgroundImg > *):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg):not(:has(.pageShadowHasBackgroundImg)) > *:not(.pageShadowHasBrightColorText):not(.pageShadowHasBrightColorBackground) {
+    filter: var(--page-shadow-invert-filter) !important;
+    -moz-filter: var(--page-shadow-invert-filter) !important;
+    -o-filter: var(--page-shadow-invert-filter) !important;
+    -webkit-filter: var(--page-shadow-invert-filter) !important;
+}
+
 /* Image invert - Invert entire page enabled */
 body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) img:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorText *),
 body.pageShadowInvertImageColor :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) svg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorText *),
