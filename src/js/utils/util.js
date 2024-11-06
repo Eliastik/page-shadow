@@ -453,6 +453,10 @@ function processRulesInvert(parentElement, style, settings) {
         }
 
         if(invertBrightColors == "true") {
+            if(shouldInvertBrightColors) {
+                style.sheet.insertRule(":host .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(:host .pageShadowHasBackgroundImg > *):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg):not(:has(.pageShadowHasBackgroundImg)) > *:not(.pageShadowHasBrightColorText):not(.pageShadowHasBrightColorBackground) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+            }
+
             if(invertEntirePage != "true") {
                 if(shouldInvertBrightColors) {
                     style.sheet.insertRule(":host > .pageShadowHasBrightColorBackground:not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg), :host > .pageShadowHasBrightColorText { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
