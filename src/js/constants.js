@@ -105,7 +105,7 @@ const defaultFilters = {
         {
             "filterName": "Mode performance ultra/Ultra performance mode",
             "sourceName": "Eliastik's Softs",
-            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/ultra.performance.txt",
+            "sourceUrl": "https://www.eliastiksofts.com/page-shadow/filters/ultra.performance.2.11.txt",
             "lastUpdated": 0,
             "enabled": false,
             "hasError": false,

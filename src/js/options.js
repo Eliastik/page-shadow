@@ -48,6 +48,7 @@ import "@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2";
 import optionsEN from "../_locales/en/options.json";
 import optionsFR from "../_locales/fr/options.json";
 import DebugLogger from "./classes/debugLogger.js";
+import Filter from "./classes/filters.js";
 
 window.$ = $;
 window.jQuery = $;
@@ -1295,7 +1296,7 @@ async function restoreSettings(object) {
     }
 
     await browser.storage.local.set(finalRestoreObject);
-    await migrateSettings();
+    await migrateSettings(new Filter());
     sendMessageWithPromise({ "type": "updateSettingsCache" });
     sendMessageWithPromise({ "type": "updatePresetCache" });
 
