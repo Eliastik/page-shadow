@@ -128,7 +128,7 @@ async function migrateSettings(filters) {
 
     // Migrate default filters
     if(filters && result.updateNotification && !result.updateNotification[extensionVersion]) {
-        filters.updateDefaultFilters();
+        await filters.updateDefaultFilters();
     }
 
     // Migrate Night mode filter
