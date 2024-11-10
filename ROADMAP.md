@@ -148,6 +148,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Bugs to fix
 
+* [x] (Medium) HTML class used by Page Shadow to invert entire page is reseted on some websites. Exemple: https://spring.io/tools
 * [x] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
 * [x] (Very minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
 * [x] (Minor) Shadow DOM is not always detected => example comments on Franceinfo website

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme, areAllCSSVariablesDefined } from "../utils/util.js";
+import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme, areAllCSSVariablesDefinedForHTMLElement, areAllClassesDefinedForHTMLElement } from "../utils/util.js";
 import { colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, attenuateDefaultValue } from "../constants.js";
 import SafeTimer from "./safeTimer.js";
 import MutationObserverProcessor from "./mutationObserverProcessor.js";
@@ -531,7 +531,8 @@ export default class ContentProcessor {
             this.timerObserveDocumentElementChange = new SafeTimer(async () => {
                 const settings = await getSettings(getCurrentURL());
 
-                if(!areAllCSSVariablesDefined(settings.pageShadowEnabled, settings.colorInvert)) {
+                if(!areAllCSSVariablesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert)
+                    || !areAllClassesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.theme)) {
                     this.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
                 }
 
