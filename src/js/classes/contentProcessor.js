@@ -532,7 +532,7 @@ export default class ContentProcessor {
                 const settings = await getSettings(getCurrentURL());
 
                 if(!areAllCSSVariablesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert)
-                    || !areAllClassesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.theme)) {
+                    || !areAllClassesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.invertEntirePage, settings.theme)) {
                     this.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
                 }
 
