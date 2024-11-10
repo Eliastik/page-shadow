@@ -102,7 +102,9 @@ html.pageShadowContrastBlack.pageShadowForceCustomTextColorAsBackground:not(.pag
 .pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *.pageShadowHasPseudoElement:not(.pageShadowPseudoElementHasBackgroundImg):not(.pageShadowPseudoElementHasTransparentBackground)::after,
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement:not(.pageShadowPseudoElementHasBackgroundImg):not(.pageShadowPseudoElementHasTransparentBackground):not(.pageShadowPseudoElementHasBrightColorBackground)::after,
 .pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *.pageShadowHasPseudoElement:not(.pageShadowPseudoElementHasBackgroundImg):not(.pageShadowPseudoElementHasTransparentBackground)::before,
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement:not(.pageShadowPseudoElementHasBackgroundImg):not(.pageShadowPseudoElementHasTransparentBackground):not(.pageShadowPseudoElementHasBrightColorBackground)::before {
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement:not(.pageShadowPseudoElementHasBackgroundImg):not(.pageShadowPseudoElementHasTransparentBackground):not(.pageShadowPseudoElementHasBrightColorBackground)::before,
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::after, 
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::before {
     background-color: var(--page-shadow-bgcolor) !important;
 }
 
@@ -114,7 +116,9 @@ html.pageShadowContrastBlack.pageShadowForceCustomTextColorAsBackground:not(.pag
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement:not(.pageShadowPseudoElementHasBackgroundImg):not(.pageShadowPseudoElementHasTransparentBackground):not(.pageShadowPseudoElementHasBrightColorText)::after,
 .pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *.pageShadowHasPseudoElement:not(.pageShadowPseudoElementHasBackgroundImg):not(.pageShadowPseudoElementHasTransparentBackground)::before,
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement:not(.pageShadowPseudoElementHasBackgroundImg):not(.pageShadowPseudoElementHasTransparentBackground):not(.pageShadowPseudoElementHasBrightColorText)::before,
-.pageShadowContrastBlack:not(.pageShadowDisableStyling) input::placeholder {
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) input::placeholder,
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::after, 
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::before {
     color: var(--page-shadow-txtcolor) !important;
 }
 
@@ -188,7 +192,9 @@ html.pageShadowContrastBlack.pageShadowForceCustomTextColorAsBackground:not(.pag
 .pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *.pageShadowHasPseudoElement:not(.pageShadowPseudoElementHasBackgroundImg):not(.pageShadowPseudoElementHasTransparentBackground)::after,
 .pageShadowContrastBlack.pageShadowBackgroundDetected.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement:not(.pageShadowPseudoElementHasBackgroundImg):not(.pageShadowPseudoElementHasTransparentBackground):not(.pageShadowPseudoElementHasBrightColorBackground)::after,
 .pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *.pageShadowHasPseudoElement:not(.pageShadowPseudoElementHasBackgroundImg):not(.pageShadowPseudoElementHasTransparentBackground)::before,
-.pageShadowContrastBlack.pageShadowBackgroundDetected.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement:not(.pageShadowPseudoElementHasBackgroundImg):not(.pageShadowPseudoElementHasTransparentBackground):not(.pageShadowPseudoElementHasBrightColorBackground)::before {
+.pageShadowContrastBlack.pageShadowBackgroundDetected.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement:not(.pageShadowPseudoElementHasBackgroundImg):not(.pageShadowPseudoElementHasTransparentBackground):not(.pageShadowPseudoElementHasBrightColorBackground)::before,
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::after,
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::before {
     background: var(--page-shadow-bgcolor) !important;
 }
 
