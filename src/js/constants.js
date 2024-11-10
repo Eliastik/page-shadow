@@ -269,7 +269,7 @@ const reportWebsiteProblemBackendURL = "https://www.eliastiksofts.com/page-shado
 
 // Filters rules
 
-const availableFilterRulesType = ["disableContrastFor", "forceTransparentBackground", "disableBackgroundStylingFor", "disableTextColorStylingFor", "disableInputBorderStylingFor", "disableLinkStylingFor", "disableFontFamilyStylingFor", "disableElementInvertFor", "hasBackgroundImg", "forceCustomLinkColorFor", "forceCustomBackgroundColorFor", "forceCustomTextColorFor", "disableShadowRootsCustomStyle", "enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "disableMutationObserverAttributes", "disableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverStyle", "forceCustomVisitedLinkColor", "disableCustomVisitedLinkColor", "forceFontFamilyStylingFor", "forceInputBorderStylingFor", "forceCustomLinkColorAsBackground", "forceCustomTextColorAsBackground", "forceCustomLinkVisitedColorAsBackground", "forceDisableDefaultBackgroundColor", "forceDisableDefaultBackground", "forceDisableDefaultFontColor", "enablePseudoElementsStyling", "enableShadowRootStyleOverride", "disableShadowRootStyleOverride", "overrideShadowRootsCustomStyle", "shadowRootStyleOverrideDelay", "invertElementAsImage", "invertElementAsVideo", "invertElementAsBackground", "enableSelectiveInvert", "enablePseudoElementSelectiveInvert", "invertPseudoElement", "enableThrottleMutationObserverBackgrounds", "disableThrottleMutationObserverBackgrounds", "delayMutationObserverBackgrounds", "throttledMutationObserverTreatedByCall", "delayApplyMutationObserversSafeTimer", "enableObserveBodyChange", "disableObserveBodyChange", "observeBodyChangeTimerInterval", "enableBrightColorDetection", "disableBrightColorDetection", "brightColorLightnessTresholdMin", "brightColorLightnessTresholdTextMin", "brightColorLightnessTresholdMax", "preserveBrightColor", "enableThrottleBackgroundDetection", "disableThrottleBackgroundDetection", "throttleBackgroundDetectionElementsTreatedByCall", "backgroundDetectionStartDelay", "useBackgroundDetectionAlreadyProcessedNodes", "enableBrightColorDetectionSubelement", "disableBrightColorDetectionSubelement", "observeDocumentChange", "observeDocumentChangeTimerInterval", "enableDarkImageDetection", "disableDarkImageDetection", "darkImageDetectionHslTreshold", "brightColorSaturationTresholdMin", "enableNotMatchingFiltersDetection", "disableNotMatchingFiltersDetection", "intervalApplyClassChanges", "classChangeMaxElementsTreatedByCall", "darkImageDetectionMinAlpha", "darkImageDetectionBlockSize", "darkImageDetectionTransparentPixelsRatio", "darkImageDetectionDarkPixelsRatio", "forcePseudoElementsTransparentBackground", "enableThrottleDarkImageDetection", "disableThrottleDarkImageDetection", "throttleDarkImageDetectionDelay", "throttleDarkImageDetectionBatchSize", "enableThrottleMutationObserverBackgroundsSubChilds", "disableThrottleMutationObserverBackgroundsSubChilds", "delayMutationObserverBackgroundsSubchilds", "throttledMutationObserverSubchildsTreatedByCall", "delayApplyClassChanges", "throttleBackgroundDetectionMaxExecutionTime", "throttleDarkImageDetectionMaxExecutionTime", "throttledMutationObserverMaxExecutionTime", "throttledMutationObserverSubchildsMaxExecutionTime", "applyClassChangesMaxExecutionTime", "autoThrottleBackgroundDetectionTime", "enableThrottleApplyClassChanges", "disableThrottleApplyClassChanges", "enableURLChangeDetection", "disableURLChangeDetection", "hasBrightColorWithWhiteText", "hasBrightColorWithBlackText"];
+const availableFilterRulesType = ["disableContrastFor", "forceTransparentBackground", "disableBackgroundStylingFor", "disableTextColorStylingFor", "disableInputBorderStylingFor", "disableLinkStylingFor", "disableFontFamilyStylingFor", "disableElementInvertFor", "hasBackgroundImg", "forceCustomLinkColorFor", "forceCustomBackgroundColorFor", "forceCustomTextColorFor", "disableShadowRootsCustomStyle", "enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "disableMutationObserverAttributes", "disableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverStyle", "forceCustomVisitedLinkColor", "disableCustomVisitedLinkColor", "forceFontFamilyStylingFor", "forceInputBorderStylingFor", "forceCustomLinkColorAsBackground", "forceCustomTextColorAsBackground", "forceCustomLinkVisitedColorAsBackground", "forceDisableDefaultBackgroundColor", "forceDisableDefaultBackground", "forceDisableDefaultFontColor", "enableShadowRootStyleOverride", "disableShadowRootStyleOverride", "overrideShadowRootsCustomStyle", "shadowRootStyleOverrideDelay", "invertElementAsImage", "invertElementAsVideo", "invertElementAsBackground", "enableSelectiveInvert", "enablePseudoElementSelectiveInvert", "invertPseudoElement", "enableThrottleMutationObserverBackgrounds", "disableThrottleMutationObserverBackgrounds", "delayMutationObserverBackgrounds", "throttledMutationObserverTreatedByCall", "delayApplyMutationObserversSafeTimer", "enableObserveBodyChange", "disableObserveBodyChange", "observeBodyChangeTimerInterval", "enableBrightColorDetection", "disableBrightColorDetection", "brightColorLightnessTresholdMin", "brightColorLightnessTresholdTextMin", "brightColorLightnessTresholdMax", "preserveBrightColor", "enableThrottleBackgroundDetection", "disableThrottleBackgroundDetection", "throttleBackgroundDetectionElementsTreatedByCall", "backgroundDetectionStartDelay", "useBackgroundDetectionAlreadyProcessedNodes", "enableBrightColorDetectionSubelement", "disableBrightColorDetectionSubelement", "observeDocumentChange", "observeDocumentChangeTimerInterval", "enableDarkImageDetection", "disableDarkImageDetection", "darkImageDetectionHslTreshold", "brightColorSaturationTresholdMin", "enableNotMatchingFiltersDetection", "disableNotMatchingFiltersDetection", "intervalApplyClassChanges", "classChangeMaxElementsTreatedByCall", "darkImageDetectionMinAlpha", "darkImageDetectionBlockSize", "darkImageDetectionTransparentPixelsRatio", "darkImageDetectionDarkPixelsRatio", "forcePseudoElementsTransparentBackground", "enableThrottleDarkImageDetection", "disableThrottleDarkImageDetection", "throttleDarkImageDetectionDelay", "throttleDarkImageDetectionBatchSize", "enableThrottleMutationObserverBackgroundsSubChilds", "disableThrottleMutationObserverBackgroundsSubChilds", "delayMutationObserverBackgroundsSubchilds", "throttledMutationObserverSubchildsTreatedByCall", "delayApplyClassChanges", "throttleBackgroundDetectionMaxExecutionTime", "throttleDarkImageDetectionMaxExecutionTime", "throttledMutationObserverMaxExecutionTime", "throttledMutationObserverSubchildsMaxExecutionTime", "applyClassChangesMaxExecutionTime", "autoThrottleBackgroundDetectionTime", "enableThrottleApplyClassChanges", "disableThrottleApplyClassChanges", "enableURLChangeDetection", "disableURLChangeDetection", "hasBrightColorWithWhiteText", "hasBrightColorWithBlackText"];
 
 const specialFilterRules = ["enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverAttributes", "disableMutationObserverClass", "disableMutationObserverStyle", "enableShadowRootStyleOverride", "disableShadowRootStyleOverride", "shadowRootStyleOverrideDelay", "enableThrottleMutationObserverBackgrounds", "disableThrottleMutationObserverBackgrounds", "delayMutationObserverBackgrounds", "throttledMutationObserverTreatedByCall", "delayApplyMutationObserversSafeTimer", "enableObserveBodyChange", "disableObserveBodyChange", "observeBodyChangeTimerInterval", "enableBrightColorDetection", "disableBrightColorDetection", "brightColorLightnessTresholdMin", "brightColorLightnessTresholdTextMin", "brightColorLightnessTresholdMax", "enableThrottleBackgroundDetection", "disableThrottleBackgroundDetection", "throttleBackgroundDetectionElementsTreatedByCall", "backgroundDetectionStartDelay", "useBackgroundDetectionAlreadyProcessedNodes", "enableBrightColorDetectionSubelement", "disableBrightColorDetectionSubelement", "observeDocumentChange", "observeDocumentChangeTimerInterval", "enableDarkImageDetection", "disableDarkImageDetection", "darkImageDetectionHslTreshold", "brightColorSaturationTresholdMin", "enableNotMatchingFiltersDetection", "disableNotMatchingFiltersDetection", "intervalApplyClassChanges", "classChangeMaxElementsTreatedByCall", "darkImageDetectionMinAlpha", "darkImageDetectionBlockSize", "darkImageDetectionTransparentPixelsRatio", "darkImageDetectionDarkPixelsRatio", "enableThrottleDarkImageDetection", "disableThrottleDarkImageDetection", "throttleDarkImageDetectionDelay", "throttleDarkImageDetectionBatchSize", "enableThrottleMutationObserverBackgroundsSubChilds", "disableThrottleMutationObserverBackgroundsSubChilds", "delayMutationObserverBackgroundsSubchilds", "throttledMutationObserverSubchildsTreatedByCall", "delayApplyClassChanges", "throttleBackgroundDetectionMaxExecutionTime", "throttleDarkImageDetectionMaxExecutionTime", "throttledMutationObserverMaxExecutionTime", "throttledMutationObserverSubchildsMaxExecutionTime", "applyClassChangesMaxExecutionTime", "autoThrottleBackgroundDetectionTime", "enableThrottleApplyClassChanges", "disableThrottleApplyClassChanges", "enableURLChangeDetection", "disableURLChangeDetection"];
 
@@ -290,37 +290,37 @@ const filterSyntaxErrorTypes = {
 
 // CSS classes used by the PageAnalyzer class
 const pageAnalyzerCSSClasses = {
-    "pageShadowHasBackgroundImg": {
-        "normal": "pageShadowHasBackgroundImg",
-        "pseudoElt": "pageShadowPseudoElementHasBackgroundImg"
+    pageShadowHasBackgroundImg: {
+        normal: "pageShadowHasBackgroundImg",
+        pseudoElt: "pageShadowPseudoElementHasBackgroundImg"
     },
-    "pageShadowHasTransparentBackground": {
-        "normal": "pageShadowHasTransparentBackground",
-        "pseudoElt": "pageShadowPseudoElementHasTransparentBackground"
+    pageShadowHasTransparentBackground: {
+        normal: "pageShadowHasTransparentBackground",
+        pseudoElt: "pageShadowPseudoElementHasTransparentBackground"
     },
-    "pageShadowSelectiveInvert": {
-        "normal": "pageShadowSelectiveInvert",
-        "pseudoElt": "pageShadowSelectiveInvertPseudoElement"
+    pageShadowSelectiveInvert: {
+        normal: "pageShadowSelectiveInvert",
+        pseudoElt: "pageShadowSelectiveInvertPseudoElement"
     },
-    "pageShadowHasBrightColorBackground": {
-        "normal": "pageShadowHasBrightColorBackground",
-        "pseudoElt": "pageShadowPseudoElementHasBrightColorBackground"
+    pageShadowHasBrightColorBackground: {
+        normal: "pageShadowHasBrightColorBackground",
+        pseudoElt: "pageShadowPseudoElementHasBrightColorBackground"
     },
-    "pageShadowHasBrightColorText": {
-        "normal": "pageShadowHasBrightColorText",
-        "pseudoElt": "pageShadowPseudoElementHasBrightColorText"
+    pageShadowHasBrightColorText: {
+        normal: "pageShadowHasBrightColorText",
+        pseudoElt: "pageShadowPseudoElementHasBrightColorText"
     },
-    "pageShadowBrightColorWithBlackText": {
-        "normal": "pageShadowBrightColorWithBlackText",
-        "pseudoElt": "pageShadowPseudoElementBrightColorWithBlackText"
+    pageShadowBrightColorWithBlackText: {
+        normal: "pageShadowBrightColorWithBlackText",
+        pseudoElt: "pageShadowPseudoElementBrightColorWithBlackText"
     },
-    "pageShadowBrightColorWithWhiteText": {
-        "normal": "pageShadowBrightColorWithWhiteText",
-        "pseudoElt": "pageShadowPseudoElementBrightColorWithWhiteText"
+    pageShadowBrightColorWithWhiteText: {
+        normal: "pageShadowBrightColorWithWhiteText",
+        pseudoElt: "pageShadowPseudoElementBrightColorWithWhiteText"
     },
-    "pageShadowBrightColorForceCustomTextLinkColor": {
-        "normal": "pageShadowBrightColorForceCustomTextLinkColor",
-        "pseudoElt": "pageShadowPseudoElementBrightColorForceCustomTextLinkColor"
+    pageShadowBrightColorForceCustomTextLinkColor: {
+        normal: "pageShadowBrightColorForceCustomTextLinkColor",
+        pseudoElt: "pageShadowPseudoElementBrightColorForceCustomTextLinkColor"
     }
 };
 
@@ -414,7 +414,6 @@ const mapFiltersCSSClass = {
     forceCustomLinkColorAsBackground: "pageShadowForceCustomLinkColorAsBackground",
     forceCustomTextColorAsBackground: "pageShadowForceCustomTextColorAsBackground",
     forceCustomLinkVisitedColorAsBackground: "pageShadowForceCustomLinkVisitedColorAsBackground",
-    enablePseudoElementsStyling: "pageShadowEnablePseudoElementStyling",
     invertElementAsImage: "pageShadowInvertElementAsImage",
     invertElementAsVideo: "pageShadowInvertElementAsVideo",
     invertElementAsBackground: "pageShadowInvertElementAsBackground",

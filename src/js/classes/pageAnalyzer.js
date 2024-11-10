@@ -104,7 +104,7 @@ export default class PageAnalyzer {
         );
 
         this.throttledTaskAnalyzeImages = new ThrottledTask((task) => {
-            this.taskAnalyzeImage(task.image, task.hasBackgroundImg, task.computedStyles);
+            this.taskAnalyzeImage(task.image, task.hasBackgroundImg, task.computedStyles, task.pseudoElt);
         },
         "throttledTaskAnalyzeImages",
         this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay,
@@ -113,10 +113,10 @@ export default class PageAnalyzer {
         );
     }
 
-    taskAnalyzeImage(image, hasBackgroundImg, computedStyles) {
+    taskAnalyzeImage(image, hasBackgroundImg, computedStyles, pseudoElt) {
         this.imageProcessor.detectDarkImage(image, hasBackgroundImg, computedStyles).then(isDarkImage => {
             if (isDarkImage) {
-                this.multipleElementClassBatcherAdd.add(image, "pageShadowSelectiveInvert");
+                this.multipleElementClassBatcherAdd.add(image, getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt));
             }
         });
     }
@@ -322,10 +322,18 @@ export default class PageAnalyzer {
         this.analyzeElement(element, null);
 
         // Analyze pseudo-element :before
-        this.analyzeElement(element, ":before");
+        const hasPseudoEltBefore = this.analyzeElement(element, ":before");
 
         // Analyze pseudo-element :after
-        this.analyzeElement(element, ":after");
+        const hasPseudoEltAfter =this.analyzeElement(element, ":after");
+
+        if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes) {
+            this.backgroundDetectionAlreadyProcessedNodes.add(element);
+        }
+
+        if(hasPseudoEltBefore || hasPseudoEltAfter) {
+            addClass(element, "pageShadowHasPseudoElement");
+        }
 
         if(!disableDestyling) {
             if(elementWasAlreadyDisabled) {
@@ -341,7 +349,7 @@ export default class PageAnalyzer {
 
         // If the pseudo-element is not defined, we stop here
         if(pseudoElt && computedStyles.content === "none") {
-            return;
+            return false;
         }
 
         const background = computedStyles.background;
@@ -359,10 +367,11 @@ export default class PageAnalyzer {
                     this.throttledTaskAnalyzeImages.start([{
                         image: element,
                         computedStyles,
-                        hasBackgroundImg
+                        hasBackgroundImg,
+                        pseudoElt
                     }]);
                 } else {
-                    this.taskAnalyzeImage(element, hasBackgroundImg, computedStyles);
+                    this.taskAnalyzeImage(element, hasBackgroundImg, computedStyles, pseudoElt);
                 }
             }
         }
@@ -381,8 +390,8 @@ export default class PageAnalyzer {
             this.detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyles, pseudoElt);
         }
 
-        if (this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes && pseudoElt == null) {
-            this.backgroundDetectionAlreadyProcessedNodes.add(element);
+        if(pseudoElt) {
+            return true;
         }
     }
 
