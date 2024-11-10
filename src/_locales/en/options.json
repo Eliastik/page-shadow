@@ -113,6 +113,7 @@
             "autoThrottleBackgroundDetectionTime": "Maximum execution time to automatically enable background throttling",
             "enableThrottleApplyClassChanges": "Throttle applying CSS classes changes to elements",
             "enableURLChangeDetection": "Enable URL change detection",
+            "enablePseudoElementsAnalysis": "Enable pseudo-element analysis",
             "help": {
                 "debugMode": "Enables debug mode, which displays debugging information in the JavaScript console on pages processed by Page Shadow, or on extension pages.",
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
@@ -165,7 +166,8 @@
                 "applyClassChangesMaxExecutionTime": "If the execution of the call exceeds this execution time (in ms), the call is interrupted to free up resources. This considerably improves performance.",
                 "autoThrottleBackgroundDetectionTime": "If background analysis throttling is not enabled, it is enabled automatically if the execution time exceeds this value (in ms). This avoids blocking web pages if the initial runtime of the analysis is too long.",
                 "enableThrottleApplyClassChanges": "Throttle Page Shadow's application of CSS class changes to elements. This can improve performance in certain scenarios.",
-                "enableURLChangeDetection": "Enables URL change detection on SPA (single page application) applications, allowing Page Shadow to reapply settings and filters based on the new URL. Disabling this option can improve performance on some websites that frequently change their URL."
+                "enableURLChangeDetection": "Enables URL change detection on SPA (single page application) applications, allowing Page Shadow to reapply settings and filters based on the new URL. Disabling this option can improve performance on some websites that frequently change their URL.",
+                "enablePseudoElementsAnalysis": "Enables analysis of pseudo-elements (text color, backgrounds, etc.). Disabling this option may improve performance, but may cause display problems."
 
             }
         },

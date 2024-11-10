@@ -321,18 +321,20 @@ export default class PageAnalyzer {
 
         this.analyzeElement(element, null);
 
-        // Analyze pseudo-element :before
-        const hasPseudoEltBefore = this.analyzeElement(element, ":before");
+        if(this.websiteSpecialFiltersConfig.enablePseudoElementsAnalysis) {
+            // Analyze pseudo-element :before
+            const hasPseudoEltBefore = this.analyzeElement(element, ":before");
 
-        // Analyze pseudo-element :after
-        const hasPseudoEltAfter = this.analyzeElement(element, ":after");
+            // Analyze pseudo-element :after
+            const hasPseudoEltAfter = this.analyzeElement(element, ":after");
+
+            if(hasPseudoEltBefore || hasPseudoEltAfter) {
+                addClass(element, "pageShadowHasPseudoElement");
+            }
+        }
 
         if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes) {
             this.backgroundDetectionAlreadyProcessedNodes.add(element);
-        }
-
-        if(hasPseudoEltBefore || hasPseudoEltAfter) {
-            addClass(element, "pageShadowHasPseudoElement");
         }
 
         if(!disableDestyling) {
