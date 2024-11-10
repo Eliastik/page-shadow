@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem, migrateSettings } from "../storage.js";
 import browser from "webextension-polyfill";
-import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, permissionOrigin, quotaBytesPerItemMargin, attenuateDefaultValue } from "../constants.js";
+import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, permissionOrigin, quotaBytesPerItemMargin, attenuateDefaultValue, pageAnalyzerCSSClasses } from "../constants.js";
 import { Sha256 } from "@aws-crypto/sha256-browser";
 import DebugLogger from "./../classes/debugLogger.js";
 
@@ -1347,7 +1347,7 @@ function removeClass(element, ...classes) {
     if(!element) return;
 
     classes.forEach(c => {
-        if(element.classList.contains(c)) {
+        if(c && element.classList.contains(c)) {
             element.classList.remove(c);
         }
     });
@@ -1358,7 +1358,7 @@ function addClass(element, ...classes) {
     const classToAdd = [];
 
     classes.forEach(c => {
-        if(!element.classList.contains(c)) {
+        if(c && !element.classList.contains(c)) {
             classToAdd.push(c);
         }
     });
@@ -1956,4 +1956,22 @@ function isCrossOrigin(imageSrc) {
     }
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefinedForHTMLElement, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud, removeStyleAttribute, isCrossOrigin, processRulesAttenuate, areAllClassesDefinedForHTMLElement };
+function getPageAnalyzerCSSClass(cssClass, pseudoElt) {
+    const type = pseudoElt ? "pseudoElt" : "normal";
+    const cssClassData = pageAnalyzerCSSClasses[cssClass];
+
+    if(!cssClassData) {
+        debugLogger.log(`getPageAnalyzerCSSClass - Unknown class ${cssClass} - type: ${type}`, "warn");
+        return cssClass;
+    }
+
+    const finalClass = cssClassData[type];
+
+    if(!finalClass) {
+        debugLogger.log(`getPageAnalyzerCSSClass - Unknown class ${cssClass} for type: ${type}`, "warn");
+    }
+
+    return finalClass;
+}
+
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefinedForHTMLElement, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud, removeStyleAttribute, isCrossOrigin, processRulesAttenuate, areAllClassesDefinedForHTMLElement, getPageAnalyzerCSSClass };

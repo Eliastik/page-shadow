@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { removeClass, addClass, loadWebsiteSpecialFiltersConfig, rgb2hsl } from "../utils/util.js";
+import { removeClass, addClass, loadWebsiteSpecialFiltersConfig, rgb2hsl, getPageAnalyzerCSSClass } from "../utils/util.js";
 import { ignoredElementsContentScript, pageShadowClassListsMutationsIgnore, ignoredElementsBrightTextColorDetection } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
 import ImageProcessor from "./imageProcessor.js";
@@ -37,8 +37,7 @@ export default class PageAnalyzer {
 
     processingBackgrounds = false;
     backgroundDetected = false;
-    backgroundDetectionAlreadyProcessedNodes = [];
-    processedShadowRoots = [];
+    backgroundDetectionAlreadyProcessedNodes = new WeakSet();
 
     multipleElementClassBatcherAdd = null;
     multipleElementClassBatcherRemove = null;
@@ -89,7 +88,7 @@ export default class PageAnalyzer {
 
     initializeThrottledTasks() {
         this.throttledTaskDetectBackgrounds = new ThrottledTask(
-            (element) => this.detectBackgroundForElement(element, false),
+            (element) => this.processElement(element, false),
             "throttledTaskDetectBackgrounds",
             this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay,
             this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall,
@@ -97,7 +96,7 @@ export default class PageAnalyzer {
         );
 
         this.throttledTaskAnalyzeSubchilds = new ThrottledTask(
-            (element) => this.detectBackgroundForElement(element, false),
+            (element) => this.processElement(element, false),
             "throttledTaskAnalyzeSubchilds",
             this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds,
             this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall,
@@ -136,7 +135,7 @@ export default class PageAnalyzer {
 
                 addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
 
-                this.detectBackgroundForElement(document.body, true);
+                this.processElement(document.body, true);
 
                 const elements = Array.from(document.body.getElementsByTagName(tagName));
 
@@ -169,7 +168,7 @@ export default class PageAnalyzer {
             let totalExecutionTime = 0;
 
             while(currentIndex < elementsLength) {
-                this.detectBackgroundForElement(elements[currentIndex], true);
+                this.processElement(elements[currentIndex], true);
                 currentIndex++;
 
                 const addTime = performance.now() - startTime;
@@ -305,12 +304,12 @@ export default class PageAnalyzer {
         return element.closest(".pageShadowHasBrightColorBackground") != null;
     }
 
-    async detectBackgroundForElement(element, disableDestyling) {
+    async processElement(element, disableDestyling) {
         if(element && element.shadowRoot != null && this.websiteSpecialFiltersConfig.enableShadowRootStyleOverride) {
             await this.processShadowRoots(element);
         }
 
-        if(!element || (element != document.body && (element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected"))) || this.backgroundDetectionAlreadyProcessedNodes.indexOf(element) !== -1 || ignoredElementsContentScript.includes(element.localName) || !element.isConnected) {
+        if(!element || (element != document.body && (element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected"))) || this.backgroundDetectionAlreadyProcessedNodes.has(element) || ignoredElementsContentScript.includes(element.localName) || !element.isConnected) {
             return;
         }
 
@@ -320,19 +319,43 @@ export default class PageAnalyzer {
             addClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
         }
 
-        const computedStyles = window.getComputedStyle(element, null);
+        this.analyzeElement(element, null);
+
+        // Analyze pseudo-element :before
+        this.analyzeElement(element, ":before");
+
+        // Analyze pseudo-element :after
+        this.analyzeElement(element, ":after");
+
+        if(!disableDestyling) {
+            if(elementWasAlreadyDisabled) {
+                removeClass(element, "pageShadowDisableStyling");
+            } else {
+                removeClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
+            }
+        }
+    }
+
+    analyzeElement(element, pseudoElt) {
+        const computedStyles = window.getComputedStyle(element, pseudoElt);
+
+        // If the pseudo-element is not defined, we stop here
+        if(pseudoElt && computedStyles.content === "none") {
+            return;
+        }
+
         const background = computedStyles.background;
         const backgroundColor = computedStyles.backgroundColor;
         const backgroundImage = computedStyles.backgroundImage;
 
         const hasBackgroundImg = this.hasBackgroundImage(element, background, backgroundImage);
-        const hasClassImg = element.classList.contains("pageShadowHasBackgroundImg");
-        const hasTransparentBackgroundClass = element.classList.contains("pageShadowHasTransparentBackground");
+        const hasClassImg = element.classList.contains(getPageAnalyzerCSSClass("pageShadowHasBackgroundImg", pseudoElt));
+        const hasTransparentBackgroundClass = element.classList.contains(getPageAnalyzerCSSClass("pageShadowHasTransparentBackground", pseudoElt));
 
         // Detect image with dark color (text, logos, etc)
-        if(this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
-            if(!element.classList.contains("pageShadowSelectiveInvert") && this.imageProcessor.elementIsImage(element, hasBackgroundImg)) {
-                if(this.websiteSpecialFiltersConfig.throttleDarkImageDetection) {
+        if (this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
+            if (!element.classList.contains(getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt)) && this.imageProcessor.elementIsImage(element, hasBackgroundImg)) {
+                if (this.websiteSpecialFiltersConfig.throttleDarkImageDetection) {
                     this.throttledTaskAnalyzeImages.start([{
                         image: element,
                         computedStyles,
@@ -344,30 +367,22 @@ export default class PageAnalyzer {
             }
         }
 
-        if(hasBackgroundImg && !hasClassImg) {
-            this.multipleElementClassBatcherAdd.add(element, "pageShadowHasBackgroundImg");
+        if (hasBackgroundImg && !hasClassImg) {
+            this.multipleElementClassBatcherAdd.add(element, getPageAnalyzerCSSClass("pageShadowHasBackgroundImg", pseudoElt));
         }
 
         let transparentColorDetected = false;
 
-        if(this.websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled) {
-            transparentColorDetected = this.detectTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg, computedStyles, hasTransparentBackgroundClass, element, transparentColorDetected);
+        if (this.websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled) {
+            transparentColorDetected = this.detectTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg, computedStyles, hasTransparentBackgroundClass, element, pseudoElt);
         }
 
-        if(this.websiteSpecialFiltersConfig.enableBrightColorDetection) {
-            this.detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyles);
+        if (this.websiteSpecialFiltersConfig.enableBrightColorDetection) {
+            this.detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyles, pseudoElt);
         }
 
-        if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes) {
-            this.backgroundDetectionAlreadyProcessedNodes.push(element);
-        }
-
-        if(!disableDestyling) {
-            if(elementWasAlreadyDisabled) {
-                removeClass(element, "pageShadowDisableStyling");
-            } else {
-                removeClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
-            }
+        if (this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes && pseudoElt == null) {
+            this.backgroundDetectionAlreadyProcessedNodes.add(element);
         }
     }
 
@@ -410,43 +425,44 @@ export default class PageAnalyzer {
         return hasShallowChildren && notAllChildrenAreImg;
     }
 
-    detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyles) {
+    detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyles, pseudoElt) {
         // Background color
         if (!transparentColorDetected && !hasTransparentBackgroundClass) {
             const hasBrightColor = this.elementHasBrightColor(background, backgroundColor, false);
 
             if (hasBrightColor && hasBrightColor[0]) {
-                addClass(element, "pageShadowHasBrightColorBackground");
+                addClass(element, getPageAnalyzerCSSClass("pageShadowHasBrightColorBackground", pseudoElt));
 
                 if (hasBrightColor[1]) {
-                    this.multipleElementClassBatcherAdd.add(element, "pageShadowBrightColorWithBlackText");
-                    this.multipleElementClassBatcherRemove.add(element, "pageShadowBrightColorWithWhiteText");
+                    this.multipleElementClassBatcherAdd.add(element, getPageAnalyzerCSSClass("pageShadowBrightColorWithBlackText", pseudoElt));
+                    this.multipleElementClassBatcherRemove.add(element, getPageAnalyzerCSSClass("pageShadowBrightColorWithWhiteText", pseudoElt));
                 } else {
-                    this.multipleElementClassBatcherAdd.add(element, "pageShadowBrightColorWithWhiteText");
-                    this.multipleElementClassBatcherRemove.add(element, "pageShadowBrightColorWithBlackText");
+                    this.multipleElementClassBatcherAdd.add(element, getPageAnalyzerCSSClass("pageShadowBrightColorWithWhiteText", pseudoElt));
+                    this.multipleElementClassBatcherRemove.add(element, getPageAnalyzerCSSClass("pageShadowBrightColorWithBlackText", pseudoElt));
                 }
             } else {
-                this.multipleElementClassBatcherRemove.add(element, "pageShadowHasBrightColorBackground", "pageShadowBrightColorWithBlackText", "pageShadowBrightColorWithWhiteText");
+                this.multipleElementClassBatcherRemove.add(element, getPageAnalyzerCSSClass("pageShadowHasBrightColorBackground", pseudoElt),
+                    getPageAnalyzerCSSClass("pageShadowBrightColorWithBlackText", pseudoElt), getPageAnalyzerCSSClass("pageShadowBrightColorWithWhiteText", pseudoElt));
 
                 if (this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode && element.parentNode.closest) {
-                    const closestBright = element.parentNode.closest(".pageShadowHasBrightColorBackground");
+                    const closestBright = element.parentNode.closest("." + getPageAnalyzerCSSClass("pageShadowHasBrightColorBackground", pseudoElt));
 
                     if (closestBright && closestBright != document.body) {
-                        addClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
+                        addClass(element, getPageAnalyzerCSSClass("pageShadowBrightColorForceCustomTextLinkColor", pseudoElt));
                     } else {
-                        this.multipleElementClassBatcherRemove.add(element, "pageShadowBrightColorForceCustomTextLinkColor");
+                        this.multipleElementClassBatcherRemove.add(element, getPageAnalyzerCSSClass("pageShadowBrightColorForceCustomTextLinkColor", pseudoElt));
                     }
                 } else {
-                    this.multipleElementClassBatcherRemove.add(element, "pageShadowBrightColorForceCustomTextLinkColor");
+                    this.multipleElementClassBatcherRemove.add(element, getPageAnalyzerCSSClass("pageShadowBrightColorForceCustomTextLinkColor", pseudoElt));
                 }
             }
         } else if (this.websiteSpecialFiltersConfig.enableBrightColorDetectionSubelement && element && element.parentNode && element.parentNode.closest) {
-            const closestForceCustom = element.parentNode.closest(".pageShadowBrightColorForceCustomTextLinkColor");
+            const closestForceCustom = element.parentNode.closest("." + getPageAnalyzerCSSClass("pageShadowBrightColorForceCustomTextLinkColor", pseudoElt));
 
             if (closestForceCustom && closestForceCustom != document.body) {
-                addClass(element, "pageShadowBrightColorForceCustomTextLinkColor");
+                addClass(element, getPageAnalyzerCSSClass("pageShadowBrightColorForceCustomTextLinkColor", pseudoElt));
             } else {
-                this.multipleElementClassBatcherRemove.add(element, "pageShadowBrightColorForceCustomTextLinkColor");
+                this.multipleElementClassBatcherRemove.add(element, getPageAnalyzerCSSClass("pageShadowBrightColorForceCustomTextLinkColor", pseudoElt));
             }
         }
 
@@ -458,26 +474,28 @@ export default class PageAnalyzer {
             const hasBrightColor = this.elementHasBrightColor(textColor, textColor, true);
 
             if (hasBrightColor && hasBrightColor[0]) {
-                this.multipleElementClassBatcherAdd.add(element, "pageShadowHasBrightColorText");
+                this.multipleElementClassBatcherAdd.add(element, getPageAnalyzerCSSClass("pageShadowHasBrightColorText", pseudoElt));
             } else {
-                this.multipleElementClassBatcherRemove.add(element, "pageShadowHasBrightColorText");
+                this.multipleElementClassBatcherRemove.add(element, getPageAnalyzerCSSClass("pageShadowHasBrightColorText", pseudoElt));
             }
         }
     }
 
-    detectTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg, computedStyles, hasTransparentBackgroundClass, element, transparentColorDetected) {
+    detectTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg, computedStyles, hasTransparentBackgroundClass, element, pseudoElt) {
         const hasTransparentBackground = this.elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg);
         const backgroundClip = computedStyles.getPropertyValue("background-clip") || computedStyles.getPropertyValue("-webkit-background-clip");
         const hasBackgroundClipText = backgroundClip && backgroundClip.trim().toLowerCase() == "text";
 
+        let transparentColorDetected = false;
+
         if ((hasTransparentBackground || hasBackgroundClipText)) {
             if (!hasTransparentBackgroundClass) {
-                this.multipleElementClassBatcherAdd.add(element, "pageShadowHasTransparentBackground");
+                this.multipleElementClassBatcherAdd.add(element, getPageAnalyzerCSSClass("pageShadowHasTransparentBackground", pseudoElt));
                 transparentColorDetected = true;
             }
         } else {
             if (hasTransparentBackgroundClass) {
-                this.multipleElementClassBatcherRemove.add(element, "pageShadowHasTransparentBackground");
+                this.multipleElementClassBatcherRemove.add(element, getPageAnalyzerCSSClass("pageShadowHasTransparentBackground", pseudoElt));
                 transparentColorDetected = false;
             }
         }
@@ -541,12 +559,12 @@ export default class PageAnalyzer {
 
             if(hasMutationPageShadowClass) {
                 if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes) {
-                    this.backgroundDetectionAlreadyProcessedNodes = this.backgroundDetectionAlreadyProcessedNodes.filter(node => node != element);
+                    this.backgroundDetectionAlreadyProcessedNodes.delete(element);
                 }
             }
         }
 
-        this.detectBackgroundForElement(element, false);
+        this.processElement(element, false);
 
         // Detect element childrens
         if (!attribute && this.websiteSpecialFiltersConfig.enableMutationObserversForSubChilds) {
@@ -562,7 +580,7 @@ export default class PageAnalyzer {
                 this.throttledTaskAnalyzeSubchilds.start(elementChildrens);
             } else {
                 for (const element of elementChildrens) {
-                    this.detectBackgroundForElement(element);
+                    this.processElement(element);
                 }
             }
         }

@@ -288,6 +288,42 @@ const filterSyntaxErrorTypes = {
     "UNKNOWN": "UNKNOWN"
 };
 
+// CSS classes used by the PageAnalyzer class
+const pageAnalyzerCSSClasses = {
+    "pageShadowHasBackgroundImg": {
+        "normal": "pageShadowHasBackgroundImg",
+        "pseudoElt": "pageShadowPseudoElementHasBackgroundImg"
+    },
+    "pageShadowHasTransparentBackground": {
+        "normal": "pageShadowHasTransparentBackground",
+        "pseudoElt": "pageShadowPseudoElementHasTransparentBackground"
+    },
+    "pageShadowSelectiveInvert": {
+        "normal": "pageShadowSelectiveInvert",
+        "pseudoElt": "pageShadowSelectiveInvertPseudoElement"
+    },
+    "pageShadowHasBrightColorBackground": {
+        "normal": "pageShadowHasBrightColorBackground",
+        "pseudoElt": "pageShadowPseudoElementHasBrightColorBackground"
+    },
+    "pageShadowHasBrightColorText": {
+        "normal": "pageShadowHasBrightColorText",
+        "pseudoElt": "pageShadowPseudoElementHasBrightColorText"
+    },
+    "pageShadowBrightColorWithBlackText": {
+        "normal": "pageShadowBrightColorWithBlackText",
+        "pseudoElt": "pageShadowPseudoElementBrightColorWithBlackText"
+    },
+    "pageShadowBrightColorWithWhiteText": {
+        "normal": "pageShadowBrightColorWithWhiteText",
+        "pseudoElt": "pageShadowPseudoElementBrightColorWithWhiteText"
+    },
+    "pageShadowBrightColorForceCustomTextLinkColor": {
+        "normal": "pageShadowBrightColorForceCustomTextLinkColor",
+        "pseudoElt": "pageShadowPseudoElementBrightColorForceCustomTextLinkColor"
+    }
+};
+
 // Internal options that change how Page Shadow works internally (pages processing)
 const defaultWebsiteSpecialFiltersConfig = {
     debugMode: false,
@@ -679,4 +715,4 @@ const websiteSpecialFiltersProcessingConfig = {
     }
 };
 
-export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, regexpDetectionPatternHighlight, ignoredElementsContentScript, failedUpdateAutoReupdateDelay, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue, archiveInfoShowInterval, defaultSettings, settingsToLoad, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, pageShadowClassListsMutationsIgnore, permissionOrigin, customThemesKey, disabledWebsitesKey, whitelistKey, attenuateDefaultValue, maxImageSizeDarkImageDetection, quotaBytesPerItemMargin, mapFiltersCSSClass, ignoredElementsBrightTextColorDetection, websiteSpecialFiltersConfigThemes, maxElementsPerBatch, throttledTaskReduceThrottleMargin, websiteSpecialFiltersProcessingConfig, enableReportWebsiteProblem, reportWebsiteProblemBackendURL };
+export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, regexpDetectionPatternHighlight, ignoredElementsContentScript, failedUpdateAutoReupdateDelay, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue, archiveInfoShowInterval, defaultSettings, settingsToLoad, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, pageShadowClassListsMutationsIgnore, permissionOrigin, customThemesKey, disabledWebsitesKey, whitelistKey, attenuateDefaultValue, maxImageSizeDarkImageDetection, quotaBytesPerItemMargin, mapFiltersCSSClass, ignoredElementsBrightTextColorDetection, websiteSpecialFiltersConfigThemes, maxElementsPerBatch, throttledTaskReduceThrottleMargin, websiteSpecialFiltersProcessingConfig, enableReportWebsiteProblem, reportWebsiteProblemBackendURL, pageAnalyzerCSSClasses };
