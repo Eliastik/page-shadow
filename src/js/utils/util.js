@@ -1831,7 +1831,7 @@ function areAllCSSVariablesDefinedForHTMLElement(contrastEnabled, invertEnabled)
     if (element) {
         const styleAttribute = element.getAttribute("style");
 
-        if(!styleAttribute) {
+        if(styleAttribute == null) {
             return true;
         }
 
@@ -1839,18 +1839,19 @@ function areAllCSSVariablesDefinedForHTMLElement(contrastEnabled, invertEnabled)
     }
 }
 
-function areAllClassesDefinedForHTMLElement(contrastEnabled, invertEnabled, contrastTheme) {
+function areAllClassesDefinedForHTMLElement(contrastEnabled, invertEnabled, invertEntirePage, contrastTheme) {
     const element = document.documentElement;
 
     if (element) {
         const classAttribute = element.getAttribute("class");
 
-        if(!classAttribute) {
+        if(classAttribute == null) {
             return true;
         }
 
-        if(invertEnabled == "true" && (!classAttribute.includes("pageShadowInvertEntirePage")
-            || !classAttribute.includes("pageShadowBackground"))) {
+        if(invertEnabled == "true" && invertEntirePage == "true" &&
+            (!classAttribute.includes("pageShadowInvertEntirePage") ||
+            !classAttribute.includes("pageShadowBackground"))) {
             return false;
         }
 

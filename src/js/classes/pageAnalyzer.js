@@ -325,7 +325,7 @@ export default class PageAnalyzer {
         const hasPseudoEltBefore = this.analyzeElement(element, ":before");
 
         // Analyze pseudo-element :after
-        const hasPseudoEltAfter =this.analyzeElement(element, ":after");
+        const hasPseudoEltAfter = this.analyzeElement(element, ":after");
 
         if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes) {
             this.backgroundDetectionAlreadyProcessedNodes.add(element);
@@ -495,21 +495,18 @@ export default class PageAnalyzer {
         const backgroundClip = computedStyles.getPropertyValue("background-clip") || computedStyles.getPropertyValue("-webkit-background-clip");
         const hasBackgroundClipText = backgroundClip && backgroundClip.trim().toLowerCase() == "text";
 
-        let transparentColorDetected = false;
-
         if ((hasTransparentBackground || hasBackgroundClipText)) {
             if (!hasTransparentBackgroundClass) {
                 this.multipleElementClassBatcherAdd.add(element, getPageAnalyzerCSSClass("pageShadowHasTransparentBackground", pseudoElt));
-                transparentColorDetected = true;
+                return true;
             }
         } else {
             if (hasTransparentBackgroundClass) {
                 this.multipleElementClassBatcherRemove.add(element, getPageAnalyzerCSSClass("pageShadowHasTransparentBackground", pseudoElt));
-                transparentColorDetected = false;
             }
         }
 
-        return transparentColorDetected;
+        return false;
     }
 
     mutationForElement(element, attribute, attributeOldValue) {
