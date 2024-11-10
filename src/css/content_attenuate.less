@@ -92,7 +92,11 @@ html.pageShadowInvertEntirePage body.pageShadowAttenuateVideoColor video.pageSha
 
 // Bright color
 body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowHasBrightColorBackground:not(.pageShadowDisableElementInvert),
-body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert) {
+body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert),
+body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowPseudoElementHasBrightColorBackground:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):after,
+body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowPseudoElementHasBrightColorText:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):after,
+body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowPseudoElementHasBrightColorBackground:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):before,
+body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowPseudoElementHasBrightColorText:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):before {
     filter: var(--page-shadow-attenuate-filter) !important;
     -moz-filter: var(--page-shadow-attenuate-filter) !important;
     -o-filter: var(--page-shadow-attenuate-filter) !important;
@@ -100,7 +104,11 @@ body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShad
 }
 
 html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground.pageShadowDisableElementInvert,
-html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorText.pageShadowDisableElementInvert {
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorText.pageShadowDisableElementInvert,
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorBackground.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):after,
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorText.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):after,
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorBackground.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):before,
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorText.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):before {
     filter: var(--page-shadow-attenuate-filter) !important;
     -moz-filter: var(--page-shadow-attenuate-filter) !important;
     -o-filter: var(--page-shadow-attenuate-filter) !important;
@@ -108,7 +116,11 @@ html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageS
 }
 
 html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground.pageShadowDisableElementInvert,
-html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorText.pageShadowDisableElementInvert {
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorText.pageShadowDisableElementInvert,
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorBackground.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):after,
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorText.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):after,
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorBackground.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):before,
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorText.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):before {
     filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
     -moz-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
     -o-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
