@@ -541,6 +541,8 @@ function processRulesInvert(parentElement, style, settings) {
             } else {
                 if(!parentHasBrightColorBackground) {
                     style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert), :host :not(.pageShadowDisableElementInvert) .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert) { filter: " + invertBgFilter + " !important; -moz-filter: " + invertBgFilter + " !important; -o-filter: " + invertBgFilter + " !important; -webkit-filter: " + invertBgFilter + " !important; }");
+
+                    style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText) { color: black; }");
                 }
 
                 if(selectiveInvert == "true") {
