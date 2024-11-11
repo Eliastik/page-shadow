@@ -198,10 +198,8 @@ html.pageShadowInvertEntirePage body.pageShadowEnableSelectiveInvert.pageShadowI
     -webkit-filter: var(--page-shadow-invert-filter-bg-backgrounds) !important;
 }
 
-html.pageShadowInvertEntirePage body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *),
-body.pageShadowInvertBgColor :not(.pageShadowDisableElementInvert) .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *),
-html.pageShadowInvertEntirePage body.pageShadowEnableSelectiveInvert.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo) *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText) {
-    color: black !important;
+html.pageShadowInvertEntirePage body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *) *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText) {
+    color: black;
 }
 
 /* Disable element invert */
