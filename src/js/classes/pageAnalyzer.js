@@ -425,7 +425,11 @@ export default class PageAnalyzer {
         await this.shadowDomProcessor.resetShadowRoots();
     }
 
-    isTextElement(element) {
+    isTextElement(element, computedStyles, pseudoElt) {
+        if(pseudoElt) {
+            return computedStyles.content != null && computedStyles.content.trim().length > 0;
+        }
+
         if (!element || element.nodeType !== Node.ELEMENT_NODE || ignoredElementsBrightTextColorDetection.includes(element.tagName.toLowerCase())) {
             return false;
         }
@@ -478,9 +482,9 @@ export default class PageAnalyzer {
         }
 
         // Text color
-        const isTextElement = this.isTextElement(element);
+        const isTextElement = this.isTextElement(element, computedStyles, pseudoElt);
 
-        if (isTextElement) {
+        if(isTextElement) {
             const textColor = computedStyles.color;
             const hasBrightColor = this.elementHasBrightColor(textColor, textColor, true);
 
