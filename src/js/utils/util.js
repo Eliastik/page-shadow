@@ -428,8 +428,7 @@ function processRulesInvert(parentElement, style, settings) {
 
     const closestBrightColorBackground = parentElement && parentElement.closest && parentElement.closest(".pageShadowHasBrightColorBackground");
     const parentHasBrightColorBackground = parentElement && (parentElement.classList.contains("pageShadowHasBrightColorBackground") || (closestBrightColorBackground != null && closestBrightColorBackground != document.body));
-    const closestBrightColorText = parentElement && parentElement.closest && parentElement.closest(".pageShadowHasBrightColorText");
-    const parentHasBrightColorText = parentElement && (parentElement.classList.contains("pageShadowHasBrightColorText") || (closestBrightColorText != null && closestBrightColorText != document.body));
+    const parentHasBrightColorText = parentElement && parentElement.classList.contains("pageShadowHasBrightColorText");
 
     // Conditions are inverted if inverting entire page
     if(invertEntirePage == "true") {
