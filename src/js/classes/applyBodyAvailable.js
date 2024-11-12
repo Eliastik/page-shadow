@@ -43,8 +43,8 @@ export default class ApplyBodyAvailable {
         this.oldDelay = delay;
 
         if(document.body) {
-            this.callback();
             this.timer.clear();
+            this.callback();
         } else {
             this.timer.start(delay);
         }

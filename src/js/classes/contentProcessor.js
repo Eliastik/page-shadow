@@ -342,11 +342,11 @@ export default class ContentProcessor {
                 const timerBackgrounds = new SafeTimer(async() => {
                     timerBackgrounds.clear();
 
-                    this.pageAnalyzer.detectBackground(elements, type === ContentProcessorConstants.TYPE_RESET);
+                    this.pageAnalyzer.detectBackground(elements, type === ContentProcessorConstants.TYPE_RESET).then(() => {
+                        resolve();
+                    });
 
                     this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS);
-
-                    resolve();
                 });
 
                 timerBackgrounds.start(1);
@@ -358,13 +358,15 @@ export default class ContentProcessor {
                         if(document.readyState === "complete") {
                             document.removeEventListener("readystatechange", eventDetectBackground);
 
-                            this.applyDetectBackground(ContentProcessorConstants.TYPE_LOADING, elements);
-                            resolve();
+                            this.applyDetectBackground(ContentProcessorConstants.TYPE_LOADING, elements).then(() => {
+                                resolve();
+                            });
                         }
                     });
                 } else {
-                    this.applyDetectBackground(ContentProcessorConstants.TYPE_LOADING, elements);
-                    resolve();
+                    this.applyDetectBackground(ContentProcessorConstants.TYPE_LOADING, elements).then(() => {
+                        resolve();
+                    });
                 }
             }
         });
@@ -505,8 +507,6 @@ export default class ContentProcessor {
 
                         if(this.precUrl == getCurrentURL()) {
                             this.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
-                        } else {
-                            this.mutationObserverProcessor.mutationDetected = true;
                         }
 
                         this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS);
@@ -531,8 +531,8 @@ export default class ContentProcessor {
             this.timerObserveDocumentElementChange = new SafeTimer(async () => {
                 const settings = await getSettings(getCurrentURL());
 
-                if(!areAllCSSVariablesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.attenuateColors)
-                    || !areAllClassesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.invertEntirePage, settings.theme)) {
+                if(this.precEnabled && (!areAllCSSVariablesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.attenuateColors)
+                    || !areAllClassesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.invertEntirePage, settings.theme))) {
                     this.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
                 }
 
@@ -580,10 +580,6 @@ export default class ContentProcessor {
     async main(type, mutation, disableCache) {
         this.precUrl = this.precUrl || getCurrentURL();
 
-        if (this.mutationObserverProcessor) {
-            this.mutationObserverProcessor.mutationDetected = false;
-        }
-
         if(type == ContentProcessorConstants.TYPE_RESET) {
             mutation = ContentProcessorConstants.TYPE_ALL;
         }
@@ -599,32 +595,36 @@ export default class ContentProcessor {
                 this.newSettingsToApply = responseEnabled.settings;
             }
 
-            this.process(responseEnabled.enabled, type);
+            await this.process(responseEnabled.enabled, type);
         } else {
             const allowed = await pageShadowAllowed(getCurrentURL());
-            this.process(allowed, type, disableCache);
+            await this.process(allowed, type, disableCache);
         }
     }
 
     async process(allowed, type, disableCache) {
         if(this.applyWhenBodyIsAvailableTimer) this.applyWhenBodyIsAvailableTimer.clear();
 
-        this.applyWhenBodyIsAvailableTimer = new ApplyBodyAvailable(async () => {
-            this.initBatchers();
-            this.initProcessors();
+        return new Promise((resolve) => {
+            this.applyWhenBodyIsAvailableTimer = new ApplyBodyAvailable(async () => {
+                this.initBatchers();
+                this.initProcessors();
 
-            this.debugLogger?.log(`Starting processing page - allowed? ${allowed} / type? ${type} / disableCache? ${disableCache}`);
+                this.debugLogger?.log(`Starting processing page - allowed? ${allowed} / type? ${type} / disableCache? ${disableCache}`);
 
-            if(allowed) {
-                await this.handleAllowedState(type, disableCache);
-            } else {
-                this.resetPage();
-            }
+                if(allowed) {
+                    await this.handleAllowedState(type, disableCache);
+                } else {
+                    this.resetPage();
+                }
 
-            this.started = true;
+                this.started = true;
+
+                resolve();
+            });
+
+            this.applyWhenBodyIsAvailableTimer.start();
         });
-
-        this.applyWhenBodyIsAvailableTimer.start();
     }
 
     initBatchers() {
@@ -719,26 +719,27 @@ export default class ContentProcessor {
         this.observeDocumentElementChange();
         this.timerApplyMutationClassChanges();
 
-        if (settings.pageShadowEnabled === "true" || settings.colorInvert === "true" || settings.attenuateColors === "true") {
-            if (type === ContentProcessorConstants.TYPE_START || !this.pageAnalyzer.backgroundDetected) {
-                this.applyDetectBackground(type, "*").then(() => {
-                    if (document.readyState === "complete") {
-                        this.updateFilters();
-                    } else {
-                        const readyStateChangeApplyFilters = document.addEventListener("readystatechange", () => {
-                            if (document.readyState === "complete") {
-                                document.removeEventListener("readystatechange", readyStateChangeApplyFilters);
-                                this.updateFilters();
-                            }
-                        });
-                    }
-                });
+        if(settings.pageShadowEnabled === "true" || settings.colorInvert === "true" || settings.attenuateColors === "true") {
+            if(type === ContentProcessorConstants.TYPE_START || !this.pageAnalyzer.backgroundDetected) {
+                await this.applyDetectBackground(type, "*");
+
+                if (document.readyState === "complete") {
+                    await this.updateFilters();
+                } else {
+                    const readyStateChangeApplyFilters = document.addEventListener("readystatechange", () => {
+                        if (document.readyState === "complete") {
+                            document.removeEventListener("readystatechange", readyStateChangeApplyFilters);
+                            this.updateFilters();
+                        }
+                    });
+                }
             }
         }
     }
 
     resetPage() {
         this.precEnabled = false;
+
         if(typeof this.lnkCustomTheme !== "undefined") this.lnkCustomTheme.setAttribute("href", "");
 
         if(this.started) {
