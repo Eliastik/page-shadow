@@ -1904,7 +1904,55 @@ async function checkPermissions() {
     });
 }
 
-function svgElementToImage(element, computedStyles) {
+function svgElementToImage(url) {
+    const image = new Image();
+    image.src = url;
+
+    return image;
+}
+
+async function backgroundImageToImage(url) {
+    const image = new Image();
+
+    const imageLoadPromise = new Promise((resolve, reject) => {
+        image.onload = resolve;
+        image.onerror = reject;
+    });
+
+    image.src = url;
+
+    if (isCrossOrigin(url)) {
+        image.crossOrigin = "anonymous";
+    }
+
+    await imageLoadPromise;
+    await image.decode();
+
+    return image;
+}
+
+function getImageUrlFromElement(element, hasBackgroundImg, computedStyles) {
+    if(element instanceof HTMLImageElement) {
+        return element.src;
+    }
+
+    if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
+        return getImageUrlFromSvgElement(element, computedStyles);
+    }
+
+
+    if(!(element instanceof HTMLImageElement) && !(element instanceof SVGImageElement) && hasBackgroundImg) {
+        const style = element.currentStyle || computedStyles;
+        const urlMatch = style.backgroundImage.match(/url\((['"]?)(.*?)\1\)/);
+        const url = urlMatch ? urlMatch[2] : null;
+
+        return url;
+    }
+
+    return null;
+}
+
+function getImageUrlFromSvgElement(element, computedStyles) {
     const box = element.getBBox();
     const width = box.width;
     const height = box.height;
@@ -1931,34 +1979,7 @@ function svgElementToImage(element, computedStyles) {
         }
     }
 
-    const image = new Image();
-    image.src = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" fill="${fill}" color="${color}" stroke="${stroke}">${element.innerHTML}</svg>`)}`;
-
-    return image;
-}
-
-async function backgroundImageToImage(element, computedStyles) {
-    const style = element.currentStyle || computedStyles;
-    const urlMatch = style.backgroundImage.match(/url\((['"]?)(.*?)\1\)/);
-    const url = urlMatch ? urlMatch[2] : null;
-
-    const image = new Image();
-
-    const imageLoadPromise = new Promise((resolve, reject) => {
-        image.onload = resolve;
-        image.onerror = reject;
-    });
-
-    image.src = url;
-
-    if (isCrossOrigin(url)) {
-        image.crossOrigin = "anonymous";
-    }
-
-    await imageLoadPromise;
-    await image.decode();
-
-    return image;
+    return `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" fill="${fill}" color="${color}" stroke="${stroke}">${element.innerHTML}</svg>`)}`;
 }
 
 function isCrossOrigin(imageSrc) {
@@ -1993,4 +2014,4 @@ function getPageAnalyzerCSSClass(cssClass, pseudoElt) {
     return finalClass;
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefinedForHTMLElement, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud, removeStyleAttribute, isCrossOrigin, processRulesAttenuate, areAllClassesDefinedForHTMLElement, getPageAnalyzerCSSClass };
+export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefinedForHTMLElement, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud, removeStyleAttribute, isCrossOrigin, processRulesAttenuate, areAllClassesDefinedForHTMLElement, getPageAnalyzerCSSClass, getImageUrlFromElement };
