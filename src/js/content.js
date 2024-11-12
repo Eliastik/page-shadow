@@ -26,6 +26,8 @@ const contentProcessor = new ContentProcessor();
 
 let settings = null;
 let precUrl = null;
+let initFinished = false;
+let initProcessing = false;
 
 async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, customThemeChanged) {
     const result = await browser.storage.local.get("liveSettings");
@@ -38,7 +40,7 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
 
     if(statusChanged && ((!isLiveSettings && !storageChanged) || isLiveSettings)) {
         contentProcessor.precEnabled = isEnabled;
-        return contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
+        return await contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
     }
 
     if(isLiveSettings && storageChanged) {
@@ -48,12 +50,12 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
 
             if(changed || hasSettingsChanged(contentProcessor.currentSettings, response.settings)) {
                 contentProcessor.precEnabled = response.enabled;
-                contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
+                await contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
             }
         } else {
             if(hasSettingsChanged(contentProcessor.currentSettings, await getSettings(getCurrentURL(), true), customThemeChanged)) {
                 contentProcessor.precEnabled = isEnabled;
-                contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
+                await contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
             }
         }
     }
@@ -100,9 +102,16 @@ function preApplyContrast(data, contentProcessor) {
 }
 
 // Global content processor start function
-const timerStart = new SafeTimer(() => {
-    contentProcessor.main(ContentProcessorConstants.TYPE_START);
-    precUrl = getCurrentURL();
+const timerStart = new SafeTimer(async () => {
+    if(!initFinished && !initProcessing) {
+        initProcessing = true;
+
+        await contentProcessor.main(ContentProcessorConstants.TYPE_START);
+
+        initFinished = true;
+        initProcessing = false;
+        precUrl = getCurrentURL();
+    }
 });
 
 // Pre-apply function
@@ -126,23 +135,27 @@ browser.runtime.onMessage.addListener(async(message) => {
 
         if(contentProcessor && contentProcessor.websiteSpecialFiltersConfig.enableURLChangeDetection &&
             message && message.url == await sha256(currentURL)) {
-            const URLUpdated = precUrl != getCurrentURL();
-            let changed = contentProcessor.hasEnabledStateChanged(message.enabled) || contentProcessor.mutationObserverProcessor?.mutationDetected;
+            const urlUpdated = precUrl != getCurrentURL();
+            const changed = initFinished && (contentProcessor.hasEnabledStateChanged(message.enabled) || urlUpdated);
 
-            if(URLUpdated) {
-                contentProcessor.pageAnalyzer.backgroundDetected = false;
+            if(urlUpdated) {
                 precUrl = getCurrentURL();
-                contentProcessor.precUrl = getCurrentURL();
 
                 if (contentProcessor.filterProcessor) {
                     contentProcessor.filterProcessor.filtersCache = null;
                 }
 
-                changed = true;
+                if (contentProcessor.pageAnalyzer) {
+                    contentProcessor.pageAnalyzer.backgroundDetected = false;
+                }
             }
 
             if(changed) {
-                applyIfSettingsChanged(true, message.storageChanged, message.enabled);
+                await applyIfSettingsChanged(true, message.storageChanged, message.enabled);
+            }
+
+            if(urlUpdated) {
+                contentProcessor.precUrl = getCurrentURL();
             }
         }
     }

@@ -26,7 +26,6 @@ import ContentProcessorConstants from "./contentProcessorConstants.js";
 export default class MutationObserverProcessor {
 
     precEnabled = false;
-    mutationDetected = false;
 
     elementBrightness;
     elementBlueLightFilter;
@@ -285,8 +284,6 @@ export default class MutationObserverProcessor {
                             } else if (reApplyBlueLight) {
                                 this.reApplyCallback(ContentProcessorConstants.TYPE_ONLY_BLUELIGHT, ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
                             }
-                        } else {
-                            this.mutationDetected = true;
                         }
                     });
 
@@ -407,8 +404,6 @@ export default class MutationObserverProcessor {
                             } else {
                                 this.reApplyCallback(ContentProcessorConstants.TYPE_ONLY_CONTRAST, ContentProcessorConstants.MUTATION_TYPE_BODY);
                             }
-                        } else {
-                            this.mutationDetected = true;
                         }
                     });
 
