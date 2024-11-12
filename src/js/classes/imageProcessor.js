@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { removeClass, addClass, rgb2hsl, svgElementToImage, backgroundImageToImage, isCrossOrigin } from "../utils/util.js";
+import { removeClass, addClass, rgb2hsl, svgElementToImage, backgroundImageToImage, isCrossOrigin, getImageUrlFromElement } from "../utils/util.js";
 import { maxImageSizeDarkImageDetection } from "../constants.js";
 
 export default class ImageProcessor {
@@ -24,17 +24,31 @@ export default class ImageProcessor {
     debugLogger;
     websiteSpecialFiltersConfig;
 
+    memoizedResults = new Map();
+
     constructor(debugLogger, websiteSpecialFiltersConfig) {
         this.debugLogger = debugLogger;
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
     }
 
     async detectDarkImage(element, hasBackgroundImg, computedStyles) {
-        if(!element) return;
+        if(!element || !computedStyles) return false;
 
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
         let image = element;
+
+        const imageUrl = getImageUrlFromElement(element, hasBackgroundImg, computedStyles);
+
+        if(imageUrl == null) {
+            return false;
+        }
+
+        if(this.isDetectionResultMemoizable(element, hasBackgroundImg) &&
+            this.memoizedResults.has(imageUrl)) {
+            this.debugLogger?.log(`ImageProcessor detectDarkImage - Getting memoized result for image with URL = ${imageUrl}`);
+            return this.memoizedResults.get(imageUrl);
+        }
 
         // Image element
         if(image instanceof HTMLImageElement && isCrossOrigin(image.src)) {
@@ -47,11 +61,12 @@ export default class ImageProcessor {
             try {
                 removeClass(image, "pageShadowDisableStyling", "pageShadowElementDisabled");
 
-                image = svgElementToImage(image, computedStyles);
+                image = svgElementToImage(imageUrl);
 
                 addClass(image, "pageShadowDisableStyling", "pageShadowElementDisabled");
             } catch(e) {
                 this.debugLogger?.log(e.message, "error");
+                this.memoizeDetectionResult(element, hasBackgroundImg, imageUrl, false);
                 return false;
             }
         }
@@ -60,12 +75,14 @@ export default class ImageProcessor {
         if(!(image instanceof HTMLImageElement) && !(image instanceof SVGImageElement)) {
             if(hasBackgroundImg) {
                 try {
-                    image = await backgroundImageToImage(image, computedStyles);
+                    image = await backgroundImageToImage(imageUrl);
                 } catch(e) {
                     this.debugLogger?.log(e.message, "error");
+                    this.memoizeDetectionResult(element, hasBackgroundImg, imageUrl, false);
                     return false;
                 }
             } else {
+                this.memoizeDetectionResult(element, hasBackgroundImg, imageUrl, false);
                 return false;
             }
         }
@@ -84,6 +101,7 @@ export default class ImageProcessor {
             ctx.drawImage(image, 0, 0, newWidth, newHeight);
         } catch(e) {
             this.debugLogger?.log(e.message, "error");
+            this.memoizeDetectionResult(element, hasBackgroundImg, imageUrl, false);
             return false;
         }
 
@@ -95,6 +113,8 @@ export default class ImageProcessor {
         if (isDarkImage) {
             this.debugLogger?.log(`Detected dark image - image URL: ${image.src}`);
         }
+
+        this.memoizeDetectionResult(element, hasBackgroundImg, imageUrl, isDarkImage);
 
         return isDarkImage;
     }
@@ -230,5 +250,15 @@ export default class ImageProcessor {
 
     elementIsImage(element, hasBackgroundImg) {
         return element instanceof HTMLImageElement || element instanceof SVGImageElement || element instanceof SVGGraphicsElement || hasBackgroundImg;
+    }
+
+    isDetectionResultMemoizable(element, hasBackgroundImg) {
+        return element instanceof HTMLImageElement || element instanceof SVGImageElement || hasBackgroundImg;
+    }
+
+    memoizeDetectionResult(element, hasBackgroundImg, imageUrl, result) {
+        if(this.isDetectionResultMemoizable(element, hasBackgroundImg)) {
+            this.memoizedResults.set(imageUrl, result);
+        }
     }
 }
