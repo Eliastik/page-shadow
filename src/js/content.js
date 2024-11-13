@@ -70,7 +70,7 @@ function preApplyContrast(data, contentProcessor) {
     }
 
     if(document.body && document.getElementsByTagName("html")[0] && !contentProcessor.started) {
-        contentProcessor.setupClassBatchers();
+        contentProcessor.initClassBatchers();
 
         // Pre-apply contrast, brightness, blue light filter and invert entire page
         if (data.settings.pageShadowEnabled == "true") {
