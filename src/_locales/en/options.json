@@ -170,7 +170,7 @@
                 "enableThrottleApplyClassChanges": "Throttle Page Shadow's application of CSS class changes to elements. This can improve performance in certain scenarios.",
                 "enableURLChangeDetection": "Enables URL change detection on SPA (single page application) applications, allowing Page Shadow to reapply settings and filters based on the new URL. Disabling this option can improve performance on some websites that frequently change their URL.",
                 "enablePseudoElementsAnalysis": "Enables analysis of pseudo-elements (text color, backgrounds, etc.). Disabling this option may improve performance, but may cause display problems.",
-                "enableDarkImageDetectionCache": "Enables caching of images already analyzed by the analysis engine. This improves performance by avoiding the need to reanalyze images already analyzed. Only the URL and analysis results of images already analyzed are cached.",
+                "enableDarkImageDetectionCache": "Enables caching of images already analyzed by the analysis engine. This improves performance by avoiding the need to reanalyze images already analyzed. Only the URL and analysis results of images already analyzed are cached. The cache is per page.",
                 "darkImageDetectionMaxCacheSize": "Sets the maximum cache size (number of elements) for images already analyzed. If the size exceeds this threshold, the oldest analyses will be purged from the cache, to avoid excessive memory usage."
 
             }
