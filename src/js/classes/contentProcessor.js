@@ -322,40 +322,31 @@ export default class ContentProcessor {
 
     async applyDetectBackground(type, elements) {
         return new Promise(resolve => {
-            if(this.pageAnalyzer.backgroundDetected) resolve();
+            if(this.pageAnalyzer.backgroundDetected) {
+                return resolve();
+            }
+
+            const timerBackgrounds = new SafeTimer(async () => {
+                timerBackgrounds.clear();
+
+                await this.pageAnalyzer.detectBackground(elements, type === ContentProcessorConstants.TYPE_RESET);
+                this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS);
+
+                resolve();
+            });
 
             if(document.readyState === "complete") {
                 this.debugLogger?.log("Page is now ready, we can start to analyze the elements");
-
-                const timerBackgrounds = new SafeTimer(async() => {
-                    timerBackgrounds.clear();
-
-                    this.pageAnalyzer.detectBackground(elements, type === ContentProcessorConstants.TYPE_RESET).then(() => {
-                        resolve();
-                    });
-
-                    this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS);
-                });
-
                 timerBackgrounds.start(1);
             } else {
-                if(type == ContentProcessorConstants.TYPE_LOADING) {
-                    this.debugLogger?.log("Page is not ready, waiting for the page to be ready to analyze the elements");
+                this.debugLogger?.log("Page is not ready, waiting for the page to be ready to analyze the elements");
 
-                    const eventDetectBackground = document.addEventListener("readystatechange", () => {
-                        if(document.readyState === "complete") {
-                            document.removeEventListener("readystatechange", eventDetectBackground);
-
-                            this.applyDetectBackground(ContentProcessorConstants.TYPE_LOADING, elements).then(() => {
-                                resolve();
-                            });
-                        }
-                    });
-                } else {
-                    this.applyDetectBackground(ContentProcessorConstants.TYPE_LOADING, elements).then(() => {
-                        resolve();
-                    });
-                }
+                const eventDetectBackground = document.addEventListener("readystatechange", () => {
+                    if(document.readyState === "complete") {
+                        document.removeEventListener("readystatechange", eventDetectBackground);
+                        timerBackgrounds.start(1);
+                    }
+                });
             }
         });
     }
@@ -486,7 +477,7 @@ export default class ContentProcessor {
 
             if(this.timerObserveBodyChange) this.timerObserveBodyChange.clear();
 
-            this.timerObserveBodyChange = new SafeTimer(() => {
+            this.timerObserveBodyChange = new SafeTimer(async () => {
                 if(document.body) {
                     if(!this.oldBody) this.oldBody = document.body;
 
@@ -494,7 +485,7 @@ export default class ContentProcessor {
                         this.initClassBatchers();
 
                         if(this.precUrl == getCurrentURL()) {
-                            this.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
+                            await this.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
                         }
 
                         this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS);

@@ -141,21 +141,21 @@ browser.runtime.onMessage.addListener(async(message) => {
             if(urlUpdated) {
                 precUrl = getCurrentURL();
 
-                if (contentProcessor.filterProcessor) {
-                    contentProcessor.filterProcessor.filtersCache = null;
-                }
+                if(contentProcessor) {
+                    contentProcessor.precUrl = getCurrentURL();
 
-                if (contentProcessor.pageAnalyzer) {
-                    contentProcessor.pageAnalyzer.backgroundDetected = false;
+                    if (contentProcessor.filterProcessor) {
+                        contentProcessor.filterProcessor.filtersCache = null;
+                    }
+
+                    if (contentProcessor.pageAnalyzer) {
+                        contentProcessor.pageAnalyzer.backgroundDetected = false;
+                    }
                 }
             }
 
             if(changed) {
                 await applyIfSettingsChanged(true, message.storageChanged, message.enabled);
-            }
-
-            if(urlUpdated) {
-                contentProcessor.precUrl = getCurrentURL();
             }
         }
     }
