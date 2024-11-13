@@ -253,11 +253,16 @@ export default class ImageProcessor {
     }
 
     isDetectionResultMemoizable(element, hasBackgroundImg) {
-        return element instanceof HTMLImageElement || element instanceof SVGImageElement || hasBackgroundImg;
+        return this.websiteSpecialFiltersConfig.enableDarkImageDetectionCache && (element instanceof HTMLImageElement || element instanceof SVGImageElement || hasBackgroundImg);
     }
 
     memoizeDetectionResult(element, hasBackgroundImg, imageUrl, result) {
         if(this.isDetectionResultMemoizable(element, hasBackgroundImg)) {
+            if(this.memoizedResults.size >= this.websiteSpecialFiltersConfig.darkImageDetectionMaxCacheSize) {
+                const oldestKey = this.memoizedResults.keys().next().value;
+                this.memoizedResults.delete(oldestKey);
+            }
+
             this.memoizedResults.set(imageUrl, result);
         }
     }
