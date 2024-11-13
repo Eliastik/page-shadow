@@ -126,9 +126,9 @@ export default class PageAnalyzer {
 
         return new Promise(resolve => {
             if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
-                if(this.processingBackgrounds) {
-                    this.debugLogger?.log("PageAnalyzer detectBackground - Already analyzing page elements, exiting");
-                    resolve();
+                if(this.processingBackgrounds || this.backgroundDetected) {
+                    this.debugLogger?.log("PageAnalyzer detectBackground - Already analyzing or analyzed page elements, exiting");
+                    return resolve();
                 }
 
                 this.processingBackgrounds = true;
