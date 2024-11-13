@@ -76,18 +76,6 @@ export default class ContentProcessor {
         this.websiteSpecialFiltersConfig = await loadWebsiteSpecialFiltersConfig();
     }
 
-    setupClassBatchers() {
-        this.bodyClassBatcher = new ElementClassBatcher("add", document.body);
-        this.bodyClassBatcherRemover = new ElementClassBatcher("remove", document.body);
-        this.htmlClassBatcher = new ElementClassBatcher("add", document.getElementsByTagName("html")[0]);
-        this.multipleElementClassBatcherAdd = new MultipleElementClassBatcher("add", this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
-            this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime,
-            this.websiteSpecialFiltersConfig.enableThrottleApplyClassChanges);
-        this.multipleElementClassBatcherRemove = new MultipleElementClassBatcher("remove", this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
-            this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime,
-            this.websiteSpecialFiltersConfig.enableThrottleApplyClassChanges);
-    }
-
     async applyContrastPage(init, contrastPageEnabled, theme, disableImgBgColor, brightColorPreservation, customThemesSettings) {
         if (contrastPageEnabled != undefined && contrastPageEnabled == "true") {
             this.debugLogger?.log(`Applying contrast page with settings : theme = ${theme} / disableImgBgColor = ${disableImgBgColor} / brightColorPreservation = ${brightColorPreservation}`);
@@ -503,7 +491,7 @@ export default class ContentProcessor {
                     if(!this.oldBody) this.oldBody = document.body;
 
                     if(document.body != this.oldBody) {
-                        this.setupClassBatchers();
+                        this.initClassBatchers();
 
                         if(this.precUrl == getCurrentURL()) {
                             this.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
@@ -607,7 +595,7 @@ export default class ContentProcessor {
 
         return new Promise((resolve) => {
             this.applyWhenBodyIsAvailableTimer = new ApplyBodyAvailable(async () => {
-                this.initBatchers();
+                this.initClassBatchers();
                 this.initProcessors();
 
                 this.debugLogger?.log(`Starting processing page - allowed? ${allowed} / type? ${type} / disableCache? ${disableCache}`);
@@ -627,10 +615,11 @@ export default class ContentProcessor {
         });
     }
 
-    initBatchers() {
-        this.bodyClassBatcher = this.bodyClassBatcher || new ElementClassBatcher("add", document.body);
-        this.bodyClassBatcherRemover = this.bodyClassBatcherRemover || new ElementClassBatcher("remove", document.body);
-        this.htmlClassBatcher = this.htmlClassBatcher || new ElementClassBatcher("add", document.getElementsByTagName("html")[0]);
+    initClassBatchers() {
+        this.bodyClassBatcher = new ElementClassBatcher("add", document.body);
+        this.bodyClassBatcherRemover = new ElementClassBatcher("remove", document.body);
+        this.htmlClassBatcher = new ElementClassBatcher("add", document.getElementsByTagName("html")[0]);
+
         this.multipleElementClassBatcherAdd = this.multipleElementClassBatcherAdd || new MultipleElementClassBatcher("add", this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
             this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime,
             this.websiteSpecialFiltersConfig.enableThrottleApplyClassChanges);
