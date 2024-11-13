@@ -517,7 +517,7 @@ export default class ContentProcessor {
             if(this.timerObserveDocumentElementChange) this.timerObserveDocumentElementChange.clear();
 
             this.timerObserveDocumentElementChange = new SafeTimer(async () => {
-                const settings = await getSettings(getCurrentURL());
+                const settings = this.currentSettings;
 
                 if(this.precEnabled && (!areAllCSSVariablesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.attenuateColors)
                     || !areAllClassesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.invertEntirePage, settings.theme))) {

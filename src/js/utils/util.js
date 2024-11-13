@@ -1726,11 +1726,14 @@ function chunkValue(key, value) {
 }
 
 async function sendMessageWithPromise(data, ...expectedMessageType) {
+    debugLogger.log(`Sending message to background process with type: ${data.type} - expected response type: ${expectedMessageType}`, "debug", data);
+
     return new Promise(resolve => {
         const listener = message => {
             if (message && expectedMessageType.includes(message.type)) {
                 resolve(message);
                 browser.runtime.onMessage.removeListener(listener);
+                debugLogger.log(`Received response ${expectedMessageType} from background process for message with data with type: ${data.type}`, "debug", data);
             }
         };
 
