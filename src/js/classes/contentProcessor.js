@@ -42,6 +42,8 @@ export default class ContentProcessor {
 
     precEnabled = false;
     started = false;
+    processingFilters = false;
+    processedFilters = false;
     currentSettings = null;
     newSettingsToApply = null;
     oldBody = null;
@@ -548,11 +550,17 @@ export default class ContentProcessor {
         }
 
         if(this.currentSettings && (this.currentSettings.pageShadowEnabled == "true" || this.currentSettings.colorInvert == "true" || this.currentSettings.attenuateColors == "true")) {
-            this.debugLogger?.log("Applying page filters");
-
             await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
 
-            this.filterProcessor.doProcessFilters();
+            if(!this.processedFilters && !this.processingFilters) {
+                this.processingFilters = true;
+                this.debugLogger?.log("Applying page filters");
+
+                await this.filterProcessor.doProcessFilters();
+
+                this.processedFilters = true;
+                this.processingFilters = false;
+            }
         }
     }
 
