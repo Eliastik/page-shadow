@@ -143,6 +143,8 @@ browser.runtime.onMessage.addListener(async(message) => {
 
                 if(contentProcessor) {
                     contentProcessor.precUrl = getCurrentURL();
+                    contentProcessor.processingFilters = false;
+                    contentProcessor.processedFilters = false;
 
                     if (contentProcessor.filterProcessor) {
                         contentProcessor.filterProcessor.filtersCache = null;
