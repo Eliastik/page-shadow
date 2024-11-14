@@ -198,7 +198,11 @@ html.pageShadowInvertEntirePage body.pageShadowEnableSelectiveInvert.pageShadowI
     -webkit-filter: var(--page-shadow-invert-filter-bg-backgrounds) !important;
 }
 
-html.pageShadowInvertEntirePage body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(.pageShadowHasBrightColorBackground) *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText) {
+body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(.pageShadowHasBrightColorBackground) {
+    color: white;
+}
+
+body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(.pageShadowHasBrightColorBackground) *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText) {
     color: black;
 }
 
