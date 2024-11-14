@@ -145,6 +145,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Bug with iframes => example comments on Franceinfo website
     * [x] Bug with invert entire page when the extension is built in prod mode => was caused by the gulp-clean-css plugin
     * [x] Process pseudo elements
+    * [x] More optimizations - test
     * [ ] Final tests (Chrome/Firefox)
 
 #### Bugs to fix
