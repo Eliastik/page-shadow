@@ -39,7 +39,7 @@ gulp.task("copy-global", () => {
 });
 
 gulp.task("compile-less", () => {
-    return gulp.src(["./src/css/*.less", "./src/css/*.css"])
+    return gulp.src(["./src/css/*.less", "./src/css/*.css", "!./src/css/content_old.css"])
         .pipe(less())
         .pipe(gulp.dest("./build/global/css/"));
 });
