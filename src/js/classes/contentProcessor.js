@@ -331,7 +331,13 @@ export default class ContentProcessor {
             const timerBackgrounds = new SafeTimer(async () => {
                 timerBackgrounds.clear();
 
+                // Start mutation observer, only for added nodes
+                this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS_ONLY_ADDED_NODES);
+
+                // Analyze page elements
                 await this.pageAnalyzer.detectBackground(elements, type === ContentProcessorConstants.TYPE_RESET);
+
+                // Start mutation observer, for added nodes and class changes
                 this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS);
 
                 resolve();
@@ -514,7 +520,7 @@ export default class ContentProcessor {
 
                 if(this.precEnabled && (!areAllCSSVariablesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.attenuateColors)
                     || !areAllClassesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.invertEntirePage, settings.theme))) {
-                    this.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
+                    await this.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
                 }
 
                 this.timerObserveDocumentElementChange.start(this.websiteSpecialFiltersConfig.observeDocumentChangeTimerInterval);

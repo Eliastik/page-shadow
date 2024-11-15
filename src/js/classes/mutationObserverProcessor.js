@@ -116,9 +116,11 @@ export default class MutationObserverProcessor {
         } else if(type == ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT) { // Mutation Observer for the brigthness/bluelight settings
             this.setupMutationObserverBrightnessBluelight(forceReset);
         } else if(type == ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS) { // Mutation Observer for analyzing whole page elements (detecting backgrounds and applying filters)
-            this.setupMutationObserverBackgrounds(forceReset);
+            this.setupMutationObserverBackgrounds(forceReset, false);
         } else if(type === ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESSWRAPPER) { // Mutation for the brightness/bluelight wrapper element
             this.setupMutationObserverBrightnessBluelightWrapper(forceReset);
+        } else if(type === ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS_ONLY_ADDED_NODES) {
+            this.setupMutationObserverBackgrounds(forceReset, true);
         }
     }
 
@@ -171,24 +173,29 @@ export default class MutationObserverProcessor {
         }
     }
 
-    setupMutationObserverBackgrounds(forceReset) {
+    setupMutationObserverBackgrounds(forceReset, onlyAddedNodes) {
         if (this.mutationObserverBackgrounds != null && !forceReset) {
             this.mutationObserverBackgrounds.start();
         } else {
             if(this.mutationObserverBackgrounds) this.mutationObserverBackgrounds.disconnect();
 
-            this.mutationObserverBackgrounds = new MutationObserverWrapper(mutations => {
-                this.treatAllMutations(mutations);
-                this.mutationObserverBackgrounds.start();
-            }, {
-                "attributes": true,
+            const mutationConfig = {
+                "attributes": !onlyAddedNodes,
                 "subtree": true,
                 "childList": true,
                 "characterData": false,
-                "attributeFilter": ["class", "style"],
-                "attributeOldValue": true,
+                "attributeOldValue": !onlyAddedNodes,
                 "characterDataOldValue": false
-            }, null, true);
+            };
+
+            if(!onlyAddedNodes) {
+                mutationConfig.attributeFilter = ["class", "style"];
+            }
+
+            this.mutationObserverBackgrounds = new MutationObserverWrapper(mutations => {
+                this.treatAllMutations(mutations);
+                this.mutationObserverBackgrounds.start();
+            }, mutationConfig, null, true);
 
             this.mutationObserverBackgrounds.start();
         }

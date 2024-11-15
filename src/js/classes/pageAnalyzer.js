@@ -158,42 +158,34 @@ export default class PageAnalyzer {
     }
 
     async runNormalBackgroundDetection(elements, forceDisableThrottle) {
-        return new Promise(resolve => {
-            removeClass(document.body, "pageShadowDisableBackgroundStyling");
+        removeClass(document.body, "pageShadowDisableBackgroundStyling");
 
-            const elementsLength = elements.length;
-            const startTime = performance.now();
+        const elementsLength = elements.length;
+        const startTime = performance.now();
 
-            let currentIndex = 0;
-            let totalExecutionTime = 0;
+        let currentIndex = 0;
+        let totalExecutionTime = 0;
 
-            while(currentIndex < elementsLength) {
-                this.processElement(elements[currentIndex], true);
-                currentIndex++;
+        while(currentIndex < elementsLength) {
+            await this.processElement(elements[currentIndex], true);
+            currentIndex++;
 
-                const addTime = performance.now() - startTime;
-                totalExecutionTime += addTime;
+            const addTime = performance.now() - startTime;
+            totalExecutionTime += addTime;
 
-                if(!forceDisableThrottle && totalExecutionTime >= this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime) {
-                    this.debugLogger?.log(`PageAnalyzer detectBackground - Stopping early task to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`);
-                    return this.runThrottledBackgroundDetection(elements.slice(currentIndex)).then(resolve);
-                }
+            if(!forceDisableThrottle && totalExecutionTime >= this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime) {
+                this.debugLogger?.log(`PageAnalyzer detectBackground - Stopping early task to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`);
+                return await this.runThrottledBackgroundDetection(elements.slice(currentIndex));
             }
+        }
 
-            this.setBackgroundDetectionFinished();
-            resolve();
-        });
+        this.setBackgroundDetectionFinished();
     }
 
     async runThrottledBackgroundDetection(elements) {
-        return new Promise(resolve => {
-            removeClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
-
-            this.throttledTaskDetectBackgrounds.start(elements).then(() => {
-                this.setBackgroundDetectionFinished();
-                resolve();
-            });
-        });
+        removeClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
+        await this.throttledTaskDetectBackgrounds.start(elements);
+        this.setBackgroundDetectionFinished();
     }
 
     setBackgroundDetectionFinished() {

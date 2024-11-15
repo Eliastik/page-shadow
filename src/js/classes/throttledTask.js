@@ -65,14 +65,14 @@ export default class ThrottledTask {
         });
     }
 
-    processBatch() {
+    async processBatch() {
         const startTime = performance.now();
 
         let batchEnd = Math.min(this.index + this.elementsPerBatch, this.elements.length);
 
         for(let i = this.index; i < batchEnd; i++) {
             try {
-                this.callback(this.elements[i]);
+                await this.callback(this.elements[i]);
             } catch(e) {
                 this.debugLogger?.log(`ThrottledTask ${this.name} - Error executing task: ${e}`, "error");
             }
