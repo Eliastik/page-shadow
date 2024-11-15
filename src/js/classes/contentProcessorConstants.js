@@ -26,6 +26,7 @@ export default {
     TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT: "onlyBrightnessAndBlueLight",
     MUTATION_TYPE_BODY: "body",
     MUTATION_TYPE_BACKGROUNDS: "backgrounds",
+    MUTATION_TYPE_BACKGROUNDS_ONLY_ADDED_NODES: "backgroundOnlyAddedNodes",
     MUTATION_TYPE_BRIGHTNESSWRAPPER: "brightnesswrapper",
     MUTATION_TYPE_BRIGHTNESS_BLUELIGHT: "brightnessbluelight",
     TYPE_LOADING: "loading",

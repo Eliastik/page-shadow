@@ -115,7 +115,7 @@ const timerStart = new SafeTimer(async () => {
 });
 
 // Pre-apply function
-const timerPreApply = new SafeTimer(async() => {
+const timerPreApply = new SafeTimer(() => {
     if(settings) {
         if(preApplyContrast(settings, contentProcessor)) {
             timerStart.start();
