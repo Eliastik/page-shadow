@@ -134,7 +134,7 @@ browser.runtime.onMessage.addListener(async(message) => {
         const currentURL = getCurrentURL();
 
         if(contentProcessor && contentProcessor.websiteSpecialFiltersConfig.enableURLChangeDetection &&
-            message && message.url == await sha256(currentURL)) {
+            message && message.url == await sha256(currentURL) && precUrl) {
             const urlUpdated = precUrl != getCurrentURL();
             const changed = initFinished && (contentProcessor.hasEnabledStateChanged(message.enabled) || urlUpdated);
 
