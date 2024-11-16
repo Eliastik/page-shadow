@@ -338,7 +338,7 @@ export default class ContentProcessor {
                 await this.pageAnalyzer.detectBackground(elements, type === ContentProcessorConstants.TYPE_RESET);
 
                 // Start mutation observer, for added nodes and class changes
-                this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS);
+                this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS, true);
 
                 resolve();
             });
@@ -493,10 +493,10 @@ export default class ContentProcessor {
                         this.initClassBatchers();
 
                         if(this.precUrl == getCurrentURL()) {
-                            await this.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
+                            this.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
                         }
 
-                        this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS);
+                        this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS, true);
                     }
 
                     this.oldBody = document.body;
@@ -551,13 +551,18 @@ export default class ContentProcessor {
 
             if(response.filters) {
                 this.filterProcessor.filtersCache = response.filters;
+            }
+
+            if(response.specialFilters) {
                 this.filterProcessor.processSpecialRules(response.specialFilters);
             }
-        }
 
-        if(this.currentSettings && (this.currentSettings.pageShadowEnabled == "true" || this.currentSettings.colorInvert == "true" || this.currentSettings.attenuateColors == "true")) {
             await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
+        }
+    }
 
+    async executeFilters() {
+        if(this.currentSettings && (this.currentSettings.pageShadowEnabled == "true" || this.currentSettings.colorInvert == "true" || this.currentSettings.attenuateColors == "true")) {
             if(!this.processedFilters && !this.processingFilters) {
                 this.processingFilters = true;
                 this.debugLogger?.log("Applying page filters");
@@ -715,15 +720,17 @@ export default class ContentProcessor {
 
         if(settings.pageShadowEnabled === "true" || settings.colorInvert === "true" || settings.attenuateColors === "true") {
             if(type === ContentProcessorConstants.TYPE_START || !this.pageAnalyzer.backgroundDetected) {
+                await this.updateFilters();
+
                 await this.applyDetectBackground(type, "*");
 
-                if (document.readyState === "complete") {
-                    await this.updateFilters();
+                if(document.readyState === "complete") {
+                    await this.executeFilters();
                 } else {
                     const readyStateChangeApplyFilters = document.addEventListener("readystatechange", () => {
-                        if (document.readyState === "complete") {
+                        if(document.readyState === "complete") {
                             document.removeEventListener("readystatechange", readyStateChangeApplyFilters);
-                            this.updateFilters();
+                            this.executeFilters();
                         }
                     });
                 }
