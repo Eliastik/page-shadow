@@ -431,8 +431,8 @@ div.navbar-right {
     animation-play-state: "running";
 }
 .snackbar.show#informations {
-    -webkit-animation: fadein 0.5s, fadeout 0.5s 5s;
-    animation: fadein 0.5s, fadeout 0.5s 5s;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 8s;
+    animation: fadein 0.5s, fadeout 0.5s 8s;
 }
 .filterButtons {
     display: flex;

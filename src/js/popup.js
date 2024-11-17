@@ -1615,7 +1615,8 @@ $(document).ready(() => {
     async function displaySettings() {
         const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "percentageBlueLightReduction", "archiveInfoLastShowed", "archiveInfoDisable", "permissionsInfoDisable", "lastAutoBackupFailedLastShowed", "lastAutoBackupFailed"]);
 
-        const informationShowed = showInformationPopup(result);
+        const informationShowed = await showInformationPopup(result);
+
         checkCurrentPopupTheme();
         toggleTheme(); // Toggle dark/light theme
         checkContrastMode(!updateNotificationShowed && !archiveInfoShowed && !informationShowed);

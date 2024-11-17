@@ -201,7 +201,7 @@ const defaultSettings = {
     "hourDisable": defaultHourDisable,
     "minuteDisable": defaultMinuteDisable,
     "hourDisableFormat": defaultHourDisableFormat,
-    "disableImgBgColor": "false",
+    "disableImgBgColor": "true",
     "presets": defaultPresets,
     "customThemes": defaultCustomThemes,
     "filtersSettings": defaultFilters,
