@@ -87,11 +87,13 @@ export default class PageAnalyzer {
             this.shadowDomProcessor.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
         }
 
-        if(this.currentSettings) {
+        if(this.currentSettings && this.currentSettings.theme && this.currentSettings.pageShadowEnabled == "true") {
             const theme = this.currentSettings.theme;
             const themeColor = theme.startsWith("custom") ? (await getCustomThemeConfig(theme.replace("custom", ""), null)).textColor : defaultThemesTextColors[parseInt(theme) - 1];
 
             this.themeColorRGB = hexToRgb(themeColor);
+        } else {
+            this.themeColorRGB = "";
         }
     }
 
