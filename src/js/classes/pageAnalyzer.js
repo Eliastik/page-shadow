@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { removeClass, addClass, loadWebsiteSpecialFiltersConfig, rgb2hsl, getPageAnalyzerCSSClass } from "../utils/util.js";
-import { ignoredElementsContentScript, pageShadowClassListsMutationsIgnore, ignoredElementsBrightTextColorDetection } from "../constants.js";
+import { removeClass, addClass, loadWebsiteSpecialFiltersConfig, rgb2hsl, getPageAnalyzerCSSClass, hexToRgb, getCustomThemeConfig } from "../utils/util.js";
+import { ignoredElementsContentScript, pageShadowClassListsMutationsIgnore, ignoredElementsBrightTextColorDetection, defaultThemesTextColors } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
 import ImageProcessor from "./imageProcessor.js";
 import ShadowDomProcessor from "./shadowDomProcessor.js";
@@ -47,6 +47,8 @@ export default class PageAnalyzer {
     throttledTaskDetectBackgrounds;
     throttledTaskAnalyzeSubchilds;
     throttledTaskAnalyzeImages;
+
+    themeColorRGB = "";
 
     constructor(websiteSpecialFiltersConfig, currentSettings, isEnabled, multipleElementClassBatcherAdd, multipleElementClassBatcherRemove, debugLogger) {
         this.setSettings(websiteSpecialFiltersConfig, currentSettings, isEnabled);
@@ -83,6 +85,13 @@ export default class PageAnalyzer {
             this.shadowDomProcessor.currentSettings = currentSettings;
             this.shadowDomProcessor.isEnabled = isEnabled;
             this.shadowDomProcessor.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
+        }
+
+        if(this.currentSettings) {
+            const theme = this.currentSettings.theme;
+            const themeColor = theme.startsWith("custom") ? (await getCustomThemeConfig(theme.replace("custom", ""), null)).textColor : defaultThemesTextColors[parseInt(theme) - 1];
+
+            this.themeColorRGB = hexToRgb(themeColor);
         }
     }
 
@@ -478,12 +487,15 @@ export default class PageAnalyzer {
 
         if(isTextElement) {
             const textColor = computedStyles.color;
-            const hasBrightColor = this.elementHasBrightColor(textColor, textColor, true);
 
-            if (hasBrightColor && hasBrightColor[0]) {
-                this.multipleElementClassBatcherAdd.add(element, getPageAnalyzerCSSClass("pageShadowHasBrightColorText", pseudoElt));
-            } else {
-                this.multipleElementClassBatcherRemove.add(element, getPageAnalyzerCSSClass("pageShadowHasBrightColorText", pseudoElt));
+            if(textColor !== this.themeColorRGB) {
+                const hasBrightColor = this.elementHasBrightColor(textColor, textColor, true);
+
+                if (hasBrightColor && hasBrightColor[0]) {
+                    this.multipleElementClassBatcherAdd.add(element, getPageAnalyzerCSSClass("pageShadowHasBrightColorText", pseudoElt));
+                } else {
+                    this.multipleElementClassBatcherRemove.add(element, getPageAnalyzerCSSClass("pageShadowHasBrightColorText", pseudoElt));
+                }
             }
         }
     }
