@@ -88,7 +88,7 @@ export default class PageAnalyzer {
 
     initializeThrottledTasks() {
         this.throttledTaskDetectBackgrounds = new ThrottledTask(
-            (element) => this.processElement(element, false),
+            async (element) => await this.processElement(element, false),
             "throttledTaskDetectBackgrounds",
             this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay,
             this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall,
@@ -96,15 +96,15 @@ export default class PageAnalyzer {
         );
 
         this.throttledTaskAnalyzeSubchilds = new ThrottledTask(
-            (element) => this.processElement(element, false),
+            async (element) => await this.processElement(element, false),
             "throttledTaskAnalyzeSubchilds",
             this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds,
             this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall,
             this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime
         );
 
-        this.throttledTaskAnalyzeImages = new ThrottledTask((task) => {
-            this.taskAnalyzeImage(task.image, task.hasBackgroundImg, task.computedStyles, task.pseudoElt);
+        this.throttledTaskAnalyzeImages = new ThrottledTask(async (task) => {
+            await this.taskAnalyzeImage(task.image, task.hasBackgroundImg, task.computedStyles, task.pseudoElt);
         },
         "throttledTaskAnalyzeImages",
         this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay,
@@ -113,12 +113,12 @@ export default class PageAnalyzer {
         );
     }
 
-    taskAnalyzeImage(image, hasBackgroundImg, computedStyles, pseudoElt) {
-        this.imageProcessor.detectDarkImage(image, hasBackgroundImg, computedStyles).then(isDarkImage => {
-            if (isDarkImage) {
-                this.multipleElementClassBatcherAdd.add(image, getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt));
-            }
-        });
+    async taskAnalyzeImage(image, hasBackgroundImg, computedStyles, pseudoElt) {
+        const isDarkImage = await this.imageProcessor.detectDarkImage(image, hasBackgroundImg, computedStyles);
+
+        if (isDarkImage) {
+            this.multipleElementClassBatcherAdd.add(image, getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt));
+        }
     }
 
     async detectBackground(tagName, forceDisableThrottle) {
