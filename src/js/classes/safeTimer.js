@@ -32,21 +32,23 @@ export default class SafeTimer {
     }
 
     start(delay) {
-        if(!delay) {
-            if(!this.requestAnimationId) {
-                this.requestAnimationId = requestAnimationFrame(() => {
-                    this.onRequestAnimationFrame();
-                });
+        return new Promise(resolve => {
+            if(!delay) {
+                if(!this.requestAnimationId) {
+                    this.requestAnimationId = requestAnimationFrame(() => {
+                        this.onRequestAnimationFrame().then(resolve);
+                    });
+                }
+
+                return;
             }
 
-            return;
-        }
-
-        if(!this.requestAnimationId) {
-            this.timeoutId = setTimeout(() => {
-                this.macroToMicro();
-            }, delay);
-        }
+            if(!this.requestAnimationId) {
+                this.timeoutId = setTimeout(() => {
+                    this.macroToMicro();
+                }, delay);
+            }
+        });
     }
 
     clear() {
@@ -66,8 +68,8 @@ export default class SafeTimer {
         this.start();
     }
 
-    onRequestAnimationFrame() {
+    async onRequestAnimationFrame() {
         this.requestAnimationId = null;
-        this.callback();
+        await this.callback();
     }
 }
