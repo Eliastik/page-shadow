@@ -79,7 +79,7 @@ export default class ContentProcessor {
     }
 
     async applyContrastPage(init, contrastPageEnabled, theme, disableImgBgColor, brightColorPreservation, customThemesSettings) {
-        if (contrastPageEnabled != undefined && contrastPageEnabled == "true") {
+        if (contrastPageEnabled == "true") {
             this.debugLogger?.log(`Applying contrast page with settings : theme = ${theme} / disableImgBgColor = ${disableImgBgColor} / brightColorPreservation = ${brightColorPreservation}`);
 
             if (theme != undefined) {
@@ -102,11 +102,11 @@ export default class ContentProcessor {
                 this.resetContrastPage(1, disableImgBgColor, brightColorPreservation);
             }
 
-            if (disableImgBgColor != undefined && disableImgBgColor == "true") {
+            if (disableImgBgColor == "true") {
                 this.bodyClassBatcher.add("pageShadowDisableImgBgColor");
             }
 
-            if (brightColorPreservation != undefined && brightColorPreservation == "true") {
+            if (brightColorPreservation == "true") {
                 this.bodyClassBatcher.add("pageShadowPreserveBrightColor");
             }
 

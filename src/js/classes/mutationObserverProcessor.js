@@ -203,8 +203,6 @@ export default class MutationObserverProcessor {
 
     async treatAllMutations(mutations) {
         if(mutations.length > 0) {
-            await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
-
             if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds) {
                 this.throttledTaskTreatMutations.start(mutations);
             } else {
