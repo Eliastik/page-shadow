@@ -38,7 +38,7 @@ export default class DebugLogger {
     log(message, type = "debug", element) {
         if (this.debugModeEnabled) {
             const timestamp = new Date().getTime();
-            const pageURL = document.URL;
+            const pageURL = typeof document !== "undefined" ? document.URL : "???";
 
             const stack = new Error().stack.split("\n");
             const link = this.getStackLink(stack, 3);

@@ -493,6 +493,13 @@ export default class ContentProcessor {
                         this.initClassBatchers();
 
                         if(this.precUrl == getCurrentURL()) {
+                            this.debugLogger?.log("Body change observer - Detected body change. Re-applying settings.");
+
+                            if(document.body != this.pageAnalyzer.backgroundDetectedBody) {
+                                this.debugLogger?.log("Body change observer - Will analyze the page as document.body has changed from the last page analysis");
+                                this.resetPageAnalysisState();
+                            }
+
                             this.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
                         }
 
@@ -753,6 +760,20 @@ export default class ContentProcessor {
             this.resetBlueLightPage();
             this.pageAnalyzer.clearShadowRoots();
             this.bodyClassBatcherRemover.apply();
+        }
+    }
+
+    resetPageAnalysisState() {
+        this.processingFilters = false;
+        this.processedFilters = false;
+
+        if(this.filterProcessor) {
+            this.filterProcessor.filtersCache = null;
+        }
+
+        if(this.pageAnalyzer) {
+            this.pageAnalyzer.backgroundDetected = false;
+            this.pageAnalyzer.backgroundDetectedBody = document.body;
         }
     }
 

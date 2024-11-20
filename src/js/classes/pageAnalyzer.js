@@ -37,6 +37,7 @@ export default class PageAnalyzer {
 
     processingBackgrounds = false;
     backgroundDetected = false;
+    backgroundDetectedBody = null;
     backgroundDetectionAlreadyProcessedNodes = new WeakSet();
 
     multipleElementClassBatcherAdd = null;
@@ -203,6 +204,7 @@ export default class PageAnalyzer {
         removeClass(document.body, "pageShadowDisableBackgroundStyling", "pageShadowDisableStyling");
         addClass(document.body, "pageShadowBackgroundDetected");
         this.backgroundDetected = true;
+        this.backgroundDetectedBody = document.body;
     }
 
     elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
