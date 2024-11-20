@@ -61,18 +61,22 @@ export default class DebugLogger {
     }
 
     getStackLink(stack, index) {
-        const stackLine = stack[index].trim();
+        if(stack && stack[index]) {
+            const stackLine = stack[index].trim();
 
-        const match = stackLine.match(/\((.*):(\d+):(\d+)\)/);
-        let link = "";
+            const match = stackLine.match(/\((.*):(\d+):(\d+)\)/);
+            let link = "";
 
-        if (match) {
-            const file = match[1];
-            const line = match[2];
-            const column = match[3];
-            link = `${file}:${line}:${column}`;
+            if (match) {
+                const file = match[1];
+                const line = match[2];
+                const column = match[3];
+                link = `${file}:${line}:${column}`;
+            }
+
+            return link;
         }
 
-        return link;
+        return "";
     }
 }

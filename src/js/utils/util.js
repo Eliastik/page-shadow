@@ -1749,7 +1749,10 @@ async function sendMessageWithPromise(data, ...expectedMessageType) {
 
         browser.runtime.sendMessage(data).catch(() => {
             browser.runtime.onMessage.removeListener(listener);
-            if(browser.runtime.lastError) return;
+            if(browser.runtime.lastError) {
+                debugLogger.log(`Error sending message to background process. Type: ${data.type} / Expected message type = ${expectedMessageType}`, "error", data);
+                return;
+            }
         });
 
         if(!expectedMessageType) {

@@ -99,12 +99,16 @@ async function getCurrentURL() {
 
         if(!browser.runtime.lastError) {
             return normalizeURL(tabInfos.url);
+        } else {
+            debugLogger.log("Popup getCurrentURL - Error getting current URL", "error", browser.runtime.lastError);
         }
     } else {
         const tabs = await browser.tabs.query({ active: true, currentWindow: true });
 
         if(!browser.runtime.lastError) {
             return normalizeURL(tabs[0].url);
+        } else {
+            debugLogger.log("Popup getCurrentURL - Error getting current URL", "error", browser.runtime.lastError);
         }
     }
 }

@@ -421,6 +421,8 @@ export default class FilterProcessor {
 
         this.rules = newRules;
         this.specialRules = newSpecialRules;
+
+        this.debugLogger.log("FilterProcessor - Updated cache");
     }
 
     extractMetadataLine(line) {

@@ -66,7 +66,10 @@ function createContextMenu(id, type, title, contexts, checked) {
             contexts: contexts,
             checked: checked
         }, () => {
-            if(browser.runtime.lastError) return; // ignore the error messages
+            if(browser.runtime.lastError) {
+                debugLogger.log(`Error creating context menu - id = ${id} / type = ${type} / title = ${title} / contexts = ${contexts} / checked = ${checked}`, "error", browser.runtime.lastError);
+                return; // ignore the error messages
+            }
         });
     }
 }
@@ -80,7 +83,10 @@ function updateContextMenu(id, type, title, contexts, checked) {
             contexts: contexts,
             checked: checked
         }).then(() => {
-            if(browser.runtime.lastError) return; // ignore the error messages
+            if(browser.runtime.lastError) {
+                debugLogger.log(`Error updating context menu - id = ${id} / type = ${type} / title = ${title} / contexts = ${contexts} / checked = ${checked}`, "error", browser.runtime.lastError);
+                return; // ignore the error messages
+            }
         });
     }
 }
@@ -261,7 +267,10 @@ async function updateBadge(storageChanged) {
                     settings: await getSettings(url, true),
                     url: await sha256(url)
                 }).catch(() => {
-                    if(browser.runtime.lastError) return; // ignore the error messages
+                    if(browser.runtime.lastError) {
+                        debugLogger.log(`Error sending message with type = websiteUrlUpdated / enabled = ${enabled} / storageChanged = ${storageChanged} / url = ${url} to tab with id = ${tab.id}`, "error", browser.runtime.lastError);
+                        return; // ignore the error messages
+                    }
                 });
             }
         }
@@ -558,7 +567,10 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 browser.tabs.sendMessage(sender.tab.id, result, {
                     frameId: sender.frameId
                 }).catch(() => {
-                    if(browser.runtime.lastError) return; // ignore the error messages
+                    if(browser.runtime.lastError) {
+                        debugLogger.log(`Error sending message with type = ${result.type} and data = ${result.data} to tab with id ${sender.tab.id} and frameId = ${sender.frameId}`, "error", browser.runtime.lastError);
+                        return; // ignore the error messages
+                    }
                 });
             }
         });
@@ -671,10 +683,13 @@ async function openTab(url, part) {
         browser.windows.update(tab.windowId, { focused: true });
 
         if(part) {
-            browser.tabs.sendMessage(tab.id,{
+            browser.tabs.sendMessage(tab.id, {
                 type: "hashUpdated"
             }).catch(() => {
-                if(browser.runtime.lastError) return; // ignore the error messages
+                if(browser.runtime.lastError) {
+                    debugLogger.log(`Error sending message with type = hashUpdated to tab with id ${tab.id}`, "error", browser.runtime.lastError);
+                    return; // ignore the error messages
+                }
             });
         }
     }
