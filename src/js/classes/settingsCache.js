@@ -18,6 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { settingsToLoad, customThemesKey, disabledWebsitesKey, whitelistKey } from "../constants.js";
 import browser from "webextension-polyfill";
+import DebugLogger from "./debugLogger.js";
 
 /**
  * Class to keep settings in cache
@@ -34,6 +35,7 @@ export default class SettingsCache {
     constructor() { // Singleton
         if(!SettingsCache.instance) {
             SettingsCache.instance = this;
+            this.debugLogger = new DebugLogger();
         }
 
         return SettingsCache.instance;
@@ -45,6 +47,8 @@ export default class SettingsCache {
         this.disabledWebsites = (await browser.storage.local.get(disabledWebsitesKey))[disabledWebsitesKey];
         this.isWhiteList = (await browser.storage.local.get(whitelistKey))[whitelistKey];
         this.isInit = false;
+
+        this.debugLogger.log("SettingsCache - Updated cache");
     }
 
     resetCache() {
@@ -52,5 +56,7 @@ export default class SettingsCache {
         this.customThemes = {};
         this.disabledWebsites = "";
         this.isWhiteList = "false";
+
+        this.debugLogger.log("SettingsCache - Reseted cache");
     }
 }
