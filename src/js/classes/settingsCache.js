@@ -32,7 +32,6 @@ export default class SettingsCache {
     constructor() { // Singleton
         if(!SettingsCache.instance) {
             SettingsCache.instance = this;
-            this.updateCache();
         }
 
         return SettingsCache.instance;

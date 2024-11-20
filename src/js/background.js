@@ -19,7 +19,7 @@
 import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud, sha256 } from "./utils/util.js";
 import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
-import Filter from "./classes/filters.js";
+import FilterProcessor from "./classes/filters.js";
 import browser from "webextension-polyfill";
 import PresetCache from "./classes/presetCache.js";
 import SettingsCache from "./classes/settingsCache.js";
@@ -31,7 +31,7 @@ let isAutoUpdatingFilters = false;
 const globalPageShadowStyleCache = {};
 const globalPageShadowStyleShadowRootsCache = {};
 
-const filters = new Filter();
+const filters = new FilterProcessor();
 const presetCache = new PresetCache();
 const settingsCache = new SettingsCache();
 const debugLogger = new DebugLogger();
@@ -380,11 +380,18 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
         if (message && message.type === "ready") {
             const tabId = sender.tab.id;
             const url = sender.tab.url;
-            const settingsCache = new SettingsCache();
-            const presetsCache = new PresetCache();
+
+            // Update cache if needed
+            if(presetCache.isInit) {
+                await presetCache.updateCache();
+            }
+
+            if(settingsCache.isInit) {
+                await settingsCache.updateCache();
+            }
 
             const data = {
-                settings: await getSettings(url, false, settingsCache.data, presetsCache.data),
+                settings: await getSettings(url, false, settingsCache.data, presetCache.data),
                 customThemes: settingsCache.customThemes,
                 enabled: await pageShadowAllowed(url, {
                     sitesInterditPageShadow: settingsCache.disabledWebsites,
