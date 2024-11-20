@@ -21,11 +21,12 @@ import browser from "webextension-polyfill";
 import ContentProcessor from "./classes/contentProcessor.js";
 import SafeTimer from "./classes/safeTimer.js";
 import ContentProcessorConstants from "./classes/contentProcessorConstants.js";
+import DebugLogger from "./classes/debugLogger.js";
 
 const contentProcessor = new ContentProcessor();
+const debugLogger = new DebugLogger();
 
 let settings = null;
-let precUrl = null;
 let initFinished = false;
 let initProcessing = false;
 
@@ -110,7 +111,6 @@ const timerStart = new SafeTimer(async () => {
 
         initFinished = true;
         initProcessing = false;
-        precUrl = getCurrentURL();
     }
 });
 
@@ -127,37 +127,35 @@ const timerPreApply = new SafeTimer(() => {
 
 // Message/response handling
 browser.runtime.onMessage.addListener(async(message) => {
-    if(message && message.type == "preApplySettings") {
+    if(!message) return;
+
+    if(message.type == "preApplySettings") {
         settings = message.data;
         timerPreApply.start();
-    } else if(message && message.type == "websiteUrlUpdated") { // Execute when the page URL changes in Single Page Applications
+
+        debugLogger.log("Content script - Pre-applying settings");
+    } else if(message.type == "websiteUrlUpdated" && contentProcessor) {
+        // Execute when the page URL changes in Single Page Applications
         const currentURL = getCurrentURL();
+        const precURL = contentProcessor.precUrl;
 
-        if(contentProcessor && contentProcessor.websiteSpecialFiltersConfig.enableURLChangeDetection &&
-            message && message.url == await sha256(currentURL) && precUrl) {
-            const urlUpdated = precUrl != getCurrentURL();
-            const changed = initFinished && (contentProcessor.hasEnabledStateChanged(message.enabled) || urlUpdated);
+        if(message && message.url == await sha256(currentURL) && precURL) {
+            if(contentProcessor.websiteSpecialFiltersConfig.enableURLChangeDetection) {
+                debugLogger.log("Content script - websiteUrlUpdated - Detected page update.");
 
-            if(urlUpdated) {
-                precUrl = getCurrentURL();
+                const urlUpdated = precURL != getCurrentURL();
+                const enabledStateChanged = contentProcessor.hasEnabledStateChanged(message.enabled);
+                const changed = initFinished && (enabledStateChanged || urlUpdated);
 
-                if(contentProcessor) {
+                if(urlUpdated) {
                     contentProcessor.precUrl = getCurrentURL();
-                    contentProcessor.processingFilters = false;
-                    contentProcessor.processedFilters = false;
-
-                    if (contentProcessor.filterProcessor) {
-                        contentProcessor.filterProcessor.filtersCache = null;
-                    }
-
-                    if (contentProcessor.pageAnalyzer) {
-                        contentProcessor.pageAnalyzer.backgroundDetected = false;
-                    }
+                    contentProcessor.resetPageAnalysisState();
                 }
-            }
 
-            if(changed) {
-                await applyIfSettingsChanged(true, message.storageChanged, message.enabled);
+                if(changed) {
+                    debugLogger.log(`Content script - websiteUrlUpdated - URL has changed, or enabled state has changed. Re-applying settings. Current URL = ${currentURL} / Previous URL = ${precURL} / Enabled state changed? ${enabledStateChanged}`);
+                    await applyIfSettingsChanged(true, message.storageChanged, message.enabled);
+                }
             }
         }
     }
