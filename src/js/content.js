@@ -104,11 +104,17 @@ function preApplyContrast(data, contentProcessor) {
 
 // Global content processor start function
 const timerStart = new SafeTimer(async () => {
-    if(!initFinished && !initProcessing) {
-        initProcessing = true;
+    if(initFinished || initProcessing) {
+        return;
+    }
 
+    initProcessing = true;
+
+    try {
         await contentProcessor.main(ContentProcessorConstants.TYPE_START);
-
+    } catch(e) {
+        debugLogger.log("Content timerStart - Error executing main", "error", e);
+    } finally {
         initFinished = true;
         initProcessing = false;
     }

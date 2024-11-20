@@ -570,12 +570,18 @@ export default class ContentProcessor {
 
     async executeFilters() {
         if(this.currentSettings && (this.currentSettings.pageShadowEnabled == "true" || this.currentSettings.colorInvert == "true" || this.currentSettings.attenuateColors == "true")) {
-            if(!this.processedFilters && !this.processingFilters) {
-                this.processingFilters = true;
+            if(this.processedFilters || this.processingFilters) {
+                return;
+            }
+
+            this.processingFilters = true;
+
+            try {
                 this.debugLogger?.log("Applying page filters");
-
                 await this.filterProcessor.doProcessFilters();
-
+            } catch(e) {
+                this.debugLogger.log("ContentProcessor - executeFilters - Error executing filters", "error", e);
+            } finally {
                 this.processedFilters = true;
                 this.processingFilters = false;
             }

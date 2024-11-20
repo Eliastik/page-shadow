@@ -36,6 +36,8 @@ const presetCache = new PresetCache();
 const settingsCache = new SettingsCache();
 const debugLogger = new DebugLogger();
 
+let updatingMenu = false;
+
 function setPopup() {
     if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setPopup) !== "undefined") {
         browser.browserAction.setPopup({
@@ -97,7 +99,7 @@ function deleteContextMenu(id) {
     }
 }
 
-async function menu() {
+async function updateMenu() {
     async function createMenu() {
         if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.local) !== "undefined") {
             const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable", "disableRightClickMenu"]);
@@ -202,16 +204,24 @@ async function menu() {
         }
     }
 
-    if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.removeAll) !== "undefined") {
-        await browser.contextMenus.removeAll();
-        createMenu();
-    } else {
-        createMenu();
+    if(updatingMenu) {
+        return;
     }
-}
 
-function updateMenu() {
-    menu();
+    updatingMenu = true;
+
+    try {
+        if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.removeAll) !== "undefined") {
+            await browser.contextMenus.removeAll();
+            await createMenu();
+        } else {
+            await createMenu();
+        }
+    } catch(e) {
+        debugLogger.log("Background - updateMenu - Error updating menu", "error", e);
+    } finally {
+        updatingMenu = false;
+    }
 }
 
 async function updateBadge(storageChanged) {
@@ -350,7 +360,7 @@ async function autoEnable(changed) {
 if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) !== "undefined") {
     browser.storage.onChanged.addListener((_changes, areaName) => {
         if(areaName == "local") {
-            menu();
+            updateMenu();
             updateBadge(true);
         }
     });
@@ -358,14 +368,14 @@ if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) 
 
 if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onActivated) !== "undefined") {
     browser.tabs.onActivated.addListener(() => {
-        menu();
+        updateMenu();
         updateBadge(false);
     });
 }
 
 if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onUpdated) !== "undefined") {
     browser.tabs.onUpdated.addListener(() => {
-        menu();
+        updateMenu();
         updateBadge(false);
     });
 }
@@ -373,7 +383,7 @@ if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onUpdated) !== "u
 if(typeof(browser.windows) !== "undefined" && typeof(browser.windows.onFocusChanged) !== "undefined") {
     browser.windows.onFocusChanged.addListener(windowId => {
         if(windowId != browser.windows.WINDOW_ID_NONE) {
-            menu();
+            updateMenu();
         }
     });
 }
@@ -697,7 +707,7 @@ async function openTab(url, part) {
 
 async function setupPageShadow() {
     setPopup();
-    await menu();
+    await updateMenu();
     await checkFirstLoad();
     await migrateSettings(filters);
     await settingsCache.updateCache();
