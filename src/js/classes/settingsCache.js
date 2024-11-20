@@ -34,8 +34,6 @@ export default class SettingsCache {
     constructor() { // Singleton
         if(!SettingsCache.instance) {
             SettingsCache.instance = this;
-        } else {
-            this.isInit = false;
         }
 
         return SettingsCache.instance;

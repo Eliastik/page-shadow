@@ -19,7 +19,7 @@
 import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud, isAutoEnable, sha256 } from "./utils/util.js";
 import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
-import Filter from "./classes/filters.js";
+import FilterProcessor from "./classes/filters.js";
 import browser from "webextension-polyfill";
 import PresetCache from "./classes/presetCache.js";
 import SettingsCache from "./classes/settingsCache.js";
@@ -287,7 +287,7 @@ async function checkAutoUpdateFilters() {
     const currentDate = Date.now();
     const lastFailedUpdate = filterResults.lastFailedUpdate;
 
-    const filters = new Filter();
+    const filters = new FilterProcessor();
 
     if(enableAutoUpdate && updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
         await sessionStorage.set({ "isAutoUpdatingFilters": "true" });
@@ -374,6 +374,15 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
             const settingsCache = new SettingsCache();
             const presetsCache = new PresetCache();
 
+            // Update cache if needed
+            if(presetsCache.isInit) {
+                await presetsCache.updateCache();
+            }
+
+            if(settingsCache.isInit) {
+                await settingsCache.updateCache();
+            }
+
             const data = {
                 settings: await getSettings(url, false, settingsCache.data, presetsCache.data),
                 customThemes: settingsCache.customThemes,
@@ -389,7 +398,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
     });
 
     browser.runtime.onMessage.addListener(async(message, sender) => {
-        const filters = new Filter();
+        const filters = new FilterProcessor();
         const presetCache = new PresetCache();
         const settingsCache = new SettingsCache();
 
@@ -399,7 +408,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
             await presetCache.updateCache();
         }
 
-        if(settingsCache.isInit && message.type == "getSettings") {
+        if(settingsCache.isInit && (message.type == "getSettings" || message.type == "isEnabledForThisPage")) {
             await settingsCache.updateCache();
         }
 
@@ -698,7 +707,7 @@ async function setupPageShadow() {
     setPopup();
     await menu();
     await checkFirstLoad();
-    await migrateSettings(new Filter());
+    await migrateSettings(new FilterProcessor());
     await autoEnable();
     await alarmCheck();
     await updateBadge(false);

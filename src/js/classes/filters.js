@@ -34,8 +34,6 @@ export default class FilterProcessor {
     constructor() { // Filter class is a Singleton
         if(!FilterProcessor.instance) {
             FilterProcessor.instance = this;
-        } else {
-            this.isInit = false;
         }
 
         this.debugLogger = new DebugLogger();
