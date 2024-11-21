@@ -100,7 +100,10 @@ export default class ImageProcessor {
             ctx.drawImage(image, 0, 0, newWidth, newHeight);
         } catch(e) {
             this.debugLogger?.log(`ImageProcessor detectDarkImage - Error drawing image to canvas. Image URL: ${imageUrl}`, "error", e);
+
             this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, false);
+            canvas.remove();
+
             return false;
         }
 
@@ -168,12 +171,10 @@ export default class ImageProcessor {
                         }
 
                         totalDarkPixels++;
+                    } else if(alpha == 0) {
+                        totalTransparentPixels++;
                     } else {
-                        if(alpha == 0) {
-                            totalTransparentPixels++;
-                        } else {
-                            totalOtherPixels++;
-                        }
+                        totalOtherPixels++;
                     }
                 }
             }

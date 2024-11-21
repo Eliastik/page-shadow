@@ -24,7 +24,7 @@ import DebugLogger from "./../classes/debugLogger.js";
 
 const debugLogger = new DebugLogger();
 
-function in_array(needle, haystack) {
+function inArray(needle, haystack) {
     for(const key in haystack) {
         if(needle.indexOf(haystack[key]) != -1) {
             return true;
@@ -34,7 +34,7 @@ function in_array(needle, haystack) {
     return false;
 }
 
-function strict_in_array(needle, haystack) {
+function strictInArray(needle, haystack) {
     for(const key in haystack) {
         if(needle == haystack[key]) {
             return true;
@@ -64,17 +64,15 @@ function matchWebsite(needle, rule) {
                 debugLogger.log(e, "error");
                 return false;
             }
-        } else {
-            if(needle == rule) {
-                return true;
-            }
+        } else if(needle == rule) {
+            return true;
         }
     }
 
     return false;
 }
 
-function in_array_website(needle, haystack) {
+function inArrayWebsite(needle, haystack) {
     for(const key in haystack) {
         if(matchWebsite(needle, haystack[key])) {
             return true;
@@ -192,18 +190,18 @@ async function pageShadowAllowed(url, settingsCache) {
             forbiddenWebsites = result.sitesInterditPageShadow.trim().split("\n");
         }
 
-        let websuteUrl_tmp;
+        let websiteUrlTmp;
 
         try {
-            websuteUrl_tmp = new URL(url);
+            websiteUrlTmp = new URL(url);
         } catch(e) {
             debugLogger.log(e, "error");
             return;
         }
 
-        const domain = websuteUrl_tmp.hostname;
+        const domain = websiteUrlTmp.hostname;
 
-        if((result.whiteList == "true" && (in_array_website(domain, forbiddenWebsites) || in_array_website(url, forbiddenWebsites))) || (result.whiteList !== "true" && !in_array_website(domain, forbiddenWebsites) && !in_array_website(url, forbiddenWebsites))) {
+        if((result.whiteList == "true" && (inArrayWebsite(domain, forbiddenWebsites) || inArrayWebsite(url, forbiddenWebsites))) || (result.whiteList !== "true" && !inArrayWebsite(domain, forbiddenWebsites) && !inArrayWebsite(url, forbiddenWebsites))) {
             return true;
         }
     }
@@ -470,14 +468,12 @@ function processRulesInvert(parentElement, style, settings) {
                 if(!parentHasBrightColorText) {
                     style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground) .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(:has(> .pageShadowHasBackgroundImg)) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
                 }
-            } else {
-                if(shouldInvertBrightColors) {
-                    style.sheet.insertRule(":host > .pageShadowHasBrightColorBackground:not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg), :host > .pageShadowHasBrightColorText:not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+            } else if(shouldInvertBrightColors) {
+                style.sheet.insertRule(":host > .pageShadowHasBrightColorBackground:not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg), :host > .pageShadowHasBrightColorText:not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
 
-                    style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText) .pageShadowHasBrightColorBackground:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText) .pageShadowHasBrightColorBackground:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
 
-                    style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText) .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBgColor .pageShadowHasBackgroundImg > *):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg):not(:has(> .pageShadowHasBackgroundImg)) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
-                }
+                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText) .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBgColor .pageShadowHasBackgroundImg > *):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg):not(:has(> .pageShadowHasBackgroundImg)) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
             }
         }
 
@@ -1104,18 +1100,18 @@ async function presetsEnabledForWebsiteWithData(url, allPresetData) {
                     websiteList = websiteSettings.trim().split("\n");
                 }
 
-                let websuteUrl_tmp;
+                let websiteUrlTmp;
 
                 try {
-                    websuteUrl_tmp = new URL(url);
+                    websiteUrlTmp = new URL(url);
                 } catch(e) {
                     debugLogger.log(e, "error");
                     return;
                 }
 
-                const domain = websuteUrl_tmp.hostname;
-                const autoEnabledWebsite = in_array_website(domain, websiteList);
-                const autoEnabledPage = in_array_website(url, websiteList);
+                const domain = websiteUrlTmp.hostname;
+                const autoEnabledWebsite = inArrayWebsite(domain, websiteList);
+                const autoEnabledPage = inArrayWebsite(url, websiteList);
 
                 if(autoEnabledWebsite || autoEnabledPage) {
                     presetListEnabled.push({
@@ -2038,4 +2034,4 @@ function hexToRgb(hex) {
     return `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)})`;
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefinedForHTMLElement, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud, removeStyleAttribute, isCrossOrigin, processRulesAttenuate, areAllClassesDefinedForHTMLElement, getPageAnalyzerCSSClass, getImageUrlFromElement, hexToRgb };
+export { inArray, strictInArray, matchWebsite, inArrayWebsite, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefinedForHTMLElement, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud, removeStyleAttribute, isCrossOrigin, processRulesAttenuate, areAllClassesDefinedForHTMLElement, getPageAnalyzerCSSClass, getImageUrlFromElement, hexToRgb };

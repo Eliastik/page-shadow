@@ -111,10 +111,8 @@ export default class ContentProcessor {
             }
 
             this.debugLogger?.log("Applied contrast page");
-        } else {
-            if(!init) {
-                this.resetContrastPage();
-            }
+        } else if(!init) {
+            this.resetContrastPage();
         }
 
         if(init) {
