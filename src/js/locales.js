@@ -20,7 +20,7 @@
 import i18next from "i18next";
 import i18nextBrowserLanguageDetector from "i18next-browser-languagedetector";
 
-function init_i18next(ns) {
+function initI18next(ns) {
     return new Promise(resolve => {
         i18next.use(i18nextBrowserLanguageDetector).init({
             fallbackLng: ["en", "fr"],
@@ -41,4 +41,4 @@ function init_i18next(ns) {
     });
 }
 
-export { init_i18next };
+export { initI18next };

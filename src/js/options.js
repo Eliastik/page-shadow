@@ -36,7 +36,7 @@ import "jquery-colpick/css/colpick.css";
 import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, getCurrentArchiveCloud } from "./utils/util.js";
 import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes } from "./constants.js";
 import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
-import { init_i18next } from "./locales.js";
+import { initI18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./utils/filter.codemirror.mode";
 import browser from "webextension-polyfill";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -116,15 +116,15 @@ function translateContent() {
     loadAdvancedOptionsUI(false, changingLanguage);
 }
 
-function initI18next() {
-    init_i18next("options").then(() => {
+function initLocales() {
+    initI18next("options").then(() => {
         i18next.addResourceBundle("en", "options", optionsEN);
         i18next.addResourceBundle("fr", "options", optionsFR);
         translateContent();
     });
 }
 
-initI18next();
+initLocales();
 toggleTheme(); // Toggle dark/light theme
 
 async function changeLng(lng) {
@@ -145,7 +145,7 @@ async function resetSettings() {
     $("#textareaAssomPage").val("");
     $("#checkWhiteList").prop("checked", false);
 
-    initI18next();
+    initLocales();
 
     $("#reset").modal("show");
     await loadPresetSelect("loadPresetSelect", i18next);

@@ -293,17 +293,15 @@ export default class MutationObserverProcessor {
                     });
 
                     timerApplyMutationBlueLight.start(this.websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
+                } else if (document.readyState == "complete" || document.readyState == "interactive") {
+                    this.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
                 } else {
-                    if (document.readyState == "complete" || document.readyState == "interactive") {
-                        this.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
-                    } else {
-                        const eventReadyStateMutationObserverBrightnessBluelight = document.addEventListener("readystatechange", () => {
-                            if (document.readyState === "interactive" || document.readyState == "complete") {
-                                document.removeEventListener("readystatechange", eventReadyStateMutationObserverBrightnessBluelight);
-                                this.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
-                            }
-                        });
-                    }
+                    const eventReadyStateMutationObserverBrightnessBluelight = document.addEventListener("readystatechange", () => {
+                        if (document.readyState === "interactive" || document.readyState == "complete") {
+                            document.removeEventListener("readystatechange", eventReadyStateMutationObserverBrightnessBluelight);
+                            this.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+                        }
+                    });
                 }
             }, {
                 "attributes": true,
@@ -413,17 +411,15 @@ export default class MutationObserverProcessor {
                     });
 
                     timerReapply.start(this.websiteSpecialFiltersConfig.delayApplyMutationObserversSafeTimer);
+                } else if (document.readyState == "complete" || document.readyState == "interactive") {
+                    this.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BODY);
                 } else {
-                    if (document.readyState == "complete" || document.readyState == "interactive") {
-                        this.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BODY);
-                    } else {
-                        const eventReadyStateMutationObserverBody = document.addEventListener("readystatechange", () => {
-                            if (document.readyState === "interactive" || document.readyState == "complete") {
-                                document.removeEventListener("readystatechange", eventReadyStateMutationObserverBody);
-                                this.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BODY);
-                            }
-                        });
-                    }
+                    const eventReadyStateMutationObserverBody = document.addEventListener("readystatechange", () => {
+                        if (document.readyState === "interactive" || document.readyState == "complete") {
+                            document.removeEventListener("readystatechange", eventReadyStateMutationObserverBody);
+                            this.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BODY);
+                        }
+                    });
                 }
             }, {
                 "attributes": true,

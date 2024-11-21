@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud, isAutoEnable, sha256 } from "./utils/util.js";
+import { inArrayWebsite, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud, isAutoEnable, sha256 } from "./utils/util.js";
 import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
 import FilterProcessor from "./classes/filters.js";
@@ -116,11 +116,11 @@ async function updateMenu() {
                 const extensionDomain = browser.runtime.getURL("");
                 if(tabUrl.startsWith(extensionDomain)) return;
 
-                const url_str = normalizeURL(tabUrl);
+                const urlStr = normalizeURL(tabUrl);
                 let url;
 
                 try {
-                    url = new URL(url_str);
+                    url = new URL(urlStr);
                 } catch(e) {
                     debugLogger.log(e, "error");
                     return;
@@ -128,23 +128,23 @@ async function updateMenu() {
 
                 const domain = url.hostname;
                 const href = url.href;
-                const isFileURL = url_str.startsWith("file:///") || url_str.startsWith("about:");
+                const isFileURL = urlStr.startsWith("file:///") || urlStr.startsWith("about:");
 
                 if(result.whiteList == "true") {
                     if(!isFileURL) {
-                        if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
+                        if(inArrayWebsite(domain, sitesInterdits) || inArrayWebsite(href, sitesInterdits)) {
                             createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
                         } else {
                             createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
                         }
                     }
 
-                    if(in_array_website(href, sitesInterdits) || in_array_website(domain, sitesInterdits)) {
+                    if(inArrayWebsite(href, sitesInterdits) || inArrayWebsite(domain, sitesInterdits)) {
                         createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
 
-                        if(in_array_website(domain, sitesInterdits)) {
+                        if(inArrayWebsite(domain, sitesInterdits)) {
                             await deleteContextMenu("disable-webpage");
-                        } else if(in_array_website(href, sitesInterdits)) {
+                        } else if(inArrayWebsite(href, sitesInterdits)) {
                             await deleteContextMenu("disable-website");
                         }
                     } else {
@@ -152,14 +152,14 @@ async function updateMenu() {
                     }
                 } else {
                     if(!isFileURL) {
-                        if(in_array_website(domain, sitesInterdits)) {
+                        if(inArrayWebsite(domain, sitesInterdits)) {
                             createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
                         } else {
                             createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
                         }
                     }
 
-                    if(in_array_website(href, sitesInterdits)) {
+                    if(inArrayWebsite(href, sitesInterdits)) {
                         createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
                     } else {
                         createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
@@ -694,7 +694,7 @@ async function openTab(url, part) {
             url: completeURL
         });
     } else {
-        let tab = tabs[0];
+        const tab = tabs[0];
 
         const updateDetails = { active: true };
 
@@ -702,15 +702,15 @@ async function openTab(url, part) {
             updateDetails.url = completeURL;
         }
 
-        tab = await browser.tabs.update(tab.id, updateDetails);
-        browser.windows.update(tab.windowId, { focused: true });
+        const updateTab = await browser.tabs.update(tab.id, updateDetails);
+        browser.windows.update(updateTab.windowId, { focused: true });
 
         if(part) {
-            browser.tabs.sendMessage(tab.id, {
+            browser.tabs.sendMessage(updateTab.id, {
                 type: "hashUpdated"
             }).catch(() => {
                 if(browser.runtime.lastError) {
-                    debugLogger.log(`Error sending message with type = hashUpdated to tab with id ${tab.id}`, "error", browser.runtime.lastError);
+                    debugLogger.log(`Error sending message with type = hashUpdated to tab with id ${updateTab.id}`, "error", browser.runtime.lastError);
                     return; // ignore the error messages
                 }
             });

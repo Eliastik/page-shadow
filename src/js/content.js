@@ -53,11 +53,9 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
                 contentProcessor.precEnabled = response.enabled;
                 await contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
             }
-        } else {
-            if(hasSettingsChanged(contentProcessor.currentSettings, await getSettings(getCurrentURL(), true), customThemeChanged)) {
-                contentProcessor.precEnabled = isEnabled;
-                await contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
-            }
+        } else if(hasSettingsChanged(contentProcessor.currentSettings, await getSettings(getCurrentURL(), true), customThemeChanged)) {
+            contentProcessor.precEnabled = isEnabled;
+            await contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
         }
     }
 }

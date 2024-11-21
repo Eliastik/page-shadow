@@ -21,10 +21,10 @@ import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
-import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme, sendMessageWithPromise, applyContrastPageVariablesWithTheme, checkPermissions, getBrowser } from "./utils/util.js";
+import { inArrayWebsite, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme, sendMessageWithPromise, applyContrastPageVariablesWithTheme, checkPermissions, getBrowser } from "./utils/util.js";
 import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval, permissionOrigin, attenuateDefaultValue, settingsToLoad, enableReportWebsiteProblem, reportWebsiteProblemBackendURL } from "./constants.js";
 import { setSettingItem } from "./storage.js";
-import { init_i18next } from "./locales.js";
+import { initI18next } from "./locales.js";
 import browser from "webextension-polyfill";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "@fortawesome/fontawesome-free/css/v4-shims.min.css";
@@ -69,8 +69,8 @@ async function translateContent() {
     i18nextLoaded = true;
 }
 
-function initI18next() {
-    init_i18next("popup").then(() => {
+function initLocales() {
+    initI18next("popup").then(() => {
         i18next.addResourceBundle("en", "popup", popupEN);
         i18next.addResourceBundle("fr", "popup", popupFR);
         translateContent();
@@ -82,11 +82,11 @@ i18next.on("languageChanged", () => {
 });
 
 toggleTheme(); // Toggle dark/light theme
-initI18next();
+initLocales();
 
 window.addEventListener("storage", (e) => {
     if(e && e.key === "i18nextLng") {
-        initI18next();
+        initLocales();
     }
 }, false);
 
@@ -200,6 +200,7 @@ $(document).ready(() => {
     const sliderBrightness = new Slider("#sliderBrightness", {
         tooltip: "show",
         step: 1,
+        // eslint-disable-next-line camelcase
         tooltip_position: "top",
         formatter: value => {
             return value;
@@ -209,6 +210,7 @@ $(document).ready(() => {
     const sliderBlueLightReduction = new Slider("#sliderBlueLightReduction", {
         tooltip: "show",
         step: 1,
+        // eslint-disable-next-line camelcase
         tooltip_position: "top",
         formatter: value => {
             return value;
@@ -218,6 +220,7 @@ $(document).ready(() => {
     const sliderAttenuateColorPercent = new Slider("#sliderAttenuateColorPercent", {
         tooltip: "show",
         step: 1,
+        // eslint-disable-next-line camelcase
         tooltip_position: "top",
         formatter: value => {
             return value;
@@ -313,17 +316,17 @@ $(document).ready(() => {
     };
 
     async function checkEnable() {
-        const url_str = await getCurrentURL();
+        const urlStr = await getCurrentURL();
         let url;
 
         try {
-            url = new URL(url_str);
+            url = new URL(urlStr);
         } catch(e) {
             debugLogger.log(e, "error");
             return;
         }
 
-        const isFileURL = url_str.startsWith("file:///") || url_str.startsWith("about:");
+        const isFileURL = urlStr.startsWith("file:///") || urlStr.startsWith("about:");
 
         const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
         let sitesInterdits;
@@ -341,7 +344,7 @@ $(document).ready(() => {
         $("#enableWebsite-li").removeAttr("disabled");
 
         if(result.whiteList == "true") {
-            if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
+            if(inArrayWebsite(domain, sitesInterdits) || inArrayWebsite(href, sitesInterdits)) {
                 $("#disableWebsite-li").hide();
                 $("#enableWebsite-li").show();
             } else {
@@ -349,14 +352,14 @@ $(document).ready(() => {
                 $("#enableWebsite-li").hide();
             }
 
-            if(in_array_website(href, sitesInterdits) || in_array_website(domain, sitesInterdits)) {
+            if(inArrayWebsite(href, sitesInterdits) || inArrayWebsite(domain, sitesInterdits)) {
                 $("#disableWebpage-li").hide();
                 $("#enableWebpage-li").show();
 
-                if(in_array_website(domain, sitesInterdits)) {
+                if(inArrayWebsite(domain, sitesInterdits)) {
                     $("#disableWebpage-li").hide();
                     $("#enableWebpage-li").hide();
-                } else if(in_array_website(href, sitesInterdits)) {
+                } else if(inArrayWebsite(href, sitesInterdits)) {
                     $("#disableWebsite-li").hide();
                     $("#enableWebsite-li").hide();
                 }
@@ -365,7 +368,7 @@ $(document).ready(() => {
                 $("#enableWebpage-li").hide();
             }
         } else {
-            if(in_array_website(domain, sitesInterdits)) {
+            if(inArrayWebsite(domain, sitesInterdits)) {
                 $("#disableWebsite-li").show();
                 $("#enableWebsite-li").hide();
             } else {
@@ -373,7 +376,7 @@ $(document).ready(() => {
                 $("#enableWebsite-li").show();
             }
 
-            if(in_array_website(href, sitesInterdits)) {
+            if(inArrayWebsite(href, sitesInterdits)) {
                 $("#disableWebpage-li").show();
                 $("#enableWebpage-li").hide();
             } else {

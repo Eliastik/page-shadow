@@ -361,16 +361,14 @@ export default class FilterProcessor {
 
                 if(parts.length > 0 && !isComment && filtersTypeRecognized) {
                     return { "website": website, "type": type, "filter": filter };
-                } else {
-                    if(!filtersTypeRecognized) {
-                        errorType = filterSyntaxErrorTypes.UNKNOWN_TYPE;
-                        errorPart = type;
-                        errorCode = "UNKNOWN_TYPE";
-                    } else if(parts.length <= 0) {
-                        errorType = filterSyntaxErrorTypes.NO_TYPE;
-                        errorPart = website + "|???";
-                        errorCode = "NO_TYPE";
-                    }
+                } else if(!filtersTypeRecognized) {
+                    errorType = filterSyntaxErrorTypes.UNKNOWN_TYPE;
+                    errorPart = type;
+                    errorCode = "UNKNOWN_TYPE";
+                } else if(parts.length <= 0) {
+                    errorType = filterSyntaxErrorTypes.NO_TYPE;
+                    errorPart = website + "|???";
+                    errorCode = "NO_TYPE";
                 }
             } else {
                 errorType = filterSyntaxErrorTypes.NO_TYPE;
@@ -396,11 +394,9 @@ export default class FilterProcessor {
                 if(parsed) {
                     if(!parsed.error) {
                         currentRules.push(parsed);
-                    } else {
-                        if(!(parsed.type == filterSyntaxErrorTypes.EMPTY && lineIndex >= lines.length)) {
-                            parsed.line = lineIndex;
-                            errorRules.push(parsed);
-                        }
+                    } else if(!(parsed.type == filterSyntaxErrorTypes.EMPTY && lineIndex >= lines.length)) {
+                        parsed.line = lineIndex;
+                        errorRules.push(parsed);
                     }
                 }
 
@@ -597,16 +593,16 @@ export default class FilterProcessor {
         const rulesToCheck = type == ruleCategory.SPECIAL_RULES ? this.specialRules : this.rules;
 
         if(url && url.trim() != "") {
-            let websuteUrl_tmp;
+            let websiteUrlTmp;
 
             try {
-                websuteUrl_tmp = new URL(url);
+                websiteUrlTmp = new URL(url);
             } catch(e) {
                 this.debugLogger?.log(e, "error");
                 return;
             }
 
-            const domain = websuteUrl_tmp.hostname;
+            const domain = websiteUrlTmp.hostname;
 
             for(let i = 0, len = rulesToCheck.length; i < len; i++) {
                 const rule = rulesToCheck[i];

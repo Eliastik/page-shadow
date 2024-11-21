@@ -137,18 +137,16 @@ export default class PageFilterProcessor {
                                                 this.filterMatchingHistory.set(filterHash, [newValue]);
                                             }
                                         }
-                                    } else {
-                                        if (enableNotMatchingFiltersDetection) {
-                                            const previousMatchedFilter = this.filterMatchingHistory.get(filterHash);
+                                    } else if (enableNotMatchingFiltersDetection) {
+                                        const previousMatchedFilter = this.filterMatchingHistory.get(filterHash);
 
-                                            if (previousMatchedFilter) {
-                                                const previousMatchedChildren = previousMatchedFilter
-                                                    .find(v => v.element === childrenElement && v.children);
+                                        if (previousMatchedFilter) {
+                                            const previousMatchedChildren = previousMatchedFilter
+                                                .find(v => v.element === childrenElement && v.children);
 
-                                                if (previousMatchedChildren) {
-                                                    elementsNotMatching.push(childrenElement);
-                                                    previousMatchedFilter.splice(previousMatchedChildren, 1);
-                                                }
+                                            if (previousMatchedChildren) {
+                                                elementsNotMatching.push(childrenElement);
+                                                previousMatchedFilter.splice(previousMatchedChildren, 1);
                                             }
                                         }
                                     }
@@ -188,10 +186,8 @@ export default class PageFilterProcessor {
                     this.multipleElementClassBatcherRemove.add(element, classToAddOrRemove);
                     this.debugLogger?.log(`PageFilterProcessor - Removing class ${classToAddOrRemove} on element`, "debug", element);
                 }
-            } else {
-                if (element.classList && !element.classList.contains(classToAddOrRemove)) {
-                    this.multipleElementClassBatcherAdd.add(element, classToAddOrRemove);
-                }
+            } else if (element.classList && !element.classList.contains(classToAddOrRemove)) {
+                this.multipleElementClassBatcherAdd.add(element, classToAddOrRemove);
             }
         }
 

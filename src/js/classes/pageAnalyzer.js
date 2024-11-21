@@ -290,16 +290,14 @@ export default class PageAnalyzer {
             if(hsl[2] >= minLightnessTreshold && hsl[1] >= minSaturationTreshold) {
                 return [true, false];
             }
-        } else {
-            if(hsl[2] >= minLightnessTreshold && hsl[2] <= maxLightnessTreshold &&
-                ((isGradient && hsl[1] >= minSaturationTreshold) || !isGradient)
-            ) {
-                if(hsl[2] >= 0.5) {
-                    return [true, true];
-                }
-
-                return [true, false];
+        } else if(hsl[2] >= minLightnessTreshold && hsl[2] <= maxLightnessTreshold &&
+            ((isGradient && hsl[1] >= minSaturationTreshold) || !isGradient)
+        ) {
+            if(hsl[2] >= 0.5) {
+                return [true, true];
             }
+
+            return [true, false];
         }
 
         return [false, false];
@@ -514,10 +512,8 @@ export default class PageAnalyzer {
                 this.multipleElementClassBatcherAdd.add(element, getPageAnalyzerCSSClass("pageShadowHasTransparentBackground", pseudoElt));
                 return true;
             }
-        } else {
-            if (hasTransparentBackgroundClass) {
-                this.multipleElementClassBatcherRemove.add(element, getPageAnalyzerCSSClass("pageShadowHasTransparentBackground", pseudoElt));
-            }
+        } else if (hasTransparentBackgroundClass) {
+            this.multipleElementClassBatcherRemove.add(element, getPageAnalyzerCSSClass("pageShadowHasTransparentBackground", pseudoElt));
         }
 
         return false;

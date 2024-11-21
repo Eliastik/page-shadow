@@ -52,10 +52,8 @@ export default class MutationObserverWrapper {
             if(!this.pausing) {
                 this.disconnect();
                 this.callback(mutations);
-            } else {
-                if(this.enableQueueMutations) {
-                    this.queueMutations.push(...mutations);
-                }
+            } else if(this.enableQueueMutations) {
+                this.queueMutations.push(...mutations);
             }
         });
     }
