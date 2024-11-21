@@ -41,7 +41,7 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
 
     if(statusChanged && ((!isLiveSettings && !storageChanged) || isLiveSettings)) {
         contentProcessor.precEnabled = isEnabled;
-        return await contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
+        return contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
     }
 
     if(isLiveSettings && storageChanged) {

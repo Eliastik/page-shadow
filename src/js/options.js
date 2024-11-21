@@ -128,7 +128,7 @@ initI18next();
 toggleTheme(); // Toggle dark/light theme
 
 async function changeLng(lng) {
-    i18next.changeLanguage(lng);
+    await i18next.changeLanguage(lng);
 }
 
 i18next.on("languageChanged", () => {
@@ -411,7 +411,7 @@ async function displayFilters() {
         checkbox.setAttribute("type", "checkbox");
         if(filter.enabled) checkbox.checked = true;
 
-        checkbox.addEventListener("click", async() => {
+        checkbox.addEventListener("click", () => {
             checkbox.disabled = true;
             let messageType = "enableFilter";
 
@@ -971,7 +971,7 @@ async function displayPresetInfos(nb) {
     }
 }
 
-async function displayFilterErrors(data, filterType) {
+function displayFilterErrors(data, filterType) {
     if(filterType == "custom") {
         $("#filterErrors").modal("show");
     } else {

@@ -93,9 +93,9 @@ function updateContextMenu(id, type, title, contexts, checked) {
     }
 }
 
-function deleteContextMenu(id) {
+async function deleteContextMenu(id) {
     if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.remove) !== "undefined") {
-        browser.contextMenus.remove(id);
+        await browser.contextMenus.remove(id);
     }
 }
 
@@ -151,9 +151,9 @@ async function updateMenu() {
                         createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
 
                         if(in_array_website(domain, sitesInterdits)) {
-                            deleteContextMenu("disable-webpage");
+                            await deleteContextMenu("disable-webpage");
                         } else if(in_array_website(href, sitesInterdits)) {
-                            deleteContextMenu("disable-website");
+                            await deleteContextMenu("disable-website");
                         }
                     } else {
                         createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
@@ -174,9 +174,9 @@ async function updateMenu() {
                     }
                 }
 
-                createMenuOthers();
+                await createMenuOthers();
             } else {
-                createMenuOthers();
+                await createMenuOthers();
             }
         }
     }

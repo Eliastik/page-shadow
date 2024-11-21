@@ -1080,7 +1080,7 @@ async function presetsEnabledForWebsite(url, disableCache) {
         allPresetData = response.data;
     }
 
-    return await presetsEnabledForWebsiteWithData(url, allPresetData);
+    return presetsEnabledForWebsiteWithData(url, allPresetData);
 }
 
 async function presetsEnabledForWebsiteWithData(url, allPresetData) {
@@ -1731,7 +1731,7 @@ function chunkValue(key, value) {
     }
 }
 
-async function sendMessageWithPromise(data, ...expectedMessageType) {
+function sendMessageWithPromise(data, ...expectedMessageType) {
     debugLogger.log(`Sending message to background process with type: ${data.type} - expected response type: ${expectedMessageType}`, "debug", data);
 
     return new Promise(resolve => {
@@ -1909,8 +1909,8 @@ async function sha256(url) {
     return hashHex;
 }
 
-async function checkPermissions() {
-    return await browser.permissions.contains({
+function checkPermissions() {
+    return browser.permissions.contains({
         origins: permissionOrigin
     });
 }
@@ -1950,7 +1950,6 @@ function getImageUrlFromElement(element, hasBackgroundImg, computedStyles) {
     if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
         return getImageUrlFromSvgElement(element, computedStyles);
     }
-
 
     if(!(element instanceof HTMLImageElement) && !(element instanceof SVGImageElement) && hasBackgroundImg) {
         const style = element.currentStyle || computedStyles;

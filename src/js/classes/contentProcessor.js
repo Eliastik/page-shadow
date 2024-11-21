@@ -322,7 +322,7 @@ export default class ContentProcessor {
         this.debugLogger?.log("Reseted attenuate color");
     }
 
-    async applyDetectBackground(type, elements) {
+    applyDetectBackground(type, elements) {
         return new Promise(resolve => {
             if(this.pageAnalyzer.backgroundDetected) {
                 return resolve();
@@ -485,7 +485,7 @@ export default class ContentProcessor {
 
             if(this.timerObserveBodyChange) this.timerObserveBodyChange.clear();
 
-            this.timerObserveBodyChange = new SafeTimer(async () => {
+            this.timerObserveBodyChange = new SafeTimer(() => {
                 if(document.body) {
                     if(!this.oldBody) this.oldBody = document.body;
 
@@ -540,7 +540,7 @@ export default class ContentProcessor {
     timerApplyMutationClassChanges() {
         if(this.timerApplyMutationObserverClassChanges) this.timerApplyMutationObserverClassChanges.clear();
 
-        this.timerApplyMutationObserverClassChanges = new SafeTimer(async () => {
+        this.timerApplyMutationObserverClassChanges = new SafeTimer(() => {
             this.multipleElementClassBatcherAdd.apply();
             this.multipleElementClassBatcherRemove.apply();
 
@@ -613,7 +613,7 @@ export default class ContentProcessor {
         }
     }
 
-    async process(allowed, type, disableCache) {
+    process(allowed, type, disableCache) {
         if(this.applyWhenBodyIsAvailableTimer) this.applyWhenBodyIsAvailableTimer.clear();
 
         return new Promise((resolve) => {

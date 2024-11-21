@@ -42,7 +42,7 @@ export default class ThrottledTask {
 
         this.index = 0;
         this.elements = [];
-        this.timer = new SafeTimer(async () => await this.processBatch());
+        this.timer = new SafeTimer(() => this.processBatch());
         this.resolve = null;
         this.isRunning = false;
         this.lastBatchTime = 0;

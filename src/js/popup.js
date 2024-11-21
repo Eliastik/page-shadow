@@ -511,7 +511,7 @@ $(document).ready(() => {
     });
 
     $("#disableWebsitePreset").on("click", async() => {
-        togglePreset("toggle-website", selectedPreset, true);
+        await togglePreset("toggle-website", selectedPreset, true);
     });
 
     $("#enableWebsitePreset").on("click", async() => {
@@ -1607,7 +1607,7 @@ $(document).ready(() => {
     }
 
     $("#createPresetModalValidate").on("click", async() => {
-        createPreset();
+        await createPreset();
     });
 
     $("#createPresetModalTitle").on("keyup", (e) => {
