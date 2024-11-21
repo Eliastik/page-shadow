@@ -201,7 +201,7 @@ export default class MutationObserverProcessor {
         }
     }
 
-    async treatAllMutations(mutations) {
+    treatAllMutations(mutations) {
         if(mutations.length > 0) {
             if(this.websiteSpecialFiltersConfig.throttleMutationObserverBackgrounds) {
                 this.throttledTaskTreatMutations.start(mutations);
@@ -213,7 +213,7 @@ export default class MutationObserverProcessor {
         }
     }
 
-    treatOneMutation(mutation) {
+    async treatOneMutation(mutation) {
         if(mutation.type == "childList") {
             const nodeList = mutation.addedNodes;
 
@@ -227,28 +227,28 @@ export default class MutationObserverProcessor {
                 }
             }
         } else if(mutation.type == "attributes") {
-            this.treatOneMutationAttributes(mutation);
+            await this.treatOneMutationAttributes(mutation);
         }
     }
 
-    treatOneMutationAttributes(mutation) {
+    async treatOneMutationAttributes(mutation) {
         if (!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
-            this.pageAnalyzer.mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
+            await this.pageAnalyzer.mutationForElement(mutation.target, mutation.attributeName, mutation.oldValue);
         }
 
-        this.filterProcessor.doProcessFilters(mutation.target, false);
+        await this.filterProcessor.doProcessFilters(mutation.target, false);
     }
 
-    treatOneMutationAddedNode(node) {
+    async treatOneMutationAddedNode(node) {
         if(!node || !node.classList || node == document.body || ignoredElementsContentScript.includes(node.localName) || node.nodeType != Node.ELEMENT_NODE) {
             return;
         }
 
         if (!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
-            this.pageAnalyzer.mutationForElement(node, null, null);
+            await this.pageAnalyzer.mutationForElement(node, null, null);
         }
 
-        this.filterProcessor.doProcessFilters(node, true);
+        await this.filterProcessor.doProcessFilters(node, true);
     }
 
     setupMutationObserverBrightnessBluelight(forceReset) {

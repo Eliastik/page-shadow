@@ -351,7 +351,7 @@ const defaultWebsiteSpecialFiltersConfig = {
     throttleDarkImageDetection: true,
     throttleDarkImageDetectionDelay: 50,
     throttleDarkImageDetectionBatchSize: 15,
-    throttleDarkImageDetectionMaxExecutionTime: 15,
+    throttleDarkImageDetectionMaxExecutionTime: 20,
     enableDarkImageDetectionCache: true,
     darkImageDetectionMaxCacheSize: 250,
     enableMutationObserversForSubChilds: true,

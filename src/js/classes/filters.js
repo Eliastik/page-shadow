@@ -676,7 +676,7 @@ export default class FilterProcessor {
         return filterErrors;
     }
 
-    async reinstallDefaultFilters() {
+    reinstallDefaultFilters() {
         return this.updateDefaultFilters(true);
     }
 
@@ -729,7 +729,7 @@ export default class FilterProcessor {
 
     async getFiltersSize() {
         if(browser.storage.local.getBytesInUse != undefined) {
-            return await browser.storage.local.getBytesInUse(["filtersSettings", "customFilter"]);
+            return browser.storage.local.getBytesInUse(["filtersSettings", "customFilter"]);
         } else {
             return getSizeObject(await browser.storage.local.get(["filtersSettings", "customFilter"]));
         }

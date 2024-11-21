@@ -162,24 +162,24 @@ export default class PageFilterProcessor {
                 }
             }
 
-            await this.processElementsList(elementsMatching, filterTypes, false);
-            await this.processElementsList(elementsNotMatching, filterTypes, true);
+            this.processElementsList(elementsMatching, filterTypes, false);
+            this.processElementsList(elementsNotMatching, filterTypes, true);
         }
     }
 
-    async processElementsList(elements, filterTypes, remove) {
+    processElementsList(elements, filterTypes, remove) {
         for (let i = 0, len = elements.length; i < len; i++) {
             const element = elements[i];
 
             if (element) {
                 for(const filterType of filterTypes) {
-                    await this.processElement(filterType, element, remove);
+                    this.processElement(filterType, element, remove);
                 }
             }
         }
     }
 
-    async processElement(filterType, element, remove) {
+    processElement(filterType, element, remove) {
         const classToAddOrRemove = mapFiltersCSSClass[filterType];
 
         if (classToAddOrRemove) {

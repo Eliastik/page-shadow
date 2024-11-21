@@ -31,22 +31,18 @@ export default class ImageProcessor {
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
     }
 
-    async detectDarkImage(element, hasBackgroundImg, computedStyles) {
-        if(!element || !computedStyles) return false;
+    async detectDarkImage(image, hasBackgroundImg, computedStyles) {
+        if(!image || !computedStyles) return false;
 
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        let image = element;
-
-        const imageUrl = getImageUrlFromElement(element, hasBackgroundImg, computedStyles);
+        const imageUrl = getImageUrlFromElement(image, hasBackgroundImg, computedStyles);
 
         if(imageUrl == null) {
             return false;
         }
 
-        if(this.isDetectionResultMemoizable(element, hasBackgroundImg) &&
+        if(this.isDetectionResultMemoizable(image, hasBackgroundImg) &&
             this.memoizedResults.has(imageUrl)) {
-            this.debugLogger?.log(`ImageProcessor detectDarkImage - Getting memoized result for image with URL = ${imageUrl}`);
+            this.debugLogger?.log(`ImageProcessor detectDarkImage - Getting memoized result for image with URL: ${imageUrl}`);
             return this.memoizedResults.get(imageUrl);
         }
 
@@ -57,7 +53,7 @@ export default class ImageProcessor {
         }
 
         // SVG element
-        if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
+        if((image instanceof SVGGraphicsElement) && image.nodeName.toLowerCase() === "svg") {
             try {
                 removeClass(image, "pageShadowDisableStyling", "pageShadowElementDisabled");
 
@@ -65,8 +61,8 @@ export default class ImageProcessor {
 
                 addClass(image, "pageShadowDisableStyling", "pageShadowElementDisabled");
             } catch(e) {
-                this.debugLogger?.log(e.message, "error");
-                this.memoizeDetectionResult(element, hasBackgroundImg, imageUrl, false);
+                this.debugLogger?.log(`ImageProcessor detectDarkImage - Error converting SVG element to image - Image URL: ${imageUrl}`, "error", e);
+                this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, false);
                 return false;
             }
         }
@@ -77,12 +73,12 @@ export default class ImageProcessor {
                 try {
                     image = await backgroundImageToImage(imageUrl);
                 } catch(e) {
-                    this.debugLogger?.log(e.message, "error");
-                    this.memoizeDetectionResult(element, hasBackgroundImg, imageUrl, false);
+                    this.debugLogger?.log(`ImageProcessor detectDarkImage - Error converting background to image - Image URL: ${imageUrl}`, "error", e);
+                    this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, false);
                     return false;
                 }
             } else {
-                this.memoizeDetectionResult(element, hasBackgroundImg, imageUrl, false);
+                this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, false);
                 return false;
             }
         }
@@ -93,6 +89,9 @@ export default class ImageProcessor {
         }
 
         // Draw image on canvas
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
         const { newWidth, newHeight } = this.getResizedDimensions(image, maxImageSizeDarkImageDetection, maxImageSizeDarkImageDetection);
         canvas.width = newWidth;
         canvas.height = newHeight;
@@ -100,8 +99,8 @@ export default class ImageProcessor {
         try {
             ctx.drawImage(image, 0, 0, newWidth, newHeight);
         } catch(e) {
-            this.debugLogger?.log(e.message, "error");
-            this.memoizeDetectionResult(element, hasBackgroundImg, imageUrl, false);
+            this.debugLogger?.log(`ImageProcessor detectDarkImage - Error drawing image to canvas. Image URL: ${imageUrl}`, "error", e);
+            this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, false);
             return false;
         }
 
@@ -111,10 +110,10 @@ export default class ImageProcessor {
         canvas.remove();
 
         if (isDarkImage) {
-            this.debugLogger?.log(`Detected dark image - image URL: ${image.src}`);
+            this.debugLogger?.log(`Detected dark image. Image URL: ${image.src}`);
         }
 
-        this.memoizeDetectionResult(element, hasBackgroundImg, imageUrl, isDarkImage);
+        this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, isDarkImage);
 
         return isDarkImage;
     }
@@ -186,7 +185,7 @@ export default class ImageProcessor {
 
             return false;
         } catch(e) {
-            this.debugLogger?.log(e.message, "error");
+            this.debugLogger?.log("ImageProcessor isImageDark - Error analyzing canvas", "error", e);
             return false;
         }
     }
@@ -240,7 +239,7 @@ export default class ImageProcessor {
             && darkPixelCount / nonTransparentPixelCount > this.websiteSpecialFiltersConfig.darkImageDetectionDarkPixelsRatio;
     }
 
-    async awaitImageLoading(image) {
+    awaitImageLoading(image) {
         return new Promise(resolve => {
             image.addEventListener("load", () => {
                 resolve(image);

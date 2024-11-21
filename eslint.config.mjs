@@ -49,5 +49,7 @@ export default [...compat.extends("eslint:recommended"), {
         "no-unused-vars": ["warn"],
         "no-constant-binary-expression": ["warn"],
         "valid-typeof": ["warn"],
+        "require-await": ["error"],
+        "no-return-await": ["error"]
     },
 }];

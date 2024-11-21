@@ -60,9 +60,9 @@ export default class PageAnalyzer {
         this.imageProcessor = new ImageProcessor(this.debugLogger, websiteSpecialFiltersConfig);
         this.shadowDomProcessor = new ShadowDomProcessor(currentSettings, websiteSpecialFiltersConfig, isEnabled);
 
-        this.shadowDomProcessor.analyzeSubElementsCallback = (currentElement) => {
+        this.shadowDomProcessor.analyzeSubElementsCallback = async (currentElement) => {
             if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
-                this.analyzeElementChildrens(currentElement);
+                await this.analyzeElementChildrens(currentElement);
             }
         };
 
@@ -100,7 +100,7 @@ export default class PageAnalyzer {
 
     initializeThrottledTasks() {
         this.throttledTaskDetectBackgrounds = new ThrottledTask(
-            async (element) => await this.processElement(element, false),
+            (element) => this.processElement(element, false),
             "throttledTaskDetectBackgrounds",
             this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay,
             this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall,
@@ -108,7 +108,7 @@ export default class PageAnalyzer {
         );
 
         this.throttledTaskAnalyzeSubchilds = new ThrottledTask(
-            async (element) => await this.processElement(element, false),
+            (element) => this.processElement(element, false),
             "throttledTaskAnalyzeSubchilds",
             this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds,
             this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall,
@@ -133,7 +133,7 @@ export default class PageAnalyzer {
         }
     }
 
-    async detectBackground(tagName, forceDisableThrottle) {
+    detectBackground(tagName, forceDisableThrottle) {
         this.debugLogger?.log(`PageAnalyzer detectBackground - Beginning analyzing page elements - elements tagName: ${tagName}`);
 
         return new Promise(resolve => {
@@ -187,7 +187,7 @@ export default class PageAnalyzer {
 
             if(!forceDisableThrottle && totalExecutionTime >= this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime) {
                 this.debugLogger?.log(`PageAnalyzer detectBackground - Stopping early task to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`);
-                return await this.runThrottledBackgroundDetection(elements.slice(currentIndex));
+                return this.runThrottledBackgroundDetection(elements.slice(currentIndex));
             }
         }
 
@@ -412,7 +412,7 @@ export default class PageAnalyzer {
 
     async processShadowRoots(element) {
         if (this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay > 0) {
-            setTimeout(async () => await this.processShadowRoot(element), this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
+            setTimeout(() => this.processShadowRoot(element), this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
         } else {
             await this.processShadowRoot(element);
         }
@@ -523,7 +523,7 @@ export default class PageAnalyzer {
         return false;
     }
 
-    mutationForElement(element, attribute, attributeOldValue) {
+    async mutationForElement(element, attribute, attributeOldValue) {
         if(!element || !element.classList || element == document.body || ignoredElementsContentScript.includes(element.localName) || element.nodeType != 1) {
             return false;
         }
@@ -584,15 +584,15 @@ export default class PageAnalyzer {
             }
         }
 
-        this.processElement(element, false);
+        await this.processElement(element, false);
 
         // Detect element childrens
         if (!attribute && this.websiteSpecialFiltersConfig.enableMutationObserversForSubChilds) {
-            this.analyzeElementChildrens(element);
+            await this.analyzeElementChildrens(element);
         }
     }
 
-    analyzeElementChildrens(currentElement) {
+    async analyzeElementChildrens(currentElement) {
         if (currentElement.getElementsByTagName || currentElement.querySelectorAll) {
             const elementChildrens = currentElement.getElementsByTagName ? currentElement.getElementsByTagName("*") : currentElement.querySelectorAll("*");
 
@@ -600,7 +600,7 @@ export default class PageAnalyzer {
                 this.throttledTaskAnalyzeSubchilds.start(elementChildrens);
             } else {
                 for (const element of elementChildrens) {
-                    this.processElement(element);
+                    await this.processElement(element);
                 }
             }
         }

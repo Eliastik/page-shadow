@@ -31,7 +31,7 @@ export default class ShadowDomProcessor {
     throttledTaskAnalyzeSubchildsShadowRoot;
 
     // eslint-disable-next-line no-unused-vars
-    analyzeSubElementsCallback = (currentElement) => {};
+    analyzeSubElementsCallback = async (currentElement) => {};
 
     constructor(currentSettings, websiteSpecialFiltersConfig, isEnabled) {
         this.currentSettings = currentSettings;
@@ -128,7 +128,7 @@ export default class ShadowDomProcessor {
             this.processedShadowRoots.add(element);
 
             if(this.analyzeSubElementsCallback) {
-                this.analyzeSubElementsCallback(element.shadowRoot);
+                await this.analyzeSubElementsCallback(element.shadowRoot);
             }
         }
     }
