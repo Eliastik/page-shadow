@@ -242,18 +242,7 @@ export default class ImageProcessor {
 
     awaitImageLoading(image) {
         return new Promise((resolve, reject) => {
-            const restoreLazyLoading = image.hasAttribute("loading");
-            const lazyLoadingValue = image.getAttribute("loading");
-
-            if(restoreLazyLoading) {
-                image.removeAttribute("loading");
-            }
-
             if(image.complete) {
-                if(restoreLazyLoading) {
-                    image.setAttribute("loading", lazyLoadingValue);
-                }
-
                 resolve(image);
                 return;
             }
@@ -271,15 +260,19 @@ export default class ImageProcessor {
             const cleanup = () => {
                 image.removeEventListener("load", onLoad);
                 image.removeEventListener("error", onError);
-
-                if(restoreLazyLoading) {
-                    image.setAttribute("loading", lazyLoadingValue);
-                }
             };
 
             image.addEventListener("load", onLoad);
             image.addEventListener("error", onError);
         });
+    }
+
+    detectionCanBeAwaited(element) {
+        if(element) {
+            return !element.hasAttribute("loading");
+        }
+
+        return true;
     }
 
     elementIsImage(element, hasBackgroundImg) {

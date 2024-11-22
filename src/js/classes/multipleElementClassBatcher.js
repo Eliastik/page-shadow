@@ -44,7 +44,7 @@ export default class MultipleElementClassBatcher {
         }
 
         this.throttledTaskClassApplyAdd = new ThrottledTask(
-            (task) => addClass(task.element, ...task.classList),
+            task => addClass(task.element, ...task.classList),
             "throttledTaskClassApplyAdd",
             this.delayApplyClassChanges,
             this.maxElementsTreatedByCall,
@@ -52,7 +52,7 @@ export default class MultipleElementClassBatcher {
         );
 
         this.throttledTaskClassApplyRemove = new ThrottledTask(
-            (task) => removeClass(task.element, ...task.classList),
+            task => removeClass(task.element, ...task.classList),
             "throttledTaskClassApplyRemove",
             this.delayApplyClassChanges,
             this.maxElementsTreatedByCall,

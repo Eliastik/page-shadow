@@ -31,12 +31,14 @@ export default class ThrottledTask {
         delay,
         elementsPerBatch = 1,
         maxExecutionTime = 25,
+        callbackCanBeAwaited = () => true,
         processNewestFirst = true,
         minDelay = 1,
         maxDelay = 1000,
         autoThrottlingAdjustmentFactor = 0.5
     ) {
         this.callback = callback;
+        this.callbackCanBeAwaited = callbackCanBeAwaited;
         this.name = name;
         this.delay = delay;
         this.elementsPerBatch = elementsPerBatch;
@@ -82,7 +84,13 @@ export default class ThrottledTask {
         for(let i = 0; i < batchSize; i++) {
             try {
                 const element = this.processNewestFirst ? this.elements.pop() : this.elements.shift();
-                await this.callback(element);
+                const runAwait = this.callbackCanBeAwaited(element);
+
+                if(runAwait) {
+                    await this.callback(element);
+                } else {
+                    this.callback(element);
+                }
             } catch(e) {
                 this.debugLogger?.log(`ThrottledTask ${this.name} - Error executing task: ${e}`, "error");
             }
