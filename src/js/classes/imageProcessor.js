@@ -241,10 +241,44 @@ export default class ImageProcessor {
     }
 
     awaitImageLoading(image) {
-        return new Promise(resolve => {
-            image.addEventListener("load", () => {
+        return new Promise((resolve, reject) => {
+            const restoreLazyLoading = image.hasAttribute("loading");
+            const lazyLoadingValue = image.getAttribute("loading");
+
+            if(restoreLazyLoading) {
+                image.removeAttribute("loading");
+            }
+
+            if(image.complete) {
+                if(restoreLazyLoading) {
+                    image.setAttribute("loading", lazyLoadingValue);
+                }
+
                 resolve(image);
-            });
+                return;
+            }
+
+            const onLoad = () => {
+                cleanup();
+                resolve(image);
+            };
+
+            const onError = () => {
+                cleanup();
+                reject(new Error(`Image failed to load: ${image.src}`));
+            };
+
+            const cleanup = () => {
+                image.removeEventListener("load", onLoad);
+                image.removeEventListener("error", onError);
+
+                if(restoreLazyLoading) {
+                    image.setAttribute("loading", lazyLoadingValue);
+                }
+            };
+
+            image.addEventListener("load", onLoad);
+            image.addEventListener("error", onError);
         });
     }
 
