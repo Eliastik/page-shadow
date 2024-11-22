@@ -265,8 +265,7 @@ async function updateBadge(storageChanged) {
                 browser.tabs.sendMessage(tab.id, {
                     type: "websiteUrlUpdated",
                     enabled,
-                    storageChanged,
-                    settings: await getSettings(url, true)
+                    storageChanged
                 }).catch(() => {
                     if(browser.runtime.lastError) {
                         debugLogger.log(`Error sending message with type = websiteUrlUpdated / enabled = ${enabled} / storageChanged = ${storageChanged} / url = ${url} to tab with id = ${tab.id}`, "error", browser.runtime.lastError);

@@ -30,7 +30,7 @@ let settings = null;
 let initFinished = false;
 let initProcessing = false;
 
-async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, customThemeChanged) {
+async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, customThemeChanged, resetPageAnalysisState) {
     const result = await browser.storage.local.get("liveSettings");
     const isLiveSettings = result.liveSettings !== "false";
 
@@ -41,6 +41,11 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
 
     if(statusChanged && ((!isLiveSettings && !storageChanged) || isLiveSettings)) {
         contentProcessor.precEnabled = isEnabled;
+
+        if(resetPageAnalysisState) {
+            contentProcessor.resetPageAnalysisState();
+        }
+
         return contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
     }
 
@@ -51,11 +56,21 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
 
             if(changed || hasSettingsChanged(contentProcessor.currentSettings, response.settings)) {
                 contentProcessor.precEnabled = response.enabled;
-                await contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
+
+                if(resetPageAnalysisState) {
+                    contentProcessor.resetPageAnalysisState();
+                }
+
+                return contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
             }
         } else if(hasSettingsChanged(contentProcessor.currentSettings, await getSettings(getCurrentURL(), true), customThemeChanged)) {
             contentProcessor.precEnabled = isEnabled;
-            await contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
+
+            if(resetPageAnalysisState) {
+                contentProcessor.resetPageAnalysisState();
+            }
+
+            return contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
         }
     }
 }
@@ -153,12 +168,11 @@ browser.runtime.onMessage.addListener((message) => {
 
                 if(urlUpdated) {
                     contentProcessor.precUrl = getCurrentURL();
-                    contentProcessor.resetPageAnalysisState();
                 }
 
                 if(changed) {
                     debugLogger.log(`Content script - websiteUrlUpdated - URL has changed, or enabled state has changed. Re-applying settings. Current URL = ${currentURL} / Previous URL = ${precURL} / Enabled state changed? ${enabledStateChanged}`);
-                    applyIfSettingsChanged(true, message.storageChanged, message.enabled);
+                    applyIfSettingsChanged(true, message.storageChanged, message.enabled, false, urlUpdated);
                 }
             }
         }
@@ -168,7 +182,7 @@ browser.runtime.onMessage.addListener((message) => {
 // If storage/settings have changed
 browser.storage.onChanged.addListener((changes, areaName) => {
     if(changes && areaName == "local") {
-        applyIfSettingsChanged(false, true, null, changes.customThemes != null);
+        applyIfSettingsChanged(false, true, null, changes.customThemes != null, false);
     }
 });
 
