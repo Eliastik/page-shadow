@@ -182,7 +182,7 @@ export default class PageAnalyzer {
 
         while(currentIndex < elementsLength) {
             if(this.backgroundDetectionCanceled) {
-                this.setBackgroundDetectionFinished();
+                this.backgroundDetectionCanceled = false;
                 return;
             }
 
@@ -203,7 +203,7 @@ export default class PageAnalyzer {
 
     async runThrottledBackgroundDetection(elements) {
         if(this.backgroundDetectionCanceled) {
-            this.setBackgroundDetectionFinished();
+            this.backgroundDetectionCanceled = false;
             return;
         }
 
@@ -215,6 +215,7 @@ export default class PageAnalyzer {
     setBackgroundDetectionFinished() {
         removeClass(document.body, "pageShadowDisableBackgroundStyling", "pageShadowDisableStyling");
         addClass(document.body, "pageShadowBackgroundDetected");
+
         this.backgroundDetected = true;
         this.backgroundDetectionCanceled = false;
         this.backgroundDetectedBody = document.body;
