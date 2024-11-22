@@ -120,8 +120,7 @@ export default class PageAnalyzer {
             "throttledTaskAnalyzeImages",
             this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay,
             this.websiteSpecialFiltersConfig.throttleDarkImageDetectionBatchSize,
-            this.websiteSpecialFiltersConfig.throttleDarkImageDetectionMaxExecutionTime,
-            false
+            this.websiteSpecialFiltersConfig.throttleDarkImageDetectionMaxExecutionTime
         );
     }
 
