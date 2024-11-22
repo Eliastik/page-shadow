@@ -179,7 +179,7 @@ export default class ContentProcessor {
         document.documentElement.style.setProperty("--page-shadow-invert-filter-video-backgrounds", "invert(100%)");
         document.documentElement.style.setProperty("--page-shadow-invert-filter-bright-color-backgrounds", "invert(100%)");
 
-        if(enabled !== null && enabled == "true") {
+        if(enabled == "true") {
             this.debugLogger?.log(`Applying invert color with settings : invertImageColors = ${invertImageColors} / invertEntirePage = ${invertEntirePage} / invertVideoColors = ${invertVideoColors} / invertBgColors = ${invertBgColors} / selectiveInvert = ${selectiveInvert} / attenuateColors = ${attenuateColors} / attenuateImgColors = ${attenuateImgColors} / attenuateBgColors = ${attenuateBgColors} / attenuateVideoColors = ${attenuateVideoColors} / attenuateBrightColors = ${attenuateBrightColors} / percentageAttenuateColors = ${percentageAttenuateColors} / invertBrightColors = ${invertBrightColors}`);
 
             if(invertEntirePage !== null && invertEntirePage == "true") {
@@ -343,14 +343,14 @@ export default class ContentProcessor {
 
             if(document.readyState === "complete") {
                 this.debugLogger?.log("Page is now ready, we can start to analyze the elements");
-                timerBackgrounds.start(1);
+                timerBackgrounds.start();
             } else {
                 this.debugLogger?.log("Page is not ready, waiting for the page to be ready to analyze the elements");
 
                 const eventDetectBackground = document.addEventListener("readystatechange", () => {
                     if(document.readyState === "complete") {
                         document.removeEventListener("readystatechange", eventDetectBackground);
-                        timerBackgrounds.start(1);
+                        timerBackgrounds.start();
                     }
                 });
             }
@@ -361,7 +361,7 @@ export default class ContentProcessor {
         this.elementBrightness.setAttribute("class", "");
 
         if(enabled == "true" && !this.runningInIframe && this.elementBrightness) {
-            this.debugLogger?.log("Applying bright reduction");
+            this.debugLogger?.log("Applying brightness reduction");
 
             if(this.elementBrightness.style) {
                 this.elementBrightness.style.display = "block";
@@ -376,7 +376,7 @@ export default class ContentProcessor {
 
             this.appendBrightnessElement(this.elementBrightness, this.elementBrightnessWrapper);
 
-            this.debugLogger?.log("Applied bright reduction");
+            this.debugLogger?.log("Applied brightness reduction");
         } else {
             this.resetBrightnessPage();
         }
@@ -447,11 +447,11 @@ export default class ContentProcessor {
             if(brightnessPageElement) {
                 brightnessPageElement.remove();
             }
+
+            this.debugLogger?.log("Appended brightness reduction element");
         }
 
         elementWrapper.appendChild(elementBrightness);
-
-        this.debugLogger?.log("Appended brightness reduction element");
     }
 
     appendBlueLightElement(elementBlueLightFilter, elementWrapper) {
@@ -470,11 +470,11 @@ export default class ContentProcessor {
             if(blueLightPageElement) {
                 blueLightPageElement.remove();
             }
+
+            this.debugLogger?.log("Appended blue light reduction element");
         }
 
         elementWrapper.appendChild(elementBlueLightFilter);
-
-        this.debugLogger?.log("Appended blue light reduction element");
     }
 
     observeBodyChange() {
@@ -776,8 +776,8 @@ export default class ContentProcessor {
         }
 
         if(this.pageAnalyzer) {
-            this.pageAnalyzer.backgroundDetected = false;
             this.pageAnalyzer.backgroundDetectedBody = document.body;
+            this.pageAnalyzer.cancelBackgroundDetection();
         }
     }
 

@@ -37,6 +37,7 @@ export default class PageAnalyzer {
 
     processingBackgrounds = false;
     backgroundDetected = false;
+    backgroundDetectionCanceled = false;
     backgroundDetectedBody = null;
     backgroundDetectionAlreadyProcessedNodes = new WeakSet();
 
@@ -144,6 +145,7 @@ export default class PageAnalyzer {
                 }
 
                 this.processingBackgrounds = true;
+                this.backgroundDetectionCanceled = false;
 
                 addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
 
@@ -179,6 +181,11 @@ export default class PageAnalyzer {
         let totalExecutionTime = 0;
 
         while(currentIndex < elementsLength) {
+            if(this.backgroundDetectionCanceled) {
+                this.setBackgroundDetectionFinished();
+                return;
+            }
+
             await this.processElement(elements[currentIndex], true);
             currentIndex++;
 
@@ -195,6 +202,11 @@ export default class PageAnalyzer {
     }
 
     async runThrottledBackgroundDetection(elements) {
+        if(this.backgroundDetectionCanceled) {
+            this.setBackgroundDetectionFinished();
+            return;
+        }
+
         removeClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
         await this.throttledTaskDetectBackgrounds.start(elements);
         this.setBackgroundDetectionFinished();
@@ -204,7 +216,19 @@ export default class PageAnalyzer {
         removeClass(document.body, "pageShadowDisableBackgroundStyling", "pageShadowDisableStyling");
         addClass(document.body, "pageShadowBackgroundDetected");
         this.backgroundDetected = true;
+        this.backgroundDetectionCanceled = false;
         this.backgroundDetectedBody = document.body;
+
+        this.debugLogger.log("PageAnalyzer - setBackgroundDetectionFinished - Finished background detection");
+    }
+
+    cancelBackgroundDetection() {
+        this.backgroundDetected = false;
+        this.processingBackgrounds = false;
+        this.backgroundDetectionCanceled = true;
+        this.throttledTaskDetectBackgrounds.clear();
+
+        this.debugLogger.log("PageAnalyzer - cancelBackgroundDetection - Cancelled background detection");
     }
 
     elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
