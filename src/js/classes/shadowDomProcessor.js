@@ -43,7 +43,7 @@ export default class ShadowDomProcessor {
 
     initializeThrottledTasks() {
         this.throttledTaskAnalyzeSubchildsShadowRoot = new ThrottledTask(
-            (element) => this.processShadowRoot(element),
+            element => this.processShadowRoot(element),
             "throttledTaskAnalyzeSubchildsShadowRoot",
             this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds,
             this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall,

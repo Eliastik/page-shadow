@@ -75,7 +75,7 @@ export default class MutationObserverProcessor {
 
     initializeThrottledTasks() {
         this.throttledTaskTreatMutations = new ThrottledTask(
-            (mutation) => this.treatOneMutation(mutation),
+            mutation => this.treatOneMutation(mutation),
             "throttledTaskTreatMutations",
             this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
             this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall,
@@ -83,7 +83,7 @@ export default class MutationObserverProcessor {
         );
 
         this.throttledTaskTreatMutationsAddedNodes = new ThrottledTask(
-            (node) => this.treatOneMutationAddedNode(node),
+            node => this.treatOneMutationAddedNode(node),
             "throttledTaskTreatMutationsAddedNodes",
             this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
             this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall,

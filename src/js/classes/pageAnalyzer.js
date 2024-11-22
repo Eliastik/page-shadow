@@ -101,7 +101,7 @@ export default class PageAnalyzer {
 
     initializeThrottledTasks() {
         this.throttledTaskDetectBackgrounds = new ThrottledTask(
-            (element) => this.processElement(element, false),
+            element => this.processElement(element, false),
             "throttledTaskDetectBackgrounds",
             this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay,
             this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall,
@@ -109,18 +109,20 @@ export default class PageAnalyzer {
         );
 
         this.throttledTaskAnalyzeSubchilds = new ThrottledTask(
-            (element) => this.processElement(element, false),
+            element => this.processElement(element, false),
             "throttledTaskAnalyzeSubchilds",
             this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds,
             this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall,
             this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime
         );
 
-        this.throttledTaskAnalyzeImages = new ThrottledTask(task => this.taskAnalyzeImage(task.image, task.hasBackgroundImg, task.computedStyles, task.pseudoElt),
+        this.throttledTaskAnalyzeImages = new ThrottledTask(
+            task => this.taskAnalyzeImage(task.image, task.hasBackgroundImg, task.computedStyles, task.pseudoElt),
             "throttledTaskAnalyzeImages",
             this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay,
             this.websiteSpecialFiltersConfig.throttleDarkImageDetectionBatchSize,
-            this.websiteSpecialFiltersConfig.throttleDarkImageDetectionMaxExecutionTime
+            this.websiteSpecialFiltersConfig.throttleDarkImageDetectionMaxExecutionTime,
+            task => this.imageProcessor.detectionCanBeAwaited(task.image)
         );
     }
 
