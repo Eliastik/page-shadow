@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, getSettings, getCurrentURL, hasSettingsChanged, sendMessageWithPromise, sha256 } from "./utils/util.js";
+import { pageShadowAllowed, getSettings, getCurrentURL, hasSettingsChanged, sendMessageWithPromise } from "./utils/util.js";
 import browser from "webextension-polyfill";
 import ContentProcessor from "./classes/contentProcessor.js";
 import SafeTimer from "./classes/safeTimer.js";
@@ -63,12 +63,14 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
 /**
  * Execute to pre-apply settings when a page is loaded before full settings are loaded. Limit flash effect.
  */
-function preApplyContrast(data, contentProcessor) {
+function preApplyFilters(data, contentProcessor) {
     if (!data.enabled) {
         return true;
     }
 
     if(document.body && document.getElementsByTagName("html")[0] && !contentProcessor.started) {
+        debugLogger.log("Content script - Pre-applying settings");
+
         contentProcessor.initClassBatchers();
 
         // Pre-apply contrast, brightness, blue light filter and invert entire page
@@ -93,6 +95,8 @@ function preApplyContrast(data, contentProcessor) {
         }
 
         contentProcessor.started = true;
+
+        debugLogger.log("Content script - Finished pre-applying settings");
 
         return true;
     }
@@ -121,7 +125,7 @@ const timerStart = new SafeTimer(async () => {
 // Pre-apply function
 const timerPreApply = new SafeTimer(() => {
     if(settings) {
-        if(preApplyContrast(settings, contentProcessor)) {
+        if(preApplyFilters(settings, contentProcessor)) {
             timerStart.start();
         } else {
             timerPreApply.start();
@@ -130,23 +134,19 @@ const timerPreApply = new SafeTimer(() => {
 });
 
 // Message/response handling
-browser.runtime.onMessage.addListener(async(message) => {
+browser.runtime.onMessage.addListener((message) => {
     if(!message) return;
 
     if(message.type == "preApplySettings") {
         settings = message.data;
         timerPreApply.start();
-
-        debugLogger.log("Content script - Pre-applying settings");
     } else if(message.type == "websiteUrlUpdated" && contentProcessor) {
         // Execute when the page URL changes in Single Page Applications
         const currentURL = getCurrentURL();
         const precURL = contentProcessor.precUrl;
 
-        if(message && message.url == await sha256(currentURL) && precURL) {
+        if(precURL) {
             if(contentProcessor.websiteSpecialFiltersConfig.enableURLChangeDetection) {
-                debugLogger.log("Content script - websiteUrlUpdated - Detected page update.");
-
                 const urlUpdated = precURL != getCurrentURL();
                 const enabledStateChanged = contentProcessor.hasEnabledStateChanged(message.enabled);
                 const changed = initFinished && (enabledStateChanged || urlUpdated);
@@ -158,7 +158,7 @@ browser.runtime.onMessage.addListener(async(message) => {
 
                 if(changed) {
                     debugLogger.log(`Content script - websiteUrlUpdated - URL has changed, or enabled state has changed. Re-applying settings. Current URL = ${currentURL} / Previous URL = ${precURL} / Enabled state changed? ${enabledStateChanged}`);
-                    await applyIfSettingsChanged(true, message.storageChanged, message.enabled);
+                    applyIfSettingsChanged(true, message.storageChanged, message.enabled);
                 }
             }
         }

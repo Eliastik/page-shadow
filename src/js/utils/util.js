@@ -1735,7 +1735,7 @@ function sendMessageWithPromise(data, ...expectedMessageType) {
             if (message && expectedMessageType.includes(message.type)) {
                 resolve(message);
                 browser.runtime.onMessage.removeListener(listener);
-                debugLogger.log(`Received response ${expectedMessageType} from background process for message with data with type: ${data.type}`, "debug", data);
+                debugLogger.log(`Received response ${expectedMessageType} from background process for message with data with type: ${data.type}`, "debug", message);
             }
         };
 

@@ -86,7 +86,6 @@ export default class PageFilterProcessor {
                                 } else {
                                     this.filterMatchingHistory.set(filterHash, [newValue]);
                                 }
-
                             }
                         } else {
                             elementsMatching = [];
