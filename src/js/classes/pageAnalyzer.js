@@ -116,13 +116,12 @@ export default class PageAnalyzer {
             this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime
         );
 
-        this.throttledTaskAnalyzeImages = new ThrottledTask(async (task) => {
-            await this.taskAnalyzeImage(task.image, task.hasBackgroundImg, task.computedStyles, task.pseudoElt);
-        },
-        "throttledTaskAnalyzeImages",
-        this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay,
-        this.websiteSpecialFiltersConfig.throttleDarkImageDetectionBatchSize,
-        this.websiteSpecialFiltersConfig.throttleDarkImageDetectionMaxExecutionTime
+        this.throttledTaskAnalyzeImages = new ThrottledTask(task => this.taskAnalyzeImage(task.image, task.hasBackgroundImg, task.computedStyles, task.pseudoElt),
+            "throttledTaskAnalyzeImages",
+            this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay,
+            this.websiteSpecialFiltersConfig.throttleDarkImageDetectionBatchSize,
+            this.websiteSpecialFiltersConfig.throttleDarkImageDetectionMaxExecutionTime,
+            false
         );
     }
 

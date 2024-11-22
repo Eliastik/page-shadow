@@ -25,7 +25,17 @@ import DebugLogger from "./debugLogger.js";
  */
 export default class ThrottledTask {
 
-    constructor(callback, name, delay, elementsPerBatch = 1, maxExecutionTime = 25, minDelay = 1, maxDelay = 1000, autoThrottlingAdjustmentFactor = 0.5) {
+    constructor(
+        callback,
+        name,
+        delay,
+        elementsPerBatch = 1,
+        maxExecutionTime = 25,
+        processNewestFirst = true,
+        minDelay = 1,
+        maxDelay = 1000,
+        autoThrottlingAdjustmentFactor = 0.5
+    ) {
         this.callback = callback;
         this.name = name;
         this.delay = delay;
@@ -34,13 +44,13 @@ export default class ThrottledTask {
         this.minDelay = minDelay;
         this.maxDelay = maxDelay;
         this.autoThrottlingAdjustmentFactor = autoThrottlingAdjustmentFactor;
+        this.processNewestFirst = processNewestFirst;
 
         this.initialDelay = delay;
         this.initialElementsPerBatch = elementsPerBatch;
 
         this.maxElementsPerBatch = Math.min(maxElementsPerBatch, elementsPerBatch * 100);
 
-        this.index = 0;
         this.elements = [];
         this.timer = new SafeTimer(() => this.processBatch());
         this.resolve = null;
@@ -58,7 +68,6 @@ export default class ThrottledTask {
             this.resolve = resolve;
 
             if(!this.isRunning) {
-                this.index = 0;
                 this.isRunning = true;
                 this.timer.start(this.delay);
             }
@@ -68,23 +77,22 @@ export default class ThrottledTask {
     async processBatch() {
         const startTime = performance.now();
 
-        let batchEnd = Math.min(this.index + this.elementsPerBatch, this.elements.length);
+        const batchSize = Math.min(this.elements.length, this.elementsPerBatch);
 
-        for(let i = this.index; i < batchEnd; i++) {
+        for(let i = 0; i < batchSize; i++) {
             try {
-                await this.callback(this.elements[i]);
+                const element = this.processNewestFirst ? this.elements.pop() : this.elements.shift();
+                await this.callback(element);
             } catch(e) {
                 this.debugLogger?.log(`ThrottledTask ${this.name} - Error executing task: ${e}`, "error");
             }
 
             if(performance.now() - startTime >= this.maxExecutionTime) {
-                batchEnd = i + 1;
                 this.debugLogger?.log(`ThrottledTask ${this.name} - Stopping early task to respect maxExecutionTime = ${this.maxExecutionTime} ms`);
                 break;
             }
         }
 
-        this.index = batchEnd;
         const batchDuration = performance.now() - startTime;
 
         this.averageBatchDuration = this.averageBatchDuration
@@ -97,7 +105,7 @@ export default class ThrottledTask {
             this.batchCounter = 0;
         }
 
-        if(this.index < this.elements.length) {
+        if(this.elements.length > 0) {
             await this.timer.start(this.delay);
         } else {
             this.clear();
@@ -131,7 +139,6 @@ export default class ThrottledTask {
     clear() {
         this.timer.clear();
         this.elements = [];
-        this.index = 0;
         this.isRunning = false;
 
         if (this.resolve) {
