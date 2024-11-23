@@ -525,6 +525,8 @@ export default class ContentProcessor {
 
                 if(this.precEnabled && (!areAllCSSVariablesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.attenuateColors)
                     || !areAllClassesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.invertEntirePage, settings.theme))) {
+                    this.debugLogger?.log("Detected HTML or body element CSS classes or CSS variables changed/erased. Re-applying settings.");
+
                     await this.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
                 }
 
