@@ -147,6 +147,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Process pseudo elements
     * [x] More optimizations - test
     * [ ] Final tests (Chrome/Firefox)
+    * [ ] When releasing: update version date, update changelog (last bugfixes), compare code between MV2 and MV3 versions
 
 #### Bugs to fix
 
