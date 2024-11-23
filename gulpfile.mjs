@@ -113,12 +113,12 @@ gulp.task("compile-js", () => {
 });
 
 gulp.task("copyChrome", () => {
-    return gulp.src(["./build/global/**", "./manifests/chrome/**/*", "!./build/global/css/content_invert_firefox.css"], { encoding: false })
+    return gulp.src(["./build/global/**", "./manifests/chrome/**/*", "!./build/global/css/content_invert_firefox.css", "!./build/global/webfonts/*.ttf"], { encoding: false })
         .pipe(gulp.dest("./build/chrome/"));
 });
 
 gulp.task("copyFirefox", () => {
-    return gulp.src(["./build/global/**", "./manifests/firefox/**/*", "!./build/global/css/content_invert_firefox.css", "!./build/global/css/content_invert.css"], { encoding: false })
+    return gulp.src(["./build/global/**", "./manifests/firefox/**/*", "!./build/global/css/content_invert_firefox.css", "!./build/global/css/content_invert.css", "!./build/global/webfonts/*.ttf"], { encoding: false })
         .pipe(gulp.dest("./build/firefox/"));
 });
 
