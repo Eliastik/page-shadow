@@ -1430,19 +1430,17 @@ function isRunningInIframe() {
 async function isInterfaceDarkTheme() {
     const setting = await browser.storage.local.get(["interfaceDarkTheme"]);
 
-    return new Promise(resolve => {
-        if (setting.interfaceDarkTheme === "enabled") {
-            resolve(true);
-        }
+    if(setting.interfaceDarkTheme === "enabled") {
+        return true;
+    }
 
-        if (!setting.interfaceDarkTheme || setting.interfaceDarkTheme === "auto") {
-            if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-                resolve(true);
-            }
+    if (!setting.interfaceDarkTheme || setting.interfaceDarkTheme === "auto") {
+        if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            return true;
         }
+    }
 
-        resolve(false);
-    });
+    return false;
 }
 
 function loadStyles(id, styles) {

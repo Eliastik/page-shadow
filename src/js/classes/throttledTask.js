@@ -65,7 +65,7 @@ export default class ThrottledTask {
     }
 
     start(newElements) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             this.elements = [...this.elements, ...newElements];
             this.resolve = resolve;
 
