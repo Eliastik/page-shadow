@@ -134,41 +134,34 @@ export default class PageAnalyzer {
         }
     }
 
-    detectBackground(tagName, forceDisableThrottle) {
+    async detectBackground(tagName, forceDisableThrottle) {
         this.debugLogger?.log(`PageAnalyzer detectBackground - Beginning analyzing page elements - elements tagName: ${tagName}`);
 
-        return new Promise(resolve => {
-            if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
-                if(this.processingBackgrounds || this.backgroundDetected) {
-                    this.debugLogger?.log("PageAnalyzer detectBackground - Already analyzing or analyzed page elements, exiting");
-                    return resolve();
-                }
-
-                this.processingBackgrounds = true;
-                this.backgroundDetectionCanceled = false;
-
-                addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
-
-                this.processElement(document.body, true);
-
-                const elements = Array.from(document.body.getElementsByTagName(tagName));
-
-                if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection && !forceDisableThrottle) {
-                    this.runThrottledBackgroundDetection(elements).then(() => {
-                        this.processingBackgrounds = false;
-                        resolve();
-                    });
-                } else {
-                    this.runNormalBackgroundDetection(elements, forceDisableThrottle).then(() => {
-                        this.processingBackgrounds = false;
-                        resolve();
-                    });
-                }
-            } else {
-                this.setBackgroundDetectionFinished();
-                resolve();
+        if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
+            if(this.processingBackgrounds || this.backgroundDetected) {
+                this.debugLogger?.log("PageAnalyzer detectBackground - Already analyzing or analyzed page elements, exiting");
+                return;
             }
-        });
+
+            this.processingBackgrounds = true;
+            this.backgroundDetectionCanceled = false;
+
+            addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
+
+            await this.processElement(document.body, true);
+
+            const elements = Array.from(document.body.getElementsByTagName(tagName));
+
+            if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection && !forceDisableThrottle) {
+                await this.runThrottledBackgroundDetection(elements);
+            } else {
+                await this.runNormalBackgroundDetection(elements, forceDisableThrottle);
+            }
+
+            this.processingBackgrounds = false;
+        } else {
+            this.setBackgroundDetectionFinished();
+        }
     }
 
     async runNormalBackgroundDetection(elements, forceDisableThrottle) {

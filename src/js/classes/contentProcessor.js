@@ -614,7 +614,7 @@ export default class ContentProcessor {
     process(allowed, type, disableCache) {
         if(this.applyWhenBodyIsAvailableTimer) this.applyWhenBodyIsAvailableTimer.clear();
 
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             this.applyWhenBodyIsAvailableTimer = new ApplyBodyAvailable(async () => {
                 this.initClassBatchers();
                 this.initProcessors();
