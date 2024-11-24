@@ -151,6 +151,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Bugs to fix
 
+* [x] (Minor) On local opened page, the right click actions doesn't work (Chrome only) -> seems OK, nothing fixed
 * [x] (Medium) HTML class used by Page Shadow to invert entire page is reseted on some websites. Exemple: https://spring.io/tools
 * [x] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
 * [x] (Very minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
@@ -178,7 +179,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Known issues/bugs
 
-* [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
 
 #### Ideas
@@ -190,11 +190,12 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Separate code treating mutations of page elements to a separate class?
     * [x] Separate method applying mutation observers to another class?
     * [x] Modularize content.js classes with less dependencies between classes?
+        * [ ] Separate each filter (increase contrast, reduce brightness etc.) into a class?
 * [ ] Others codebase improvements
     * [ ] No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
 * [ ] Filters module improving
     * [x] Filters: UI to report a website problem
     * [ ] Filters: Element picker to create custom rule easily
-    * [ ] Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditonal filter)
+    * [ ] Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditional filter)
     * [ ] Store filters on a Github repository ?
 * [ ] Prevent the attenuation of subelements (when enabling Colored elements attenuation)?
