@@ -23,8 +23,8 @@ import ImageProcessor from "./imageProcessor.js";
 import ShadowDomProcessor from "./shadowDomProcessor.js";
 
 /**
- * Class used to analyze the pages and detect transparent background,
- * background images, etc.
+ * Class used to analyze page elements and detect transparent background,
+ * background images, bright colors, etc.
  */
 export default class PageAnalyzer {
 
@@ -35,18 +35,18 @@ export default class PageAnalyzer {
     isEnabled = false;
     currentSettings = {};
 
-    processingBackgrounds = false;
-    backgroundDetected = false;
-    backgroundDetectionCanceled = false;
-    backgroundDetectedBody = null;
-    backgroundDetectionAlreadyProcessedNodes = new WeakSet();
+    analyzingPage = false;
+    pageAnalysisFinished = false;
+    pageAnalysisCanceled = false;
+    pageAnalysisFinishedBody = null;
+    pageAnalysisAlreadyProcessedNodes = new WeakSet();
 
     multipleElementClassBatcherAdd = null;
     multipleElementClassBatcherRemove = null;
 
     debugLogger;
 
-    throttledTaskDetectBackgrounds;
+    throttledTaskAnalyzeElements;
     throttledTaskAnalyzeSubchilds;
     throttledTaskAnalyzeImages;
 
@@ -73,9 +73,10 @@ export default class PageAnalyzer {
     async setSettings(websiteSpecialFiltersConfig, currentSettings, isEnabled) {
         if(!websiteSpecialFiltersConfig) {
             this.websiteSpecialFiltersConfig = await loadWebsiteSpecialFiltersConfig();
+        } else {
+            this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
         }
 
-        this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
         this.currentSettings = currentSettings;
         this.isEnabled = isEnabled;
 
@@ -87,6 +88,30 @@ export default class PageAnalyzer {
             this.shadowDomProcessor.currentSettings = currentSettings;
             this.shadowDomProcessor.isEnabled = isEnabled;
             this.shadowDomProcessor.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
+
+            if(this.shadowDomProcessor.throttledTaskAnalyzeSubchildsShadowRoot) {
+                this.shadowDomProcessor.throttledTaskAnalyzeSubchildsShadowRoot.delay = this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds;
+                this.shadowDomProcessor.throttledTaskAnalyzeSubchildsShadowRoot.elementsPerBatch = this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall;
+                this.shadowDomProcessor.throttledTaskAnalyzeSubchildsShadowRoot.maxExecutionTime = this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime;
+            }
+        }
+
+        if(this.throttledTaskAnalyzeElements) {
+            this.throttledTaskAnalyzeElements.delay = this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay;
+            this.throttledTaskAnalyzeElements.elementsPerBatch = this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall;
+            this.throttledTaskAnalyzeElements.maxExecutionTime = this.websiteSpecialFiltersConfig.throttleBackgroundDetectionMaxExecutionTime;
+        }
+
+        if(this.throttledTaskAnalyzeSubchilds) {
+            this.throttledTaskAnalyzeSubchilds.delay = this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds;
+            this.throttledTaskAnalyzeSubchilds.elementsPerBatch = this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall;
+            this.throttledTaskAnalyzeSubchilds.maxExecutionTime = this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime;
+        }
+
+        if(this.throttledTaskAnalyzeImages) {
+            this.throttledTaskAnalyzeImages.delay = this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay;
+            this.throttledTaskAnalyzeImages.elementsPerBatch = this.websiteSpecialFiltersConfig.throttleDarkImageDetectionBatchSize;
+            this.throttledTaskAnalyzeImages.maxExecutionTime = this.websiteSpecialFiltersConfig.throttleDarkImageDetectionMaxExecutionTime;
         }
 
         if(this.currentSettings && this.currentSettings.theme && this.currentSettings.pageShadowEnabled == "true") {
@@ -100,9 +125,9 @@ export default class PageAnalyzer {
     }
 
     initializeThrottledTasks() {
-        this.throttledTaskDetectBackgrounds = new ThrottledTask(
+        this.throttledTaskAnalyzeElements = new ThrottledTask(
             element => this.processElement(element, false),
-            "throttledTaskDetectBackgrounds",
+            "throttledTaskAnalyzeElements",
             this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay,
             this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall,
             this.websiteSpecialFiltersConfig.throttleBackgroundDetectionMaxExecutionTime
@@ -135,17 +160,17 @@ export default class PageAnalyzer {
         }
     }
 
-    async detectBackground(tagName, forceDisableThrottle) {
-        this.debugLogger?.log(`PageAnalyzer detectBackground - Beginning analyzing page elements - elements tagName: ${tagName}`);
+    async analyzeElements(tagName, forceDisableThrottle) {
+        this.debugLogger?.log(`PageAnalyzer analyzeElements - Beginning analyzing page elements - elements tagName: ${tagName}`);
 
         if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
-            if(this.processingBackgrounds || this.backgroundDetected) {
-                this.debugLogger?.log("PageAnalyzer detectBackground - Already analyzing or analyzed page elements, exiting");
+            if(this.analyzingPage || this.pageAnalysisFinished) {
+                this.debugLogger?.log("PageAnalyzer analyzeElements - Already analyzing or analyzed page elements, exiting");
                 return;
             }
 
-            this.processingBackgrounds = true;
-            this.backgroundDetectionCanceled = false;
+            this.analyzingPage = true;
+            this.pageAnalysisCanceled = false;
 
             addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
 
@@ -154,18 +179,18 @@ export default class PageAnalyzer {
             const elements = Array.from(document.body.getElementsByTagName(tagName));
 
             if(this.websiteSpecialFiltersConfig.throttleBackgroundDetection && !forceDisableThrottle) {
-                await this.runThrottledBackgroundDetection(elements);
+                await this.runThrottledPageAnalysis(elements);
             } else {
-                await this.runNormalBackgroundDetection(elements, forceDisableThrottle);
+                await this.runNormalPageAnalysis(elements, forceDisableThrottle);
             }
 
-            this.processingBackgrounds = false;
+            this.analyzingPage = false;
         } else {
-            this.setBackgroundDetectionFinished();
+            this.setPageAnalysisFinished();
         }
     }
 
-    async runNormalBackgroundDetection(elements, forceDisableThrottle) {
+    async runNormalPageAnalysis(elements, forceDisableThrottle) {
         removeClass(document.body, "pageShadowDisableBackgroundStyling");
 
         const elementsLength = elements.length;
@@ -175,8 +200,8 @@ export default class PageAnalyzer {
         let totalExecutionTime = 0;
 
         while(currentIndex < elementsLength) {
-            if(this.backgroundDetectionCanceled) {
-                this.backgroundDetectionCanceled = false;
+            if(this.pageAnalysisCanceled) {
+                this.pageAnalysisCanceled = false;
                 return;
             }
 
@@ -187,43 +212,136 @@ export default class PageAnalyzer {
             totalExecutionTime += addTime;
 
             if(!forceDisableThrottle && totalExecutionTime >= this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime) {
-                this.debugLogger?.log(`PageAnalyzer detectBackground - Stopping early task to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`);
-                return this.runThrottledBackgroundDetection(elements.slice(currentIndex));
+                this.debugLogger?.log(`PageAnalyzer analyzeElements - Stopping early task to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`);
+                return this.runThrottledPageAnalysis(elements.slice(currentIndex));
             }
         }
 
-        this.setBackgroundDetectionFinished();
+        this.setPageAnalysisFinished();
     }
 
-    async runThrottledBackgroundDetection(elements) {
-        if(this.backgroundDetectionCanceled) {
-            this.backgroundDetectionCanceled = false;
+    async runThrottledPageAnalysis(elements) {
+        if(this.pageAnalysisCanceled) {
+            this.pageAnalysisCanceled = false;
             return;
         }
 
         removeClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
-        await this.throttledTaskDetectBackgrounds.start(elements);
-        this.setBackgroundDetectionFinished();
+        await this.throttledTaskAnalyzeElements.start(elements);
+        this.setPageAnalysisFinished();
     }
 
-    setBackgroundDetectionFinished() {
+    setPageAnalysisFinished() {
         removeClass(document.body, "pageShadowDisableBackgroundStyling", "pageShadowDisableStyling");
         addClass(document.body, "pageShadowBackgroundDetected");
 
-        this.backgroundDetected = true;
-        this.backgroundDetectionCanceled = false;
-        this.backgroundDetectedBody = document.body;
+        this.pageAnalysisFinished = true;
+        this.pageAnalysisCanceled = false;
+        this.pageAnalysisFinishedBody = document.body;
 
-        this.debugLogger.log("PageAnalyzer - setBackgroundDetectionFinished - Finished background detection");
+        this.debugLogger?.log("PageAnalyzer - setPageAnalysisFinished - Finished page analyzing");
     }
 
-    cancelBackgroundDetection() {
-        this.backgroundDetected = false;
-        this.processingBackgrounds = false;
-        this.backgroundDetectionCanceled = true;
-        this.throttledTaskDetectBackgrounds.clear();
+    cancelPageAnalysis() {
+        this.pageAnalysisFinished = false;
+        this.analyzingPage = false;
+        this.pageAnalysisCanceled = true;
+        this.throttledTaskAnalyzeElements.clear();
 
-        this.debugLogger.log("PageAnalyzer - cancelBackgroundDetection - Cancelled background detection");
+        this.debugLogger?.log("PageAnalyzer - cancelPageAnalysis - Cancelled page analyzing");
+    }
+
+    async processElement(element, disableDestyling) {
+        if(element && element.shadowRoot != null && this.websiteSpecialFiltersConfig.enableShadowRootStyleOverride) {
+            await this.processShadowRoots(element);
+        }
+
+        if(!element || (element != document.body && (element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected"))) || this.pageAnalysisAlreadyProcessedNodes.has(element) || ignoredElementsContentScript.includes(element.localName) || !element.isConnected) {
+            return;
+        }
+
+        const elementWasAlreadyDisabled = element.classList.contains("pageShadowElementDisabled");
+
+        if(!disableDestyling) {
+            addClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
+        }
+
+        this.analyzeElement(element, null);
+
+        if(this.websiteSpecialFiltersConfig.enablePseudoElementsAnalysis) {
+            // Analyze pseudo-element :before
+            const hasPseudoEltBefore = this.analyzeElement(element, ":before");
+
+            // Analyze pseudo-element :after
+            const hasPseudoEltAfter = this.analyzeElement(element, ":after");
+
+            if(hasPseudoEltBefore || hasPseudoEltAfter) {
+                addClass(element, "pageShadowHasPseudoElement");
+            }
+        }
+
+        if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes) {
+            this.pageAnalysisAlreadyProcessedNodes.add(element);
+        }
+
+        if(!disableDestyling) {
+            if(elementWasAlreadyDisabled) {
+                removeClass(element, "pageShadowDisableStyling");
+            } else {
+                removeClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
+            }
+        }
+    }
+
+    analyzeElement(element, pseudoElt) {
+        const computedStyles = window.getComputedStyle(element, pseudoElt);
+
+        // If the pseudo-element is not defined, we stop here
+        if(pseudoElt && computedStyles.content === "none") {
+            return false;
+        }
+
+        const background = computedStyles.background;
+        const backgroundColor = computedStyles.backgroundColor;
+        const backgroundImage = computedStyles.backgroundImage;
+
+        const hasBackgroundImg = this.hasBackgroundImage(element, background, backgroundImage);
+        const hasClassImg = element.classList.contains(getPageAnalyzerCSSClass("pageShadowHasBackgroundImg", pseudoElt));
+        const hasTransparentBackgroundClass = element.classList.contains(getPageAnalyzerCSSClass("pageShadowHasTransparentBackground", pseudoElt));
+
+        // Detect image with dark color (text, logos, etc)
+        if (this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
+            if (!element.classList.contains(getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt)) && this.imageProcessor.elementIsImage(element, hasBackgroundImg)) {
+                if (this.websiteSpecialFiltersConfig.throttleDarkImageDetection) {
+                    this.throttledTaskAnalyzeImages.start([{
+                        image: element,
+                        computedStyles,
+                        hasBackgroundImg,
+                        pseudoElt
+                    }]);
+                } else {
+                    this.taskAnalyzeImage(element, hasBackgroundImg, computedStyles, pseudoElt);
+                }
+            }
+        }
+
+        if (hasBackgroundImg && !hasClassImg) {
+            this.multipleElementClassBatcherAdd.add(element, getPageAnalyzerCSSClass("pageShadowHasBackgroundImg", pseudoElt));
+        }
+
+        let transparentColorDetected = false;
+
+        if (this.websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled) {
+            transparentColorDetected = this.detectTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg, computedStyles, hasTransparentBackgroundClass, element, pseudoElt);
+        }
+
+        if (this.websiteSpecialFiltersConfig.enableBrightColorDetection) {
+            this.detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyles, pseudoElt);
+        }
+
+        if(pseudoElt) {
+            return true;
+        }
     }
 
     elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
@@ -326,125 +444,12 @@ export default class PageAnalyzer {
         return element.closest(".pageShadowHasBrightColorBackground") != null;
     }
 
-    async processElement(element, disableDestyling) {
-        if(element && element.shadowRoot != null && this.websiteSpecialFiltersConfig.enableShadowRootStyleOverride) {
-            await this.processShadowRoots(element);
-        }
-
-        if(!element || (element != document.body && (element.classList.contains("pageShadowDisableStyling") || element.classList.contains("pageShadowBackgroundDetected"))) || this.backgroundDetectionAlreadyProcessedNodes.has(element) || ignoredElementsContentScript.includes(element.localName) || !element.isConnected) {
-            return;
-        }
-
-        const elementWasAlreadyDisabled = element.classList.contains("pageShadowElementDisabled");
-
-        if(!disableDestyling) {
-            addClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
-        }
-
-        this.analyzeElement(element, null);
-
-        if(this.websiteSpecialFiltersConfig.enablePseudoElementsAnalysis) {
-            // Analyze pseudo-element :before
-            const hasPseudoEltBefore = this.analyzeElement(element, ":before");
-
-            // Analyze pseudo-element :after
-            const hasPseudoEltAfter = this.analyzeElement(element, ":after");
-
-            if(hasPseudoEltBefore || hasPseudoEltAfter) {
-                addClass(element, "pageShadowHasPseudoElement");
-            }
-        }
-
-        if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes) {
-            this.backgroundDetectionAlreadyProcessedNodes.add(element);
-        }
-
-        if(!disableDestyling) {
-            if(elementWasAlreadyDisabled) {
-                removeClass(element, "pageShadowDisableStyling");
-            } else {
-                removeClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
-            }
-        }
-    }
-
-    analyzeElement(element, pseudoElt) {
-        const computedStyles = window.getComputedStyle(element, pseudoElt);
-
-        // If the pseudo-element is not defined, we stop here
-        if(pseudoElt && computedStyles.content === "none") {
-            return false;
-        }
-
-        const background = computedStyles.background;
-        const backgroundColor = computedStyles.backgroundColor;
-        const backgroundImage = computedStyles.backgroundImage;
-
-        const hasBackgroundImg = this.hasBackgroundImage(element, background, backgroundImage);
-        const hasClassImg = element.classList.contains(getPageAnalyzerCSSClass("pageShadowHasBackgroundImg", pseudoElt));
-        const hasTransparentBackgroundClass = element.classList.contains(getPageAnalyzerCSSClass("pageShadowHasTransparentBackground", pseudoElt));
-
-        // Detect image with dark color (text, logos, etc)
-        if (this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
-            if (!element.classList.contains(getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt)) && this.imageProcessor.elementIsImage(element, hasBackgroundImg)) {
-                if (this.websiteSpecialFiltersConfig.throttleDarkImageDetection) {
-                    this.throttledTaskAnalyzeImages.start([{
-                        image: element,
-                        computedStyles,
-                        hasBackgroundImg,
-                        pseudoElt
-                    }]);
-                } else {
-                    this.taskAnalyzeImage(element, hasBackgroundImg, computedStyles, pseudoElt);
-                }
-            }
-        }
-
-        if (hasBackgroundImg && !hasClassImg) {
-            this.multipleElementClassBatcherAdd.add(element, getPageAnalyzerCSSClass("pageShadowHasBackgroundImg", pseudoElt));
-        }
-
-        let transparentColorDetected = false;
-
-        if (this.websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled) {
-            transparentColorDetected = this.detectTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg, computedStyles, hasTransparentBackgroundClass, element, pseudoElt);
-        }
-
-        if (this.websiteSpecialFiltersConfig.enableBrightColorDetection) {
-            this.detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyles, pseudoElt);
-        }
-
-        if(pseudoElt) {
-            return true;
-        }
-    }
-
     hasBackgroundImage(element, background, backgroundImage) {
         if(element.tagName.toLowerCase() === "img" || element.tagName.toLowerCase() === "picture") {
             return false;
         }
 
         return background.split(" ").some(v => v.trim().substring(0, 4).toLowerCase().includes("url(")) || backgroundImage.split(" ").some(v => v.trim().substring(0, 4).toLowerCase().includes("url("));
-    }
-
-    async processShadowRoots(element) {
-        if (this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay > 0) {
-            setTimeout(() => this.processShadowRoot(element), this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
-        } else {
-            await this.processShadowRoot(element);
-        }
-    }
-
-    async processShadowRoot(currentElement) {
-        await this.shadowDomProcessor.processShadowRoot(currentElement);
-    }
-
-    clearShadowRoots() {
-        this.shadowDomProcessor.clearShadowRoots();
-    }
-
-    async resetShadowRoots() {
-        await this.shadowDomProcessor.resetShadowRoots();
     }
 
     isTextElement(element, computedStyles, pseudoElt) {
@@ -538,6 +543,26 @@ export default class PageAnalyzer {
         return false;
     }
 
+    async processShadowRoots(element) {
+        if (this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay > 0) {
+            setTimeout(() => this.processShadowRoot(element), this.websiteSpecialFiltersConfig.shadowRootStyleOverrideDelay);
+        } else {
+            await this.processShadowRoot(element);
+        }
+    }
+
+    async processShadowRoot(currentElement) {
+        await this.shadowDomProcessor.processShadowRoot(currentElement);
+    }
+
+    clearShadowRoots() {
+        this.shadowDomProcessor.clearShadowRoots();
+    }
+
+    async resetShadowRoots() {
+        await this.shadowDomProcessor.resetShadowRoots();
+    }
+
     async mutationForElement(element, attribute, attributeOldValue) {
         if(!element || !element.classList || element == document.body || ignoredElementsContentScript.includes(element.localName) || element.nodeType != 1) {
             return false;
@@ -594,7 +619,7 @@ export default class PageAnalyzer {
 
             if(hasMutationPageShadowClass) {
                 if(this.websiteSpecialFiltersConfig.useBackgroundDetectionAlreadyProcessedNodes) {
-                    this.backgroundDetectionAlreadyProcessedNodes.delete(element);
+                    this.pageAnalysisAlreadyProcessedNodes.delete(element);
                 }
             }
         }

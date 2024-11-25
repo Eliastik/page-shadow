@@ -44,6 +44,12 @@ export default class PageFilterProcessor {
         this.debugLogger = debugLogger;
     }
 
+    setSettings(pageAnalyzer, multipleElementClassBatcherAdd, multipleElementClassBatcherRemove) {
+        this.pageAnalyzer = pageAnalyzer;
+        this.multipleElementClassBatcherAdd = multipleElementClassBatcherAdd;
+        this.multipleElementClassBatcherRemove = multipleElementClassBatcherRemove;
+    }
+
     async doProcessFilters(element, applyToChildrens) {
         if(!this.filtersCache) return;
 

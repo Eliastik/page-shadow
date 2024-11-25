@@ -44,14 +44,14 @@ export default class PresetCache {
         }
 
         this.isInit = false;
-        this.debugLogger.log("PresetCache - Updated cache");
+        this.debugLogger?.log("PresetCache - Updated cache");
 
         return true;
     }
 
     resetCache() {
         this.data = [];
-        this.debugLogger.log("PresetCache - Reseted cache");
+        this.debugLogger?.log("PresetCache - Reseted cache");
     }
 
     getPresetData(nb) {
