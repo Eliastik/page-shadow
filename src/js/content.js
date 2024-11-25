@@ -86,7 +86,7 @@ function preApplyFilters(data, contentProcessor) {
     if(document.body && document.getElementsByTagName("html")[0] && !contentProcessor.started) {
         debugLogger.log("Content script - Pre-applying settings");
 
-        contentProcessor.initClassBatchers();
+        contentProcessor.initBodyAndHTMLClassBatchers();
 
         // Pre-apply contrast, brightness, blue light filter and invert entire page
         if (data.settings.pageShadowEnabled == "true") {

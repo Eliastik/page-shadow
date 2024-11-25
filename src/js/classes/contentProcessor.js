@@ -320,20 +320,20 @@ export default class ContentProcessor {
         this.debugLogger?.log("Reseted attenuate color");
     }
 
-    applyDetectBackground(type, elements) {
+    applyPageAnalysis(type, elements) {
         return new Promise(resolve => {
-            if(this.pageAnalyzer.backgroundDetected) {
+            if(this.pageAnalyzer.pageAnalysisFinished) {
                 return resolve();
             }
 
-            const timerBackgrounds = new SafeTimer(async () => {
-                timerBackgrounds.clear();
+            const timerAnalyzePageElements = new SafeTimer(async () => {
+                timerAnalyzePageElements.clear();
 
                 // Start mutation observer, only for added nodes
                 this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS_ONLY_ADDED_NODES);
 
                 // Analyze page elements
-                await this.pageAnalyzer.detectBackground(elements, type === ContentProcessorConstants.TYPE_RESET);
+                await this.pageAnalyzer.analyzeElements(elements, type === ContentProcessorConstants.TYPE_RESET);
 
                 // Start mutation observer, for added nodes and class changes
                 this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BACKGROUNDS, true);
@@ -343,14 +343,14 @@ export default class ContentProcessor {
 
             if(document.readyState === "complete") {
                 this.debugLogger?.log("Page is now ready, we can start to analyze the elements");
-                timerBackgrounds.start();
+                timerAnalyzePageElements.start();
             } else {
                 this.debugLogger?.log("Page is not ready, waiting for the page to be ready to analyze the elements");
 
                 const eventDetectBackground = document.addEventListener("readystatechange", () => {
                     if(document.readyState === "complete") {
                         document.removeEventListener("readystatechange", eventDetectBackground);
-                        timerBackgrounds.start();
+                        timerAnalyzePageElements.start();
                     }
                 });
             }
@@ -488,12 +488,13 @@ export default class ContentProcessor {
                     if(!this.oldBody) this.oldBody = document.body;
 
                     if(document.body != this.oldBody) {
-                        this.initClassBatchers();
+                        this.initBodyAndHTMLClassBatchers();
+                        this.initElementClassBatchers();
 
                         if(this.precUrl == getCurrentURL()) {
                             this.debugLogger?.log("Body change observer - Detected body change. Re-applying settings.");
 
-                            if(document.body != this.pageAnalyzer.backgroundDetectedBody) {
+                            if(document.body != this.pageAnalyzer.pageAnalysisFinishedBody) {
                                 this.debugLogger?.log("Body change observer - Will analyze the page as document.body has changed from the last page analysis");
                                 this.resetPageAnalysisState();
                             }
@@ -563,8 +564,6 @@ export default class ContentProcessor {
             if(response.specialFilters) {
                 this.filterProcessor.processSpecialRules(response.specialFilters);
             }
-
-            await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
         }
     }
 
@@ -580,7 +579,7 @@ export default class ContentProcessor {
                 this.debugLogger?.log("Applying page filters");
                 await this.filterProcessor.doProcessFilters();
             } catch(e) {
-                this.debugLogger.log("ContentProcessor - executeFilters - Error executing filters", "error", e);
+                this.debugLogger?.log("ContentProcessor - executeFilters - Error executing filters", "error", e);
             } finally {
                 this.processedFilters = true;
                 this.processingFilters = false;
@@ -618,8 +617,7 @@ export default class ContentProcessor {
 
         return new Promise(resolve => {
             this.applyWhenBodyIsAvailableTimer = new ApplyBodyAvailable(async () => {
-                this.initClassBatchers();
-                this.initProcessors();
+                this.initBodyAndHTMLClassBatchers();
 
                 this.debugLogger?.log(`Starting processing page - allowed? ${allowed} / type? ${type} / disableCache? ${disableCache}`);
 
@@ -638,10 +636,16 @@ export default class ContentProcessor {
         });
     }
 
-    initClassBatchers() {
+    initBodyAndHTMLClassBatchers() {
+        this.debugLogger?.log("ContentProcessor - initBodyAndHTMLClassBatchers - Initializing body and HTML class batchers");
+
         this.bodyClassBatcher = new ElementClassBatcher("add", document.body);
         this.bodyClassBatcherRemover = new ElementClassBatcher("remove", document.body);
         this.htmlClassBatcher = new ElementClassBatcher("add", document.getElementsByTagName("html")[0]);
+    }
+
+    initElementClassBatchers() {
+        this.debugLogger?.log("ContentProcessor - initElementClassBatchers - Initializing elements class batchers");
 
         this.multipleElementClassBatcherAdd = this.multipleElementClassBatcherAdd || new MultipleElementClassBatcher("add", this.websiteSpecialFiltersConfig.classChangeMaxElementsTreatedByCall,
             this.websiteSpecialFiltersConfig.delayApplyClassChanges, this.websiteSpecialFiltersConfig.applyClassChangesMaxExecutionTime,
@@ -652,19 +656,52 @@ export default class ContentProcessor {
     }
 
     initProcessors() {
+        this.debugLogger?.log("ContentProcessor - initProcessors - Initializing processors");
+
         this.pageAnalyzer = this.pageAnalyzer || new PageAnalyzer(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove, this.debugLogger);
-        this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove, this.websiteSpecialFiltersConfig, this.debugLogger);
         this.mutationObserverProcessor = this.mutationObserverProcessor || new MutationObserverProcessor(this.pageAnalyzer, this.filterProcessor, this.debugLogger, this.elementBrightnessWrapper, this.websiteSpecialFiltersConfig, this.elementBrightness, this.elementBlueLightFilter);
+        this.initFilterProcessor();
+
         this.mutationObserverProcessor.reApplyCallback = (type, mutation) => this.main(type, mutation);
+    }
+
+    initFilterProcessor() {
+        this.filterProcessor = this.filterProcessor || new PageFilterProcessor(this.pageAnalyzer, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove, this.websiteSpecialFiltersConfig, this.debugLogger);
+    }
+
+    async initializeProcessingPipeline() {
+        this.debugLogger?.log("ContentProcessor - initializeProcessingPipeline - Setup processing classes and special filters");
+
+        const specialRules = await sendMessageWithPromise({ "type": "getSpecialRules" }, "getSpecialRulesResponse");
+
+        this.initFilterProcessor();
+
+        this.filterProcessor.processSpecialRules(specialRules.filters);
+
+        this.initElementClassBatchers();
+        this.initProcessors();
+
+        await this.filterProcessor.setSettings(this.pageAnalyzer, this.multipleElementClassBatcherAdd, this.multipleElementClassBatcherRemove);
+        await this.mutationObserverProcessor.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precUrl, this.precEnabled);
+        await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
+    }
+
+    applyAllBodyBatchers() {
+        this.bodyClassBatcher.apply();
+        this.bodyClassBatcherRemover.apply();
+        this.htmlClassBatcher.apply();
+    }
+
+    removeAllBodyBatchers() {
+        this.bodyClassBatcher.removeAll();
+        this.bodyClassBatcherRemover.removeAll();
+        this.htmlClassBatcher.removeAll();
     }
 
     async handleAllowedState(type, disableCache) {
         const settings = this.newSettingsToApply || await getSettings(getCurrentURL(), disableCache);
         this.currentSettings = settings;
         this.precEnabled = true;
-
-        await this.mutationObserverProcessor.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precUrl, this.precEnabled);
-        await this.pageAnalyzer.setSettings(this.websiteSpecialFiltersConfig, this.currentSettings, this.precEnabled);
 
         switch(type) {
         case ContentProcessorConstants.TYPE_ONLY_INVERT:
@@ -695,8 +732,11 @@ export default class ContentProcessor {
             this.applyAllBodyBatchers();
         }
 
+        await this.initializeProcessingPipeline();
+
         if(![ContentProcessorConstants.TYPE_ONLY_CONTRAST, ContentProcessorConstants.TYPE_ONLY_INVERT, ContentProcessorConstants.TYPE_ONLY_BRIGHTNESS, ContentProcessorConstants.TYPE_ONLY_BLUELIGHT].includes(type)) {
-            await this.applyBackgroundAndFilters(settings, type);
+            this.applyBrightnessAndBlueLightFilter(settings);
+            await this.applyPageAnalysisAndFilters(settings, type);
         }
 
         this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BODY);
@@ -706,36 +746,25 @@ export default class ContentProcessor {
         await this.pageAnalyzer.resetShadowRoots();
     }
 
-    applyAllBodyBatchers() {
-        this.bodyClassBatcher.apply();
-        this.bodyClassBatcherRemover.apply();
-        this.htmlClassBatcher.apply();
-    }
-
-    removeAllBodyBatchers() {
-        this.bodyClassBatcher.removeAll();
-        this.bodyClassBatcherRemover.removeAll();
-        this.htmlClassBatcher.removeAll();
-    }
-
-    async applyBackgroundAndFilters(settings, type) {
+    applyBrightnessAndBlueLightFilter(settings) {
         this.mutationObserverProcessor?.pause(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
 
         this.brightnessPage(settings.pageLumEnabled, settings.pourcentageLum);
         this.blueLightFilterPage(settings.blueLightReductionEnabled, settings.percentageBlueLightReduction, settings.colorTemp);
+    }
 
-        const specialRules = await sendMessageWithPromise({ "type": "getSpecialRules" }, "getSpecialRulesResponse");
-        this.filterProcessor.processSpecialRules(specialRules.filters);
+    async applyPageAnalysisAndFilters(settings, type) {
+        this.debugLogger?.log("ContentProcessor - applyPageAnalysisAndFilters - Applying page analysis and filters");
 
         this.observeBodyChange();
         this.observeDocumentElementChange();
         this.timerApplyMutationClassChanges();
 
         if(settings.pageShadowEnabled === "true" || settings.colorInvert === "true" || settings.attenuateColors === "true") {
-            if(type === ContentProcessorConstants.TYPE_START || !this.pageAnalyzer.backgroundDetected) {
+            if(type === ContentProcessorConstants.TYPE_START || !this.pageAnalyzer.pageAnalysisFinished) {
                 await this.updateFilters();
 
-                await this.applyDetectBackground(type, "*");
+                await this.applyPageAnalysis(type, "*");
 
                 if(document.readyState === "complete") {
                     await this.executeFilters();
@@ -778,8 +807,8 @@ export default class ContentProcessor {
         }
 
         if(this.pageAnalyzer) {
-            this.pageAnalyzer.backgroundDetectedBody = document.body;
-            this.pageAnalyzer.cancelBackgroundDetection();
+            this.pageAnalyzer.pageAnalysisFinishedBody = document.body;
+            this.pageAnalyzer.cancelPageAnalysis();
         }
     }
 

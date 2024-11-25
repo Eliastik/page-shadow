@@ -46,7 +46,7 @@ export default class SettingsCache {
         this.isWhiteList = (await browser.storage.local.get(whitelistKey))[whitelistKey];
         this.isInit = false;
 
-        this.debugLogger.log("SettingsCache - Updated cache");
+        this.debugLogger?.log("SettingsCache - Updated cache");
     }
 
     resetCache() {
@@ -55,6 +55,6 @@ export default class SettingsCache {
         this.disabledWebsites = "";
         this.isWhiteList = "false";
 
-        this.debugLogger.log("SettingsCache - Reseted cache");
+        this.debugLogger?.log("SettingsCache - Reseted cache");
     }
 }

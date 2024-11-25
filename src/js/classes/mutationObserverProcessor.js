@@ -65,12 +65,27 @@ export default class MutationObserverProcessor {
     async setSettings(websiteSpecialFiltersConfig, currentSettings, precUrl, precEnabled) {
         if(!websiteSpecialFiltersConfig) {
             this.websiteSpecialFiltersConfig = await loadWebsiteSpecialFiltersConfig();
+        } else {
+            this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
         }
 
-        this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
         this.currentSettings = currentSettings;
         this.precUrl = precUrl;
         this.precEnabled = precEnabled;
+
+        if(this.throttledTaskTreatMutations) {
+            this.throttledTaskTreatMutations.delay = this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds;
+            this.throttledTaskTreatMutations.elementsPerBatch = this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall;
+            this.throttledTaskTreatMutations.maxExecutionTime = this.websiteSpecialFiltersConfig.throttledMutationObserverMaxExecutionTime;
+            this.throttledTaskTreatMutations.processNewestFirst = this.websiteSpecialFiltersConfig.mutationObserverProcessNewestFirst;
+        }
+
+        if(this.throttledTaskTreatMutationsAddedNodes) {
+            this.throttledTaskTreatMutationsAddedNodes.delay = this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds;
+            this.throttledTaskTreatMutationsAddedNodes.elementsPerBatch = this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall;
+            this.throttledTaskTreatMutationsAddedNodes.maxExecutionTime = this.websiteSpecialFiltersConfig.throttledMutationObserverMaxExecutionTime;
+            this.throttledTaskTreatMutationsAddedNodes.processNewestFirst = this.websiteSpecialFiltersConfig.mutationObserverProcessNewestFirst;
+        }
     }
 
     initializeThrottledTasks() {
