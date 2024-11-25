@@ -113,6 +113,7 @@
             "enablePseudoElementsAnalysis": "Activer l'analyse des pseudo-éléments",
             "enableDarkImageDetectionCache": "Activer la mise en cache des images déjà analysées",
             "darkImageDetectionMaxCacheSize": "Taille du cache (nombre d'éléments) des images déjà analysées",
+            "mutationObserverProcessNewestFirst": "Traiter les mutations les plus récentes d'abord",
             "help": {
                 "debugMode": "Active le mode de débogage qui affiche des informations de débogage dans la console JavaScript sur les pages traitées par Page Shadow, ou sur les pages de l'extension.",
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive la détection et le traitement des arrière-plans des éléments.",
@@ -168,7 +169,8 @@
                 "enableURLChangeDetection": "Active la détection du changement d'adresse URL sur les applications SPA (single page application), ce qui permet à Page Shadow de réappliquer les paramètres et filtres selon la nouvelle URL. Désactiver cette option peut améliorer les performances sur certains sites web qui modifient souvent leur URL.",
                 "enablePseudoElementsAnalysis": "Active l'analyse des pseudo-éléments (couleur du texte, arrières-plans notamment). Désactiver cette option peut améliorer les performances, mais peut provoquer des problèmes d'affichage.",
                 "enableDarkImageDetectionCache": "Active la mise en cache des images déjà analysées par le moteur d'analyse. Cela améliore les performances en évitant de réanalyser les images déjà analysées. Seul est mis en cache l'URL et le résultat de l'analyse des images déjà analysées. Le cache est par page.",
-                "darkImageDetectionMaxCacheSize": "Paramètre la taille maximale du cache (nombre d'éléments) des images déjà analysées. Si la taille dépasse ce seuil, les plus anciennes analyses seront purgées du cache, pour éviter une utilisation mémoire trop élevée."
+                "darkImageDetectionMaxCacheSize": "Paramètre la taille maximale du cache (nombre d'éléments) des images déjà analysées. Si la taille dépasse ce seuil, les plus anciennes analyses seront purgées du cache, pour éviter une utilisation mémoire trop élevée.",
+                "mutationObserverProcessNewestFirst": "Si cette option est activée, les mutations les plus récentes seront prises en compte en priorité par rapport aux plus anciennes. Cela n'impacte pas les performances, et n'est utile que pour certains sites web."
             }
         },
         "filtersConfigCategories": {

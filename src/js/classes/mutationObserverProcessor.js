@@ -79,7 +79,8 @@ export default class MutationObserverProcessor {
             "throttledTaskTreatMutations",
             this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
             this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall,
-            this.websiteSpecialFiltersConfig.throttledMutationObserverMaxExecutionTime
+            this.websiteSpecialFiltersConfig.throttledMutationObserverMaxExecutionTime,
+            this.websiteSpecialFiltersConfig.mutationObserverProcessNewestFirst
         );
 
         this.throttledTaskTreatMutationsAddedNodes = new ThrottledTask(
@@ -87,7 +88,8 @@ export default class MutationObserverProcessor {
             "throttledTaskTreatMutationsAddedNodes",
             this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
             this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall,
-            this.websiteSpecialFiltersConfig.throttledMutationObserverMaxExecutionTime
+            this.websiteSpecialFiltersConfig.throttledMutationObserverMaxExecutionTime,
+            this.websiteSpecialFiltersConfig.mutationObserverProcessNewestFirst
         );
     }
 
