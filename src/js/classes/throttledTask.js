@@ -31,8 +31,8 @@ export default class ThrottledTask {
         delay,
         elementsPerBatch = 1,
         maxExecutionTime = 25,
+        processNewestFirst = false,
         callbackCanBeAwaited = () => true,
-        processNewestFirst = true,
         minDelay = 1,
         maxDelay = 1000,
         autoThrottlingAdjustmentFactor = 0.5

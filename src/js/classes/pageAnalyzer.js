@@ -122,6 +122,7 @@ export default class PageAnalyzer {
             this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay,
             this.websiteSpecialFiltersConfig.throttleDarkImageDetectionBatchSize,
             this.websiteSpecialFiltersConfig.throttleDarkImageDetectionMaxExecutionTime,
+            false,
             task => this.imageProcessor.detectionCanBeAwaited(task.image)
         );
     }
