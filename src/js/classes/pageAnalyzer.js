@@ -36,6 +36,7 @@ export default class PageAnalyzer {
     currentSettings = {};
 
     analyzingPage = false;
+    startTimePageAnalysis = -1;
     pageAnalysisFinished = false;
     pageAnalysisCanceled = false;
     pageAnalysisFinishedBody = null;
@@ -170,6 +171,7 @@ export default class PageAnalyzer {
             }
 
             this.analyzingPage = true;
+            this.startTimePageAnalysis = performance.now();
             this.pageAnalysisCanceled = false;
 
             addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
@@ -194,10 +196,11 @@ export default class PageAnalyzer {
         removeClass(document.body, "pageShadowDisableBackgroundStyling");
 
         const elementsLength = elements.length;
-        const startTime = performance.now();
+
+        let startTime = performance.now();
+        let totalExecutionTime = 0;
 
         let currentIndex = 0;
-        let totalExecutionTime = 0;
 
         while(currentIndex < elementsLength) {
             if(this.pageAnalysisCanceled) {
@@ -208,11 +211,15 @@ export default class PageAnalyzer {
             await this.processElement(elements[currentIndex], true);
             currentIndex++;
 
-            const addTime = performance.now() - startTime;
+            const currentTime = performance.now();
+            const addTime = currentTime - startTime;
             totalExecutionTime += addTime;
+            startTime = currentTime;
 
             if(!forceDisableThrottle && totalExecutionTime >= this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime) {
-                this.debugLogger?.log(`PageAnalyzer analyzeElements - Stopping early task to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`);
+                this.debugLogger?.log(
+                    `PageAnalyzer analyzeElements - Stopping early task to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`
+                );
                 return this.runThrottledPageAnalysis(elements.slice(currentIndex));
             }
         }
@@ -239,7 +246,7 @@ export default class PageAnalyzer {
         this.pageAnalysisCanceled = false;
         this.pageAnalysisFinishedBody = document.body;
 
-        this.debugLogger?.log("PageAnalyzer - setPageAnalysisFinished - Finished page analyzing");
+        this.debugLogger?.log(`PageAnalyzer - setPageAnalysisFinished - Page analysis completed in ${performance.now() - this.startTimePageAnalysis} ms`);
     }
 
     cancelPageAnalysis() {
