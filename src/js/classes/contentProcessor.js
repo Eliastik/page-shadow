@@ -787,14 +787,14 @@ export default class ContentProcessor {
 
         if(this.started) {
             this.mutationObserverProcessor?.pause(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
-            this.bodyClassBatcherRemover.removeAll();
+            this.bodyClassBatcherRemover?.removeAll();
             this.resetContrastPage();
             this.resetInvertPage();
             this.resetAttenuateColor();
             this.resetBrightnessPage();
             this.resetBlueLightPage();
-            this.pageAnalyzer.clearShadowRoots();
-            this.bodyClassBatcherRemover.apply();
+            this.pageAnalyzer?.clearShadowRoots();
+            this.bodyClassBatcherRemover?.apply();
         }
     }
 
