@@ -1954,6 +1954,13 @@ function getImageUrlFromElement(element, hasBackgroundImg, computedStyles) {
         const urlMatch = style.backgroundImage.match(/url\((['"]?)(.*?)\1\)/);
         const url = urlMatch ? urlMatch[2] : null;
 
+        if(url && url.toLowerCase().startsWith("data:image/svg+xml")) {
+            const svgDoc = new DOMParser().parseFromString(url.replace(/^data:image\/svg\+xml(;utf-8)?,/, ""), "image/svg+xml");
+            const svgElement = svgDoc.documentElement;
+
+            return getImageUrlFromSvgElement(svgElement, computedStyles);
+        }
+
         return url;
     }
 
@@ -1961,9 +1968,9 @@ function getImageUrlFromElement(element, hasBackgroundImg, computedStyles) {
 }
 
 function getImageUrlFromSvgElement(element, computedStyles) {
-    const box = element.getBBox();
-    const width = box.width;
-    const height = box.height;
+    const box = element && element.getBBox && element.getBBox();
+    const width = box && box.width > 0 ? box.width : 100;
+    const height = box && box.height > 0 ? box.height : 100;
     const stroke = computedStyles.stroke;
     const color = computedStyles.color;
 
