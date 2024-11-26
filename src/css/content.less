@@ -224,9 +224,8 @@ html.pageShadowContrastBlack.pageShadowForceCustomTextColorAsBackground:not(.pag
     background-color: var(--page-shadow-imgbgcolor) !important;
 }
 
-.pageShadowContrastBlack:not(.pageShadowPreserveBrightColor) .pageShadowHasBackgroundImg,
-.pageShadowContrastBlack.pageShadowPreserveBrightColor .pageShadowHasBackgroundImg:not(.pageShadowHasBrightColorBackground), 
-
+.pageShadowContrastBlack:not(.pageShadowPreserveBrightColor) .pageShadowHasBackgroundImg:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(select),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor .pageShadowHasBackgroundImg:not(.pageShadowHasBrightColorBackground):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(select),
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) .pageShadowDisableElementInvert {
     background-color: transparent !important;
 }
