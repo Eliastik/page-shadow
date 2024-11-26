@@ -547,6 +547,10 @@ function processRulesInvert(parentElement, style, settings) {
                 if(selectiveInvert == "true") {
                     style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo) { filter: " + invertBgFilter + " !important; -moz-filter: " + invertBgFilter + " !important; -o-filter: " + invertBgFilter + " !important; -webkit-filter: " + invertBgFilter + " !important; }");
                 }
+
+                if(invertBrightColors == "true") {
+                    style.sheet.insertRule(":host .pageShadowHasBrightColorText > *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a) { color: black; }");
+                }
             }
 
             if(!parentHasBrightColorBackground) {
