@@ -334,7 +334,7 @@ const defaultWebsiteSpecialFiltersConfig = {
     throttleBackgroundDetectionElementsTreatedByCall: 25,
     throttleBackgroundDetectionMaxExecutionTime: 300,
     backgroundDetectionStartDelay: 5,
-    autoThrottleBackgroundDetectionTime: 3000,
+    autoThrottleBackgroundDetectionTime: 500,
     useBackgroundDetectionAlreadyProcessedNodes: false,
     enableBrightColorDetection: true,
     enableBrightColorDetectionSubelement: true,
