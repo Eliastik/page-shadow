@@ -85,7 +85,13 @@ export default class ImageProcessor {
 
         // If the image is not yet loaded, we wait
         if(!image.complete) {
-            await this.awaitImageLoading(image);
+            try {
+                await this.awaitImageLoading(image);
+            } catch(e) {
+                this.debugLogger?.log("ImageProcessor detectDarkImage - Error loading image", "error", image, e);
+                this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, false);
+                return false;
+            }
         }
 
         // Draw image on canvas
