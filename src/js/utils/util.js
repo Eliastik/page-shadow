@@ -549,14 +549,14 @@ function processRulesInvert(parentElement, style, settings) {
                 }
 
                 if(invertBrightColors == "true" && !parentHasBrightColorBackground) {
-                    style.sheet.insertRule(":host .pageShadowHasBrightColorText > *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a) { color: black; }");
+                    style.sheet.insertRule(":host .pageShadowHasBrightColorText > *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(.pageShadowDisableBackgroundStyling) { color: black; }");
                 }
             }
 
             if(!parentHasBrightColorBackground) {
-                style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground):not(select):not(.pageShadowHasBrightColorText) { color: white; }");
+                style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground):not(select):not(.pageShadowHasBrightColorText):not(.pageShadowDisableBackgroundStyling) { color: white; }");
 
-                style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground) *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a) { color: black; }");
+                style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground) *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(.pageShadowDisableBackgroundStyling) { color: black; }");
             }
 
             if(shouldInvertBrightColors) {

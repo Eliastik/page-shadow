@@ -30,12 +30,12 @@
 }
 
 /* Body color for invert entire page */
-html.pageShadowBackground {
+html.pageShadowBackground:not(.pageShadowDisableStyling) {
     background: white !important;
 }
 
 /* Body color for invert entire page */
-html.pageShadowBackground body {
+html.pageShadowBackground body:not(.pageShadowDisableStyling) {
     background-color: white;
     color: black;
 }
@@ -199,12 +199,12 @@ html.pageShadowInvertEntirePage body.pageShadowEnableSelectiveInvert.pageShadowI
     -webkit-filter: var(--page-shadow-invert-filter-bg-backgrounds) !important;
 }
 
-body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(.pageShadowHasBrightColorBackground):not(select):not(.pageShadowHasBrightColorText) {
+body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(.pageShadowHasBrightColorBackground):not(select):not(.pageShadowHasBrightColorText):not(.pageShadowDisableBackgroundStyling) {
     color: white;
 }
 
-body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(.pageShadowHasBrightColorBackground) *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *),
-html.pageShadowInvertEntirePage body.pageShadowInvertBrightColors .pageShadowHasBrightColorText > *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *) {
+body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(.pageShadowHasBrightColorBackground) *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(.pageShadowDisableBackgroundStyling),
+html.pageShadowInvertEntirePage body.pageShadowInvertBrightColors .pageShadowHasBrightColorText > *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(.pageShadowDisableBackgroundStyling) {
     color: black;
 }
 
