@@ -554,7 +554,7 @@ function processRulesInvert(parentElement, style, settings) {
             }
 
             if(!parentHasBrightColorBackground) {
-                style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground) { color: white; }");
+                style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground):not(select):not(.pageShadowHasBrightColorText) { color: white; }");
 
                 style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground) *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a) { color: black; }");
             }
