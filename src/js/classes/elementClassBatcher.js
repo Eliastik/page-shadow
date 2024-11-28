@@ -24,14 +24,14 @@ export default class ElementClassBatcher {
     element = null;
     classList = [];
 
-    constructor(type = "add", element, ...classList) {
+    constructor(type = "add", elementType, ...classList) {
         this.type = type;
 
         if(this.type !== "add" && this.type !== "remove") {
             throw new Error("[PAGE SHADOW ERROR] ElementClassBatcher - type need to be either 'add' or 'remove' in constructor");
         }
 
-        this.element = element;
+        this.elementType = elementType;
         this.add(...classList);
     }
 
@@ -44,13 +44,17 @@ export default class ElementClassBatcher {
     }
 
     doAddAllClasses() {
-        addClass(this.element, ...this.classList);
+        addClass(this.getElement(), ...this.classList);
         this.removeAll();
     }
 
     doRemoveAllClasses() {
-        removeClass(this.element, ...this.classList);
+        removeClass(this.getElement(), ...this.classList);
         this.removeAll();
+    }
+
+    getElement() {
+        return this.elementType === "html" ? document.getElementsByTagName("html")[0] : document.body;
     }
 
     apply() {

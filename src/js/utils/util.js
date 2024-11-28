@@ -1855,13 +1855,7 @@ function getPageVariablesToApply(contrastEnabled, invertEnabled, attenuateColors
 function areAllCSSVariablesDefinedForHTMLElement(contrastEnabled, invertEnabled, attenuateColors) {
     const element = document.documentElement;
 
-    if (element) {
-        const styleAttribute = element.getAttribute("style");
-
-        if(styleAttribute == null) {
-            return true;
-        }
-
+    if (element && element.style) {
         return getPageVariablesToApply(contrastEnabled, invertEnabled, attenuateColors).every(variable => element.style.getPropertyValue(variable) !== "");
     }
 }
@@ -1870,11 +1864,7 @@ function areAllClassesDefinedForHTMLElement(contrastEnabled, invertEnabled, inve
     const element = document.documentElement;
 
     if (element) {
-        const classAttribute = element.getAttribute("class");
-
-        if(classAttribute == null) {
-            return true;
-        }
+        const classAttribute = element.getAttribute("class") || "";
 
         if(invertEnabled == "true" && invertEntirePage == "true" &&
             (!classAttribute.includes("pageShadowInvertEntirePage") ||
