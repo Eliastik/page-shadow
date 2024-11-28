@@ -132,7 +132,7 @@ export default class ContentProcessor {
     resetContrastPage(themeException, disableImgBgColor, brightColorPreservation) {
         this.debugLogger?.log("Resetting contrast page");
 
-        const removeBatcherHTML = new ElementClassBatcher("remove", document.getElementsByTagName("html")[0]);
+        const removeBatcherHTML = new ElementClassBatcher("remove", "html");
 
         if(!themeException || !themeException.startsWith("custom")) {
             if(typeof this.lnkCustomTheme !== "undefined") this.lnkCustomTheme.setAttribute("href", "");
@@ -639,9 +639,9 @@ export default class ContentProcessor {
     initBodyAndHTMLClassBatchers() {
         this.debugLogger?.log("ContentProcessor - initBodyAndHTMLClassBatchers - Initializing body and HTML class batchers");
 
-        this.bodyClassBatcher = new ElementClassBatcher("add", document.body);
-        this.bodyClassBatcherRemover = new ElementClassBatcher("remove", document.body);
-        this.htmlClassBatcher = new ElementClassBatcher("add", document.getElementsByTagName("html")[0]);
+        this.bodyClassBatcher = new ElementClassBatcher("add", "body");
+        this.bodyClassBatcherRemover = new ElementClassBatcher("remove", "body");
+        this.htmlClassBatcher = new ElementClassBatcher("add", "html");
     }
 
     initElementClassBatchers() {
