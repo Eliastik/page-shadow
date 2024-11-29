@@ -699,9 +699,10 @@ export default class ContentProcessor {
     }
 
     async handleAllowedState(type, disableCache) {
+        this.precEnabled = true;
+
         const settings = this.newSettingsToApply || await getSettings(getCurrentURL(), disableCache);
         this.currentSettings = settings;
-        this.precEnabled = true;
 
         switch(type) {
         case ContentProcessorConstants.TYPE_ONLY_INVERT:
