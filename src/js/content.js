@@ -40,7 +40,9 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
     }
 
     if(statusChanged && ((!isLiveSettings && !storageChanged) || isLiveSettings)) {
-        contentProcessor.precEnabled = isEnabled;
+        if(isEnabled != null) {
+            contentProcessor.precEnabled = isEnabled;
+        }
 
         if(resetPageAnalysisState) {
             contentProcessor.resetPageAnalysisState();
@@ -55,7 +57,9 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
             const changed = contentProcessor.hasEnabledStateChanged(response.enabled);
 
             if(changed || hasSettingsChanged(contentProcessor.currentSettings, response.settings)) {
-                contentProcessor.precEnabled = response.enabled;
+                if(response.enabled != null) {
+                    contentProcessor.precEnabled = response.enabled;
+                }
 
                 if(resetPageAnalysisState) {
                     contentProcessor.resetPageAnalysisState();
@@ -64,7 +68,9 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
                 return contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
             }
         } else if(hasSettingsChanged(contentProcessor.currentSettings, await getSettings(getCurrentURL(), true), customThemeChanged)) {
-            contentProcessor.precEnabled = isEnabled;
+            if(isEnabled != null) {
+                contentProcessor.precEnabled = isEnabled;
+            }
 
             if(resetPageAnalysisState) {
                 contentProcessor.resetPageAnalysisState();
