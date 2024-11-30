@@ -161,7 +161,7 @@ const defaultFilters = {
 const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.11.php";
 const regexpDetectionPattern = /^((.*)\/(?:[^\\]|\\.)*?\/)(\|)/;
 const regexpDetectionPatternHighlight = /^(\/(?:[^\\]|\\.)*?\/)(\|)/;
-const opacityDetectedAsTransparentThresholdDefault = 0.1;
+const opacityDetectedAsTransparentThresholdDefault = 0.6;
 
 const ignoredElementsContentScript = ["style", "script", "br", "head", "link", "meta", "hr"];
 const ignoredElementsBrightTextColorDetection = ["img", "g", "path", "svg"];
