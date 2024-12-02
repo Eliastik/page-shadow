@@ -172,7 +172,7 @@ export default class ContentProcessor {
 
     invertColor(enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert,
         attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors, percentageAttenuateColors, invertBrightColors) {
-        const invertPageVariables = getInvertPageVariablesKeyValues(invertEntirePage, selectiveInvert);
+        const invertPageVariables = getInvertPageVariablesKeyValues(invertEntirePage, selectiveInvert, this.websiteSpecialFiltersConfig.enableSelectiveInvertPreserveColors);
 
         for(const [key, value] of invertPageVariables) {
             document.documentElement.style.setProperty(key, value);

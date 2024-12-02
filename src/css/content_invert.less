@@ -289,7 +289,7 @@ html.pageShadowInvertEntirePage .pageShadowDisableElementInvert * {
     -webkit-filter: var(--page-shadow-invert-filter-disable)  !important;
 }
 
-/* Images */
+/* Background images */
 body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorText > *) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorText > *):not(.pageShadowHasBrightColorBackground) > *:not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorText),
 html.pageShadowInvertEntirePage body.pageShadowInvertImageColor *:not(.pageShadowDisableElementInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorText > *) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorText > *):not(.pageShadowHasBrightColorBackground) > *:not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorText) img,
 body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert) > * {
@@ -299,6 +299,7 @@ body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShado
     -webkit-filter: var(--page-shadow-invert-filter-image-backgrounds) !important;
 }
 
+/* Background images selective invert - Childrens */
 body.pageShadowEnableSelectiveInvert *:not(.pageShadowDisableElementInvert) > .pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo) > * {
     filter: var(--page-shadow-invert-filter-selective-bg) !important;
     -moz-filter: var(--page-shadow-invert-filter-selective-bg) !important;

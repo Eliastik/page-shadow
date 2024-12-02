@@ -117,6 +117,7 @@
             "enableDarkImageDetectionCache": "Enable caching of previously analyzed images",
             "darkImageDetectionMaxCacheSize": "Cache size (number of elements) of images already analyzed",
             "mutationObserverProcessNewestFirst": "Treat the most recent mutations first",
+            "enableSelectiveInvertPreserveColors": "Preserve colors during selective inversion",
             "help": {
                 "debugMode": "Enables debug mode, which displays debugging information in the JavaScript console on pages processed by Page Shadow, or on extension pages.",
                 "performanceModeEnabled": "Enable performance optimizations, this disables detection and processing of element backgrounds.",
@@ -173,7 +174,8 @@
                 "enablePseudoElementsAnalysis": "Enables analysis of pseudo-elements (text color, backgrounds, etc.). Disabling this option may improve performance, but may cause display problems.",
                 "enableDarkImageDetectionCache": "Enables caching of images already analyzed by the analysis engine. This improves performance by avoiding the need to reanalyze images already analyzed. Only the URL and analysis results of images already analyzed are cached. The cache is per page.",
                 "darkImageDetectionMaxCacheSize": "Sets the maximum cache size (number of elements) for images already analyzed. If the size exceeds this threshold, the oldest analyses will be purged from the cache, to avoid excessive memory usage.",
-                "mutationObserverProcessNewestFirst": "If this option is enabled, the most recent mutations will be given priority over the oldest. This has no impact on performance, and is only useful for certain websites."
+                "mutationObserverProcessNewestFirst": "If this option is enabled, the most recent mutations will be given priority over the oldest. This has no impact on performance, and is only useful for certain websites.",
+                "enableSelectiveInvertPreserveColors": "If this option is enabled, the selective inversion filter will attempt to preserve the original colors while only inverting black and white."
 
             }
         },
