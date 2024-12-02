@@ -1810,6 +1810,34 @@ function applyContrastPageVariables(config) {
     }
 }
 
+function getInvertPageVariablesKeyValues(invertEntirePage, selectiveInvert) {
+    const invertPageVariables = new Map();
+
+    invertPageVariables.set("--page-shadow-invert-filter", "invert(100%)");
+    invertPageVariables.set("--page-shadow-invert-filter-image-backgrounds", "invert(100%)");
+    invertPageVariables.set("--page-shadow-invert-filter-bg-backgrounds", "invert(100%)");
+    invertPageVariables.set("--page-shadow-invert-filter-video-backgrounds", "invert(100%)");
+    invertPageVariables.set("--page-shadow-invert-filter-bright-color-backgrounds", "invert(100%)");
+
+    if(invertEntirePage === "true") {
+        if(selectiveInvert === "true") {
+            invertPageVariables.set("--page-shadow-invert-filter-selective-image", "hue-rotate(180deg)");
+            invertPageVariables.set("--page-shadow-invert-filter-selective-bg", "hue-rotate(180deg)");
+            invertPageVariables.set("--page-shadow-invert-filter-selective-video", "hue-rotate(180deg)");
+        } else {
+            invertPageVariables.set("--page-shadow-invert-filter-selective-image", "invert(100%)");
+            invertPageVariables.set("--page-shadow-invert-filter-selective-bg", "invert(100%)");
+            invertPageVariables.set("--page-shadow-invert-filter-selective-video", "invert(100%)");
+        }
+    } else {
+        invertPageVariables.set("--page-shadow-invert-filter-selective-image", "invert(100%) hue-rotate(180deg)");
+        invertPageVariables.set("--page-shadow-invert-filter-selective-bg", "invert(100%) hue-rotate(180deg)");
+        invertPageVariables.set("--page-shadow-invert-filter-selective-video", "invert(100%) hue-rotate(180deg)");
+    }
+
+    return invertPageVariables;
+}
+
 function getPageVariablesToApply(contrastEnabled, invertEnabled, attenuateColors) {
     const pageVariablesToApply = [];
 
@@ -1839,7 +1867,10 @@ function getPageVariablesToApply(contrastEnabled, invertEnabled, attenuateColors
             "--page-shadow-invert-filter-image-backgrounds",
             "--page-shadow-invert-filter-bg-backgrounds",
             "--page-shadow-invert-filter-video-backgrounds",
-            "--page-shadow-invert-filter-bright-color-backgrounds"
+            "--page-shadow-invert-filter-bright-color-backgrounds",
+            "--page-shadow-invert-filter-selective-image",
+            "--page-shadow-invert-filter-selective-bg",
+            "--page-shadow-invert-filter-selective-video"
         );
     }
 
@@ -2037,4 +2068,4 @@ function hexToRgb(hex) {
     return `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)})`;
 }
 
-export { inArray, strictInArray, matchWebsite, inArrayWebsite, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefinedForHTMLElement, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud, removeStyleAttribute, isCrossOrigin, processRulesAttenuate, areAllClassesDefinedForHTMLElement, getPageAnalyzerCSSClass, getImageUrlFromElement, hexToRgb };
+export { inArray, strictInArray, matchWebsite, inArrayWebsite, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefinedForHTMLElement, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud, removeStyleAttribute, isCrossOrigin, processRulesAttenuate, areAllClassesDefinedForHTMLElement, getPageAnalyzerCSSClass, getImageUrlFromElement, hexToRgb, getInvertPageVariablesKeyValues };
