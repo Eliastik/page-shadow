@@ -639,13 +639,13 @@ function processRulesAttenuate(style, settings) {
 
         if(attenuateBgColors == "true") {
             if(enabledInvertPage == "true" && invertBgColors != "true") {
-                style.sheet.insertRule(":host .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert) { filter: " + attenuateFilter + " !important; -moz-filter: " + attenuateFilter + " !important; -o-filter: " + attenuateFilter + " !important; -webkit-filter: " + attenuateFilter + " !important; }");
+                style.sheet.insertRule(":host .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert), :host .pageShadowPseudoElementHasBackgroundImgBefore:not(.pageShadowDisableElementInvert):before, :host .pageShadowPseudoElementHasBackgroundImgAfter:not(.pageShadowDisableElementInvert):after { filter: " + attenuateFilter + " !important; -moz-filter: " + attenuateFilter + " !important; -o-filter: " + attenuateFilter + " !important; -webkit-filter: " + attenuateFilter + " !important; }");
             }
 
             if(invertEntirePage != "true") {
-                style.sheet.insertRule(":host .pageShadowHasBackgroundImg.pageShadowDisableElementInvert { filter: " + attenuateFilter + " !important; -moz-filter: " + attenuateFilter + " !important; -o-filter: " + attenuateFilter + " !important; -webkit-filter: " + attenuateFilter + " !important; }");
+                style.sheet.insertRule(":host .pageShadowHasBackgroundImg.pageShadowDisableElementInvert, :host .pageShadowPseudoElementHasBackgroundImgBefore.pageShadowDisableElementInvert:before, :host .pageShadowPseudoElementHasBackgroundImgAfter.pageShadowDisableElementInvert:after { filter: " + attenuateFilter + " !important; -moz-filter: " + attenuateFilter + " !important; -o-filter: " + attenuateFilter + " !important; -webkit-filter: " + attenuateFilter + " !important; }");
             } else {
-                style.sheet.insertRule(":host .pageShadowHasBackgroundImg.pageShadowDisableElementInvert { filter: invert(100%) " + attenuateFilter + " !important; -moz-filter: invert(100%) " + attenuateFilter + " !important; -o-filter: invert(100%) " + attenuateFilter + " !important; -webkit-filter: invert(100%) " + attenuateFilter + " !important; }");
+                style.sheet.insertRule(":host .pageShadowHasBackgroundImg.pageShadowDisableElementInvert, :host .pageShadowPseudoElementHasBackgroundImgBefore.pageShadowDisableElementInvert:before, :host .pageShadowPseudoElementHasBackgroundImgAfter.pageShadowDisableElementInvert:after { filter: invert(100%) " + attenuateFilter + " !important; -moz-filter: invert(100%) " + attenuateFilter + " !important; -o-filter: invert(100%) " + attenuateFilter + " !important; -webkit-filter: invert(100%) " + attenuateFilter + " !important; }");
             }
         }
 
