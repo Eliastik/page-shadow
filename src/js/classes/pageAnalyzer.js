@@ -154,7 +154,7 @@ export default class PageAnalyzer {
     }
 
     async taskAnalyzeImage(image, hasBackgroundImg, computedStyles, pseudoElt) {
-        const isDarkImage = await this.imageProcessor.detectDarkImage(image, hasBackgroundImg, computedStyles);
+        const isDarkImage = await this.imageProcessor.detectDarkImage(image, hasBackgroundImg, computedStyles, pseudoElt);
 
         if (isDarkImage) {
             this.multipleElementClassBatcherAdd.add(image, getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt));
@@ -312,7 +312,7 @@ export default class PageAnalyzer {
         const backgroundColor = computedStyles.backgroundColor;
         const backgroundImage = computedStyles.backgroundImage;
 
-        const hasBackgroundImg = this.hasBackgroundImage(element, background, backgroundImage);
+        const hasBackgroundImg = this.hasBackgroundImage(element, background, backgroundImage, pseudoElt, computedStyles);
         const hasClassImg = element.classList.contains(getPageAnalyzerCSSClass("pageShadowHasBackgroundImg", pseudoElt));
         const hasTransparentBackgroundClass = element.classList.contains(getPageAnalyzerCSSClass("pageShadowHasTransparentBackground", pseudoElt));
 
@@ -451,12 +451,20 @@ export default class PageAnalyzer {
         return element.closest(".pageShadowHasBrightColorBackground") != null;
     }
 
-    hasBackgroundImage(element, background, backgroundImage) {
+    hasBackgroundImage(element, background, backgroundImage, pseudoElt, computedStyles) {
         if(element.tagName.toLowerCase() === "img" || element.tagName.toLowerCase() === "picture") {
             return false;
         }
 
-        return background.split(" ").some(v => v.trim().substring(0, 4).toLowerCase().includes("url(")) || backgroundImage.split(" ").some(v => v.trim().substring(0, 4).toLowerCase().includes("url("));
+        return this.valueContainsBackgroundImage(background) || this.valueContainsBackgroundImage(backgroundImage) || (pseudoElt && this.valueContainsBackgroundImage(computedStyles.content));
+    }
+
+    valueContainsBackgroundImage(value) {
+        if(!value || value.trim().length <= 0) {
+            return false;
+        }
+
+        return value.split(" ").some(v => v.trim().substring(0, 4).toLowerCase().includes("url("));
     }
 
     isTextElement(element, computedStyles, pseudoElt) {
