@@ -47,21 +47,27 @@ html.pageShadowInvertEntirePage body.pageShadowAttenuateImageColor img.pageShado
 }
 
 // Backgrounds
-body.pageShadowAttenuateBgColor:not(.pageShadowInvertBgColor) .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert) {
+body.pageShadowAttenuateBgColor:not(.pageShadowInvertBgColor) .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert),
+body.pageShadowAttenuateBgColor:not(.pageShadowInvertBgColor) .pageShadowPseudoElementHasBackgroundImgBefore:not(.pageShadowDisableElementInvert):before,
+body.pageShadowAttenuateBgColor:not(.pageShadowInvertBgColor) .pageShadowPseudoElementHasBackgroundImgAfter:not(.pageShadowDisableElementInvert):after {
     filter: var(--page-shadow-attenuate-filter) !important;
     -moz-filter: var(--page-shadow-attenuate-filter) !important;
     -o-filter: var(--page-shadow-attenuate-filter) !important;
     -webkit-filter: var(--page-shadow-attenuate-filter) !important;
 }
 
-html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBgColor .pageShadowHasBackgroundImg.pageShadowDisableElementInvert {
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBgColor .pageShadowHasBackgroundImg.pageShadowDisableElementInvert,
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBgColor .pageShadowPseudoElementHasBackgroundImgBefore.pageShadowDisableElementInvert:before,
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBgColor .pageShadowPseudoElementHasBackgroundImgAfter.pageShadowDisableElementInvert:after {
     filter: var(--page-shadow-attenuate-filter) !important;
     -moz-filter: var(--page-shadow-attenuate-filter) !important;
     -o-filter: var(--page-shadow-attenuate-filter) !important;
     -webkit-filter: var(--page-shadow-attenuate-filter) !important;
 }
 
-html.pageShadowInvertEntirePage body.pageShadowAttenuateBgColor .pageShadowHasBackgroundImg.pageShadowDisableElementInvert {
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBgColor .pageShadowHasBackgroundImg.pageShadowDisableElementInvert,
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBgColor .pageShadowPseudoElementHasBackgroundImgBefore.pageShadowDisableElementInvert:before,
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBgColor .pageShadowPseudoElementHasBackgroundImgAfter.pageShadowDisableElementInvert:after {
     filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
     -moz-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
     -o-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
