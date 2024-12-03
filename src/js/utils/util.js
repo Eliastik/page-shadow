@@ -1830,11 +1830,12 @@ function getInvertPageVariablesKeyValues(invertEntirePage, selectiveInvert, enab
     invertPageVariables.set("--page-shadow-invert-filter-bg-backgrounds", "invert(100%)");
     invertPageVariables.set("--page-shadow-invert-filter-video-backgrounds", "invert(100%)");
     invertPageVariables.set("--page-shadow-invert-filter-bright-color-backgrounds", "invert(100%)");
-    invertPageVariables.set("--page-shadow-invert-filter-selective-image-parent-bright", "invert(100%) hue-rotate(180deg)");
-    invertPageVariables.set("--page-shadow-invert-filter-selective-bg-parent-bright", "invert(100%) hue-rotate(180deg)");
-    invertPageVariables.set("--page-shadow-invert-filter-selective-video-parent-bright", "invert(100%) hue-rotate(180deg)");
 
     if(invertEntirePage === "true") {
+        invertPageVariables.set("--page-shadow-invert-filter-selective-image-parent-bright", "invert(100%) hue-rotate(180deg)");
+        invertPageVariables.set("--page-shadow-invert-filter-selective-bg-parent-bright", "invert(100%) hue-rotate(180deg)");
+        invertPageVariables.set("--page-shadow-invert-filter-selective-video-parent-bright", "invert(100%) hue-rotate(180deg)");
+
         if(selectiveInvert === "true") {
             const filter = enablePreserveColorsSelectiveInvert ? "hue-rotate(180deg)" : "invert(0)";
             invertPageVariables.set("--page-shadow-invert-filter-selective-image", filter);
@@ -1846,6 +1847,10 @@ function getInvertPageVariablesKeyValues(invertEntirePage, selectiveInvert, enab
             invertPageVariables.set("--page-shadow-invert-filter-selective-video", "invert(100%)");
         }
     } else {
+        invertPageVariables.set("--page-shadow-invert-filter-selective-image-parent-bright", "hue-rotate(180deg)");
+        invertPageVariables.set("--page-shadow-invert-filter-selective-bg-parent-bright", "hue-rotate(180deg)");
+        invertPageVariables.set("--page-shadow-invert-filter-selective-video-parent-bright", "hue-rotate(180deg)");
+
         const filter = enablePreserveColorsSelectiveInvert ? "invert(100%) hue-rotate(180deg)" : "invert(100%)";
         invertPageVariables.set("--page-shadow-invert-filter-selective-image", filter);
         invertPageVariables.set("--page-shadow-invert-filter-selective-bg", filter);
