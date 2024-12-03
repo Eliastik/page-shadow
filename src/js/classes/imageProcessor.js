@@ -31,10 +31,10 @@ export default class ImageProcessor {
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
     }
 
-    async detectDarkImage(image, hasBackgroundImg, computedStyles) {
+    async detectDarkImage(image, hasBackgroundImg, computedStyles, pseudoElt) {
         if(!image || !computedStyles) return false;
 
-        const imageUrl = getImageUrlFromElement(image, hasBackgroundImg, computedStyles);
+        const imageUrl = getImageUrlFromElement(image, hasBackgroundImg, computedStyles, pseudoElt);
 
         if(imageUrl == null) {
             return false;

@@ -1985,7 +1985,7 @@ async function backgroundImageToImage(url) {
     return image;
 }
 
-function getImageUrlFromElement(element, hasBackgroundImg, computedStyles) {
+function getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseudoElt) {
     if(element instanceof HTMLImageElement) {
         return element.src;
     }
@@ -1996,17 +1996,21 @@ function getImageUrlFromElement(element, hasBackgroundImg, computedStyles) {
 
     if(!(element instanceof HTMLImageElement) && !(element instanceof SVGImageElement) && hasBackgroundImg) {
         const style = element.currentStyle || computedStyles;
-        const urlMatch = style.backgroundImage.match(/url\((['"]?)(.*?)\1\)/);
-        const url = urlMatch ? urlMatch[2] : null;
+        const styleContent = pseudoElt ? computedStyles.content : style.backgroundImage;
 
-        if(url && url.toLowerCase().startsWith("data:image/svg+xml")) {
-            const svgDoc = new DOMParser().parseFromString(url.replace(/^data:image\/svg\+xml(;utf-8)?,/, ""), "image/svg+xml");
-            const svgElement = svgDoc.documentElement;
+        if(styleContent) {
+            const urlMatch = styleContent.match(/url\((['"]?)(.*?)\1\)/);
+            const url = urlMatch ? urlMatch[2] : null;
 
-            return getImageUrlFromSvgElement(svgElement, computedStyles);
+            if(url && url.toLowerCase().startsWith("data:image/svg+xml")) {
+                const svgDoc = new DOMParser().parseFromString(url.replace(/^data:image\/svg\+xml(;utf-8)?,/, ""), "image/svg+xml");
+                const svgElement = svgDoc.documentElement;
+
+                return getImageUrlFromSvgElement(svgElement, computedStyles);
+            }
+
+            return url;
         }
-
-        return url;
     }
 
     return null;
