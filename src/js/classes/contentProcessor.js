@@ -281,6 +281,9 @@ export default class ContentProcessor {
                 const invertSelectiveFilterImage = invertPageVariables.get("--page-shadow-invert-filter-selective-image");
                 document.documentElement.style.setProperty("--page-shadow-invert-filter-selective-image", invertSelectiveFilterImage + " grayscale(" + percentageAttenuateColors + "%)");
 
+                const invertSelectiveFilterImageParentBright = invertPageVariables.get("--page-shadow-invert-filter-selective-image-parent-bright");
+                document.documentElement.style.setProperty("--page-shadow-invert-filter-selective-image-parent-bright", invertSelectiveFilterImageParentBright + " grayscale(" + percentageAttenuateColors + "%)");
+
                 this.bodyClassBatcher.add("pageShadowAttenuateImageColor");
             } else {
                 this.bodyClassBatcherRemover.add("pageShadowAttenuateImageColor");
@@ -293,6 +296,9 @@ export default class ContentProcessor {
                 const invertSelectiveFilterBg = invertPageVariables.get("--page-shadow-invert-filter-selective-bg");
                 document.documentElement.style.setProperty("--page-shadow-invert-filter-selective-bg", invertSelectiveFilterBg + " grayscale(" + percentageAttenuateColors + "%)");
 
+                const invertSelectiveFilterBgParentBright = invertPageVariables.get("--page-shadow-invert-filter-selective-bg-parent-bright");
+                document.documentElement.style.setProperty("--page-shadow-invert-filter-selective-bg-parent-bright", invertSelectiveFilterBgParentBright + " grayscale(" + percentageAttenuateColors + "%)");
+
                 this.bodyClassBatcher.add("pageShadowAttenuateBgColor");
             } else {
                 this.bodyClassBatcherRemover.add("pageShadowAttenuateBgColor");
@@ -304,6 +310,9 @@ export default class ContentProcessor {
 
                 const invertSelectiveFilterVideo = invertPageVariables.get("--page-shadow-invert-filter-selective-video");
                 document.documentElement.style.setProperty("--page-shadow-invert-filter-selective-video", invertSelectiveFilterVideo + " grayscale(" + percentageAttenuateColors + "%)");
+
+                const invertSelectiveFilterVideoParentBright = invertPageVariables.get("--page-shadow-invert-filter-selective-video-parent-bright");
+                document.documentElement.style.setProperty("--page-shadow-invert-filter-selective-video-parent-bright", invertSelectiveFilterVideoParentBright + " grayscale(" + percentageAttenuateColors + "%)");
 
                 this.bodyClassBatcher.add("pageShadowAttenuateVideoColor");
             } else {
