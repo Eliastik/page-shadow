@@ -2014,9 +2014,11 @@ function getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseud
         const styleContent = pseudoElt && computedStyles.content && computedStyles.content.match(regexpMatchURL);
         const styleBackground = style.background && style.background.match(regexpMatchURL);
         const styleBackgroundImage = style.backgroundImage && style.backgroundImage.match(regexpMatchURL);
+        const maskImage = style.maskImage && style.maskImage.match(regexpMatchURL);
+        const objectData = element instanceof HTMLObjectElement && element.data;
 
-        const urlMatch = styleContent || styleBackground || styleBackgroundImage;
-        const url = urlMatch ? urlMatch[2] : null;
+        const urlMatch = styleContent || styleBackground || styleBackgroundImage || maskImage;
+        const url = objectData || (urlMatch ? urlMatch[2] : null);
 
         if(url && url.toLowerCase().startsWith("data:image/svg+xml")) {
             const svgDoc = new DOMParser().parseFromString(url.replace(/^data:image\/svg\+xml(;(charset=)?utf-8)?,/, "").replace(/\\"/g, "\""), "image/svg+xml");
