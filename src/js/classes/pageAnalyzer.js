@@ -154,6 +154,13 @@ export default class PageAnalyzer {
     }
 
     async taskAnalyzeImage(image, hasBackgroundImg, computedStyles, pseudoElt) {
+        if(!image) return;
+
+        if(image.classList.contains(getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt))) {
+            this.debugLogger.log("Ignored dark image detection for element because element already has class pageShadowSelectiveInvert", "debug", image);
+            return;
+        }
+
         const isDarkImage = await this.imageProcessor.detectDarkImage(image, hasBackgroundImg, computedStyles, pseudoElt);
 
         if (isDarkImage) {
@@ -318,7 +325,7 @@ export default class PageAnalyzer {
 
         // Detect image with dark color (text, logos, etc)
         if (this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
-            if (!element.classList.contains(getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt)) && this.imageProcessor.elementIsImage(element, hasBackgroundImg)) {
+            if(!element.classList.contains(getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt)) && this.imageProcessor.elementIsImage(element, hasBackgroundImg)) {
                 if (this.websiteSpecialFiltersConfig.throttleDarkImageDetection) {
                     this.throttledTaskAnalyzeImages.start([{
                         image: element,
