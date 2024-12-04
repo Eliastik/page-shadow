@@ -315,12 +315,8 @@ export default class PageAnalyzer {
             return false;
         }
 
-        const background = computedStyles.background;
-        const backgroundColor = computedStyles.backgroundColor;
-        const backgroundImage = computedStyles.backgroundImage;
-
-        const hasBackgroundImg = this.hasBackgroundImage(element, background, backgroundImage, pseudoElt, computedStyles);
         const hasClassImg = element.classList.contains(getPageAnalyzerCSSClass("pageShadowHasBackgroundImg", pseudoElt));
+        const hasBackgroundImg = hasClassImg || this.hasBackgroundImage(element, computedStyles, pseudoElt);
         const hasTransparentBackgroundClass = element.classList.contains(getPageAnalyzerCSSClass("pageShadowHasTransparentBackground", pseudoElt));
 
         // Detect image with dark color (text, logos, etc)
@@ -346,11 +342,11 @@ export default class PageAnalyzer {
         let transparentColorDetected = false;
 
         if (this.websiteSpecialFiltersConfig.autoDetectTransparentBackgroundEnabled) {
-            transparentColorDetected = this.detectTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg, computedStyles, hasTransparentBackgroundClass, element, pseudoElt);
+            transparentColorDetected = this.detectTransparentBackground(element, computedStyles, hasBackgroundImg, hasTransparentBackgroundClass, pseudoElt);
         }
 
         if (this.websiteSpecialFiltersConfig.enableBrightColorDetection) {
-            this.detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyles, pseudoElt);
+            this.detectBrightColor(element, computedStyles, transparentColorDetected, hasTransparentBackgroundClass, pseudoElt);
         }
 
         if(pseudoElt) {
@@ -458,12 +454,16 @@ export default class PageAnalyzer {
         return element.closest(".pageShadowHasBrightColorBackground") != null;
     }
 
-    hasBackgroundImage(element, background, backgroundImage, pseudoElt, computedStyles) {
+    hasBackgroundImage(element, computedStyles, pseudoElt) {
         if(element.tagName.toLowerCase() === "img" || element.tagName.toLowerCase() === "picture") {
             return false;
         }
 
-        return this.valueContainsBackgroundImage(background) || this.valueContainsBackgroundImage(backgroundImage) || (pseudoElt && this.valueContainsBackgroundImage(computedStyles.content));
+        if(element instanceof HTMLObjectElement && element.type && element.type.trim().toLowerCase().startsWith("image/")) {
+            return true;
+        }
+
+        return this.valueContainsBackgroundImage(computedStyles.background) || this.valueContainsBackgroundImage(computedStyles.backgroundImage) || this.valueContainsBackgroundImage(computedStyles.maskImage) || (pseudoElt && this.valueContainsBackgroundImage(computedStyles.content));
     }
 
     valueContainsBackgroundImage(value) {
@@ -489,7 +489,10 @@ export default class PageAnalyzer {
         return hasShallowChildren && notAllChildrenAreImg;
     }
 
-    detectBrightColor(transparentColorDetected, hasTransparentBackgroundClass, background, backgroundColor, element, computedStyles, pseudoElt) {
+    detectBrightColor(element, computedStyles, transparentColorDetected, hasTransparentBackgroundClass, pseudoElt) {
+        const background = computedStyles.background;
+        const backgroundColor = computedStyles.backgroundColor;
+
         // Background color
         if (!transparentColorDetected && !hasTransparentBackgroundClass) {
             const hasBrightColor = this.elementHasBrightColor(background, backgroundColor, false);
@@ -548,7 +551,10 @@ export default class PageAnalyzer {
         }
     }
 
-    detectTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg, computedStyles, hasTransparentBackgroundClass, element, pseudoElt) {
+    detectTransparentBackground(element, computedStyles, hasBackgroundImg, hasTransparentBackgroundClass, pseudoElt) {
+        const backgroundColor = computedStyles.backgroundColor;
+        const backgroundImage = computedStyles.backgroundImage;
+
         const hasTransparentBackground = this.elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg);
         const backgroundClip = computedStyles.getPropertyValue("background-clip") || computedStyles.getPropertyValue("-webkit-background-clip");
         const hasBackgroundClipText = backgroundClip && backgroundClip.trim().toLowerCase() == "text";
