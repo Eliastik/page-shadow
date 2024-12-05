@@ -34,7 +34,7 @@
     "less-plugin-clean-css": "^1.6.0",
     "raw-loader": "^4.0.2",
     "style-loader": "^4.0.0",
-    "webpack": "^5.97.0",
+    "webpack": "^5.97.1",
     "webpack-cli": "^5.1.4",
     "webpack-stream": "^7.0.0"
   },
