@@ -2020,8 +2020,8 @@ function getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseud
         const urlMatch = styleContent || styleBackground || styleBackgroundImage || maskImage;
         const url = objectData || (urlMatch ? urlMatch[2] : null);
 
-        if(url && url.toLowerCase().startsWith("data:image/svg+xml")) {
-            const svgDoc = new DOMParser().parseFromString(url.replace(/^data:image\/svg\+xml(;(charset=)?utf-8)?,/, "").replace(/\\"/g, "\""), "image/svg+xml");
+        if(url && url.trim().toLowerCase().startsWith("data:image/svg+xml")) {
+            const svgDoc = new DOMParser().parseFromString(decodeURIComponent(url.replace(/^data:image\/svg\+xml(;(charset=)?utf-8)?,/, "").replace(/\\"/g, "\"")), "image/svg+xml");
             const svgElement = svgDoc.documentElement;
 
             return getImageUrlFromSvgElement(svgElement, computedStyles);
@@ -2060,7 +2060,26 @@ function getImageUrlFromSvgElement(element, computedStyles) {
         }
     }
 
-    return `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" fill="${fill}" color="${color}" stroke="${stroke}">${element.innerHTML}</svg>`)}`;
+    const innerHTML = element.innerHTML;
+    const namespaces = [];
+
+    if(innerHTML.includes("xlink:")) {
+        namespaces.push("xmlns:xlink=\"http://www.w3.org/1999/xlink\"");
+    }
+
+    if(innerHTML.includes("xml:")) {
+        namespaces.push("xmlns:xml=\"http://www.w3.org/XML/1998/namespace\"");
+    }
+
+    if(innerHTML.includes("rdf:") || innerHTML.includes("cc:") || innerHTML.includes("dc:")) {
+        namespaces.push("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
+        namespaces.push("xmlns:cc=\"http://creativecommons.org/ns#\"");
+        namespaces.push("xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
+    }
+
+    const namespaceString = namespaces.length > 0 ? ` ${namespaces.join(" ")}` : "";
+
+    return `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg"${namespaceString} width="${width}" height="${height}" fill="${fill}" color="${color}" stroke="${stroke}">${innerHTML}</svg>`)}`;
 }
 
 function isCrossOrigin(imageSrc) {
