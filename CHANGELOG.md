@@ -437,7 +437,7 @@
     * Les changements de classes CSS des éléments s'effectue désormais en batch ;
     * D'autres optimisations du code ont été apportées afin d'améliorer les performances ;
     * Toutes ces optimisations sont réglables dans les options avancés de l'extension, pour les utilisteurs avertis seulement. Ces optimisations peuvent également être réglées via la fonctionnalité Filtres de l'extension ;
-* Ajout de la possibilité de signaler un problème d'affichage des fonctionnalités des pages web au développeur de Page Shadow : cela transmet l'URL de la page au développeur après le consentement de l'utilisateur, afin de l'aider à corriger le problème ;
+* Ajout de la possibilité de signaler un problème d'affichage des fonctionnalités de Page Shadow sur les pages web au développeur de l'extension : cela transmet l'URL de la page au développeur après le consentement de l'utilisateur, afin de l'aider à corriger le problème ;
 * Correction de problèmes avec l'archivage Cloud des paramètres de Page Shadow : dans certains cas, il était possible que l'archivage échoue, à cause de l'algorithme de chunking utilisé par Page Shadow. L'algorithme a été corrigé, ce qui corrige ces problèmes. Les archives Cloud existantes ne sont pas impactées ;
 * Ajout de 5 slots de pré-réglages supplémentaires (portant leur nombre à 15) ainsi que 5 slots de thèmes personnalisés supplémentaires (portant leur nombre à 10) ;
 * L'extension détecte désormais les éléments sur lesquels un filtre était appliqué, mais suite à certains changements, si le filtre ne doit plus s'appliquer à l'élément, celui-ci est désormais retiré ;

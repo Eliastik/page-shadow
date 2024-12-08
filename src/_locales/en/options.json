@@ -229,6 +229,7 @@
                 "report": "Report a display problem on a webpage"
             },
             "version": "Current version:",
+            "versionDate": "Version date:",
             "browser": "Your web browser:",
             "changelogTitle": "Changelog",
             "infos": "Informations",
