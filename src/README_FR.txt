@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.11 (09/10/2024)
+* Version actuelle : 2.11 (15/12/2024)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -34,35 +34,53 @@ Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
 
-### Version 2.11 (09/10/2024) :
+### Version 2.11 (15/12/2024) :
 
 * Ajout de la possibilité d'activer l'inversion ou l'atténuation des éléments colorés. Il est possible ainsi de désactiver l'inversion des éléments colorés en activant l'inversion de la page entière, pour un mode sombre alternatif à la fonction Augmenter le contraste ;
 * Ajout de la possibilité de modifier l'intensité du filtre de la fonction Atténuer les couleurs ;
 * Les éléments textuels colorés sont désormais détectés par Page Shadow. Ainsi, ils sont pris en compte par les différentes fonctions gérant les éléments colorés : Augmenter le contraste, Inverser les couleurs et Atténuer les couleurs ;
-* Lors de l'ouverture d'une nouvelle page, les fonctionnalités Baisser la luminosité et Filtre de réduction de la lumière bleue sont appliquées plus rapidement afin d'éviter l'affichage d'un flash pouvant être désagréable, grâce à une optimisation des performances ;
+* Lors de l'ouverture d'une nouvelle page, les fonctionnalités Baisser la luminosité, Filtre de réduction de la lumière bleue et Inverser la page entière sont appliquées plus rapidement afin d'éviter l'affichage d'un flash pouvant être désagréable, grâce à une optimisation des performances ;
+* La fonction d'inversion sélective a été améliorée : elle préserve autant que possible les couleurs originales des images tout en inversant les couleurs noires et sombres en blanc, afin de rendre les éléments plus visibles sur un fond sombre ;
 * L'algorithme de détection des images comportant des textes/logos ou autres éléments sombres a été revu et amélioré : il est beaucoup plus efficace et plus performant. Il est désormais activé par défaut dans cette version. Pour profiter de cette fonctionnalité, il faut activer la fonction Inverser les couleurs > Sélectif afin d'inverser les images détectées, afin qu'elles soient plus lisibles sur un fond sombre ;
     * L'algorithme analyse les images sur les pages à la recherche de motifs sombres entourés d'un fond transparent ;
     * L'algorithme peut être réglé grâce aux options avancées de l'extension, pour les utilisateurs avertis uniquement, ou via la fonctionnalité des Filtres ;
+    * Des optimisations de perfomance ont été apportées à l'algorithme ;
 * Une attention particulière a été portée à l'optimisation des performances de l'extension : l'extension s'adapte désormais aux performances de l'appareil et la complexité des pages web pour le moteur d'analyse des pages. Ainsi, le nombre d'éléments analysés s'adapte automatiquement en fonction du contexte pour de meilleures performances. D'autres optimisations ont également été apportées, améliorant considérablement les performances de l'extension :
     * Les fonctionnalités du moteur d'analyse des pages web de Page Shadow ont désormais un temps d'exécution maximal : si le temps d'exécution dépasse un seuil, l'exécution s'arrête temporairement afin de libérer des ressources ;
     * Les fonctionnalités du moteur d'analyse des pages web de Page Shadow s'exécutent désormais de manière asynchrone ;
     * Les changements de classes CSS des éléments s'effectue désormais en batch ;
     * D'autres optimisations du code ont été apportées afin d'améliorer les performances ;
     * Toutes ces optimisations sont réglables dans les options avancés de l'extension, pour les utilisteurs avertis seulement. Ces optimisations peuvent également être réglées via la fonctionnalité Filtres de l'extension ;
+* Ajout de la possibilité de signaler un problème d'affichage des fonctionnalités des pages web au développeur de Page Shadow : cela transmet l'URL de la page au développeur après le consentement de l'utilisateur, afin de l'aider à corriger le problème ;
 * Correction de problèmes avec l'archivage Cloud des paramètres de Page Shadow : dans certains cas, il était possible que l'archivage échoue, à cause de l'algorithme de chunking utilisé par Page Shadow. L'algorithme a été corrigé, ce qui corrige ces problèmes. Les archives Cloud existantes ne sont pas impactées ;
 * Ajout de 5 slots de pré-réglages supplémentaires (portant leur nombre à 15) ainsi que 5 slots de thèmes personnalisés supplémentaires (portant leur nombre à 10) ;
 * L'extension détecte désormais les éléments sur lesquels un filtre était appliqué, mais suite à certains changements, si le filtre ne doit plus s'appliquer à l'élément, celui-ci est désormais retiré ;
 * Les arrières-plans sous forme de dégradés colorés sont désormais détectés par l'extension ;
 * L'interface des options avancées de l'extension a été revue, les options sont désormais groupées par catégories ;
+* Amélioration du support des Shadow DOM : l'extension analyse désormais les éléments contenus dans un Shadow DOM. D'autres corrections apportent une meilleure compatibilité avec les sites utilisant cette technologie ;
+* Amélioration du support des pseudo-éléments : l'extension analyse désormais les pseudo-éléments afin d'améliorer l'affichage sur les sites web utilisant cette fonctionnalité ;
 * Correction d'autres bugs et améliorations techniques :
-    * Ajout d'un mode de débogage, activable dans les options avancées ;
-    * Correction d'un bug avec l'application rapide de la fonctionnalité "Augmenter le contraste", amélioration apportée par la version 2.10.4 : elle était parfois appliquée aux iframes des pages à tort, de manière aléatoire, alors que la fonction était désactivée sur la page parent ;
+    * Ajout d'un mode de débogage, activable dans les options avancées, qui ajoute des logs de débogage et d'erreurs ;
+    * Ajout de nouveaux filtres et de nouvelles options avancées ;
+    * Correction d'un bug avec l'application rapide de la fonctionnalité "Augmenter le contraste", amélioration apportée par la version 2.10.4 : elle était parfois appliquée aux iframes des pages à tort, de manière aléatoire, alors que la fonction était désactivée sur la page parente ;
     * Correction de la détection des arrière-plans transparents sur certains sites web ;
+    * Correction de la détection des images d'arrière-plan sur certains sites web ;
     * Correction d'un bug avec certains filtres ;
     * Correction d'un bug avec la modification des paramètres de la fonction Inverser les couleurs, lors de l'application en temps réel des changements des paramètres ;
+    * Correction de la détection des changements des paramètres en temps réel avec les iframes ;
+    * Correction de l'affichage du pré-réglage appliqué au site web actuel dans la popup sur Firefox : parfois, aucun pré-réglage n'était affiché, de manière aléatoire ;
+    * Correction d'un bug sur certains sites web où l'attribut "class" de l'élément HTML était réinitialisé : l'extension détecte désormais ce comportement et restaure les classes nécessaires à son bon fonctionnement ;
+    * Correction d'un bug sur certains sites web modifiant leur élément body : Page Shadow détecte désormais correctement ces modifications, évitant divers problèmes ;
+    * Correction d'un bug lié au cache des paramètres et des filtres dans la version ManifestV3 : certaines données obsolètes ne s'expiraient pas correctement de manière aléatoire ;
+    * Correction d'un bug sur la version ManifestV3 : des messages étaient envoyés très régulièrement au Service Worker de l'extension ce qui empêchait celui-ci de se mettre en veille en cas d'inactivité ;
+    * Correction de l'inversion des images d'arrière-plan sur certains sites web ;
+    * Correction de l'inversion des images qui sont à la racine de l'élément body ;
+    * Correction de l'inversion des vidéos dans certains cas ;
     * Correction du wording de certains textes de l'extension pour plus de clarté ;
-    * Amélioration générale du code, dispatch de certaines parties du code dans des classes séparées, autres améliorations du code pour plus de lisibilité ;
-    * Autres corrections de bugs mineurs.
+    * Correction d'erreurs avec le système gérant le menu du clic droit ;
+    * Amélioration générale du code, dispatch de certaines parties du code dans des classes séparées, autres améliorations du code pour plus de lisibilité, ajout de nouvelles règles eslint ;
+    * Autres corrections de bugs mineurs ;
+    * Mise à jour des dépendances.
 
 ### Version 2.10.4 (09/06/2024) :
 
