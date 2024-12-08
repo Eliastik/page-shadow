@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { removeClass, addClass, rgb2hsl, svgElementToImage, backgroundImageToImage, isCrossOrigin, getImageUrlFromElement, sha256 } from "../utils/util.js";
+import { removeClass, addClass, rgb2hsl, svgElementToImage, backgroundImageToImage, isCrossOrigin, getImageUrlFromElement, sha256, isValidURL } from "../utils/util.js";
 import { maxImageSizeDarkImageDetection } from "../constants.js";
 
 export default class ImageProcessor {
@@ -36,7 +36,12 @@ export default class ImageProcessor {
 
         const imageUrl = getImageUrlFromElement(image, hasBackgroundImg, computedStyles, pseudoElt);
 
-        if(imageUrl == null) {
+        if(imageUrl == null || imageUrl.trim() === "") {
+            return false;
+        }
+
+        if(!isValidURL(imageUrl)) {
+            this.debugLogger.log(`Ignored image with following URL because it is invalid: ${imageUrl}`, "debug", image);
             return false;
         }
 
