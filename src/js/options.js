@@ -34,7 +34,7 @@ import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
 import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, getCurrentArchiveCloud } from "./utils/util.js";
-import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes } from "./constants.js";
+import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes, versionDate } from "./constants.js";
 import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
 import { initI18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./utils/filter.codemirror.mode";
@@ -114,6 +114,8 @@ function translateContent() {
 
     displaySettings(null, changingLanguage, null, changingLanguage);
     loadAdvancedOptionsUI(false, changingLanguage);
+
+    $("#versionDateExtension").text(new Intl.DateTimeFormat(i18next.language).format(versionDate));
 }
 
 function initLocales() {
@@ -601,8 +603,6 @@ async function displayFilters() {
         document.getElementById("filtersList").appendChild(element);
     });
 
-    $("[data-toggle=\"tooltip\"]").tooltip();
-
     const rulesCount = await sendMessageWithPromise({ "type": "getNumberOfTotalRules" }, "getNumberOfTotalRulesResponse");
     $("#filtersCount").text(i18next.t("modal.filters.filtersCount", { count: rulesCount.count }));
 
@@ -621,6 +621,8 @@ async function displayFilters() {
         $("#errorFilterCountCustom").text(i18next.t("modal.filters.filtersWithErrorCount", { count: errorCustomRules.data.length }));
         $("#buttonSeeErrorsCustomFilter").show();
     }
+
+    $("[data-toggle=\"tooltip\"]").tooltip();
 }
 
 async function loadAdvancedOptionsUI(reset, changingLanguage) {
