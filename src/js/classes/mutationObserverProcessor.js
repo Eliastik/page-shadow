@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getCurrentURL, loadWebsiteSpecialFiltersConfig } from "../utils/util.js";
-import { ignoredElementsContentScript } from "../constants.js";
+import { getCurrentURL, loadWebsiteSpecialFiltersConfig, getBlueLightReductionFilterCSSClass } from "../utils/util.js";
+import { ignoredElementsContentScript, brightnessReductionElementId, blueLightReductionElementId } from "../constants.js";
 import MutationObserverWrapper from "./mutationObserverWrapper.js";
 import SafeTimer from "./safeTimer.js";
 import ThrottledTask from "./throttledTask.js";
@@ -282,14 +282,22 @@ export default class MutationObserverProcessor {
 
                 mutations.forEach(mutation => {
                     if (this.currentSettings && this.currentSettings.pageLumEnabled != undefined && this.currentSettings.pageLumEnabled === "true") {
-                        if ((!document.body.contains(this.elementBrightness) || !document.body.contains(this.elementBrightnessWrapper)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
+                        if ((!document.body.contains(this.elementBrightness) || !document.body.contains(this.elementBrightnessWrapper))
+                            || (mutation.type == "attributes" && mutation.attributeName == "style") || this.elementBrightness.id !== brightnessReductionElementId) {
                             reApplyBrightness = true;
                         }
                     }
 
                     if (this.currentSettings && this.currentSettings.blueLightReductionEnabled != undefined && this.currentSettings.blueLightReductionEnabled === "true") {
-                        if ((!document.body.contains(this.elementBlueLightFilter) || !document.body.contains(this.elementBrightnessWrapper)) || (mutation.type == "attributes" && mutation.attributeName == "style")) {
+                        if ((!document.body.contains(this.elementBlueLightFilter) || !document.body.contains(this.elementBrightnessWrapper))
+                            || (mutation.type == "attributes" && mutation.attributeName == "style") || this.elementBlueLightFilter.id !== blueLightReductionElementId) {
                             reApplyBlueLight = true;
+                        } else if(mutation.type == "attributes" && mutation.attributeName == "class") {
+                            const tempColorClass = getBlueLightReductionFilterCSSClass(this.currentSettings.colorTemp);
+
+                            if(!this.elementBlueLightFilter.classList.contains(tempColorClass)) {
+                                reApplyBlueLight = true;
+                            }
                         }
                     }
                 });
