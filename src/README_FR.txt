@@ -55,7 +55,7 @@ Soit la compiler vous-même (voir section "Compilation").
 * Correction de problèmes avec l'archivage Cloud des paramètres de Page Shadow : dans certains cas, il était possible que l'archivage échoue, à cause de l'algorithme de chunking utilisé par Page Shadow. L'algorithme a été corrigé, ce qui corrige ces problèmes. Les archives Cloud existantes ne sont pas impactées ;
 * Ajout de 5 slots de pré-réglages supplémentaires (portant leur nombre à 15) ainsi que 5 slots de thèmes personnalisés supplémentaires (portant leur nombre à 10) ;
 * L'extension détecte désormais les éléments sur lesquels un filtre était appliqué, mais suite à certains changements, si le filtre ne doit plus s'appliquer à l'élément, celui-ci est désormais retiré ;
-* Les arrières-plans sous forme de dégradés colorés sont désormais détectés par l'extension ;
+* Les arrière-plans sous forme de dégradés colorés sont désormais détectés par l'extension ;
 * L'interface des options avancées de l'extension a été revue, les options sont désormais groupées par catégories ;
 * Amélioration du support des Shadow DOM : l'extension analyse désormais les éléments contenus dans un Shadow DOM. D'autres corrections apportent une meilleure compatibilité avec les sites utilisant cette technologie ;
 * Amélioration du support des pseudo-éléments : l'extension analyse désormais les pseudo-éléments afin d'améliorer l'affichage sur les sites web utilisant cette fonctionnalité ;
