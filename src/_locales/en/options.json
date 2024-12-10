@@ -185,7 +185,7 @@
             "shadowRoots": "Shadow DOM",
             "observePageChanges": "Page observation timers",
             "brightColorAnalysis": "Page analysis engine - bright colors",
-            "backgroundAnalysis": "Page analysis engine - backgrounds",
+            "backgroundAnalysis": "Page analysis engine - transparent backgrounds",
             "generalPageAnalysis": "Page analysis engine - general",
             "filterEngine": "Filter engine",
             "imageAnalyze": "Page analysis engine - images",

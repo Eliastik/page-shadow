@@ -181,7 +181,7 @@
             "shadowRoots": "Shadow DOM",
             "observePageChanges": "Minuteurs d'observation de la page",
             "brightColorAnalysis": "Moteur d'analyse des pages - couleurs vives",
-            "backgroundAnalysis": "Moteur d'analyse des pages - arrière-plans",
+            "backgroundAnalysis": "Moteur d'analyse des pages - arrière-plans transparents",
             "generalPageAnalysis": "Moteur d'analyse des pages - général",
             "filterEngine": "Moteur des filtres",
             "imageAnalyze": "Moteur d'analyse des pages - images",
