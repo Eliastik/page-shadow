@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme, areAllCSSVariablesDefinedForHTMLElement, areAllClassesDefinedForHTMLElement, getInvertPageVariablesKeyValues } from "../utils/util.js";
-import { colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, attenuateDefaultValue } from "../constants.js";
+import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme, areAllCSSVariablesDefinedForHTMLElement, areAllClassesDefinedForHTMLElement, getInvertPageVariablesKeyValues, getBlueLightReductionFilterCSSClass } from "../utils/util.js";
+import { minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, attenuateDefaultValue, brightnessReductionElementId, blueLightReductionElementId } from "../constants.js";
 import SafeTimer from "./safeTimer.js";
 import MutationObserverProcessor from "./mutationObserverProcessor.js";
 import ElementClassBatcher from "./elementClassBatcher.js";
@@ -390,7 +390,7 @@ export default class ContentProcessor {
 
             if(this.elementBrightness.style) {
                 this.elementBrightness.style.display = "block";
-                this.elementBrightness.setAttribute("id", "pageShadowBrightness");
+                this.elementBrightness.setAttribute("id", brightnessReductionElementId);
 
                 if(percentage / 100 > maxBrightnessPercentage || percentage / 100 < minBrightnessPercentage || typeof percentage === "undefined" || percentage == null) {
                     this.elementBrightness.style.opacity = brightnessDefaultValue;
@@ -421,16 +421,12 @@ export default class ContentProcessor {
 
             if(this.elementBlueLightFilter.style) {
                 this.elementBlueLightFilter.style.display = "block";
-                this.elementBlueLightFilter.setAttribute("id", "pageShadowBrightnessNightMode");
+                this.elementBlueLightFilter.setAttribute("id", blueLightReductionElementId);
                 this.elementBlueLightFilter.setAttribute("class", "");
 
-                let tempColor = "2000";
-
                 if(colorTemp != undefined) {
-                    const tempIndex = parseInt(colorTemp);
-                    tempColor = colorTemperaturesAvailable[tempIndex - 1];
-
-                    this.elementBlueLightFilter.setAttribute("class", "k" + tempColor);
+                    const tempClass = getBlueLightReductionFilterCSSClass(colorTemp);
+                    this.elementBlueLightFilter.setAttribute("class", tempClass);
                 } else {
                     this.elementBlueLightFilter.setAttribute("class", "k2000");
                 }
@@ -460,7 +456,7 @@ export default class ContentProcessor {
         if(document.body) {
             this.debugLogger?.log("Appending brightness reduction element");
 
-            const brightnessPageElement = document.getElementById("pageShadowBrightness");
+            const brightnessPageElement = document.getElementById(brightnessReductionElementId);
 
             if(elementWrapper && document.body.contains(elementWrapper) && elementWrapper.contains(elementBrightness)) {
                 elementWrapper.removeChild(elementBrightness);
@@ -483,7 +479,7 @@ export default class ContentProcessor {
         if(document.body) {
             this.debugLogger?.log("Appending blue light reduction element");
 
-            const blueLightPageElement = document.getElementById("pageShadowBrightnessNightMode");
+            const blueLightPageElement = document.getElementById(blueLightReductionElementId);
 
             if(elementWrapper && document.body.contains(elementWrapper) && elementWrapper.contains(elementBlueLightFilter)) {
                 elementWrapper.removeChild(elementBlueLightFilter);

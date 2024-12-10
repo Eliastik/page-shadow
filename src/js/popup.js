@@ -22,7 +22,7 @@ import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
 import { inArrayWebsite, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme, sendMessageWithPromise, applyContrastPageVariablesWithTheme, checkPermissions, getBrowser } from "./utils/util.js";
-import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval, permissionOrigin, attenuateDefaultValue, settingsToLoad, enableReportWebsiteProblem, reportWebsiteProblemBackendURL } from "./constants.js";
+import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval, permissionOrigin, attenuateDefaultValue, settingsToLoad, enableReportWebsiteProblem, reportWebsiteProblemBackendURL, brightnessReductionElementId, blueLightReductionElementId } from "./constants.js";
 import { setSettingItem } from "./storage.js";
 import { initI18next } from "./locales.js";
 import browser from "webextension-polyfill";
@@ -1276,7 +1276,7 @@ $(document).ready(() => {
         const result = await browser.storage.local.get(["pageLumEnabled", "nightModeEnabled", "pourcentageLum"]);
 
         if(result.pageLumEnabled == "true") {
-            elLumB.setAttribute("id", "pageShadowBrightness");
+            elLumB.setAttribute("id", brightnessReductionElementId);
 
             if(result.pourcentageLum / 100 > maxBrightnessPercentage || result.pourcentageLum / 100 < minBrightnessPercentage || typeof result.pourcentageLum === "undefined" || result.pourcentageLum == null) {
                 elLumB.style.opacity = brightnessDefaultValue;
@@ -1323,7 +1323,7 @@ $(document).ready(() => {
         const result = await browser.storage.local.get(["blueLightReductionEnabled", "colorTemp", "percentageBlueLightReduction"]);
 
         if(result.blueLightReductionEnabled == "true") {
-            elBlueLightReduction.setAttribute("id", "pageShadowBrightnessNightMode");
+            elBlueLightReduction.setAttribute("id", blueLightReductionElementId);
 
             if(result.percentageBlueLightReduction / 100 > maxBrightnessPercentage || result.percentageBlueLightReduction / 100 < minBrightnessPercentage || typeof result.percentageBlueLightReduction === "undefined" || result.percentageBlueLightReduction == null) {
                 elBlueLightReduction.style.opacity = percentageBlueLightDefaultValue;
