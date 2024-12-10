@@ -2023,8 +2023,17 @@ function getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseud
         const url = objectData || (urlMatch ? urlMatch[2] : null);
 
         if(url && url.trim().toLowerCase().startsWith("data:image/svg+xml")) {
-            const svgDoc = new DOMParser().parseFromString(decodeURIComponent(url.replace(/^data:image\/svg\+xml(;(charset=)?utf-8)?,/, "").replace(/\\"/g, "\"")), "image/svg+xml");
+            const svgData = url.trim().replace(/^data:image\/svg\+xml(;(charset=)?([a-zA-Z0-9-]+))?(;base64)?,/, "").replace(/\\"/g, "\"");
+            const decodedSvg = decodeURIComponent(svgData);
+            const svgDoc = new DOMParser().parseFromString(decodedSvg, "image/svg+xml");
             const svgElement = svgDoc.documentElement;
+
+            const errorNode = svgDoc.querySelector("parsererror");
+
+            if(errorNode) {
+                debugLogger.log(`Error parsing SVG from URL: ${url}`, "error", element);
+                return null;
+            }
 
             return getImageUrlFromSvgElement(svgElement, computedStyles);
         }
