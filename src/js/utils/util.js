@@ -2023,9 +2023,24 @@ function getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseud
         const url = objectData || (urlMatch ? urlMatch[2] : null);
 
         if(url && url.trim().toLowerCase().startsWith("data:image/svg+xml")) {
-            const svgData = url.trim().replace(/^data:image\/svg\+xml(;(charset=)?([a-zA-Z0-9-]+))?(;base64)?,/, "").replace(/\\"/g, "\"");
-            const decodedSvg = decodeURIComponent(svgData);
-            const svgDoc = new DOMParser().parseFromString(decodedSvg, "image/svg+xml");
+            const regexMatchSVGData = /^data:image\/svg\+xml(;(charset=)?([a-zA-Z0-9-]+))?(;base64)?,/;
+            const match = regexMatchSVGData.exec(url.trim());
+
+            if(!match) {
+                debugLogger.log(`Invalid data URI format: ${url}`, "error", element);
+                return null;
+            }
+
+            let decodedURL = url.trim().replace(regexMatchSVGData, "");
+
+            // If the SVG contains base64 data
+            if((match[3] && match[3].toLowerCase() === "base64")
+                || (match[4] && match[4].toLowerCase() === ";base64")) {
+                decodedURL = atob(decodedURL);
+            }
+
+            const svgData = decodeURIComponent(decodedURL.replace(/\\"/g, "\""));
+            const svgDoc = new DOMParser().parseFromString(svgData, "image/svg+xml");
             const svgElement = svgDoc.documentElement;
 
             const errorNode = svgDoc.querySelector("parsererror");
