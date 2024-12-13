@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem, migrateSettings } from "../storage.js";
 import browser from "webextension-polyfill";
-import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, permissionOrigin, quotaBytesPerItemMargin, attenuateDefaultValue, pageAnalyzerCSSClasses, colorTemperaturesAvailable } from "../constants.js";
+import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, permissionOrigin, quotaBytesPerItemMargin, attenuateDefaultValue, pageAnalyzerCSSClasses, colorTemperaturesAvailable, regexpMatchURL } from "../constants.js";
 import { Sha256 } from "@aws-crypto/sha256-browser";
 import DebugLogger from "./../classes/debugLogger.js";
 
@@ -2012,7 +2012,6 @@ function getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseud
     if(!(element instanceof HTMLImageElement) && !(element instanceof SVGImageElement) && hasBackgroundImg) {
         const style = element.currentStyle || computedStyles;
 
-        const regexpMatchURL = /url\((['"]?)(.*?)\1\)/;
         const styleContent = pseudoElt && computedStyles.content && computedStyles.content.match(regexpMatchURL);
         const styleBackground = style.background && style.background.match(regexpMatchURL);
         const styleBackgroundImage = style.backgroundImage && style.backgroundImage.match(regexpMatchURL);
@@ -2105,7 +2104,13 @@ function getImageUrlFromSvgElement(element, computedStyles) {
 
     const namespaceString = namespaces.length > 0 ? ` ${namespaces.join(" ")}` : "";
 
-    return `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg"${namespaceString} width="${width}" height="${height}" fill="${fill}" color="${color}" stroke="${stroke}">${innerHTML}</svg>`)}`;
+    const matchURLFill = fill && fill.match(regexpMatchURL);
+    const matchURLStroke = stroke && stroke.match(regexpMatchURL);
+
+    const escapedFill = matchURLFill && matchURLFill[2] ? `url(${matchURLFill[2]})` : fill;
+    const escapedStroke = matchURLStroke && matchURLStroke[2] ? `url(${matchURLStroke[2]})` : stroke;
+
+    return `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg"${namespaceString} width="${width}" height="${height}" fill="${escapedFill}" color="${color}" stroke="${escapedStroke}">${innerHTML}</svg>`)}`;
 }
 
 function isCrossOrigin(imageSrc) {
