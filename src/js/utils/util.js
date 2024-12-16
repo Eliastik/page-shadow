@@ -2000,6 +2000,18 @@ async function backgroundImageToImage(url) {
     return image;
 }
 
+function safeDecodeURIComponent(str) {
+    try {
+        if(/%[0-9A-Fa-f]{2}/.test(str)) {
+            return decodeURIComponent(str);
+        }
+    } catch (e) {
+        debugLogger.log(`Error decoding URI component: ${str}`, "error", e);
+    }
+
+    return str;
+}
+
 function getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseudoElt) {
     if(element instanceof HTMLImageElement) {
         return element.src;
@@ -2035,10 +2047,15 @@ function getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseud
             // If the SVG contains base64 data
             if((match[3] && match[3].toLowerCase() === "base64")
                 || (match[4] && match[4].toLowerCase() === ";base64")) {
-                decodedURL = atob(decodedURL);
+                try {
+                    decodedURL = atob(safeDecodeURIComponent(decodedURL));
+                } catch(e) {
+                    debugLogger.log(`Error decoding base64 data for URL: ${url}`, "error", e);
+                    return null;
+                }
             }
 
-            const svgData = decodeURIComponent(decodedURL.replace(/\\"/g, "\""));
+            const svgData = safeDecodeURIComponent(decodedURL.replace(/\\"/g, "\""));
             const svgDoc = new DOMParser().parseFromString(svgData, "image/svg+xml");
             const svgElement = svgDoc.documentElement;
 
