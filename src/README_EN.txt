@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.11 (12/15/2024)
+* Latest version: 2.11 (12/22/2024)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -34,7 +34,7 @@ Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
 
-### Version 2.11 (12/15/2024) :
+### Version 2.11 (12/22/2024) :
 
 * Added the ability to enable the inversion or attenuation of colored elements. This allows users to disable the inversion of colored elements while enabling entire page inversion, providing an alternative dark mode to the Increase contrast function;
 * Added the ability to adjust the filter intensity for the Attenuate colors function;
