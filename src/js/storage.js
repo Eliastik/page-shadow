@@ -177,6 +177,7 @@ async function migrateSettings(filters) {
             currentAdvancedOptions.throttleMutationObserverBackgrounds = defaultWebsiteSpecialFiltersConfig.throttleMutationObserverBackgrounds;
             currentAdvancedOptions.throttledMutationObserverTreatedByCall = defaultWebsiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall;
             currentAdvancedOptions.throttleBackgroundDetection = defaultWebsiteSpecialFiltersConfig.throttleBackgroundDetection;
+            currentAdvancedOptions.opacityDetectedAsTransparentThreshold = defaultWebsiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold;
         }
 
         await setSettingItem("advancedOptionsFiltersSettings", currentAdvancedOptions);
