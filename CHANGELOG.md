@@ -2,7 +2,7 @@
 
 ## Changelog:
 
-### Version 2.11 (12/15/2024) :
+### Version 2.11 (12/22/2024) :
 
 * Added the ability to enable the inversion or attenuation of colored elements. This allows users to disable the inversion of colored elements while enabling entire page inversion, providing an alternative dark mode to the Increase contrast function;
 * Added the ability to adjust the filter intensity for the Attenuate colors function;
@@ -420,7 +420,7 @@
 
 ## Journal des changements :
 
-### Version 2.11 (15/12/2024) :
+### Version 2.11 (22/12/2024) :
 
 * Ajout de la possibilité d'activer l'inversion ou l'atténuation des éléments colorés. Il est possible ainsi de désactiver l'inversion des éléments colorés en activant l'inversion de la page entière, pour un mode sombre alternatif à la fonction Augmenter le contraste ;
 * Ajout de la possibilité de modifier l'intensité du filtre de la fonction Atténuer les couleurs ;

@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.11 (15/12/2024)
+* Version actuelle : 2.11 (22/12/2024)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -34,7 +34,7 @@ Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
 
-### Version 2.11 (15/12/2024) :
+### Version 2.11 (22/12/2024) :
 
 * Ajout de la possibilité d'activer l'inversion ou l'atténuation des éléments colorés. Il est possible ainsi de désactiver l'inversion des éléments colorés en activant l'inversion de la page entière, pour un mode sombre alternatif à la fonction Augmenter le contraste ;
 * Ajout de la possibilité de modifier l'intensité du filtre de la fonction Atténuer les couleurs ;
