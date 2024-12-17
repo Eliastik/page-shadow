@@ -146,8 +146,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Bug with invert entire page when the extension is built in prod mode => was caused by the gulp-clean-css plugin
     * [x] Process pseudo elements
     * [x] More optimizations - test
-    * [ ] Final tests (Chrome/Firefox)
-    * [ ] When releasing: update version date, update changelog (last bugfixes), compare code between MV2 and MV3 versions
+    * [x] Final tests (Chrome/Firefox)
+    * [x] When releasing: update version date, update changelog (last bugfixes), compare code between MV2 and MV3 versions
 
 #### Bugs to fix
 
@@ -180,6 +180,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Known issues/bugs
 
 * [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
+* [ ] (Medium) Some images are ignored by the dark image detection due to CORS restriction
 
 #### Ideas
 
