@@ -927,6 +927,11 @@ async function loadPreset(nb) {
         }
 
         const preset = await getPresetData(nb);
+
+        if(!preset) {
+            return "empty";
+        }
+
         let settingsRestored = 0;
 
         const settingsNames = JSON.parse(JSON.stringify(settingsToSavePresets));
@@ -1602,10 +1607,12 @@ async function archiveCloud() {
             try {
                 await browser.storage.sync.clear();
                 await browser.storage.sync.set(settingToSave);
-            } catch (e) {
+            } catch(e) {
                 // In case of error, restore the old cloud archive data
                 await browser.storage.sync.clear();
                 await browser.storage.sync.set(prepareDataForArchiveCloud(currentStorage));
+
+                debugLogger.log(e, "error");
 
                 if (e && (e.message.indexOf("QUOTA_BYTES_PER_ITEM") !== -1 || e.message.indexOf("QUOTA_BYTES") !== -1 || e.message.indexOf("QuotaExceededError") !== -1)) {
                     throw new Error("quota");
@@ -1620,7 +1627,8 @@ async function archiveCloud() {
                     browser.storage.sync.set(deviceSettings),
                     browser.storage.sync.remove("pageShadowStorageBackup")
                 ]);
-            } catch {
+            } catch(e) {
+                debugLogger.log(e, "error");
                 throw new Error("standard");
             }
 
@@ -2005,7 +2013,7 @@ function safeDecodeURIComponent(str) {
         if(/%[0-9A-Fa-f]{2}/.test(str)) {
             return decodeURIComponent(str);
         }
-    } catch (e) {
+    } catch(e) {
         debugLogger.log(`Error decoding URI component: ${str}`, "error", e);
     }
 
@@ -2134,7 +2142,7 @@ function isCrossOrigin(imageSrc) {
     try {
         const url = new URL(imageSrc);
         return window.location.origin !== url.origin;
-    } catch (e) {
+    } catch(e) {
         debugLogger.log(e + " - URL: " + imageSrc, "error");
         return false;
     }
