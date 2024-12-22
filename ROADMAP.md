@@ -124,7 +124,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Minor) Bug with error in filters: open errors from a built-in filter, then the errors from custom filter: the window will be blank (random)
 * [x] (Minor) Transition background color (background white) blink when Increase page contrast is enabled - Exemple: https://iq.opengenus.org/lstopo-in-linux/
 
-### Release - Next
+### Release - 2.11
 
 #### Features
 
@@ -173,30 +173,37 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
 
+#### Known issues/bugs
+
+* [ ] (Medium) Some images are ignored by the dark image detection due to CORS restriction
+* [ ] (Minor) Logo not detected as dark image when increase contrast is enabled (still detect with invert entire page) on: https://www.fastmail.com/blog/why-we-use-our-own-hardware/
+    * Due to the path sub-element with fill = "currentcolor" and a style stating fill = "inherit"
+
 #### Common
 
 * [ ] FAQ for common questions?
 
-#### Known issues/bugs
-
-* [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
-* [ ] (Medium) Some images are ignored by the dark image detection due to CORS restriction
-
 #### Ideas
 
-* [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
-* [ ] Improving codebase
+* Improving codebase
     * [ ] Comment the code: doc for methods/functions
     * [x] Simplify code applying Shadow Roots styles?
     * [x] Separate code treating mutations of page elements to a separate class?
     * [x] Separate method applying mutation observers to another class?
     * [x] Modularize content.js classes with less dependencies between classes?
         * [ ] Separate each filter (increase contrast, reduce brightness etc.) into a class?
-* [ ] Others codebase improvements
-    * [ ] No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
-* [ ] Filters module improving
+* Filters module improving
     * [x] Filters: UI to report a website problem
-    * [ ] Filters: Element picker to create custom rule easily
-    * [ ] Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditional filter)
-    * [ ] Store filters on a Github repository ?
-* [ ] Prevent the attenuation of subelements (when enabling Colored elements attenuation)?
+* Others :
+    * [ ] Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
+    * [ ] Auto detect website already having a dark mode to auto disable Increase contrast and Invert entire page?
+
+#### Abandoned ideas
+
+* Prevent the attenuation of subelements (when enabling Colored elements attenuation)?
+* Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
+* No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
+* Filters module improving
+    * Filters: Element picker to create custom rule easily
+    * Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditional filter)
+    * Store filters on a Github repository?
