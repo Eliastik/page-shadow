@@ -47,7 +47,7 @@ gulp.task("compile-less", () => {
 gulp.task("compile-less-compressed", () => {
     const cleanCSSPlugin = new LessPluginCleanCSS({ advanced: true });
 
-    return gulp.src(["./src/css/*.less", "./src/css/*.css"])
+    return gulp.src(["./src/css/*.less", "./src/css/*.css", "!./src/css/content_old.css"])
         .pipe(less({
             plugins: [cleanCSSPlugin]
         }))
@@ -133,15 +133,15 @@ gulp.task("build", () => {
     const distFileName = manifestChrome.name + " v" + manifestChrome.version;
     const codebase = manifestChrome.codebase;
 
-    gulp.src("build/firefox/**/**/*")
+    gulp.src("build/firefox/**/**/*", { encoding: false })
         .pipe(zip(distFileName + " Firefox.xpi", { compress: true, modifiedTime: zipTimestamp }))
         .pipe(gulp.dest("./build"));
 
-    gulp.src("build/chrome/**/**/*")
+    gulp.src("build/chrome/**/**/*", { encoding: false })
         .pipe(zip(distFileName + " Chrome.zip", { compress: true, modifiedTime: zipTimestamp }))
         .pipe(gulp.dest("./build"));
 
-    return gulp.src("./build/chrome/")
+    return gulp.src("./build/chrome/", { encoding: false })
         .pipe(crx({
             privateKey: fs.readFileSync("./key/key.pem", "utf8"),
             filename: manifestChrome.name + " v" + manifestChrome.version + " Chromium.crx",
