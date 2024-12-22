@@ -64,5 +64,20 @@
     },
     "enablePresetTen": {
         "message": "Load the preset n°10"
+    },
+    "enablePresetEleven": {
+        "message": "Load the preset n°11"
+    },
+    "enablePresetTwelve": {
+        "message": "Load the preset n°12"
+    },
+    "enablePresetThirteen": {
+        "message": "Load the preset n°13"
+    },
+    "enablePresetFourteen": {
+        "message": "Load the preset n°14"
+    },
+    "enablePresetFifteen": {
+        "message": "Load the preset n°15"
     }
 }

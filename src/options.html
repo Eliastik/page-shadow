@@ -305,7 +305,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 <li role="presentation" id="restoreTabLink"><a href="#restoreTab" aria-controls="restoreTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-repeat" aria-hidden="true"></i> <span data-i18n="modal.archive.restore"></span></a></li>
                                 <li role="presentation" id="cloudBackupLink"><a href="#cloudBackupTab" aria-controls="cloudBackupTab" role="tab" data-toggle="tab"><i class="fa fa-fw fa-cloud" aria-hidden="true"></i> <span data-i18n="modal.archive.cloud"></span></a></li>
                             </ul>
-                            <div class="tab-content">
+                            <div class="tab-content tab-content-no-overflow">
                                 <div role="tabpanel" class="tab-pane active" id="archiveTab">
                                     <p data-i18n="modal.archive.descriptionArchive"></p>
                                     <center><a class="btn btn-primary" id="archiveDataButton"><i class="fa fa-archive fa-fw" aria-hidden="true"></i> <span data-i18n="modal.archive.buttonArchive"></span></a></center>
@@ -397,6 +397,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                 <div role="tabpanel" class="tab-pane active" id="aboutBasicTab">
                                     <p class="large-text"><span data-i18n="modal.about.description"></span> (<a href="http://www.eliastiksofts.com" target="_blank">www.eliastiksofts.com</a>).</p>
                                     <p class="large-text"><label data-i18n="modal.about.version" class="bold"></label> <span class="badge" id="versionExtension"></span></p>
+                                    <p class="large-text"><label data-i18n="modal.about.versionDate" class="bold"></label> <span class="badge" id="versionDateExtension"></span></p>
                                     <!-- <p class="large-text"><label data-i18n="modal.about.browser"></label> <span class="badge" id="browserName"></span></p> -->
                                     <div class="center">
                                         <a href="" target="_blank" class="btn btn-success" role="button" id="updateBtn"><i class="fa fa-search fa-fw" aria-hidden="true"></i> <span data-i18n="container.update"></span></a> &nbsp; <a class="btn btn-default" href="http://www.eliastiksofts.com/page-shadow/" target="_blank"><i class="fa fa-home fa-fw" aria-hidden="true"></i> <span data-i18n="modal.about.homepage"></span></a> &nbsp; 
@@ -405,6 +406,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                             <ul class="dropdown-menu dropdown-menu-top">
                                                 <li><a href="http://www.eliastiksofts.com/contact/" target="_blank"><i class="fa fa-at fa-fw" aria-hidden="true"></i> <span data-i18n="modal.about.contact.email"></span></a></li>
                                                 <li><a href="https://github.com/Eliastik/page-shadow/issues" target="_blank"><i class="fa fa-github fa-fw" aria-hidden="true"></i> <span data-i18n="modal.about.contact.github"></span></a></li>
+                                                <li><a href="http://www.eliastiksofts.com/page-shadow/report" target="_blank"><i class="fa fa-bug fa-fw" aria-hidden="true"></i> <span data-i18n="modal.about.contact.report"></span></a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -414,10 +416,20 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                         <div class="panel panel-default" name="aboutLatestVersion">
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse211" data-i18n="modal.about.changelog.versionNames.2_11"></a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapse211" class="panel-collapse collapse in">
+                                                <div class="panel-body" data-i18n="[html]modal.about.changelog.2_11"></div>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
                                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse2104" data-i18n="modal.about.changelog.versionNames.2104"></a>
                                                 </h4>
                                             </div>
-                                            <div id="collapse2104" class="panel-collapse collapse in">
+                                            <div id="collapse2104" class="panel-collapse collapse">
                                                 <div class="panel-body" data-i18n="[html]modal.about.changelog.2104"></div>
                                             </div>
                                         </div>

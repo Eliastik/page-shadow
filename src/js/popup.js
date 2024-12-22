@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -21,10 +21,10 @@ import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
-import { in_array_website, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme, sendMessageWithPromise, applyContrastPageVariablesWithTheme, checkPermissions, getBrowser } from "./utils/util.js";
-import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval, permissionOrigin } from "./constants.js";
+import { inArrayWebsite, disableEnableToggle, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, loadPresetSelect, loadPreset, presetsEnabledForWebsite, disableEnablePreset, getPresetData, savePreset, normalizeURL, getPriorityPresetEnabledForWebsite, toggleTheme, sendMessageWithPromise, applyContrastPageVariablesWithTheme, checkPermissions, getBrowser } from "./utils/util.js";
+import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval, permissionOrigin, attenuateDefaultValue, settingsToLoad, enableReportWebsiteProblem, reportWebsiteProblemBackendURL, brightnessReductionElementId, blueLightReductionElementId } from "./constants.js";
 import { setSettingItem } from "./storage.js";
-import { init_i18next } from "./locales.js";
+import { initI18next } from "./locales.js";
 import browser from "webextension-polyfill";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "@fortawesome/fontawesome-free/css/v4-shims.min.css";
@@ -34,6 +34,7 @@ import "@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2";
 import "@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2";
 import popupEN from "../_locales/en/popup.json";
 import popupFR from "../_locales/fr/popup.json";
+import DebugLogger from "./classes/debugLogger.js";
 
 window.$ = $;
 window.jQuery = $;
@@ -48,8 +49,9 @@ let currentTheme = "checkbox";
 let permissionInfoShowed = false;
 let autoBackupFailedShowed = false;
 
+const debugLogger = new DebugLogger();
+
 async function translateContent() {
-    i18nextLoaded = true;
     jqueryI18next.init(i18next, $, {
         handleName: "localize",
         selectorAttr: "data-i18n"
@@ -64,10 +66,11 @@ async function translateContent() {
     await checkPresetAutoEnabled(await getCurrentURL());
     $("#loadPresetSelect").val(selectedPreset).trigger("change");
     $("#modalUpdatedMessage").text(i18next.t("modalUpdated.message", { version: extensionVersion, date: new Intl.DateTimeFormat(i18next.language).format(versionDate), interpolation: { escapeValue: false } }));
+    i18nextLoaded = true;
 }
 
-function initI18next() {
-    init_i18next("popup").then(() => {
+function initLocales() {
+    initI18next("popup").then(() => {
         i18next.addResourceBundle("en", "popup", popupEN);
         i18next.addResourceBundle("fr", "popup", popupFR);
         translateContent();
@@ -79,11 +82,11 @@ i18next.on("languageChanged", () => {
 });
 
 toggleTheme(); // Toggle dark/light theme
-initI18next();
+initLocales();
 
 window.addEventListener("storage", (e) => {
     if(e && e.key === "i18nextLng") {
-        initI18next();
+        initLocales();
     }
 }, false);
 
@@ -96,12 +99,16 @@ async function getCurrentURL() {
 
         if(!browser.runtime.lastError) {
             return normalizeURL(tabInfos.url);
+        } else {
+            debugLogger.log("Popup getCurrentURL - Error getting current URL", "error", browser.runtime.lastError);
         }
     } else {
-        const tabs = await browser.tabs.query({active: true, currentWindow: true});
+        const tabs = await browser.tabs.query({ active: true, currentWindow: true });
 
         if(!browser.runtime.lastError) {
             return normalizeURL(tabs[0].url);
+        } else {
+            debugLogger.log("Popup getCurrentURL - Error getting current URL", "error", browser.runtime.lastError);
         }
     }
 }
@@ -180,6 +187,10 @@ $(document).ready(() => {
     $("#sliderBlueLightReduction").attr("data-slider-max", maxBrightnessPercentage * 100);
     $("#sliderBlueLightReduction").attr("data-slider-value", brightnessDefaultValue * 100);
 
+    $("#sliderAttenuateColorPercent").attr("data-slider-min", 0);
+    $("#sliderAttenuateColorPercent").attr("data-slider-max", 100);
+    $("#sliderAttenuateColorPercent").attr("data-slider-value", attenuateDefaultValue * 100);
+
     $("[data-toggle=\"tooltip\"]").tooltip({
         trigger: "hover",
         container: "body",
@@ -189,6 +200,7 @@ $(document).ready(() => {
     const sliderBrightness = new Slider("#sliderBrightness", {
         tooltip: "show",
         step: 1,
+        // eslint-disable-next-line camelcase
         tooltip_position: "top",
         formatter: value => {
             return value;
@@ -198,6 +210,17 @@ $(document).ready(() => {
     const sliderBlueLightReduction = new Slider("#sliderBlueLightReduction", {
         tooltip: "show",
         step: 1,
+        // eslint-disable-next-line camelcase
+        tooltip_position: "top",
+        formatter: value => {
+            return value;
+        }
+    });
+
+    const sliderAttenuateColorPercent = new Slider("#sliderAttenuateColorPercent", {
+        tooltip: "show",
+        step: 1,
+        // eslint-disable-next-line camelcase
         tooltip_position: "top",
         formatter: value => {
             return value;
@@ -293,16 +316,17 @@ $(document).ready(() => {
     };
 
     async function checkEnable() {
-        const url_str = await getCurrentURL();
+        const urlStr = await getCurrentURL();
         let url;
 
         try {
-            url = new URL(url_str);
+            url = new URL(urlStr);
         } catch(e) {
+            debugLogger.log(e, "error");
             return;
         }
 
-        const isFileURL = url_str.startsWith("file:///") || url_str.startsWith("about:");
+        const isFileURL = urlStr.startsWith("file:///") || urlStr.startsWith("about:");
 
         const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
         let sitesInterdits;
@@ -320,7 +344,7 @@ $(document).ready(() => {
         $("#enableWebsite-li").removeAttr("disabled");
 
         if(result.whiteList == "true") {
-            if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
+            if(inArrayWebsite(domain, sitesInterdits) || inArrayWebsite(href, sitesInterdits)) {
                 $("#disableWebsite-li").hide();
                 $("#enableWebsite-li").show();
             } else {
@@ -328,14 +352,14 @@ $(document).ready(() => {
                 $("#enableWebsite-li").hide();
             }
 
-            if(in_array_website(href, sitesInterdits) || in_array_website(domain, sitesInterdits)) {
+            if(inArrayWebsite(href, sitesInterdits) || inArrayWebsite(domain, sitesInterdits)) {
                 $("#disableWebpage-li").hide();
                 $("#enableWebpage-li").show();
 
-                if(in_array_website(domain, sitesInterdits)) {
+                if(inArrayWebsite(domain, sitesInterdits)) {
                     $("#disableWebpage-li").hide();
                     $("#enableWebpage-li").hide();
-                } else if(in_array_website(href, sitesInterdits)) {
+                } else if(inArrayWebsite(href, sitesInterdits)) {
                     $("#disableWebsite-li").hide();
                     $("#enableWebsite-li").hide();
                 }
@@ -344,7 +368,7 @@ $(document).ready(() => {
                 $("#enableWebpage-li").hide();
             }
         } else {
-            if(in_array_website(domain, sitesInterdits)) {
+            if(inArrayWebsite(domain, sitesInterdits)) {
                 $("#disableWebsite-li").show();
                 $("#enableWebsite-li").hide();
             } else {
@@ -352,7 +376,7 @@ $(document).ready(() => {
                 $("#enableWebsite-li").show();
             }
 
-            if(in_array_website(href, sitesInterdits)) {
+            if(inArrayWebsite(href, sitesInterdits)) {
                 $("#disableWebpage-li").show();
                 $("#enableWebpage-li").hide();
             } else {
@@ -437,6 +461,7 @@ $(document).ready(() => {
         try {
             url = new URL(await getCurrentURL());
         } catch(e) {
+            debugLogger.log(e, "error");
             return;
         }
 
@@ -450,6 +475,7 @@ $(document).ready(() => {
         try {
             url = new URL(await getCurrentURL());
         } catch(e) {
+            debugLogger.log(e, "error");
             return;
         }
 
@@ -488,7 +514,7 @@ $(document).ready(() => {
     });
 
     $("#disableWebsitePreset").on("click", async() => {
-        togglePreset("toggle-website", selectedPreset, true);
+        await togglePreset("toggle-website", selectedPreset, true);
     });
 
     $("#enableWebsitePreset").on("click", async() => {
@@ -647,12 +673,12 @@ $(document).ready(() => {
     });
 
     $("#themeSelect").on("change", async function() {
-        setSettingItem("theme", $(this).val());
+        await setSettingItem("theme", $(this).val());
 
         if($(this).val().trim().startsWith("custom")) {
             const result = await browser.storage.local.get("customThemeInfoDisable");
 
-            if(typeof result.customThemeInfoDisable == undefined || result.customThemeInfoDisable !== "true") {
+            if(typeof result.customThemeInfoDisable == "undefined" || result.customThemeInfoDisable !== "true") {
                 $("#customThemeInfos").modal("show");
             }
         }
@@ -697,15 +723,15 @@ $(document).ready(() => {
     }
 
     async function checkColorInvert() {
-        const result = await browser.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "selectiveInvert"]);
+        const result = await browser.storage.local.get(["colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "selectiveInvert", "invertBrightColors"]);
 
         if(result.colorInvert == "true") {
             // Convert old settings to new settings
-            setSettingItem("colorInvert", "false");
-            setSettingItem("invertPageColors", "true");
-            setSettingItem("invertImageColors", "true");
-            setSettingItem("invertVideoColors", "true");
-            setSettingItem("invertBgColor", "true");
+            await setSettingItem("colorInvert", "false");
+            await setSettingItem("invertPageColors", "true");
+            await setSettingItem("invertImageColors", "true");
+            await setSettingItem("invertVideoColors", "true");
+            await setSettingItem("invertBgColor", "true");
             checkColorInvert();
         } else if(result.invertPageColors == "true") {
             if(currentTheme != "modern" &&  currentTheme != "compactModern") {
@@ -765,6 +791,12 @@ $(document).ready(() => {
             $("#checkEntirePageInvert").prop("checked", true);
         } else if(result.invertEntirePage !== "true" && $("#checkEntirePageInvert").is(":checked") == true) {
             $("#checkEntirePageInvert").prop("checked", false);
+        }
+
+        if(result.invertBrightColors == "true" && $("#checkInvertBrightColors").is(":checked") == false) {
+            $("#checkInvertBrightColors").prop("checked", true);
+        } else if(result.invertBrightColors == "false" && $("#checkInvertBrightColors").is(":checked") == true) {
+            $("#checkInvertBrightColors").prop("checked", false);
         }
     }
 
@@ -846,8 +878,22 @@ $(document).ready(() => {
         }
     });
 
+    $("#checkInvertBrightColors").on("change", function() {
+        if($(this).is(":checked") == true) {
+            setSettingItem("invertBrightColors", "true");
+        } else {
+            setSettingItem("invertBrightColors", "false");
+        }
+    });
+
     async function checkAttenuateColor() {
-        const result = await browser.storage.local.get(["attenuateColors", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors", "attenuateBrightColors"]);
+        const result = await browser.storage.local.get(["attenuateColors", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors", "attenuateBrightColors", "percentageAttenuateColors"]);
+
+        if(result.percentageAttenuateColors / 100 > 100 || result.percentageAttenuateColors / 100 < 0 || typeof result.percentageAttenuateColors === "undefined" || result.percentageAttenuateColors == null) {
+            sliderAttenuateColorPercent.setValue(attenuateDefaultValue * 100);
+        } else {
+            sliderAttenuateColorPercent.setValue(result.percentageAttenuateColors);
+        }
 
         if(result.attenuateColors == "true") {
             if(currentTheme != "modern" &&  currentTheme != "compactModern") {
@@ -1230,7 +1276,7 @@ $(document).ready(() => {
         const result = await browser.storage.local.get(["pageLumEnabled", "nightModeEnabled", "pourcentageLum"]);
 
         if(result.pageLumEnabled == "true") {
-            elLumB.setAttribute("id", "pageShadowBrightness");
+            elLumB.setAttribute("id", brightnessReductionElementId);
 
             if(result.pourcentageLum / 100 > maxBrightnessPercentage || result.pourcentageLum / 100 < minBrightnessPercentage || typeof result.pourcentageLum === "undefined" || result.pourcentageLum == null) {
                 elLumB.style.opacity = brightnessDefaultValue;
@@ -1277,7 +1323,7 @@ $(document).ready(() => {
         const result = await browser.storage.local.get(["blueLightReductionEnabled", "colorTemp", "percentageBlueLightReduction"]);
 
         if(result.blueLightReductionEnabled == "true") {
-            elBlueLightReduction.setAttribute("id", "pageShadowBrightnessNightMode");
+            elBlueLightReduction.setAttribute("id", blueLightReductionElementId);
 
             if(result.percentageBlueLightReduction / 100 > maxBrightnessPercentage || result.percentageBlueLightReduction / 100 < minBrightnessPercentage || typeof result.percentageBlueLightReduction === "undefined" || result.percentageBlueLightReduction == null) {
                 elBlueLightReduction.style.opacity = percentageBlueLightDefaultValue;
@@ -1426,6 +1472,11 @@ $(document).ready(() => {
         setSettingItem("percentageBlueLightReduction", sliderBlueLightReductionValue);
     });
 
+    $("#sliderAttenuateColorPercent").on("slideStop", () => {
+        const sliderAttenuateColorPercentValue = sliderAttenuateColorPercent.getValue();
+        setSettingItem("percentageAttenuateColors", sliderAttenuateColorPercentValue);
+    });
+
     $( "#checkNighMode" ).on("change", function() {
         if($(this).is(":checked") == true) {
             setSettingItem("nightModeEnabled", "true");
@@ -1559,7 +1610,7 @@ $(document).ready(() => {
     }
 
     $("#createPresetModalValidate").on("click", async() => {
-        createPreset();
+        await createPreset();
     });
 
     $("#createPresetModalTitle").on("keyup", (e) => {
@@ -1571,7 +1622,8 @@ $(document).ready(() => {
     async function displaySettings() {
         const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "percentageBlueLightReduction", "archiveInfoLastShowed", "archiveInfoDisable", "permissionsInfoDisable", "lastAutoBackupFailedLastShowed", "lastAutoBackupFailed"]);
 
-        const informationShowed = showInformationPopup(result);
+        const informationShowed = await showInformationPopup(result);
+
         checkCurrentPopupTheme();
         toggleTheme(); // Toggle dark/light theme
         checkContrastMode(!updateNotificationShowed && !archiveInfoShowed && !informationShowed);
@@ -1668,7 +1720,41 @@ $(document).ready(() => {
             document.getElementById("popup-wrapper").style.maxHeight = (resolHeight - 120) + "px";
         }
     }
+
+    $("#reportProblemLink").on("click", () => {
+        $("#reportProblemModal").modal("show");
+    });
+
+    $("#reportProblemButton").on("click", async () => {
+        await reportWebsiteProblem();
+        $("#reportProblemModal").modal("hide");
+    });
+
+    if(enableReportWebsiteProblem) {
+        $("#reportProblemLink").show();
+    }
 });
+
+async function reportWebsiteProblem() {
+    const currentURL = await getCurrentURL();
+    const settings = await browser.storage.local.get(settingsToLoad);
+
+    const dataToSend = {
+        currentURL,
+        settings
+    };
+
+    const base64dataToSend = btoa(JSON.stringify(dataToSend))
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
+
+    sendMessageWithPromise({
+        type: "openTab",
+        url: reportWebsiteProblemBackendURL + encodeURIComponent(base64dataToSend),
+        part: ""
+    });
+}
 
 async function showInformationPopup(result) {
     const updateNotification = result.updateNotification || {};
@@ -1690,7 +1776,7 @@ async function showInformationPopup(result) {
 
         updateNotification[extensionVersion] = true;
         $("#updated").modal("show");
-        setSettingItem("updateNotification", updateNotification);
+        await setSettingItem("updateNotification", updateNotification);
         updateNotificationShowed = true;
         return true;
     } else if (!updateNotificationShowed) {
@@ -1699,12 +1785,12 @@ async function showInformationPopup(result) {
 
             if (archiveInfoLastShowed > 0 && archiveInfoLastShowed + (archiveInfoShowInterval * 60 * 60 * 24 * 1000) <= Date.now() && result.archiveInfoDisable !== "true") {
                 $("#archiveInfo").modal("show");
-                setSettingItem("archiveInfoLastShowed", Date.now());
+                await setSettingItem("archiveInfoLastShowed", Date.now());
                 archiveInfoShowed = true;
 
                 return true;
             } else if (archiveInfoLastShowed <= 0) {
-                setSettingItem("archiveInfoLastShowed", Date.now());
+                await setSettingItem("archiveInfoLastShowed", Date.now());
             }
         }
 
@@ -1714,7 +1800,7 @@ async function showInformationPopup(result) {
 
             if (hasErrorLastAutoBackup && !lastAutoBackupFailedLastShowed) {
                 $("#autoBackupCloudLastFailed").modal("show");
-                setSettingItem("lastAutoBackupFailedLastShowed", "true");
+                await setSettingItem("lastAutoBackupFailedLastShowed", "true");
                 autoBackupFailedShowed = true;
 
                 return true;

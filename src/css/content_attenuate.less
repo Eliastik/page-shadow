@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -16,6 +16,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+
+/** CSS for the attenuate colors filter **/
+
+/* CSS variables - controlled by JavaScript code */
 :root {
     --page-shadow-attenuate-filter: grayscale(50%);
 }
@@ -29,39 +33,45 @@ body.pageShadowAttenuateImageColor:not(.pageShadowInvertImageColor) img:not(.pag
 }
 
 html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateImageColor img.pageShadowDisableElementInvert, html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateImageColor svg.pageShadowDisableElementInvert {
-    filter: grayscale(50%) !important;
-    -moz-filter: grayscale(50%) !important;
-    -o-filter: grayscale(50%) !important;
-    -webkit-filter: grayscale(50%) !important;
-}
-
-html.pageShadowInvertEntirePage body.pageShadowAttenuateImageColor img.pageShadowDisableElementInvert, html.pageShadowInvertEntirePage body.pageShadowAttenuateImageColor svg.pageShadowDisableElementInvert {
-    filter: invert(100%) grayscale(50%) !important;
-    -moz-filter: invert(100%) grayscale(50%) !important;
-    -o-filter: invert(100%) grayscale(50%) !important;
-    -webkit-filter: invert(100%) grayscale(50%) !important;
-}
-
-// Backgrounds
-body.pageShadowAttenuateBgColor:not(.pageShadowInvertBgColor) .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert) {
     filter: var(--page-shadow-attenuate-filter) !important;
     -moz-filter: var(--page-shadow-attenuate-filter) !important;
     -o-filter: var(--page-shadow-attenuate-filter) !important;
     -webkit-filter: var(--page-shadow-attenuate-filter) !important;
 }
 
-html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBgColor .pageShadowHasBackgroundImg.pageShadowDisableElementInvert {
-    filter: grayscale(50%) !important;
-    -moz-filter: grayscale(50%) !important;
-    -o-filter: grayscale(50%) !important;
-    -webkit-filter: grayscale(50%) !important;
+html.pageShadowInvertEntirePage body.pageShadowAttenuateImageColor img.pageShadowDisableElementInvert, html.pageShadowInvertEntirePage body.pageShadowAttenuateImageColor svg.pageShadowDisableElementInvert {
+    filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
+    -moz-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
+    -o-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
+    -webkit-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
 }
 
-html.pageShadowInvertEntirePage body.pageShadowAttenuateBgColor .pageShadowHasBackgroundImg.pageShadowDisableElementInvert {
-    filter: invert(100%) grayscale(50%) !important;
-    -moz-filter: invert(100%) grayscale(50%) !important;
-    -o-filter: invert(100%) grayscale(50%) !important;
-    -webkit-filter: invert(100%) grayscale(50%) !important;
+// Backgrounds
+body.pageShadowAttenuateBgColor:not(.pageShadowInvertBgColor) .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert),
+body.pageShadowAttenuateBgColor:not(.pageShadowInvertBgColor) .pageShadowPseudoElementHasBackgroundImgBefore:not(.pageShadowDisableElementInvert):before,
+body.pageShadowAttenuateBgColor:not(.pageShadowInvertBgColor) .pageShadowPseudoElementHasBackgroundImgAfter:not(.pageShadowDisableElementInvert):after {
+    filter: var(--page-shadow-attenuate-filter) !important;
+    -moz-filter: var(--page-shadow-attenuate-filter) !important;
+    -o-filter: var(--page-shadow-attenuate-filter) !important;
+    -webkit-filter: var(--page-shadow-attenuate-filter) !important;
+}
+
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBgColor .pageShadowHasBackgroundImg.pageShadowDisableElementInvert,
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBgColor .pageShadowPseudoElementHasBackgroundImgBefore.pageShadowDisableElementInvert:before,
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBgColor .pageShadowPseudoElementHasBackgroundImgAfter.pageShadowDisableElementInvert:after {
+    filter: var(--page-shadow-attenuate-filter) !important;
+    -moz-filter: var(--page-shadow-attenuate-filter) !important;
+    -o-filter: var(--page-shadow-attenuate-filter) !important;
+    -webkit-filter: var(--page-shadow-attenuate-filter) !important;
+}
+
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBgColor .pageShadowHasBackgroundImg.pageShadowDisableElementInvert,
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBgColor .pageShadowPseudoElementHasBackgroundImgBefore.pageShadowDisableElementInvert:before,
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBgColor .pageShadowPseudoElementHasBackgroundImgAfter.pageShadowDisableElementInvert:after {
+    filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
+    -moz-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
+    -o-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
+    -webkit-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
 }
 
 // Videos
@@ -73,37 +83,52 @@ body.pageShadowAttenuateVideoColor:not(.pageShadowInvertVideoColor) video:not(.p
 }
 
 html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateVideoColor video.pageShadowDisableElementInvert, html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateVideoColor canvas.pageShadowDisableElementInvert {
-    filter: grayscale(50%) !important;
-    -moz-filter: grayscale(50%) !important;
-    -o-filter: grayscale(50%) !important;
-    -webkit-filter: grayscale(50%) !important;
-}
-
-html.pageShadowInvertEntirePage body.pageShadowAttenuateVideoColor video.pageShadowDisableElementInvert, html.pageShadowInvertEntirePage body.pageShadowAttenuateVideoColor canvas.pageShadowDisableElementInvert {
-    filter: invert(100%) grayscale(50%) !important;
-    -moz-filter: invert(100%) grayscale(50%) !important;
-    -o-filter: invert(100%) grayscale(50%) !important;
-    -webkit-filter: invert(100%) grayscale(50%) !important;
-}
-
-// Bright color
-body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground:not(.pageShadowDisableElementInvert) {
     filter: var(--page-shadow-attenuate-filter) !important;
     -moz-filter: var(--page-shadow-attenuate-filter) !important;
     -o-filter: var(--page-shadow-attenuate-filter) !important;
     -webkit-filter: var(--page-shadow-attenuate-filter) !important;
 }
 
-html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground.pageShadowDisableElementInvert {
-    filter: grayscale(50%) !important;
-    -moz-filter: grayscale(50%) !important;
-    -o-filter: grayscale(50%) !important;
-    -webkit-filter: grayscale(50%) !important;
+html.pageShadowInvertEntirePage body.pageShadowAttenuateVideoColor video.pageShadowDisableElementInvert, html.pageShadowInvertEntirePage body.pageShadowAttenuateVideoColor canvas.pageShadowDisableElementInvert {
+    filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
+    -moz-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
+    -o-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
+    -webkit-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
 }
 
-html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground.pageShadowDisableElementInvert {
-    filter: invert(100%) grayscale(50%) !important;
-    -moz-filter: invert(100%) grayscale(50%) !important;
-    -o-filter: invert(100%) grayscale(50%) !important;
-    -webkit-filter: invert(100%) grayscale(50%) !important;
+// Bright color
+body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowHasBrightColorBackground:not(.pageShadowDisableElementInvert),
+body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert),
+body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowPseudoElementHasBrightColorBackgroundAfter:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):after,
+body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowPseudoElementHasBrightColorTextAfter:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):after,
+body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowPseudoElementHasBrightColorBackgroundBefore:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):before,
+body.pageShadowAttenuateBrightColor:not(.pageShadowInvertBrightColors) .pageShadowPseudoElementHasBrightColorTextBefore:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):before {
+    filter: var(--page-shadow-attenuate-filter) !important;
+    -moz-filter: var(--page-shadow-attenuate-filter) !important;
+    -o-filter: var(--page-shadow-attenuate-filter) !important;
+    -webkit-filter: var(--page-shadow-attenuate-filter) !important;
+}
+
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground.pageShadowDisableElementInvert,
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorText.pageShadowDisableElementInvert,
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorBackgroundAfter.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):after,
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorTextAfter.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):after,
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorBackgroundBefore.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):before,
+html:not(.pageShadowInvertEntirePage) body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorTextBefore.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):before {
+    filter: var(--page-shadow-attenuate-filter) !important;
+    -moz-filter: var(--page-shadow-attenuate-filter) !important;
+    -o-filter: var(--page-shadow-attenuate-filter) !important;
+    -webkit-filter: var(--page-shadow-attenuate-filter) !important;
+}
+
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorBackground.pageShadowDisableElementInvert,
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowHasBrightColorText.pageShadowDisableElementInvert,
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorBackgroundAfter.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):after,
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorTextAfter.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):after,
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorBackgroundBefore.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):before,
+html.pageShadowInvertEntirePage body.pageShadowAttenuateBrightColor .pageShadowPseudoElementHasBrightColorTextBefore.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):before {
+    filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
+    -moz-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
+    -o-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
+    -webkit-filter: invert(100%) var(--page-shadow-attenuate-filter) !important;
 }

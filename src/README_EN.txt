@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.10.4 (6/9/2024)
+* Latest version: 2.11 (12/22/2024)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,54 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.11 (12/22/2024) :
+
+* Added the ability to enable the inversion or attenuation of colored elements. This allows users to disable the inversion of colored elements while enabling entire page inversion, providing an alternative dark mode to the Increase contrast function;
+* Added the ability to adjust the filter intensity for the Attenuate colors function;
+* Colored text elements are now detected by Page Shadow. They are thus taken into account by the various functions managing colored elements: Increase contrast, Invert colors, and Attenuate colors;
+* When opening a new page, the Decrease brightness, Blue light reduction filter and Invert colors features are now applied faster to prevent the appearance of a potentially unpleasant flash, thanks to performance optimization;
+* The selective invert feature has been improved: it preserves as far as possible the original colors of images while inverting black and dark colors to white, to make elements more visible against a dark background;
+* The algorithm detecting images containing text/logos or other dark elements has been revised and improved: it is much more effective and efficient. It is now enabled by default in this version. To take advantage of this feature, you need to enable the Invert colors > Selective function so that detected images are inverted, making them more readable on a dark background;
+    * The algorithm analyzes images on the webpage to detect dark pixel patterns surrounded by transparent backgrounds;
+    * The algorithm can be configured via the advanced options of the extension, for advanced users only, or via the Filters functionality;
+    * Performance optimizations have been made to the algorithm;
+* Special attention was paid to optimizing the performance of the extension: it now adapts to the device's performance and the complexity of web pages for the page analysis engine. The number of elements analyzed automatically adjusts based on the context for better performance. Other optimizations have also been made, significantly improving the extension’s performance:
+    * The Page Shadow web page analysis engine's features now have a maximum execution time: if the execution time exceeds a threshold, it temporarily pauses execution to free up resources;
+    * The features of the Page Shadow web page analysis engine now execute asynchronously;
+    * CSS class changes are now applied in batches;
+    * Other code optimizations have been made to improve performance;
+    * All these optimizations can be adjusted in the advanced options of the extension, for advanced users only. These optimizations can also be managed via the extension’s Filters feature;
+* Added the ability to report a problem with the display of web pages using Page Shadow features to the extension developer: this transmits the URL of the page to the developer after user consent, to help correct the problem;
+* Fixed issues with Cloud archiving of Page Shadow settings: in some cases, archiving could fail due to the chunking algorithm used by Page Shadow. The algorithm has been corrected, resolving these issues. Existing Cloud archives are not affected;
+* Added 5 additional preset slots (bringing the total to 15) and 5 additional custom theme slots (bringing the total to 10);
+* The extension now detects elements where a filter was applied but, due to certain changes, the filter no longer needs to be applied. Filters are now properly removed from the element in this case;
+* Gradient-colored backgrounds are now detected by the extension;
+* The advanced options interface has been revamped, with options now grouped by category;
+* Improved Shadow DOM support: the extension now analyzes elements contained in a Shadow DOM. Other fixes bring greater compatibility with websites using this technology;
+* Improved support for pseudo-elements: the extension now analyzes pseudo-elements to improve display on websites using this feature;
+* Fixed other bugs and technical improvements:
+    * A debug mode has been added, which can be enabled in the advanced options, adding debugging and error logs;
+    * Added new filters and advanced options;
+    * Fixed a bug with the quick application of the "Increase Contrast" feature, an improvement introduced in version 2.10.4: it was sometimes incorrectly applied to iframes on the page, even when the feature was disabled on the parent page;
+    * Fixed the detection of transparent backgrounds on certain websites;
+    * Fixed background image detection on some websites;
+    * Fixed a bug with some filters;
+    * Fixed a bug with changing the settings of the Invert colors function when applying real-time changes to the settings;
+    * Fixed detection of real-time settings changes with iframes;
+    * Fixed display of the preset applied to the current website in the popup on Firefox: sometimes, no preset was displayed, randomly;
+    * Fixed a bug on some websites where the "class" attribute of the HTML element was reset: the extension now detects this behavior and restores the classes necessary for it to function properly;
+    * Fixed a bug on some websites modifying their body element: Page Shadow now correctly detects these modifications, avoiding various problems;
+    * Fixed a bug in the settings and filters cache in the ManifestV3 version: some obsolete data did not expire correctly at random;
+    * Fixed a bug in the ManifestV3 version: messages were regularly sent to the extension's Service Worker, preventing it from going to sleep in the event of inactivity;
+    * Fixed inversion of background images on some websites;
+    * Fixed inversion of images at the root of the body element;
+    * Fixed video inversion in certain cases;
+    * Corrected the wording of some extension texts for better clarity;
+    * Fixed errors with the right-click menu system;
+    * General code improvements, dispatch of certain parts of the code into separate classes, other code improvements for greater readability, addition of new eslint rules;
+    * Other minor bug fixes;
+    * Dependencies updated.
 
 ### Version 2.10.4 (6/9/2024) :
 

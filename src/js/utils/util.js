@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -18,10 +18,13 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { setSettingItem, migrateSettings } from "../storage.js";
 import browser from "webextension-polyfill";
-import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, permissionOrigin } from "../constants.js";
+import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingsToSavePresets, nbPresets, defaultPresets, defaultCustomThemes, defaultWebsiteSpecialFiltersConfig, defaultSettings, settingsToLoad, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, permissionOrigin, quotaBytesPerItemMargin, attenuateDefaultValue, pageAnalyzerCSSClasses, colorTemperaturesAvailable, regexpMatchURL } from "../constants.js";
 import { Sha256 } from "@aws-crypto/sha256-browser";
+import DebugLogger from "./../classes/debugLogger.js";
 
-function in_array(needle, haystack) {
+const debugLogger = new DebugLogger();
+
+function inArray(needle, haystack) {
     for(const key in haystack) {
         if(needle.indexOf(haystack[key]) != -1) {
             return true;
@@ -31,7 +34,7 @@ function in_array(needle, haystack) {
     return false;
 }
 
-function strict_in_array(needle, haystack) {
+function strictInArray(needle, haystack) {
     for(const key in haystack) {
         if(needle == haystack[key]) {
             return true;
@@ -58,19 +61,18 @@ function matchWebsite(needle, rule) {
                     return true;
                 }
             } catch(e) {
+                debugLogger.log(e, "error");
                 return false;
             }
-        } else {
-            if(needle == rule) {
-                return true;
-            }
+        } else if(needle == rule) {
+            return true;
         }
     }
 
     return false;
 }
 
-function in_array_website(needle, haystack) {
+function inArrayWebsite(needle, haystack) {
     for(const key in haystack) {
         if(matchWebsite(needle, haystack[key])) {
             return true;
@@ -188,17 +190,18 @@ async function pageShadowAllowed(url, settingsCache) {
             forbiddenWebsites = result.sitesInterditPageShadow.trim().split("\n");
         }
 
-        let websuteUrl_tmp;
+        let websiteUrlTmp;
 
         try {
-            websuteUrl_tmp = new URL(url);
+            websiteUrlTmp = new URL(url);
         } catch(e) {
+            debugLogger.log(e, "error");
             return;
         }
 
-        const domain = websuteUrl_tmp.hostname;
+        const domain = websiteUrlTmp.hostname;
 
-        if((result.whiteList == "true" && (in_array_website(domain, forbiddenWebsites) || in_array_website(url, forbiddenWebsites))) || (result.whiteList !== "true" && !in_array_website(domain, forbiddenWebsites) && !in_array_website(url, forbiddenWebsites))) {
+        if((result.whiteList == "true" && (inArrayWebsite(domain, forbiddenWebsites) || inArrayWebsite(url, forbiddenWebsites))) || (result.whiteList !== "true" && !inArrayWebsite(domain, forbiddenWebsites) && !inArrayWebsite(url, forbiddenWebsites))) {
             return true;
         }
     }
@@ -310,116 +313,371 @@ async function customTheme(nb, disableCustomCSS, lnkCssElement, customThemesSett
     return false;
 }
 
-function processRules(style, config, isShadowRoot) {
+async function processRules(style, themeConfig, isShadowRoot) {
     if(!style.sheet) return;
+
     if(style.cssRules) { // Remove all rules
         for(let i = 0; i < style.cssRules.length; i++) {
             style.sheet.deleteRule(i);
         }
     }
 
-    const ruleSelector = isShadowRoot ? ":host" : ".pageShadowContrastBlackCustom:not(.pageShadowDisableStyling)";
-    const backgroundTheme = config.backgroundColor;
-    const linksColorTheme = config.linkColor;
-    const linksVisitedColorTheme = config.visitedLinkColor;
-    const textsColorTheme = config.textColor;
-    const fontTheme = config.fontFamily;
+    const response = await sendMessageWithPromise({ "type": "getGlobalPageShadowStyle" }, "getGlobalPageShadowStyleResponse");
 
-    if(!isShadowRoot) {
-        style.sheet.insertRule("html.pageShadowBackgroundCustom:not(.pageShadowDisableBackgroundStyling) { background: #" + backgroundTheme + " !important; }", 0);
-        style.sheet.insertRule("html.pageShadowBackgroundCustom.pageShadowForceCustomLinkColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + linksColorTheme + " !important; }", 0);
-        style.sheet.insertRule("html.pageShadowBackgroundCustom.pageShadowForceCustomLinkVisitedColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + linksVisitedColorTheme + " !important; }", 0);
-        style.sheet.insertRule("html.pageShadowBackgroundCustom.pageShadowForceCustomTextColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + textsColorTheme + " !important; }", 0);
-    }
+    style.textContent = processRulesConfig(response.data, themeConfig);
 
-    style.sheet.insertRule(ruleSelector + ":not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg) { background: #" + backgroundTheme + " !important; background-image: url(); color: #" + textsColorTheme + "; }", 0);
-    style.sheet.insertRule(ruleSelector + ".pageShadowHasBackgroundImg:not(.pageShadowDisableBackgroundStyling) { background-color: #" + backgroundTheme + " !important; color: #" + textsColorTheme + "; }", 0);
-    style.sheet.insertRule(ruleSelector + ".pageShadowForceCustomLinkColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + linksColorTheme + " !important; background-image: url(); }", 0);
-    style.sheet.insertRule(ruleSelector + ".pageShadowForceCustomLinkVisitedColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + linksVisitedColorTheme + " !important; background-image: url(); }", 0);
-    style.sheet.insertRule(ruleSelector + ".pageShadowForceCustomTextColorAsBackground:not(.pageShadowDisableBackgroundStyling) { background: #" + textsColorTheme + " !important; background-image: url(); }", 0);
-    style.sheet.insertRule(ruleSelector + " *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling):not(.pageShadowHasTransparentBackground), " + ruleSelector + " *.pageShadowForceCustomBackgroundColor, " + ruleSelector + " *.pageShadowEnablePseudoElementStyling::after, " + ruleSelector + " *.pageShadowEnablePseudoElementStyling::before { background-color: #" + backgroundTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor), " + ruleSelector + " *.pageShadowForceCustomTextColor, " + ruleSelector + " *.pageShadowEnablePseudoElementStyling::after, " + ruleSelector + " *.pageShadowEnablePseudoElementStyling::before { color: #" + textsColorTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " input:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling), " + ruleSelector + " textarea:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling) { border-color: #" + textsColorTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " input.pageShadowForceInputBorderStyling, " + ruleSelector + " textarea.pageShadowForceInputBorderStyling { border: 1px solid #" + textsColorTheme + " !important; }", 0);
-    if(!isShadowRoot) style.sheet.insertRule(ruleSelector + " *:not(.pageShadowElementDisabled):not(.pageShadowDisableFontFamilyStyling), " + ruleSelector + " *.pageShadowForceFontFamilyStyling { font-family: " + fontTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " :not(.pageShadowInvertImageColor) svg:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor) { color: #" + textsColorTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " a:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomTextColor), " + ruleSelector + " *.pageShadowForceCustomLinkColor { color: #" + linksColorTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected a:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowDisableStyling) { background-color: transparent !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " img, " + ruleSelector + " video, " + ruleSelector + " canvas { filter: invert(0%); }", 0);
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected * > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground), " + ruleSelector + " *.pageShadowForceCustomBackgroundColor, " + ruleSelector + " *.pageShadowEnablePseudoElementStyling::after, " + ruleSelector + " *.pageShadowEnablePseudoElementStyling::before { background: #" + backgroundTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) { background: #" + backgroundTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor), " + ruleSelector + " #pageShadowLinkVisited:not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor), " + ruleSelector + " *:visited.pageShadowForceCustomLinkColor, " + ruleSelector + " *.pageShadowForceCustomVisitedLinkColor { color: #" + linksVisitedColorTheme + " !important; }", 0);
-    style.sheet.insertRule(ruleSelector + " *.pageShadowForceCustomLinkColorAsBackground:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling):not(.pageShadowHasTransparentBackground) { background-color: #" + linksColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + " *.pageShadowForceCustomLinkVisitedColorAsBackground:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling):not(.pageShadowHasTransparentBackground) { background-color: #" + linksVisitedColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + " *.pageShadowForceCustomTextColorAsBackground:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowDisableStyling):not(.pageShadowHasTransparentBackground) { background-color: #" + textsColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected * > *.pageShadowForceCustomLinkColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) { background: #" + linksColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected * > *.pageShadowForceCustomLinkVisitedColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) { background: #" + linksVisitedColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected * > *.pageShadowForceCustomTextColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) { background: #" + textsColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected > *.pageShadowForceCustomLinkColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) { background: #" + linksColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected > *.pageShadowForceCustomLinkVisitedColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) { background: #" + linksVisitedColorTheme + " !important; }");
-    style.sheet.insertRule(ruleSelector + ".pageShadowBackgroundDetected > *.pageShadowForceCustomTextColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowDisableStyling):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) { background: #" + textsColorTheme + " !important; }");
-
-    if(isShadowRoot) {
-        style.sheet.insertRule(":host { color: unset !important; background: unset !important; }");
+    if(style.sheet) {
+        if(isShadowRoot) {
+            style.sheet.insertRule(":host { color: unset !important; background: unset !important; }");
+        }
     }
 }
 
-function processRulesInvert(style, enabled, invertImageColors, invertEntirePage, invertVideoColors, invertBgColors, selectiveInvert) {
+function processShadowRootStyle(style) {
+    let newStyle = style.replaceAll(/html\.pageShadowBackgroundContrast\b/g, ":host");
+    newStyle = newStyle.replaceAll(/html\.pageShadowContrastBlack\b/g, ":host");
+    newStyle = newStyle.replaceAll(/body\.pageShadowInvertImageColor\b/g, ":host(.pageShadowInvertImageColor)");
+    newStyle = newStyle.replaceAll(/body\.pageShadowInvertBgColor\b/g, ":host(.pageShadowInvertBgColor)");
+    newStyle = newStyle.replaceAll(/body\.pageShadowInvertVideoColor\b/g, ":host(.pageShadowInvertVideoColor)");
+    newStyle = newStyle.replaceAll(/.pageShadowCustomFontFamily\b/g, ":host");
+    newStyle = newStyle.replaceAll(/\.pageShadowContrastBlack(?=[\s\S]*\{)/g, ":host");
+    newStyle = newStyle.replaceAll(/:root/g, ":host");
+    newStyle = newStyle.replaceAll(/:host:host/g, ":host");
+    newStyle = newStyle.replaceAll(/:host(?:\s*:\s*not\([^)]+\))+\s/g, ":host ");
+
+    return newStyle;
+}
+
+function processRulesConfig(style, themeConfig) {
+    const colorMap = {
+        "--page-shadow-bgcolor": themeConfig.backgroundColor,
+        "--page-shadow-txtcolor": themeConfig.textColor,
+        "--page-shadow-lnkcolor": themeConfig.linkColor,
+        "--page-shadow-visitedlnkcolor": themeConfig.visitedLinkColor,
+        "--page-shadow-selectbgcolor": themeConfig.selectBackgroundColor || defaultThemesSelectBgColors[0],
+        "--page-shadow-selecttxtcolor": themeConfig.selectTextColor || defaultThemesSelectTextColors[0],
+        "--page-shadow-insbgcolor": themeConfig.insBackgroundColor || defaultThemesInsBgColors[0],
+        "--page-shadow-instcolor": themeConfig.insTextColor || defaultThemesInsTextColors[0],
+        "--page-shadow-delbgcolor": themeConfig.delBackgroundColor || defaultThemesDelBgColors[0],
+        "--page-shadow-deltcolor": themeConfig.delTextColor || defaultThemesDelTextColors[0],
+        "--page-shadow-markbgcolor": themeConfig.markBackgroundColor || defaultThemesMarkBgColors[0],
+        "--page-shadow-marktxtcolor": themeConfig.markTxtColor || defaultThemesMarkTextColors[0],
+        "--page-shadow-imgbgcolor": themeConfig.imageBackgroundColor || defaultThemesImgBgColors[0],
+        "--page-shadow-customfontfamily": themeConfig.fontFamily || "default",
+        "--page-shadow-brightcolorxtwhite": themeConfig.brightColorTextWhite || defaultThemesBrightColorTextWhite[0],
+        "--page-shadow-brightcolortxtblack": themeConfig.brightColorTextBlack || defaultThemesBrightColorTextBlack[0]
+    };
+
+    return style.replace(/var\((--page-shadow-[a-zA-Z-]+)\)/g, (match, varName) => {
+        return colorMap[varName] || match;
+    });
+}
+
+function processRulesInvert(parentElement, style, settings, enablePreserveColorsSelectiveInvert) {
     if(!style.sheet) return;
+
     if(style.cssRules) { // Remove all rules
         for(let i = 0; i < style.cssRules.length; i++) {
             style.sheet.deleteRule(i);
         }
     }
 
-    if(enabled == "true") {
-        if((invertEntirePage != "true" && invertImageColors == "true") || (invertEntirePage == "true" && invertImageColors != "true")) {
-            style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) img:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) svg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsImage:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; background-color: transparent !important; }");
+    const enabled = settings.colorInvert;
+    const invertEntirePage = settings.invertEntirePage;
 
-            if(invertEntirePage != "true" && selectiveInvert != "true") {
-                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) img:not(.pageShadowDisableElementInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) svg:not(.pageShadowDisableElementInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsImage:not(.pageShadowDisableElementInvert) { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; background-color: transparent !important; }");
-            }
+    let invertImageColors = settings.invertImageColors;
+    let invertVideoColors = settings.invertVideoColors;
+    let invertBgColors = settings.invertBgColor;
+    let selectiveInvert = settings.selectiveInvert;
+    let invertBrightColors = settings.invertBrightColors;
 
-            if(selectiveInvert == "true") {
-                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) img.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) svg.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert),:host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsImage.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert) { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; background-color: transparent !important; }");
-            }
+    let percentageAttenuateColors = settings.percentageAttenuateColors;
 
-            if(invertEntirePage != "true" && selectiveInvert == "true") {
-                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) img.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert), :host  :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) svg.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert), :host  :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsImage.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert) { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; background-color: transparent !important; }");
-            }
+    if(percentageAttenuateColors / 100 > 1 || percentageAttenuateColors / 100 < 0 || typeof percentageAttenuateColors === "undefined" || percentageAttenuateColors == null) {
+        percentageAttenuateColors = attenuateDefaultValue;
+    }
+
+    const attenuateEnabled = settings.attenuateColors;
+    const attenuateImageColors = settings.attenuateImgColors;
+    const attenuateBgColors = settings.attenuateBgColors;
+    const attenuateVideoColors = settings.attenuateVideoColors;
+    const attenuateBrightColors = settings.attenuateBrightColors;
+
+    let invertImageFilter = "invert(100%)";
+    let invertImageFilterSelective = enablePreserveColorsSelectiveInvert ? "invert(100%) hue-rotate(180deg)" : "invert(100%)";
+    let invertBgFilter = "invert(100%)";
+    let invertBgFilterSelective = enablePreserveColorsSelectiveInvert ? "invert(100%) hue-rotate(180deg)" : "invert(100%)";
+    let invertVideoFilter = "invert(100%)";
+    let invertVideoFilterSelective = enablePreserveColorsSelectiveInvert ? "invert(100%) hue-rotate(180deg)" : "invert(100%)";
+    let invertBrightColorsFilter = "invert(100%)";
+
+    if(invertEntirePage === "true") {
+        if(selectiveInvert === "true") {
+            invertImageFilterSelective = enablePreserveColorsSelectiveInvert ? "hue-rotate(180deg)" : "invert(0)";
+            invertBgFilterSelective = enablePreserveColorsSelectiveInvert ? "hue-rotate(180deg)" : "invert(0)";
+            invertVideoFilterSelective = enablePreserveColorsSelectiveInvert ? "hue-rotate(180deg)" : "invert(0)";
+        } else {
+            invertImageFilterSelective = "invert(100%)";
+            invertBgFilterSelective = "invert(100%)";
+            invertVideoFilterSelective = "invert(100%)";
         }
+    }
 
+    if(attenuateEnabled == "true" && attenuateImageColors == "true") {
+        invertImageFilter = invertImageFilter + " grayscale(" + percentageAttenuateColors + "%)";
+        invertImageFilterSelective = invertImageFilterSelective + " grayscale(" + percentageAttenuateColors + "%)";
+    }
+
+    if(attenuateEnabled == "true" && attenuateBgColors == "true") {
+        invertBgFilter = invertBgFilter + " grayscale(" + percentageAttenuateColors + "%)";
+        invertBgFilterSelective = invertBgFilterSelective + " grayscale(" + percentageAttenuateColors + "%)";
+    }
+
+    if(attenuateEnabled == "true" && attenuateVideoColors == "true") {
+        invertVideoFilter = invertVideoFilter + " grayscale(" + percentageAttenuateColors + "%)";
+        invertVideoFilterSelective = invertVideoFilterSelective + " grayscale(" + percentageAttenuateColors + "%)";
+    }
+
+    if(attenuateEnabled == "true" && attenuateBrightColors == "true") {
+        invertBrightColorsFilter = invertBrightColorsFilter + " grayscale(" + percentageAttenuateColors + "%)";
+    }
+
+    const closestBrightColorBackground = parentElement && parentElement.closest && parentElement.closest(".pageShadowHasBrightColorBackground");
+    const parentHasBrightColorBackground = parentElement && (parentElement.classList.contains("pageShadowHasBrightColorBackground") || (closestBrightColorBackground != null && closestBrightColorBackground != document.body));
+    const parentHasBrightColorText = parentElement && parentElement.classList.contains("pageShadowHasBrightColorText");
+
+    // Conditions are inverted if inverting entire page
+    if(invertEntirePage == "true") {
+        invertImageColors = invertImageColors == "false" ? "true" : "false";
+        invertVideoColors = invertVideoColors == "false" ? "true" : "false";
+        invertBgColors = invertBgColors == "false" ? "true" : "false";
+        invertBrightColors = invertBrightColors == "false" ? "true" : "false";
+        selectiveInvert = selectiveInvert == "false" ? "true" : "false";
+    }
+
+    const shouldInvertBrightColors = invertBrightColors != "true" || (invertBrightColors == "true" && !parentHasBrightColorText && !parentHasBrightColorBackground);
+
+    if(enabled == "true") {
         if(invertEntirePage == "true") {
             style.sheet.insertRule(":host .pageShadowDisableElementInvert { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; }");
             style.sheet.insertRule(":host .pageShadowDisableElementInvert > * { filter: invert(0%) !important; -moz-filter: invert(0%) !important; -o-filter: invert(0%) !important; -webkit-filter: invert(0%) !important; }");
-        }
 
-        if((invertEntirePage != "true" && invertVideoColors == "true") || (invertEntirePage == "true" && invertVideoColors != "true")) {
-            style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) video:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) canvas:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsVideo:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; }");
-
-            if(invertEntirePage != "true" && selectiveInvert != "true") {
-                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) video:not(.pageShadowDisableElementInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) canvas:not(.pageShadowDisableElementInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsVideo:not(.pageShadowDisableElementInvert) { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; }");
-            }
-
-            if(selectiveInvert == "true") {
-                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) video.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) canvas.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert),:host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsVideo.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert) { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; }");
-            }
-
-            if(invertEntirePage != "true" && selectiveInvert == "true") {
-                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) video.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert), :host  :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) canvas.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert), :host  :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsVideo.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert) { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; }");
+            if(shouldInvertBrightColors) {
+                style.sheet.insertRule(":host iframe, :host frame { filter: invert(0%) !important; -moz-filter: invert(0%) !important; -o-filter: invert(0%) !important; -webkit-filter: invert(0%) !important; }");
             }
         }
 
-        if((invertEntirePage != "true" && invertBgColors == "true") || (invertEntirePage == "true" && invertBgColors != "true")) {
-            style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert), :host :not(.pageShadowDisableElementInvert) .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert) { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; }");
-            style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert) > *, :host *:not(.pageShadowDisableElementInvert) > .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert) > * { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; }");
-            style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertPseudoElement:not(.pageShadowDisableElementInvert):before, :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertPseudoElement:not(.pageShadowDisableElementInvert):after { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; }");
+        if(invertBrightColors == "true") {
+            if(shouldInvertBrightColors) {
+                style.sheet.insertRule(":host .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(:host .pageShadowHasBackgroundImg > *):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg):not(:has(> .pageShadowHasBackgroundImg)) > *:not(.pageShadowHasBrightColorText):not(.pageShadowHasBrightColorBackground):not(.pageShadowSelectiveInvert) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+
+                style.sheet.insertRule(":host .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(:host .pageShadowHasBackgroundImg > *):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg):has(> .pageShadowHasBackgroundImg) > *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBackgroundImg):not(.pageShadowSelectiveInvert) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+            }
+
+            if(invertEntirePage != "true") {
+                if(shouldInvertBrightColors) {
+                    style.sheet.insertRule(":host > .pageShadowHasBrightColorBackground:not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg), :host > .pageShadowHasBrightColorText { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+                }
+
+                if(!parentHasBrightColorBackground) {
+                    style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground) .pageShadowHasBrightColorBackground:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+                }
+
+                if(!parentHasBrightColorText) {
+                    style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground) .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(:has(> .pageShadowHasBackgroundImg)) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+                }
+            } else if(shouldInvertBrightColors) {
+                style.sheet.insertRule(":host > .pageShadowHasBrightColorBackground:not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg), :host > .pageShadowHasBrightColorText:not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+
+                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText) .pageShadowHasBrightColorBackground:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+
+                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText) .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBgColor .pageShadowHasBackgroundImg > *):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg):not(:has(> .pageShadowHasBackgroundImg)) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+            }
         }
 
-        if((invertEntirePage != "true" && selectiveInvert == "true") || (invertEntirePage == "true" && selectiveInvert != "true")) {
-            style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert):not(img):not(svg):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo) { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; }");
-            style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert):not(img):not(svg):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo) > * { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; }");
-            style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) .pageShadowSelectiveInvertPseudoElement:not(.pageShadowDisableElementInvert):before, :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) .pageShadowSelectiveInvertPseudoElement:not(.pageShadowDisableElementInvert):after { filter: invert(100%) !important; -moz-filter: invert(100%) !important; -o-filter: invert(100%) !important; -webkit-filter: invert(100%) !important; }");
+        if(invertImageColors == "true") {
+            if(shouldInvertBrightColors) {
+                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) img:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(:host .pageShadowHasBackgroundImg > *), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) svg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(:host .pageShadowHasBackgroundImg > *), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) svg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(:host .pageShadowHasBackgroundImg > *) use[href^=\"#\"], :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsImage:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(:host .pageShadowHasBackgroundImg > *) { filter: " + invertImageFilter + " !important; -moz-filter: " + invertImageFilter + " !important; -o-filter: " + invertImageFilter + " !important; -webkit-filter: " + invertImageFilter + " !important; background-color: transparent !important; }");
+            }
+
+            if(selectiveInvert == "true" && shouldInvertBrightColors) {
+                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) img.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) svg.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsImage.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert) { filter: " + invertImageFilterSelective + " !important; -moz-filter: " + invertImageFilterSelective + " !important; -o-filter: " + invertImageFilterSelective + " !important; -webkit-filter: " + invertImageFilterSelective + " !important; background-color: transparent !important; }");
+            }
+
+            if(invertEntirePage == "true" && shouldInvertBrightColors) {
+                style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground) > * img { filter: " + invertImageFilter + " !important; -moz-filter: " + invertImageFilter + " !important; -o-filter: " + invertImageFilter + " !important; -webkit-filter: " + invertImageFilter + " !important; background-color: transparent !important; }");
+            }
+        }
+
+        if(invertBrightColors == "true") {
+            if(parentHasBrightColorBackground) {
+                if(invertImageColors != "true") {
+                    style.sheet.insertRule(":host img:not(.pageShadowHasBrightColorBackground), :host svg:not(.pageShadowHasBrightColorBackground), :host .pageShadowInvertElementAsImage:not(.pageShadowHasBrightColorBackground) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+                }
+
+                if(invertBgColors != "true") {
+                    style.sheet.insertRule(":host .pageShadowHasBackgroundImg:not(.pageShadowHasBrightColorBackground), :host .pageShadowInvertElementAsBackground:not(.pageShadowHasBrightColorBackground) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+                }
+
+                if(invertVideoColors != "true") {
+                    style.sheet.insertRule(":host video:not(.pageShadowHasBrightColorBackground), :host canvas:not(.pageShadowHasBrightColorBackground), :host .pageShadowInvertElementAsVideo:not(.pageShadowHasBrightColorBackground) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+                }
+
+                if(invertEntirePage != "true") {
+                    style.sheet.insertRule(":host iframe, :host frame { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+                }
+
+                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground) .pageShadowPseudoElementHasBrightColorBackgroundBefore:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):before, :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowPseudoElementHasBrightColorBackgroundAfter:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):after, :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowPseudoElementHasBrightColorTextBefore:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):before, :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowPseudoElementHasBrightColorTextAfter:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):after { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
+            }
+        }
+
+        if((invertEntirePage != "true" && selectiveInvert == "true") || (invertEntirePage == "true" && selectiveInvert != "true" && !parentHasBrightColorBackground)) {
+            // Image selective invert
+            style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) img.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) svg.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsImage.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert) { filter: " + invertImageFilterSelective + " !important; -moz-filter: " + invertImageFilterSelective + " !important; -o-filter: " + invertImageFilterSelective + " !important; -webkit-filter: " + invertImageFilterSelective + " !important; }");
+
+            style.sheet.insertRule(":host .pageShadowHasBrightColorText:not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) > img.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert), :host .pageShadowHasBrightColorText:not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) > svg.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert), :host .pageShadowHasBrightColorText:not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) > .pageShadowInvertElementAsImage.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert) { filter: " + invertImageFilterSelective + " !important; -moz-filter: " + invertImageFilterSelective + " !important; -o-filter: " + invertImageFilterSelective + " !important; -webkit-filter: " + invertImageFilterSelective + " !important; }");
+
+            // Background images selective invert
+            style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo) { filter: " + invertBgFilterSelective + " !important; -moz-filter: " + invertBgFilterSelective + " !important; -o-filter: " + invertBgFilterSelective + " !important; -webkit-filter: " + invertBgFilterSelective + " !important; }");
+        }
+
+        if(selectiveInvert == "true") {
+            // Pseudo-elements selective invert
+            style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) .pageShadowSelectiveInvertPseudoElementBefore:not(.pageShadowDisableElementInvert):before, :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert) .pageShadowSelectiveInvertPseudoElementAfter:not(.pageShadowDisableElementInvert):after { filter: " + invertImageFilterSelective + " !important; -moz-filter: " + invertImageFilterSelective + " !important; -o-filter: " + invertImageFilterSelective + " !important; -webkit-filter: " + invertImageFilterSelective + " !important; }");
+
+            style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > svg.pageShadowSelectiveInvert:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(.pageShadowDisableBackgroundStyling) { color: black; }");
+
+            // Background images selective invert (subelements)
+            if(!parentHasBrightColorBackground) {
+                style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert):not(img):not(svg):not(svg use):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo) > * { filter: " + invertBgFilterSelective + " !important; -moz-filter: " + invertBgFilterSelective + " !important; -o-filter: " + invertBgFilterSelective + " !important; -webkit-filter: " + invertBgFilterSelective + " !important; }");
+            }
+        }
+
+        if(invertBgColors == "true") {
+            style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertPseudoElement:not(.pageShadowDisableElementInvert):before, :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertPseudoElement:not(.pageShadowDisableElementInvert):after { filter: " + invertBgFilter + " !important; -moz-filter: " + invertBgFilter + " !important; -o-filter: " + invertBgFilter + " !important; -webkit-filter: " + invertBgFilter + " !important; }");
+
+            style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert) > * { filter: " + invertBgFilter + " !important; -moz-filter: " + invertBgFilter + " !important; -o-filter: " + invertBgFilter + " !important; -webkit-filter: " + invertBgFilter + " !important; }");
+
+            if(invertEntirePage != "true") {
+                if(parentHasBrightColorBackground) {
+                    style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert) { filter: " + invertBgFilter + " !important; -moz-filter: " + invertBgFilter + " !important; -o-filter: " + invertBgFilter + " !important; -webkit-filter: " + invertBgFilter + " !important; }");
+                }
+            } else {
+                if(!parentHasBrightColorBackground) {
+                    style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert), :host :not(.pageShadowDisableElementInvert) .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert) { filter: " + invertBgFilter + " !important; -moz-filter: " + invertBgFilter + " !important; -o-filter: " + invertBgFilter + " !important; -webkit-filter: " + invertBgFilter + " !important; }");
+                }
+
+                if(invertBrightColors == "true" && !parentHasBrightColorBackground) {
+                    style.sheet.insertRule(":host .pageShadowHasBrightColorText > *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(.pageShadowDisableBackgroundStyling) { color: black; }");
+                }
+            }
+
+            if(!parentHasBrightColorBackground) {
+                style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground):not(select):not(.pageShadowHasBrightColorText):not(.pageShadowDisableBackgroundStyling) { color: white; }");
+
+                style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground) *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(.pageShadowDisableBackgroundStyling) { color: black; }");
+            }
+
+            if(shouldInvertBrightColors) {
+                style.sheet.insertRule(":host :not(.pageShadowDisableElementInvert) .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert) { filter: " + invertBgFilter + " !important; -moz-filter: " + invertBgFilter + " !important; -o-filter: " + invertBgFilter + " !important; -webkit-filter: " + invertBgFilter + " !important; }");
+
+                style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground) > * { filter: " + invertBgFilter + " !important; -moz-filter: " + invertBgFilter + " !important; -o-filter: " + invertBgFilter + " !important; -webkit-filter: " + invertBgFilter + " !important; }");
+
+                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowPseudoElementHasBackgroundImgBefore:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):not(.pageShadowSelectiveInvertPseudoElementBefore):before, :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowPseudoElementHasBackgroundImgAfter:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):not(.pageShadowSelectiveInvertPseudoElementAfter):after { filter: " + invertBgFilter + " !important; -moz-filter: " + invertBgFilter + " !important; -o-filter: " + invertBgFilter + " !important; -webkit-filter: " + invertBgFilter + " !important; }");
+            }
+        }
+
+        if(invertVideoColors == "true") {
+            if(shouldInvertBrightColors) {
+                style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) video:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) canvas:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsVideo:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert), :host > video:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert), :host > canvas:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert), :host > .pageShadowInvertElementAsVideo:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) { filter: " + invertVideoFilter + " !important; -moz-filter: " + invertVideoFilter + " !important; -o-filter: " + invertVideoFilter + " !important; -webkit-filter: " + invertVideoFilter + " !important; }");
+
+                if(selectiveInvert != "true") {
+                    style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) video:not(.pageShadowDisableElementInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) canvas:not(.pageShadowDisableElementInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsVideo:not(.pageShadowDisableElementInvert) { filter: " + invertVideoFilter + " !important; -moz-filter: " + invertVideoFilter + " !important; -o-filter: " + invertVideoFilter + " !important; -webkit-filter: " + invertVideoFilter + " !important; }");
+                } else {
+                    style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) video.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) canvas.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert), :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertElementAsVideo.pageShadowSelectiveInvert:not(.pageShadowDisableElementInvert) { filter: " + invertVideoFilterSelective + " !important; -moz-filter: " + invertVideoFilterSelective + " !important; -o-filter: " + invertVideoFilterSelective + " !important; -webkit-filter: " + invertVideoFilterSelective + " !important; }");
+                }
+            }
+        }
+    }
+}
+
+function processRulesAttenuate(style, settings) {
+    if(!style.sheet) return;
+
+    if(style.cssRules) { // Remove all rules
+        for(let i = 0; i < style.cssRules.length; i++) {
+            style.sheet.deleteRule(i);
+        }
+    }
+
+    const enabled = settings.attenuateColors;
+    const attenuateImageColors = settings.attenuateImgColors;
+    const attenuateBgColors = settings.attenuateBgColors;
+    const attenuateVideoColors = settings.attenuateVideoColors;
+    const attenuateBrightColors = settings.attenuateBrightColors;
+
+    const enabledInvertPage = settings.colorInvert;
+    const invertEntirePage = settings.invertEntirePage;
+    const invertImageColors = settings.invertImageColors;
+    const invertVideoColors = settings.invertVideoColors;
+    const invertBgColors = settings.invertBgColor;
+    const invertBrightColors = settings.invertBrightColors;
+
+    let percentageAttenuateColors = settings.percentageAttenuateColors;
+
+    if(percentageAttenuateColors / 100 > 1 || percentageAttenuateColors / 100 < 0 || typeof percentageAttenuateColors === "undefined" || percentageAttenuateColors == null) {
+        percentageAttenuateColors = attenuateDefaultValue;
+    }
+
+    const attenuateFilter = "grayscale(" + percentageAttenuateColors + "%)";
+
+    if(enabled == "true") {
+        if(attenuateImageColors == "true") {
+            if(enabledInvertPage == "true" && invertImageColors != "true") {
+                style.sheet.insertRule(":host img:not(.pageShadowDisableElementInvert), :host svg:not(.pageShadowDisableElementInvert) { filter: " + attenuateFilter + " !important; -moz-filter: " + attenuateFilter + " !important; -o-filter: " + attenuateFilter + " !important; -webkit-filter: " + attenuateFilter + " !important; }");
+            }
+
+            if(invertEntirePage != "true") {
+                style.sheet.insertRule(":host img.pageShadowDisableElementInvert, :host svg.pageShadowDisableElementInvert { filter: " + attenuateFilter + " !important; -moz-filter: " + attenuateFilter + " !important; -o-filter: " + attenuateFilter + " !important; -webkit-filter: " + attenuateFilter + " !important; }");
+            } else {
+                style.sheet.insertRule(":host img.pageShadowDisableElementInvert, :host svg.pageShadowDisableElementInvert { filter: invert(100%) " + attenuateFilter + " !important; -moz-filter: invert(100%) " + attenuateFilter + " !important; -o-filter: invert(100%) " + attenuateFilter + " !important; -webkit-filter: invert(100%) " + attenuateFilter + " !important; }");
+            }
+        }
+
+        if(attenuateBgColors == "true") {
+            if(enabledInvertPage == "true" && invertBgColors != "true") {
+                style.sheet.insertRule(":host .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert), :host .pageShadowPseudoElementHasBackgroundImgBefore:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvertPseudoElementBefore):before, :host .pageShadowPseudoElementHasBackgroundImgAfter:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvertPseudoElementAfter):after { filter: " + attenuateFilter + " !important; -moz-filter: " + attenuateFilter + " !important; -o-filter: " + attenuateFilter + " !important; -webkit-filter: " + attenuateFilter + " !important; }");
+            }
+
+            if(invertEntirePage != "true") {
+                style.sheet.insertRule(":host .pageShadowHasBackgroundImg.pageShadowDisableElementInvert, :host .pageShadowPseudoElementHasBackgroundImgBefore.pageShadowDisableElementInvert:before, :host .pageShadowPseudoElementHasBackgroundImgAfter.pageShadowDisableElementInvert:after { filter: " + attenuateFilter + " !important; -moz-filter: " + attenuateFilter + " !important; -o-filter: " + attenuateFilter + " !important; -webkit-filter: " + attenuateFilter + " !important; }");
+            } else {
+                style.sheet.insertRule(":host .pageShadowHasBackgroundImg.pageShadowDisableElementInvert, :host .pageShadowPseudoElementHasBackgroundImgBefore.pageShadowDisableElementInvert:before, :host .pageShadowPseudoElementHasBackgroundImgAfter.pageShadowDisableElementInvert:after { filter: invert(100%) " + attenuateFilter + " !important; -moz-filter: invert(100%) " + attenuateFilter + " !important; -o-filter: invert(100%) " + attenuateFilter + " !important; -webkit-filter: invert(100%) " + attenuateFilter + " !important; }");
+            }
+        }
+
+        if(attenuateVideoColors == "true") {
+            if(enabledInvertPage == "true" && invertVideoColors != "true") {
+                style.sheet.insertRule(":host video:not(.pageShadowDisableElementInvert), :host canvas:not(.pageShadowDisableElementInvert) { filter: " + attenuateFilter + " !important; -moz-filter: " + attenuateFilter + " !important; -o-filter: " + attenuateFilter + " !important; -webkit-filter: " + attenuateFilter + " !important; }");
+            }
+
+            if(invertEntirePage != "true") {
+                style.sheet.insertRule(":host video.pageShadowDisableElementInvert, :host canvas.pageShadowDisableElementInvert { filter: " + attenuateFilter + " !important; -moz-filter: " + attenuateFilter + " !important; -o-filter: " + attenuateFilter + " !important; -webkit-filter: " + attenuateFilter + " !important; }");
+            } else {
+                style.sheet.insertRule(":host video.pageShadowDisableElementInvert, :host canvas.pageShadowDisableElementInvert { filter: invert(100%) " + attenuateFilter + " !important; -moz-filter: invert(100%) " + attenuateFilter + " !important; -o-filter: invert(100%) " + attenuateFilter + " !important; -webkit-filter: invert(100%) " + attenuateFilter + " !important; }");
+            }
+        }
+
+        if(attenuateBrightColors == "true") {
+            if(enabledInvertPage == "true" && invertBrightColors != "true") {
+                style.sheet.insertRule(":host .pageShadowHasBrightColorBackground:not(.pageShadowDisableElementInvert), :host .pageShadowHasBrightColorText:not(.pageShadowDisableElementInvert), :host .pageShadowPseudoElementHasBrightColorBackgroundAfter:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):after, :host .pageShadowPseudoElementHasBrightColorTextAfter:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):after, :host .pageShadowPseudoElementHasBrightColorBackgroundBefore:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):before, :host .pageShadowPseudoElementHasBrightColorTextBefore:not(.pageShadowDisableElementInvert):not(.pageShadowHasBrightColorBackground):before { filter: " + attenuateFilter + " !important; -moz-filter: " + attenuateFilter + " !important; -o-filter: " + attenuateFilter + " !important; -webkit-filter: " + attenuateFilter + " !important; }");
+            }
+
+            if(invertEntirePage != "true") {
+                style.sheet.insertRule(":host .pageShadowHasBrightColorBackground.pageShadowDisableElementInvert, :host .pageShadowHasBrightColorText.pageShadowDisableElementInvert, :host .pageShadowPseudoElementHasBrightColorBackground.pageShadowDisableElementInvertAfter:not(.pageShadowHasBrightColorBackground):after, :host .pageShadowPseudoElementHasBrightColorText.pageShadowDisableElementInvertAfter:not(.pageShadowHasBrightColorBackground):after, :host .pageShadowPseudoElementHasBrightColorBackgroundBefore.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):before, :host .pageShadowPseudoElementHasBrightColorTextBefore.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):before { filter: " + attenuateFilter + " !important; -moz-filter: " + attenuateFilter + " !important; -o-filter: " + attenuateFilter + " !important; -webkit-filter: " + attenuateFilter + " !important; }");
+            } else {
+                style.sheet.insertRule(":host .pageShadowHasBrightColorBackground.pageShadowDisableElementInvert, :host .pageShadowHasBrightColorText.pageShadowDisableElementInvert, :host .pageShadowPseudoElementHasBrightColorBackgroundAfter.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):after, :host .pageShadowPseudoElementHasBrightColorTextAfter.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):after, :host .pageShadowPseudoElementHasBrightColorBackgroundBefore.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):before, :host .pageShadowPseudoElementHasBrightColorTextBefore.pageShadowDisableElementInvert:not(.pageShadowHasBrightColorBackground):before { filter: invert(100%) " + attenuateFilter + " !important; -moz-filter: invert(100%) " + attenuateFilter + " !important; -o-filter: invert(100%) " + attenuateFilter + " !important; -webkit-filter: invert(100%) " + attenuateFilter + " !important; }");
+            }
         }
     }
 }
@@ -589,13 +847,13 @@ function downloadData(data, name) {
 }
 
 async function loadPresetSelect(selectId, i18next) {
-    let presetSelected = document.getElementById(selectId).value;
+    const selectElement = document.getElementById(selectId);
+
+    let presetSelected = selectElement.value;
 
     if(!presetSelected) {
-        presetSelected = 1;
+        presetSelected = "1";
     }
-
-    document.getElementById(selectId).innerHTML = "";
 
     let optionTitle = "";
 
@@ -603,20 +861,26 @@ async function loadPresetSelect(selectId, i18next) {
         const preset = await getPresetData(i);
 
         if(!preset || !Object.prototype.hasOwnProperty.call(preset, "name")) {
-            optionTitle = optionTitle + "<option value=\"" + i + "\">" + i18next.t("modal.archive.presetTitle") + i + " : " + i18next.t("modal.archive.presetEmpty") + "</option>";
+            optionTitle += `<option value="${i}">${i18next.t("modal.archive.presetTitle")}${i} : ${i18next.t("modal.archive.presetEmpty")}</option>`;
         } else {
-            if(preset["name"].trim() == "") {
-                optionTitle = optionTitle + "<option value=\"" + i+ "\">" + i18next.t("modal.archive.presetTitle") + i + " : " + i18next.t("modal.archive.presetTitleEmpty") + "</option>";
-            } else {
-                const element = document.createElement("div");
-                element.textContent = preset["name"].substring(0, 50);
-                optionTitle = optionTitle + "<option value=\"" + i + "\">" + i18next.t("modal.archive.presetTitle") + i  + " : " + element.innerHTML + "</option>";
-            }
+            const presetName = preset["name"].trim() === ""
+                ? i18next.t("modal.archive.presetTitleEmpty")
+                : preset["name"].substring(0, 50);
+
+            const element = document.createElement("div");
+            element.textContent = presetName;
+
+            optionTitle += `<option value="${i}">${i18next.t("modal.archive.presetTitle")}${i} : ${element.innerHTML}</option>`;
         }
     }
 
-    document.getElementById(selectId).innerHTML = optionTitle;
-    document.getElementById(selectId).value = presetSelected;
+    selectElement.innerHTML = optionTitle;
+
+    if(Array.from(selectElement.options).some(option => option.value === presetSelected)) {
+        selectElement.value = presetSelected;
+    } else {
+        selectElement.value = selectElement.options[0]?.value || "1";
+    }
 }
 
 async function presetsEnabled() {
@@ -644,6 +908,7 @@ async function presetsEnabled() {
 
         return listPreset;
     } catch(e) {
+        debugLogger.log(e, "error");
         throw "";
     }
 }
@@ -656,17 +921,17 @@ async function loadPreset(nb) {
     const data = await browser.storage.local.get("presets");
 
     try {
-        let presets;
-
         if(data.presets == null || typeof(data.presets) == "undefined") {
             await setSettingItem("presets", defaultPresets);
             return "empty";
-        } else {
-            presets = data.presets;
         }
 
-        const namePreset = nb;
-        const preset = presets[namePreset];
+        const preset = await getPresetData(nb);
+
+        if(!preset) {
+            return "empty";
+        }
+
         let settingsRestored = 0;
 
         const settingsNames = JSON.parse(JSON.stringify(settingsToSavePresets));
@@ -691,6 +956,7 @@ async function loadPreset(nb) {
 
         await browser.storage.local.set(finalRestoreObject);
         await migrateSettings();
+        sendMessageWithPromise({ "type": "updateSettingsCache" });
         sendMessageWithPromise({ "type": "updatePresetCache" });
 
         if(settingsRestored > 0) {
@@ -699,6 +965,7 @@ async function loadPreset(nb) {
             return "empty";
         }
     } catch(e) {
+        debugLogger.log(e, "error");
         return "error";
     }
 }
@@ -728,6 +995,11 @@ async function getPresetData(nb) {
 
         const settingsNames = JSON.parse(JSON.stringify(settingsToSavePresets));
 
+        // Migrate Invert bright colors
+        if (!preset["invertBrightColors"] && preset["invertEntirePage"] == "true") {
+            preset["invertBrightColors"] = "true";
+        }
+
         for(const key of settingsNames) {
             if(typeof(key) === "string") {
                 if(!Object.prototype.hasOwnProperty.call(preset, key)) {
@@ -754,6 +1026,7 @@ async function getPresetData(nb) {
 
         return preset;
     } catch(e) {
+        debugLogger.log(e, "error");
         return "error";
     }
 }
@@ -794,6 +1067,7 @@ async function savePreset(nb, name, websiteListToApply, saveNewSettings) {
 
         return "success";
     } catch(e) {
+        debugLogger.log(e, "error");
         return "error";
     }
 }
@@ -821,6 +1095,7 @@ async function deletePreset(nb) {
 
         return "success";
     } catch(e) {
+        debugLogger.log(e, "error");
         return "error";
     }
 }
@@ -833,7 +1108,7 @@ async function presetsEnabledForWebsite(url, disableCache) {
         allPresetData = response.data;
     }
 
-    return await presetsEnabledForWebsiteWithData(url, allPresetData);
+    return presetsEnabledForWebsiteWithData(url, allPresetData);
 }
 
 async function presetsEnabledForWebsiteWithData(url, allPresetData) {
@@ -857,17 +1132,18 @@ async function presetsEnabledForWebsiteWithData(url, allPresetData) {
                     websiteList = websiteSettings.trim().split("\n");
                 }
 
-                let websuteUrl_tmp;
+                let websiteUrlTmp;
 
                 try {
-                    websuteUrl_tmp = new URL(url);
+                    websiteUrlTmp = new URL(url);
                 } catch(e) {
+                    debugLogger.log(e, "error");
                     return;
                 }
 
-                const domain = websuteUrl_tmp.hostname;
-                const autoEnabledWebsite = in_array_website(domain, websiteList);
-                const autoEnabledPage = in_array_website(url, websiteList);
+                const domain = websiteUrlTmp.hostname;
+                const autoEnabledWebsite = inArrayWebsite(domain, websiteList);
+                const autoEnabledPage = inArrayWebsite(url, websiteList);
 
                 if(autoEnabledWebsite || autoEnabledPage) {
                     presetListEnabled.push({
@@ -1043,6 +1319,7 @@ async function disableEnablePreset(type, nb, checked, url) {
 
         return "success";
     } catch(e) {
+        debugLogger.log(e, "error");
         return "error";
     }
 }
@@ -1098,25 +1375,18 @@ function getCurrentURL() {
     try {
         url = window.opener ? window.opener.location.href : window.location.href;
     } catch(e) {
+        debugLogger.log(e, "error");
         url = window.location.href;
     }
 
     return normalizeURL(url);
 }
 
-function processShadowRootStyle(style) {
-    let newStyle = style.replaceAll(/body\.pageShadowInvertImageColor.*?/g, ":host(.pageShadowInvertImageColor)");
-    newStyle = newStyle.replaceAll(/body\.pageShadowInvertBgColor.*?/g, ":host(.pageShadowInvertBgColor)");
-    newStyle = newStyle.replaceAll(/body\.pageShadowInvertVideoColor.*?/g, ":host(.pageShadowInvertVideoColor)");
-
-    return newStyle;
-}
-
 function removeClass(element, ...classes) {
     if(!element) return;
 
     classes.forEach(c => {
-        if(element.classList.contains(c)) {
+        if(c && element.classList.contains(c)) {
             element.classList.remove(c);
         }
     });
@@ -1127,7 +1397,7 @@ function addClass(element, ...classes) {
     const classToAdd = [];
 
     classes.forEach(c => {
-        if(!element.classList.contains(c)) {
+        if(c && !element.classList.contains(c)) {
             classToAdd.push(c);
         }
     });
@@ -1136,20 +1406,46 @@ function addClass(element, ...classes) {
 }
 
 function addNewStyleAttribute(element, styleToAdd) {
-    const oldStyleAttribute = element.getAttribute("style");
-    let newStyleAttribute = (oldStyleAttribute ? oldStyleAttribute : "");
-    if(newStyleAttribute.trim() != "" && !newStyleAttribute.trim().endsWith(";")) {
-        newStyleAttribute += "; " + styleToAdd;
-    } else {
-        newStyleAttribute += styleToAdd;
+    const oldStyleAttribute = element.getAttribute("style") || "";
+
+    const styleToAddParts = styleToAdd.split(";").map(part => part.trim()).filter(Boolean);
+    const oldStyleParts = oldStyleAttribute.split(";").map(part => part.trim()).filter(Boolean);
+
+    const stylesToActuallyAdd = styleToAddParts.filter(newStyle => {
+        return !oldStyleParts.some(oldStyle => oldStyle === newStyle);
+    });
+
+    if(stylesToActuallyAdd.length > 0) {
+        let newStyleAttribute = oldStyleAttribute.trim();
+
+        if(newStyleAttribute && !newStyleAttribute.endsWith(";")) {
+            newStyleAttribute += "; ";
+        }
+
+        newStyleAttribute += stylesToActuallyAdd.join("; ");
+        element.setAttribute("style", newStyleAttribute);
     }
-    element.setAttribute("style", newStyleAttribute);
+}
+
+function removeStyleAttribute(element, styleToRemove) {
+    const oldStyleAttribute = element.getAttribute("style");
+    if (!oldStyleAttribute) return;
+    const stylesArray = oldStyleAttribute.split(";").map(s => s.trim()).filter(s => s.length > 0);
+    const newStylesArray = stylesArray.filter(style => !style.startsWith(styleToRemove.split(":")[0].trim()));
+    const newStyleAttribute = newStylesArray.join("; ");
+
+    if (newStyleAttribute.trim() === "") {
+        element.removeAttribute("style");
+    } else {
+        element.setAttribute("style", newStyleAttribute);
+    }
 }
 
 function isRunningInPopup() {
     try {
         return window.opener && window.opener !== window;
     } catch(e) {
+        debugLogger.log(e, "error");
         return false;
     }
 }
@@ -1158,6 +1454,7 @@ function isRunningInIframe() {
     try {
         return window !== window.top;
     } catch(e) {
+        debugLogger.log(e, "error");
         return false;
     }
 }
@@ -1165,19 +1462,17 @@ function isRunningInIframe() {
 async function isInterfaceDarkTheme() {
     const setting = await browser.storage.local.get(["interfaceDarkTheme"]);
 
-    return new Promise(resolve => {
-        if (setting.interfaceDarkTheme === "enabled") {
-            resolve(true);
-        }
+    if(setting.interfaceDarkTheme === "enabled") {
+        return true;
+    }
 
-        if (!setting.interfaceDarkTheme || setting.interfaceDarkTheme === "auto") {
-            if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-                resolve(true);
-            }
+    if (!setting.interfaceDarkTheme || setting.interfaceDarkTheme === "auto") {
+        if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            return true;
         }
+    }
 
-        resolve(false);
-    });
+    return false;
 }
 
 function loadStyles(id, styles) {
@@ -1261,6 +1556,14 @@ async function loadWebsiteSpecialFiltersConfig() {
             if (Object.prototype.hasOwnProperty.call(websiteSpecialFiltersConfig, key)) {
                 websiteSpecialFiltersConfig[key] = settings.advancedOptionsFiltersSettings[key];
             }
+
+            const config = websiteSpecialFiltersConfig[key];
+
+            if(typeof config === "string") {
+                websiteSpecialFiltersConfig[key] = parseFloat(config);
+            } else {
+                websiteSpecialFiltersConfig[key] = config;
+            }
         });
     }
 
@@ -1284,6 +1587,7 @@ async function getSettingsToArchive() {
         const dataStr = JSON.stringify(data);
         return dataStr;
     } catch(e) {
+        debugLogger.log(e, "error");
         throw "";
     }
 }
@@ -1303,10 +1607,12 @@ async function archiveCloud() {
             try {
                 await browser.storage.sync.clear();
                 await browser.storage.sync.set(settingToSave);
-            } catch (e) {
+            } catch(e) {
                 // In case of error, restore the old cloud archive data
                 await browser.storage.sync.clear();
                 await browser.storage.sync.set(prepareDataForArchiveCloud(currentStorage));
+
+                debugLogger.log(e, "error");
 
                 if (e && (e.message.indexOf("QUOTA_BYTES_PER_ITEM") !== -1 || e.message.indexOf("QUOTA_BYTES") !== -1 || e.message.indexOf("QuotaExceededError") !== -1)) {
                     throw new Error("quota");
@@ -1321,17 +1627,35 @@ async function archiveCloud() {
                     browser.storage.sync.set(deviceSettings),
                     browser.storage.sync.remove("pageShadowStorageBackup")
                 ]);
-            } catch {
+            } catch(e) {
+                debugLogger.log(e, "error");
                 throw new Error("standard");
             }
 
             return;
         } catch(e) {
+            debugLogger.log(e, "error");
             throw new Error(e.message);
         }
     } else {
         throw new Error("Browser storage is not supported");
     }
+}
+
+async function isAutoEnable() {
+    if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.local) !== "undefined") {
+        const result = await browser.storage.local.get("autoEnable");
+
+        if(result.autoEnable == "true") {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function lengthInUtf8Bytes(str) {
+    return new TextEncoder().encode(str).length;
 }
 
 function prepareDataForArchiveCloud(dataObj) {
@@ -1340,9 +1664,10 @@ function prepareDataForArchiveCloud(dataObj) {
     for (const key in dataObj) {
         if (typeof key === "string" && Object.prototype.hasOwnProperty.call(dataObj, key)) {
             const value = dataObj[key];
+            const valueSizeByte = lengthInUtf8Bytes(JSON.stringify(value));
 
-            if (JSON.stringify(value).length > browser.storage.sync.QUOTA_BYTES_PER_ITEM) {
-                const [type, chunks] = chunkValue(value);
+            if (valueSizeByte > browser.storage.sync.QUOTA_BYTES_PER_ITEM - quotaBytesPerItemMargin) {
+                const [type, chunks] = chunkValue(key, value);
 
                 for (let i = 0; i < chunks.length; i++) {
                     settingToSave[`${key}_${i}_${type}`] = chunks[i];
@@ -1400,34 +1725,50 @@ async function getCurrentArchiveCloud() {
     return restoredData;
 }
 
-function chunkString(str) {
+function chunkString(key, str, type) {
     const chunks = [];
-    const chunkSize = browser.storage.sync.QUOTA_BYTES_PER_ITEM - 500;
+    const maxBytesPerItem = browser.storage.sync.QUOTA_BYTES_PER_ITEM - quotaBytesPerItemMargin;
 
-    for(let i = 0; i < str.length; i += chunkSize) {
-        chunks.push(str.substring(i, i + chunkSize));
+    let i = 0;
+
+    while (str.length > 0) {
+        const finalKey = `${key}_${i++}_${type}`;
+        const maxValueBytes = maxBytesPerItem - lengthInUtf8Bytes(finalKey);
+
+        let counter = maxValueBytes;
+        let segment = str.substr(0, counter);
+
+        while (lengthInUtf8Bytes(JSON.stringify(segment)) > maxValueBytes) {
+            segment = str.substr(0, --counter);
+        }
+
+        chunks.push(segment);
+        str = str.substr(counter);
     }
 
     return chunks;
 }
 
-function chunkValue(value) {
+function chunkValue(key, value) {
     if(typeof value === "string") {
-        return ["string", chunkString(value)];
+        return ["string", chunkString(key, value, "string")];
     } else if(typeof value === "object") {
         const valueString = JSON.stringify(value);
-        return ["object", chunkString(valueString)];
+        return ["object", chunkString(key, valueString, "object")];
     } else {
         throw new Error("Unsupported data type");
     }
 }
 
-async function sendMessageWithPromise(data, ...expectedMessageType) {
+function sendMessageWithPromise(data, ...expectedMessageType) {
+    debugLogger.log(`Sending message to background process with type: ${data.type} - expected response type: ${expectedMessageType}`, "debug", data);
+
     return new Promise(resolve => {
         const listener = message => {
             if (message && expectedMessageType.includes(message.type)) {
                 resolve(message);
                 browser.runtime.onMessage.removeListener(listener);
+                debugLogger.log(`Received response ${expectedMessageType} from background process for message with data with type: ${data.type}`, "debug", message);
             }
         };
 
@@ -1437,7 +1778,10 @@ async function sendMessageWithPromise(data, ...expectedMessageType) {
 
         browser.runtime.sendMessage(data).catch(() => {
             browser.runtime.onMessage.removeListener(listener);
-            if(browser.runtime.lastError) return;
+            if(browser.runtime.lastError) {
+                debugLogger.log(`Error sending message to background process. Type: ${data.type} / Expected message type = ${expectedMessageType}`, "error", data);
+                return;
+            }
         });
 
         if(!expectedMessageType) {
@@ -1493,7 +1837,48 @@ function applyContrastPageVariables(config) {
     }
 }
 
-function getPageVariablesToApply(contrastEnabled, invertEnabled) {
+function getInvertPageVariablesKeyValues(invertEntirePage, selectiveInvert, enablePreserveColorsSelectiveInvert) {
+    const invertPageVariables = new Map();
+
+    invertPageVariables.set("--page-shadow-invert-filter", "invert(100%)");
+    invertPageVariables.set("--page-shadow-invert-filter-image-backgrounds", "invert(100%)");
+    invertPageVariables.set("--page-shadow-invert-filter-bg-backgrounds", "invert(100%)");
+    invertPageVariables.set("--page-shadow-invert-filter-video-backgrounds", "invert(100%)");
+    invertPageVariables.set("--page-shadow-invert-filter-bright-color-backgrounds", "invert(100%)");
+
+    if(invertEntirePage === "true") {
+        if(selectiveInvert === "true") {
+            const filter = enablePreserveColorsSelectiveInvert ? "hue-rotate(180deg)" : "invert(0)";
+            invertPageVariables.set("--page-shadow-invert-filter-selective-image", filter);
+            invertPageVariables.set("--page-shadow-invert-filter-selective-bg", filter);
+            invertPageVariables.set("--page-shadow-invert-filter-selective-video", filter);
+        } else {
+            invertPageVariables.set("--page-shadow-invert-filter-selective-image", "invert(100%)");
+            invertPageVariables.set("--page-shadow-invert-filter-selective-bg", "invert(100%)");
+            invertPageVariables.set("--page-shadow-invert-filter-selective-video", "invert(100%)");
+        }
+
+        const filterParentBright = enablePreserveColorsSelectiveInvert ? "invert(100%) hue-rotate(180deg)" : "invert(100%)";
+        invertPageVariables.set("--page-shadow-invert-filter-selective-image-parent-bright", filterParentBright);
+        invertPageVariables.set("--page-shadow-invert-filter-selective-bg-parent-bright", filterParentBright);
+        invertPageVariables.set("--page-shadow-invert-filter-selective-video-parent-bright", filterParentBright);
+    } else {
+        const filter = enablePreserveColorsSelectiveInvert ? "invert(100%) hue-rotate(180deg)" : "invert(100%)";
+        invertPageVariables.set("--page-shadow-invert-filter-selective-image", filter);
+        invertPageVariables.set("--page-shadow-invert-filter-selective-bg", filter);
+        invertPageVariables.set("--page-shadow-invert-filter-selective-video", filter);
+
+        const filterParentBright = enablePreserveColorsSelectiveInvert ? "hue-rotate(180deg)" : "invert(0)";
+        invertPageVariables.set("--page-shadow-invert-filter-selective-image-parent-bright", filterParentBright);
+        invertPageVariables.set("--page-shadow-invert-filter-selective-bg-parent-bright", filterParentBright);
+        invertPageVariables.set("--page-shadow-invert-filter-selective-video-parent-bright", filterParentBright);
+
+    }
+
+    return invertPageVariables;
+}
+
+function getPageVariablesToApply(contrastEnabled, invertEnabled, attenuateColors) {
     const pageVariablesToApply = [];
 
     if (contrastEnabled == "true") {
@@ -1518,26 +1903,59 @@ function getPageVariablesToApply(contrastEnabled, invertEnabled) {
 
     if(invertEnabled == "true") {
         pageVariablesToApply.push(
+            "--page-shadow-invert-filter",
             "--page-shadow-invert-filter-image-backgrounds",
             "--page-shadow-invert-filter-bg-backgrounds",
-            "--page-shadow-invert-filter-video-backgrounds"
+            "--page-shadow-invert-filter-video-backgrounds",
+            "--page-shadow-invert-filter-bright-color-backgrounds",
+            "--page-shadow-invert-filter-selective-image",
+            "--page-shadow-invert-filter-selective-bg",
+            "--page-shadow-invert-filter-selective-video",
+            "--page-shadow-invert-filter-selective-image-parent-bright",
+            "--page-shadow-invert-filter-selective-bg-parent-bright",
+            "--page-shadow-invert-filter-selective-video-parent-bright"
+        );
+    }
+
+    if(attenuateColors == "true") {
+        pageVariablesToApply.push(
+            "--page-shadow-attenuate-filter"
         );
     }
 
     return pageVariablesToApply;
 }
 
-function areAllCSSVariablesDefined(contrastEnabled, invertEnabled) {
+function areAllCSSVariablesDefinedForHTMLElement(contrastEnabled, invertEnabled, attenuateColors) {
+    const element = document.documentElement;
+
+    if (element && element.style) {
+        return getPageVariablesToApply(contrastEnabled, invertEnabled, attenuateColors).every(variable => element.style.getPropertyValue(variable) !== "");
+    }
+}
+
+function areAllClassesDefinedForHTMLElement(contrastEnabled, invertEnabled, invertEntirePage, contrastTheme) {
     const element = document.documentElement;
 
     if (element) {
-        const styleAttribute = element.getAttribute("style");
+        const classAttribute = element.getAttribute("class") || "";
 
-        if(!styleAttribute) {
-            return true;
+        if(invertEnabled == "true" && invertEntirePage == "true" &&
+            (!classAttribute.includes("pageShadowInvertEntirePage") ||
+            !classAttribute.includes("pageShadowBackground"))) {
+            return false;
         }
 
-        return getPageVariablesToApply(contrastEnabled, invertEnabled).every(variable => element.style.getPropertyValue(variable) !== "");
+        if(contrastEnabled == "true" && !classAttribute.includes("pageShadowBackgroundContrast")) {
+            return false;
+        }
+
+        if(contrastEnabled == "true" && contrastTheme.startsWith("custom")
+            && !classAttribute.includes("pageShadowBackgroundCustom")) {
+            return false;
+        }
+
+        return true;
     }
 }
 
@@ -1557,38 +1975,229 @@ async function sha256(url) {
     return hashHex;
 }
 
-async function checkPermissions() {
-    return await browser.permissions.contains({
+function checkPermissions() {
+    return browser.permissions.contains({
         origins: permissionOrigin
     });
 }
 
-function svgElementToImage(element) {
-    const computedStyles = window.getComputedStyle(element);
-
-    const box = element.getBBox();
-    const width = box.width;
-    const height = box.height;
-    const fill = computedStyles.fill;
-    const stroke = computedStyles.stroke;
-    const color = computedStyles.color;
-
+function svgElementToImage(url) {
     const image = new Image();
-    image.src = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" fill="${fill}" color="${color}" stroke="${stroke}">${element.outerHTML}</svg>`)}`;
+    image.src = url;
 
     return image;
 }
 
-async function backgroundImageToImage(element) {
-    const style = element.currentStyle || window.getComputedStyle(element, false);
-    const url = style.backgroundImage.slice(4, -1).replace(/"/g, "");
-
+async function backgroundImageToImage(url) {
     const image = new Image();
+
+    const imageLoadPromise = new Promise((resolve, reject) => {
+        image.onload = resolve;
+        image.onerror = reject;
+    });
+
     image.src = url;
 
+    if (isCrossOrigin(url)) {
+        image.crossOrigin = "anonymous";
+    }
+
+    await imageLoadPromise;
     await image.decode();
 
     return image;
 }
 
-export { in_array, strict_in_array, matchWebsite, in_array_website, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefined, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud };
+function safeDecodeURIComponent(str) {
+    try {
+        if(/%[0-9A-Fa-f]{2}/.test(str)) {
+            return decodeURIComponent(str);
+        }
+    } catch(e) {
+        debugLogger.log(`Error decoding URI component: ${str}`, "error", e);
+    }
+
+    return str;
+}
+
+function getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseudoElt) {
+    if(element instanceof HTMLImageElement) {
+        return element.src;
+    }
+
+    if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
+        return getImageUrlFromSvgElement(element, computedStyles);
+    }
+
+    if(!(element instanceof HTMLImageElement) && !(element instanceof SVGImageElement) && hasBackgroundImg) {
+        const style = element.currentStyle || computedStyles;
+
+        const styleContent = pseudoElt && computedStyles.content && computedStyles.content.match(regexpMatchURL);
+        const styleBackground = style.background && style.background.match(regexpMatchURL);
+        const styleBackgroundImage = style.backgroundImage && style.backgroundImage.match(regexpMatchURL);
+        const maskImage = style.maskImage && style.maskImage.match(regexpMatchURL);
+        const objectData = element instanceof HTMLObjectElement && element.data;
+
+        const urlMatch = styleContent || styleBackground || styleBackgroundImage || maskImage;
+        const url = objectData || (urlMatch ? urlMatch[2] : null);
+
+        if(url && url.trim().toLowerCase().startsWith("data:image/svg+xml")) {
+            const regexMatchSVGData = /^data:image\/svg\+xml(;(charset=)?([a-zA-Z0-9-]+))?(;base64)?,/;
+            const match = regexMatchSVGData.exec(url.trim());
+
+            if(!match) {
+                debugLogger.log(`Invalid data URI format: ${url}`, "error", element);
+                return null;
+            }
+
+            let decodedURL = url.trim().replace(regexMatchSVGData, "");
+
+            // If the SVG contains base64 data
+            if((match[3] && match[3].toLowerCase() === "base64")
+                || (match[4] && match[4].toLowerCase() === ";base64")) {
+                try {
+                    decodedURL = atob(safeDecodeURIComponent(decodedURL));
+                } catch(e) {
+                    debugLogger.log(`Error decoding base64 data for URL: ${url}`, "error", e);
+                    return null;
+                }
+            }
+
+            const svgData = safeDecodeURIComponent(decodedURL.replace(/\\"/g, "\""));
+            const svgDoc = new DOMParser().parseFromString(svgData, "image/svg+xml");
+            const svgElement = svgDoc.documentElement;
+
+            const errorNode = svgDoc.querySelector("parsererror");
+
+            if(errorNode) {
+                debugLogger.log(`Error parsing SVG from URL: ${url}`, "error", element);
+                return null;
+            }
+
+            return getImageUrlFromSvgElement(svgElement, computedStyles);
+        }
+
+        return url;
+    }
+
+    return null;
+}
+
+function getImageUrlFromSvgElement(element, computedStyles) {
+    const box = element && element.getBBox && element.getBBox();
+    const width = box && box.width > 0 ? box.width : 100;
+    const height = box && box.height > 0 ? box.height : 100;
+    const stroke = computedStyles.stroke;
+    const color = computedStyles.color;
+
+    let fill = computedStyles.fill;
+
+    if (fill === "rgb(0, 0, 0)" && !element.hasAttribute("fill")) {
+        const childElements = element.children;
+
+        fill = "none";
+
+        for(const childrenElement of childElements) {
+            if (childrenElement.tagName.toLowerCase() !== "title") {
+                const computedStyles = window.getComputedStyle(childrenElement);
+                const subFill = computedStyles.fill;
+
+                if (subFill !== "none") {
+                    fill = subFill;
+                    break;
+                }
+            }
+        }
+    }
+
+    const innerHTML = element.innerHTML;
+    const namespaces = [];
+
+    if(innerHTML.includes("xlink:")) {
+        namespaces.push("xmlns:xlink=\"http://www.w3.org/1999/xlink\"");
+    }
+
+    if(innerHTML.includes("xml:")) {
+        namespaces.push("xmlns:xml=\"http://www.w3.org/XML/1998/namespace\"");
+    }
+
+    if(innerHTML.includes("rdf:") || innerHTML.includes("cc:") || innerHTML.includes("dc:")) {
+        namespaces.push("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
+        namespaces.push("xmlns:cc=\"http://creativecommons.org/ns#\"");
+        namespaces.push("xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
+    }
+
+    const namespaceString = namespaces.length > 0 ? ` ${namespaces.join(" ")}` : "";
+
+    const matchURLFill = fill && fill.match(regexpMatchURL);
+    const matchURLStroke = stroke && stroke.match(regexpMatchURL);
+
+    const escapedFill = matchURLFill && matchURLFill[2] ? `url(${matchURLFill[2]})` : fill;
+    const escapedStroke = matchURLStroke && matchURLStroke[2] ? `url(${matchURLStroke[2]})` : stroke;
+
+    return `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg"${namespaceString} width="${width}" height="${height}" fill="${escapedFill}" color="${color}" stroke="${escapedStroke}">${innerHTML}</svg>`)}`;
+}
+
+function isCrossOrigin(imageSrc) {
+    try {
+        const url = new URL(imageSrc);
+        return window.location.origin !== url.origin;
+    } catch(e) {
+        debugLogger.log(e + " - URL: " + imageSrc, "error");
+        return false;
+    }
+}
+
+function getPageAnalyzerCSSClass(cssClass, pseudoElt) {
+    const type = pseudoElt ? "pseudoElt" : "normal";
+    const cssClassData = pageAnalyzerCSSClasses[cssClass];
+
+    if(!cssClassData) {
+        debugLogger.log(`getPageAnalyzerCSSClass - Unknown class ${cssClass} - type: ${type}`, "warn");
+        return cssClass;
+    }
+
+    let finalClass = cssClassData[type];
+
+    if(pseudoElt) {
+        finalClass += (pseudoElt === ":after" ? "After" : "Before");
+    }
+
+    if(!finalClass) {
+        debugLogger.log(`getPageAnalyzerCSSClass - Unknown class ${cssClass} for type: ${type}`, "warn");
+    }
+
+    return finalClass;
+}
+
+function hexToRgb(hex) {
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, (_, r, g, b) => r + r + g + g + b + b);
+
+    const regex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i;
+    const result = regex.exec(hex);
+
+    if(!result) {
+        return "";
+    }
+
+    return `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)})`;
+}
+
+function isValidURL(url) {
+    try {
+        new URL(url);
+    // eslint-disable-next-line no-unused-vars
+    } catch(e) {
+        return false;
+    }
+
+    return true;
+}
+
+function getBlueLightReductionFilterCSSClass(colorTemp) {
+    const tempIndex = parseInt(colorTemp || "2000");
+    return "k" + colorTemperaturesAvailable[tempIndex - 1];
+}
+
+export { inArray, strictInArray, matchWebsite, inArrayWebsite, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefinedForHTMLElement, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud, removeStyleAttribute, isCrossOrigin, processRulesAttenuate, areAllClassesDefinedForHTMLElement, getPageAnalyzerCSSClass, getImageUrlFromElement, hexToRgb, getInvertPageVariablesKeyValues, isValidURL, getBlueLightReductionFilterCSSClass };

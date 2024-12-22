@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/ */
-import { availableFilterRulesType, specialFilterRules, regexpDetectionPatternHighlight } from "./constants.js";
+import { availableFilterRulesType, specialFilterRules, regexpDetectionPatternHighlight } from "../constants.js";
 
 function filtersHint(CodeMirror, editor, keywords, getToken) {
     const Pos = CodeMirror.Pos;
