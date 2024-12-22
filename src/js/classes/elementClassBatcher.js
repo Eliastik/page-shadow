@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -20,12 +20,18 @@ import { addClass, removeClass } from "../utils/util.js";
 /**
  * Class used to apply or remove CSS classes in batch to an element
  */
-export default class ClassBatcher {
+export default class ElementClassBatcher {
     element = null;
     classList = [];
 
-    constructor(element, ...classList) {
-        this.element = element;
+    constructor(type = "add", elementType, ...classList) {
+        this.type = type;
+
+        if(this.type !== "add" && this.type !== "remove") {
+            throw new Error("[PAGE SHADOW ERROR] ElementClassBatcher - type need to be either 'add' or 'remove' in constructor");
+        }
+
+        this.elementType = elementType;
         this.add(...classList);
     }
 
@@ -37,13 +43,25 @@ export default class ClassBatcher {
         this.classList = [];
     }
 
-    applyAdd() {
-        addClass(this.element, ...this.classList);
+    doAddAllClasses() {
+        addClass(this.getElement(), ...this.classList);
         this.removeAll();
     }
 
-    applyRemove() {
-        removeClass(this.element, ...this.classList);
+    doRemoveAllClasses() {
+        removeClass(this.getElement(), ...this.classList);
         this.removeAll();
+    }
+
+    getElement() {
+        return this.elementType === "html" ? document.getElementsByTagName("html")[0] : document.body;
+    }
+
+    apply() {
+        if(this.type === "add") {
+            this.doAddAllClasses();
+        } else {
+            this.doRemoveAllClasses();
+        }
     }
 }

@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -16,11 +16,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { setSettingItem } from "./storage.js";
-import { matchWebsite, getSizeObject } from "./utils/util.js";
-import { defaultFilters, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory } from "./constants.js";
+import { setSettingItem } from "../storage.js";
+import { matchWebsite, getSizeObject } from "../utils/util.js";
+import { defaultFilters, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory } from "../constants.js";
 import browser from "webextension-polyfill";
 import { parseHTML } from "linkedom";
+import DebugLogger from "./debugLogger.js";
 
 export default class FilterProcessor {
     static instance = null;
@@ -28,13 +29,14 @@ export default class FilterProcessor {
     rules = [];
     specialRules = []; // Special rules contains rules for adjusting Page Shadow internal processing (performance mode, etc.)
     isInit = true;
+    debugLogger;
 
     constructor() { // Filter class is a Singleton
         if(!FilterProcessor.instance) {
             FilterProcessor.instance = this;
-        } else {
-            this.isInit = false;
         }
+
+        this.debugLogger = new DebugLogger();
 
         return FilterProcessor.instance;
     }
@@ -82,6 +84,7 @@ export default class FilterProcessor {
 
                     return true;
                 } catch(e) {
+                    this.debugLogger?.log(e, "error");
                     return false;
                 }
             }
@@ -106,7 +109,7 @@ export default class FilterProcessor {
                 }
             }
 
-            setSettingItem("filtersSettings", filters);
+            await setSettingItem("filtersSettings", filters);
         }
     }
 
@@ -151,10 +154,12 @@ export default class FilterProcessor {
                             filterToUpdate.hasError = true;
                         }
                     } catch(error2) {
+                        this.debugLogger?.log(error2, "error");
                         filterToUpdate.hasError = true;
                     }
                 }
             } catch(error) {
+                this.debugLogger?.log(error, "error");
                 filterToUpdate.hasError = true;
             }
         }
@@ -185,7 +190,7 @@ export default class FilterProcessor {
             filters.lastFailedUpdate = -1;
         }
 
-        setSettingItem("filtersSettings", filters);
+        await setSettingItem("filtersSettings", filters);
         this.cacheFilters();
 
         return !updateHadErrors;
@@ -202,7 +207,7 @@ export default class FilterProcessor {
             filters.filters[i].needUpdate = false;
         }
 
-        setSettingItem("filtersSettings", filters);
+        await setSettingItem("filtersSettings", filters);
         this.cacheFilters();
 
         return true;
@@ -212,7 +217,7 @@ export default class FilterProcessor {
         const result = await browser.storage.local.get("filtersSettings");
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
         filters.filters[idFilter] = await this.updateFilter(idFilter);
-        setSettingItem("filtersSettings", filters);
+        await setSettingItem("filtersSettings", filters);
         this.cacheFilters();
 
         if(filters.filters[idFilter].hasError) {
@@ -226,7 +231,7 @@ export default class FilterProcessor {
         const result = await browser.storage.local.get("filtersSettings");
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
         filters.filters[idFilter].enabled = enable;
-        setSettingItem("filtersSettings", filters);
+        await setSettingItem("filtersSettings", filters);
         this.cacheFilters();
 
         return true;
@@ -236,7 +241,7 @@ export default class FilterProcessor {
         const result = await browser.storage.local.get("filtersSettings");
         const filters = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
         filters.enableAutoUpdate = enabled;
-        setSettingItem("filtersSettings", filters);
+        await setSettingItem("filtersSettings", filters);
         this.cacheFilters();
 
         return true;
@@ -356,16 +361,14 @@ export default class FilterProcessor {
 
                 if(parts.length > 0 && !isComment && filtersTypeRecognized) {
                     return { "website": website, "type": type, "filter": filter };
-                } else {
-                    if(!filtersTypeRecognized) {
-                        errorType = filterSyntaxErrorTypes.UNKNOWN_TYPE;
-                        errorPart = type;
-                        errorCode = "UNKNOWN_TYPE";
-                    } else if(parts.length <= 0) {
-                        errorType = filterSyntaxErrorTypes.NO_TYPE;
-                        errorPart = website + "|???";
-                        errorCode = "NO_TYPE";
-                    }
+                } else if(!filtersTypeRecognized) {
+                    errorType = filterSyntaxErrorTypes.UNKNOWN_TYPE;
+                    errorPart = type;
+                    errorCode = "UNKNOWN_TYPE";
+                } else if(parts.length <= 0) {
+                    errorType = filterSyntaxErrorTypes.NO_TYPE;
+                    errorPart = website + "|???";
+                    errorCode = "NO_TYPE";
                 }
             } else {
                 errorType = filterSyntaxErrorTypes.NO_TYPE;
@@ -391,11 +394,9 @@ export default class FilterProcessor {
                 if(parsed) {
                     if(!parsed.error) {
                         currentRules.push(parsed);
-                    } else {
-                        if(!(parsed.type == filterSyntaxErrorTypes.EMPTY && lineIndex >= lines.length)) {
-                            parsed.line = lineIndex;
-                            errorRules.push(parsed);
-                        }
+                    } else if(!(parsed.type == filterSyntaxErrorTypes.EMPTY && lineIndex >= lines.length)) {
+                        parsed.line = lineIndex;
+                        errorRules.push(parsed);
                     }
                 }
 
@@ -429,6 +430,8 @@ export default class FilterProcessor {
         this.rules = newRules;
         this.specialRules = newSpecialRules;
         this.isInit = false;
+
+        this.debugLogger?.log("FilterProcessor - Updated cache");
     }
 
     extractMetadataLine(line) {
@@ -528,7 +531,7 @@ export default class FilterProcessor {
                             });
                         }
 
-                        setSettingItem("filtersSettings", filters);
+                        await setSettingItem("filtersSettings", filters);
                         return true;
                     }
 
@@ -549,7 +552,7 @@ export default class FilterProcessor {
 
         if(filters && filters.filters) {
             filters.filters = filters.filters.filter((value, index) => index != idFilter);
-            setSettingItem("filtersSettings", filters);
+            await setSettingItem("filtersSettings", filters);
             this.cacheFilters();
         }
 
@@ -574,8 +577,8 @@ export default class FilterProcessor {
             });
         }
 
-        setSettingItem("customFilter", text);
-        setSettingItem("filtersSettings", filters);
+        await setSettingItem("customFilter", text);
+        await setSettingItem("filtersSettings", filters);
         this.cacheFilters();
 
         return true;
@@ -590,15 +593,16 @@ export default class FilterProcessor {
         const rulesToCheck = type == ruleCategory.SPECIAL_RULES ? this.specialRules : this.rules;
 
         if(url && url.trim() != "") {
-            let websuteUrl_tmp;
+            let websiteUrlTmp;
 
             try {
-                websuteUrl_tmp = new URL(url);
+                websiteUrlTmp = new URL(url);
             } catch(e) {
+                this.debugLogger?.log(e, "error");
                 return;
             }
 
-            const domain = websuteUrl_tmp.hostname;
+            const domain = websiteUrlTmp.hostname;
 
             for(let i = 0, len = rulesToCheck.length; i < len; i++) {
                 const rule = rulesToCheck[i];
@@ -668,7 +672,7 @@ export default class FilterProcessor {
         return filterErrors;
     }
 
-    async reinstallDefaultFilters() {
+    reinstallDefaultFilters() {
         return this.updateDefaultFilters(true);
     }
 
@@ -706,7 +710,7 @@ export default class FilterProcessor {
 
         filters.filters = newFilters;
 
-        setSettingItem("filtersSettings", filters);
+        await setSettingItem("filtersSettings", filters);
 
         if(filterUpdated) {
             this.updateAllFilters(false);
@@ -721,7 +725,7 @@ export default class FilterProcessor {
 
     async getFiltersSize() {
         if(browser.storage.local.getBytesInUse != undefined) {
-            return await browser.storage.local.getBytesInUse(["filtersSettings", "customFilter"]);
+            return browser.storage.local.getBytesInUse(["filtersSettings", "customFilter"]);
         } else {
             return getSizeObject(await browser.storage.local.get(["filtersSettings", "customFilter"]));
         }

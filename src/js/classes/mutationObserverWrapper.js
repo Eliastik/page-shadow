@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -16,6 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
+
 /**
  * Mutation Observer Wrapper class adding new features to Mutation Observers :
  *
@@ -51,10 +52,8 @@ export default class MutationObserverWrapper {
             if(!this.pausing) {
                 this.disconnect();
                 this.callback(mutations);
-            } else {
-                if(this.enableQueueMutations) {
-                    this.queueMutations.push(...mutations);
-                }
+            } else if(this.enableQueueMutations) {
+                this.queueMutations.push(...mutations);
             }
         });
     }

@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -16,7 +16,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
- :root {
+
+// Variables of the theme - Controlled by JavaScript, this is default theme
+:root {
     --page-shadow-bgcolor: black;
     --page-shadow-txtcolor: #AAA;
     --page-shadow-lnkcolor: #1E90FF;
@@ -35,180 +37,266 @@
     --page-shadow-brightcolortxtblack: black;
 }
 
-@colortempsnames: 1000, 1200, 1500, 1800, 2000, 2200, 2600, 2900, 3100, 3600; // Name of the color temperatures (in Kelvin)
-@colortemps: rgb(255,51,0), rgb(255,82,0), rgb(255,111,0), rgb(255,126,0), rgb(255,137,18), rgb(255,147,44), rgb(255,165,79), rgb(255,177,101), rgb(255,184,114), rgb(255,199,143); // Color temperatures in RGB
-@nbcolortemps: 10; // NB of color temperatures
+// NB of color temperatures
+@nbcolortemps: 10;
+// Name of the color temperatures (in Kelvin)
+@colortempsnames: 1000, 1200, 1500, 1800, 2000, 2200, 2600, 2900, 3100, 3600;
+// Color temperatures in RGB
+@colortemps: rgb(255,51,0), rgb(255,82,0), rgb(255,111,0), rgb(255,126,0), rgb(255,137,18), rgb(255,147,44), rgb(255,165,79), rgb(255,177,101), rgb(255,184,114), rgb(255,199,143);
 
-/* Colors themes */
+/* Contrast filter CSS */
 html.pageShadowBackgroundContrast * {
     transition: background-color 0s;
 }
+
 html.pageShadowBackgroundContrast:not(.pageShadowDisableBackgroundStyling) {
     background: var(--page-shadow-bgcolor) !important;
 }
+
 html.pageShadowContrastBlack.pageShadowForceCustomLinkColorAsBackground:not(.pageShadowDisableBackgroundStyling) {
     background: var(--page-shadow-lnkcolor) !important;
 }
+
 html.pageShadowContrastBlack.pageShadowForceCustomLinkVisitedColorAsBackground:not(.pageShadowDisableBackgroundStyling) {
     background: var(--page-shadow-visitedlnkcolor) !important;
 }
+
 html.pageShadowContrastBlack.pageShadowForceCustomTextColorAsBackground:not(.pageShadowDisableBackgroundStyling) {
     background: var(--page-shadow-txtcolor) !important;
 }
+
 .pageShadowContrastBlack:not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg) {
     background: var(--page-shadow-bgcolor) !important;
     background-image: url();
     color: var(--page-shadow-txtcolor);
 }
+
 .pageShadowContrastBlack.pageShadowHasBackgroundImg:not(.pageShadowDisableBackgroundStyling) {
     background-color: var(--page-shadow-bgcolor) !important;
     color: var(--page-shadow-txtcolor);
 }
+
 .pageShadowContrastBlack.pageShadowForceCustomLinkColorAsBackground:not(.pageShadowDisableBackgroundStyling) {
     background: var(--page-shadow-lnkcolor) !important;
     background-image: url();
 }
+
 .pageShadowContrastBlack.pageShadowForceCustomLinkVisitedColorAsBackground:not(.pageShadowDisableBackgroundStyling) {
     background: var(--page-shadow-visitedlnkcolor) !important;
     background-image: url();
 }
+
 .pageShadowContrastBlack.pageShadowForceCustomTextColorAsBackground:not(.pageShadowDisableBackgroundStyling) {
     background: var(--page-shadow-txtcolor) !important;
     background-image: url();
 }
-.pageShadowContrastBlack.pageShadowDisableStyling *, .pageShadowContrastBlack *.pageShadowElementDisabled {
+
+.pageShadowContrastBlack.pageShadowDisableStyling *, 
+.pageShadowContrastBlack *.pageShadowElementDisabled {
     transition: none !important;
 }
-.pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowHasTransparentBackground),
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowHasTransparentBackground):not(.pageShadowHasBrightColorBackground),
-.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowForceCustomBackgroundColor, .pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::after, .pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::before {
+
+.pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowHasTransparentBackground):not(.pageShadowElementForceTransparentBackground):not(.pageShadowForceCustomLinkColorAsBackground):not(.pageShadowForceCustomTextColorAsBackground):not(.pageShadowForceCustomLinkVisitedColorAsBackground),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowHasTransparentBackground):not(.pageShadowHasBrightColorBackground):not(.pageShadowElementForceTransparentBackground):not(.pageShadowForceCustomLinkColorAsBackground):not(.pageShadowForceCustomTextColorAsBackground):not(.pageShadowForceCustomLinkVisitedColorAsBackground),
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowForceCustomBackgroundColor, 
+.pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *.pageShadowHasPseudoElement:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowPseudoElementHasBackgroundImgAfter):not(.pageShadowPseudoElementHasTransparentBackgroundAfter)::after,
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowPseudoElementHasBackgroundImgAfter):not(.pageShadowPseudoElementHasTransparentBackgroundAfter):not(.pageShadowPseudoElementHasBrightColorBackgroundAfter)::after,
+.pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *.pageShadowHasPseudoElement:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowPseudoElementHasBackgroundImgBefore):not(.pageShadowPseudoElementHasTransparentBackgroundBefore)::before,
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowPseudoElementHasBackgroundImgBefore):not(.pageShadowPseudoElementHasTransparentBackgroundBefore):not(.pageShadowPseudoElementHasBrightColorBackgroundBefore)::before,
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::after,
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::before {
     background-color: var(--page-shadow-bgcolor) !important;
 }
+
 .pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor),
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowHasBrightColorBackground):not(.pageShadowForceCustomTextColor),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowHasBrightColorBackground):not(.pageShadowForceCustomTextColor):not(.pageShadowHasBrightColorText):not(body.pageShadowEnableSelectiveInvert svg.pageShadowSelectiveInvert use),
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowForceCustomTextColor,
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowBrightColorForceCustomTextLinkColor,
-.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::after, .pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::before,
-.pageShadowContrastBlack:not(.pageShadowDisableStyling) input::placeholder {
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) a > .pageShadowHasBrightColorText > *:not(.pageShadowHasBrightColorText),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowBrightColorForceCustomTextLinkColor:not(.pageShadowDisableStyling):not(.pageShadowHasBrightColorText),
+.pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *.pageShadowHasPseudoElement:not(.pageShadowElementDisabled):not(.pageShadowPseudoElementHasBackgroundImgAfter):not(.pageShadowPseudoElementHasTransparentBackgroundAfter)::after,
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement:not(.pageShadowElementDisabled):not(.pageShadowPseudoElementHasBackgroundImgAfter):not(.pageShadowPseudoElementHasTransparentBackgroundAfter):not(.pageShadowPseudoElementHasBrightColorTextAfter)::after,
+.pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *.pageShadowHasPseudoElement:not(.pageShadowElementDisabled):not(.pageShadowPseudoElementHasBackgroundImgBefore):not(.pageShadowPseudoElementHasTransparentBackgroundBefore)::before,
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement:not(.pageShadowElementDisabled):not(.pageShadowPseudoElementHasBackgroundImgBefore):not(.pageShadowPseudoElementHasTransparentBackgroundBefore):not(.pageShadowPseudoElementHasBrightColorTextBefore)::before,
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) input::placeholder,
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::after, 
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::before,
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowPseudoElementBrightColorForceCustomTextLinkColor::after, 
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowPseudoElementBrightColorForceCustomTextLinkColor::before {
     color: var(--page-shadow-txtcolor) !important;
 }
+
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) :not(.pageShadowInvertImageColor) svg:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor) {
     color: var(--page-shadow-txtcolor) !important;
 }
+
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) select:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
     background-color: var(--page-shadow-selectbgcolor) !important;
 }
+
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) select:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
     color: var(--page-shadow-selectxtcolor) !important;
 }
-.pageShadowContrastBlack:not(.pageShadowDisableStyling) input:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling), .pageShadowContrastBlack:not(.pageShadowDisableStyling) textarea:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling) {
+
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) input:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling), 
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) textarea:not(.pageShadowElementDisabled):not(.pageShadowDisableInputBorderStyling) {
     border-color: var(--page-shadow-txtcolor) !important;
 }
-.pageShadowContrastBlack:not(.pageShadowDisableStyling) input.pageShadowForceInputBorderStyling:not(.pageShadowDisableInputBorderStyling), .pageShadowContrastBlack:not(.pageShadowDisableStyling) textarea.pageShadowForceInputBorderStyling:not(.pageShadowDisableInputBorderStyling) {
+
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) input.pageShadowForceInputBorderStyling:not(.pageShadowDisableInputBorderStyling), 
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) textarea.pageShadowForceInputBorderStyling:not(.pageShadowDisableInputBorderStyling) {
     border: 1px solid var(--page-shadow-txtcolor) !important;
 }
+
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) ins:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
     background-color: var(--page-shadow-insbgcolor) !important;
 }
+
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) ins:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
     color: var(--page-shadow-instxtcolor) !important;
 }
+
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) del:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
     background-color: var(--page-shadow-delbgcolor) !important;
 }
+
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) del:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
     color: var(--page-shadow-deltxtcolor) !important;
 }
+
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) mark:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
     background-color: var(--page-shadow-markbgcolor) !important;
 }
+
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) mark:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling) {
     color: var(--page-shadow-marktxtcolor) !important;
 }
-.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) a:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowHasTransparentBackground),
-.pageShadowContrastBlack.pageShadowPreserveBrightColor.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *:not(.pageShadowHasBrightColorBackground) > a:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowHasBrightColorBackground) {
+
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) a:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowElementForceTransparentBackground):not(.pageShadowForceCustomLinkColorAsBackground):not(.pageShadowForceCustomTextColorAsBackground):not(.pageShadowForceCustomLinkVisitedColorAsBackground),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *:not(.pageShadowHasBrightColorBackground) > a:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowHasBrightColorBackground):not(.pageShadowElementForceTransparentBackground):not(.pageShadowForceCustomLinkColorAsBackground):not(.pageShadowForceCustomTextColorAsBackground):not(.pageShadowForceCustomLinkVisitedColorAsBackground) {
     background-color: transparent !important;
 }
-.pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) a:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowForceCustomLinkColor),
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(.pageShadowHasBrightColorBackground) a:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowHasBrightColorBackground),
+
+.pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) a:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowForceCustomLinkColor):not(:has(.pageShadowDisableStyling)),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(.pageShadowHasBrightColorBackground) a:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowHasBrightColorBackground):not(:has(.pageShadowDisableStyling)),
 .pageShadowContrastBlack *.pageShadowForceCustomLinkColor,
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) a.pageShadowBrightColorForceCustomTextLinkColor {
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) a.pageShadowBrightColorForceCustomTextLinkColor:not(:has(.pageShadowDisableStyling)) {
     color: var(--page-shadow-lnkcolor) !important;
 }
-.pageShadowContrastBlack:not(.pageShadowDisableStyling) img, .pageShadowContrastBlack:not(.pageShadowDisableStyling) video, .pageShadowContrastBlack:not(.pageShadowDisableStyling) canvas {
+
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) img, 
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) video, 
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) canvas {
     filter: invert(0%) !important;
 }
-.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) * > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground),
-.pageShadowContrastBlack.pageShadowPreserveBrightColor.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *:not(.pageShadowHasBrightColorBackground) > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowHasBrightColorBackground),
-.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowForceCustomBackgroundColor, .pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::after, .pageShadowContrastBlack.pageShadowBackgroundDetected *.pageShadowEnablePseudoElementStyling::before {
+
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) * > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowElementForceTransparentBackground):not(.pageShadowForceCustomLinkColorAsBackground):not(.pageShadowForceCustomTextColorAsBackground):not(.pageShadowForceCustomLinkVisitedColorAsBackground),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *:not(.pageShadowHasBrightColorBackground) > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowHasBrightColorBackground):not(.pageShadowElementForceTransparentBackground):not(.pageShadowForceCustomLinkColorAsBackground):not(.pageShadowForceCustomTextColorAsBackground):not(.pageShadowForceCustomLinkVisitedColorAsBackground),
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowForceCustomBackgroundColor, 
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *.pageShadowHasPseudoElement:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowPseudoElementHasBackgroundImgAfter):not(.pageShadowPseudoElementHasTransparentBackgroundAfter)::after,
+.pageShadowContrastBlack.pageShadowBackgroundDetected.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowPseudoElementHasBackgroundImgAfter):not(.pageShadowPseudoElementHasTransparentBackgroundAfter):not(.pageShadowPseudoElementHasBrightColorBackgroundAfter)::after,
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *.pageShadowHasPseudoElement:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowPseudoElementHasBackgroundImgBefore):not(.pageShadowPseudoElementHasTransparentBackgroundBefore)::before,
+.pageShadowContrastBlack.pageShadowBackgroundDetected.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowPseudoElementHasBackgroundImgBefore):not(.pageShadowPseudoElementHasTransparentBackgroundBefore):not(.pageShadowPseudoElementHasBrightColorBackgroundBefore)::before,
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::after,
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *.pageShadowEnablePseudoElementStyling::before {
     background: var(--page-shadow-bgcolor) !important;
 }
-.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground),
-.pageShadowContrastBlack.pageShadowPreserveBrightColor.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowHasBrightColorBackground) {
+
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement.pageShadowForcePseudoElementTransparentBackgroundAfter::after, 
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowHasPseudoElement.pageShadowForcePseudoElementTransparentBackgroundBefore::before {
+    background-color: transparent !important;
+}
+
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowElementForceTransparentBackground):not(.pageShadowForceCustomLinkColorAsBackground):not(.pageShadowForceCustomTextColorAsBackground):not(.pageShadowForceCustomLinkVisitedColorAsBackground),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowHasBrightColorBackground):not(.pageShadowElementForceTransparentBackground):not(.pageShadowForceCustomLinkColorAsBackground):not(.pageShadowForceCustomTextColorAsBackground):not(.pageShadowForceCustomLinkVisitedColorAsBackground) {
     background: var(--page-shadow-bgcolor) !important;
 }
-.pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor),
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(.pageShadowHasBrightColorBackground) a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowHasBrightColorBackground),
+
+.pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor):not(:has(.pageShadowDisableStyling)),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(.pageShadowHasBrightColorBackground) a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowHasBrightColorBackground):not(:has(.pageShadowDisableStyling)),
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) #pageShadowLinkVisited:not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor),
-.pageShadowContrastBlack:not(.pageShadowDisableStyling) *:visited.pageShadowForceCustomLinkColor, .pageShadowContrastBlack *.pageShadowForceCustomVisitedLinkColor,
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) a.pageShadowBrightColorForceCustomTextLinkColor:visited {
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *:visited.pageShadowForceCustomLinkColor:not(:has(.pageShadowDisableStyling)), 
+.pageShadowContrastBlack *.pageShadowForceCustomVisitedLinkColor:not(:has(.pageShadowDisableStyling)),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) a.pageShadowBrightColorForceCustomTextLinkColor:visited:not(:has(.pageShadowDisableStyling)) {
     color: var(--page-shadow-visitedlnkcolor) !important;
 }
+
 .pageShadowContrastBlack:not(.pageShadowDisableImgBgColor):not(.pageShadowDisableStyling) img:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
     background-color: var(--page-shadow-imgbgcolor) !important;
 }
-.pageShadowContrastBlack:not(.pageShadowPreserveBrightColor) .pageShadowHasBackgroundImg,
-.pageShadowContrastBlack.pageShadowPreserveBrightColor .pageShadowHasBackgroundImg:not(.pageShadowHasBrightColorBackground), 
+
+.pageShadowContrastBlack:not(.pageShadowPreserveBrightColor) .pageShadowHasBackgroundImg:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(select),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor .pageShadowHasBackgroundImg:not(.pageShadowHasBrightColorBackground):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(select),
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) .pageShadowDisableElementInvert {
     background-color: transparent !important;
 }
-.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) .pageShadowHasHiddenElement, .pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *.pageShadowHasHiddenElement > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled), .pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *.pageShadowElementForceTransparentBackground, .pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *.pageShadowElementForceTransparentBackground * {
+
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) .pageShadowHasHiddenElement, 
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *.pageShadowHasHiddenElement > *:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled), 
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *.pageShadowElementForceTransparentBackground, 
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) *.pageShadowElementForceTransparentBackground * {
     background: transparent !important;
 }
-.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowForceCustomLinkColorAsBackground:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowHasTransparentBackground) {
+
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowForceCustomLinkColorAsBackground:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowHasTransparentBackground):not(.pageShadowElementForceTransparentBackground):not(:has(.pageShadowDisableStyling)) {
     background-color: var(--page-shadow-lnkcolor) !important;
 }
-.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowForceCustomLinkVisitedColorAsBackground:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowHasTransparentBackground) {
+
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowForceCustomLinkVisitedColorAsBackground:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowHasTransparentBackground):not(.pageShadowElementForceTransparentBackground):not(:has(.pageShadowDisableStyling)) {
     background-color: var(--page-shadow-visitedlnkcolor) !important;
 }
-.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowForceCustomTextColorAsBackground:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowHasTransparentBackground) {
+
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowForceCustomTextColorAsBackground:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasBackgroundImg):not(.pageShadowHasTransparentBackground):not(.pageShadowElementForceTransparentBackground) {
     background-color: var(--page-shadow-txtcolor) !important;
 }
-.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) * > *.pageShadowForceCustomLinkColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) {
+
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) * > *.pageShadowForceCustomLinkColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowElementForceTransparentBackground):not(:has(.pageShadowDisableStyling)) {
     background: var(--page-shadow-lnkcolor) !important;
 }
-.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) * > *.pageShadowForceCustomLinkVisitedColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) {
+
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) * > *.pageShadowForceCustomLinkVisitedColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowElementForceTransparentBackground):not(:has(.pageShadowDisableStyling)) {
     background: var(--page-shadow-visitedlnkcolor) !important;
 }
-.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) * > *.pageShadowForceCustomTextColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) {
+
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) * > *.pageShadowForceCustomTextColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowElementForceTransparentBackground) {
     background: var(--page-shadow-txtcolor) !important;
 }
-.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) > *.pageShadowForceCustomLinkColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) {
+
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) > *.pageShadowForceCustomLinkColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowElementForceTransparentBackground):not(:has(.pageShadowDisableStyling)) {
     background: var(--page-shadow-lnkcolor) !important;
 }
-.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) > *.pageShadowForceCustomLinkVisitedColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) {
+
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) > *.pageShadowForceCustomLinkVisitedColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowElementForceTransparentBackground):not(:has(.pageShadowDisableStyling)) {
     background: var(--page-shadow-visitedlnkcolor) !important;
 }
-.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) > *.pageShadowForceCustomTextColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground) {
+
+.pageShadowContrastBlack.pageShadowBackgroundDetected:not(.pageShadowDisableStyling) > *.pageShadowForceCustomTextColorAsBackground:not(img):not(video):not(canvas):not(a):not(svg):not(select):not(ins):not(del):not(mark):not(yt-icon):not(.pageShadowHasBackgroundImg):not(.pageShadowHasHiddenElement):not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowHasTransparentBackground):not(.pageShadowElementForceTransparentBackground) {
     background: var(--page-shadow-txtcolor) !important;
 }
-.pageShadowCustomFontFamily *:not(.pageShadowElementDisabled):not(.pageShadowDisableFontFamilyStyling), .pageShadowCustomFontFamily *.pageShadowForceFontFamilyStyling {
+
+.pageShadowCustomFontFamily *:not(.pageShadowElementDisabled):not(.pageShadowDisableFontFamilyStyling), 
+.pageShadowCustomFontFamily *.pageShadowForceFontFamilyStyling {
     font-family: var(--page-shadow-customfontfamily) !important;
 }
+
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasBrightColorBackground.pageShadowBrightColorWithBlackText,
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(.pageShadowBrightColorWithWhiteText):not(.pageShadowBrightColorForceCustomTextLinkColor).pageShadowHasBrightColorBackground.pageShadowBrightColorWithBlackText *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowBrightColorWithWhiteText):not(.pageShadowForceCustomTextColor):not(.pageShadowBrightColorForceCustomTextLinkColor),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(.pageShadowBrightColorWithWhiteText):not(.pageShadowBrightColorForceCustomTextLinkColor).pageShadowHasBrightColorBackground.pageShadowBrightColorWithBlackText *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowBrightColorWithWhiteText):not(.pageShadowForceCustomTextColor):not(.pageShadowBrightColorForceCustomTextLinkColor):not(.pageShadowHasBrightColorText),
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasBrightColorBackground.pageShadowBrightColorWithBlackText a:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowBrightColorForceCustomTextLinkColor),
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasBrightColorBackground.pageShadowBrightColorWithBlackText a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowBrightColorForceCustomTextLinkColor) {
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasBrightColorBackground.pageShadowBrightColorWithBlackText a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowBrightColorForceCustomTextLinkColor),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowPseudoElementHasBrightColorBackgroundAfter.pageShadowPseudoElementBrightColorWithBlackTextAfter:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling)::after,
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowPseudoElementHasBrightColorBackgroundBefore.pageShadowPseudoElementBrightColorWithBlackTextBefore:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling)::before {
     color: var(--page-shadow-brightcolortxtblack) !important;
 }
+
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasBrightColorBackground.pageShadowBrightColorWithWhiteText,
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(.pageShadowBrightColorWithBlackText):not(.pageShadowBrightColorForceCustomTextLinkColor).pageShadowHasBrightColorBackground.pageShadowBrightColorWithWhiteText *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowBrightColorWithBlackText):not(.pageShadowForceCustomTextColor):not(.pageShadowBrightColorForceCustomTextLinkColor),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(.pageShadowBrightColorWithBlackText):not(.pageShadowBrightColorForceCustomTextLinkColor).pageShadowHasBrightColorBackground.pageShadowBrightColorWithWhiteText *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowBrightColorWithBlackText):not(.pageShadowForceCustomTextColor):not(.pageShadowBrightColorForceCustomTextLinkColor):not(.pageShadowHasBrightColorText),
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasBrightColorBackground.pageShadowBrightColorWithWhiteText a:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowBrightColorForceCustomTextLinkColor),
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasBrightColorBackground.pageShadowBrightColorWithWhiteText a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowBrightColorForceCustomTextLinkColor) {
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasBrightColorBackground.pageShadowBrightColorWithWhiteText a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowBrightColorForceCustomTextLinkColor),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowPseudoElementHasBrightColorBackgroundAfter.pageShadowPseudoElementBrightColorWithWhiteTextAfter:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling)::after,
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowPseudoElementHasBrightColorBackgroundBefore.pageShadowPseudoElementBrightColorWithWhiteTextBefore:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling)::before {
     color: var(--page-shadow-brightcolortxtwhite) !important;
 }
 
-/* Color temperatures */
+/* Color temperatures (blue-light reduction filter) CSS */
 .loopColorTemps(@i) when (@i =< @nbcolortemps) {
     @colortempname: extract(@colortempsnames, @i);
     @colortemp: extract(@colortemps, @i);
@@ -226,7 +314,7 @@ html.pageShadowContrastBlack.pageShadowForceCustomTextColorAsBackground:not(.pag
     }
 }
 
-/* Brightness */
+/* Brightness reduction filter */
 div#pageShadowBrightness {
     position: fixed;
     top: 0;
@@ -241,6 +329,7 @@ div#pageShadowBrightness {
     pointer-events: none;
 }
 
+/* Blue-light reduction filter */
 div#pageShadowBrightnessNightMode {
     position: fixed;
     top: 0;

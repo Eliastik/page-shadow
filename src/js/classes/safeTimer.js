@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -22,27 +22,33 @@
  * inactive) to preserve performance
  */
 export default class SafeTimer {
+
+    timeoutId = null;
+    requestAnimationId = null;
+    callback = null;
+
     constructor(callback) {
-        this.requestAnimationId = this.timeoutId = null;
         this.callback = callback;
     }
 
     start(delay) {
-        if(!delay) {
-            if(!this.requestAnimationId) {
-                this.requestAnimationId = requestAnimationFrame(() => {
-                    this.onRequestAnimationFrame();
-                });
+        return new Promise(resolve => {
+            if(!delay) {
+                if(!this.requestAnimationId) {
+                    this.requestAnimationId = requestAnimationFrame(() => {
+                        this.onRequestAnimationFrame().then(resolve);
+                    });
+                }
+
+                return;
             }
 
-            return;
-        }
-
-        if(!this.requestAnimationId && !this.timeoutId) {
-            this.timeoutid = setTimeout(() => {
-                this.macroToMicro();
-            }, delay);
-        }
+            if(!this.requestAnimationId) {
+                this.timeoutId = setTimeout(() => {
+                    this.macroToMicro();
+                }, delay);
+            }
+        });
     }
 
     clear() {
@@ -51,19 +57,19 @@ export default class SafeTimer {
             this.requestAnimationId = null;
         }
 
-        if(this.timeoutid) {
-            clearTimeout(this.timeoutid);
-            this.timeoutid = null;
+        if(this.timeoutId) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = null;
         }
     }
 
     macroToMicro() {
-        this.timeoutid = null;
+        this.timeoutId = null;
         this.start();
     }
 
-    onRequestAnimationFrame() {
+    async onRequestAnimationFrame() {
         this.requestAnimationId = null;
-        this.callback();
+        await this.callback();
     }
 }
