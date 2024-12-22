@@ -124,56 +124,86 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Minor) Bug with error in filters: open errors from a built-in filter, then the errors from custom filter: the window will be blank (random)
 * [x] (Minor) Transition background color (background white) blink when Increase page contrast is enabled - Exemple: https://iq.opengenus.org/lstopo-in-linux/
 
-### Release - Next
+### Release - 2.11
 
 #### Features
 
-* [ ] Reduce delay applying reduce brightness/blue light reduction filter + invert entire page
-* [ ] Fix dark image detection (using contours detection?) + enable by default?
+* [x] Reduce delay applying reduce brightness/blue light reduction filter + invert entire page
+* [x] Detect bright color text + enable for bright color inversion/color reduction?
+* [x] Optimize performance
+* [x] Debug mode
+* [x] Fix dark image detection (using contours detection?) + enable by default?
     * [x] Optimize by reducing size of the image before analyze
-* [ ] Publish Manifestv3 for Firefox
-    * [ ] Fix Cloud backup on Firefox ; all other feature works
+* [x] Finalization: continue to test and adjust advanced settings for: performance optimizations and dark image detection
+    * [x] Add advanced settings for dark image detection?
+    * [x] Optimize performance settings, dynamic throttling?
+    * [x] Prepare release 2.11: Readme, Changelog, etc...
+* [x] Filters module improving
+    * [x] Filters: UI to report a website problem
+* Release 2.11 - don't forget to change version date
+    * [x] Adjust throttling algorithm, and performance settings
+    * [x] Bug with iframes => example comments on Franceinfo website
+    * [x] Bug with invert entire page when the extension is built in prod mode => was caused by the gulp-clean-css plugin
+    * [x] Process pseudo elements
+    * [x] More optimizations - test
+    * [x] Final tests (Chrome/Firefox)
+    * [x] When releasing: update version date, update changelog (last bugfixes), compare code between MV2 and MV3 versions
 
 #### Bugs to fix
 
+* [x] (Minor) On local opened page, the right click actions doesn't work (Chrome only) -> seems OK, nothing fixed
+* [x] (Medium) HTML class used by Page Shadow to invert entire page is reseted on some websites. Exemple: https://spring.io/tools
+* [x] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
+* [x] (Very minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
+* [x] (Minor) Shadow DOM is not always detected => example comments on Franceinfo website
+* [x] (Medium) Dark image detection not working on image from cross-origin domain (cf Wikipedia articles)
 * [x] (Major) Still some errors with QUOTA_BYTES_PER_ITEM in cloud archive. The chunk method need to be fixed
 * [x] (Medium) Bug with fast apply mode and iframes + preset: iframe use global settings instead of preset settings from parent page
 * [x] (Minor) Background gradient not detected as bright colors
 * [x] (Minor) Fix transition white that disable some transitions? -> no, seems OK
-* [ ] (Minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
+* [x] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element -> disabled by default
 
 #### Ideas
 
 * [x] Add possibility to change the filter intensity for the Attenuate colors feature?
 * [x] Add possibility to not invert bright color for the Invert colors features?
 * [x] Increase the number of presets/custom themes?
-* [ ] Detect bright color text + enable for bright color inversion/color reduction?
 
-### Common
+### Release - future
+
+* [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
+
+#### Known issues/bugs
+
+* [ ] (Medium) Some images are ignored by the dark image detection due to CORS restriction
+* [ ] (Minor) Logo not detected as dark image when increase contrast is enabled (still detect with invert entire page) on: https://www.fastmail.com/blog/why-we-use-our-own-hardware/
+    * Due to the path sub-element with fill = "currentcolor" and a style stating fill = "inherit"
+
+#### Common
 
 * [ ] FAQ for common questions?
 
-### Planned/ideas
+#### Ideas
 
-* [ ] Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
-* [ ] Improving codebase
+* Improving codebase
     * [ ] Comment the code: doc for methods/functions
-    * [ ] Simplify code applying Shadow Roots styles?
-    * [ ] Separate code treating mutations of page elements to a separate class?
-    * [ ] Separate method applying mutation observers to another class?
-    * [ ] Modularize content.js classes with less dependencies between classes?
-* [ ] Others codebase improvements
-    * [ ] No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
-* [ ] Filters module improving
-    * [ ] Filters: UI to report a website problem
-    * [ ] Filters: Element picker to create custom rule easily
-    * [ ] Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditonal filter)
-    * [ ] Store filters on a Github repository ?
-* [ ] Prevent the attenuation of subelements (when enabling Colored elements attenuation)?
+    * [x] Simplify code applying Shadow Roots styles?
+    * [x] Separate code treating mutations of page elements to a separate class?
+    * [x] Separate method applying mutation observers to another class?
+    * [x] Modularize content.js classes with less dependencies between classes?
+        * [ ] Separate each filter (increase contrast, reduce brightness etc.) into a class?
+* Filters module improving
+    * [x] Filters: UI to report a website problem
+* Others :
+    * [ ] Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
+    * [ ] Auto detect website already having a dark mode to auto disable Increase contrast and Invert entire page?
 
-### Known issues/bugs
+#### Abandoned ideas
 
-* [ ] (Minor) Filter: disable class for matched filter on an element but no longer matched following changes in the element
-* [ ] (Minor) On local opened page, the right click actions doesn't work (Chrome only)
-* [ ] (Minor) Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
-* [ ] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
+* Prevent the attenuation of subelements (when enabling Colored elements attenuation)?
+* Several "shades" of background color for the themes? -> detect element with lightness < 0.05 (use existing hsl code)
+* No longer rely on classes for styling (filter rules and background detection) -> auto generation of a CSS style sheet? (see https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/API/tabs/insertCSS)
+* Filters module improving
+    * Filters: Element picker to create custom rule easily
+    * Filters: match if an element is present in the page -> to match sites based on Medium/Gitlab/other types (conditional filter)
+    * Store filters on a Github repository?

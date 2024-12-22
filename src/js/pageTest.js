@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -20,7 +20,7 @@
 import $ from "jquery";
 import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
-import { init_i18next } from "./locales.js";
+import { initI18next } from "./locales.js";
 import { toggleTheme } from "./utils/util.js";
 import browser from "webextension-polyfill";
 import pageTestEN from "../_locales/en/pageTest.json";
@@ -29,8 +29,8 @@ import pageTestFR from "../_locales/fr/pageTest.json";
 window.$ = $;
 window.jQuery = $;
 
-function initI18next() {
-    init_i18next("pageTest").then(() => {
+function initLocales() {
+    initI18next("pageTest").then(() => {
         i18next.addResourceBundle("en", "pageTest", pageTestEN);
         i18next.addResourceBundle("fr", "pageTest", pageTestFR);
         translateContent();
@@ -47,7 +47,7 @@ function translateContent() {
 }
 
 toggleTheme(); // Toggle dark/light theme
-initI18next();
+initLocales();
 
 i18next.on("languageChanged", () => {
     translateContent();
@@ -55,7 +55,7 @@ i18next.on("languageChanged", () => {
 
 window.addEventListener("storage", (e) => {
     if(e && e.key === "i18nextLng") {
-        initI18next();
+        initLocales();
     }
 }, false);
 

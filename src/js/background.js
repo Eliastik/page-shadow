@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -16,13 +16,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { in_array_website, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud, sha256 } from "./utils/util.js";
+import { inArrayWebsite, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud } from "./utils/util.js";
 import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
-import Filter from "./filters.js";
+import FilterProcessor from "./classes/filters.js";
 import browser from "webextension-polyfill";
-import PresetCache from "./utils/presetCache.js";
-import SettingsCache from "./utils/settingsCache.js";
+import PresetCache from "./classes/presetCache.js";
+import SettingsCache from "./classes/settingsCache.js";
+import DebugLogger from "./classes/debugLogger.js";
 
 let autoEnableActivated = false;
 let lastAutoEnableDetected = null;
@@ -30,9 +31,12 @@ let isAutoUpdatingFilters = false;
 const globalPageShadowStyleCache = {};
 const globalPageShadowStyleShadowRootsCache = {};
 
-const filters = new Filter();
+const filters = new FilterProcessor();
 const presetCache = new PresetCache();
 const settingsCache = new SettingsCache();
+const debugLogger = new DebugLogger();
+
+let updatingMenu = false;
 
 function setPopup() {
     if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setPopup) !== "undefined") {
@@ -64,7 +68,10 @@ function createContextMenu(id, type, title, contexts, checked) {
             contexts: contexts,
             checked: checked
         }, () => {
-            if(browser.runtime.lastError) return; // ignore the error messages
+            if(browser.runtime.lastError) {
+                debugLogger.log(`Error creating context menu - id = ${id} / type = ${type} / title = ${title} / contexts = ${contexts} / checked = ${checked}`, "error", browser.runtime.lastError);
+                return; // ignore the error messages
+            }
         });
     }
 }
@@ -78,18 +85,21 @@ function updateContextMenu(id, type, title, contexts, checked) {
             contexts: contexts,
             checked: checked
         }).then(() => {
-            if(browser.runtime.lastError) return; // ignore the error messages
+            if(browser.runtime.lastError) {
+                debugLogger.log(`Error updating context menu - id = ${id} / type = ${type} / title = ${title} / contexts = ${contexts} / checked = ${checked}`, "error", browser.runtime.lastError);
+                return; // ignore the error messages
+            }
         });
     }
 }
 
-function deleteContextMenu(id) {
+async function deleteContextMenu(id) {
     if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.remove) !== "undefined") {
-        browser.contextMenus.remove(id);
+        await browser.contextMenus.remove(id);
     }
 }
 
-async function menu() {
+async function updateMenu() {
     async function createMenu() {
         if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.local) !== "undefined") {
             const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable", "disableRightClickMenu"]);
@@ -114,58 +124,59 @@ async function menu() {
                 const extensionDomain = browser.runtime.getURL("");
                 if(tabUrl.startsWith(extensionDomain)) return;
 
-                const url_str = normalizeURL(tabUrl);
+                const urlStr = normalizeURL(tabUrl);
                 let url;
 
                 try {
-                    url = new URL(url_str);
+                    url = new URL(urlStr);
                 } catch(e) {
+                    debugLogger.log(e, "error");
                     return;
                 }
 
                 const domain = url.hostname;
                 const href = url.href;
-                const isFileURL = url_str.startsWith("file:///") || url_str.startsWith("about:");
+                const isFileURL = urlStr.startsWith("file:///") || urlStr.startsWith("about:");
 
                 if(result.whiteList == "true") {
                     if(!isFileURL) {
-                        if(in_array_website(domain, sitesInterdits) || in_array_website(href, sitesInterdits)) {
+                        if(inArrayWebsite(domain, sitesInterdits) || inArrayWebsite(href, sitesInterdits)) {
                             createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
                         } else {
                             createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
                         }
                     }
 
-                    if(in_array_website(href, sitesInterdits) || in_array_website(domain, sitesInterdits)) {
+                    if(inArrayWebsite(href, sitesInterdits) || inArrayWebsite(domain, sitesInterdits)) {
                         createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
 
-                        if(in_array_website(domain, sitesInterdits)) {
-                            deleteContextMenu("disable-webpage");
-                        } else if(in_array_website(href, sitesInterdits)) {
-                            deleteContextMenu("disable-website");
+                        if(inArrayWebsite(domain, sitesInterdits)) {
+                            await deleteContextMenu("disable-webpage");
+                        } else if(inArrayWebsite(href, sitesInterdits)) {
+                            await deleteContextMenu("disable-website");
                         }
                     } else {
                         createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
                     }
                 } else {
                     if(!isFileURL) {
-                        if(in_array_website(domain, sitesInterdits)) {
+                        if(inArrayWebsite(domain, sitesInterdits)) {
                             createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
                         } else {
                             createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
                         }
                     }
 
-                    if(in_array_website(href, sitesInterdits)) {
+                    if(inArrayWebsite(href, sitesInterdits)) {
                         createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], true);
                     } else {
                         createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
                     }
                 }
 
-                createMenuOthers();
+                await createMenuOthers();
             } else {
-                createMenuOthers();
+                await createMenuOthers();
             }
         }
     }
@@ -193,16 +204,24 @@ async function menu() {
         }
     }
 
-    if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.removeAll) !== "undefined") {
-        await browser.contextMenus.removeAll();
-        createMenu();
-    } else {
-        createMenu();
+    if(updatingMenu) {
+        return;
     }
-}
 
-function updateMenu() {
-    menu();
+    updatingMenu = true;
+
+    try {
+        if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.removeAll) !== "undefined") {
+            await browser.contextMenus.removeAll();
+            await createMenu();
+        } else {
+            await createMenu();
+        }
+    } catch(e) {
+        debugLogger.log("Background - updateMenu - Error updating menu", "error", e);
+    } finally {
+        updatingMenu = false;
+    }
 }
 
 async function updateBadge(storageChanged) {
@@ -254,11 +273,12 @@ async function updateBadge(storageChanged) {
                 browser.tabs.sendMessage(tab.id, {
                     type: "websiteUrlUpdated",
                     enabled,
-                    storageChanged,
-                    settings: await getSettings(url, true),
-                    url: await sha256(url)
+                    storageChanged
                 }).catch(() => {
-                    if(browser.runtime.lastError) return; // ignore the error messages
+                    if(browser.runtime.lastError) {
+                        debugLogger.log(`Error sending message with type = websiteUrlUpdated / enabled = ${enabled} / storageChanged = ${storageChanged} / url = ${url} to tab with id = ${tab.id}`, "error", browser.runtime.lastError);
+                        return; // ignore the error messages
+                    }
                 });
             }
         }
@@ -271,10 +291,10 @@ async function checkAutoEnable() {
         const enabled = checkAutoEnableStartup(data[6], data[4], data[7], data[5]);
 
         if(enabled && !lastAutoEnableDetected || enabled && lastAutoEnableDetected == null) {
-            setSettingItem("globallyEnable", "true");
+            await setSettingItem("globallyEnable", "true");
             lastAutoEnableDetected = true;
         } else if(!enabled && lastAutoEnableDetected || !enabled && lastAutoEnableDetected == null) {
-            setSettingItem("globallyEnable", "false");
+            await setSettingItem("globallyEnable", "false");
             lastAutoEnableDetected = false;
         }
     }
@@ -291,10 +311,14 @@ async function checkAutoUpdateFilters() {
 
     if(enableAutoUpdate && updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
         isAutoUpdatingFilters = true;
-        filters.updateAllFilters(true, false).then(() => isAutoUpdatingFilters = false);
+        filters.updateAllFilters(true, false).then(() => {
+            isAutoUpdatingFilters = false;
+        });
     } else if(enableAutoUpdate && lastFailedUpdate != null && lastFailedUpdate > -1 && ((currentDate - lastFailedUpdate) >= failedUpdateAutoReupdateDelay)) {
         isAutoUpdatingFilters = true;
-        filters.updateAllFilters(true, true).then(() => isAutoUpdatingFilters = false);
+        filters.updateAllFilters(true, true).then(() => {
+            isAutoUpdatingFilters = false;
+        });
     }
 }
 
@@ -310,6 +334,7 @@ async function checkAutoBackupCloud() {
             await setSettingItem("lastAutoBackupFailedDate", -1);
             await setSettingItem("lastAutoBackupCloud", Date.now());
         } catch(e) {
+            debugLogger.log(e, "error");
             await setSettingItem("lastAutoBackupFailed", "true");
             await setSettingItem("lastAutoBackupFailedDate", Date.now());
             await setSettingItem("lastAutoBackupCloud", Date.now());
@@ -337,7 +362,7 @@ async function autoEnable(changed) {
 if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) !== "undefined") {
     browser.storage.onChanged.addListener((_changes, areaName) => {
         if(areaName == "local") {
-            menu();
+            updateMenu();
             updateBadge(true);
         }
     });
@@ -345,14 +370,14 @@ if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) 
 
 if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onActivated) !== "undefined") {
     browser.tabs.onActivated.addListener(() => {
-        menu();
+        updateMenu();
         updateBadge(false);
     });
 }
 
 if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onUpdated) !== "undefined") {
     browser.tabs.onUpdated.addListener(() => {
-        menu();
+        updateMenu();
         updateBadge(false);
     });
 }
@@ -360,7 +385,7 @@ if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.onUpdated) !== "u
 if(typeof(browser.windows) !== "undefined" && typeof(browser.windows.onFocusChanged) !== "undefined") {
     browser.windows.onFocusChanged.addListener(windowId => {
         if(windowId != browser.windows.WINDOW_ID_NONE) {
-            menu();
+            updateMenu();
         }
     });
 }
@@ -375,12 +400,19 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
     browser.runtime.onMessage.addListener(async (message, sender) => {
         if (message && message.type === "ready") {
             const tabId = sender.tab.id;
-            const url = sender.url;
-            const settingsCache = new SettingsCache();
-            const presetsCache = new PresetCache();
+            const url = sender.tab.url;
+
+            // Update cache if needed
+            if(presetCache.isInit) {
+                await presetCache.updateCache();
+            }
+
+            if(settingsCache.isInit) {
+                await settingsCache.updateCache();
+            }
 
             const data = {
-                settings: await getSettings(url, false, settingsCache.data, presetsCache.data),
+                settings: await getSettings(url, false, settingsCache.data, presetCache.data),
                 customThemes: settingsCache.customThemes,
                 enabled: await pageShadowAllowed(url, {
                     sitesInterditPageShadow: settingsCache.disabledWebsites,
@@ -413,14 +445,24 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 const pageURL = normalizeURL(sender.url);
 
                 if(message.type == "isEnabledForThisPage" || message.type == "applySettingsChanged") {
-                    pageShadowAllowed(tabURL, {
-                        sitesInterditPageShadow: settingsCache.disabledWebsites,
-                        whiteList: settingsCache.isWhiteList,
-                        globallyEnable: settingsCache.data.globallyEnable
-                    }).then(async(enabled) => {
-                        const settings = await getSettings(tabURL, true);
-                        resolve({ type: message.type + "Response", enabled: enabled, settings: settings });
-                    });
+                    const checkEnabledForThisPage = () => {
+                        pageShadowAllowed(tabURL, {
+                            sitesInterditPageShadow: settingsCache.disabledWebsites,
+                            whiteList: settingsCache.isWhiteList,
+                            globallyEnable: settingsCache.data.globallyEnable
+                        }).then(async(enabled) => {
+                            const settings = await getSettings(tabURL, true);
+                            resolve({ type: message.type + "Response", enabled, settings: settings });
+                        });
+                    };
+
+                    if(message.type == "applySettingsChanged") {
+                        settingsCache.updateCache().then(() => {
+                            checkEnabledForThisPage();
+                        });
+                    } else {
+                        checkEnabledForThisPage();
+                    }
                 } else if(message.type == "updateAllFilters") {
                     filters.updateAllFilters().then(() => {
                         resolve({ type: "updateAllFiltersFinished", result: true });
@@ -514,8 +556,9 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     fetch(url).then(response => {
                         if(response) {
                             response.text().then(text => {
-                                globalPageShadowStyleCache[url] = text;
+                                globalPageShadowStyleCache[url] = processShadowRootStyle(text);
                                 globalPageShadowStyleShadowRootsCache[url] = processShadowRootStyle(text);
+
                                 resolve({ type: message.type + "Response", data: message.type == "getGlobalShadowRootPageShadowStyle" ? globalPageShadowStyleShadowRootsCache[url] : globalPageShadowStyleCache[url] });
                             });
                         }
@@ -536,7 +579,10 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 browser.tabs.sendMessage(sender.tab.id, result, {
                     frameId: sender.frameId
                 }).catch(() => {
-                    if(browser.runtime.lastError) return; // ignore the error messages
+                    if(browser.runtime.lastError) {
+                        debugLogger.log(`Error sending message with type = ${result.type} and data = ${result.data} to tab with id ${sender.tab.id} and frameId = ${sender.frameId}`, "error", browser.runtime.lastError);
+                        return; // ignore the error messages
+                    }
                 });
             }
         });
@@ -551,6 +597,7 @@ if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.o
         try {
             urlObj = new URL(url);
         } catch(e) {
+            debugLogger.log(e, "error");
             return;
         }
 
@@ -572,9 +619,9 @@ if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand
             const result = await browser.storage.local.get("globallyEnable");
 
             if(result.globallyEnable == "false") {
-                setSettingItem("globallyEnable", "true");
+                await setSettingItem("globallyEnable", "true");
             } else {
-                setSettingItem("globallyEnable", "false");
+                await setSettingItem("globallyEnable", "false");
             }
             break;
         }
@@ -608,6 +655,21 @@ if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand
         case "enablePresetTen":
             loadPreset(10);
             break;
+        case "enablePresetEleven":
+            loadPreset(11);
+            break;
+        case "enablePresetTwelve":
+            loadPreset(12);
+            break;
+        case "enablePresetThirteen":
+            loadPreset(13);
+            break;
+        case "enablePresetFourteen":
+            loadPreset(14);
+            break;
+        case "enablePresetFifteen":
+            loadPreset(15);
+            break;
         }
     });
 }
@@ -621,7 +683,7 @@ async function openTab(url, part) {
             url: completeURL
         });
     } else {
-        let tab = tabs[0];
+        const tab = tabs[0];
 
         const updateDetails = { active: true };
 
@@ -629,26 +691,35 @@ async function openTab(url, part) {
             updateDetails.url = completeURL;
         }
 
-        tab = await browser.tabs.update(tab.id, updateDetails);
-        browser.windows.update(tab.windowId, { focused: true });
+        const updateTab = await browser.tabs.update(tab.id, updateDetails);
+        browser.windows.update(updateTab.windowId, { focused: true });
 
         if(part) {
-            browser.tabs.sendMessage(tab.id,{
+            browser.tabs.sendMessage(updateTab.id, {
                 type: "hashUpdated"
             }).catch(() => {
-                if(browser.runtime.lastError) return; // ignore the error messages
+                if(browser.runtime.lastError) {
+                    debugLogger.log(`Error sending message with type = hashUpdated to tab with id ${updateTab.id}`, "error", browser.runtime.lastError);
+                    return; // ignore the error messages
+                }
             });
         }
     }
 }
 
-setPopup();
-menu();
-updateBadge(false);
-autoEnable();
-checkFirstLoad();
-migrateSettings(filters);
-checkAutoBackupCloud();
+async function setupPageShadow() {
+    setPopup();
+    await updateMenu();
+    await checkFirstLoad();
+    await migrateSettings(filters);
+    await settingsCache.updateCache();
+    await presetCache.updateCache();
+    await autoEnable();
+    await updateBadge(false);
+    await checkAutoBackupCloud();
+}
+
+setupPageShadow();
 
 setInterval(() => {
     checkAutoEnable();

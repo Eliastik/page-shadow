@@ -16,29 +16,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-/* translation */
-import i18next from "i18next";
-import i18nextBrowserLanguageDetector from "i18next-browser-languagedetector";
-
-function initI18next(ns) {
-    return new Promise(resolve => {
-        i18next.use(i18nextBrowserLanguageDetector).init({
-            fallbackLng: ["en", "fr"],
-            ns: ns,
-            load: "languageOnly",
-            defaultNS: ns,
-            detection: {
-                order: ["localStorage", "navigator"],
-                lookupLocalStorage: "i18nextLng",
-                caches: ["localStorage"],
-            },
-            backend: {
-                loadPath: "/_locales/{{lng}}/{{ns}}.json",
-            },
-        }, () => {
-            resolve();
-        });
-    });
-}
-
-export { initI18next };
+export default {
+    TYPE_RESET: "reset",
+    TYPE_ALL: "all",
+    TYPE_ONLY_CONTRAST: "onlyContrast",
+    TYPE_ONLY_INVERT: "onlyInvert",
+    TYPE_ONLY_BRIGHTNESS: "onlyBrightness",
+    TYPE_ONLY_BLUELIGHT: "onlyBlueLight",
+    TYPE_ONLY_BRIGHTNESS_AND_BLUELIGHT: "onlyBrightnessAndBlueLight",
+    MUTATION_TYPE_BODY: "body",
+    MUTATION_TYPE_BACKGROUNDS: "backgrounds",
+    MUTATION_TYPE_BACKGROUNDS_ONLY_ADDED_NODES: "backgroundOnlyAddedNodes",
+    MUTATION_TYPE_BRIGHTNESSWRAPPER: "brightnesswrapper",
+    MUTATION_TYPE_BRIGHTNESS_BLUELIGHT: "brightnessbluelight",
+    TYPE_LOADING: "loading",
+    TYPE_START: "start"
+};

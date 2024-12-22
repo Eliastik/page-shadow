@@ -11,12 +11,12 @@
         "themeSelect": "Thème de couleur :",
         "theme": "Thème {{count}}",
         "customTheme": "Personnalisé {{count}}",
-        "tileTheme": "Sélectionnez le thème de couleur utilisé par cette fonction. Un thème comprend une couleur de fond, une couleur de texte et une couleur de lien unifiée pour chaque page.",
+        "titleTheme": "Sélectionnez le thème de couleur utilisé par cette fonction. Un thème comprend une couleur de fond, une couleur de texte et une couleur de lien unifiée pour chaque page.",
         "previsualisationTheme": "Prévisualisation :",
         "previsualisationThemeText": "Un texte. <a href=\"#\" id=\"pageShadowLinkNotVisited\">Un lien</a>. <a href=\"#\" id=\"pageShadowLinkVisited\">Un lien visité</a>.",
         "disableImgBgColor": "Colorer l'arrière-plan des images",
         "checkEnableBrightColorPreservation": "Conserver les couleurs des éléments",
-        "titleCheckEnableBrightColorPreservation": "Améliore le rendu de la fonction en remplaçant uniquement les couleurs très proches du blanc ou très sombres, et en conservant les autres couleurs.",
+        "titleCheckEnableBrightColorPreservation": "Améliore le rendu de la fonction en remplaçant uniquement les couleurs très claires ou très sombres, et en conservant les autres.",
         "colorInvert": "Inverser les couleurs",
         "titleColorInvert": "Inverse les couleurs des images, des vidéos et/ou de la page entière afin de mieux ressortir sur le thème sombre.",
         "entirePageInvert": "Page entière",
@@ -24,14 +24,15 @@
         "bgColorInvert": "Arrière-plans",
         "videoInvert": "Vidéos",
         "selectiveInvert": "Sélectif",
-        "selectiveInvertHelp": "Inverse automatiquement certains éléments (comme les logos) pour qu'ils s'affichent correctement sur un thème sombre de la fonction Augmenter le contraste. Se base sur la fonctionnalité des filtres ainsi qu'une détection automatique des images sombres ou contenant un logo/texte.",
-        "tileEntirePageInvert": "Inverse les couleurs de la page entière.",
+        "invertBrightColors": "Éléments colorés",
+        "selectiveInvertHelp": "Inverse automatiquement certains éléments (comme les logos) pour qu'ils s'affichent correctement sur un thème sombre de la fonction Augmenter le contraste. Se base sur la fonctionnalité des filtres ainsi qu'une détection automatique des images contenant un logo/texte sombre.",
+        "titleEntirePageInvert": "Inverse les couleurs de la page entière.",
         "brightness": "Baisser la luminosité",
         "titleBrightness": "Baisse la luminosité de la page. C'est vous qui choisissez le pourcentage de baisse de luminosité de la page.",
         "percentage": "Pourcentage de baisse de luminosité :",
         "nightMode": "Mode nuit",
         "autoEnable": "Activer / désactiver auto.",
-        "titleAutoEnable": "Activer ou désactiver globalement Page Shadow de manière automatique en fonction de l'heure. Sélectionnez l'icône roue dentée afin de régler cette fonction.",
+        "titleAutoEnable": "Active ou désactive globalement Page Shadow de manière automatique en fonction de l'heure. Sélectionnez l'icône roue dentée afin de régler cette fonction.",
         "liveSettings": "Appliquer les paramètres en temps réel",
         "titleLiveSettings": "Peut réduire les performances du navigateur.",
         "tempSelect": "Température de couleur :",
@@ -48,14 +49,17 @@
         "attenuateColor": "Atténuer les couleurs",
         "attenuateBrightColors": "Éléments colorés",
         "titleAttenuateImageColor": "Atténue les couleurs des éléments pour éviter l'affichage de couleurs trop vives",
-        "increaseContrastInformation": "Il est conseillé d'activer la fonction Inverser les couleurs > Sélectif (seul) lorsque vous utilisez la fonction Augmenter le contraste"
+        "increaseContrastInformation": "Il est conseillé d'activer la fonction Inverser les couleurs > Sélectif (seul) lorsque vous utilisez la fonction Augmenter le contraste",
+        "attenuateColorPercent": "Intensité du filtre :"
     },
     "modal": {
         "customThemeTitle": "Information",
-        "customThemeInfos": "Pour paramétrer ce thème personnalisé, vous devez vous rendre dans les Paramètres avancés de Page Shadow.",
+        "customThemeInfos": "Pour paramétrer ce thème personnalisé, vous devez vous rendre dans les Paramètres de Page Shadow.",
         "customThemeInfoDisable": "Ne plus afficher",
         "close": "Fermer",
-        "AdvSettings": "Paramètres avancés",
+        "AdvSettings": "Paramètres de l'extension",
+        "continue": "Continuer",
+        "cancel": "Annuler",
         "archive": {
             "presetTitle": "Pré-régl. ",
             "presetEmpty": "Vide",
@@ -91,27 +95,28 @@
         "message": "Page Shadow vient d'être mis à jour vers la version {{version}} en date du {{date}} !",
         "whatsNew": "Quoi de neuf ?",
         "uiUpdated": "L'interface de l'extension a été refondue.",
-        "openAdvancedSettings": "Accédez aux paramètres avancés",
+        "openAdvancedSettings": "Accédez aux paramètres de l'extension",
         "personnalize": "pour personnaliser votre interface."
     },
     "createPresetModal": {
         "title": "Créer le pré-réglage",
         "modalTitle": "Titre :",
         "infoLead": "Le pré-réglage sera créé avec les paramètres actuels tels qu'affichés dans ce menu.",
-        "infoAdvanced": "Plus de paramètres sont disponibles lors de la création/édition d'un pré-réglage dans les Paramètres avancés"
+        "infoAdvanced": "Plus de paramètres sont disponibles lors de la création/édition d'un pré-réglage dans les Paramètres de l'extension"
     },
     "footer": {
-        "advancedSettings": "Paramètres avancés",
+        "advancedSettings": "Paramètres de l'extension",
         "testExtension": "Tester l'extension",
         "disableWebsite": "Désactiver pour ce site",
         "enableWebsite": "Désactiver pour ce site",
         "disableWebpage": "Désactiver pour cette page",
         "enableWebpage": "Désactiver pour cette page",
-        "permissionLink": "Permission manquante. Cliquez ici pour l'activer."
+        "permissionLink": "Permission manquante. Cliquez ici pour l'activer.",
+        "reportProblemLink": "Signaler un problème d'affichage pour cette page"
     },
     "modalArchiveInfo": {
         "title": "Conseil",
-        "message": "Il est conseillé de faire régulièrement des sauvegardes de vos paramètres, pour éviter leur perte accidentelle. Vous pouvez effectuer une sauvegarde sur votre appareil en local (fichier JSON) ou sur le Cloud, depuis les Paramètres avancés, dans l'onglet Archiver/restaurer.",
+        "message": "Il est conseillé de faire régulièrement des archives de vos paramètres, pour éviter leur perte accidentelle. Vous pouvez effectuer un archivage sur votre appareil en local (fichier JSON) ou sur le Cloud, depuis les Paramètres de l'extension, dans l'onglet Archiver/restaurer.",
         "disable": "Ne plus afficher ce conseil"
     },
     "modalPermissionsInfo": {
@@ -122,7 +127,15 @@
         "disable": "Ne plus afficher"
     },
     "modalAutoBackupCloudLastFailedMessage": {
-        "title": "Erreur lors la sauvegarde automatique dans le Cloud",
-        "message": "Une erreur est survenue lors de la dernière sauvegarde automatique dans le Cloud de vos paramètres. Vous pouvez essayer d'effectuer la sauvegarde manuellement dans les paramètres avancés. Si le problème persiste, vérifiez que vos paramètres ne dépassent pas le quota maximal autorisé par cette méthode de sauvegarde, puis réessayez. Vous pouvez aussi effectuer une sauvegarde manuelle en local."
+        "title": "Erreur lors l'archivage automatique dans le Cloud",
+        "message": "Une erreur est survenue lors de la dernière archive automatique dans le Cloud de vos paramètres. Vous pouvez essayer d'effectuer l'archivage manuellement dans les paramètres de l'extension. Si le problème persiste, vérifiez que vos paramètres ne dépassent pas le quota maximal autorisé par cette méthode d'archivage, puis réessayez. Vous pouvez aussi effectuer une archive manuelle en local."
+    },
+    "modalReportProblem": {
+        "reportProblemModalTitle": "Reporter un problème sur cette page",
+        "reportProblemModalDescription": "Vous pouvez signaler au développeur de l'extension un problème d'affichage sur cette page en utilisant les fonctionnalités de Page Shadow. En continuant, les données suivantes seront transmises au développeur de l'extension :",
+        "data1": "Adresse URL complète de la page web actuelle",
+        "data2": "Paramètres tels qu'affichés sur la popup de l'extension",
+        "reportProblemModalDescription2": "Ces données seront utilisées par le développeur pour investiguer et résoudre le problème, par exemple à travers la mise à jour des filtres de l'extension.",
+        "confirmation": "En continuant, vous consentez à la transmission de ces données au développeur de l'extension."
     }
 }

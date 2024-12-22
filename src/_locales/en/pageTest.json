@@ -1,7 +1,7 @@
 {
     "nav": {
         "toggleNavigation": "Toggle navigation",
-        "advancedSettings": "Advanced settings",
+        "advancedSettings": "Settings",
         "testPage": "Test page",
         "actual": "(current)"
     },
@@ -29,6 +29,8 @@
         "mark": "Mark element",
         "testBackground": "This is a test of the automatic detection of transparent elements by Page Shadow. If you see this message, this detection is not working properly.",
         "testPopup": "Popup opening test",
-        "testPopupLink": "Click here"
+        "testPopupLink": "Click here",
+        "descriptionIframe": "This is an iframe test",
+        "testIframe": "Iframe test"
     }
 }
