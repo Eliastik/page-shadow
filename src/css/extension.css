@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -154,6 +154,9 @@ hr {
 }
 .mb4 {
     margin-bottom: 4px;
+}
+.mb12 {
+    margin-bottom: 12px;
 }
 .mt8 {
     margin-top: 8px;
@@ -428,8 +431,8 @@ div.navbar-right {
     animation-play-state: "running";
 }
 .snackbar.show#informations {
-    -webkit-animation: fadein 0.5s, fadeout 0.5s 5s;
-    animation: fadein 0.5s, fadeout 0.5s 5s;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 8s;
+    animation: fadein 0.5s, fadeout 0.5s 8s;
 }
 .filterButtons {
     display: flex;
@@ -586,11 +589,10 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 .well .well {
     background-color: #e7e4e4;
 }
-.dropdown-menu-top {
-    top: -175%;
-    border-radius: 6px;
+.container-option .tab-content:not(.tab-content-no-overflow) {
+    overflow: visible;
 }
-#sliderBlueLightReduction {
+#sliderBlueLightReduction, #sliderAttenuateColorPercent {
     width: 185px;
     margin-left: 10px;
 }
@@ -883,4 +885,34 @@ input, select, textarea {
 }
 #buttonSeeErrorsFilter, #buttonSeeErrorsFilter i {
     cursor: pointer !important;
+}
+.panel-title-large-text {
+    font-size: 13pt;
+}
+.advancedOptionsCategoryDescription {
+    font-size: 12pt;
+}
+.advancedOptionsCategoryDescriptionContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
+    margin-bottom: 16px;
+}
+.advancedOptionsCategoryDescriptionContainer p {
+    margin: 0 !important;
+}
+.advancedOptionsCategoryDescriptionContainer .fa-solid {
+    font-size: 13pt !important;
+    margin-right: 8px;
+}
+body.popup .modal-header {
+    padding-bottom: 8px !important;
+}
+body.popup .modal-body {
+    padding-top: 0 !important;
+    padding-bottom: 8px !important;
+}
+body.popup .modal-footer {
+    padding-top: 0px !important;
 }

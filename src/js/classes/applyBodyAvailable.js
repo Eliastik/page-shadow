@@ -1,6 +1,6 @@
 /* Page Shadow
  *
- * Copyright (C) 2015-2022 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
  *
  * This file is part of Page Shadow.
  *
@@ -43,8 +43,8 @@ export default class ApplyBodyAvailable {
         this.oldDelay = delay;
 
         if(document.body) {
-            this.callback();
             this.timer.clear();
+            this.callback();
         } else {
             this.timer.start(delay);
         }
