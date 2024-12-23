@@ -572,6 +572,24 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 } else if(message.type == "getSettings") {
                     const data = settingsCache.data;
                     resolve({ type: "getSettingsResponse", data: data });
+                } else if(message.type === "fetchImageData") {
+                    fetch(message.imageUrl, { mode: "cors" }).then(response => {
+                        const reader = new FileReader();
+
+                        reader.onload = () => resolve({
+                            type: "fetchImageDataResponse",
+                            success: true,
+                            data: reader.result
+                        });
+
+                        reader.onerror = () => resolve({
+                            type: "fetchImageDataResponse",
+                            success: false,
+                            error: "Failed to convert image to base64"
+                        });
+
+                        response.blob().then(blob => reader.readAsDataURL(blob));
+                    }).catch(error => resolve({ type: "fetchImageDataResponse", success: false, error: error.message }));
                 }
             }
         }).then(result => {
