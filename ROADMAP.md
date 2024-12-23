@@ -175,7 +175,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Known issues/bugs
 
-* [ ] (Medium) Some images are ignored by the dark image detection due to CORS restriction
+* [x] (Medium) Some images are ignored by the dark image detection due to CORS restriction
 * [ ] (Minor) Logo not detected as dark image when increase contrast is enabled (still detect with invert entire page) on: https://www.fastmail.com/blog/why-we-use-our-own-hardware/
     * Due to the path sub-element with fill = "currentcolor" and a style stating fill = "inherit"
 

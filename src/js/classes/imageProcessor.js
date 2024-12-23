@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { removeClass, addClass, rgb2hsl, svgElementToImage, backgroundImageToImage, isCrossOrigin, getImageUrlFromElement, sha256, isValidURL } from "../utils/util.js";
+import { removeClass, addClass, rgb2hsl, svgElementToImage, backgroundImageToImage, getImageUrlFromElement, sha256, isValidURL, isCrossOrigin, sendMessageWithPromise } from "../utils/util.js";
 import { maxImageSizeDarkImageDetection } from "../constants.js";
 
 export default class ImageProcessor {
@@ -54,10 +54,15 @@ export default class ImageProcessor {
             }
         }
 
-        // Image element
-        if(image instanceof HTMLImageElement && isCrossOrigin(image.src)) {
-            image = image.cloneNode();
-            image.crossOrigin = "Anonymous";
+        if(image instanceof HTMLImageElement && isCrossOrigin(imageUrl)) {
+            /* If image is from a cross origin, we fetch the image from the background script/service worker
+               to bypass CORS */
+            const response = await sendMessageWithPromise({ type: "fetchImageData", imageUrl }, "fetchImageDataResponse");
+
+            if(response && response.success) {
+                image = new Image();
+                image.src = response.data;
+            }
         }
 
         // SVG element
@@ -104,7 +109,7 @@ export default class ImageProcessor {
 
         // Draw image on canvas
         const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
         const { newWidth, newHeight } = this.getResizedDimensions(image, maxImageSizeDarkImageDetection, maxImageSizeDarkImageDetection);
         canvas.width = newWidth;
@@ -126,7 +131,7 @@ export default class ImageProcessor {
 
         canvas.remove();
 
-        if (isDarkImage) {
+        if(isDarkImage) {
             this.debugLogger?.log(`Detected dark image. Image URL: ${image.src}`);
         }
 
