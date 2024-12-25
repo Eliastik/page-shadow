@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { removeClass, addClass, rgb2hsl, svgElementToImage, backgroundImageToImage, getImageUrlFromElement, sha256, isValidURL, isCrossOrigin, sendMessageWithPromise } from "../utils/util.js";
+import { rgb2hsl, svgElementToImage, backgroundImageToImage, getImageUrlFromElement, sha256, isValidURL, isCrossOrigin, sendMessageWithPromise } from "../utils/util.js";
 import { maxImageSizeDarkImageDetection } from "../constants.js";
 
 export default class ImageProcessor {
@@ -68,11 +68,7 @@ export default class ImageProcessor {
         // SVG element
         if((image instanceof SVGGraphicsElement) && image.nodeName.toLowerCase() === "svg") {
             try {
-                removeClass(image, "pageShadowDisableStyling", "pageShadowElementDisabled");
-
                 image = svgElementToImage(imageUrl);
-
-                addClass(image, "pageShadowDisableStyling", "pageShadowElementDisabled");
             } catch(e) {
                 this.debugLogger?.log(`ImageProcessor detectDarkImage - Error converting SVG element to image - Image URL: ${imageUrl}`, "error", e);
                 await this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, false);
