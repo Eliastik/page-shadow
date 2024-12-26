@@ -390,7 +390,12 @@
             },
             "autoBackupError": "Une erreur est survenue lors du dernier archivage automatique dans le Cloud.",
             "restoring": "Restauration en cours…",
-            "archivingCloud": "Archivage en cours…"
+            "archivingCloud": "Archivage en cours…",
+            "checkAutoEnablePresetForDarkWebsitesPart1": "Activer automatiquement ce pré-réglage",
+            "website": "sur les sites web",
+            "webpage": "sur les pages web", 
+            "checkAutoEnablePresetForDarkWebsitesPart2": "ayant un thème sombre",
+            "checkAutoEnablePresetForDarkWebsitesTitle": "Si Page Shadow détecte qu'un site web/page web a un thème sombre, ce pré-réglage sera automatiquement activé. Ne peut être activé que sur un pré-réglage à la fois."
         },
         "presets": {
             "pageShadowEnabled": "Augmenter le contraste :",

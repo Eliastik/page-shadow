@@ -1033,7 +1033,29 @@ async function getPresetData(nb) {
     }
 }
 
-async function savePreset(nb, name, websiteListToApply, saveNewSettings) {
+async function hasPresetWithAutoEnableForDarkWebsites() {
+    const dataPreset = await browser.storage.local.get("presets");
+
+    let presets;
+
+    if(dataPreset.presets == null || typeof(dataPreset.presets) == "undefined") {
+        presets = defaultPresets;
+    } else {
+        presets = dataPreset.presets;
+    }
+
+    for(const presetKey in Object.keys(presets)) {
+        const preset = presets[presetKey];
+
+        if(preset && preset.autoEnablePresetForDarkWebsites && preset.autoEnablePresetForDarkWebsitesType) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+async function savePreset(nb, name, websiteListToApply, saveNewSettings, autoEnablePresetForDarkWebsites, autoEnablePresetForDarkWebsitesType) {
     const dataPreset = await browser.storage.local.get("presets");
     const data = await browser.storage.local.get(settingsToSavePresets);
 
@@ -1047,25 +1069,27 @@ async function savePreset(nb, name, websiteListToApply, saveNewSettings) {
         }
 
         const namePreset = nb;
-        const preset = presets;
-        if(!preset[namePreset]) preset[namePreset] = {};
-        preset[namePreset].name = name.substring(0, 50);
-        preset[namePreset].websiteListToApply = websiteListToApply;
+
+        if(!presets[namePreset]) presets[namePreset] = {};
+        presets[namePreset].name = name.substring(0, 50);
+        presets[namePreset].websiteListToApply = websiteListToApply;
+        presets[namePreset].autoEnablePresetForDarkWebsites = autoEnablePresetForDarkWebsites ? true : false;
+        presets[namePreset].autoEnablePresetForDarkWebsitesType = autoEnablePresetForDarkWebsitesType;
 
         if(saveNewSettings) {
             for(const key in data) {
                 if(typeof(key) === "string") {
                     if(Object.prototype.hasOwnProperty.call(data, key) && settingsToSavePresets.indexOf(key) !== -1) {
-                        preset[namePreset][key] = data[key];
+                        presets[namePreset][key] = data[key];
                     }
                 }
             }
 
-            preset[namePreset]["nightModeEnabled"] = false;
-            preset[namePreset]["attenuateImageColor"] = false;
+            presets[namePreset]["nightModeEnabled"] = false;
+            presets[namePreset]["attenuateImageColor"] = false;
         }
 
-        await setSettingItem("presets", preset);
+        await setSettingItem("presets", presets);
 
         return "success";
     } catch(e) {
@@ -2210,4 +2234,4 @@ function getBlueLightReductionFilterCSSClass(colorTemp) {
     return "k" + colorTemperaturesAvailable[tempIndex - 1];
 }
 
-export { inArray, strictInArray, matchWebsite, inArrayWebsite, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefinedForHTMLElement, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud, removeStyleAttribute, isCrossOrigin, processRulesAttenuate, areAllClassesDefinedForHTMLElement, getPageAnalyzerCSSClass, getImageUrlFromElement, hexToRgb, getInvertPageVariablesKeyValues, isValidURL, getBlueLightReductionFilterCSSClass };
+export { inArray, strictInArray, matchWebsite, inArrayWebsite, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefinedForHTMLElement, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud, removeStyleAttribute, isCrossOrigin, processRulesAttenuate, areAllClassesDefinedForHTMLElement, getPageAnalyzerCSSClass, getImageUrlFromElement, hexToRgb, getInvertPageVariablesKeyValues, isValidURL, getBlueLightReductionFilterCSSClass, hasPresetWithAutoEnableForDarkWebsites };

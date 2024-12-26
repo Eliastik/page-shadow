@@ -33,7 +33,7 @@ import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, getCurrentArchiveCloud } from "./utils/util.js";
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, getCurrentArchiveCloud, hasPresetWithAutoEnableForDarkWebsites } from "./utils/util.js";
 import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes, versionDate } from "./constants.js";
 import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
 import { initI18next } from "./locales.js";
@@ -1546,7 +1546,8 @@ async function createPreset() {
     $("#savePresetError").hide();
     $("#savePresetSuccess").hide();
 
-    const result = await savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val(), $("#savePresetWebsite").val(), $("#checkSaveNewSettingsPreset").prop("checked"));
+    const result = await savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val(), $("#savePresetWebsite").val(),
+        $("#checkSaveNewSettingsPreset").prop("checked"), $("#checkAutoEnablePresetForDarkWebsites").prop("checked"), $("#autoEnablePresetForDarkWebsitesTypeSelect").val());
 
     if(result == "success") {
         $("#savePresetSuccess").fadeIn(500);
@@ -1561,8 +1562,14 @@ async function notifyChangedPresetNotSaved(nb) {
     if(data && Object.keys(data).length > 0) {
         const name = typeof(data["name"]) === "undefined" ? "" : data["name"];
         const websiteListToApply = typeof(data["websiteListToApply"]) === "undefined" ? "" : data["websiteListToApply"];
+        const autoEnablePresetForDarkWebsites = typeof(data["autoEnablePresetForDarkWebsites"]) === "undefined" ? "" : data["autoEnablePresetForDarkWebsites"];
+        const autoEnablePresetForDarkWebsitesType = typeof(data["autoEnablePresetForDarkWebsitesType"]) === "undefined" ? "" : data["autoEnablePresetForDarkWebsitesType"];
 
-        return name != $("#savePresetTitle").val() || websiteListToApply != $("#savePresetWebsite").val();
+        const isCheckAutoEnablePresetForDarkWebsitesEnabled = $("#checkAutoEnablePresetForDarkWebsites").is(":checked");
+
+        return name != $("#savePresetTitle").val() || websiteListToApply != $("#savePresetWebsite").val()
+            || autoEnablePresetForDarkWebsitesType != $("#autoEnablePresetForDarkWebsitesTypeSelect").val()
+            || isCheckAutoEnablePresetForDarkWebsitesEnabled != autoEnablePresetForDarkWebsites;
     }
 
     return $("#savePresetTitle").val().trim() != "" || $("#savePresetWebsite").val().trim() != "";
@@ -1575,10 +1582,14 @@ async function displayPresetSettings(id, changingLanguage) {
         $("#savePresetTitle").val("");
         $("#savePresetWebsite").val("");
         $("#checkSaveNewSettingsPreset").prop("checked", false);
+        $("#checkAutoEnablePresetForDarkWebsites").prop("checked", false);
+        $("#autoEnablePresetForDarkWebsitesTypeSelect").val("website");
     }
 
     $("#checkSaveNewSettingsPreset").removeAttr("disabled");
     $("#presetInfosBtn").removeAttr("disabled");
+    $("#checkAutoEnablePresetForDarkWebsites").removeAttr("disabled");
+    $("#autoEnablePresetForDarkWebsitesTypeSelect").removeAttr("disabled");
 
     if(data && data != "error" && Object.keys(data).length > 0) {
         if(!changingLanguage) {
@@ -1587,11 +1598,31 @@ async function displayPresetSettings(id, changingLanguage) {
         }
 
         $("#presetCreateEditBtn").text(i18next.t("modal.edit"));
+
+        if(data.autoEnablePresetForDarkWebsites) {
+            $("#checkAutoEnablePresetForDarkWebsites").prop("checked", true);
+        } else {
+            $("#checkAutoEnablePresetForDarkWebsites").prop("checked", false);
+
+            if(await hasPresetWithAutoEnableForDarkWebsites()) {
+                $("#checkAutoEnablePresetForDarkWebsites").attr("disabled", "disabled");
+                $("#autoEnablePresetForDarkWebsitesTypeSelect").attr("disabled", "disabled");
+            }
+        }
+
+        if(data.autoEnablePresetForDarkWebsitesType) {
+            $("#autoEnablePresetForDarkWebsitesTypeSelect").val(data.autoEnablePresetForDarkWebsitesType);
+        }
     } else {
         $("#checkSaveNewSettingsPreset").prop("checked", true);
         $("#checkSaveNewSettingsPreset").attr("disabled", "disabled");
         $("#presetInfosBtn").attr("disabled", "disabled");
         $("#presetCreateEditBtn").text(i18next.t("modal.create"));
+
+        if(await hasPresetWithAutoEnableForDarkWebsites()) {
+            $("#checkAutoEnablePresetForDarkWebsites").attr("disabled", "disabled");
+            $("#autoEnablePresetForDarkWebsitesTypeSelect").attr("disabled", "disabled");
+        }
     }
 }
 
@@ -2124,6 +2155,22 @@ $(document).ready(async () => {
     });
 
     $("#checkSaveNewSettingsPreset").on("change", async() => {
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            $("#not-saved-presets").show();
+        } else {
+            $("#not-saved-presets").hide();
+        }
+    });
+
+    $("#checkAutoEnablePresetForDarkWebsites").on("change", async() => {
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            $("#not-saved-presets").show();
+        } else {
+            $("#not-saved-presets").hide();
+        }
+    });
+
+    $("#autoEnablePresetForDarkWebsitesTypeSelect").on("change", async() => {
         if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
             $("#not-saved-presets").show();
         } else {

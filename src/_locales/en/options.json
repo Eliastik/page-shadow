@@ -395,7 +395,12 @@
             },
             "autoBackupError": "An error occurred during the last automatic Cloud archive.",
             "restoring": "Restoring data…",
-            "archivingCloud": "Backing up data…"
+            "archivingCloud": "Backing up data…",
+            "checkAutoEnablePresetForDarkWebsitesPart1": "Auto enable this preset",
+            "website": "on websites",
+            "webpage": "on webpages", 
+            "checkAutoEnablePresetForDarkWebsitesPart2": "having a dark theme",
+            "checkAutoEnablePresetForDarkWebsitesTitle": "If Page Shadow detects that a website/webpage has a dark theme, this preset will be automatically enabled. Can only be enabled on one preset at a time."
         },
         "presets": {
             "pageShadowEnabled": "Increase contrast:",
