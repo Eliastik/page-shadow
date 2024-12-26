@@ -29,7 +29,9 @@
         "validate": "Confirm",
         "customTheme": "Custom theme n°{{count}}",
         "filters": "Filters",
-        "save": "Save"
+        "save": "Save",
+        "autoDisableDarkThemedWebsite": "Automatically disable Page Shadow on webpages or websites with a dark theme",
+        "titleAutoDisableDarkThemedWebsite": "If Page Shadow detects that a website or webpage has a dark theme, the extension will be disabled automatically for this website/webpage. This option doesn't work if you have enabled the Whitelist option."
     },
     "tabTitles": {
         "general": "General",
@@ -516,11 +518,18 @@
             "hasUpdate": "An update is available for this filter",
             "hasUpdateAuto": "This update will be done automatically, but you can update manually"
         },
+        "autoDisableDarkThemedWebsiteSettings": {
+            "title": "Settings for automatic disabling of Page Shadow on websites/webpages with a dark theme",
+            "typeLabel": "Automatically disable for:",
+            "website": "Entire website detected",
+            "webpage": "Only for the detected webpage"
+        },
         "close": "Close",
         "ok": "OK",
         "yes": "Yes",
         "no": "No",
         "confirm": "Confirm",
+        "save": "Save",
         "load": "Load",
         "create": "Create",
         "delete": "Delete",
