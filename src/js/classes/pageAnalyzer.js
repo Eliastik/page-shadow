@@ -63,7 +63,7 @@ export default class PageAnalyzer {
         this.debugLogger = debugLogger;
         this.imageProcessor = new ImageProcessor(this.debugLogger, websiteSpecialFiltersConfig);
         this.shadowDomProcessor = new ShadowDomProcessor(currentSettings, websiteSpecialFiltersConfig, isEnabled);
-        this.darkThemeDetector = new DarkThemeDetector(currentSettings, websiteSpecialFiltersConfig);
+        this.darkThemeDetector = new DarkThemeDetector(currentSettings, websiteSpecialFiltersConfig, debugLogger);
 
         this.shadowDomProcessor.analyzeSubElementsCallback = async (currentElement) => {
             if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
@@ -262,14 +262,6 @@ export default class PageAnalyzer {
         this.pageAnalysisFinishedBody = document.body;
 
         this.debugLogger?.log(`PageAnalyzer - setPageAnalysisFinished - Page analysis completed in ${performance.now() - this.startTimePageAnalysis} ms`);
-
-        const percentDarkElements = Math.round(this.darkThemeDetector.getPercentDarkElements() * 100);
-
-        if(this.darkThemeDetector.hasDarkTheme()) {
-            this.debugLogger?.log(`PageAnalyzer - Detected this page as having a dark theme with ${percentDarkElements}% of dark elements`);
-        } else {
-            this.debugLogger?.log(`PageAnalyzer - This website doesn't have a dark theme (${percentDarkElements}% of dark elements)`);
-        }
     }
 
     cancelPageAnalysis() {
@@ -279,6 +271,10 @@ export default class PageAnalyzer {
         this.throttledTaskAnalyzeElements.clear();
 
         this.debugLogger?.log("PageAnalyzer - cancelPageAnalysis - Cancelled page analyzing");
+    }
+
+    async executePostActions() {
+        await this.darkThemeDetector.executeActions();
     }
 
     async processElement(element, disableDestyling) {

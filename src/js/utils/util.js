@@ -1033,7 +1033,7 @@ async function getPresetData(nb) {
     }
 }
 
-async function hasPresetWithAutoEnableForDarkWebsites() {
+async function getPresetWithAutoEnableForDarkWebsites() {
     const dataPreset = await browser.storage.local.get("presets");
 
     let presets;
@@ -1048,14 +1048,14 @@ async function hasPresetWithAutoEnableForDarkWebsites() {
         const preset = presets[presetKey];
 
         if(preset && preset.autoEnablePresetForDarkWebsites && preset.autoEnablePresetForDarkWebsitesType) {
-            return true;
+            return presetKey;
         }
     }
 
-    return false;
+    return null;
 }
 
-async function savePreset(nb, name, websiteListToApply, saveNewSettings, autoEnablePresetForDarkWebsites, autoEnablePresetForDarkWebsitesType) {
+async function savePreset(nb, name, websiteListToApply, saveNewSettings, saveAutoEnable, autoEnablePresetForDarkWebsites, autoEnablePresetForDarkWebsitesType) {
     const dataPreset = await browser.storage.local.get("presets");
     const data = await browser.storage.local.get(settingsToSavePresets);
 
@@ -1073,8 +1073,11 @@ async function savePreset(nb, name, websiteListToApply, saveNewSettings, autoEna
         if(!presets[namePreset]) presets[namePreset] = {};
         presets[namePreset].name = name.substring(0, 50);
         presets[namePreset].websiteListToApply = websiteListToApply;
-        presets[namePreset].autoEnablePresetForDarkWebsites = autoEnablePresetForDarkWebsites ? true : false;
-        presets[namePreset].autoEnablePresetForDarkWebsitesType = autoEnablePresetForDarkWebsitesType;
+
+        if(saveAutoEnable) {
+            presets[namePreset].autoEnablePresetForDarkWebsites = autoEnablePresetForDarkWebsites ? true : false;
+            presets[namePreset].autoEnablePresetForDarkWebsitesType = autoEnablePresetForDarkWebsitesType;
+        }
 
         if(saveNewSettings) {
             for(const key in data) {
@@ -2234,4 +2237,4 @@ function getBlueLightReductionFilterCSSClass(colorTemp) {
     return "k" + colorTemperaturesAvailable[tempIndex - 1];
 }
 
-export { inArray, strictInArray, matchWebsite, inArrayWebsite, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefinedForHTMLElement, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud, removeStyleAttribute, isCrossOrigin, processRulesAttenuate, areAllClassesDefinedForHTMLElement, getPageAnalyzerCSSClass, getImageUrlFromElement, hexToRgb, getInvertPageVariablesKeyValues, isValidURL, getBlueLightReductionFilterCSSClass, hasPresetWithAutoEnableForDarkWebsites };
+export { inArray, strictInArray, matchWebsite, inArrayWebsite, disableEnableToggle, removeA, commentMatched, commentAllLines, pageShadowAllowed, getUImessage, customTheme, hourToPeriodFormat, checkNumber, getAutoEnableSavedData, getAutoEnableFormData, checkAutoEnableStartup, checkChangedStorageData, getBrowser, downloadData, loadPresetSelect, presetsEnabled, loadPreset, savePreset, deletePreset, getSettings, getPresetData, getCurrentURL, presetsEnabledForWebsite, disableEnablePreset, convertBytes, getSizeObject, normalizeURL, getPriorityPresetEnabledForWebsite, hasSettingsChanged, processShadowRootStyle, processRules, removeClass, addClass, processRulesInvert, isRunningInPopup, isRunningInIframe, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, addNewStyleAttribute, applyContrastPageVariables, applyContrastPageVariablesWithTheme, getCustomThemeConfig, rgb2hsl, isAutoEnable, sha256, checkPermissions, getPageVariablesToApply, areAllCSSVariablesDefinedForHTMLElement, svgElementToImage, backgroundImageToImage, chunkValue, getCurrentArchiveCloud, removeStyleAttribute, isCrossOrigin, processRulesAttenuate, areAllClassesDefinedForHTMLElement, getPageAnalyzerCSSClass, getImageUrlFromElement, hexToRgb, getInvertPageVariablesKeyValues, isValidURL, getBlueLightReductionFilterCSSClass, getPresetWithAutoEnableForDarkWebsites };
