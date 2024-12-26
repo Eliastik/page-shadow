@@ -33,7 +33,7 @@ import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, getCurrentArchiveCloud, hasPresetWithAutoEnableForDarkWebsites } from "./utils/util.js";
+import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, getCurrentArchiveCloud, getPresetWithAutoEnableForDarkWebsites } from "./utils/util.js";
 import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes, versionDate } from "./constants.js";
 import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
 import { initI18next } from "./locales.js";
@@ -1547,7 +1547,7 @@ async function createPreset() {
     $("#savePresetSuccess").hide();
 
     const result = await savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val(), $("#savePresetWebsite").val(),
-        $("#checkSaveNewSettingsPreset").prop("checked"), $("#checkAutoEnablePresetForDarkWebsites").prop("checked"), $("#autoEnablePresetForDarkWebsitesTypeSelect").val());
+        $("#checkSaveNewSettingsPreset").prop("checked"), true, $("#checkAutoEnablePresetForDarkWebsites").prop("checked"), $("#autoEnablePresetForDarkWebsitesTypeSelect").val());
 
     if(result == "success") {
         $("#savePresetSuccess").fadeIn(500);
@@ -1562,8 +1562,8 @@ async function notifyChangedPresetNotSaved(nb) {
     if(data && Object.keys(data).length > 0) {
         const name = typeof(data["name"]) === "undefined" ? "" : data["name"];
         const websiteListToApply = typeof(data["websiteListToApply"]) === "undefined" ? "" : data["websiteListToApply"];
-        const autoEnablePresetForDarkWebsites = typeof(data["autoEnablePresetForDarkWebsites"]) === "undefined" ? "" : data["autoEnablePresetForDarkWebsites"];
-        const autoEnablePresetForDarkWebsitesType = typeof(data["autoEnablePresetForDarkWebsitesType"]) === "undefined" ? "" : data["autoEnablePresetForDarkWebsitesType"];
+        const autoEnablePresetForDarkWebsites = typeof(data["autoEnablePresetForDarkWebsites"]) === "undefined" ? false : data["autoEnablePresetForDarkWebsites"];
+        const autoEnablePresetForDarkWebsitesType = typeof(data["autoEnablePresetForDarkWebsitesType"]) === "undefined" ? "website" : data["autoEnablePresetForDarkWebsitesType"];
 
         const isCheckAutoEnablePresetForDarkWebsitesEnabled = $("#checkAutoEnablePresetForDarkWebsites").is(":checked");
 
@@ -1604,7 +1604,7 @@ async function displayPresetSettings(id, changingLanguage) {
         } else {
             $("#checkAutoEnablePresetForDarkWebsites").prop("checked", false);
 
-            if(await hasPresetWithAutoEnableForDarkWebsites()) {
+            if(await getPresetWithAutoEnableForDarkWebsites() != null) {
                 $("#checkAutoEnablePresetForDarkWebsites").attr("disabled", "disabled");
                 $("#autoEnablePresetForDarkWebsitesTypeSelect").attr("disabled", "disabled");
             }
@@ -1619,7 +1619,7 @@ async function displayPresetSettings(id, changingLanguage) {
         $("#presetInfosBtn").attr("disabled", "disabled");
         $("#presetCreateEditBtn").text(i18next.t("modal.create"));
 
-        if(await hasPresetWithAutoEnableForDarkWebsites()) {
+        if(await getPresetWithAutoEnableForDarkWebsites() != null) {
             $("#checkAutoEnablePresetForDarkWebsites").attr("disabled", "disabled");
             $("#autoEnablePresetForDarkWebsitesTypeSelect").attr("disabled", "disabled");
         }

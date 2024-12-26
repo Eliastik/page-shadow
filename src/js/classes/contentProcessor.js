@@ -798,6 +798,8 @@ export default class ContentProcessor {
                         }
                     });
                 }
+
+                await this.pageAnalyzer.executePostActions();
             }
         }
     }
