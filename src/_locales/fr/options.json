@@ -26,7 +26,9 @@
         "validate": "Valider",
         "customTheme": "Thème personnalisé n°{{count}}",
         "filters": "Filtres",
-        "save": "Sauvegarder"
+        "save": "Sauvegarder",
+        "autoDisableDarkThemedWebsite": "Désactiver automatiquement Page Shadow sur les pages ou sites ayant un thème sombre",
+        "titleAutoDisableDarkThemedWebsite": "Si Page Shadow détecte qu'un site web ou qu'une page web a un thème sombre, l'extension sera désactivée automatiquement pour ce site/page. Cette option ne fonctionne pas si vous avez activé l'option Liste blanche."
     },
     "tabTitles": {
         "general": "Général",
@@ -511,11 +513,18 @@
             "hasUpdate": "Une mise à jour est disponible pour ce filtre",
             "hasUpdateAuto": "La mise à jour s'effectuera automatiquement, mais vous pouvez l'effectuer manuellement"
         },
+        "autoDisableDarkThemedWebsiteSettings": {
+            "title": "Paramètres de la désactivation automatique de Page Shadow sur les sites/pages ayant un thème sombre",
+            "typeLabel": "Désactiver automatiquement pour :",
+            "website": "L'ensemble du site web détecté",
+            "webpage": "Uniquement pour la page web détectée"
+        },
         "close": "Fermer",
         "ok": "OK",
         "yes": "Oui",
         "no": "Non",
         "confirm": "Valider",
+        "save": "Sauvegarder",
         "load": "Charger",
         "create": "Créer",
         "delete": "Supprimer",

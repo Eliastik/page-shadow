@@ -146,6 +146,7 @@ async function resetSettings() {
 
     $("#textareaAssomPage").val("");
     $("#checkWhiteList").prop("checked", false);
+    $("#autoDisableDarkThemedWebsite").prop("checked", false);
 
     initLocales();
 
@@ -190,7 +191,7 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
     }
 
     if(!areaName || areaName == "local") {
-        const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "autoBackupCloudInterval", "lastAutoBackupFailed", "disableRightClickMenu"]);
+        const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "autoDisableDarkThemedWebsite", "autoDisableDarkThemedWebsiteType", "autoBackupCloudInterval", "lastAutoBackupFailed", "disableRightClickMenu"]);
 
         if(!disableStorageSizeCalculation) {
             const size = browser.storage.local.getBytesInUse ? await browser.storage.local.getBytesInUse(null) : getSizeObject(await browser.storage.local.get(null));
@@ -208,6 +209,22 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
                     $("#checkWhiteList").prop("checked", true);
                 } else if(result.whiteList !== "true" && $("#checkWhiteList").is(":checked") == true) {
                     $("#checkWhiteList").prop("checked", false);
+                }
+            }
+
+            if(!changes || changes.includes("autoDisableDarkThemedWebsite")) {
+                if(result.autoDisableDarkThemedWebsite == "true" && $("#autoDisableDarkThemedWebsite").is(":checked") == false) {
+                    $("#autoDisableDarkThemedWebsite").prop("checked", true);
+                } else if(result.autoDisableDarkThemedWebsite !== "true" && $("#autoDisableDarkThemedWebsite").is(":checked") == true) {
+                    $("#autoDisableDarkThemedWebsite").prop("checked", false);
+                }
+            }
+
+            if((!changes || changes.includes("autoDisableDarkThemedWebsiteType"))) {
+                if(result.autoDisableDarkThemedWebsiteType) {
+                    $("#autoDisableDarkThemedWebsiteTypeSelect").val(result.autoDisableDarkThemedWebsiteType);
+                } else {
+                    $("#autoDisableDarkThemedWebsiteTypeSelect").val("website");
                 }
             }
 
@@ -1193,13 +1210,22 @@ async function notifyChangedThemeNotSaved(nb) {
 }
 
 async function notifyChangedListNotSaved() {
-    const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
+    const result = await browser.storage.local.get(["sitesInterditPageShadow", "autoDisableDarkThemedWebsite", "autoDisableDarkThemedWebsiteType", "whiteList"]);
     const list = result.sitesInterditPageShadow || "";
+
     const whiteListSetting = result.whiteList != null ? result.whiteList : "false";
     const whiteListChecked = $("#checkWhiteList").is(":checked") ? "true" : "false";
 
+    const autoDisableDarkThemedWebsiteSetting = result.autoDisableDarkThemedWebsite != null ? result.autoDisableDarkThemedWebsite : "false";
+    const autoDisableDarkThemedWebsiteChecked = $("#autoDisableDarkThemedWebsite").is(":checked") ? "true" : "false";
+
+    const autoDisableDarkThemedWebsiteTypeSelectSetting = result.autoDisableDarkThemedWebsiteType != null ? result.autoDisableDarkThemedWebsiteType : "website";
+    const autoDisableDarkThemedWebsiteTypeSelectValue = $("#autoDisableDarkThemedWebsiteTypeSelect").val() || "website";
+
     return list.toLowerCase() != $("#textareaAssomPage").val().toLowerCase() ||
-        whiteListSetting.toLowerCase() != whiteListChecked.toLowerCase();
+        whiteListSetting.toLowerCase() != whiteListChecked.toLowerCase() ||
+        autoDisableDarkThemedWebsiteSetting.toLowerCase() != autoDisableDarkThemedWebsiteChecked.toLowerCase() ||
+        autoDisableDarkThemedWebsiteTypeSelectSetting.toLowerCase() != autoDisableDarkThemedWebsiteTypeSelectValue.toLowerCase();
 }
 
 async function saveList() {
@@ -1219,6 +1245,12 @@ async function saveList() {
         }
 
         await setSettingItem("whiteList", "false");
+    }
+
+    if($("#autoDisableDarkThemedWebsite").prop("checked") == true) {
+        await setSettingItem("autoDisableDarkThemedWebsite", "true");
+    } else {
+        await setSettingItem("autoDisableDarkThemedWebsite", "false");
     }
 
     $("#saved").modal("show");
@@ -1335,6 +1367,7 @@ function restoreSettingsFile(event) {
 
             $("#textareaAssomPage").val("");
             $("#checkWhiteList").prop("checked", false);
+            $("#autoDisableDarkThemedWebsite").prop("checked", false);
             $("#restoreDataButton").attr("disabled", "disabled");
             $("#archiveCloudBtn").attr("disabled", "disabled");
             $("#restoreCloudBtn").attr("disabled", "disabled");
@@ -1474,6 +1507,7 @@ async function restoreCloudSettings() {
 
                 $("#textareaAssomPage").val("");
                 $("#checkWhiteList").prop("checked", false);
+                $("#autoDisableDarkThemedWebsite").prop("checked", false);
                 $("#restoreCloudBtn").attr("disabled", "disabled");
                 $("#restoreDataButton").attr("disabled", "disabled");
                 $("#archiveCloudBtn").attr("disabled", "disabled");
@@ -2152,6 +2186,27 @@ $(document).ready(async () => {
         } else {
             $("#not-saved-lists").hide();
         }
+    });
+
+    $("#autoDisableDarkThemedWebsite").on("change", async() => {
+        if(await notifyChangedListNotSaved()) {
+            $("#not-saved-lists").show();
+        } else {
+            $("#not-saved-lists").hide();
+        }
+    });
+
+    $("#autoDisableDarkThemedWebsiteTypeSelect").on("change", async() => {
+        if(await notifyChangedListNotSaved()) {
+            $("#not-saved-lists").show();
+        } else {
+            $("#not-saved-lists").hide();
+        }
+    });
+
+    $("#autoDisableDarkThemedWebsiteSettingsSave").on("click", async () => {
+        await setSettingItem("autoDisableDarkThemedWebsiteType", $("#autoDisableDarkThemedWebsiteTypeSelect").val());
+        $("#autoDisableDarkThemedWebsiteSettings").modal("hide");
     });
 
     $("#textareaAssomPage").on("input", async() => {
