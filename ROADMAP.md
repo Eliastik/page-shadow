@@ -171,6 +171,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 ### Release - future
 
+* [ ] Auto detect website already having a dark mode to auto disable Increase contrast and Invert entire page
 * [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
 
 #### Known issues/bugs
@@ -179,6 +180,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Medium) Images fail to load when Invert entire page is enabled on this website: https://actu.fr
 * [x] (Minor) Logo not detected as dark image when increase contrast is enabled (still detect with invert entire page) on: https://www.fastmail.com/blog/why-we-use-our-own-hardware/
     * Due to the path sub-element with fill = "currentcolor" and a style stating fill = "inherit"
+* [ ] (Minor) OKLCH css colors are not taken into account
 
 #### Common
 
@@ -197,7 +199,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Filters: UI to report a website problem
 * Others :
     * [ ] Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
-    * [ ] Auto detect website already having a dark mode to auto disable Increase contrast and Invert entire page?
 
 #### Abandoned ideas
 

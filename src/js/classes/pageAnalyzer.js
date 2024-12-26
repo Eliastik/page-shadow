@@ -21,6 +21,7 @@ import { ignoredElementsContentScript, pageShadowClassListsMutationsIgnore, igno
 import ThrottledTask from "./throttledTask.js";
 import ImageProcessor from "./imageProcessor.js";
 import ShadowDomProcessor from "./shadowDomProcessor.js";
+import DarkThemeDetector from "./darkThemeDetector.js";
 
 /**
  * Class used to analyze page elements and detect transparent background,
@@ -30,6 +31,7 @@ export default class PageAnalyzer {
 
     imageProcessor;
     shadowDomProcessor;
+    darkThemeDetector;
 
     websiteSpecialFiltersConfig = {};
     isEnabled = false;
@@ -61,6 +63,7 @@ export default class PageAnalyzer {
         this.debugLogger = debugLogger;
         this.imageProcessor = new ImageProcessor(this.debugLogger, websiteSpecialFiltersConfig);
         this.shadowDomProcessor = new ShadowDomProcessor(currentSettings, websiteSpecialFiltersConfig, isEnabled);
+        this.darkThemeDetector = new DarkThemeDetector(currentSettings, websiteSpecialFiltersConfig);
 
         this.shadowDomProcessor.analyzeSubElementsCallback = async (currentElement) => {
             if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
@@ -95,6 +98,11 @@ export default class PageAnalyzer {
                 this.shadowDomProcessor.throttledTaskAnalyzeSubchildsShadowRoot.elementsPerBatch = this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall;
                 this.shadowDomProcessor.throttledTaskAnalyzeSubchildsShadowRoot.maxExecutionTime = this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime;
             }
+        }
+
+        if(this.darkThemeDetector) {
+            this.darkThemeDetector.currentSettings = currentSettings;
+            this.darkThemeDetector.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
         }
 
         if(this.throttledTaskAnalyzeElements) {
@@ -254,6 +262,14 @@ export default class PageAnalyzer {
         this.pageAnalysisFinishedBody = document.body;
 
         this.debugLogger?.log(`PageAnalyzer - setPageAnalysisFinished - Page analysis completed in ${performance.now() - this.startTimePageAnalysis} ms`);
+
+        const percentDarkElements = Math.round(this.darkThemeDetector.getPercentDarkElements() * 100);
+
+        if(this.darkThemeDetector.hasDarkTheme()) {
+            this.debugLogger?.log(`PageAnalyzer - Detected this page as having a dark theme with ${percentDarkElements}% of dark elements`);
+        } else {
+            this.debugLogger?.log(`PageAnalyzer - This website doesn't have a dark theme (${percentDarkElements}% of dark elements)`);
+        }
     }
 
     cancelPageAnalysis() {
@@ -352,6 +368,8 @@ export default class PageAnalyzer {
         if(pseudoElt) {
             return true;
         }
+
+        this.darkThemeDetector.process(computedStyles, hasBackgroundImg, transparentColorDetected);
     }
 
     elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
