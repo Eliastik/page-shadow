@@ -222,6 +222,10 @@ hr.nmt {
 .m0 {
     margin-bottom: 0 !important;
 }
+.select-inline {
+    display: inline-block;
+    width: auto !important;
+}
 .list-inline-item[disabled] a {
     pointer-events: none !important;
     color: gray !important;
