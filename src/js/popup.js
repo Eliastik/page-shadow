@@ -1619,7 +1619,7 @@ $(document).ready(() => {
         }
     });
 
-    async function displaySettings() {
+    async function displaySettings(changes) {
         const result = await browser.storage.local.get(["theme", "colorTemp", "pourcentageLum", "updateNotification", "defaultLoad", "percentageBlueLightReduction", "archiveInfoLastShowed", "archiveInfoDisable", "permissionsInfoDisable", "lastAutoBackupFailedLastShowed", "lastAutoBackupFailed"]);
 
         const informationShowed = await showInformationPopup(result);
@@ -1636,6 +1636,10 @@ $(document).ready(() => {
         checkCustomTheme();
         checkAutoEnable();
         checkGlobalEnable();
+
+        if(changes && changes.presets) {
+            checkPresetAutoEnabled(await getCurrentURL());
+        }
 
         if(typeof result.pourcentageLum !== "undefined" && result.pourcentageLum !== null && result.pourcentageLum / 100 <= maxBrightnessPercentage && result.pourcentageLum / 100 >= minBrightnessPercentage && brightnessChangedFromThisPage == false) {
             sliderBrightness.setValue(result.pourcentageLum);
@@ -1670,9 +1674,9 @@ $(document).ready(() => {
     displaySettings();
 
     if(typeof(browser.storage.onChanged) !== "undefined") {
-        browser.storage.onChanged.addListener((_changes, areaName) => {
+        browser.storage.onChanged.addListener((changes, areaName) => {
             if(areaName == "local") {
-                displaySettings();
+                displaySettings(changes);
             }
         });
     }

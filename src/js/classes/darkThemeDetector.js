@@ -16,7 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { rgb2hsl, getCurrentURL, disableEnableToggle, getPresetWithAutoEnableForDarkWebsites, getPresetData, disableEnablePreset } from "../utils/util.js";
+import { getCurrentURL, disableEnableToggle, getPresetWithAutoEnableForDarkWebsites, getPresetData, disableEnablePreset } from "../utils/util.js";
+import { rgb2hsl, cssColorToRgbaValues } from "../utils/colorUtils.js";
 
 /** Class used to analyze and detect website having a dark theme */
 export default class DarkThemeDetector {
@@ -45,6 +46,8 @@ export default class DarkThemeDetector {
 
         const hslBackgroundColor = this.getHSLFromColor(backgroundColor);
 
+        if(!hslBackgroundColor) return;
+
         if(backgroundColor && backgroundColor.trim().startsWith("rgb")) {
             // TODO constant websiteSpecialFiltersConfig
             const lightnessBackgroundColor = hslBackgroundColor[2];
@@ -61,8 +64,9 @@ export default class DarkThemeDetector {
     }
 
     getHSLFromColor(color) {
-        const rgbValues = color.split("(")[1].split(")")[0];
-        const rgbValuesList = rgbValues.trim().split(",");
+        const rgbValuesList = cssColorToRgbaValues(color);
+
+        if(!rgbValuesList) return null;
 
         return rgb2hsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
     }
