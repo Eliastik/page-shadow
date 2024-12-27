@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getCurrentURL } from "../utils/util.js";
+import { getCurrentURL } from "../utils/urlUtils.js";
 import { disableEnableToggle } from "../utils/enableDisableUtils.js";
 import { getPresetData, disableEnablePreset, getPresetWithAutoEnableForDarkWebsites } from "../utils/presetUtils.js";
 import { rgb2hsl, cssColorToRgbaValues } from "../utils/colorUtils.js";

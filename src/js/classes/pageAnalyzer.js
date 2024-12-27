@@ -16,7 +16,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { removeClass, addClass, loadWebsiteSpecialFiltersConfig, getPageAnalyzerCSSClass, getCustomThemeConfig } from "../utils/util.js";
+import { removeClass, addClass, getPageAnalyzerCSSClass } from "../utils/cssClassUtils.js";
+import { loadWebsiteSpecialFiltersConfig } from "../utils/storageUtils.js";
+import { getCustomThemeConfig } from "../utils/customThemeUtils.js";
 import { rgb2hsl, hexToRgb, cssColorToRgbaValues } from "../utils/colorUtils.js";
 import { ignoredElementsContentScript, pageShadowClassListsMutationsToProcess, pageShadowClassListsMutationsToIgnore, ignoredElementsBrightTextColorDetection, defaultThemesTextColors } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";

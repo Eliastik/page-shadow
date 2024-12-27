@@ -146,4 +146,16 @@ function checkAutoEnableStartup(hourEnable, minuteEnable, hourDisable, minuteDis
     return false;
 }
 
-export { checkAutoEnableStartup, checkNumber, getAutoEnableFormData, getAutoEnableSavedData, hourToPeriodFormat };
+async function isAutoEnable() {
+    if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.local) !== "undefined") {
+        const result = await browser.storage.local.get("autoEnable");
+
+        if(result.autoEnable == "true") {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+export { checkAutoEnableStartup, checkNumber, getAutoEnableFormData, getAutoEnableSavedData, hourToPeriodFormat, isAutoEnable };

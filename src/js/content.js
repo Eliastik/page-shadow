@@ -16,7 +16,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getSettings, getCurrentURL, hasSettingsChanged, sendMessageWithPromise } from "./utils/util.js";
+import { sendMessageWithPromise } from "./utils/browserUtils.js";
+import { getCurrentURL } from "./utils/urlUtils.js";
+import { getSettings, hasSettingsChanged } from "./utils/settingsUtils.js";
 import { pageShadowAllowed } from "./utils/enableDisableUtils.js";
 import browser from "webextension-polyfill";
 import ContentProcessor from "./classes/contentProcessor.js";

@@ -16,7 +16,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { svgElementToImage, backgroundImageToImage, getImageUrlFromElement, sha256, isValidURL, isCrossOrigin, sendMessageWithPromise } from "../utils/util.js";
+import { sha256 } from "../utils/commonUtils.js";
+import { sendMessageWithPromise } from "../utils/browserUtils.js";
+import { isValidURL, isCrossOrigin } from "../utils/urlUtils.js";
+import { svgElementToImage, backgroundImageToImage, getImageUrlFromElement } from "../utils/imageUtils.js";
 import { rgb2hsl } from "../utils/colorUtils.js";
 import { maxImageSizeDarkImageDetection } from "../constants.js";
 
