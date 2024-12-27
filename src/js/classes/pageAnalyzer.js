@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { removeClass, addClass, loadWebsiteSpecialFiltersConfig, rgb2hsl, getPageAnalyzerCSSClass, hexToRgb, getCustomThemeConfig } from "../utils/util.js";
-import { ignoredElementsContentScript, pageShadowClassListsMutationsIgnore, ignoredElementsBrightTextColorDetection, defaultThemesTextColors } from "../constants.js";
+import { ignoredElementsContentScript, pageShadowClassListsMutationsToProcess, pageShadowClassListsMutationsToIgnore, ignoredElementsBrightTextColorDetection, defaultThemesTextColors } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
 import ImageProcessor from "./imageProcessor.js";
 import ShadowDomProcessor from "./shadowDomProcessor.js";
@@ -627,8 +627,6 @@ export default class PageAnalyzer {
                 return false;
             }
 
-            let hasMutationPageShadowClass = false;
-            let newClassContainsPageShadowClass = false;
             let noChange = true;
 
             for(const _class of attributeOldValue.split(" ")) {
@@ -642,7 +640,11 @@ export default class PageAnalyzer {
                 return false;
             }
 
-            for(const _class of pageShadowClassListsMutationsIgnore) {
+            let hasMutationPageShadowClass = false;
+            let newClassContainsPageShadowClass = false;
+            let modifiedClassContainsPageShadowClassToIgnore = false;
+
+            for(const _class of pageShadowClassListsMutationsToProcess) {
                 const indexOfClass = attributeOldValue.indexOf(_class);
                 const elementContainsClass = element.classList.contains(_class);
 
@@ -650,12 +652,22 @@ export default class PageAnalyzer {
                     hasMutationPageShadowClass = true;
                 }
 
-                if(indexOfClass < 0 && elementContainsClass) {
+                if(indexOfClass === -1 && elementContainsClass) {
                     newClassContainsPageShadowClass = true;
                 }
             }
 
-            if(newClassContainsPageShadowClass) {
+            for(const _class of pageShadowClassListsMutationsToIgnore) {
+                const indexOfClass = attributeOldValue.indexOf(_class);
+                const elementContainsClass = element.classList.contains(_class);
+
+                if((indexOfClass !== -1 && !elementContainsClass) ||
+                    (indexOfClass === -1 && elementContainsClass)) {
+                    modifiedClassContainsPageShadowClassToIgnore = true;
+                }
+            }
+
+            if(newClassContainsPageShadowClass || modifiedClassContainsPageShadowClassToIgnore) {
                 return false;
             }
 

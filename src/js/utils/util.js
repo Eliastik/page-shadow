@@ -2055,13 +2055,11 @@ function getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseud
     }
 
     if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
-        const svgImage = element.cloneNode();
+        addClass(element, "pageShadowForceBlackColor");
 
-        addClass(svgImage, "pageShadowForceBlackColor");
+        const svgUrl = getImageUrlFromSvgElement(element, window.getComputedStyle(element));
 
-        const svgUrl = getImageUrlFromSvgElement(element, window.getComputedStyle(svgImage));
-
-        removeClass(svgImage, "pageShadowForceBlackColor");
+        removeClass(element, "pageShadowForceBlackColor");
 
         return svgUrl;
     }
