@@ -21,7 +21,7 @@ import $ from "jquery";
 import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import { initI18next } from "./locales.js";
-import { toggleTheme } from "./utils/util.js";
+import { toggleTheme } from "./utils/uiUtils.js";
 import browser from "webextension-polyfill";
 import pageTestEN from "../_locales/en/pageTest.json";
 import pageTestFR from "../_locales/fr/pageTest.json";

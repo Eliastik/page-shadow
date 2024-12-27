@@ -18,7 +18,8 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 
 import { mapFiltersCSSClass, websiteSpecialFiltersProcessingConfig } from "../constants.js";
-import { addNewStyleAttribute, removeStyleAttribute, sha256 } from "../utils/util.js";
+import { sha256 } from "../utils/commonUtils.js";
+import { addNewStyleAttribute, removeStyleAttribute } from "../utils/attributeUtils.js";
 import SafeTimer from "./safeTimer.js";
 
 /**

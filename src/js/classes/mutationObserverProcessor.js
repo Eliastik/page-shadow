@@ -16,7 +16,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getCurrentURL, loadWebsiteSpecialFiltersConfig, getBlueLightReductionFilterCSSClass } from "../utils/util.js";
+import { getCurrentURL } from "../utils/urlUtils.js";
+import { getBlueLightReductionFilterCSSClass } from "../utils/cssClassUtils.js";
+import { loadWebsiteSpecialFiltersConfig } from "../utils/storageUtils.js";
 import { ignoredElementsContentScript, brightnessReductionElementId, blueLightReductionElementId } from "../constants.js";
 import MutationObserverWrapper from "./mutationObserverWrapper.js";
 import SafeTimer from "./safeTimer.js";

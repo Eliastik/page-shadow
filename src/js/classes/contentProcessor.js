@@ -16,8 +16,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme, areAllCSSVariablesDefinedForHTMLElement, areAllClassesDefinedForHTMLElement, getInvertPageVariablesKeyValues, getBlueLightReductionFilterCSSClass } from "../utils/util.js";
+import { isRunningInIframe, isRunningInPopup, sendMessageWithPromise } from "../utils/browserUtils.js";
+import { getCurrentURL } from "../utils/urlUtils.js";
+import { removeClass, areAllClassesDefinedForHTMLElement, getBlueLightReductionFilterCSSClass } from "../utils/cssClassUtils.js";
+import { loadWebsiteSpecialFiltersConfig } from "../utils/storageUtils.js";
+import { applyContrastPageVariablesWithTheme, areAllCSSVariablesDefinedForHTMLElement, getInvertPageVariablesKeyValues } from "../utils/cssVariableUtils.js";
+import { getSettings } from "../utils/settingsUtils.js";
 import { pageShadowAllowed } from "../utils/enableDisableUtils.js";
+import { customTheme } from "../utils/customThemeUtils.js";
 import { minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, attenuateDefaultValue, brightnessReductionElementId, blueLightReductionElementId } from "../constants.js";
 import SafeTimer from "./safeTimer.js";
 import MutationObserverProcessor from "./mutationObserverProcessor.js";

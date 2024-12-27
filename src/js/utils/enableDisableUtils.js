@@ -16,12 +16,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { removeA } from "./util.js";
-import { setSettingItem } from "../storage.js";
+import { removeElementsFromArray } from "./commonUtils.js";
+import { setSettingItem } from "./storageUtils.js";
 import browser from "webextension-polyfill";
 import DebugLogger from "../classes/debugLogger.js";
 
-/** Utils function used for the archive feature (backup of settings) of Page Shadow */
+/** Utils function used for the enable/disable feature of Page Shadow */
 
 const debugLogger = new DebugLogger();
 
@@ -99,14 +99,14 @@ async function disableEnableToggle(type, checked, url) {
         let disabledWebsitesNew;
 
         if((checked && result.whiteList == "true") || (!checked && result.whiteList != "true")) {
-            disabledWebsitesNew = removeA(disabledWebsitesArray, match);
+            disabledWebsitesNew = removeElementsFromArray(disabledWebsitesArray, match);
             disabledWebsitesNew = commentMatched(disabledWebsitesNew, match);
-            disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
+            disabledWebsitesNew = removeElementsFromArray(disabledWebsitesNew, "").join("\n");
 
             await setSettingItem("sitesInterditPageShadow", disabledWebsitesNew.trim());
         } else if((!checked && result.whiteList == "true") || (checked && result.whiteList != "true")) {
             disabledWebsitesArray.push(match);
-            disabledWebsitesNew = removeA(disabledWebsitesArray, "").join("\n");
+            disabledWebsitesNew = removeElementsFromArray(disabledWebsitesArray, "").join("\n");
 
             await setSettingItem("sitesInterditPageShadow", disabledWebsitesNew);
         }

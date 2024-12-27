@@ -16,9 +16,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { sendMessageWithPromise, removeA } from "./util.js";
+import { removeElementsFromArray } from "./commonUtils.js";
+import { sendMessageWithPromise } from "./browserUtils.js";
 import { inArrayWebsite, commentMatched } from "./enableDisableUtils.js";
-import { setSettingItem, migrateSettings } from "../storage.js";
+import { setSettingItem, migrateSettings } from "./storageUtils.js";
 import { settingsToSavePresets, nbPresets, defaultPresets, defaultSettings } from "../constants.js";
 import browser from "webextension-polyfill";
 import DebugLogger from "./../classes/debugLogger.js";
@@ -418,12 +419,12 @@ async function disableEnablePreset(type, nb, checked, url) {
 
         if(checked) {
             websitesPagesArray.push(match);
-            websitesPagesArray = removeA(websitesPagesArray, "").join("\n");
+            websitesPagesArray = removeElementsFromArray(websitesPagesArray, "").join("\n");
             disabledWebsitesNew = websitesPagesArray;
         } else {
-            disabledWebsitesNew = removeA(websitesPagesArray, match);
+            disabledWebsitesNew = removeElementsFromArray(websitesPagesArray, match);
             disabledWebsitesNew = commentMatched(disabledWebsitesNew, match);
-            disabledWebsitesNew = removeA(disabledWebsitesNew, "").join("\n");
+            disabledWebsitesNew = removeElementsFromArray(disabledWebsitesNew, "").join("\n");
         }
 
         await savePreset(nb, preset.name, disabledWebsitesNew, false);

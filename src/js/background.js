@@ -16,14 +16,16 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getUImessage, checkChangedStorageData, getSettings, normalizeURL } from "./utils/util.js";
+import { getUImessage } from "./utils/uiUtils.js";
+import { normalizeURL } from "./utils/urlUtils.js";
+import { getSettings } from "./utils/settingsUtils.js";
 import { inArrayWebsite, disableEnableToggle, pageShadowAllowed } from "./utils/enableDisableUtils.js";
 import { getAutoEnableSavedData, checkAutoEnableStartup } from "./utils/autoEnableUtils.js";
 import { archiveCloud } from "./utils/archiveUtils.js";
 import { presetsEnabled, loadPreset } from "./utils/presetUtils.js";
 import { processShadowRootStyle } from "./utils/shadowDomUtils.js";
 import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay } from "./constants.js";
-import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
+import { setSettingItem, checkFirstLoad, migrateSettings, checkChangedStorageData } from "./utils/storageUtils.js";
 import FilterProcessor from "./classes/filters.js";
 import browser from "webextension-polyfill";
 import PresetCache from "./classes/presetCache.js";
