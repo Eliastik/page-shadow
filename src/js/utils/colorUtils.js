@@ -48,12 +48,18 @@ function oklchToRgba(oklch) {
 
     // OKLCH to OKLab
     const a = C * Math.cos((h * Math.PI) / 180);
-    const bValue = C * Math.sin((h * Math.PI) / 180);
+    const b = C * Math.sin((h * Math.PI) / 180);
+
+    return oklabToRgba([L, a, b, alpha]);
+}
+
+function oklabToRgba(oklab) {
+    const [L, a, b, alpha = 1] = oklab;
 
     // OKLab to XYZ (D65)
-    const L_ = (L + 0.3963377774 * a + 0.2158037573 * bValue) ** 3;
-    const M_ = (L - 0.1055613458 * a - 0.0638541728 * bValue) ** 3;
-    const S_ = (L - 0.0894841775 * a - 1.291485548 * bValue) ** 3;
+    const L_ = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+    const M_ = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+    const S_ = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
 
     const X = +1.2270138511 * L_ - 0.5577999807 * M_ + 0.2812561489 * S_;
     const Y = -0.0405801784 * L_ + 1.1122568696 * M_ - 0.0716766787 * S_;
@@ -70,9 +76,9 @@ function oklchToRgba(oklch) {
 
     const r = Math.min(1, Math.max(0, toSrgb(R))) * 255;
     const g = Math.min(1, Math.max(0, toSrgb(G))) * 255;
-    const b = Math.min(1, Math.max(0, toSrgb(B))) * 255;
+    const bValue = Math.min(1, Math.max(0, toSrgb(B))) * 255;
 
-    return [Math.round(r), Math.round(g), Math.round(b), alpha];
+    return [Math.round(r), Math.round(g), Math.round(bValue), alpha];
 }
 
 function parseOklchColor(oklchColor) {
@@ -88,9 +94,22 @@ function parseOklchColor(oklchColor) {
     const h = parseFloat(match[3]);
     const alpha = match[4] ? parseFloat(match[4]) : 1;
 
-    return {
-        L, C, h, alpha
-    };
+    return { L, C, h, alpha };
+}
+
+function parseOklabColor(oklabColor) {
+    const oklabRegex = /oklab\(\s*([\d.\-e]+)\s+([\d.\-e]+)\s+([\d.\-e]+)\s*\)/i;
+    const match = oklabColor.match(oklabRegex);
+
+    if(!match) {
+        return null;
+    }
+
+    const L = parseFloat(match[1]);
+    const a = parseFloat(match[2]);
+    const b = parseFloat(match[3]);
+
+    return { L, a, b, alpha: 1 };
 }
 
 function cssColorToRgbaValues(cssColor) {
@@ -103,7 +122,22 @@ function cssColorToRgbaValues(cssColor) {
             return rgbValuesList;
         } else if(cssColor.trim().toLowerCase().startsWith("oklch")) {
             const parsedOklch = parseOklchColor(cssColor);
+
+            if(!parsedOklch) {
+                debugLogger.log(`cssColorToRgbaValues - Failed to parse oklch color: ${cssColor}`, "error");
+                return null;
+            }
+
             return oklchToRgba([parsedOklch.L, parsedOklch.C, parsedOklch.h, parsedOklch.alpha]);
+        } else if(cssColor.trim().toLowerCase().startsWith("oklab")) {
+            const parsedOklab = parseOklabColor(cssColor);
+
+            if(!parseOklabColor) {
+                debugLogger.log(`cssColorToRgbaValues - Failed to parse oklab color: ${cssColor}`, "error");
+                return null;
+            }
+
+            return oklabToRgba([parsedOklab.L, parsedOklab.a, parsedOklab.b, parsedOklab.alpha]);
         } else {
             debugLogger.log(`cssColorToRgbaValues - CSS color format not recognized: ${cssColor.split("(")[0]}`, "error");
         }
