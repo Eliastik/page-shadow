@@ -16,7 +16,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getCurrentURL, disableEnableToggle, getPresetWithAutoEnableForDarkWebsites, getPresetData, disableEnablePreset } from "../utils/util.js";
+import { getCurrentURL } from "../utils/util.js";
+import { disableEnableToggle } from "../utils/enableDisableUtils.js";
+import { getPresetData, disableEnablePreset, getPresetWithAutoEnableForDarkWebsites } from "../utils/presetUtils.js";
 import { rgb2hsl, cssColorToRgbaValues } from "../utils/colorUtils.js";
 
 /** Class used to analyze and detect website having a dark theme */

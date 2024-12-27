@@ -16,7 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { pageShadowAllowed, getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme, areAllCSSVariablesDefinedForHTMLElement, areAllClassesDefinedForHTMLElement, getInvertPageVariablesKeyValues, getBlueLightReductionFilterCSSClass } from "../utils/util.js";
+import { getSettings, getCurrentURL, removeClass, isRunningInIframe, isRunningInPopup, loadWebsiteSpecialFiltersConfig, sendMessageWithPromise, customTheme, applyContrastPageVariablesWithTheme, areAllCSSVariablesDefinedForHTMLElement, areAllClassesDefinedForHTMLElement, getInvertPageVariablesKeyValues, getBlueLightReductionFilterCSSClass } from "../utils/util.js";
+import { pageShadowAllowed } from "../utils/enableDisableUtils.js";
 import { minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, attenuateDefaultValue, brightnessReductionElementId, blueLightReductionElementId } from "../constants.js";
 import SafeTimer from "./safeTimer.js";
 import MutationObserverProcessor from "./mutationObserverProcessor.js";
