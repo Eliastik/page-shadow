@@ -16,7 +16,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { inArrayWebsite, disableEnableToggle, pageShadowAllowed, getUImessage, getAutoEnableSavedData, checkAutoEnableStartup, checkChangedStorageData, presetsEnabled, loadPreset, getSettings, normalizeURL, processShadowRootStyle, archiveCloud, isAutoEnable } from "./utils/util.js";
+import { getUImessage, checkChangedStorageData, getSettings, normalizeURL, isAutoEnable } from "./utils/util.js";
+import { inArrayWebsite, disableEnableToggle, pageShadowAllowed } from "./utils/enableDisableUtils.js";
+import { getAutoEnableSavedData, checkAutoEnableStartup } from "./utils/autoEnableUtils.js";
+import { archiveCloud } from "./utils/archiveUtils.js";
+import { presetsEnabled, loadPreset } from "./utils/presetUtils.js";
+import { processShadowRootStyle } from "./utils/shadowDomUtils.js";
 import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings } from "./storage.js";
 import FilterProcessor from "./classes/filters.js";
