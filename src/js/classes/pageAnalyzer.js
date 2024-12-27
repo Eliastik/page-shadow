@@ -16,7 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { removeClass, addClass, loadWebsiteSpecialFiltersConfig, rgb2hsl, getPageAnalyzerCSSClass, hexToRgb, getCustomThemeConfig } from "../utils/util.js";
+import { removeClass, addClass, loadWebsiteSpecialFiltersConfig, getPageAnalyzerCSSClass, getCustomThemeConfig } from "../utils/util.js";
+import { rgb2hsl, hexToRgb, cssColorToRgbaValues } from "../utils/colorUtils.js";
 import { ignoredElementsContentScript, pageShadowClassListsMutationsToProcess, pageShadowClassListsMutationsToIgnore, ignoredElementsBrightTextColorDetection, defaultThemesTextColors } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
 import ImageProcessor from "./imageProcessor.js";
@@ -432,14 +433,14 @@ export default class PageAnalyzer {
             }
         }
 
-        if(backgroundColor && backgroundColor.trim().startsWith("rgb")) {
-            const rgbValues = backgroundColor.split("(")[1].split(")")[0];
-            const rgbValuesList = rgbValues.trim().split(",");
-            return this.isBrightColor(rgbValuesList, isText, false);
+        if(backgroundColor) {
+            return this.isBrightColor(cssColorToRgbaValues(backgroundColor), isText, false);
         }
     }
 
     isBrightColor(rgbValuesList, isText, isGradient) {
+        if(!rgbValuesList) return false;
+
         const hsl = rgb2hsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
 
         // If ligthness is between min and max values

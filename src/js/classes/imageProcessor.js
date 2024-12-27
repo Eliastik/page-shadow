@@ -16,7 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { rgb2hsl, svgElementToImage, backgroundImageToImage, getImageUrlFromElement, sha256, isValidURL, isCrossOrigin, sendMessageWithPromise } from "../utils/util.js";
+import { svgElementToImage, backgroundImageToImage, getImageUrlFromElement, sha256, isValidURL, isCrossOrigin, sendMessageWithPromise } from "../utils/util.js";
+import { rgb2hsl } from "../utils/colorUtils.js";
 import { maxImageSizeDarkImageDetection } from "../constants.js";
 
 export default class ImageProcessor {
