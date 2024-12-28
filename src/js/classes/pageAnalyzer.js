@@ -19,7 +19,7 @@
 import { removeClass, addClass, getPageAnalyzerCSSClass } from "../utils/cssClassUtils.js";
 import { loadWebsiteSpecialFiltersConfig } from "../utils/storageUtils.js";
 import { getCustomThemeConfig } from "../utils/customThemeUtils.js";
-import { rgb2hsl, hexToRgb, cssColorToRgbaValues } from "../utils/colorUtils.js";
+import { rgbTohsl, hexToRgb, cssColorToRgbaValues } from "../utils/colorUtils.js";
 import { ignoredElementsContentScript, pageShadowClassListsMutationsToProcess, pageShadowClassListsMutationsToIgnore, ignoredElementsBrightTextColorDetection, defaultThemesTextColors } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
 import ImageProcessor from "./imageProcessor.js";
@@ -443,7 +443,7 @@ export default class PageAnalyzer {
     isBrightColor(rgbValuesList, isText, isGradient) {
         if(!rgbValuesList) return false;
 
-        const hsl = rgb2hsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
+        const hsl = rgbTohsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
 
         // If ligthness is between min and max values
         const minLightnessTreshold = isText ? this.websiteSpecialFiltersConfig.brightColorLightnessTresholdTextMin : this.websiteSpecialFiltersConfig.brightColorLightnessTresholdMin;

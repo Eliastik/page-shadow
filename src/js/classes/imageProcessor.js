@@ -20,7 +20,7 @@ import { sha256 } from "../utils/commonUtils.js";
 import { sendMessageWithPromise } from "../utils/browserUtils.js";
 import { isValidURL, isCrossOrigin } from "../utils/urlUtils.js";
 import { svgElementToImage, backgroundImageToImage, getImageUrlFromElement } from "../utils/imageUtils.js";
-import { rgb2hsl } from "../utils/colorUtils.js";
+import { rgbTohsl } from "../utils/colorUtils.js";
 import { maxImageSizeDarkImageDetection } from "../constants.js";
 
 export default class ImageProcessor {
@@ -212,7 +212,7 @@ export default class ImageProcessor {
 
     isPixelDark(red, green, blue, alpha) {
         if (alpha >= this.websiteSpecialFiltersConfig.darkImageDetectionMinAlpha) {
-            const hsl = rgb2hsl(red / 255, green / 255, blue / 255);
+            const hsl = rgbTohsl(red / 255, green / 255, blue / 255);
 
             if(hsl[2] <= this.websiteSpecialFiltersConfig.darkImageDetectionHslTreshold) {
                 return true;

@@ -22,7 +22,7 @@ import DebugLogger from "./../classes/debugLogger.js";
 
 const debugLogger = new DebugLogger();
 
-function rgb2hsl(r, g, b) {
+function rgbTohsl(r, g, b) {
     const v = Math.max(r, g, b), c = v - Math.min(r, g, b), f = (1 - Math.abs(v + v - c - 1));
     const h = c && ((v == r) ? (g - b) / c : ((v == g) ? 2 + (b - r) / c : 4 + (r - g) / c));
 
@@ -81,6 +81,52 @@ function oklabToRgba(oklab) {
     return [Math.round(r), Math.round(g), Math.round(bValue), alpha];
 }
 
+function labToRgba(lab) {
+    const [L, a, b, alpha = 1] = lab;
+
+    const refX =  0.95047;
+    const refY =  1.00000;
+    const refZ =  1.08883;
+
+    const fy = (L + 16) / 116;
+    const fx = fy + a / 500;
+    const fz = fy - b / 200;
+
+    const xyzX = refX * (fx > 0.206893034 ? Math.pow(fx, 3) : (fx - 16 / 116) / 7.787);
+    const xyzY = refY * (fy > 0.206893034 ? Math.pow(fy, 3) : (fy - 16 / 116) / 7.787);
+    const xyzZ = refZ * (fz > 0.206893034 ? Math.pow(fz, 3) : (fz - 16 / 116) / 7.787);
+
+    // XYZ to RGB
+    const R = xyzX * 3.2406 - xyzY * 1.5372 - xyzZ * 0.4986;
+    const G = -xyzX * 0.9689 + xyzY * 1.8758 + xyzZ * 0.0415;
+    const B = xyzX * 0.0556 - xyzY * 0.2040 + xyzZ * 1.0572;
+
+    // Gamma correction
+    const gamma = (value) => {
+        return value <= 0.0031308 ? value * 12.92 : 1.055 * Math.pow(value, 1 / 2.4) - 0.055;
+    };
+
+    const rGamma = gamma(R);
+    const gGamma = gamma(G);
+    const bGamma = gamma(B);
+
+    const r = Math.round(Math.max(0, Math.min(255, rGamma * 255)));
+    const g = Math.round(Math.max(0, Math.min(255, gGamma * 255)));
+    const bValue = Math.round(Math.max(0, Math.min(255, bGamma * 255)));
+
+    return [Math.round(r), Math.round(g), Math.round(bValue), alpha];
+}
+
+function lchToRgba(lch) {
+    const [L, C, h, alpha = 1] = lch;
+
+    // LCH to Lab
+    const a = C * Math.cos((h * Math.PI) / 180);
+    const b = C * Math.sin((h * Math.PI) / 180);
+
+    return labToRgba([L, a, b, alpha]);
+}
+
 function parseOklchColor(oklchColor) {
     const oklchRegex = /oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\/?\s*([\d.]+)?\s*\)/i;
     const match = oklchColor.match(oklchRegex);
@@ -98,7 +144,7 @@ function parseOklchColor(oklchColor) {
 }
 
 function parseOklabColor(oklabColor) {
-    const oklabRegex = /oklab\(\s*([\d.\-e]+)\s+([\d.\-e]+)\s+([\d.\-e]+)\s*\)/i;
+    const oklabRegex = /oklab\(\s*([\d.\-e]+)\s+([\d.\-e]+)\s+([\d.\-e]+)\s*(?:\/\s*([\d.]+))?\s*\)/i;
     const match = oklabColor.match(oklabRegex);
 
     if(!match) {
@@ -108,8 +154,41 @@ function parseOklabColor(oklabColor) {
     const L = parseFloat(match[1]);
     const a = parseFloat(match[2]);
     const b = parseFloat(match[3]);
+    const alpha = match[4] ? parseFloat(match[4]) : 1;
 
-    return { L, a, b, alpha: 1 };
+    return { L, a, b, alpha };
+}
+
+function parseLchColor(lchColor) {
+    const lchRegex = /lch\(\s*([\d.\-e]+)\s+([\d.\-e]+)\s+([\d.\-e]+)\s*\/?\s*([\d.\-e]+)?\s*\)/i;
+    const match = lchColor.match(lchRegex);
+
+    if(!match) {
+        return null;
+    }
+
+    const L = parseFloat(match[1]);
+    const C = parseFloat(match[2]);
+    const h = parseFloat(match[3]);
+    const alpha = match[4] ? parseFloat(match[4]) : 1;
+
+    return { L, C, h, alpha };
+}
+
+function parseLabColor(labColor) {
+    const labRegex = /lab\(\s*([\d.\-e]+)\s+([\d.\-e]+)\s+([\d.\-e]+)\s*\/?\s*([\d.\-e]+)?\s*\)/i;
+    const match = labColor.match(labRegex);
+
+    if (!match) {
+        return null;
+    }
+
+    const L = parseFloat(match[1]);
+    const a = parseFloat(match[2]);
+    const b = parseFloat(match[3]);
+    const alpha = match[4] ? parseFloat(match[4]) : 1;
+
+    return { L, a, b, alpha };
 }
 
 function cssColorToRgbaValues(cssColor) {
@@ -138,6 +217,24 @@ function cssColorToRgbaValues(cssColor) {
             }
 
             return oklabToRgba([parsedOklab.L, parsedOklab.a, parsedOklab.b, parsedOklab.alpha]);
+        } else if(cssColor.trim().toLowerCase().startsWith("lch")) {
+            const parsedLch = parseLchColor(cssColor);
+
+            if(!parsedLch) {
+                debugLogger.log(`cssColorToRgbaValues - Failed to parse lch color: ${cssColor}`, "error");
+                return null;
+            }
+
+            return lchToRgba([parsedLch.L, parsedLch.C, parsedLch.h, parsedLch.alpha]);
+        } else if(cssColor.trim().toLowerCase().startsWith("lab")) {
+            const parsedLab = parseLabColor(cssColor);
+
+            if(!parsedLab) {
+                debugLogger.log(`cssColorToRgbaValues - Failed to parse lab color: ${cssColor}`, "error");
+                return null;
+            }
+
+            return labToRgba([parsedLab.L, parsedLab.a, parsedLab.b, parsedLab.alpha]);
         } else {
             debugLogger.log(`cssColorToRgbaValues - CSS color format not recognized: ${cssColor.split("(")[0]}`, "error");
         }
@@ -146,4 +243,4 @@ function cssColorToRgbaValues(cssColor) {
     return null;
 }
 
-export { rgb2hsl, hexToRgb, oklchToRgba, parseOklchColor, cssColorToRgbaValues };
+export { rgbTohsl, hexToRgb, oklchToRgba, oklabToRgba, lchToRgba, labToRgba, parseLabColor, parseLchColor, parseOklabColor, parseOklchColor, cssColorToRgbaValues };

@@ -19,7 +19,7 @@
 import { getCurrentURL } from "../utils/urlUtils.js";
 import { disableEnableToggle } from "../utils/enableDisableUtils.js";
 import { getPresetData, disableEnablePreset, getPresetWithAutoEnableForDarkWebsites } from "../utils/presetUtils.js";
-import { rgb2hsl, cssColorToRgbaValues } from "../utils/colorUtils.js";
+import { rgbTohsl, cssColorToRgbaValues } from "../utils/colorUtils.js";
 
 /** Class used to analyze and detect website having a dark theme */
 export default class DarkThemeDetector {
@@ -70,7 +70,7 @@ export default class DarkThemeDetector {
 
         if(!rgbValuesList) return null;
 
-        return rgb2hsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
+        return rgbTohsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
     }
 
     hasDarkTheme() {
