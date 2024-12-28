@@ -56,9 +56,11 @@ function oklabToRgba(oklab) {
     const Z = -0.0763812845 * L_ - 0.4214819784 * M_ + 1.5861632204 * S_;
 
     // XYZ to Linear RGB
-    const R = +3.2409699419 * X - 1.5373831776 * Y - 0.4986107603 * Z;
-    const G = -0.9692436363 * X + 1.8759675015 * Y + 0.0415550574 * Z;
-    const B = +0.0556300797 * X - 0.2039769589 * Y + 1.0569715142 * Z;
+    const rgbFromXyz = xyzD65ToRgba([X, Y, Z, alpha]);
+
+    const R = rgbFromXyz[0] / 255;
+    const G = rgbFromXyz[1] / 255;
+    const B = rgbFromXyz[2] / 255;
 
     // Linear RGB to sRGB
     const toSrgb = (c) =>
@@ -97,9 +99,11 @@ function labToRgba(lab) {
     const xyzZ = refZ * (fz > 0.206893034 ? Math.pow(fz, 3) : (fz - 16 / 116) / 7.787);
 
     // XYZ to RGB
-    const R = xyzX * 3.2406 - xyzY * 1.5372 - xyzZ * 0.4986;
-    const G = -xyzX * 0.9689 + xyzY * 1.8758 + xyzZ * 0.0415;
-    const B = xyzX * 0.0556 - xyzY * 0.2040 + xyzZ * 1.0572;
+    const rgbFromXyz = xyzD65ToRgba([xyzX, xyzY, xyzZ, alpha]);
+
+    const R = rgbFromXyz[0] / 255;
+    const G = rgbFromXyz[1] / 255;
+    const B = rgbFromXyz[2] / 255;
 
     // Gamma correction
     const gamma = (value) => {
@@ -191,6 +195,41 @@ function parseLabColor(labColor) {
     return { L, a, b, alpha };
 }
 
+function srgbToRgba([r, g, b, alpha = 1]) {
+    return [
+        Math.min(Math.max(r * 255, 0), 255),
+        Math.min(Math.max(g * 255, 0), 255),
+        Math.min(Math.max(b * 255, 0), 255),
+        alpha
+    ];
+}
+
+function xyzD50ToRgba([x, y, z, alpha = 1]) {
+    const r = x * 3.1331 + y * -1.6170 + z * -0.4906;
+    const g = x * -0.6461 + y * 1.6153 + z * 0.0312;
+    const b = x * 0.0217 + y * -0.2362 + z * 1.0050;
+
+    return [
+        Math.min(Math.max(r * 255, 0), 255),
+        Math.min(Math.max(g * 255, 0), 255),
+        Math.min(Math.max(b * 255, 0), 255),
+        alpha
+    ];
+}
+
+function xyzD65ToRgba([x, y, z, alpha = 1]) {
+    const r = x * 3.2406 + y * -1.5372 + z * -0.4986;
+    const g = x * -0.9689 + y * 1.8758 + z * 0.0415;
+    const b = x * 0.0556 + y * -0.204 + z * 1.0572;
+
+    return [
+        Math.min(Math.max(r * 255, 0), 255),
+        Math.min(Math.max(g * 255, 0), 255),
+        Math.min(Math.max(b * 255, 0), 255),
+        alpha
+    ];
+}
+
 function parseAndConvertColorFunction(cssColor) {
     const colorRegex = /color\(([\w-]+)\s+([\d.\-e%]+)\s*([\d.\-e%]+)?\s*([\d.\-e%]+)?\s*\/?\s*([\d.]+)?\s*\)/i;
     const match = cssColor.match(colorRegex);
@@ -209,16 +248,19 @@ function parseAndConvertColorFunction(cssColor) {
     switch (colorSpace.toLowerCase()) {
     case "srgb":
     case "srgb-linear":
-        return [component1 * 255, component2 * 255, component3 * 255, alpha];
     case "display-p3":
     case "a98-rgb":
-    case "rec2020":
     case "prophoto-rgb":
-    case "xyz":
+    case "rec2020":
+    case "rec2100-pq":
+    case "rec2100-hlg":
+    case "rec2100-linear":
+        return srgbToRgba([component1, component2, component3, alpha]);
     case "xyz-d50":
+        return xyzD50ToRgba([component1, component2, component3, alpha]);
+    case "xyz":
     case "xyz-d65":
-        debugLogger.log(`parseAndConvertColorFunction - Unsupported color space: ${colorSpace}`, "warn");
-        return null;
+        return xyzD65ToRgba([component1, component2, component3, alpha]);
     case "lab":
         return labToRgba([component1, component2, component3, alpha]);
     case "lch":
@@ -300,4 +342,4 @@ function extractGradientRGBValues(background) {
     return rgbaValuesLists;
 }
 
-export { rgbTohsl, hexToRgb, oklchToRgba, oklabToRgba, lchToRgba, labToRgba, parseLabColor, parseLchColor, parseOklabColor, parseOklchColor, cssColorToRgbaValues, extractGradientRGBValues };
+export { rgbTohsl, hexToRgb, oklchToRgba, oklabToRgba, lchToRgba, labToRgba, parseLabColor, parseLchColor, parseOklabColor, parseOklchColor, cssColorToRgbaValues, extractGradientRGBValues, srgbToRgba, xyzD50ToRgba, xyzD65ToRgba, parseAndConvertColorFunction };
