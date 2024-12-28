@@ -117,6 +117,10 @@
             "darkImageDetectionMaxCacheSize": "Taille du cache (nombre d'éléments) des images déjà analysées",
             "mutationObserverProcessNewestFirst": "Traiter les mutations les plus récentes d'abord",
             "enableSelectiveInvertPreserveColors": "Conserver les couleurs lors de l'inversion sélective",
+            "darkThemeDetectionMaxLightness": "Luminosité maximale pour détecter un élément comme sombre",
+            "darkThemeDetectionMaxSaturation": "Saturation maximale pour détecter un élément comme sombre",
+            "darkThemeDetectionMinLightnessLightElements": "Luminosité minimale pour détecter un élément comme clair",
+            "darkThemeDetectionPercentageRationDarkLightElements": "Ratio éléments sombres / éléments clairs pour détecter qu'un site a un thème sombre",
             "help": {
                 "debugMode": "Active le mode de débogage qui affiche des informations de débogage dans la console JavaScript sur les pages traitées par Page Shadow, ou sur les pages de l'extension.",
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive l'analyse des éléments des pages web. Cependant, la gestion des filtres reste activée.",
@@ -174,7 +178,11 @@
                 "enableDarkImageDetectionCache": "Active la mise en cache des images déjà analysées par le moteur d'analyse. Cela améliore les performances en évitant de réanalyser les images déjà analysées. Seuls sont mis en cache l'URL et le résultat de l'analyse des images déjà analysées. Le cache est géré par page.",
                 "darkImageDetectionMaxCacheSize": "Paramètre la taille maximale du cache (nombre d'éléments) des images déjà analysées. Si la taille dépasse ce seuil, les plus anciennes analyses seront purgées du cache, pour éviter une utilisation mémoire trop élevée.",
                 "mutationObserverProcessNewestFirst": "Si cette option est activée, les mutations les plus récentes seront prises en compte en priorité par rapport aux plus anciennes. Cela n'impacte pas les performances, et n'est utile que pour certains sites web.",
-                "enableSelectiveInvertPreserveColors": "Si cette option est activée, le filtre d'inversion sélective tentera de préserver les couleurs originales tout en inversant uniquement le noir et le blanc."
+                "enableSelectiveInvertPreserveColors": "Si cette option est activée, le filtre d'inversion sélective tentera de préserver les couleurs originales tout en inversant uniquement le noir et le blanc.",
+                "darkThemeDetectionMaxLightness": "Définit la valeur maximale de luminosité qu'un élément doit avoir pour être considéré comme sombre. Cette valeur doit être comprise entre 0 et 1 (pourcentage).",
+                "darkThemeDetectionMaxSaturation": "Définit la saturation maximale qu'un élément doit avoir pour être considéré comme sombre. Cette valeur doit être comprise entre 0 et 1 (pourcentage).",
+                "darkThemeDetectionMinLightnessLightElements": "Définit la luminosité minimale qu'un élément doit avoir pour être considéré comme clair. Les éléments dont la luminosité est supérieure à cette valeur seront considérés comme clairs. Cette valeur doit être comprise entre 0 et 1 (pourcentage).",
+                "darkThemeDetectionPercentageRationDarkLightElements": "Définit le ratio (en pourcentage, entre 0 et 1) entre les éléments sombres et clairs pour déterminer si un site web utilise un thème sombre."
             }
         },
         "filtersConfigCategories": {
@@ -189,6 +197,7 @@
             "imageAnalyze": "Moteur d'analyse des pages - images",
             "applyCssTimer": "Minuteur d'application des changements de classes CSS",
             "others": "Autres options",
+            "darkThemeDetection": "Moteur d'analyse des pages - détection des sites ayant un thème sombre",
             "descriptions": {
                 "general": "Options globales affectant le comportement général de l'extension.",
                 "mutationsObservers": "Les mutation observers sont utilisés pour surveiller et réagir aux changements dynamiques des pages web. Par exemple, cela permet à l'extension de détecter et réagir aux modifications de style et d'attributs des éléments des pages web, ou des modifications de la structure des pages.",
@@ -200,7 +209,8 @@
                 "filterEngine": "Ces options gèrent le fonctionnement du moteur de filtre de Page Shadow.",
                 "imageAnalyze": "Ces options gèrent le moteur chargé d'analyser les images et chargé de détecter les images avec du texte ou autres éléments sombres. Les résultats des analyses sont utilisés pour la fonctionnalité Inverser les couleurs > Sélectif.",
                 "applyCssTimer": "Ces options gèrent le fonctionnement du minuteur chargé d'appliquer les changements de classes CSS des éléments par Page Shadow sur les pages web.",
-                "others": "Autres options avancées."
+                "others": "Autres options avancées.",
+                "darkThemeDetection": "Ces options gèrent le moteur chargé de détecter les sites web ayant un thème sombre."
             }
         },
         "saved": "Sauvegardé !"
