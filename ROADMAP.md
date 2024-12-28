@@ -172,7 +172,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 ### Release - future
 
 * [x] Auto detect website already having a dark mode to auto disable Increase contrast and Invert entire page
-    * [ ] Improve detection algorithm
+    * [x] Improve detection algorithm
     * [ ] Detection only enabled if Invert colors, Increase contrast or Attenuate colors is enabled: fix?
 * [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
 
@@ -183,7 +183,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Minor) Logo not detected as dark image when increase contrast is enabled (still detect with invert entire page) on: https://www.fastmail.com/blog/why-we-use-our-own-hardware/
     * Due to the path sub-element with fill = "currentcolor" and a style stating fill = "inherit"
 * [x] (Minor) OKLCH css colors are not taken into account
-    * [ ] Take into account other color formats
+    * [x] Take into account other color formats
+    * [ ] Color format not recognized -> fix? https://developer.mozilla.org/fr/docs/Web/CSS/color_value/color
 
 #### Common
 

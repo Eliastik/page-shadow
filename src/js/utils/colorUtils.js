@@ -43,16 +43,6 @@ function hexToRgb(hex) {
     return `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)})`;
 }
 
-function oklchToRgba(oklch) {
-    const [L, C, h, alpha = 1] = oklch;
-
-    // OKLCH to OKLab
-    const a = C * Math.cos((h * Math.PI) / 180);
-    const b = C * Math.sin((h * Math.PI) / 180);
-
-    return oklabToRgba([L, a, b, alpha]);
-}
-
 function oklabToRgba(oklab) {
     const [L, a, b, alpha = 1] = oklab;
 
@@ -79,6 +69,16 @@ function oklabToRgba(oklab) {
     const bValue = Math.min(1, Math.max(0, toSrgb(B))) * 255;
 
     return [Math.round(r), Math.round(g), Math.round(bValue), alpha];
+}
+
+function oklchToRgba(oklch) {
+    const [L, C, h, alpha = 1] = oklch;
+
+    // OKLCH to OKLab
+    const a = C * Math.cos((h * Math.PI) / 180);
+    const b = C * Math.sin((h * Math.PI) / 180);
+
+    return oklabToRgba([L, a, b, alpha]);
 }
 
 function labToRgba(lab) {
@@ -243,4 +243,17 @@ function cssColorToRgbaValues(cssColor) {
     return null;
 }
 
-export { rgbTohsl, hexToRgb, oklchToRgba, oklabToRgba, lchToRgba, labToRgba, parseLabColor, parseLchColor, parseOklabColor, parseOklchColor, cssColorToRgbaValues };
+function extractGradientRGBValues(background) {
+    const pattern = /rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})(?:,\s*(\d*\.?\d+))?\)/g;
+    const matches = [...background.matchAll(pattern)];
+
+    const rgbaValuesLists = matches.map(match => {
+        const rgb = match.slice(1, 4).map(Number);
+        const alpha = match[4] !== undefined ? parseFloat(match[4]) : 1;
+        return [...rgb, alpha];
+    });
+
+    return rgbaValuesLists;
+}
+
+export { rgbTohsl, hexToRgb, oklchToRgba, oklabToRgba, lchToRgba, labToRgba, parseLabColor, parseLchColor, parseOklabColor, parseOklchColor, cssColorToRgbaValues, extractGradientRGBValues };

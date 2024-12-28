@@ -39,8 +39,9 @@ export default class DarkThemeDetector {
         this.debugLogger = debugLogger;
     }
 
-    process(computedStyles, hasBackgroundImg, hasTransparentColor) {
-        if(hasBackgroundImg || hasTransparentColor) {
+    process(element, computedStyles, hasBackgroundImg, hasTransparentColor) {
+        if(!element || !computedStyles || hasBackgroundImg || hasTransparentColor
+            || (element.checkVisibility && !element.checkVisibility())) {
             return;
         }
 
@@ -50,19 +51,17 @@ export default class DarkThemeDetector {
 
         if(!hslBackgroundColor) return;
 
-        if(backgroundColor && backgroundColor.trim().startsWith("rgb")) {
-            // TODO constant websiteSpecialFiltersConfig
-            const lightnessBackgroundColor = hslBackgroundColor[2];
-            const saturationBackgroundColor = hslBackgroundColor[1];
+        // TODO constant websiteSpecialFiltersConfig
+        const lightnessBackgroundColor = hslBackgroundColor[2];
+        const saturationBackgroundColor = hslBackgroundColor[1];
 
-            if(lightnessBackgroundColor <= 0.25 && saturationBackgroundColor <= 0.5) {
-                this.darkElements++;
-            } else {
-                this.lightElements++;
-            }
-
-            this.analyzedElements++;
+        if(lightnessBackgroundColor <= 0.25 && saturationBackgroundColor <= 0.5) {
+            this.darkElements++;
+        } else if(lightnessBackgroundColor >= 0.9) {
+            this.lightElements++;
         }
+
+        this.analyzedElements++;
     }
 
     getHSLFromColor(color) {
@@ -75,11 +74,11 @@ export default class DarkThemeDetector {
 
     hasDarkTheme() {
         // TODO constant websiteSpecialFiltersConfig
-        return this.analyzedElements > 0 && this.getPercentDarkElements() >= 0.6;
+        return this.analyzedElements > 0 && this.getPercentDarkElements() >= 0.8;
     }
 
     getPercentDarkElements() {
-        return (this.darkElements / this.analyzedElements) || 0;
+        return (this.darkElements / (this.darkElements + this.lightElements)) || 0;
     }
 
     async executeActions() {
