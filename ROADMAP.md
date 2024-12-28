@@ -186,6 +186,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Minor) OKLCH css colors are not taken into account
     * [x] Take into account other color formats
     * [x] Color format not recognized -> fix? https://developer.mozilla.org/fr/docs/Web/CSS/color_value/color
+* [ ] (Minor) Still CORS error due to URL redirects. Example: https://web.dev/blog/color-spaces-and-functions?hl=fr - fix?
 
 #### Common
 

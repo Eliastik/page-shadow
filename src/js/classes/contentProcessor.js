@@ -295,9 +295,9 @@ export default class ContentProcessor {
             await this.applyPageAnalysisAndFilters(settings, type);
         }
 
-        this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BODY);
-        this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
-        this.mutationObserverProcessor.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESSWRAPPER);
+        this.mutationObserverProcessor?.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BODY);
+        this.mutationObserverProcessor?.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+        this.mutationObserverProcessor?.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESSWRAPPER);
 
         await this.pageAnalyzer.resetShadowRoots();
     }
