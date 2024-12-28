@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { regexpMatchURL } from "../constants.js";
+import { base64EncodeUnicode } from "./commonUtils.js";
 import { isCrossOrigin, safeDecodeURIComponent } from "./urlUtils.js";
 import { addClass, removeClass } from "./cssClassUtils.js";
 import DebugLogger from "./../classes/debugLogger.js";
@@ -173,7 +174,7 @@ function getImageUrlFromSvgElement(element, computedStyles) {
     const escapedFill = matchURLFill && matchURLFill[2] ? `url(${matchURLFill[2]})` : fill;
     const escapedStroke = matchURLStroke && matchURLStroke[2] ? `url(${matchURLStroke[2]})` : stroke;
 
-    return `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg"${namespaceString} width="${width}" height="${height}" fill="${escapedFill}" color="${color}" stroke="${escapedStroke}">${innerHTML}</svg>`)}`;
+    return `data:image/svg+xml;base64,${base64EncodeUnicode(`<svg xmlns="http://www.w3.org/2000/svg"${namespaceString} width="${width}" height="${height}" fill="${escapedFill}" color="${color}" stroke="${escapedStroke}">${innerHTML}</svg>`)}`;
 }
 
 export { svgElementToImage, backgroundImageToImage, getImageUrlFromElement, getImageUrlFromSvgElement };

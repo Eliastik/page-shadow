@@ -93,4 +93,27 @@ function checkPermissions() {
     });
 }
 
-export { getBrowser, isRunningInPopup, isRunningInIframe, sendMessageWithPromise, checkPermissions };
+function isElementNotVisible(element, computedStyles) {
+    if(element.checkVisibility && !element.checkVisibility()) {
+        return true;
+    }
+
+    if(computedStyles && (computedStyles.display === "none" || computedStyles.visibility === "hidden"
+        || computedStyles.opacity === "0")) {
+        return true;
+    }
+
+    const rect = element.getBoundingClientRect();
+
+    if(rect.top < 0 || rect.left < 0 || rect.right < 0 || rect.bottom < 0) {
+        return true;
+    }
+
+    if(rect.top > window.innerHeight || rect.left > window.innerHeight || rect.right > window.innerHeight || rect.bottom > window.innerHeight) {
+        return true;
+    }
+
+    return false;
+}
+
+export { getBrowser, isRunningInPopup, isRunningInIframe, sendMessageWithPromise, checkPermissions, isElementNotVisible };
