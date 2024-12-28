@@ -193,7 +193,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Ideas
 
 * Improving codebase
-    * [ ] Comment the code: doc for methods/functions
+    * [x] Comment the code: doc for methods/functions
     * [x] Simplify code applying Shadow Roots styles?
     * [x] Separate code treating mutations of page elements to a separate class?
     * [x] Separate method applying mutation observers to another class?

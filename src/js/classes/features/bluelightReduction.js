@@ -27,7 +27,6 @@ export default class BluelightReduction {
     debugLogger;
 
     currentSettings;
-    websiteSpecialFiltersConfig;
 
     constructor(debugLogger) {
         this.debugLogger = debugLogger;

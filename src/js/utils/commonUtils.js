@@ -80,4 +80,12 @@ async function sha256(url) {
     return hashHex;
 }
 
-export { removeElementsFromArray, commentAllLines, downloadData, convertBytes, getSizeObject, sha256 };
+function base64EncodeUnicode(str) {
+    const uint8Array = new TextEncoder().encode(str);
+    const binaryString = Array.from(uint8Array)
+        .map(byte => String.fromCharCode(byte))
+        .join("");
+    return btoa(binaryString);
+}
+
+export { removeElementsFromArray, commentAllLines, downloadData, convertBytes, getSizeObject, sha256, base64EncodeUnicode };

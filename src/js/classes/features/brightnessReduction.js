@@ -26,7 +26,6 @@ export default class BrightnessReduction {
     debugLogger;
 
     currentSettings;
-    websiteSpecialFiltersConfig;
 
     constructor(debugLogger) {
         this.debugLogger = debugLogger;
