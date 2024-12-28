@@ -198,7 +198,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Separate code treating mutations of page elements to a separate class?
     * [x] Separate method applying mutation observers to another class?
     * [x] Modularize content.js classes with less dependencies between classes?
-        * [ ] Separate each filter (increase contrast, reduce brightness etc.) into a class?
+        * [x] Separate each filter (increase contrast, reduce brightness etc.) into a class?
 * Filters module improving
     * [x] Filters: UI to report a website problem
 * Others :

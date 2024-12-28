@@ -151,7 +151,7 @@ gulp.task("build", () => {
 });
 
 gulp.task("watch", () => {
-    gulp.watch(["src/js/*.js", "src/js/classes/*.js", "src/js/utils/*.js", "src/css/*.css", "src/css/*.less", "src/locales/**/*.json", "src/*.html", "src/*.txt", "manifests/**/*.json"], gulp.series("build-directory-dev"));
+    gulp.watch(["src/js/*.js", "src/js/classes/*.js", "src/js/utils/*.js", "src/js/classes/features/*.js", "src/css/*.css", "src/css/*.less", "src/locales/**/*.json", "src/*.html", "src/*.txt", "manifests/**/*.json"], gulp.series("build-directory-dev"));
 });
 
 gulp.task("build-directory-dev", gulp.series("clean", "copy-global", "compile-less", "compile-js", "copyChrome", "copyFirefox", "copyFirefoxContentCSS"));

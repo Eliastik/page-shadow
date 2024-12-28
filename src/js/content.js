@@ -51,7 +51,7 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
             contentProcessor.resetPageAnalysisState();
         }
 
-        return contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
+        return contentProcessor.start(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
     }
 
     if(isLiveSettings && storageChanged) {
@@ -68,7 +68,7 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
                     contentProcessor.resetPageAnalysisState();
                 }
 
-                return contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
+                return contentProcessor.start(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
             }
         } else if(hasSettingsChanged(contentProcessor.currentSettings, await getSettings(getCurrentURL(), true), customThemeChanged)) {
             if(isEnabled != null) {
@@ -79,7 +79,7 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
                 contentProcessor.resetPageAnalysisState();
             }
 
-            return contentProcessor.main(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
+            return contentProcessor.start(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL, true);
         }
     }
 }
@@ -87,7 +87,7 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
 /**
  * Execute to pre-apply settings when a page is loaded before full settings are loaded. Limit flash effect.
  */
-function preApplyFilters(data, contentProcessor) {
+function fastPreApply(data, contentProcessor) {
     if (!data.enabled) {
         return true;
     }
@@ -95,30 +95,7 @@ function preApplyFilters(data, contentProcessor) {
     if(document.body && document.getElementsByTagName("html")[0] && !contentProcessor.started) {
         debugLogger.log("Content script - Pre-applying settings");
 
-        contentProcessor.initBodyAndHTMLClassBatchers();
-
-        // Pre-apply contrast, brightness, blue light filter and invert entire page
-        if (data.settings.pageShadowEnabled == "true") {
-            contentProcessor.applyContrastPage(true, data.settings.pageShadowEnabled, data.settings.theme, "false", "false", data.customThemes);
-        }
-
-        if (data.settings.pageLumEnabled == "true") {
-            contentProcessor.brightnessPage(data.settings.pageLumEnabled, data.settings.pourcentageLum);
-        }
-
-        if (data.settings.blueLightReductionEnabled == "true") {
-            contentProcessor.blueLightFilterPage(data.settings.blueLightReductionEnabled, data.settings.percentageBlueLightReduction, data.settings.colorTemp);
-        }
-
-        if (data.settings.colorInvert == "true" && data.settings.invertEntirePage == "true") {
-            contentProcessor.invertColor(data.settings.colorInvert, data.settings.invertImageColors, data.settings.invertEntirePage, data.settings.invertVideoColors, data.settings.invertBgColor, data.settings.selectiveInvert, null, null, null, null, null, null, data.settings.invertBrightColors);
-
-            contentProcessor.bodyClassBatcher.apply();
-            contentProcessor.bodyClassBatcherRemover.apply();
-            contentProcessor.htmlClassBatcher.apply();
-        }
-
-        contentProcessor.started = true;
+        contentProcessor.fastPreApply(data.settings, data.customThemes);
 
         debugLogger.log("Content script - Finished pre-applying settings");
 
@@ -137,7 +114,7 @@ const timerStart = new SafeTimer(async () => {
     initProcessing = true;
 
     try {
-        await contentProcessor.main(ContentProcessorConstants.TYPE_START);
+        await contentProcessor.start(ContentProcessorConstants.TYPE_START);
     } catch(e) {
         debugLogger.log("Content timerStart - Error executing main", "error", e);
     } finally {
@@ -149,7 +126,7 @@ const timerStart = new SafeTimer(async () => {
 // Pre-apply function
 const timerPreApply = new SafeTimer(() => {
     if(settings) {
-        if(preApplyFilters(settings, contentProcessor)) {
+        if(fastPreApply(settings, contentProcessor)) {
             timerStart.start();
         } else {
             timerPreApply.start();
