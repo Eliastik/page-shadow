@@ -52,13 +52,13 @@ export default class DarkThemeDetector {
 
         if(!hslBackgroundColor) return;
 
-        // TODO constant websiteSpecialFiltersConfig
         const lightnessBackgroundColor = hslBackgroundColor[2];
         const saturationBackgroundColor = hslBackgroundColor[1];
 
-        if(lightnessBackgroundColor <= 0.25 && saturationBackgroundColor <= 0.5) {
+        if(lightnessBackgroundColor <= this.websiteSpecialFiltersConfig.darkThemeDetectionMinLightnessLightElements
+            && saturationBackgroundColor <= this.websiteSpecialFiltersConfig.darkThemeDetectionMaxSaturation) {
             this.darkElements++;
-        } else if(lightnessBackgroundColor >= 0.9) {
+        } else if(lightnessBackgroundColor >= this.websiteSpecialFiltersConfig.darkThemeDetectionMinLightnessLightElements) {
             this.lightElements++;
         }
 
@@ -74,8 +74,7 @@ export default class DarkThemeDetector {
     }
 
     hasDarkTheme() {
-        // TODO constant websiteSpecialFiltersConfig
-        return this.analyzedElements > 0 && this.getPercentDarkElements() >= 0.8;
+        return this.analyzedElements > 0 && this.getPercentDarkElements() >= this.websiteSpecialFiltersConfig.darkThemeDetectionPercentageRationDarkLightElements;
     }
 
     getPercentDarkElements() {

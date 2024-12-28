@@ -120,6 +120,10 @@
             "darkImageDetectionMaxCacheSize": "Cache size (number of elements) of images already analyzed",
             "mutationObserverProcessNewestFirst": "Treat the most recent mutations first",
             "enableSelectiveInvertPreserveColors": "Preserve colors during selective inversion",
+            "darkThemeDetectionMaxLightness": "Max lightness to detect an element as dark",
+            "darkThemeDetectionMaxSaturation": "Max saturation to detect an element as dark",
+            "darkThemeDetectionMinLightnessLightElements": "Min lightness to detect an element as light",
+            "darkThemeDetectionPercentageRationDarkLightElements": "Ration dark elements / light elements to detect a website as having a dark theme",
             "help": {
                 "debugMode": "Enables debug mode, which displays debugging information in the JavaScript console on pages processed by Page Shadow, or on extension pages.",
                 "performanceModeEnabled": "Enable performance optimizations, this disables the analysis of webpage elements. However, filter management remains enabled.",
@@ -177,8 +181,11 @@
                 "enableDarkImageDetectionCache": "Enables caching of images already analyzed by the analysis engine. This improves performance by avoiding the need to reanalyze images already analyzed. Only the URL and analysis results of images already analyzed are cached. The cache is per page.",
                 "darkImageDetectionMaxCacheSize": "Sets the maximum cache size (number of elements) for images already analyzed. If the size exceeds this threshold, the oldest analyses will be purged from the cache, to avoid excessive memory usage.",
                 "mutationObserverProcessNewestFirst": "If this option is enabled, the most recent mutations will be given priority over the oldest. This has no impact on performance, and is only useful for certain websites.",
-                "enableSelectiveInvertPreserveColors": "If this option is enabled, the selective inversion filter will attempt to preserve the original colors while only inverting black and white."
-
+                "enableSelectiveInvertPreserveColors": "If this option is enabled, the selective inversion filter will attempt to preserve the original colors while only inverting black and white.",
+                "darkThemeDetectionMaxLightness": "Defines the maximum lightness value an element must have to be considered dark. This value must be between 0 and 1 (percentage).",
+                "darkThemeDetectionMaxSaturation": "Defines the maximum saturation value an element must have to be considered dark. This value must be between 0 and 1 (percentage).",
+                "darkThemeDetectionMinLightnessLightElements": "Defines the minimum lightness value an element must have to be considered light. Elements with a lightness above this value will be considered light. This value must be between 0 and 1 (percentage).",
+                "darkThemeDetectionPercentageRationDarkLightElements": "Defines the ratio (as a percentage, between 0 and 1) of dark elements to light elements to determine if a website uses a dark theme."
             }
         },
         "filtersConfigCategories": {
@@ -193,6 +200,7 @@
             "imageAnalyze": "Page analysis engine - images",
             "applyCssTimer": "CSS class change application timer",
             "others": "Others options",
+            "darkThemeDetection": "Page analysis engine - dark theme detection",
             "descriptions": {
                 "general": "Global options affecting the overall behavior of the extension.",
                 "mutationsObservers": "Mutation observers are used to monitor and react to dynamic changes on web pages. For example, this allows the extension to detect and respond to changes in style and attributes of web page elements or modifications in the structure of pages.",
@@ -204,7 +212,8 @@
                 "filterEngine": "These options manage the Page Shadow filter engine.",
                 "imageAnalyze": "These options manage the engine responsible for analyzing images and detecting images with text or other dark elements. Analysis results are used for the feature Invert colors > Selective.",
                 "applyCssTimer": "These options control the functioning of the timer responsible for applying CSS class changes to elements by Page Shadow on web pages.",
-                "others": "Others advanced options."
+                "others": "Others advanced options.",
+                "darkThemeDetection": "These options manage the engine responsible for detecting dark themed websites."
             }
         },
         "saved": "Saved!"

@@ -173,7 +173,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [x] Auto detect website already having a dark mode to auto disable Increase contrast and Invert entire page
     * [x] Improve detection algorithm
-    * [ ] Detection only enabled if Invert colors, Increase contrast or Attenuate colors is enabled: fix?
+    * [x] Detection only enabled if Invert colors, Increase contrast or Attenuate colors is enabled: fix? -> No
+    * [ ] Update filter guide for new special filters
 * [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
 
 #### Known issues/bugs
