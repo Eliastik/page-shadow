@@ -19,7 +19,7 @@
 import { removeClass, addClass, getPageAnalyzerCSSClass } from "../utils/cssClassUtils.js";
 import { loadWebsiteSpecialFiltersConfig } from "../utils/storageUtils.js";
 import { getCustomThemeConfig } from "../utils/customThemeUtils.js";
-import { rgbTohsl, hexToRgb, cssColorToRgbaValues } from "../utils/colorUtils.js";
+import { rgbTohsl, hexToRgb, cssColorToRgbaValues, extractGradientRGBValues } from "../utils/colorUtils.js";
 import { ignoredElementsContentScript, pageShadowClassListsMutationsToProcess, pageShadowClassListsMutationsToIgnore, ignoredElementsBrightTextColorDetection, defaultThemesTextColors } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
 import ImageProcessor from "./imageProcessor.js";
@@ -368,7 +368,7 @@ export default class PageAnalyzer {
             return true;
         }
 
-        this.darkThemeDetector.process(computedStyles, hasBackgroundImg, transparentColorDetected);
+        this.darkThemeDetector.process(element, computedStyles, hasBackgroundImg, transparentColorDetected);
     }
 
     elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
@@ -390,7 +390,7 @@ export default class PageAnalyzer {
             const hasGradientValue = this.hasGradient(backgroundImage);
 
             if(hasGradientValue) {
-                const rgbValuesLists = this.extractGradientRGBValues(backgroundImage);
+                const rgbValuesLists = extractGradientRGBValues(backgroundImage);
                 return !rgbValuesLists.every(([, , , alpha = 1]) => alpha <= this.websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold);
             }
 
@@ -405,25 +405,12 @@ export default class PageAnalyzer {
             || background.trim().toLowerCase().indexOf("radial-gradient") != -1 || background.trim().toLowerCase().indexOf("conic-gradient") != -1);
     }
 
-    extractGradientRGBValues(background) {
-        const pattern = /rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})(?:,\s*(\d*\.?\d+))?\)/g;
-        const matches = [...background.matchAll(pattern)];
-
-        const rgbaValuesLists = matches.map(match => {
-            const rgb = match.slice(1, 4).map(Number);
-            const alpha = match[4] !== undefined ? parseFloat(match[4]) : 1;
-            return [...rgb, alpha];
-        });
-
-        return rgbaValuesLists;
-    }
-
     elementHasBrightColor(background, backgroundColor, isText) {
         if(background) {
             const hasGradient = this.hasGradient(background);
 
             if(hasGradient) {
-                const rgbValuesLists = this.extractGradientRGBValues(background);
+                const rgbValuesLists = extractGradientRGBValues(background);
 
                 for(const rgbValuesList of rgbValuesLists) {
                     const isBrightColor = this.isBrightColor(rgbValuesList, isText, true);
