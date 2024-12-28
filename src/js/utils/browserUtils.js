@@ -94,6 +94,10 @@ function checkPermissions() {
 }
 
 function isElementNotVisible(element, computedStyles) {
+    if(element === document.body) {
+        return false;
+    }
+
     if(element.checkVisibility && !element.checkVisibility()) {
         return true;
     }

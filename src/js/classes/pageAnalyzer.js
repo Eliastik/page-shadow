@@ -188,6 +188,8 @@ export default class PageAnalyzer {
                 return;
             }
 
+            this.darkThemeDetector?.clear();
+
             this.analyzingPage = true;
             this.startTimePageAnalysis = performance.now();
             this.pageAnalysisCanceled = false;
@@ -368,7 +370,7 @@ export default class PageAnalyzer {
             return true;
         }
 
-        this.darkThemeDetector.process(element, computedStyles, hasBackgroundImg, transparentColorDetected);
+        this.darkThemeDetector.process(element, computedStyles, hasBackgroundImg, transparentColorDetected || hasTransparentBackgroundClass);
     }
 
     elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {

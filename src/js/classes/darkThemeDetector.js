@@ -48,14 +48,15 @@ export default class DarkThemeDetector {
 
         const backgroundColor = computedStyles.backgroundColor;
 
-        const hslBackgroundColor = this.getHSLFromColor(backgroundColor);
+        const rgbValuesList = cssColorToRgbaValues(backgroundColor);
+        const hslBackgroundColor = this.getHSLFromColor(rgbValuesList);
 
-        if(!hslBackgroundColor) return;
+        if(!hslBackgroundColor || rgbValuesList[3] == 0) return;
 
         const lightnessBackgroundColor = hslBackgroundColor[2];
         const saturationBackgroundColor = hslBackgroundColor[1];
 
-        if(lightnessBackgroundColor <= this.websiteSpecialFiltersConfig.darkThemeDetectionMinLightnessLightElements
+        if(lightnessBackgroundColor <= this.websiteSpecialFiltersConfig.darkThemeDetectionMaxLightness
             && saturationBackgroundColor <= this.websiteSpecialFiltersConfig.darkThemeDetectionMaxSaturation) {
             this.darkElements++;
         } else if(lightnessBackgroundColor >= this.websiteSpecialFiltersConfig.darkThemeDetectionMinLightnessLightElements) {
@@ -65,11 +66,8 @@ export default class DarkThemeDetector {
         this.analyzedElements++;
     }
 
-    getHSLFromColor(color) {
-        const rgbValuesList = cssColorToRgbaValues(color);
-
+    getHSLFromColor(rgbValuesList) {
         if(!rgbValuesList) return null;
-
         return rgbTohsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
     }
 
@@ -114,5 +112,11 @@ export default class DarkThemeDetector {
         } else {
             this.debugLogger?.log(`PageAnalyzer - This website doesn't have a dark theme (${percentDarkElements}% of dark elements)`);
         }
+    }
+
+    clear() {
+        this.analyzedElements = 0;
+        this.darkElements = 0;
+        this.lightElements = 0;
     }
 }
