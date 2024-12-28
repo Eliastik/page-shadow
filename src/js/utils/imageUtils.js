@@ -18,6 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { regexpMatchURL } from "../constants.js";
 import { base64EncodeUnicode } from "./commonUtils.js";
+import { sendMessageWithPromise } from "../utils/browserUtils.js";
 import { isCrossOrigin, safeDecodeURIComponent } from "./urlUtils.js";
 import { addClass, removeClass } from "./cssClassUtils.js";
 import DebugLogger from "./../classes/debugLogger.js";
@@ -26,7 +27,26 @@ import DebugLogger from "./../classes/debugLogger.js";
 
 const debugLogger = new DebugLogger();
 
-function svgElementToImage(url) {
+async function fetchCorsImage(imageUrl) {
+    /* If image is from a cross origin, we fetch the image from the background script/service worker
+       to bypass CORS */
+    const response = await sendMessageWithPromise({ type: "fetchImageData", imageUrl }, "fetchImageDataResponse");
+
+    if(response && response.success) {
+        const image = new Image();
+        image.src = response.data;
+        return image;
+    }
+
+    return null;
+}
+
+async function svgElementToImage(url) {
+    if(isCrossOrigin(url)) {
+        const newImage = await fetchCorsImage(url);
+        if(newImage) return newImage;
+    }
+
     const image = new Image();
     image.src = url;
 
@@ -36,16 +56,17 @@ function svgElementToImage(url) {
 async function backgroundImageToImage(url) {
     const image = new Image();
 
+    if(isCrossOrigin(url)) {
+        const newImage = await fetchCorsImage(url);
+        if(newImage) return newImage;
+    }
+
     const imageLoadPromise = new Promise((resolve, reject) => {
         image.onload = resolve;
         image.onerror = reject;
     });
 
     image.src = url;
-
-    if (isCrossOrigin(url)) {
-        image.crossOrigin = "anonymous";
-    }
 
     await imageLoadPromise;
     await image.decode();
@@ -177,4 +198,4 @@ function getImageUrlFromSvgElement(element, computedStyles) {
     return `data:image/svg+xml;base64,${base64EncodeUnicode(`<svg xmlns="http://www.w3.org/2000/svg"${namespaceString} width="${width}" height="${height}" fill="${escapedFill}" color="${color}" stroke="${escapedStroke}">${innerHTML}</svg>`)}`;
 }
 
-export { svgElementToImage, backgroundImageToImage, getImageUrlFromElement, getImageUrlFromSvgElement };
+export { svgElementToImage, backgroundImageToImage, getImageUrlFromElement, getImageUrlFromSvgElement, fetchCorsImage };

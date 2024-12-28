@@ -17,9 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { sha256 } from "../utils/commonUtils.js";
-import { sendMessageWithPromise } from "../utils/browserUtils.js";
 import { isValidURL, isCrossOrigin } from "../utils/urlUtils.js";
-import { svgElementToImage, backgroundImageToImage, getImageUrlFromElement } from "../utils/imageUtils.js";
+import { svgElementToImage, backgroundImageToImage, getImageUrlFromElement, fetchCorsImage } from "../utils/imageUtils.js";
 import { rgbTohsl } from "../utils/colorUtils.js";
 import { maxImageSizeDarkImageDetection } from "../constants.js";
 
@@ -59,20 +58,14 @@ export default class ImageProcessor {
         }
 
         if(image instanceof HTMLImageElement && isCrossOrigin(imageUrl)) {
-            /* If image is from a cross origin, we fetch the image from the background script/service worker
-               to bypass CORS */
-            const response = await sendMessageWithPromise({ type: "fetchImageData", imageUrl }, "fetchImageDataResponse");
-
-            if(response && response.success) {
-                image = new Image();
-                image.src = response.data;
-            }
+            const newImage = await fetchCorsImage(imageUrl);
+            if(newImage) image = newImage;
         }
 
         // SVG element
         if((image instanceof SVGGraphicsElement) && image.nodeName.toLowerCase() === "svg") {
             try {
-                image = svgElementToImage(imageUrl);
+                image = await svgElementToImage(imageUrl);
             } catch(e) {
                 this.debugLogger?.log(`ImageProcessor detectDarkImage - Error converting SVG element to image - Image URL: ${imageUrl}`, "error", e);
                 await this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, false);
