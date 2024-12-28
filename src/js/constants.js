@@ -161,7 +161,7 @@ const defaultFilters = {
     "lastFailedUpdate": -1
 };
 
-const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.11.php";
+const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.11.1.php";
 const regexpDetectionPattern = /^((.*)\/(?:[^\\]|\\.)*?\/)(\|)/;
 const regexpDetectionPatternHighlight = /^(\/(?:[^\\]|\\.)*?\/)(\|)/;
 const regexpMatchURL = /url\((['"]?)(.*?)\1\)/;

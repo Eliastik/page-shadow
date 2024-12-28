@@ -191,6 +191,48 @@ function parseLabColor(labColor) {
     return { L, a, b, alpha };
 }
 
+function parseAndConvertColorFunction(cssColor) {
+    const colorRegex = /color\(([\w-]+)\s+([\d.\-e%]+)\s*([\d.\-e%]+)?\s*([\d.\-e%]+)?\s*\/?\s*([\d.]+)?\s*\)/i;
+    const match = cssColor.match(colorRegex);
+
+    if(!match) {
+        debugLogger.log(`parseAndConvertColorFunction - Failed to parse color() function: ${cssColor}`, "error");
+        return null;
+    }
+
+    const colorSpace = match[1];
+    const component1 = parseFloat(match[2]);
+    const component2 = match[3] ? parseFloat(match[3]) : 0;
+    const component3 = match[4] ? parseFloat(match[4]) : 0;
+    const alpha = match[5] ? parseFloat(match[5]) : 1;
+
+    switch (colorSpace.toLowerCase()) {
+    case "srgb":
+    case "srgb-linear":
+        return [component1 * 255, component2 * 255, component3 * 255, alpha];
+    case "display-p3":
+    case "a98-rgb":
+    case "rec2020":
+    case "prophoto-rgb":
+    case "xyz":
+    case "xyz-d50":
+    case "xyz-d65":
+        debugLogger.log(`parseAndConvertColorFunction - Unsupported color space: ${colorSpace}`, "warn");
+        return null;
+    case "lab":
+        return labToRgba([component1, component2, component3, alpha]);
+    case "lch":
+        return lchToRgba([component1, component2, component3, alpha]);
+    case "oklab":
+        return oklabToRgba([component1, component2, component3, alpha]);
+    case "oklch":
+        return oklchToRgba([component1, component2, component3, alpha]);
+    default:
+        debugLogger.log(`parseAndConvertColorFunction - Unknown color space: ${colorSpace}`, "error");
+        return null;
+    }
+}
+
 function cssColorToRgbaValues(cssColor) {
     if(!cssColor) return null;
 
@@ -235,6 +277,8 @@ function cssColorToRgbaValues(cssColor) {
             }
 
             return labToRgba([parsedLab.L, parsedLab.a, parsedLab.b, parsedLab.alpha]);
+        } else if(cssColor.trim().toLowerCase().startsWith("color")) {
+            return parseAndConvertColorFunction(cssColor);
         } else {
             debugLogger.log(`cssColorToRgbaValues - CSS color format not recognized: ${cssColor.split("(")[0]}`, "error");
         }

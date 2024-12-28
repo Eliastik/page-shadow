@@ -174,7 +174,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Auto detect website already having a dark mode to auto disable Increase contrast and Invert entire page
     * [x] Improve detection algorithm
     * [x] Detection only enabled if Invert colors, Increase contrast or Attenuate colors is enabled: fix? -> No
-    * [ ] Update filter guide for new special filters
+    * [x] Update filter guide for new special filters
 * [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
 
 #### Known issues/bugs
@@ -185,7 +185,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * Due to the path sub-element with fill = "currentcolor" and a style stating fill = "inherit"
 * [x] (Minor) OKLCH css colors are not taken into account
     * [x] Take into account other color formats
-    * [ ] Color format not recognized -> fix? https://developer.mozilla.org/fr/docs/Web/CSS/color_value/color
+    * [x] Color format not recognized -> fix? https://developer.mozilla.org/fr/docs/Web/CSS/color_value/color
 
 #### Common
 
