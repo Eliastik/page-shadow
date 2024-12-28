@@ -51,7 +51,9 @@ export default class DarkThemeDetector {
         const rgbValuesList = cssColorToRgbaValues(backgroundColor);
         const hslBackgroundColor = this.getHSLFromColor(rgbValuesList);
 
-        if(!hslBackgroundColor || rgbValuesList[3] == 0) return;
+        if(!hslBackgroundColor || (rgbValuesList && rgbValuesList.length === 4 && rgbValuesList[3] == 0)) {
+            return;
+        }
 
         const lightnessBackgroundColor = hslBackgroundColor[2];
         const saturationBackgroundColor = hslBackgroundColor[1];
