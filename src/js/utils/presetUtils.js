@@ -418,9 +418,9 @@ async function disableEnablePreset(type, nb, checked, url) {
         let disabledWebsitesNew;
 
         if(checked) {
-            websitesPagesArray.push(match);
-            websitesPagesArray = removeElementsFromArray(websitesPagesArray, "").join("\n");
-            disabledWebsitesNew = websitesPagesArray;
+            disabledWebsitesNew = removeElementsFromArray(websitesPagesArray, match);
+            disabledWebsitesNew.push(match);
+            disabledWebsitesNew = removeElementsFromArray(disabledWebsitesNew, "").join("\n");
         } else {
             disabledWebsitesNew = removeElementsFromArray(websitesPagesArray, match);
             disabledWebsitesNew = commentMatched(disabledWebsitesNew, match);
