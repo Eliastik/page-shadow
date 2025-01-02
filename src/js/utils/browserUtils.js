@@ -113,10 +113,6 @@ function isElementNotVisible(element, computedStyles) {
         return true;
     }
 
-    if(rect.top > window.innerHeight || rect.left > window.innerHeight || rect.right > window.innerHeight || rect.bottom > window.innerHeight) {
-        return true;
-    }
-
     return false;
 }
 
