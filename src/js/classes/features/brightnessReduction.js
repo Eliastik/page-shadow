@@ -22,6 +22,7 @@ export default class BrightnessReduction {
 
     elementBrightness;
     elementBrightnessWrapper;
+    runningInIframe;
 
     debugLogger;
 
@@ -31,10 +32,11 @@ export default class BrightnessReduction {
         this.debugLogger = debugLogger;
     }
 
-    setSettings(settings, elementBrightness, elementBrightnessWrapper) {
+    setSettings(settings, elementBrightness, elementBrightnessWrapper, runningInIframe) {
         this.currentSettings = settings;
         this.elementBrightness = elementBrightness;
         this.elementBrightnessWrapper = elementBrightnessWrapper;
+        this.runningInIframe = runningInIframe;
     }
 
     apply() {
