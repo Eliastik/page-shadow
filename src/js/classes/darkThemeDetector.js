@@ -26,8 +26,8 @@ import { rgbTohsl, cssColorToRgbaValues } from "../utils/colorUtils.js";
 export default class DarkThemeDetector {
 
     analyzedElements = 0;
-    darkElements = 0;
-    lightElements = 0;
+    darkElementsScore = 0;
+    lightElementsScore = 0;
 
     currentSettings;
     websiteSpecialFiltersConfig;
@@ -60,9 +60,11 @@ export default class DarkThemeDetector {
 
         if(lightnessBackgroundColor <= this.websiteSpecialFiltersConfig.darkThemeDetectionMaxLightness
             && saturationBackgroundColor <= this.websiteSpecialFiltersConfig.darkThemeDetectionMaxSaturation) {
-            this.darkElements++;
+            const rect = element.getBoundingClientRect();
+            this.darkElementsScore += (rect.width * rect.height);
         } else if(lightnessBackgroundColor >= this.websiteSpecialFiltersConfig.darkThemeDetectionMinLightnessLightElements) {
-            this.lightElements++;
+            const rect = element.getBoundingClientRect();
+            this.lightElementsScore += (rect.width * rect.height);
         }
 
         this.analyzedElements++;
@@ -78,14 +80,24 @@ export default class DarkThemeDetector {
     }
 
     getPercentDarkElements() {
-        return (this.darkElements / (this.darkElements + this.lightElements)) || 0;
+        const totalScore = this.darkElementsScore + this.lightElementsScore;
+        const totalPageArea = document.documentElement.scrollWidth * document.documentElement.scrollHeight;
+
+        if(totalScore === 0 || totalPageArea === 0) {
+            return 0;
+        }
+
+        const normalizedDarkScore = this.darkElementsScore / totalPageArea;
+        const normalizedLightScore = this.lightElementsScore / totalPageArea;
+
+        return normalizedDarkScore / (normalizedDarkScore + normalizedLightScore);
     }
 
     async executeActions() {
         const percentDarkElements = Math.round(this.getPercentDarkElements() * 100);
 
         if(this.hasDarkTheme()) {
-            this.debugLogger?.log(`PageAnalyzer - Detected this page as having a dark theme with ${percentDarkElements}% of dark elements`);
+            this.debugLogger?.log(`PageAnalyzer - Detected this page as having a dark theme with a score of ${percentDarkElements}%`);
 
             let url;
 
@@ -112,13 +124,13 @@ export default class DarkThemeDetector {
                 }
             }
         } else {
-            this.debugLogger?.log(`PageAnalyzer - This website doesn't have a dark theme (${percentDarkElements}% of dark elements)`);
+            this.debugLogger?.log(`PageAnalyzer - This website doesn't have a dark theme (${percentDarkElements}% score)`);
         }
     }
 
     clear() {
         this.analyzedElements = 0;
-        this.darkElements = 0;
-        this.lightElements = 0;
+        this.darkElementsScore = 0;
+        this.lightElementsScore = 0;
     }
 }
