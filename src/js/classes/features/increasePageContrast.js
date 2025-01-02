@@ -22,6 +22,8 @@ import ElementClassBatcher from "../elementClassBatcher.js";
 
 export default class IncreasePageContrast {
 
+    lnkCustomTheme;
+
     bodyClassBatcher;
     htmlClassBatcher;
     bodyClassBatcherRemover;
@@ -34,8 +36,9 @@ export default class IncreasePageContrast {
         this.debugLogger = debugLogger;
     }
 
-    setSettings(settings, bodyClassBatcher, htmlClassBatcher, bodyClassBatcherRemover) {
+    setSettings(settings, bodyClassBatcher, htmlClassBatcher, bodyClassBatcherRemover, lnkCustomTheme) {
         this.currentSettings = settings;
+        this.lnkCustomTheme = lnkCustomTheme;
         this.bodyClassBatcher = bodyClassBatcher;
         this.htmlClassBatcher = htmlClassBatcher;
         this.bodyClassBatcherRemover = bodyClassBatcherRemover;

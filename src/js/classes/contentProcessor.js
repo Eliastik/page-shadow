@@ -121,11 +121,11 @@ export default class ContentProcessor {
         this.brightnessReduction = this.brightnessReduction || new BrightnessReduction(this.debugLogger);
         this.bluelightReduction = this.bluelightReduction || new BluelightReduction(this.debugLogger);
 
-        this.increasePageContrast.setSettings(settings || this.currentSettings, this.bodyClassBatcher, this.htmlClassBatcher, this.bodyClassBatcherRemover);
+        this.increasePageContrast.setSettings(settings || this.currentSettings, this.bodyClassBatcher, this.htmlClassBatcher, this.bodyClassBatcherRemover, this.lnkCustomTheme);
         this.invertColor.setSettings(settings || this.currentSettings, this.bodyClassBatcher, this.htmlClassBatcher, this.bodyClassBatcherRemover, this.websiteSpecialFiltersConfig);
         this.attenuateColor.setSettings(settings || this.currentSettings, this.bodyClassBatcher, this.htmlClassBatcher, this.bodyClassBatcherRemover, this.websiteSpecialFiltersConfig);
-        this.brightnessReduction.setSettings(settings || this.currentSettings, this.elementBrightness, this.elementBrightnessWrapper);
-        this.bluelightReduction.setSettings(settings || this.currentSettings, this.elementBlueLightFilter, this.elementBrightnessWrapper);
+        this.brightnessReduction.setSettings(settings || this.currentSettings, this.elementBrightness, this.elementBrightnessWrapper, this.runningInIframe);
+        this.bluelightReduction.setSettings(settings || this.currentSettings, this.elementBlueLightFilter, this.elementBrightnessWrapper, this.runningInIframe);
     }
 
     initProcessors() {

@@ -23,6 +23,7 @@ export default class BluelightReduction {
 
     elementBlueLightFilter;
     elementBrightnessWrapper;
+    runningInIframe;
 
     debugLogger;
 
@@ -32,10 +33,11 @@ export default class BluelightReduction {
         this.debugLogger = debugLogger;
     }
 
-    setSettings(settings, elementBlueLightFilter, elementBrightnessWrapper) {
+    setSettings(settings, elementBlueLightFilter, elementBrightnessWrapper, runningInIframe) {
         this.currentSettings = settings;
         this.elementBlueLightFilter = elementBlueLightFilter;
         this.elementBrightnessWrapper = elementBrightnessWrapper;
+        this.runningInIframe = runningInIframe;
     }
 
     apply() {
