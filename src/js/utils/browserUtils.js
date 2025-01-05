@@ -57,11 +57,15 @@ function isRunningInIframe() {
 }
 
 function sendMessageWithPromise(data, ...expectedMessageType) {
+    // Random ID to filter correct responses
+    const randomId = Math.random().toString(36).substring(2);
+    data.randomId = randomId;
+
     debugLogger.log(`Sending message to background process with type: ${data.type} - expected response type: ${expectedMessageType}`, "debug", data);
 
     return new Promise(resolve => {
         const listener = message => {
-            if (message && expectedMessageType.includes(message.type)) {
+            if(message && message.randomId === randomId && expectedMessageType.includes(message.type)) {
                 resolve(message);
                 browser.runtime.onMessage.removeListener(listener);
                 debugLogger.log(`Received response ${expectedMessageType} from background process for message with data with type: ${data.type}`, "debug", message);
