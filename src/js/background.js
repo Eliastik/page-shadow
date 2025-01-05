@@ -618,6 +618,10 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
             }
         }).then(result => {
             if(typeof(browser.tabs.sendMessage) !== "undefined") {
+                // Send back random ID
+                result.randomId = message.randomId;
+
+                // Send response message to caller tab
                 browser.tabs.sendMessage(sender.tab.id, result, {
                     frameId: sender.frameId
                 }).catch(() => {
