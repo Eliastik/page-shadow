@@ -123,7 +123,7 @@
             "darkThemeDetectionMaxLightness": "Max lightness to detect an element as dark",
             "darkThemeDetectionMaxSaturation": "Max saturation to detect an element as dark",
             "darkThemeDetectionMinLightnessLightElements": "Min lightness to detect an element as light",
-            "darkThemeDetectionPercentageRationDarkLightElements": "Ration dark elements / light elements to detect a website as having a dark theme",
+            "darkThemeDetectionPercentageRationDarkLightElements": "Ratio dark elements / light elements to detect a website as having a dark theme",
             "help": {
                 "debugMode": "Enables debug mode, which displays debugging information in the JavaScript console on pages processed by Page Shadow, or on extension pages.",
                 "performanceModeEnabled": "Enable performance optimizations, this disables the analysis of webpage elements. However, filter management remains enabled.",

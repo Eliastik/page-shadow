@@ -281,7 +281,7 @@ export default class ContentProcessor {
         default:
             this.removeAllBodyBatchers();
 
-            this.increasePageContrast.apply(false);
+            await this.increasePageContrast.apply(false);
             this.invertColor.apply();
             this.attenuateColor.apply();
 
