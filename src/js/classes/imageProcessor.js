@@ -38,7 +38,7 @@ export default class ImageProcessor {
     async detectDarkImage(image, hasBackgroundImg, computedStyles, pseudoElt) {
         if(!image || !computedStyles) return false;
 
-        let imageUrl = getImageUrlFromElement(image, hasBackgroundImg, computedStyles, pseudoElt);
+        const imageUrl = getImageUrlFromElement(image, hasBackgroundImg, computedStyles, pseudoElt);
 
         if(imageUrl == null || imageUrl.trim() === "") {
             return false;
@@ -58,13 +58,15 @@ export default class ImageProcessor {
             }
         }
 
+        let isCrossOriginUrl = isCrossOrigin(imageUrl);
+
         const isRedirectedImageResponse = await sendMessageWithPromise({ type: "checkImageRedirection", imageUrl }, "checkImageRedirectionResponse");
 
-        if(isRedirectedImageResponse && isRedirectedImageResponse.redirected) {
-            imageUrl = isRedirectedImageResponse.redirectedUrl;
+        if(isRedirectedImageResponse && isRedirectedImageResponse.redirected && isCrossOrigin(isRedirectedImageResponse.redirectedUrl)) {
+            isCrossOriginUrl = true;
         }
 
-        if(image instanceof HTMLImageElement && isCrossOrigin(imageUrl)) {
+        if(image instanceof HTMLImageElement && isCrossOriginUrl) {
             const newImage = await fetchCorsImage(imageUrl);
             if(newImage) image = newImage;
         }
