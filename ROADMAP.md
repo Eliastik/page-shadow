@@ -176,6 +176,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Detection only enabled if Invert colors, Increase contrast or Attenuate colors is enabled: fix? -> No
     * [x] Update filter guide for new special filters
 * [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
+* [ ] Tests
 
 #### Known issues/bugs
 
