@@ -20,6 +20,7 @@ import { sha256 } from "../utils/commonUtils.js";
 import { isValidURL, isCrossOrigin } from "../utils/urlUtils.js";
 import { svgElementToImage, backgroundImageToImage, getImageUrlFromElement, fetchCorsImage } from "../utils/imageUtils.js";
 import { rgbTohsl } from "../utils/colorUtils.js";
+import { sendMessageWithPromise } from "../utils/browserUtils.js";
 import { maxImageSizeDarkImageDetection } from "../constants.js";
 
 export default class ImageProcessor {
@@ -37,7 +38,7 @@ export default class ImageProcessor {
     async detectDarkImage(image, hasBackgroundImg, computedStyles, pseudoElt) {
         if(!image || !computedStyles) return false;
 
-        const imageUrl = getImageUrlFromElement(image, hasBackgroundImg, computedStyles, pseudoElt);
+        let imageUrl = getImageUrlFromElement(image, hasBackgroundImg, computedStyles, pseudoElt);
 
         if(imageUrl == null || imageUrl.trim() === "") {
             return false;
@@ -55,6 +56,12 @@ export default class ImageProcessor {
                 this.debugLogger?.log(`ImageProcessor detectDarkImage - Getting memoized result for image with URL: ${imageUrl}`);
                 return this.memoizedResults.get(urlSha256);
             }
+        }
+
+        const isRedirectedImageResponse = await sendMessageWithPromise({ type: "checkImageRedirection", imageUrl }, "checkImageRedirectionResponse");
+
+        if(isRedirectedImageResponse && isRedirectedImageResponse.redirected) {
+            imageUrl = isRedirectedImageResponse.redirectedUrl;
         }
 
         if(image instanceof HTMLImageElement && isCrossOrigin(imageUrl)) {
@@ -131,6 +138,33 @@ export default class ImageProcessor {
         await this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, isDarkImage);
 
         return isDarkImage;
+    }
+
+    awaitImageLoading(image) {
+        return new Promise((resolve, reject) => {
+            if(image.complete) {
+                resolve(image);
+                return;
+            }
+
+            const onLoad = () => {
+                cleanup();
+                resolve(image);
+            };
+
+            const onError = () => {
+                cleanup();
+                reject(new Error(`Image failed to load: ${image.src}`));
+            };
+
+            const cleanup = () => {
+                image.removeEventListener("load", onLoad);
+                image.removeEventListener("error", onError);
+            };
+
+            image.addEventListener("load", onLoad);
+            image.addEventListener("error", onError);
+        });
     }
 
     getResizedDimensions(image, maxWidth, maxHeight) {
@@ -250,33 +284,6 @@ export default class ImageProcessor {
 
         return transparentPixelCount / totalPixelCount > this.websiteSpecialFiltersConfig.darkImageDetectionTransparentPixelsRatio
             && darkPixelCount / nonTransparentPixelCount > this.websiteSpecialFiltersConfig.darkImageDetectionDarkPixelsRatio;
-    }
-
-    awaitImageLoading(image) {
-        return new Promise((resolve, reject) => {
-            if(image.complete) {
-                resolve(image);
-                return;
-            }
-
-            const onLoad = () => {
-                cleanup();
-                resolve(image);
-            };
-
-            const onError = () => {
-                cleanup();
-                reject(new Error(`Image failed to load: ${image.src}`));
-            };
-
-            const cleanup = () => {
-                image.removeEventListener("load", onLoad);
-                image.removeEventListener("error", onError);
-            };
-
-            image.addEventListener("load", onLoad);
-            image.addEventListener("error", onError);
-        });
     }
 
     detectionCanBeAwaited(element) {
