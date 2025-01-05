@@ -19,6 +19,7 @@
 import { permissionOrigin } from "../constants.js";
 import DebugLogger from "./../classes/debugLogger.js";
 import browser from "webextension-polyfill";
+import { v4 as uuidv4 } from "uuid";
 
 const debugLogger = new DebugLogger();
 
@@ -57,35 +58,46 @@ function isRunningInIframe() {
 }
 
 function sendMessageWithPromise(data, ...expectedMessageType) {
-    // Random ID to filter correct responses
-    const randomId = Math.random().toString(36).substring(2);
-    data.randomId = randomId;
+    // Random UUID to filter correct responses
+    const uuid = uuidv4();
+    data.uuid = uuid;
 
     debugLogger.log(`Sending message to background process with type: ${data.type} - expected response type: ${expectedMessageType}`, "debug", data);
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
+        // Timeout if no response received after 60 seconds
+        const timeout = setTimeout(() => {
+            browser.runtime.onMessage.removeListener(listener);
+            debugLogger.log(`Timeout exceeded waiting for response from background process. Type: ${data.type} / Expected message type = ${expectedMessageType}`, "error", data);
+            reject(new Error("Timeout: No response received"));
+        }, 60000);
+
         const listener = message => {
-            if(message && message.randomId === randomId && expectedMessageType.includes(message.type)) {
+            if(message && message.uuid === uuid && expectedMessageType.includes(message.type)) {
+                clearTimeout(timeout);
                 resolve(message);
                 browser.runtime.onMessage.removeListener(listener);
                 debugLogger.log(`Received response ${expectedMessageType} from background process for message with data with type: ${data.type}`, "debug", message);
             }
         };
 
-        if(expectedMessageType) {
+        if(expectedMessageType && expectedMessageType.length > 0) {
             browser.runtime.onMessage.addListener(listener);
         }
 
-        browser.runtime.sendMessage(data).catch(() => {
+        browser.runtime.sendMessage(data).catch(err => {
             browser.runtime.onMessage.removeListener(listener);
+
             if(browser.runtime.lastError) {
-                debugLogger.log(`Error sending message to background process. Type: ${data.type} / Expected message type = ${expectedMessageType}`, "error", data);
-                return;
+                debugLogger.log(`Error sending message to background process. Type: ${data.type} / Expected message type = ${expectedMessageType}`, "error", err);
+                clearTimeout(timeout);
+                reject(browser.runtime.lastError);
             }
         });
 
-        if(!expectedMessageType) {
+        if(!expectedMessageType || expectedMessageType.length === 0) {
             browser.runtime.onMessage.removeListener(listener);
+            clearTimeout(timeout);
             resolve();
         }
     });

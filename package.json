@@ -49,6 +49,7 @@
     "jquery": "^3.7.1",
     "jquery-colpick": "^3.1.0",
     "jquery-i18next": "^1.2.1",
+    "uuid": "^11.0.4",
     "webextension-polyfill": "^0.12.0"
   }
 }
