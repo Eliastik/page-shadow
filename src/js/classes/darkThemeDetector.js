@@ -76,7 +76,7 @@ export default class DarkThemeDetector {
     }
 
     hasDarkTheme() {
-        return this.analyzedElements > 0 && this.getPercentDarkElements() >= this.websiteSpecialFiltersConfig.darkThemeDetectionPercentageRationDarkLightElements;
+        return this.analyzedElements > 0 && this.getPercentDarkElements() >= this.websiteSpecialFiltersConfig.darkThemeDetectionPercentageRatioDarkLightElements;
     }
 
     getPercentDarkElements() {

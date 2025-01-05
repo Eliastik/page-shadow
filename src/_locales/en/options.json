@@ -123,7 +123,7 @@
             "darkThemeDetectionMaxLightness": "Max lightness to detect an element as dark",
             "darkThemeDetectionMaxSaturation": "Max saturation to detect an element as dark",
             "darkThemeDetectionMinLightnessLightElements": "Min lightness to detect an element as light",
-            "darkThemeDetectionPercentageRationDarkLightElements": "Ratio dark elements / light elements to detect a website as having a dark theme",
+            "darkThemeDetectionPercentageRatioDarkLightElements": "Ratio dark elements / light elements to detect a website as having a dark theme",
             "help": {
                 "debugMode": "Enables debug mode, which displays debugging information in the JavaScript console on pages processed by Page Shadow, or on extension pages.",
                 "performanceModeEnabled": "Enable performance optimizations, this disables the analysis of webpage elements. However, filter management remains enabled.",
@@ -185,7 +185,7 @@
                 "darkThemeDetectionMaxLightness": "Defines the maximum lightness value an element must have to be considered dark. This value must be between 0 and 1 (percentage).",
                 "darkThemeDetectionMaxSaturation": "Defines the maximum saturation value an element must have to be considered dark. This value must be between 0 and 1 (percentage).",
                 "darkThemeDetectionMinLightnessLightElements": "Defines the minimum lightness value an element must have to be considered light. Elements with a lightness above this value will be considered light. This value must be between 0 and 1 (percentage).",
-                "darkThemeDetectionPercentageRationDarkLightElements": "Defines the ratio (as a percentage, between 0 and 1) of dark elements to light elements to determine if a website uses a dark theme."
+                "darkThemeDetectionPercentageRatioDarkLightElements": "Defines the ratio (as a percentage, between 0 and 1) of dark elements to light elements to determine if a website uses a dark theme."
             }
         },
         "filtersConfigCategories": {
