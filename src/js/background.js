@@ -35,6 +35,8 @@ import DebugLogger from "./classes/debugLogger.js";
 const sessionStorage = browser.storage.session ? browser.storage.session : browser.storage.local;
 const debugLogger = new DebugLogger();
 
+const globalPageShadowStyleShadowRootsCache = {};
+
 let updatingMenu = false;
 
 function setPopup() {
@@ -562,23 +564,20 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     });
                 } else if(message.type == "getGlobalPageShadowStyle" || message.type == "getGlobalShadowRootPageShadowStyle") {
                     const url = message.what == "invert" ? "/css/content_invert.css" : "/css/content.css";
-                    const globalPageShadowStyleCache = {};
-                    const globalPageShadowStyleShadowRootsCache = {};
 
-                    if(globalPageShadowStyleCache[url] && globalPageShadowStyleShadowRootsCache[url]) {
-                        resolve({ type: message.type + "Response", data: message.type == "getGlobalShadowRootPageShadowStyle" ? globalPageShadowStyleShadowRootsCache[url] : globalPageShadowStyleCache[url] });
+                    if(globalPageShadowStyleShadowRootsCache[url]) {
+                        resolve({ type: message.type + "Response", data: globalPageShadowStyleShadowRootsCache[url] });
+                    } else {
+                        fetch(url).then(response => {
+                            if(response) {
+                                response.text().then(text => {
+                                    globalPageShadowStyleShadowRootsCache[url] = processShadowRootStyle(text);
+
+                                    resolve({ type: message.type + "Response", data: globalPageShadowStyleShadowRootsCache[url] });
+                                });
+                            }
+                        });
                     }
-
-                    fetch(url).then(response => {
-                        if(response) {
-                            response.text().then(text => {
-                                globalPageShadowStyleCache[url] = processShadowRootStyle(text);
-                                globalPageShadowStyleShadowRootsCache[url] = processShadowRootStyle(text);
-
-                                resolve({ type: message.type + "Response", data: message.type == "getGlobalShadowRootPageShadowStyle" ? globalPageShadowStyleShadowRootsCache[url] : globalPageShadowStyleCache[url] });
-                            });
-                        }
-                    });
                 } else if(message.type == "getPreset") {
                     const data = presetCache.getPresetData(message.idPreset);
                     resolve({ type: "getPresetResponse", data: data });
