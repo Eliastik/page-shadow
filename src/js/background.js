@@ -606,22 +606,30 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                         response.blob().then(blob => reader.readAsDataURL(blob));
                     }).catch(error => resolve({ type: "fetchImageDataResponse", success: false, error: error.message }));
                 } else if(message.type === "checkImageRedirection") {
-                    fetch(message.imageUrl, { method: "HEAD", redirect: "follow" }).then(response => {
-                        if(response.redirected) {
-                            resolve({
-                                type: "checkImageRedirectionResponse",
-                                success: true,
-                                redirected: true,
-                                redirectedUrl: new URL(response.url).href
-                            });
-                        } else {
-                            resolve({
-                                type: "checkImageRedirectionResponse",
-                                success: true,
-                                redirected: false
-                            });
-                        }
-                    }).catch(error => resolve({ type: "checkImageRedirectionResponse", success: false, redirected: false, error: error.message }));
+                    if(message.imageUrl.trim().toLowerCase().startsWith("data:")) {
+                        resolve({
+                            type: "checkImageRedirectionResponse",
+                            success: true,
+                            redirected: false
+                        });
+                    } else {
+                        fetch(message.imageUrl, { method: "HEAD", redirect: "follow" }).then(response => {
+                            if(response.redirected) {
+                                resolve({
+                                    type: "checkImageRedirectionResponse",
+                                    success: true,
+                                    redirected: true,
+                                    redirectedUrl: new URL(response.url).href
+                                });
+                            } else {
+                                resolve({
+                                    type: "checkImageRedirectionResponse",
+                                    success: true,
+                                    redirected: false
+                                });
+                            }
+                        }).catch(error => resolve({ type: "checkImageRedirectionResponse", success: false, redirected: false, error: error.message }));
+                    }
                 }
             }
         }).then(result => {
