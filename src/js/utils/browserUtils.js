@@ -68,7 +68,7 @@ function sendMessageWithPromise(data, ...expectedMessageType) {
         // Timeout if no response received after 60 seconds
         const timeout = setTimeout(() => {
             browser.runtime.onMessage.removeListener(listener);
-            debugLogger.log(`Timeout exceeded waiting for response from background process. Type: ${data.type} / Expected message type = ${expectedMessageType}`, "error", data);
+            debugLogger.log(`Timeout of ${sendMessageWithPromiseTimeout} ms exceeded waiting for response from background process. Type: ${data.type} / Expected message type = ${expectedMessageType}`, "error", data);
             reject(new Error("Timeout: No response received"));
         }, sendMessageWithPromiseTimeout);
 
