@@ -54,6 +54,43 @@ const nbPresets = 15;
 const defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, 12: {}, 13: {}, 14: {}, 15: {}};
 const nbCustomThemesSlots = 10;
 const defaultCustomThemes = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}};
+
+const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.11.1.php";
+const regexpDetectionPattern = /^((.*)\/(?:[^\\]|\\.)*?\/)(\|)/;
+const regexpDetectionPatternHighlight = /^(\/(?:[^\\]|\\.)*?\/)(\|)/;
+const regexpMatchURL = /url\((['"]?)(.*?)\1\)/;
+const opacityDetectedAsTransparentThresholdDefault = 0.6;
+
+const ignoredElementsContentScript = ["style", "script", "br", "head", "link", "meta", "hr"];
+const ignoredElementsBrightTextColorDetection = ["img", "g", "path", "svg"];
+const failedUpdateAutoReupdateDelay = 5 * 60 * 1000; // ms
+
+// Max size used to detect dark image. If the image size is above this size, we resize the image before analyze
+const maxImageSizeDarkImageDetection = 150;
+
+// Margin used to calculate the max quota bytes per item limit in cloud backup
+const quotaBytesPerItemMargin = 100;
+
+// Max elements per batch to treat for throttled tasks
+const maxElementsPerBatch = 10000;
+
+// Margin of max execution time compared to real execution time to reduce throttling
+const throttledTaskReduceThrottleMargin = 0.8;
+
+// URL to report website problem
+const enableReportWebsiteProblem = true;
+const reportWebsiteProblemBackendURL = "https://www.eliastiksofts.com/page-shadow/report?data=";
+
+// Default settings
+const updateNotification = {};
+updateNotification[extensionVersion] = true;
+
+const defaultInterfaceDarkTheme = "auto"; // auto/on/off
+const defaultPopupTheme = "modern"; // switch/classic/modern
+
+// Timeout before receiving response when using sendMessageWithPromise method
+const sendMessageWithPromiseTimeout = 90000; // ms
+
 // Default filters object
 const defaultFilters = {
     "filters": [
@@ -161,23 +198,6 @@ const defaultFilters = {
     "lastFailedUpdate": -1
 };
 
-const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.11.1.php";
-const regexpDetectionPattern = /^((.*)\/(?:[^\\]|\\.)*?\/)(\|)/;
-const regexpDetectionPatternHighlight = /^(\/(?:[^\\]|\\.)*?\/)(\|)/;
-const regexpMatchURL = /url\((['"]?)(.*?)\1\)/;
-const opacityDetectedAsTransparentThresholdDefault = 0.6;
-
-const ignoredElementsContentScript = ["style", "script", "br", "head", "link", "meta", "hr"];
-const ignoredElementsBrightTextColorDetection = ["img", "g", "path", "svg"];
-const failedUpdateAutoReupdateDelay = 5 * 60 * 1000; // ms
-
-// Default settings
-const updateNotification = {};
-updateNotification[extensionVersion] = true;
-
-const defaultInterfaceDarkTheme = "auto"; // auto/on/off
-const defaultPopupTheme = "modern"; // switch/classic/modern
-
 const defaultSettings = {
     "pageShadowEnabled": "false",
     "theme": "1",
@@ -256,22 +276,6 @@ const permissionOrigin = [
     "https://*/*",
     "ftp://*/*"
 ];
-
-// Max size used to detect dark image. If the image size is above this size, we resize the image before analyze
-const maxImageSizeDarkImageDetection = 150;
-
-// Margin used to calculate the max quota bytes per item limit in cloud backup
-const quotaBytesPerItemMargin = 100;
-
-// Max elements per batch to treat for throttled tasks
-const maxElementsPerBatch = 10000;
-
-// Margin of max execution time compared to real execution time to reduce throttling
-const throttledTaskReduceThrottleMargin = 0.8;
-
-// URL to report website problem
-const enableReportWebsiteProblem = true;
-const reportWebsiteProblemBackendURL = "https://www.eliastiksofts.com/page-shadow/report?data=";
 
 // Filters rules
 
@@ -784,4 +788,4 @@ const websiteSpecialFiltersProcessingConfig = {
     }
 };
 
-export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, regexpDetectionPatternHighlight, ignoredElementsContentScript, failedUpdateAutoReupdateDelay, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue, archiveInfoShowInterval, defaultSettings, settingsToLoad, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, pageShadowClassListsMutationsToProcess, pageShadowClassListsMutationsToIgnore, permissionOrigin, customThemesKey, disabledWebsitesKey, whitelistKey, attenuateDefaultValue, maxImageSizeDarkImageDetection, quotaBytesPerItemMargin, mapFiltersCSSClass, ignoredElementsBrightTextColorDetection, websiteSpecialFiltersConfigThemes, maxElementsPerBatch, throttledTaskReduceThrottleMargin, websiteSpecialFiltersProcessingConfig, enableReportWebsiteProblem, reportWebsiteProblemBackendURL, pageAnalyzerCSSClasses, brightnessReductionElementId, blueLightReductionElementId, regexpMatchURL };
+export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, regexpDetectionPatternHighlight, ignoredElementsContentScript, failedUpdateAutoReupdateDelay, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue, archiveInfoShowInterval, defaultSettings, settingsToLoad, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, pageShadowClassListsMutationsToProcess, pageShadowClassListsMutationsToIgnore, permissionOrigin, customThemesKey, disabledWebsitesKey, whitelistKey, attenuateDefaultValue, maxImageSizeDarkImageDetection, quotaBytesPerItemMargin, mapFiltersCSSClass, ignoredElementsBrightTextColorDetection, websiteSpecialFiltersConfigThemes, maxElementsPerBatch, throttledTaskReduceThrottleMargin, websiteSpecialFiltersProcessingConfig, enableReportWebsiteProblem, reportWebsiteProblemBackendURL, pageAnalyzerCSSClasses, brightnessReductionElementId, blueLightReductionElementId, regexpMatchURL, sendMessageWithPromiseTimeout };
