@@ -195,6 +195,7 @@ export default class PageAnalyzer {
             this.startTimePageAnalysis = performance.now();
             this.pageAnalysisCanceled = false;
 
+            addClass(document.documentElement, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
             addClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
 
             await this.processElement(document.body, true);
@@ -214,6 +215,7 @@ export default class PageAnalyzer {
     }
 
     async runNormalPageAnalysis(elements, forceDisableThrottle) {
+        removeClass(document.documentElement, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
         removeClass(document.body, "pageShadowDisableBackgroundStyling");
 
         const elementsLength = elements.length;
@@ -254,13 +256,18 @@ export default class PageAnalyzer {
             return;
         }
 
+        removeClass(document.documentElement, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
         removeClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
+
         await this.throttledTaskAnalyzeElements.start(elements);
+
         this.setPageAnalysisFinished();
     }
 
     setPageAnalysisFinished() {
+        removeClass(document.documentElement, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
         removeClass(document.body, "pageShadowDisableBackgroundStyling", "pageShadowDisableStyling");
+
         addClass(document.body, "pageShadowBackgroundDetected");
 
         this.pageAnalysisFinished = true;
