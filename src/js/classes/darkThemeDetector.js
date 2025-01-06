@@ -21,6 +21,7 @@ import { disableEnableToggle } from "../utils/enableDisableUtils.js";
 import { getPresetData, disableEnablePreset, getPresetWithAutoEnableForDarkWebsites } from "../utils/presetUtils.js";
 import { isElementNotVisible } from "../utils/browserUtils.js";
 import { rgbTohsl, cssColorToRgbaValues } from "../utils/colorUtils.js";
+import { brightnessReductionElementId, blueLightReductionElementId } from "../constants.js";
 
 /** Class used to analyze and detect website having a dark theme */
 export default class DarkThemeDetector {
@@ -41,8 +42,7 @@ export default class DarkThemeDetector {
     }
 
     process(element, computedStyles, hasBackgroundImg, hasTransparentColor) {
-        if(!element || !computedStyles || hasBackgroundImg || hasTransparentColor
-            || isElementNotVisible(element, computedStyles)) {
+        if(this.isIgnoredElement(element, computedStyles, hasBackgroundImg, hasTransparentColor)) {
             return;
         }
 
@@ -50,29 +50,96 @@ export default class DarkThemeDetector {
 
         const rgbValuesList = cssColorToRgbaValues(backgroundColor);
         const hslBackgroundColor = this.getHSLFromColor(rgbValuesList);
+        const isBackgroundTransparent = this.isColorTransparent(rgbValuesList);
 
-        if(!hslBackgroundColor || (rgbValuesList && rgbValuesList.length === 4 && rgbValuesList[3] == 0)) {
+        if(!hslBackgroundColor || (isBackgroundTransparent && element !== document.body
+            && element !== document.documentElement)) {
             return;
         }
 
-        const lightnessBackgroundColor = hslBackgroundColor[2];
-        const saturationBackgroundColor = hslBackgroundColor[1];
+        // If the body element is transparent, we analyze the background of the HTML element
+        if(this.isBodyTransparent(element, rgbValuesList)) {
+            return this.process(document.documentElement, window.getComputedStyle(document.documentElement), false, false);
+        }
 
-        if(lightnessBackgroundColor <= this.websiteSpecialFiltersConfig.darkThemeDetectionMaxLightness
-            && saturationBackgroundColor <= this.websiteSpecialFiltersConfig.darkThemeDetectionMaxSaturation) {
-            const rect = element.getBoundingClientRect();
-            this.darkElementsScore += (rect.width * rect.height);
-        } else if(lightnessBackgroundColor >= this.websiteSpecialFiltersConfig.darkThemeDetectionMinLightnessLightElements) {
-            const rect = element.getBoundingClientRect();
-            this.lightElementsScore += (rect.width * rect.height);
+        if(this.isElementDark(element, rgbValuesList, hslBackgroundColor)) {
+            this.darkElementsScore += this.getElementSize(element);
+        } else if(this.isElementLight(element, rgbValuesList, rgbValuesList, hslBackgroundColor)) {
+            this.lightElementsScore += this.getElementSize(element);
         }
 
         this.analyzedElements++;
     }
 
+    isColorTransparent(rgbValuesList) {
+        return (rgbValuesList && rgbValuesList.length === 4 && rgbValuesList[3] == 0);
+    }
+
     getHSLFromColor(rgbValuesList) {
         if(!rgbValuesList) return null;
         return rgbTohsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
+    }
+
+    getElementSize(element) {
+        if(element === document.body || element === document.documentElement) {
+            return document.documentElement.scrollWidth * document.documentElement.scrollHeight;
+        }
+
+        const rect = element.getBoundingClientRect();
+        return rect.width * rect.height;
+    }
+
+    isIgnoredElement(element, computedStyles, hasBackgroundImg, hasTransparentColor) {
+        if(element === document.body || element === document.documentElement) {
+            return false;
+        }
+
+        if(!element || !computedStyles || hasBackgroundImg
+            || hasTransparentColor || isElementNotVisible(element, computedStyles)) {
+            return true;
+        }
+
+        return [brightnessReductionElementId, blueLightReductionElementId].includes(element.id);
+    }
+
+    isBodyTransparent(element, rgbValuesList) {
+        return element === document.body && this.isColorTransparent(rgbValuesList);
+    }
+
+    isHTMLElementTransparent(element, rgbValuesList) {
+        return element === document.documentElement && this.isColorTransparent(rgbValuesList);
+    }
+
+    isElementDark(element, rgbValuesList, hslBackgroundColor) {
+        const saturationBackgroundColor = hslBackgroundColor[1];
+        const lightnessBackgroundColor = hslBackgroundColor[2];
+
+        // If the HTML element is transparent, we consider that it have a light background
+        if(this.isHTMLElementTransparent(element, rgbValuesList)) {
+            return false;
+        }
+
+        if(lightnessBackgroundColor <= this.websiteSpecialFiltersConfig.darkThemeDetectionMaxLightness
+            && saturationBackgroundColor <= this.websiteSpecialFiltersConfig.darkThemeDetectionMaxSaturation) {
+            return true;
+        }
+
+        return false;
+    }
+
+    isElementLight(element, rgbValuesList, hslBackgroundColor) {
+        const lightnessBackgroundColor = hslBackgroundColor[2];
+
+        // If the HTML element is transparent, we consider that it have a light background
+        if(this.isHTMLElementTransparent(element, rgbValuesList)) {
+            return true;
+        }
+
+        if(lightnessBackgroundColor >= this.websiteSpecialFiltersConfig.darkThemeDetectionMinLightnessLightElements) {
+            return true;
+        }
+
+        return false;
     }
 
     hasDarkTheme() {

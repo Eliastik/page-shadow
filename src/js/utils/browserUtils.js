@@ -110,10 +110,6 @@ function checkPermissions() {
 }
 
 function isElementNotVisible(element, computedStyles) {
-    if(element === document.body) {
-        return false;
-    }
-
     if(element.checkVisibility && !element.checkVisibility()) {
         return true;
     }
@@ -125,7 +121,16 @@ function isElementNotVisible(element, computedStyles) {
 
     const rect = element.getBoundingClientRect();
 
-    if(rect.top < 0 || rect.left < 0 || rect.right < 0 || rect.bottom < 0) {
+    // Top left corner of element
+    const x1 = rect.left + window.scrollX;
+    const y1 = rect.top + window.scrollY;
+
+    // Bottom right corner of element
+    const x2 = x1 + rect.width;
+    const y2 = y1 + rect.height;
+
+    // We check if the element is outside document
+    if(x2 < 0 || y2 < 0 || x1 > document.documentElement.scrollWidth || y1 > document.documentElement.scrollHeight) {
         return true;
     }
 
