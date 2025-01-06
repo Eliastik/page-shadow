@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { permissionOrigin } from "../constants.js";
+import { permissionOrigin, sendMessageWithPromiseTimeout } from "../constants.js";
 import DebugLogger from "./../classes/debugLogger.js";
 import browser from "webextension-polyfill";
 import { v4 as uuidv4 } from "uuid";
@@ -70,7 +70,7 @@ function sendMessageWithPromise(data, ...expectedMessageType) {
             browser.runtime.onMessage.removeListener(listener);
             debugLogger.log(`Timeout exceeded waiting for response from background process. Type: ${data.type} / Expected message type = ${expectedMessageType}`, "error", data);
             reject(new Error("Timeout: No response received"));
-        }, 60000);
+        }, sendMessageWithPromiseTimeout);
 
         const listener = message => {
             if(message && message.uuid === uuid && expectedMessageType.includes(message.type)) {
