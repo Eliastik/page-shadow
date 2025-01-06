@@ -19,6 +19,7 @@
 import { removeClass, addClass, getPageAnalyzerCSSClass } from "../utils/cssClassUtils.js";
 import { loadWebsiteSpecialFiltersConfig } from "../utils/storageUtils.js";
 import { getCustomThemeConfig } from "../utils/customThemeUtils.js";
+import { elementIsImage } from "../utils/imageUtils.js";
 import { rgbTohsl, hexToRgb, cssColorToRgbaValues, extractGradientRGBValues } from "../utils/colorUtils.js";
 import { ignoredElementsContentScript, pageShadowClassListsMutationsToProcess, pageShadowClassListsMutationsToIgnore, ignoredElementsBrightTextColorDetection, defaultThemesTextColors } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
@@ -338,7 +339,7 @@ export default class PageAnalyzer {
 
         // Detect image with dark color (text, logos, etc)
         if (this.websiteSpecialFiltersConfig.enableDarkImageDetection) {
-            if(!element.classList.contains(getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt)) && this.imageProcessor.elementIsImage(element, hasBackgroundImg)) {
+            if(!element.classList.contains(getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt)) && elementIsImage(element, hasBackgroundImg)) {
                 if (this.websiteSpecialFiltersConfig.throttleDarkImageDetection) {
                     this.throttledTaskAnalyzeImages.start([{
                         image: element,
