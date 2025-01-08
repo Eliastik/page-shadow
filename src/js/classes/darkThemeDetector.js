@@ -19,7 +19,7 @@
 import { getCurrentURL } from "../utils/urlUtils.js";
 import { disableEnableToggle } from "../utils/enableDisableUtils.js";
 import { getPresetData, disableEnablePreset, getPresetWithAutoEnableForDarkWebsites } from "../utils/presetUtils.js";
-import { isElementNotVisible } from "../utils/browserUtils.js";
+import { isElementNotVisible, hasDarkColorScheme, hasLightColorScheme } from "../utils/browserUtils.js";
 import { rgbTohsl, cssColorToRgbaValues } from "../utils/colorUtils.js";
 import { brightnessReductionElementId, blueLightReductionElementId } from "../constants.js";
 
@@ -64,9 +64,9 @@ export default class DarkThemeDetector {
             return this.process(document.documentElement, window.getComputedStyle(document.documentElement), false, false);
         }
 
-        if(this.isElementDark(element, rgbValuesList, hslBackgroundColor)) {
+        if(this.isElementDark(element, computedStyles, rgbValuesList, hslBackgroundColor)) {
             this.darkElementsScore += this.getElementSize(element);
-        } else if(this.isElementLight(element, rgbValuesList, rgbValuesList, hslBackgroundColor)) {
+        } else if(this.isElementLight(element, computedStyles, rgbValuesList, hslBackgroundColor)) {
             this.lightElementsScore += this.getElementSize(element);
         }
 
@@ -128,9 +128,13 @@ export default class DarkThemeDetector {
         return element === document.documentElement && this.isColorTransparent(rgbValuesList);
     }
 
-    isElementDark(element, rgbValuesList, hslBackgroundColor) {
+    isElementDark(element, computedStyles, rgbValuesList, hslBackgroundColor) {
         const saturationBackgroundColor = hslBackgroundColor[1];
         const lightnessBackgroundColor = hslBackgroundColor[2];
+
+        if(hasDarkColorScheme(computedStyles)) {
+            return true;
+        }
 
         // If the HTML element is transparent, we consider that it have a light background
         if(this.isHTMLElementTransparent(element, rgbValuesList)) {
@@ -145,8 +149,12 @@ export default class DarkThemeDetector {
         return false;
     }
 
-    isElementLight(element, rgbValuesList, hslBackgroundColor) {
+    isElementLight(element, computedStyles, rgbValuesList, hslBackgroundColor) {
         const lightnessBackgroundColor = hslBackgroundColor[2];
+
+        if(hasLightColorScheme(computedStyles)) {
+            return true;
+        }
 
         // If the HTML element is transparent, we consider that it have a light background
         if(this.isHTMLElementTransparent(element, rgbValuesList)) {
@@ -179,13 +187,20 @@ export default class DarkThemeDetector {
     }
 
     isImageViewerPage() {
-        return Array.from(this.mapTagNames.entries()).every(([key, value]) => {
-            if(key === "img") {
-                return value <= 1;
-            }
+        let hasHtmlOrBody = false;
+        let hasOnlyOneImg = false;
 
-            return key === "html" || key === "body";
-        });
+        for(const [key, value] of this.mapTagNames) {
+            if(key === "html" || key === "body") {
+                hasHtmlOrBody = true;
+            } else if(key === "img" && value <= 1) {
+                hasOnlyOneImg = true;
+            } else {
+                return false;
+            }
+        }
+
+        return hasHtmlOrBody && hasOnlyOneImg;
     }
 
     async executeActions() {
