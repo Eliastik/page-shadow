@@ -88,8 +88,10 @@ i18next.on("languageChanged", () => {
     translateContent();
 });
 
-toggleTheme(); // Toggle dark/light theme
 initLocales();
+toggleTheme(); // Toggle dark/light theme
+
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", toggleTheme);
 
 window.addEventListener("storage", (e) => {
     if(e && e.key === "i18nextLng") {
