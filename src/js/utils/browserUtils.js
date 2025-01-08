@@ -137,6 +137,15 @@ function isElementNotVisible(element, computedStyles) {
     return false;
 }
 
+function getElementSize(element) {
+    if(element === document.body || element === document.documentElement) {
+        return document.documentElement.scrollWidth * document.documentElement.scrollHeight;
+    }
+
+    const rect = element.getBoundingClientRect();
+    return rect.width * rect.height;
+}
+
 function hasDarkColorScheme(computedStyles) {
     const isDarkModeEnabled = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
     const colorScheme = computedStyles.colorScheme;
@@ -153,4 +162,4 @@ function hasLightColorScheme(computedStyles) {
     return !isDarkModeEnabled && hasLightColorScheme;
 }
 
-export { getBrowser, isRunningInPopup, isRunningInIframe, sendMessageWithPromise, checkPermissions, isElementNotVisible, hasDarkColorScheme, hasLightColorScheme };
+export { getBrowser, isRunningInPopup, isRunningInIframe, sendMessageWithPromise, checkPermissions, isElementNotVisible, getElementSize, hasDarkColorScheme, hasLightColorScheme };

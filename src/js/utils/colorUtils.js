@@ -342,4 +342,13 @@ function extractGradientRGBValues(background) {
     return rgbaValuesLists;
 }
 
-export { rgbTohsl, hexToRgb, oklchToRgba, oklabToRgba, lchToRgba, labToRgba, parseLabColor, parseLchColor, parseOklabColor, parseOklchColor, cssColorToRgbaValues, extractGradientRGBValues, srgbToRgba, xyzD50ToRgba, xyzD65ToRgba, parseAndConvertColorFunction };
+function isColorTransparent(rgbValuesList) {
+    return (rgbValuesList && rgbValuesList.length === 4 && rgbValuesList[3] == 0);
+}
+
+function getHSLFromColor(rgbValuesList) {
+    if(!rgbValuesList) return null;
+    return rgbTohsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
+}
+
+export { rgbTohsl, hexToRgb, oklchToRgba, oklabToRgba, lchToRgba, labToRgba, parseLabColor, parseLchColor, parseOklabColor, parseOklchColor, cssColorToRgbaValues, extractGradientRGBValues, srgbToRgba, xyzD50ToRgba, xyzD65ToRgba, parseAndConvertColorFunction, isColorTransparent, getHSLFromColor };
