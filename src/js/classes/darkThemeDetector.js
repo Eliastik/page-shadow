@@ -35,6 +35,8 @@ export default class DarkThemeDetector {
 
     debugLogger;
 
+    mapTagNames = new Map();
+
     constructor(currentSettings, websiteSpecialFiltersConfig, debugLogger) {
         this.currentSettings = currentSettings;
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
@@ -68,7 +70,23 @@ export default class DarkThemeDetector {
             this.lightElementsScore += this.getElementSize(element);
         }
 
+        this.storeTagName(element);
+
         this.analyzedElements++;
+    }
+
+    storeTagName(element) {
+        if(element && element.tagName) {
+            const tagName = element.tagName.toLowerCase();
+
+            const currentCount = this.mapTagNames.get(tagName);
+
+            if(currentCount) {
+                this.mapTagNames.set(tagName, currentCount + 1);
+            } else {
+                this.mapTagNames.set(tagName, 1);
+            }
+        }
     }
 
     isColorTransparent(rgbValuesList) {
@@ -143,7 +161,7 @@ export default class DarkThemeDetector {
     }
 
     hasDarkTheme() {
-        return this.analyzedElements > 0 && this.getPercentDarkElements() >= this.websiteSpecialFiltersConfig.darkThemeDetectionPercentageRatioDarkLightElements;
+        return this.analyzedElements > 0 && this.getPercentDarkElements() >= this.websiteSpecialFiltersConfig.darkThemeDetectionPercentageRatioDarkLightElements && !this.isImageViewerPage();
     }
 
     getPercentDarkElements() {
@@ -158,6 +176,16 @@ export default class DarkThemeDetector {
         const normalizedLightScore = this.lightElementsScore / totalPageArea;
 
         return normalizedDarkScore / (normalizedDarkScore + normalizedLightScore);
+    }
+
+    isImageViewerPage() {
+        return Array.from(this.mapTagNames.entries()).every(([key, value]) => {
+            if(key === "img") {
+                return value <= 1;
+            }
+
+            return key === "html" || key === "body";
+        });
     }
 
     async executeActions() {
