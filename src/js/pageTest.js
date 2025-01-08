@@ -46,8 +46,10 @@ function translateContent() {
     $(".container").localize();
 }
 
-toggleTheme(); // Toggle dark/light theme
 initLocales();
+toggleTheme(); // Toggle dark/light theme
+
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", toggleTheme);
 
 i18next.on("languageChanged", () => {
     translateContent();

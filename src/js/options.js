@@ -134,6 +134,8 @@ function initLocales() {
 initLocales();
 toggleTheme(); // Toggle dark/light theme
 
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", toggleTheme);
+
 async function changeLng(lng) {
     await i18next.changeLanguage(lng);
 }
