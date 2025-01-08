@@ -137,4 +137,20 @@ function isElementNotVisible(element, computedStyles) {
     return false;
 }
 
-export { getBrowser, isRunningInPopup, isRunningInIframe, sendMessageWithPromise, checkPermissions, isElementNotVisible };
+function hasDarkColorScheme(computedStyles) {
+    const isDarkModeEnabled = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const colorScheme = computedStyles.colorScheme;
+    const hasDarkColorScheme = colorScheme && colorScheme.includes("dark");
+
+    return isDarkModeEnabled && hasDarkColorScheme;
+}
+
+function hasLightColorScheme(computedStyles) {
+    const isDarkModeEnabled = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const colorScheme = computedStyles.colorScheme;
+    const hasLightColorScheme = colorScheme && colorScheme.includes("light");
+
+    return !isDarkModeEnabled && hasLightColorScheme;
+}
+
+export { getBrowser, isRunningInPopup, isRunningInIframe, sendMessageWithPromise, checkPermissions, isElementNotVisible, hasDarkColorScheme, hasLightColorScheme };
