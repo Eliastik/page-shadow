@@ -19,8 +19,8 @@
 import { getCurrentURL } from "../utils/urlUtils.js";
 import { disableEnableToggle } from "../utils/enableDisableUtils.js";
 import { getPresetData, disableEnablePreset, getPresetWithAutoEnableForDarkWebsites } from "../utils/presetUtils.js";
-import { isElementNotVisible, hasDarkColorScheme, hasLightColorScheme } from "../utils/browserUtils.js";
-import { rgbTohsl, cssColorToRgbaValues } from "../utils/colorUtils.js";
+import { isElementNotVisible, hasDarkColorScheme, hasLightColorScheme, getElementSize } from "../utils/browserUtils.js";
+import { cssColorToRgbaValues, getHSLFromColor, isColorTransparent } from "../utils/colorUtils.js";
 import { brightnessReductionElementId, blueLightReductionElementId } from "../constants.js";
 
 /** Class used to analyze and detect website having a dark theme */
@@ -51,8 +51,8 @@ export default class DarkThemeDetector {
         const backgroundColor = computedStyles.backgroundColor;
 
         const rgbValuesList = cssColorToRgbaValues(backgroundColor);
-        const hslBackgroundColor = this.getHSLFromColor(rgbValuesList);
-        const isBackgroundTransparent = this.isColorTransparent(rgbValuesList);
+        const hslBackgroundColor = getHSLFromColor(rgbValuesList);
+        const isBackgroundTransparent = isColorTransparent(rgbValuesList);
 
         if(!hslBackgroundColor || (isBackgroundTransparent && element !== document.body
             && element !== document.documentElement)) {
@@ -65,9 +65,9 @@ export default class DarkThemeDetector {
         }
 
         if(this.isElementDark(element, computedStyles, rgbValuesList, hslBackgroundColor)) {
-            this.darkElementsScore += this.getElementSize(element);
+            this.darkElementsScore += getElementSize(element);
         } else if(this.isElementLight(element, computedStyles, rgbValuesList, hslBackgroundColor)) {
-            this.lightElementsScore += this.getElementSize(element);
+            this.lightElementsScore += getElementSize(element);
         }
 
         this.storeTagName(element);
@@ -89,24 +89,6 @@ export default class DarkThemeDetector {
         }
     }
 
-    isColorTransparent(rgbValuesList) {
-        return (rgbValuesList && rgbValuesList.length === 4 && rgbValuesList[3] == 0);
-    }
-
-    getHSLFromColor(rgbValuesList) {
-        if(!rgbValuesList) return null;
-        return rgbTohsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
-    }
-
-    getElementSize(element) {
-        if(element === document.body || element === document.documentElement) {
-            return document.documentElement.scrollWidth * document.documentElement.scrollHeight;
-        }
-
-        const rect = element.getBoundingClientRect();
-        return rect.width * rect.height;
-    }
-
     isIgnoredElement(element, computedStyles, hasBackgroundImg, hasTransparentColor) {
         if(element === document.body || element === document.documentElement) {
             return false;
@@ -121,18 +103,18 @@ export default class DarkThemeDetector {
     }
 
     isBodyTransparent(element, rgbValuesList) {
-        return element === document.body && this.isColorTransparent(rgbValuesList);
+        return element === document.body && isColorTransparent(rgbValuesList);
     }
 
     isHTMLElementTransparent(element, rgbValuesList) {
-        return element === document.documentElement && this.isColorTransparent(rgbValuesList);
+        return element === document.documentElement && isColorTransparent(rgbValuesList);
     }
 
     isElementDark(element, computedStyles, rgbValuesList, hslBackgroundColor) {
         const saturationBackgroundColor = hslBackgroundColor[1];
         const lightnessBackgroundColor = hslBackgroundColor[2];
 
-        if(hasDarkColorScheme(computedStyles)) {
+        if(hasDarkColorScheme(computedStyles) && isColorTransparent(rgbValuesList)) {
             return true;
         }
 
@@ -152,7 +134,7 @@ export default class DarkThemeDetector {
     isElementLight(element, computedStyles, rgbValuesList, hslBackgroundColor) {
         const lightnessBackgroundColor = hslBackgroundColor[2];
 
-        if(hasLightColorScheme(computedStyles)) {
+        if(hasLightColorScheme(computedStyles) && isColorTransparent(rgbValuesList)) {
             return true;
         }
 
