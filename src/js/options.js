@@ -33,16 +33,6 @@ import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, downloadData, convertBytes, getSizeObject } from "./utils/commonUtils.js";
-import { getBrowser, sendMessageWithPromise } from "./utils/browserUtils.js";
-import { toggleTheme, isInterfaceDarkTheme } from "./utils/uiUtils.js";
-import { getSettingsToArchive, archiveCloud, getCurrentArchiveCloud } from "./utils/archiveUtils.js";
-import { deletePreset, getPresetData, getPresetWithAutoEnableForDarkWebsites, loadPreset, loadPresetSelect, savePreset } from "./utils/presetUtils.js";
-import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes, versionDate } from "./constants.js";
-import { setSettingItem, setFirstSettings, migrateSettings, loadWebsiteSpecialFiltersConfig } from "./utils/storageUtils.js";
-import { initI18next } from "./locales.js";
-import registerCodemirrorFilterMode from "./utils/filter.codemirror.mode";
-import browser from "webextension-polyfill";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "@fortawesome/fontawesome-free/css/v4-shims.min.css";
 import "@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2";
@@ -53,6 +43,17 @@ import optionsEN from "../_locales/en/options.json";
 import optionsFR from "../_locales/fr/options.json";
 import DebugLogger from "./classes/debugLogger.js";
 import Filter from "./classes/filters.js";
+import patchColpick from "./libs/patchColpick";
+import { commentAllLines, downloadData, convertBytes, getSizeObject } from "./utils/commonUtils.js";
+import { getBrowser, sendMessageWithPromise } from "./utils/browserUtils.js";
+import { toggleTheme, isInterfaceDarkTheme } from "./utils/uiUtils.js";
+import { getSettingsToArchive, archiveCloud, getCurrentArchiveCloud } from "./utils/archiveUtils.js";
+import { deletePreset, getPresetData, getPresetWithAutoEnableForDarkWebsites, loadPreset, loadPresetSelect, savePreset } from "./utils/presetUtils.js";
+import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes, versionDate } from "./constants.js";
+import { setSettingItem, setFirstSettings, migrateSettings, loadWebsiteSpecialFiltersConfig } from "./utils/storageUtils.js";
+import { initI18next } from "./locales.js";
+import registerCodemirrorFilterMode from "./utils/filter.codemirror.mode";
+import browser from "webextension-polyfill";
 
 window.$ = $;
 window.jQuery = $;
@@ -1670,6 +1671,9 @@ async function addFilter() {
 }
 
 async function initColpick() {
+    // Patches Colpick ID generator bug
+    patchColpick($);
+
     $("#colorpicker1").colpick({
         layout: "full",
         submit: false,
@@ -1769,7 +1773,7 @@ function openTabByHash() {
     }
 }
 
-$(document).ready(async () => {
+$(async() => {
     let savedTimeout;
 
     $("#saveListButton").on("click", () => {

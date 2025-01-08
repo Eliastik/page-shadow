@@ -21,6 +21,14 @@ import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import Slider from "bootstrap-slider";
 import "bootstrap-slider/dist/css/bootstrap-slider.min.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "@fortawesome/fontawesome-free/css/v4-shims.min.css";
+import "@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2";
+import "@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2";
+import "@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2";
+import "@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2";
+import popupEN from "../_locales/en/popup.json";
+import popupFR from "../_locales/fr/popup.json";
 import { getBrowser, sendMessageWithPromise, checkPermissions } from "./utils/browserUtils.js";
 import { toggleTheme } from "./utils/uiUtils.js";
 import { normalizeURL } from "./utils/urlUtils.js";
@@ -33,14 +41,6 @@ import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, mi
 import { setSettingItem } from "./utils/storageUtils.js";
 import { initI18next } from "./locales.js";
 import browser from "webextension-polyfill";
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import "@fortawesome/fontawesome-free/css/v4-shims.min.css";
-import "@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2";
-import "@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2";
-import "@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2";
-import "@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2";
-import popupEN from "../_locales/en/popup.json";
-import popupFR from "../_locales/fr/popup.json";
 import DebugLogger from "./classes/debugLogger.js";
 
 window.$ = $;
@@ -164,7 +164,88 @@ async function checkCurrentPopupTheme() {
     }
 }
 
-$(document).ready(() => {
+async function reportWebsiteProblem() {
+    const currentURL = await getCurrentURL();
+    const settings = await browser.storage.local.get(settingsToLoad);
+
+    const dataToSend = {
+        currentURL,
+        settings
+    };
+
+    const base64dataToSend = btoa(JSON.stringify(dataToSend))
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
+
+    sendMessageWithPromise({
+        type: "openTab",
+        url: reportWebsiteProblemBackendURL + encodeURIComponent(base64dataToSend),
+        part: ""
+    });
+}
+
+async function showInformationPopup(result) {
+    const updateNotification = result.updateNotification || {};
+
+    if (updateNotification[extensionVersion] != true && result.defaultLoad == "0") {
+        let updateFromVersionBefore210 = true;
+
+        for(const version of Object.keys(updateNotification)) {
+            if(version.startsWith("2.10")) {
+                updateFromVersionBefore210 = false;
+            }
+        }
+
+        if(updateFromVersionBefore210) {
+            $("#modalUIUpdatedMessage").show();
+        } else {
+            $("#modalUIUpdatedMessage").hide();
+        }
+
+        updateNotification[extensionVersion] = true;
+        $("#updated").modal("show");
+        await setSettingItem("updateNotification", updateNotification);
+        updateNotificationShowed = true;
+        return true;
+    } else if (!updateNotificationShowed) {
+        if (!archiveInfoShowed) {
+            const archiveInfoLastShowed = !result.archiveInfoLastShowed ? 0 : result.archiveInfoLastShowed;
+
+            if (archiveInfoLastShowed > 0 && archiveInfoLastShowed + (archiveInfoShowInterval * 60 * 60 * 24 * 1000) <= Date.now() && result.archiveInfoDisable !== "true") {
+                $("#archiveInfo").modal("show");
+                await setSettingItem("archiveInfoLastShowed", Date.now());
+                archiveInfoShowed = true;
+
+                return true;
+            } else if (archiveInfoLastShowed <= 0) {
+                await setSettingItem("archiveInfoLastShowed", Date.now());
+            }
+        }
+
+        if (!autoBackupFailedShowed) {
+            const lastAutoBackupFailedLastShowed = result.lastAutoBackupFailedLastShowed === "true";
+            const hasErrorLastAutoBackup = result.lastAutoBackupFailed === "true";
+
+            if (hasErrorLastAutoBackup && !lastAutoBackupFailedLastShowed) {
+                $("#autoBackupCloudLastFailed").modal("show");
+                await setSettingItem("lastAutoBackupFailedLastShowed", "true");
+                autoBackupFailedShowed = true;
+
+                return true;
+            }
+        }
+
+        if(!archiveInfoShowed && !permissionInfoShowed && !autoBackupFailedShowed && !(await checkPermissions()) && result.permissionsInfoDisable != "true") {
+            $("#permissions").modal("show");
+            permissionInfoShowed = true;
+        }
+    }
+
+    return false;
+}
+
+$(() => {
     const elLumB = document.createElement("div");
     elLumB.style.display = "none";
     document.body.appendChild(elLumB);
@@ -1745,84 +1826,3 @@ $(document).ready(() => {
         $("#reportProblemLink").show();
     }
 });
-
-async function reportWebsiteProblem() {
-    const currentURL = await getCurrentURL();
-    const settings = await browser.storage.local.get(settingsToLoad);
-
-    const dataToSend = {
-        currentURL,
-        settings
-    };
-
-    const base64dataToSend = btoa(JSON.stringify(dataToSend))
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=+$/, "");
-
-    sendMessageWithPromise({
-        type: "openTab",
-        url: reportWebsiteProblemBackendURL + encodeURIComponent(base64dataToSend),
-        part: ""
-    });
-}
-
-async function showInformationPopup(result) {
-    const updateNotification = result.updateNotification || {};
-
-    if (updateNotification[extensionVersion] != true && result.defaultLoad == "0") {
-        let updateFromVersionBefore210 = true;
-
-        for(const version of Object.keys(updateNotification)) {
-            if(version.startsWith("2.10")) {
-                updateFromVersionBefore210 = false;
-            }
-        }
-
-        if(updateFromVersionBefore210) {
-            $("#modalUIUpdatedMessage").show();
-        } else {
-            $("#modalUIUpdatedMessage").hide();
-        }
-
-        updateNotification[extensionVersion] = true;
-        $("#updated").modal("show");
-        await setSettingItem("updateNotification", updateNotification);
-        updateNotificationShowed = true;
-        return true;
-    } else if (!updateNotificationShowed) {
-        if (!archiveInfoShowed) {
-            const archiveInfoLastShowed = !result.archiveInfoLastShowed ? 0 : result.archiveInfoLastShowed;
-
-            if (archiveInfoLastShowed > 0 && archiveInfoLastShowed + (archiveInfoShowInterval * 60 * 60 * 24 * 1000) <= Date.now() && result.archiveInfoDisable !== "true") {
-                $("#archiveInfo").modal("show");
-                await setSettingItem("archiveInfoLastShowed", Date.now());
-                archiveInfoShowed = true;
-
-                return true;
-            } else if (archiveInfoLastShowed <= 0) {
-                await setSettingItem("archiveInfoLastShowed", Date.now());
-            }
-        }
-
-        if (!autoBackupFailedShowed) {
-            const lastAutoBackupFailedLastShowed = result.lastAutoBackupFailedLastShowed === "true";
-            const hasErrorLastAutoBackup = result.lastAutoBackupFailed === "true";
-
-            if (hasErrorLastAutoBackup && !lastAutoBackupFailedLastShowed) {
-                $("#autoBackupCloudLastFailed").modal("show");
-                await setSettingItem("lastAutoBackupFailedLastShowed", "true");
-                autoBackupFailedShowed = true;
-
-                return true;
-            }
-        }
-
-        if(!archiveInfoShowed && !permissionInfoShowed && !autoBackupFailedShowed && !(await checkPermissions()) && result.permissionsInfoDisable != "true") {
-            $("#permissions").modal("show");
-            permissionInfoShowed = true;
-        }
-    }
-
-    return false;
-}
