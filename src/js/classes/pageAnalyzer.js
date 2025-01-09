@@ -20,7 +20,7 @@ import { removeClass, addClass, getPageAnalyzerCSSClass } from "../utils/cssClas
 import { loadWebsiteSpecialFiltersConfig } from "../utils/storageUtils.js";
 import { getCustomThemeConfig } from "../utils/customThemeUtils.js";
 import { elementIsImage } from "../utils/imageUtils.js";
-import { rgbTohsl, hexToRgb, cssColorToRgbaValues, extractGradientRGBValues } from "../utils/colorUtils.js";
+import { rgbTohsl, hexToRgb, cssColorToRgbaValues, extractGradientRGBValues, isColorTransparent } from "../utils/colorUtils.js";
 import { ignoredElementsContentScript, pageShadowClassListsMutationsToProcess, pageShadowClassListsMutationsToIgnore, ignoredElementsBrightTextColorDetection, defaultThemesTextColors } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
 import ImageProcessor from "./imageProcessor.js";
@@ -385,8 +385,8 @@ export default class PageAnalyzer {
         if(!backgroundColor) return true;
 
         const rgbaColor = cssColorToRgbaValues(backgroundColor);
-        const alpha = rgbaColor && rgbaColor.length === 4 ? rgbaColor[3] : -1;
-        const isTransparentColor = backgroundColor.trim().startsWith("rgba(0, 0, 0, 0)") || alpha === 0;
+        const isTransparentColor = isColorTransparent(rgbaColor);
+        const alpha = rgbaColor && rgbaColor.length === 4 ? rgbaColor[3] : 1;
 
         const hasBackgroundImageValue = this.elementHasBackgroundImageValue(backgroundImage);
         const hasNoBackgroundColorValue = backgroundColor && (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "");
