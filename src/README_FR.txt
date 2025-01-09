@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.11 (22/12/2024)
+* Version actuelle : 2.11.1 (09/01/2025)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,23 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.11.1 (09/01/2025) :
+
+* Détection automatique des thèmes sombres : Page Shadow peut désormais identifier les sites web utilisant un thème sombre. Grâce à cette fonctionnalité, vous pouvez configurer l'extension pour :
+    * Se désactiver automatiquement sur les sites ou pages avec un thème sombre ;
+    * Activer automatiquement un pré-réglage spécifique si un thème sombre est détecté.
+* Correction de bugs et améliorations techniques :
+    * Correction d’un bug où l’algorithme de détection des images sombres échouait à cause des restrictions CORS ;
+    * Correction d'un bug où certaines images étaient invisibles en activant la fonctionnalité Inverser les couleurs > Page entières sur certains sites web ;
+    * Correction d'un bug où certaines images SVG n'étaient pas détectées comme étant sombres par l'algorithme d'analyse des images ;
+    * Correction d'un bug où certains éléments colorés n'étaient pas détectés comme tels, car leur couleur était définie sur un espace de couleur spécifique (OKLCH, OKLAB, etc.) ;
+    * Correction d'un bug concernant la détection des arrière-plans transparent lorsque la couleur d'arrière-plan était définie dans un espace de couleur spécifique ;
+    * Correction d'un bug avec l'inversion sélective lorsque le parent avait un fond avec couleurs vives ;
+    * Correction d'un bug avec l'inversion sélective et les icônes SVG ;
+    * Correction d'un bug très rare où, lors de l'ouverture des paramètres de l'extension, l'éditeur de thèmes personnalisés dysfonctionnait ;
+    * Refactorisation du code : la plupart des méthodes ont été organisées dans des classes et fichiers distincts, chacun avec une responsabilité unique ;
+    * Mise à jour des dépendances.
 
 ### Version 2.11 (22/12/2024) :
 
@@ -498,7 +515,7 @@ Page Shadow est distribué sous licence GNU GPL-3.0 (voir le fichier LICENCE.txt
 
 #### Avis de licence
 
-Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2025 Eliastik (eliastiksofts.com)
 
 Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le
 modifier suivant les termes de la GNU General Public License telle que

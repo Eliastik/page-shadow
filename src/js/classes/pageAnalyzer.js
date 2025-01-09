@@ -384,13 +384,14 @@ export default class PageAnalyzer {
     elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
         if(!backgroundColor) return true;
 
-        const isRgbaColor = backgroundColor.trim().startsWith("rgba");
-        const isTransparentColor = backgroundColor.trim().startsWith("rgba(0, 0, 0, 0)");
-        const alpha = isRgbaColor ? parseFloat(backgroundColor.split(",")[3]) : -1;
+        const rgbaColor = cssColorToRgbaValues(backgroundColor);
+        const alpha = rgbaColor && rgbaColor.length === 4 ? rgbaColor[3] : -1;
+        const isTransparentColor = backgroundColor.trim().startsWith("rgba(0, 0, 0, 0)") || alpha === 0;
+
         const hasBackgroundImageValue = this.elementHasBackgroundImageValue(backgroundImage);
         const hasNoBackgroundColorValue = backgroundColor && (backgroundColor.trim().toLowerCase().indexOf("transparent") != -1 || backgroundColor.trim().toLowerCase() == "none" || backgroundColor.trim() == "");
 
-        return (hasNoBackgroundColorValue || isTransparentColor || (isRgbaColor && alpha <= this.websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasBackgroundImageValue;
+        return (hasNoBackgroundColorValue || isTransparentColor || (alpha <= this.websiteSpecialFiltersConfig.opacityDetectedAsTransparentThreshold)) && !hasBackgroundImg && !hasBackgroundImageValue;
     }
 
     elementHasBackgroundImageValue(backgroundImage) {
