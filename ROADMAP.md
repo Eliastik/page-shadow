@@ -174,7 +174,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Improve detection algorithm
     * [x] Detection only enabled if Invert colors, Increase contrast or Attenuate colors is enabled: fix? -> No
     * [x] Update filter guide for new special filters
-    * [ ] Youtube dark not detected?
+    * [x] Youtube dark not detected? => Due to performance mode
+        * Disable performance mode on release
 * [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
 * [ ] Tests + release (when releasing: update version date, update changelog (last bugfixes), compare code between MV2 and MV3 versions)
 
