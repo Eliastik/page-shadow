@@ -19,7 +19,7 @@
 import { removeClass, addClass, getPageAnalyzerCSSClass } from "../utils/cssClassUtils.js";
 import { loadWebsiteSpecialFiltersConfig } from "../utils/storageUtils.js";
 import { getCustomThemeConfig } from "../utils/customThemeUtils.js";
-import { elementIsImage } from "../utils/imageUtils.js";
+import { elementIsImage, extractSvgUseHref } from "../utils/imageUtils.js";
 import { rgbTohsl, hexToRgb, cssColorToRgbaValues, extractGradientRGBValues, isColorTransparent } from "../utils/colorUtils.js";
 import { ignoredElementsContentScript, pageShadowClassListsMutationsToProcess, pageShadowClassListsMutationsToIgnore, ignoredElementsBrightTextColorDetection, defaultThemesTextColors } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
@@ -177,6 +177,16 @@ export default class PageAnalyzer {
 
         if (isDarkImage) {
             this.multipleElementClassBatcherAdd.add(image, getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt));
+
+            const { useHref } = extractSvgUseHref(image);
+
+            for(const href of useHref) {
+                const symbol = document.querySelector(href);
+
+                if(symbol) {
+                    this.multipleElementClassBatcherAdd.add(symbol, getPageAnalyzerCSSClass("pageShadowForceBlackColor", pseudoElt));
+                }
+            }
         }
     }
 

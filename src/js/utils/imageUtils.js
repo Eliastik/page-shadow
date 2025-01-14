@@ -175,15 +175,7 @@ function getImageUrlFromSvgElement(element, computedStyles) {
         }
     }
 
-    const innerHTML = element.innerHTML.replace(/<use[^>]*href=["']([^"']+)["'][^>]*>(.*?)<\/use>/g, (_match, href) => {
-        const symbol = document.querySelector(href);
-
-        if(symbol) {
-            return symbol.innerHTML;
-        }
-
-        return "";
-    });
+    const { innerHTML } = extractSvgUseHref(element);
 
     const namespaces = [];
 
@@ -210,6 +202,23 @@ function getImageUrlFromSvgElement(element, computedStyles) {
     const escapedStroke = matchURLStroke && matchURLStroke[2] ? `url(${matchURLStroke[2]})` : stroke;
 
     return `data:image/svg+xml;base64,${base64EncodeUnicode(`<svg xmlns="http://www.w3.org/2000/svg"${namespaceString} width="${width}" height="${height}" fill="${escapedFill}" color="${color}" stroke="${escapedStroke}">${innerHTML}</svg>`)}`;
+}
+
+function extractSvgUseHref(element) {
+    const useHref = [];
+
+    const innerHTML = element.innerHTML.replace(/<use[^>]*href=["']([^"']+)["'][^>]*>(.*?)<\/use>/g, (_match, href) => {
+        const symbol = document.querySelector(href);
+
+        if (symbol) {
+            useHref.push(href);
+            return symbol.innerHTML;
+        }
+
+        return "";
+    });
+
+    return { innerHTML, useHref };
 }
 
 async function getImageFromElement(image, imageUrl, hasBackgroundImg) {
@@ -295,4 +304,4 @@ function awaitImageLoading(image) {
     });
 }
 
-export { svgElementToImage, backgroundImageToImage, getImageUrlFromElement, getImageUrlFromSvgElement, fetchCorsImage, getImageFromElement, awaitImageLoading, elementIsImage };
+export { svgElementToImage, backgroundImageToImage, getImageUrlFromElement, getImageUrlFromSvgElement, fetchCorsImage, getImageFromElement, awaitImageLoading, elementIsImage, extractSvgUseHref };

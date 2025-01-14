@@ -330,7 +330,10 @@ body.pageShadowEnableSelectiveInvert *:not(.pageShadowDisableElementInvert) > .p
     color: black;
 }
 
-svg.pageShadowForceBlackColor, svg.pageShadowForceBlackColor * {
+body.pageShadowEnableSelectiveInvert svg.pageShadowForceBlackColor,
+body.pageShadowEnableSelectiveInvert svg.pageShadowForceBlackColor *,
+body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor,
+body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor * {
     color: black !important;
 }
 
