@@ -191,7 +191,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Minor) Bug when selective invert of an element which have a parent with bright color, and increase contrast enabled
 * [x] (Minor) Still CORS error due to URL redirects. Example: https://web.dev/blog/color-spaces-and-functions?hl=fr - fix?
 * [x] (Very minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed => Colpick bug
-* [ ] (Medium) Still some bugs with selective invert SVG - example francetvinfo website/tutorial teacher
+* [x] (Medium) Still some bugs with selective invert SVG - example francetvinfo website/tutorial teacher
 
 #### Common
 
