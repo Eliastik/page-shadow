@@ -175,7 +175,16 @@ function getImageUrlFromSvgElement(element, computedStyles) {
         }
     }
 
-    const innerHTML = element.innerHTML;
+    const innerHTML = element.innerHTML.replace(/<use[^>]*href=["']([^"']+)["'][^>]*>(.*?)<\/use>/g, (_match, href) => {
+        const symbol = document.querySelector(href);
+
+        if(symbol) {
+            return symbol.innerHTML;
+        }
+
+        return "";
+    });
+
     const namespaces = [];
 
     if(innerHTML.includes("xlink:")) {
