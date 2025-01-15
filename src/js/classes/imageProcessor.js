@@ -39,7 +39,7 @@ export default class ImageProcessor {
             return false;
         }
 
-        const imageUrl = getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseudoElt);
+        const imageUrl = await getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseudoElt);
 
         if(imageUrl == null || imageUrl.trim() === "") {
             return false;

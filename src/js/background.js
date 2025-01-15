@@ -579,6 +579,10 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     const data = settingsCache.data;
                     resolve({ type: "getSettingsResponse", data: data });
                 } else if(message.type === "fetchImageData") {
+                    if(!message || !message.imageUrl) {
+                        resolve({ type: "fetchImageDataResponse", success: false });
+                    }
+
                     fetch(message.imageUrl, { mode: "cors" }).then(response => {
                         const reader = new FileReader();
 
@@ -597,6 +601,10 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                         response.blob().then(blob => reader.readAsDataURL(blob));
                     }).catch(error => resolve({ type: "fetchImageDataResponse", success: false, error: error.message }));
                 } else if(message.type === "checkImageRedirection") {
+                    if(!message || !message.imageUrl) {
+                        resolve({ type: "checkImageRedirectionResponse", success: false, redirected: false });
+                    }
+
                     if(message.imageUrl.trim().toLowerCase().startsWith("data:")) {
                         resolve({
                             type: "checkImageRedirectionResponse",
