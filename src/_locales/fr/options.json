@@ -28,7 +28,7 @@
         "filters": "Filtres",
         "save": "Sauvegarder",
         "autoDisableDarkThemedWebsite": "Désactiver automatiquement Page Shadow sur les pages ou sites ayant un thème sombre",
-        "titleAutoDisableDarkThemedWebsite": "Si Page Shadow détecte qu'un site web ou qu'une page web a un thème sombre, l'extension sera désactivée automatiquement pour ce site/page. Cette option ne fonctionne pas si vous avez activé l'option Liste blanche."
+        "titleAutoDisableDarkThemedWebsite": "Si Page Shadow détecte qu'un site web ou qu'une page web a un thème sombre, l'extension sera désactivée automatiquement pour ce site/page. Cette option ne fonctionne pas si vous avez activé l'option Liste blanche. Ne fonctionne que si les options Augmenter le contraste, Inverser les couleurs et/ou Atténuer les couleurs sont appliquées pour le site ou la page, car le moteur d'analyse n'est pas activé dans les autres cas pour des raisons de performance."
     },
     "tabTitles": {
         "general": "Général",
@@ -407,7 +407,7 @@
             "website": "sur les sites web",
             "webpage": "sur les pages web", 
             "checkAutoEnablePresetForDarkWebsitesPart2": "ayant un thème sombre",
-            "checkAutoEnablePresetForDarkWebsitesTitle": "Si Page Shadow détecte qu'un site web/page web a un thème sombre, ce pré-réglage sera automatiquement activé. Ne peut être activé que sur un pré-réglage à la fois."
+            "checkAutoEnablePresetForDarkWebsitesTitle": "Si Page Shadow détecte qu'un site web/page web a un thème sombre, ce pré-réglage sera automatiquement activé. Ne peut être activé que sur un pré-réglage à la fois. Ne fonctionne que si les options Augmenter le contraste, Inverser les couleurs et/ou Atténuer les couleurs sont appliquées pour le site ou la page, car le moteur d'analyse n'est pas activé dans les autres cas pour des raisons de performance."
         },
         "presets": {
             "pageShadowEnabled": "Augmenter le contraste :",

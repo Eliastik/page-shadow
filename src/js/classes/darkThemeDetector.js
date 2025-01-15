@@ -23,7 +23,7 @@ import { isElementNotVisible, hasDarkColorScheme, hasLightColorScheme, getElemen
 import { cssColorToRgbaValues, getHSLFromColor, isColorTransparent } from "../utils/colorUtils.js";
 import { brightnessReductionElementId, blueLightReductionElementId } from "../constants.js";
 
-/** Class used to analyze and detect website having a dark theme */
+/** Class used to analyze and detect websites having a dark theme */
 export default class DarkThemeDetector {
 
     analyzedElements = 0;
@@ -200,7 +200,7 @@ export default class DarkThemeDetector {
                 return;
             }
 
-            if(this.currentSettings.autoDisableDarkThemedWebsite == "true") {
+            if(this.currentSettings.autoDisableDarkThemedWebsite == "true" && this.currentSettings.whiteList != "true") {
                 const type = this.currentSettings.autoDisableDarkThemedWebsiteType;
                 await disableEnableToggle(type === "webpage" ? "disable-webpage" : "disable-website", true, url);
             }

@@ -207,12 +207,17 @@ function getImageUrlFromSvgElement(element, computedStyles) {
 function extractSvgUseHref(element) {
     const useHref = [];
 
-    const innerHTML = element.innerHTML.replace(/<use[^>]*href=["']([^"']+)["'][^>]*>(.*?)<\/use>/g, (_match, href) => {
-        const symbol = document.querySelector(href);
+    const innerHTML = element.innerHTML.replace(/<use[^>]*href=["']([^"']+)["'][^>]*>(.*?)<\/use>/g, (match, href) => {
+        try {
+            const symbol = document.querySelector(href);
 
-        if (symbol) {
-            useHref.push(href);
-            return symbol.innerHTML;
+            if(symbol) {
+                useHref.push(href);
+                return symbol.innerHTML;
+            }
+        // eslint-disable-next-line no-unused-vars
+        } catch(e) {
+            return match;
         }
 
         return "";
