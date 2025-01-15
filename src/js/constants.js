@@ -331,6 +331,10 @@ const pageAnalyzerCSSClasses = {
     pageShadowBrightColorForceCustomTextLinkColor: {
         normal: "pageShadowBrightColorForceCustomTextLinkColor",
         pseudoElt: "pageShadowPseudoElementBrightColorForceCustomTextLinkColor"
+    },
+    pageShadowForceBlackColor: {
+        normal: "pageShadowForceBlackColor",
+        pseudoElt: "pageShadowForceBlackColor"
     }
 };
 

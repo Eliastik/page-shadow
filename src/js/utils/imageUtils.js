@@ -20,7 +20,7 @@ import { regexpMatchURL } from "../constants.js";
 import { base64EncodeUnicode } from "./commonUtils.js";
 import { sendMessageWithPromise } from "../utils/browserUtils.js";
 import { isCrossOrigin, safeDecodeURIComponent } from "./urlUtils.js";
-import { addClass, removeClass } from "./cssClassUtils.js";
+import { addClass, removeClass, getPageAnalyzerCSSClass } from "./cssClassUtils.js";
 import DebugLogger from "./../classes/debugLogger.js";
 
 /** Utils function used by the image processor (dark image detection) */
@@ -79,19 +79,13 @@ async function backgroundImageToImage(url) {
     return image;
 }
 
-async function getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseudoElt) {
+function getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseudoElt) {
     if(element instanceof HTMLImageElement) {
         return element.src;
     }
 
     if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
-        addClass(element, "pageShadowForceBlackColor");
-
-        const svgUrl = await getImageUrlFromSvgElement(element, window.getComputedStyle(element));
-
-        removeClass(element, "pageShadowForceBlackColor");
-
-        return svgUrl;
+        return getImageUrlFromSvgElement(element, pseudoElt);
     }
 
     if(!(element instanceof HTMLImageElement) && !(element instanceof SVGImageElement) && hasBackgroundImg) {
@@ -146,13 +140,17 @@ function getImageUrlFromBackground(element, computedStyles, pseudoElt) {
             return null;
         }
 
-        return getImageUrlFromSvgElement(svgElement, computedStyles);
+        return getImageUrlFromSvgElement(svgElement, pseudoElt, computedStyles);
     }
 
     return url;
 }
 
-async function getImageUrlFromSvgElement(element, computedStyles) {
+async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles) {
+    addClass(element, getPageAnalyzerCSSClass("pageShadowForceBlackColor", pseudoElt));
+
+    computedStyles = computedStyles || window.getComputedStyle(element);
+
     const box = element && element.getBBox && element.getBBox();
     const width = box && box.width > 0 ? box.width : 100;
     const height = box && box.height > 0 ? box.height : 100;
@@ -178,6 +176,8 @@ async function getImageUrlFromSvgElement(element, computedStyles) {
             }
         }
     }
+
+    removeClass(element, getPageAnalyzerCSSClass("pageShadowForceBlackColor", pseudoElt));
 
     const { innerHTML } = await extractSvgUseHref(element, true);
 
@@ -208,8 +208,8 @@ async function getImageUrlFromSvgElement(element, computedStyles) {
     return `data:image/svg+xml;base64,${base64EncodeUnicode(`<svg xmlns="http://www.w3.org/2000/svg"${namespaceString} width="${width}" height="${height}" fill="${escapedFill}" color="${color}" stroke="${escapedStroke}">${innerHTML}</svg>`)}`;
 }
 
-async function extractSvgUseHref(element, fetch) {
-    const useHref = [];
+async function extractSvgUseHref(element, fetchHref) {
+    const useHrefs = [];
 
     let innerHTML = element.innerHTML;
 
@@ -220,27 +220,29 @@ async function extractSvgUseHref(element, fetch) {
         const href = match[1];
 
         try {
+            // Fetch symbol based on CSS selector from href attribute
             const symbol = document.querySelector(href);
 
             if(symbol) {
-                useHref.push(href);
+                useHrefs.push(href);
                 innerHTML = innerHTML.replace(value, symbol.innerHTML);
             }
         // eslint-disable-next-line no-unused-vars
         } catch(e) {
+            // Fetch image based on user href URL
             const baseUrl = window.location.origin;
 
             try {
                 const newUrl = new URL(href, baseUrl).href;
 
-                if(fetch) {
-                    const fetchedImage = await fetchCorsImage(newUrl);
+                let fetchedImage = null;
 
-                    if(fetchedImage) {
-                        innerHTML = innerHTML.replace(value, value.replace(href, fetchedImage.src));
-                    } else {
-                        innerHTML = innerHTML.replace(value, value.replace(href, newUrl));
-                    }
+                if(fetchHref) {
+                    fetchedImage = await fetchCorsImage(newUrl);
+                }
+
+                if(fetchedImage) {
+                    innerHTML = innerHTML.replace(value, value.replace(href, fetchedImage.src));
                 } else {
                     innerHTML = innerHTML.replace(value, value.replace(href, newUrl));
                 }
@@ -250,7 +252,7 @@ async function extractSvgUseHref(element, fetch) {
         }
     }
 
-    return { innerHTML, useHref };
+    return { innerHTML, useHrefs };
 }
 
 async function getImageFromElement(image, imageUrl, hasBackgroundImg) {
