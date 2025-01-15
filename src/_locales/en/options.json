@@ -31,7 +31,7 @@
         "filters": "Filters",
         "save": "Save",
         "autoDisableDarkThemedWebsite": "Automatically disable Page Shadow on webpages or websites with a dark theme",
-        "titleAutoDisableDarkThemedWebsite": "If Page Shadow detects that a website or webpage has a dark theme, the extension will be disabled automatically for this website/webpage. This option doesn't work if you have enabled the Whitelist option."
+        "titleAutoDisableDarkThemedWebsite": "If Page Shadow detects that a website or webpage has a dark theme, the extension will be disabled automatically for this website/webpage. This option doesn't work if you have enabled the Whitelist option. It only works if the options Increase contrast, Invert colors, and/or Attenaute colors are applied for the website or webpage, as the analysis engine is not activated in other cases for performance reasons."
     },
     "tabTitles": {
         "general": "General",
@@ -411,7 +411,7 @@
             "website": "on websites",
             "webpage": "on webpages", 
             "checkAutoEnablePresetForDarkWebsitesPart2": "having a dark theme",
-            "checkAutoEnablePresetForDarkWebsitesTitle": "If Page Shadow detects that a website/webpage has a dark theme, this preset will be automatically enabled. Can only be enabled on one preset at a time."
+            "checkAutoEnablePresetForDarkWebsitesTitle": "If Page Shadow detects that a website/webpage has a dark theme, this preset will be automatically enabled. Can only be enabled on one preset at a time. It only works if the options Increase contrast, Invert colors, and/or Attenaute colors are applied for the website or webpage, as the analysis engine is not activated in other cases for performance reasons."
         },
         "presets": {
             "pageShadowEnabled": "Increase contrast:",
