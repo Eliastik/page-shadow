@@ -108,7 +108,7 @@ function getImageUrlFromBackground(element, computedStyles, pseudoElt) {
     const url = objectData || (urlMatch ? urlMatch[2] : null);
 
     if(url && url.trim().toLowerCase().startsWith("data:image/svg+xml")) {
-        const regexMatchSVGData = /^data:image\/svg\+xml(;(charset=)?([a-zA-Z0-9-]+))?(;base64)?,/;
+        const regexMatchSVGData = /^data:image\/svg\+xml(;(charset=)?([a-zA-Z0-9-\s]+))?(;base64)?,/;
         const match = regexMatchSVGData.exec(url.trim());
 
         if(!match) {
@@ -179,7 +179,7 @@ async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles) {
 
     removeClass(element, getPageAnalyzerCSSClass("pageShadowForceBlackColor", pseudoElt));
 
-    const { innerHTML } = await extractSvgUseHref(element, true);
+    const { innerHTML } = await extractSvgUseHref(element, false);
 
     const namespaces = [];
 
@@ -242,6 +242,7 @@ async function extractSvgUseHref(element, fetchHref) {
                 }
 
                 if(fetchedImage) {
+                    // TODO keep anchor (#test)
                     innerHTML = innerHTML.replace(value, value.replace(href, fetchedImage.src));
                 } else {
                     innerHTML = innerHTML.replace(value, value.replace(href, newUrl));

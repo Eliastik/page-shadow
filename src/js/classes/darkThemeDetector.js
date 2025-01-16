@@ -21,6 +21,7 @@ import { disableEnableToggle } from "../utils/enableDisableUtils.js";
 import { getPresetData, disableEnablePreset, getPresetWithAutoEnableForDarkWebsites } from "../utils/presetUtils.js";
 import { isElementNotVisible, hasDarkColorScheme, hasLightColorScheme, getElementSize } from "../utils/browserUtils.js";
 import { cssColorToRgbaValues, getHSLFromColor, isColorTransparent } from "../utils/colorUtils.js";
+import { getGlobalSettings } from "../utils/settingsUtils.js";
 import { brightnessReductionElementId, blueLightReductionElementId } from "../constants.js";
 
 /** Class used to analyze and detect websites having a dark theme */
@@ -30,15 +31,13 @@ export default class DarkThemeDetector {
     darkElementsScore = 0;
     lightElementsScore = 0;
 
-    currentSettings;
     websiteSpecialFiltersConfig;
 
     debugLogger;
 
     mapTagNames = new Map();
 
-    constructor(currentSettings, websiteSpecialFiltersConfig, debugLogger) {
-        this.currentSettings = currentSettings;
+    constructor(websiteSpecialFiltersConfig, debugLogger) {
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
         this.debugLogger = debugLogger;
     }
@@ -194,14 +193,16 @@ export default class DarkThemeDetector {
             let url;
 
             try {
-                url = new URL(await getCurrentURL());
+                url = new URL(getCurrentURL());
             } catch(e) {
                 this.debugLogger?.log(e, "error");
                 return;
             }
 
-            if(this.currentSettings.autoDisableDarkThemedWebsite == "true" && this.currentSettings.whiteList != "true") {
-                const type = this.currentSettings.autoDisableDarkThemedWebsiteType;
+            const settings = await getGlobalSettings();
+
+            if(settings.autoDisableDarkThemedWebsite == "true" && settings.whiteList != "true") {
+                const type = settings.autoDisableDarkThemedWebsiteType;
                 await disableEnableToggle(type === "webpage" ? "disable-webpage" : "disable-website", true, url);
             }
 

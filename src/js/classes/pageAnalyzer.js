@@ -67,7 +67,7 @@ export default class PageAnalyzer {
         this.debugLogger = debugLogger;
         this.imageProcessor = new ImageProcessor(this.debugLogger, websiteSpecialFiltersConfig);
         this.shadowDomProcessor = new ShadowDomProcessor(currentSettings, websiteSpecialFiltersConfig, isEnabled);
-        this.darkThemeDetector = new DarkThemeDetector(currentSettings, websiteSpecialFiltersConfig, debugLogger);
+        this.darkThemeDetector = new DarkThemeDetector(websiteSpecialFiltersConfig, debugLogger);
 
         this.shadowDomProcessor.analyzeSubElementsCallback = async (currentElement) => {
             if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {

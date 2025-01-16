@@ -34,7 +34,7 @@ export default [...compat.extends("eslint:recommended"), {
 
     rules: {
         indent: ["error", 4],
-        "linebreak-style": ["error", "unix"],
+        "linebreak-style": ["off", "unix"],
         quotes: ["error", "double"],
         semi: ["error", "always"],
         "no-var": ["error"],
