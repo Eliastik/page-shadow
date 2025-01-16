@@ -189,7 +189,7 @@ async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles) {
 
     removeClass(element, getPageAnalyzerCSSClass("pageShadowForceBlackColor", pseudoElt));
 
-    const { innerHTML } = await extractSvgUseHref(element, true);
+    const { innerHTML } = await extractSvgUseHref(element, true); // TODO Disable fetch ?
 
     const namespaces = [];
 
