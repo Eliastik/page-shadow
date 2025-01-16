@@ -41,10 +41,28 @@ function fillSettings(defaultSettings, newSettings) {
     }
 }
 
-async function getSettings(url, disableCache, settingsData, allPresetData) {
+async function getGlobalSettings(disableCache, settingsData) {
     const settings = getDefaultSettingsToLoad();
-    let loadGlobalSettings = true;
 
+    let newSettings = {};
+
+    if(settingsData) {
+        newSettings = settingsData;
+    } else if(!disableCache) {
+        const settingsResponse = await sendMessageWithPromise({ "type": "getSettings" }, "getSettingsResponse");
+        newSettings = settingsResponse.data;
+    } else {
+        newSettings = await browser.storage.local.get(settingsToLoad);
+    }
+
+    fillSettings(settings, newSettings);
+
+    migrateDeprecatedSettings(settings);
+
+    return settings;
+}
+
+async function getPresetSettings(url, disableCache, allPresetData) {
     // Automatically enable preset ?
     let presetsEnabled;
 
@@ -58,51 +76,51 @@ async function getSettings(url, disableCache, settingsData, allPresetData) {
         const presetEnabled = getPriorityPresetEnabledForWebsite(presetsEnabled);
 
         if(presetEnabled && presetEnabled.presetNb > 0) {
+            const settings = getDefaultSettingsToLoad();
             const presetData = presetEnabled.presetData;
+
             fillSettings(settings, presetData);
-            loadGlobalSettings = false;
+
+            migrateDeprecatedSettings(settings);
+
+            return settings;
         }
     }
 
-    // Else, load the global settings
-    if(loadGlobalSettings) {
-        let newSettings = {};
+    return null;
+}
 
-        if(settingsData) {
-            newSettings = settingsData;
-        } else if(!disableCache) {
-            const settingsResponse = await sendMessageWithPromise({ "type": "getSettings" }, "getSettingsResponse");
-            newSettings = settingsResponse.data;
-        } else {
-            newSettings = await browser.storage.local.get(settingsToLoad);
-        }
+async function getSettings(url, disableCache, settingsData, allPresetData) {
+    const presetData = await getPresetSettings(url, disableCache, allPresetData);
 
-        fillSettings(settings, newSettings);
+    if(presetData) {
+        return presetData;
     }
 
-    // Migrate deprecated/old settings
-    if(settings.colorInvert == "true") {
+    return getGlobalSettings(disableCache, settingsData);
+}
+
+function migrateDeprecatedSettings(settings) {
+    if (settings.colorInvert == "true") {
         settings.colorInvert = "true";
         settings.invertImageColors = "true";
-    } else if(settings.invertPageColors == "true") {
+    } else if (settings.invertPageColors == "true") {
         settings.colorInvert = "true";
     } else {
         settings.colorInvert = "false";
     }
 
-    if(settings.attenuateImageColor == "true") {
+    if (settings.attenuateImageColor == "true") {
         settings.attenuateColors = "true";
         settings.attenuateImgColors = "true";
         settings.attenuateBgColors = "true";
     }
 
-    if(settings.nightModeEnabled == "true" && settings.pageLumEnabled == "true") {
+    if (settings.nightModeEnabled == "true" && settings.pageLumEnabled == "true") {
         settings.blueLightReductionEnabled = "true";
         settings.percentageBlueLightReduction = settings.pourcentageLum;
         settings.nightModeEnabled = "false";
     }
-
-    return settings;
 }
 
 function hasSettingsChanged(currentSettings, newSettings, customThemeChanged) {
@@ -120,4 +138,4 @@ function hasSettingsChanged(currentSettings, newSettings, customThemeChanged) {
     return false;
 }
 
-export { getDefaultSettingsToLoad, fillSettings, getSettings, hasSettingsChanged };
+export { getDefaultSettingsToLoad, fillSettings, getSettings, hasSettingsChanged, getGlobalSettings };
