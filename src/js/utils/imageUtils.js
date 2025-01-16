@@ -108,42 +108,52 @@ function getImageUrlFromBackground(element, computedStyles, pseudoElt) {
     const url = objectData || (urlMatch ? urlMatch[2] : null);
 
     if(url && url.trim().toLowerCase().startsWith("data:image/svg+xml")) {
-        const regexMatchSVGData = /^data:image\/svg\+xml(;(charset=)?([a-zA-Z0-9-\s]+))?(;base64)?,/;
-        const match = regexMatchSVGData.exec(url.trim());
+        const svgElement = extractSvgFromDataUrl(url, element);
 
-        if(!match) {
-            debugLogger.log(`Invalid data URI format: ${url}`, "error", element);
-            return null;
+        if(svgElement) {
+            return getImageUrlFromSvgElement(svgElement, pseudoElt, computedStyles);
         }
 
-        let decodedURL = url.trim().replace(regexMatchSVGData, "");
-
-        // If the SVG contains base64 data
-        if((match[3] && match[3].toLowerCase() === "base64")
-                || (match[4] && match[4].toLowerCase() === ";base64")) {
-            try {
-                decodedURL = atob(safeDecodeURIComponent(decodedURL));
-            } catch(e) {
-                debugLogger.log(`Error decoding base64 data for URL: ${url}`, "error", e);
-                return null;
-            }
-        }
-
-        const svgData = safeDecodeURIComponent(decodedURL.replace(/\\"/g, "\""));
-        const svgDoc = new DOMParser().parseFromString(svgData, "image/svg+xml");
-        const svgElement = svgDoc.documentElement;
-
-        const errorNode = svgDoc.querySelector("parsererror");
-
-        if(errorNode) {
-            debugLogger.log(`Error parsing SVG from URL: ${url}`, "error", element);
-            return null;
-        }
-
-        return getImageUrlFromSvgElement(svgElement, pseudoElt, computedStyles);
+        return null;
     }
 
     return url;
+}
+
+function extractSvgFromDataUrl(url, element) {
+    const regexMatchSVGData = /^data:image\/svg\+xml(;(charset=)?([a-zA-Z0-9-\s]+))?(;base64)?,/;
+    const match = regexMatchSVGData.exec(url.trim());
+
+    if(!match) {
+        debugLogger.log(`Invalid data URI format: ${url}`, "error", element);
+        return null;
+    }
+
+    let decodedURL = url.trim().replace(regexMatchSVGData, "");
+
+    // If the SVG contains base64 data
+    if((match[3] && match[3].toLowerCase() === "base64")
+                || (match[4] && match[4].toLowerCase() === ";base64")) {
+        try {
+            decodedURL = atob(safeDecodeURIComponent(decodedURL));
+        } catch(e) {
+            debugLogger.log(`Error decoding base64 data for URL: ${url}`, "error", e);
+            return null;
+        }
+    }
+
+    const svgData = safeDecodeURIComponent(decodedURL.replace(/\\"/g, "\""));
+    const svgDoc = new DOMParser().parseFromString(svgData, "image/svg+xml");
+    const svgElement = svgDoc.documentElement;
+
+    const errorNode = svgDoc.querySelector("parsererror");
+
+    if(errorNode) {
+        debugLogger.log(`Error parsing SVG from URL: ${url}`, "error", element);
+        return null;
+    }
+
+    return svgElement;
 }
 
 async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles) {
@@ -179,7 +189,7 @@ async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles) {
 
     removeClass(element, getPageAnalyzerCSSClass("pageShadowForceBlackColor", pseudoElt));
 
-    const { innerHTML } = await extractSvgUseHref(element, false);
+    const { innerHTML } = await extractSvgUseHref(element, true);
 
     const namespaces = [];
 
@@ -229,31 +239,62 @@ async function extractSvgUseHref(element, fetchHref) {
             }
         // eslint-disable-next-line no-unused-vars
         } catch(e) {
-            // Fetch image based on user href URL
-            const baseUrl = window.location.origin;
+            const { url, svgElement } = await fetchSvgFromUsehref(href, fetchHref);
 
-            try {
-                const newUrl = new URL(href, baseUrl).href;
-
-                let fetchedImage = null;
-
-                if(fetchHref) {
-                    fetchedImage = await fetchCorsImage(newUrl);
-                }
-
-                if(fetchedImage) {
-                    // TODO keep anchor (#test)
-                    innerHTML = innerHTML.replace(value, value.replace(href, fetchedImage.src));
-                } else {
-                    innerHTML = innerHTML.replace(value, value.replace(href, newUrl));
-                }
-            } catch (e) {
-                debugLogger.log(`extractSvgUseHref - Error when parsing URL ${href} from use element`, "error", e);
+            if(svgElement) {
+                innerHTML = innerHTML.replace(value, svgElement.innerHTML);
+            } else if(url) {
+                innerHTML.replace(value, value.replace(href, url));
             }
         }
     }
 
     return { innerHTML, useHrefs };
+}
+
+async function fetchSvgFromUsehref(href, fetchHref) {
+    // Fetch image based on use element href URL
+    const baseUrl = window.location.origin;
+
+    try {
+        const newUrl = new URL(href, baseUrl);
+
+        if(fetchHref) {
+            const fetchedImage = await fetchCorsImage(newUrl.href);
+
+            if(fetchedImage) {
+                const svgElement = extractSvgFromDataUrl(fetchedImage.src, fetchedImage);
+
+                if(svgElement) {
+                    const anchorId = newUrl.hash ? newUrl.hash : null;
+
+                    if(anchorId) {
+                        return {
+                            url: newUrl.href,
+                            svgElement: await extractSvgUseHref(svgElement.querySelector(anchorId), false)
+                        };
+                    }
+
+                    return {
+                        url: newUrl.href,
+                        svgElement: await extractSvgUseHref(svgElement, false)
+                    };
+                }
+            }
+        }
+
+        return {
+            url: newUrl.href,
+            svgElement: null
+        };
+    } catch (e) {
+        debugLogger.log(`extractSvgUseHref - Error when parsing or fetching URL ${href} from use element`, "error", e);
+    }
+
+    return {
+        url: null,
+        svgElement: null
+    };
 }
 
 async function getImageFromElement(image, imageUrl, hasBackgroundImg) {
@@ -339,4 +380,4 @@ function awaitImageLoading(image) {
     });
 }
 
-export { svgElementToImage, backgroundImageToImage, getImageUrlFromElement, getImageUrlFromSvgElement, fetchCorsImage, getImageFromElement, awaitImageLoading, elementIsImage, extractSvgUseHref, getImageUrlFromBackground };
+export { svgElementToImage, backgroundImageToImage, getImageUrlFromElement, getImageUrlFromSvgElement, fetchCorsImage, getImageFromElement, awaitImageLoading, elementIsImage, extractSvgUseHref, getImageUrlFromBackground, extractSvgFromDataUrl };

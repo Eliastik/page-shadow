@@ -56,13 +56,12 @@ async function getGlobalSettings(disableCache, settingsData) {
     }
 
     fillSettings(settings, newSettings);
-
     migrateDeprecatedSettings(settings);
 
     return settings;
 }
 
-async function getPresetSettings(url, disableCache, allPresetData) {
+async function getSettingsFromPresets(url, disableCache, allPresetData) {
     // Automatically enable preset ?
     let presetsEnabled;
 
@@ -80,7 +79,6 @@ async function getPresetSettings(url, disableCache, allPresetData) {
             const presetData = presetEnabled.presetData;
 
             fillSettings(settings, presetData);
-
             migrateDeprecatedSettings(settings);
 
             return settings;
@@ -91,7 +89,7 @@ async function getPresetSettings(url, disableCache, allPresetData) {
 }
 
 async function getSettings(url, disableCache, settingsData, allPresetData) {
-    const presetData = await getPresetSettings(url, disableCache, allPresetData);
+    const presetData = await getSettingsFromPresets(url, disableCache, allPresetData);
 
     if(presetData) {
         return presetData;
@@ -138,4 +136,4 @@ function hasSettingsChanged(currentSettings, newSettings, customThemeChanged) {
     return false;
 }
 
-export { getDefaultSettingsToLoad, fillSettings, getSettings, hasSettingsChanged, getGlobalSettings };
+export { getDefaultSettingsToLoad, fillSettings, getSettings, hasSettingsChanged, getGlobalSettings, getSettingsFromPresets };
