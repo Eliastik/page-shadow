@@ -79,23 +79,23 @@ async function backgroundImageToImage(url) {
     return image;
 }
 
-function getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseudoElt) {
+function getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseudoElt, fetchUseHref) {
     if(element instanceof HTMLImageElement) {
         return element.src;
     }
 
     if((element instanceof SVGGraphicsElement) && element.nodeName.toLowerCase() === "svg") {
-        return getImageUrlFromSvgElement(element, pseudoElt);
+        return getImageUrlFromSvgElement(element, pseudoElt, null, fetchUseHref);
     }
 
     if(!(element instanceof HTMLImageElement) && !(element instanceof SVGImageElement) && hasBackgroundImg) {
-        return getImageUrlFromBackground(element, computedStyles, pseudoElt);
+        return getImageUrlFromBackground(element, computedStyles, pseudoElt, fetchUseHref);
     }
 
     return null;
 }
 
-function getImageUrlFromBackground(element, computedStyles, pseudoElt) {
+function getImageUrlFromBackground(element, computedStyles, pseudoElt, fetchUseHref) {
     const style = element.currentStyle || computedStyles;
 
     const styleContent = pseudoElt && computedStyles.content && computedStyles.content.match(regexpMatchURL);
@@ -111,7 +111,7 @@ function getImageUrlFromBackground(element, computedStyles, pseudoElt) {
         const svgElement = extractSvgFromDataUrl(url, element);
 
         if(svgElement) {
-            return getImageUrlFromSvgElement(svgElement, pseudoElt, computedStyles);
+            return getImageUrlFromSvgElement(svgElement, pseudoElt, computedStyles, fetchUseHref);
         }
 
         return null;
@@ -156,7 +156,7 @@ function extractSvgFromDataUrl(url, element) {
     return svgElement;
 }
 
-async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles) {
+async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles, fetchUseHref) {
     addClass(element, getPageAnalyzerCSSClass("pageShadowForceBlackColor", pseudoElt));
 
     computedStyles = computedStyles || window.getComputedStyle(element);
@@ -189,7 +189,7 @@ async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles) {
 
     removeClass(element, getPageAnalyzerCSSClass("pageShadowForceBlackColor", pseudoElt));
 
-    const { innerHTML } = await extractSvgUseHref(element, true); // TODO Disable fetch ?
+    const { innerHTML } = await extractSvgUseHref(element, fetchUseHref);
 
     const namespaces = [];
 

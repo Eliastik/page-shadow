@@ -31,6 +31,10 @@ export default class ImageProcessor {
 
     constructor(debugLogger, websiteSpecialFiltersConfig) {
         this.debugLogger = debugLogger;
+        this.setSettings(websiteSpecialFiltersConfig);
+    }
+
+    setSettings(websiteSpecialFiltersConfig) {
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
     }
 
@@ -39,7 +43,7 @@ export default class ImageProcessor {
             return false;
         }
 
-        const imageUrl = await getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseudoElt);
+        const imageUrl = await getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseudoElt, this.websiteSpecialFiltersConfig.darkImageDetectionEnableFetchUseHref);
 
         if(imageUrl == null || imageUrl.trim() === "") {
             return false;

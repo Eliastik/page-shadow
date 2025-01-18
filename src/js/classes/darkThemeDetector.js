@@ -38,8 +38,13 @@ export default class DarkThemeDetector {
     mapTagNames = new Map();
 
     constructor(websiteSpecialFiltersConfig, debugLogger) {
-        this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
         this.debugLogger = debugLogger;
+        this.setSettings(null, websiteSpecialFiltersConfig);
+    }
+
+    setSettings(currentSettings, websiteSpecialFiltersConfig) {
+        this.currentSettings = currentSettings;
+        this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
     }
 
     process(element, computedStyles, hasBackgroundImg, hasTransparentColor) {

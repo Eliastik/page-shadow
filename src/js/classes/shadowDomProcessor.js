@@ -35,11 +35,18 @@ export default class ShadowDomProcessor {
     analyzeSubElementsCallback = async (currentElement) => {};
 
     constructor(currentSettings, websiteSpecialFiltersConfig, isEnabled) {
+        this.setSettings(currentSettings, websiteSpecialFiltersConfig, isEnabled);
+        this.initializeThrottledTasks();
+    }
+
+    setSettings(currentSettings, websiteSpecialFiltersConfig, isEnabled) {
         this.currentSettings = currentSettings;
         this.isEnabled = isEnabled;
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
 
-        this.initializeThrottledTasks();
+        if(this.throttledTaskAnalyzeSubchildsShadowRoot) {
+            this.throttledTaskAnalyzeSubchildsShadowRoot.setSettings(this.websiteSpecialFiltersConfig);
+        }
     }
 
     initializeThrottledTasks() {

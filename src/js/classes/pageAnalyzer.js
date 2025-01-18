@@ -89,42 +89,27 @@ export default class PageAnalyzer {
         this.isEnabled = isEnabled;
 
         if(this.imageProcessor) {
-            this.imageProcessor.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
+            this.imageProcessor.setSettings(websiteSpecialFiltersConfig);
         }
 
         if(this.shadowDomProcessor) {
-            this.shadowDomProcessor.currentSettings = currentSettings;
-            this.shadowDomProcessor.isEnabled = isEnabled;
-            this.shadowDomProcessor.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
-
-            if(this.shadowDomProcessor.throttledTaskAnalyzeSubchildsShadowRoot) {
-                this.shadowDomProcessor.throttledTaskAnalyzeSubchildsShadowRoot.delay = this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds;
-                this.shadowDomProcessor.throttledTaskAnalyzeSubchildsShadowRoot.elementsPerBatch = this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall;
-                this.shadowDomProcessor.throttledTaskAnalyzeSubchildsShadowRoot.maxExecutionTime = this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime;
-            }
+            this.shadowDomProcessor.setSettings(currentSettings, websiteSpecialFiltersConfig, isEnabled);
         }
 
         if(this.darkThemeDetector) {
-            this.darkThemeDetector.currentSettings = currentSettings;
-            this.darkThemeDetector.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
+            this.darkThemeDetector.setSettings(currentSettings, websiteSpecialFiltersConfig);
         }
 
         if(this.throttledTaskAnalyzeElements) {
-            this.throttledTaskAnalyzeElements.delay = this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay;
-            this.throttledTaskAnalyzeElements.elementsPerBatch = this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall;
-            this.throttledTaskAnalyzeElements.maxExecutionTime = this.websiteSpecialFiltersConfig.throttleBackgroundDetectionMaxExecutionTime;
+            this.throttledTaskAnalyzeElements.setSettings(this.websiteSpecialFiltersConfig);
         }
 
         if(this.throttledTaskAnalyzeSubchilds) {
-            this.throttledTaskAnalyzeSubchilds.delay = this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds;
-            this.throttledTaskAnalyzeSubchilds.elementsPerBatch = this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall;
-            this.throttledTaskAnalyzeSubchilds.maxExecutionTime = this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime;
+            this.throttledTaskAnalyzeSubchilds.setSettings(this.websiteSpecialFiltersConfig);
         }
 
         if(this.throttledTaskAnalyzeImages) {
-            this.throttledTaskAnalyzeImages.delay = this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay;
-            this.throttledTaskAnalyzeImages.elementsPerBatch = this.websiteSpecialFiltersConfig.throttleDarkImageDetectionBatchSize;
-            this.throttledTaskAnalyzeImages.maxExecutionTime = this.websiteSpecialFiltersConfig.throttleDarkImageDetectionMaxExecutionTime;
+            this.throttledTaskAnalyzeImages.setSettings(this.websiteSpecialFiltersConfig);
         }
 
         if(this.currentSettings && this.currentSettings.theme && this.currentSettings.pageShadowEnabled == "true") {
