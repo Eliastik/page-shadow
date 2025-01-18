@@ -121,6 +121,7 @@
             "darkThemeDetectionMaxSaturation": "Saturation maximale pour détecter un élément comme sombre",
             "darkThemeDetectionMinLightnessLightElements": "Luminosité minimale pour détecter un élément comme clair",
             "darkThemeDetectionPercentageRatioDarkLightElements": "Ratio éléments sombres / éléments clairs pour détecter qu'un site a un thème sombre",
+            "darkImageDetectionEnableFetchUseHref": "Activer la récupération des SVG référencés par les balises HTML use",
             "help": {
                 "debugMode": "Active le mode de débogage qui affiche des informations de débogage dans la console JavaScript sur les pages traitées par Page Shadow, ou sur les pages de l'extension.",
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive l'analyse des éléments des pages web. Cependant, la gestion des filtres reste activée.",
@@ -182,7 +183,8 @@
                 "darkThemeDetectionMaxLightness": "Définit la valeur maximale de luminosité qu'un élément doit avoir pour être considéré comme sombre. Cette valeur doit être comprise entre 0 et 1 (pourcentage).",
                 "darkThemeDetectionMaxSaturation": "Définit la saturation maximale qu'un élément doit avoir pour être considéré comme sombre. Cette valeur doit être comprise entre 0 et 1 (pourcentage).",
                 "darkThemeDetectionMinLightnessLightElements": "Définit la luminosité minimale qu'un élément doit avoir pour être considéré comme clair. Les éléments dont la luminosité est supérieure à cette valeur seront considérés comme clairs. Cette valeur doit être comprise entre 0 et 1 (pourcentage).",
-                "darkThemeDetectionPercentageRatioDarkLightElements": "Définit le ratio (en pourcentage, entre 0 et 1) entre les éléments sombres et clairs pour déterminer si un site web utilise un thème sombre."
+                "darkThemeDetectionPercentageRatioDarkLightElements": "Définit le ratio (en pourcentage, entre 0 et 1) entre les éléments sombres et clairs pour déterminer si un site web utilise un thème sombre.",
+                "darkImageDetectionEnableFetchUseHref": "Si cette option est activée, Page Shadow effectuera une requête vers le fichier SVG référencé par une balise HTML use. Cela peut permettre d'analyser certaines images SVG supplémentaires."
             }
         },
         "filtersConfigCategories": {
