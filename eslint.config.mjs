@@ -86,6 +86,9 @@ export default [...compat.extends("eslint:recommended"), {
         "prefer-rest-params": "warn",
         "prefer-spread": "warn",
         "no-unneeded-ternary": "warn",
-        "no-promise-executor-return": "error"
+        "no-promise-executor-return": "error",
+        "no-mixed-operators": ["warn", { "groups": [["&&", "||"]] }],
+        "array-bracket-spacing": ["error", "never"],
+        "no-prototype-builtins": "error"
     },
 }];
