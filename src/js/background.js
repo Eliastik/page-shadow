@@ -24,7 +24,7 @@ import { getAutoEnableSavedData, checkAutoEnableStartup, isAutoEnable } from "./
 import { archiveCloud } from "./utils/archiveUtils.js";
 import { presetsEnabled, loadPreset } from "./utils/presetUtils.js";
 import { processShadowRootStyle } from "./utils/shadowDomUtils.js";
-import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay } from "./constants.js";
+import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay, wordToNumberMap } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings, checkChangedStorageData } from "./utils/storageUtils.js";
 import FilterProcessor from "./classes/filters.js";
 import browser from "webextension-polyfill";
@@ -692,8 +692,7 @@ if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.o
 
 if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand) !== "undefined") {
     browser.commands.onCommand.addListener(async command => {
-        switch(command) {
-        case "enableDisable": {
+        if(command === "enableDisable") {
             const result = await browser.storage.local.get("globallyEnable");
 
             if(result.globallyEnable == "false") {
@@ -701,53 +700,15 @@ if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand
             } else {
                 await setSettingItem("globallyEnable", "false");
             }
-            break;
-        }
-        case "enablePresetOne":
-            loadPreset(1);
-            break;
-        case "enablePresetTwo":
-            loadPreset(2);
-            break;
-        case "enablePresetThree":
-            loadPreset(3);
-            break;
-        case "enablePresetFour":
-            loadPreset(4);
-            break;
-        case "enablePresetFive":
-            loadPreset(5);
-            break;
-        case "enablePresetSix":
-            loadPreset(6);
-            break;
-        case "enablePresetSeven":
-            loadPreset(7);
-            break;
-        case "enablePresetEight":
-            loadPreset(8);
-            break;
-        case "enablePresetNine":
-            loadPreset(9);
-            break;
-        case "enablePresetTen":
-            loadPreset(10);
-            break;
-        case "enablePresetEleven":
-            loadPreset(11);
-            break;
-        case "enablePresetTwelve":
-            loadPreset(12);
-            break;
-        case "enablePresetThirteen":
-            loadPreset(13);
-            break;
-        case "enablePresetFourteen":
-            loadPreset(14);
-            break;
-        case "enablePresetFifteen":
-            loadPreset(15);
-            break;
+        } else if(command && command.startsWith("enablePreset")) {
+            const presetWord = command.replace("enablePreset", "").toLowerCase();
+            const presetNumber = wordToNumberMap[presetWord];
+
+            if(presetNumber) {
+                loadPreset(presetNumber);
+            } else {
+                debugLogger.log(`Unknown preset from command: ${command}`, "warn");
+            }
         }
     });
 }
