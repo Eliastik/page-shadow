@@ -85,8 +85,6 @@ async function archiveCloud() {
                 debugLogger.log(e, "error");
                 throw new Error("standard");
             }
-
-            return;
         } catch(e) {
             debugLogger.log(e, "error");
             throw new Error(e.message);

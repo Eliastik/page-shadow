@@ -69,7 +69,7 @@ export default class PageAnalyzer {
         this.shadowDomProcessor = new ShadowDomProcessor(currentSettings, websiteSpecialFiltersConfig, isEnabled);
         this.darkThemeDetector = new DarkThemeDetector(websiteSpecialFiltersConfig, debugLogger);
 
-        this.shadowDomProcessor.analyzeSubElementsCallback = async (currentElement) => {
+        this.shadowDomProcessor.analyzeSubElementsCallback = async currentElement => {
             if(!this.websiteSpecialFiltersConfig.performanceModeEnabled) {
                 await this.analyzeElementChildrens(currentElement);
             }

@@ -63,7 +63,7 @@ function oklabToRgba(oklab) {
     const B = rgbFromXyz[2] / 255;
 
     // Linear RGB to sRGB
-    const toSrgb = (c) =>
+    const toSrgb = c =>
         c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
 
     const r = Math.min(1, Math.max(0, toSrgb(R))) * 255;
@@ -106,7 +106,7 @@ function labToRgba(lab) {
     const B = rgbFromXyz[2] / 255;
 
     // Gamma correction
-    const gamma = (value) => value <= 0.0031308 ? value * 12.92 : 1.055 * Math.pow(value, 1 / 2.4) - 0.055;
+    const gamma = value => value <= 0.0031308 ? value * 12.92 : 1.055 * Math.pow(value, 1 / 2.4) - 0.055;
 
     const rGamma = gamma(R);
     const gGamma = gamma(G);

@@ -97,7 +97,7 @@ toggleTheme(); // Toggle dark/light theme
 
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", toggleTheme);
 
-window.addEventListener("storage", (e) => {
+window.addEventListener("storage", e => {
     if(e && e.key === "i18nextLng") {
         initLocales();
     }
@@ -1614,7 +1614,7 @@ $(() => {
 
         $("#infoPreset").addClass("show");
 
-        $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", (e) => {
+        $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", e => {
             if(e.originalEvent.animationName === "fadeout") {
                 $("#infoPreset").removeClass("show");
             }
@@ -1637,7 +1637,7 @@ $(() => {
 
             $("#infoPreset").addClass("show");
 
-            $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", (e) => {
+            $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", e => {
                 if(e.originalEvent.animationName === "fadeout") {
                     $("#infoPreset").removeClass("show");
                 }
@@ -1694,7 +1694,7 @@ $(() => {
         $("#createPresetModal").modal("hide");
         $("#infoPreset").addClass("show");
 
-        $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", (e) => {
+        $("#infoPreset").on("animationend webkitAnimationEnd mozAnimationEnd oAnimationEnd msAnimationEnd", e => {
             if(e.originalEvent.animationName === "fadeout") {
                 $("#infoPreset").removeClass("show");
             }
@@ -1705,7 +1705,7 @@ $(() => {
         await createPreset();
     });
 
-    $("#createPresetModalTitle").on("keyup", (e) => {
+    $("#createPresetModalTitle").on("keyup", e => {
         if(e.key === "Enter") {
             createPreset();
         }

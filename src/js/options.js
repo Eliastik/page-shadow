@@ -1396,7 +1396,7 @@ function restoreSettingsFile(event) {
 
     if (typeof FileReader !== "undefined") {
         const reader = new FileReader();
-        reader.onload = async(readerEvent) => {
+        reader.onload = async readerEvent => {
             let obj;
 
             try {
@@ -2061,7 +2061,7 @@ $(async() => {
         createPreset();
     });
 
-    $("#savePresetTitle").on("keyup", (e) => {
+    $("#savePresetTitle").on("keyup", e => {
         if(e.key === "Enter") {
             createPreset();
         }
@@ -2113,7 +2113,7 @@ $(async() => {
         addFilter();
     });
 
-    $("#filterAddress").on("keyup", (e) => {
+    $("#filterAddress").on("keyup", e => {
         if(e.key === "Enter") {
             addFilter();
         }
