@@ -148,7 +148,7 @@ async function getCurrentArchiveCloud() {
 
             if(Array.isArray(valueChunks)) {
                 const sortedIndices = Object.keys(valueChunks).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
-                const type = restoredData[key][0].type;
+                const { type } = restoredData[key][0];
 
                 if(type === "string") {
                     restoredData[key] = sortedIndices.map(index => valueChunks[index].data).join("");
@@ -190,12 +190,14 @@ function chunkString(key, str, type) {
 function chunkValue(key, value) {
     if(typeof value === "string") {
         return ["string", chunkString(key, value, "string")];
-    } else if(typeof value === "object") {
+    }
+
+    if(typeof value === "object") {
         const valueString = JSON.stringify(value);
         return ["object", chunkString(key, valueString, "object")];
-    } else {
-        throw new Error("Unsupported data type");
     }
+
+    throw new Error("Unsupported data type");
 }
 
 function lengthInUtf8Bytes(str) {

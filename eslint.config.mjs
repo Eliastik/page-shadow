@@ -65,6 +65,9 @@ export default [...compat.extends("eslint:recommended"), {
         "no-new-func": ["error"],
         "no-buffer-constructor": ["error"],
         "no-shadow": ["warn"],
-        "prefer-destructuring": ["warn", { "object": true, "array": false }]
+        "prefer-destructuring": ["warn", { "object": true, "array": false }],
+        "object-shorthand": ["error", "always"],
+        "no-unused-expressions": ["error"],
+        "no-else-return": ["error", { "allowElseIf": false }]
     },
 }];

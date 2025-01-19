@@ -52,7 +52,7 @@ export default class DarkThemeDetector {
             return;
         }
 
-        const backgroundColor = computedStyles.backgroundColor;
+        const { backgroundColor } = computedStyles;
 
         const rgbValuesList = cssColorToRgbaValues(backgroundColor);
         const hslBackgroundColor = getHSLFromColor(rgbValuesList);

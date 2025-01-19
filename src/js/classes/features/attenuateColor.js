@@ -43,17 +43,11 @@ export default class AttenuateColor {
     }
 
     apply() {
-        const attenuateImgColors = this.currentSettings.attenuateImgColors;
-        const attenuateBgColors = this.currentSettings.attenuateBgColors;
-        const attenuateVideoColors = this.currentSettings.attenuateVideoColors;
-        const attenuateBrightColors = this.currentSettings.attenuateBrightColors;
-
-        const invertEntirePage = this.currentSettings.invertEntirePage;
-        const selectiveInvert = this.currentSettings.selectiveInvert;
+        const { attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors, invertEntirePage, selectiveInvert } = this.currentSettings;
 
         const invertPageVariables = getInvertPageVariablesKeyValues(invertEntirePage, selectiveInvert, this.websiteSpecialFiltersConfig.enableSelectiveInvertPreserveColors);
 
-        let percentageAttenuateColors = this.currentSettings.percentageAttenuateColors;
+        let { percentageAttenuateColors } = this.currentSettings;
 
         if(percentageAttenuateColors / 100 > 1 || percentageAttenuateColors / 100 < 0 || typeof percentageAttenuateColors === "undefined" || percentageAttenuateColors == null) {
             percentageAttenuateColors = attenuateDefaultValue;

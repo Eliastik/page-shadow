@@ -66,10 +66,10 @@ function inArrayWebsite(needle, haystack) {
 async function disableEnableToggle(type, checked, url) {
     const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
 
+    const { hostname, href } = url;
+
     let disabledWebsites = "";
-    const domain = url.hostname;
-    const href = url.href;
-    let match = domain;
+    let match = hostname;
     let disabledWebsitesArray;
 
     if(result.sitesInterditPageShadow == undefined && result.sitesInterditPageShadow !== "") {
@@ -81,7 +81,7 @@ async function disableEnableToggle(type, checked, url) {
 
     switch(type) {
     case "disable-website":
-        match = domain;
+        match = hostname;
         break;
     case "disable-webpage":
         match = href;

@@ -43,12 +43,7 @@ export default class InvertColor {
     }
 
     apply() {
-        const invertImageColors = this.currentSettings.invertImageColors;
-        const invertEntirePage = this.currentSettings.invertEntirePage;
-        const invertVideoColors = this.currentSettings.invertVideoColors;
-        const invertBgColors = this.currentSettings.invertBgColor;
-        const selectiveInvert = this.currentSettings.selectiveInvert;
-        const invertBrightColors = this.currentSettings.invertBrightColors;
+        const { invertImageColors, invertEntirePage, invertVideoColors, invertBgColor, selectiveInvert, invertBrightColors } = this.currentSettings;
 
         const invertPageVariables = getInvertPageVariablesKeyValues(invertEntirePage, selectiveInvert, this.websiteSpecialFiltersConfig.enableSelectiveInvertPreserveColors);
 
@@ -57,7 +52,7 @@ export default class InvertColor {
         }
 
         if(this.currentSettings.colorInvert === "true") {
-            this.debugLogger?.log(`Applying invert color with settings : invertImageColors = ${invertImageColors} / invertEntirePage = ${invertEntirePage} / invertVideoColors = ${invertVideoColors} / invertBgColors = ${invertBgColors} / selectiveInvert = ${selectiveInvert} / invertBrightColors = ${invertBrightColors}`);
+            this.debugLogger?.log(`Applying invert color with settings : invertImageColors = ${invertImageColors} / invertEntirePage = ${invertEntirePage} / invertVideoColors = ${invertVideoColors} / invertBgColors = ${invertBgColor} / selectiveInvert = ${selectiveInvert} / invertBrightColors = ${invertBrightColors}`);
 
             if(invertEntirePage === "true") {
                 this.htmlClassBatcher.add("pageShadowInvertEntirePage", "pageShadowBackground");
@@ -68,7 +63,7 @@ export default class InvertColor {
                     this.bodyClassBatcher.add("pageShadowInvertImageColor");
                 }
 
-                if(invertBgColors === "true") {
+                if(invertBgColor === "true") {
                     this.bodyClassBatcherRemover.add("pageShadowInvertBgColor");
                 } else {
                     this.bodyClassBatcher.add("pageShadowInvertBgColor");
@@ -100,7 +95,7 @@ export default class InvertColor {
                     this.bodyClassBatcherRemover.add("pageShadowInvertImageColor");
                 }
 
-                if(invertBgColors !== "false") {
+                if(invertBgColor !== "false") {
                     this.bodyClassBatcher.add("pageShadowInvertBgColor");
                 } else {
                     this.bodyClassBatcherRemover.add("pageShadowInvertBgColor");

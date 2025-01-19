@@ -104,8 +104,7 @@ export default class ImageProcessor {
     }
 
     getResizedDimensions(image, maxWidth, maxHeight) {
-        const width = image.width;
-        const height = image.height;
+        const { width, height } = image;
 
         let newWidth = width;
         let newHeight = height;
@@ -133,7 +132,7 @@ export default class ImageProcessor {
             }
 
             const imgData = ctx.getImageData(0, 0, width, height);
-            const data = imgData.data;
+            const { data } = imgData;
 
             let totalDarkPixels = 0;
             let totalTransparentPixels = 0;

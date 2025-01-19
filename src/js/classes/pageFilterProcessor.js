@@ -56,7 +56,7 @@ export default class PageFilterProcessor {
             return;
         }
 
-        const enableNotMatchingFiltersDetection = this.websiteSpecialFiltersConfig.enableNotMatchingFiltersDetection;
+        const { enableNotMatchingFiltersDetection } = this.websiteSpecialFiltersConfig;
 
         for(const filter of this.filtersCache) {
             const selector = filter.filter;

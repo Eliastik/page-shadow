@@ -356,7 +356,7 @@ export default class MutationObserverProcessor {
             }
 
             this.mutationObserverBody = new MutationObserverWrapper(mutations => {
-                const classList = document.body.classList;
+                const { classList } = document.body;
 
                 let reApplyContrast = false;
                 let reApplyInvert = false;

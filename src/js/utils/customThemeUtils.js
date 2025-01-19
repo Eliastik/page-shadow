@@ -66,6 +66,7 @@ async function getCustomThemeConfig(nb, customThemesSettings) {
     }
 
     if(customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
+        // eslint-disable-next-line prefer-destructuring
         customCSSCode = customThemes["customCSSCode"];
     } else {
         customCSSCode = "";

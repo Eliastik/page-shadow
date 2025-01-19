@@ -76,7 +76,7 @@ async function getSettingsFromPresets(url, disableCache, allPresetData) {
 
         if(presetEnabled && presetEnabled.presetNb > 0) {
             const settings = getDefaultSettingsToLoad();
-            const presetData = presetEnabled.presetData;
+            const { presetData } = presetEnabled;
 
             fillSettings(settings, presetData);
             migrateDeprecatedSettings(settings);

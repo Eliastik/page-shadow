@@ -44,8 +44,7 @@ export default class BluelightReduction {
         this.elementBlueLightFilter.setAttribute("class", "");
 
         if(this.currentSettings.blueLightReductionEnabled == "true" && !this.runningInIframe && this.elementBlueLightFilter) {
-            const percentage = this.currentSettings.percentageBlueLightReduction;
-            const colorTemp = this.currentSettings.colorTemp;
+            const { percentageBlueLightReduction, colorTemp } = this.currentSettings;
 
             this.debugLogger?.log("Applying blue light reduction");
 
@@ -61,10 +60,11 @@ export default class BluelightReduction {
                     this.elementBlueLightFilter.setAttribute("class", "k2000");
                 }
 
-                if(percentage / 100 > maxBrightnessPercentage || percentage / 100 < minBrightnessPercentage || typeof percentage === "undefined" || percentage == null) {
+                if(percentageBlueLightReduction / 100 > maxBrightnessPercentage || percentageBlueLightReduction / 100 < minBrightnessPercentage
+                    || typeof percentageBlueLightReduction === "undefined" || percentageBlueLightReduction == null) {
                     this.elementBlueLightFilter.style.opacity = brightnessDefaultValue;
                 } else {
-                    this.elementBlueLightFilter.style.opacity = percentage / 100;
+                    this.elementBlueLightFilter.style.opacity = percentageBlueLightReduction / 100;
                 }
             }
 

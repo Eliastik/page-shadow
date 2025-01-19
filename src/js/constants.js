@@ -233,7 +233,7 @@ const defaultSettings = {
     "filtersSettings": defaultFilters,
     "customFilter": "",
     "defaultLoad": "0",
-    "updateNotification": updateNotification,
+    updateNotification,
     "interfaceDarkTheme": defaultInterfaceDarkTheme,
     "popupTheme": defaultPopupTheme,
     "advancedOptionsFiltersSettings": {},

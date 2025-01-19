@@ -69,11 +69,11 @@ function setPopup() {
 function createContextMenu(id, type, title, contexts, checked) {
     if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.create) !== "undefined") {
         browser.contextMenus.create({
-            id: id,
-            type: type,
-            title: title,
-            contexts: contexts,
-            checked: checked
+            id,
+            type,
+            title,
+            contexts,
+            checked
         }, () => {
             if(browser.runtime.lastError) {
                 debugLogger.log(`Error creating context menu - id = ${id} / type = ${type} / title = ${title} / contexts = ${contexts} / checked = ${checked}`, "error", browser.runtime.lastError);
@@ -87,10 +87,10 @@ function createContextMenu(id, type, title, contexts, checked) {
 function updateContextMenu(id, type, title, contexts, checked) {
     if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.update) !== "undefined") {
         browser.contextMenus.update(id, {
-            type: type,
-            title: title,
-            contexts: contexts,
-            checked: checked
+            type,
+            title,
+            contexts,
+            checked
         }).then(() => {
             if(browser.runtime.lastError) {
                 debugLogger.log(`Error updating context menu - id = ${id} / type = ${type} / title = ${title} / contexts = ${contexts} / checked = ${checked}`, "error", browser.runtime.lastError);
@@ -149,23 +149,22 @@ async function updateMenu() {
                     return;
                 }
 
-                const domain = url.hostname;
-                const href = url.href;
+                const { hostname, href } = url.href;
                 const isFileURL = urlStr.startsWith("file:///") || urlStr.startsWith("about:");
 
                 if(result.whiteList == "true") {
                     if(!isFileURL) {
-                        if(inArrayWebsite(domain, sitesInterdits) || inArrayWebsite(href, sitesInterdits)) {
+                        if(inArrayWebsite(hostname, sitesInterdits) || inArrayWebsite(href, sitesInterdits)) {
                             createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
                         } else {
                             createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
                         }
                     }
 
-                    if(inArrayWebsite(href, sitesInterdits) || inArrayWebsite(domain, sitesInterdits)) {
+                    if(inArrayWebsite(href, sitesInterdits) || inArrayWebsite(hostname, sitesInterdits)) {
                         createContextMenu("disable-webpage", "checkbox", getUImessage("disableWebpage"), ["all"], false);
 
-                        if(inArrayWebsite(domain, sitesInterdits)) {
+                        if(inArrayWebsite(hostname, sitesInterdits)) {
                             await deleteContextMenu("disable-webpage");
                         } else if(inArrayWebsite(href, sitesInterdits)) {
                             await deleteContextMenu("disable-website");
@@ -175,7 +174,7 @@ async function updateMenu() {
                     }
                 } else {
                     if(!isFileURL) {
-                        if(inArrayWebsite(domain, sitesInterdits)) {
+                        if(inArrayWebsite(hostname, sitesInterdits)) {
                             createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], true);
                         } else {
                             createContextMenu("disable-website", "checkbox", getUImessage("disableWebsite"), ["all"], false);
@@ -251,7 +250,7 @@ async function updateBadge(storageChanged) {
                 continue;
             }
 
-            const url = tab.url;
+            const { url } = tab;
             const enabled = await pageShadowAllowed(normalizeURL(url));
 
             if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeText) !== "undefined") {
@@ -323,13 +322,11 @@ async function checkAutoEnable() {
 async function checkAutoUpdateFilters() {
     const result = await browser.storage.local.get("filtersSettings");
     const filterResults = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
-    const lastUpdate = filterResults.lastUpdated;
-    const updateInterval = filterResults.updateInterval;
-    const enableAutoUpdate = filterResults.enableAutoUpdate;
-    const currentDate = Date.now();
-    const lastFailedUpdate = filterResults.lastFailedUpdate;
 
-    if(enableAutoUpdate && updateInterval > 0 && (lastUpdate <= 0 || (currentDate - lastUpdate) >= updateInterval)) {
+    const { updateInterval, enableAutoUpdate, lastFailedUpdate, lastUpdated } = filterResults;
+    const currentDate = Date.now();
+
+    if(enableAutoUpdate && updateInterval > 0 && (lastUpdated <= 0 || (currentDate - lastUpdated) >= updateInterval)) {
         isAutoUpdatingFilters = true;
         filters.updateAllFilters(true, false).then(() => {
             isAutoUpdatingFilters = false;
@@ -419,8 +416,7 @@ if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.onChanged) 
 if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) !== "undefined") {
     browser.runtime.onMessage.addListener(async (message, sender) => {
         if (message && message.type === "ready") {
-            const tabId = sender.tab.id;
-            const url = sender.tab.url;
+            const { id, url } = sender.tab;
 
             // Update cache if needed
             if(presetCache.isInit) {
@@ -441,7 +437,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 })
             };
 
-            browser.tabs.sendMessage(tabId, { type: "preApplySettings", data });
+            browser.tabs.sendMessage(id, { type: "preApplySettings", data });
         }
     });
 
@@ -474,7 +470,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                             globallyEnable: settingsCache.data.globallyEnable
                         }).then(async(enabled) => {
                             const settings = await getSettings(tabURL, true);
-                            resolve({ type: message.type + "Response", enabled, settings: settings });
+                            resolve({ type: message.type + "Response", enabled, settings });
                         });
                     };
 
@@ -491,46 +487,46 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     });
                 } else if(message.type == "updateFilter") {
                     filters.updateOneFilter(message.filterId).then(result => {
-                        resolve({ type: "updateFilterFinished", result: result, filterId: message.filterId });
+                        resolve({ type: "updateFilterFinished", result, filterId: message.filterId });
                     });
                 } else if(message.type == "checkUpdateNeededForFilters") {
                     filters.checkAllFiltersNeedUpdate().then(result => {
-                        resolve({ type: "getUpdateNeededForFilterFinished", result: result });
+                        resolve({ type: "getUpdateNeededForFilterFinished", result });
                     });
                 } else if(message.type == "disableFilter") {
                     filters.toggleFilter(message.filterId, false).then(result => {
-                        resolve({ type: "disabledFilter", result: result, filterId: message.filterId });
+                        resolve({ type: "disabledFilter", result, filterId: message.filterId });
                     });
                 } else if(message.type == "enableFilter") {
                     filters.toggleFilter(message.filterId, true).then(result => {
-                        resolve({ type: "enabledFilter", result: result, filterId: message.filterId });
+                        resolve({ type: "enabledFilter", result, filterId: message.filterId });
                     });
                 } else if(message.type == "cleanAllFilters") {
                     filters.cleanAllFilters().then(result => {
-                        resolve({ type: "cleanAllFiltersFinished", result: result });
+                        resolve({ type: "cleanAllFiltersFinished", result });
                     });
                 } else if(message.type == "addFilter") {
                     filters.addFilter(message.address).then(result => {
-                        resolve({ type: "addFilterFinished", result: result });
+                        resolve({ type: "addFilterFinished", result });
                     }).catch(error => {
-                        resolve({ type: "addFilterError", error: error });
+                        resolve({ type: "addFilterError", error });
                     });
                 } else if(message.type == "removeFilter") {
                     filters.removeFilter(message.filterId).then(result => {
-                        resolve({ type: "addFilterFinished", result: result, filterId: message.filterId });
+                        resolve({ type: "addFilterFinished", result, filterId: message.filterId });
                     });
                 } else if(message.type == "toggleAutoUpdate") {
                     filters.toggleAutoUpdate(message.enabled).then(result => {
-                        resolve({ type: "toggleAutoUpdateFinished", result: result });
+                        resolve({ type: "toggleAutoUpdateFinished", result });
                     });
                 } else if(message.type == "getCustomFilter") {
                     filters.getCustomFilter().then(result => {
-                        resolve({ type: "getCustomFilterFinished", result: result });
+                        resolve({ type: "getCustomFilterFinished", result });
                     });
                 } else if(message.type == "updateCustomFilter" || message.type == "updateCustomFilterAndClose") {
                     filters.updateCustomFilter(message.text).then(result => {
                         resolve({ type: message.type == "updateCustomFilter" ?
-                            "updateCustomFilterFinished" : "updateCustomFilterAndCloseFinished", result: result });
+                            "updateCustomFilterFinished" : "updateCustomFilterAndCloseFinished", result });
                     });
                 } else if(message.type == "getAllFilters") {
                     resolve({ type: "getFiltersResponse", filters: filters.getRules() });
@@ -538,11 +534,11 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     resolve({ type: "getFiltersResponse", filters: filters.getRulesForWebsite(pageURL, ruleCategory.STANDARD_RULES), specialFilters: filters.getRulesForWebsite(pageURL, ruleCategory.SPECIAL_RULES) });
                 } else if(message.type == "reinstallDefaultFilters") {
                     filters.reinstallDefaultFilters().then(result => {
-                        resolve({ type: "reinstallDefaultFiltersResponse", result: result });
+                        resolve({ type: "reinstallDefaultFiltersResponse", result });
                     });
                 } else if(message.type == "getNumberOfRules") {
                     filters.getNumberOfRulesFor(message.idFilter).then(count => {
-                        resolve({ type: "getNumberOfRulesResponse", count: count });
+                        resolve({ type: "getNumberOfRulesResponse", count });
                     });
                 } else if(message.type == "getSpecialRules") {
                     resolve({ type: "getSpecialRulesResponse", filters: filters.getRulesForWebsite(pageURL, ruleCategory.SPECIAL_RULES) });
@@ -550,23 +546,23 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     resolve({ type: "getNumberOfTotalRulesResponse", count: filters.getNumberOfTotalRules() });
                 } else if(message.type == "getFiltersSize") {
                     filters.getFiltersSize().then(size => {
-                        resolve({ type: "getFiltersSizeResponse", size: size });
+                        resolve({ type: "getFiltersSizeResponse", size });
                     });
                 } else if(message.type == "getNumberOfCustomFilterRules") {
                     filters.getNumberOfRulesFor("customFilter").then(count => {
-                        resolve({ type: "getNumberOfCustomFilterRulesResponse", count: count });
+                        resolve({ type: "getNumberOfCustomFilterRulesResponse", count });
                     });
                 } else if(message.type == "getRulesErrorsForCustomEdit" || message.type == "getRulesErrorCustomFilter") {
                     filters.getRulesErrors("customFilter").then(data => {
-                        resolve({ type: message.type + "Response", data: data });
+                        resolve({ type: message.type + "Response", data });
                     });
                 } else if(message.type == "getRulesErrors") {
                     filters.getRulesErrors(message.idFilter).then(data => {
-                        resolve({ type: "getRulesErrorsResponse", data: data, typeFilter: message.idFilter == "customFilter" ? "custom" : "normal" });
+                        resolve({ type: "getRulesErrorsResponse", data, typeFilter: message.idFilter == "customFilter" ? "custom" : "normal" });
                     });
                 } else if(message.type == "getFilterRuleNumberErrors") {
                     filters.getRulesErrors(message.idFilter).then(data => {
-                        resolve({ type: "getFilterRuleNumberErrorsResponse", data: data });
+                        resolve({ type: "getFilterRuleNumberErrorsResponse", data });
                     });
                 } else if(message.type == "getGlobalPageShadowStyle" || message.type == "getGlobalShadowRootPageShadowStyle") {
                     const url = message.what == "invert" ? "/css/content_invert.css" : "/css/content.css";
@@ -586,13 +582,13 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     }
                 } else if(message.type == "getPreset") {
                     const data = presetCache.getPresetData(message.idPreset);
-                    resolve({ type: "getPresetResponse", data: data });
+                    resolve({ type: "getPresetResponse", data });
                 } else if(message.type == "getAllPresets") {
                     const data = presetCache.getAllPresetsData();
-                    resolve({ type: "getAllPresetsResponse", data: data });
+                    resolve({ type: "getAllPresetsResponse", data });
                 } else if(message.type == "getSettings") {
-                    const data = settingsCache.data;
-                    resolve({ type: "getSettingsResponse", data: data });
+                    const { data } = settingsCache;
+                    resolve({ type: "getSettingsResponse", data });
                 } else if(message.type === "fetchImageData") {
                     if(!message || !message.imageUrl) {
                         resolve({ type: "fetchImageDataResponse", success: false });
@@ -751,7 +747,7 @@ if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand
 }
 
 async function openTab(url, part) {
-    const tabs = await browser.tabs.query({ url: url });
+    const tabs = await browser.tabs.query({ url });
     const completeURL = String(url) + (part ? "#" + part : "");
 
     if(tabs.length === 0) {

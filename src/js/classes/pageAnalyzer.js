@@ -113,7 +113,7 @@ export default class PageAnalyzer {
         }
 
         if(this.currentSettings && this.currentSettings.theme && this.currentSettings.pageShadowEnabled == "true") {
-            const theme = this.currentSettings.theme;
+            const { theme } = this.currentSettings;
             const themeColor = theme.startsWith("custom") ? (await getCustomThemeConfig(theme.replace("custom", ""), null)).textColor : defaultThemesTextColors[parseInt(theme, 10) - 1];
 
             this.themeColorRGB = hexToRgb(themeColor);
@@ -506,8 +506,7 @@ export default class PageAnalyzer {
     }
 
     detectBrightColor(element, computedStyles, transparentColorDetected, hasTransparentBackgroundClass, pseudoElt) {
-        const background = computedStyles.background;
-        const backgroundColor = computedStyles.backgroundColor;
+        const { background, backgroundColor } = computedStyles;
 
         // Background color
         if (!transparentColorDetected && !hasTransparentBackgroundClass) {
@@ -568,8 +567,7 @@ export default class PageAnalyzer {
     }
 
     detectTransparentBackground(element, computedStyles, hasBackgroundImg, hasTransparentBackgroundClass, pseudoElt) {
-        const backgroundColor = computedStyles.backgroundColor;
-        const backgroundImage = computedStyles.backgroundImage;
+        const { backgroundColor, backgroundImage } = computedStyles;
 
         const hasTransparentBackground = this.elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg);
         const backgroundClip = computedStyles.getPropertyValue("background-clip") || computedStyles.getPropertyValue("-webkit-background-clip");

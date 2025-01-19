@@ -283,7 +283,9 @@ function cssColorToRgbaValues(cssColor) {
             const rgbValues = cssColor.split("(")[1].split(")")[0];
             const rgbValuesList = rgbValues.trim().split(",");
             return rgbValuesList;
-        } else if(cssColor.trim().toLowerCase().startsWith("oklch")) {
+        }
+
+        if(cssColor.trim().toLowerCase().startsWith("oklch")) {
             const parsedOklch = parseOklchColor(cssColor);
 
             if(!parsedOklch) {
@@ -292,7 +294,9 @@ function cssColorToRgbaValues(cssColor) {
             }
 
             return oklchToRgba([parsedOklch.L, parsedOklch.C, parsedOklch.h, parsedOklch.alpha]);
-        } else if(cssColor.trim().toLowerCase().startsWith("oklab")) {
+        }
+
+        if(cssColor.trim().toLowerCase().startsWith("oklab")) {
             const parsedOklab = parseOklabColor(cssColor);
 
             if(!parseOklabColor) {
@@ -301,7 +305,9 @@ function cssColorToRgbaValues(cssColor) {
             }
 
             return oklabToRgba([parsedOklab.L, parsedOklab.a, parsedOklab.b, parsedOklab.alpha]);
-        } else if(cssColor.trim().toLowerCase().startsWith("lch")) {
+        }
+
+        if(cssColor.trim().toLowerCase().startsWith("lch")) {
             const parsedLch = parseLchColor(cssColor);
 
             if(!parsedLch) {
@@ -310,7 +316,9 @@ function cssColorToRgbaValues(cssColor) {
             }
 
             return lchToRgba([parsedLch.L, parsedLch.C, parsedLch.h, parsedLch.alpha]);
-        } else if(cssColor.trim().toLowerCase().startsWith("lab")) {
+        }
+
+        if(cssColor.trim().toLowerCase().startsWith("lab")) {
             const parsedLab = parseLabColor(cssColor);
 
             if(!parsedLab) {
@@ -319,11 +327,13 @@ function cssColorToRgbaValues(cssColor) {
             }
 
             return labToRgba([parsedLab.L, parsedLab.a, parsedLab.b, parsedLab.alpha]);
-        } else if(cssColor.trim().toLowerCase().startsWith("color")) {
-            return parseAndConvertColorFunction(cssColor);
-        } else {
-            debugLogger.log(`cssColorToRgbaValues - CSS color format not recognized: ${cssColor.split("(")[0]}`, "error");
         }
+
+        if(cssColor.trim().toLowerCase().startsWith("color")) {
+            return parseAndConvertColorFunction(cssColor);
+        }
+
+        debugLogger.log(`cssColorToRgbaValues - CSS color format not recognized: ${cssColor.split("(")[0]}`, "error");
     }
 
     return null;
