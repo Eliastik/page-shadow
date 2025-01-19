@@ -46,8 +46,8 @@ async function fetchCorsImage(imageUrl) {
     return null;
 }
 
-async function svgElementToImage(url) {
-    if(isCrossOrigin(url)) {
+async function svgElementToImage(url, enableCorsFetch) {
+    if(isCrossOrigin(url) && enableCorsFetch) {
         const newImage = await fetchCorsImage(url);
         if(newImage) {
             return newImage;
@@ -60,10 +60,10 @@ async function svgElementToImage(url) {
     return image;
 }
 
-async function backgroundImageToImage(url) {
+async function backgroundImageToImage(url, enableCorsFetch) {
     const image = new Image();
 
-    if(isCrossOrigin(url)) {
+    if(isCrossOrigin(url) && enableCorsFetch) {
         const newImage = await fetchCorsImage(url);
         if(newImage) {
             return newImage;
@@ -332,10 +332,10 @@ async function fetchSvgFromUsehref(href, fetchHref) {
     };
 }
 
-async function getImageFromElement(image, imageUrl, hasBackgroundImg) {
+async function getImageFromElement(image, imageUrl, hasBackgroundImg, enableCorsFetch) {
     let isCrossOriginUrl = isCrossOrigin(imageUrl);
 
-    if(!isCrossOriginUrl) {
+    if(!isCrossOriginUrl && enableCorsFetch) {
         const isRedirectedImageResponse = await sendMessageWithPromise({ type: "checkImageRedirection", imageUrl }, "checkImageRedirectionResponse");
 
         if(isRedirectedImageResponse && isRedirectedImageResponse.redirected && isCrossOrigin(isRedirectedImageResponse.redirectedUrl)) {
@@ -344,17 +344,22 @@ async function getImageFromElement(image, imageUrl, hasBackgroundImg) {
     }
 
     if(image instanceof HTMLImageElement && isCrossOriginUrl) {
-        const newImage = await fetchCorsImage(imageUrl);
+        if(enableCorsFetch) {
+            const newImage = await fetchCorsImage(imageUrl);
 
-        if(newImage) {
-            image = newImage;
+            if(newImage) {
+                image = newImage;
+            }
+        } else {
+            image = image.cloneNode();
+            image.crossOrigin = "Anonymous";
         }
     }
 
     // SVG element
     if((image instanceof SVGGraphicsElement) && image.nodeName.toLowerCase() === "svg") {
         try {
-            image = await svgElementToImage(imageUrl);
+            image = await svgElementToImage(imageUrl, enableCorsFetch);
         } catch(e) {
             debugLogger?.log(`ImageProcessor detectDarkImage - Error converting SVG element to image - Image URL: ${imageUrl}`, "error", e);
             return null;
@@ -365,7 +370,7 @@ async function getImageFromElement(image, imageUrl, hasBackgroundImg) {
     if(!(image instanceof HTMLImageElement) && !(image instanceof SVGImageElement)) {
         if(hasBackgroundImg) {
             try {
-                image = await backgroundImageToImage(imageUrl);
+                image = await backgroundImageToImage(imageUrl, enableCorsFetch);
             } catch(e) {
                 debugLogger?.log(`ImageProcessor detectDarkImage - Error converting background to image - Image URL: ${imageUrl}`, "error", e);
                 return null;

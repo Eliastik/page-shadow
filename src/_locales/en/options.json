@@ -125,6 +125,7 @@
             "darkThemeDetectionMinLightnessLightElements": "Min lightness to detect an element as light",
             "darkThemeDetectionPercentageRatioDarkLightElements": "Ratio dark elements / light elements to detect a website as having a dark theme",
             "darkImageDetectionEnableFetchUseHref": "Enable retrieval of SVGs referenced by use HTML tags",
+            "darkImageDetectionEnableCorsFetch": "Enable image verification and retrieval for cross-origin images",
             "help": {
                 "debugMode": "Enables debug mode, which displays debugging information in the JavaScript console on pages processed by Page Shadow, or on extension pages.",
                 "performanceModeEnabled": "Enable performance optimizations, this disables the analysis of webpage elements. However, filter management remains enabled.",
@@ -187,7 +188,8 @@
                 "darkThemeDetectionMaxSaturation": "Defines the maximum saturation value an element must have to be considered dark. This value must be between 0 and 1 (percentage).",
                 "darkThemeDetectionMinLightnessLightElements": "Defines the minimum lightness value an element must have to be considered light. Elements with a lightness above this value will be considered light. This value must be between 0 and 1 (percentage).",
                 "darkThemeDetectionPercentageRatioDarkLightElements": "Defines the ratio (as a percentage, between 0 and 1) of dark elements to light elements to determine if a website uses a dark theme.",
-                "darkImageDetectionEnableFetchUseHref": "If this option is enabled, Page Shadow will query the SVG file referenced by an HTML use tag. This can be used to analyze additional SVG images."
+                "darkImageDetectionEnableFetchUseHref": "If this option is enabled, Page Shadow will query the SVG file referenced by an HTML use tag. This can be used to analyze additional SVG images.",
+                "darkImageDetectionEnableCorsFetch": "If this option is enabled, Page Shadow will send a HEAD request to the server hosting the image to check if it originates from a different origin. If so, the image will be fetched by the extension's background script from the same server to bypass CORS restrictions."
             }
         },
         "filtersConfigCategories": {
