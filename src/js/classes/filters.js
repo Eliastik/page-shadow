@@ -139,13 +139,33 @@ export default class FilterProcessor {
                             const version = metadata["version"];
                             const license = metadata["license"];
 
-                            if(name != null) filterToUpdate.filterName = name;
-                            if(sourcename != null) filterToUpdate.sourceName = sourcename;
-                            if(homepage != null) filterToUpdate.homepage = homepage;
-                            if(expires != null) filterToUpdate.expiresIn = expires;
-                            if(description != null) filterToUpdate.description = description;
-                            if(version != null) filterToUpdate.version = version;
-                            if(license != null) filterToUpdate.license = license;
+                            if(name != null) {
+                                filterToUpdate.filterName = name;
+                            }
+
+                            if(sourcename != null) {
+                                filterToUpdate.sourceName = sourcename;
+                            }
+
+                            if(homepage != null) {
+                                filterToUpdate.homepage = homepage;
+                            }
+
+                            if(expires != null) {
+                                filterToUpdate.expiresIn = expires;
+                            }
+
+                            if(description != null) {
+                                filterToUpdate.description = description;
+                            }
+
+                            if(version != null) {
+                                filterToUpdate.version = version;
+                            }
+
+                            if(license != null) {
+                                filterToUpdate.license = license;
+                            }
 
                             filterToUpdate.content = text;
                             filterToUpdate.hasError = false;
@@ -179,7 +199,9 @@ export default class FilterProcessor {
 
             if(!autoUpdate || (autoUpdate && needUpdate) || (updateOnlyFailed && filters.filters[i].hasError)) {
                 filters.filters[i] = await this.updateFilter(i);
-                if(filters.filters[i].hasError) updateHadErrors = true;
+                if(filters.filters[i].hasError) {
+                    updateHadErrors = true;
+                }
             }
         }
 
@@ -306,7 +328,7 @@ export default class FilterProcessor {
                 const lineSplitted = line.split(regexpDetectionPattern);
                 const regexp = lineSplitted[1];
                 website = regexp;
-                line = lineSplitted[3] + "" + lineSplitted[4];
+                line = String(lineSplitted[3]) + lineSplitted[4];
                 const regexpTest = this.testRegexp(regexp);
 
                 if(regexpTest.error) {
@@ -320,7 +342,10 @@ export default class FilterProcessor {
                 }
             }
 
-            if(!line) return { "error": true, "type": filterSyntaxErrorTypes.UNKNOWN, "message": "", "errorCode": "UNKNOWN" };
+            if(!line) {
+                return { "error": true, "type": filterSyntaxErrorTypes.UNKNOWN, "message": "", "errorCode": "UNKNOWN" };
+            }
+
             const parts = line.split("|");
             const lineTrimmed = line.trim();
             const isComment = lineTrimmed[0] == "#";
@@ -329,7 +354,10 @@ export default class FilterProcessor {
                 return null;
             }
 
-            if(!isRegexp) website = parts[0];
+            if(!isRegexp) {
+                website = parts[0];
+            }
+
             let type = parts[1];
             const filter = parts[2];
 
@@ -539,7 +567,10 @@ export default class FilterProcessor {
                     throw "Parsing error";
                 }
             } catch(e) {
-                if(e === "Parsing error") throw e;
+                if(e === "Parsing error") {
+                    throw e;
+                }
+
                 throw "Fetch error";
             }
         }
@@ -705,7 +736,9 @@ export default class FilterProcessor {
 
         if(filters) {
             for(const customFilter of filters.filters) {
-                if(!customFilter.builtIn) newFilters.push(customFilter);
+                if(!customFilter.builtIn) {
+                    newFilters.push(customFilter);
+                }
             }
         }
 

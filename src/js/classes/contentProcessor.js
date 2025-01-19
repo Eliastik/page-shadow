@@ -197,7 +197,9 @@ export default class ContentProcessor {
     }
 
     process(allowed, type, disableCache) {
-        if(this.applyWhenBodyIsAvailableTimer) this.applyWhenBodyIsAvailableTimer.clear();
+        if(this.applyWhenBodyIsAvailableTimer) {
+            this.applyWhenBodyIsAvailableTimer.clear();
+        }
 
         return new Promise(resolve => {
             this.applyWhenBodyIsAvailableTimer = new ApplyBodyAvailable(async () => {
@@ -341,7 +343,9 @@ export default class ContentProcessor {
     resetPage() {
         this.precEnabled = false;
 
-        if(typeof this.lnkCustomTheme !== "undefined") this.lnkCustomTheme.setAttribute("href", "");
+        if(typeof this.lnkCustomTheme !== "undefined") {
+            this.lnkCustomTheme.setAttribute("href", "");
+        }
 
         if(this.started) {
             this.initFeatures();
@@ -421,11 +425,15 @@ export default class ContentProcessor {
         if(this.websiteSpecialFiltersConfig.observeBodyChange) {
             this.debugLogger?.log("Applying body change observer");
 
-            if(this.timerObserveBodyChange) this.timerObserveBodyChange.clear();
+            if(this.timerObserveBodyChange) {
+                this.timerObserveBodyChange.clear();
+            }
 
             this.timerObserveBodyChange = new SafeTimer(() => {
                 if(document.body) {
-                    if(!this.oldBody) this.oldBody = document.body;
+                    if(!this.oldBody) {
+                        this.oldBody = document.body;
+                    }
 
                     if(document.body != this.oldBody) {
                         this.initBodyAndHTMLClassBatchers();
@@ -459,7 +467,9 @@ export default class ContentProcessor {
         if(this.websiteSpecialFiltersConfig.observeDocumentChange) {
             this.debugLogger?.log("Applying document element change observer");
 
-            if(this.timerObserveDocumentElementChange) this.timerObserveDocumentElementChange.clear();
+            if(this.timerObserveDocumentElementChange) {
+                this.timerObserveDocumentElementChange.clear();
+            }
 
             this.timerObserveDocumentElementChange = new SafeTimer(async () => {
                 const settings = this.currentSettings;
@@ -479,7 +489,9 @@ export default class ContentProcessor {
     }
 
     timerApplyMutationClassChanges() {
-        if(this.timerApplyMutationObserverClassChanges) this.timerApplyMutationObserverClassChanges.clear();
+        if(this.timerApplyMutationObserverClassChanges) {
+            this.timerApplyMutationObserverClassChanges.clear();
+        }
 
         this.timerApplyMutationObserverClassChanges = new SafeTimer(() => {
             this.multipleElementClassBatcherAdd.apply();

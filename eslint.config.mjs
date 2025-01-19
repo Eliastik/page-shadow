@@ -56,6 +56,15 @@ export default [...compat.extends("eslint:recommended"), {
         "no-lonely-if": ["warn"],
         "no-return-assign": ["error"],
         "no-sequences": ["error"],
-        "no-implicit-coercion": ["warn"]
+        "no-implicit-coercion": ["error"],
+        "curly": ["error", "all"],
+        "arrow-body-style": ["error", "as-needed"],
+        "no-duplicate-imports": ["error"],
+        "radix": ["error"],
+        "no-use-before-define": ["error", { "functions": false, "classes": true }],
+        "no-new-func": ["error"],
+        "no-buffer-constructor": ["error"],
+        "no-shadow": ["warn"],
+        "prefer-destructuring": ["warn", { "object": true, "array": false }]
     },
 }];

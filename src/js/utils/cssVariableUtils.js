@@ -21,7 +21,7 @@ import { defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkCol
 /** Utils function used to process CSS variables used by Page Shadow */
 
 function applyContrastPageVariablesWithTheme(theme) {
-    const themeNumber = parseInt(theme) - 1;
+    const themeNumber = parseInt(theme, 10) - 1;
 
     applyContrastPageVariables({
         backgroundColor: defaultThemesBackgrounds[themeNumber],

@@ -97,7 +97,10 @@ export default class IncreasePageContrast {
         const removeBatcherHTML = new ElementClassBatcher("remove", "html");
 
         if(!themeException || !themeException.startsWith("custom")) {
-            if(typeof this.lnkCustomTheme !== "undefined") this.lnkCustomTheme.setAttribute("href", "");
+            if(typeof this.lnkCustomTheme !== "undefined") {
+                this.lnkCustomTheme.setAttribute("href", "");
+            }
+
             removeBatcherHTML.add("pageShadowBackgroundCustom");
             this.bodyClassBatcherRemover.add("pageShadowCustomFontFamily");
         }

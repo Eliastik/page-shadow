@@ -68,7 +68,11 @@ async function translateContent() {
     $(".modal").localize();
     $("footer").localize();
     await checkCurrentPopupTheme();
-    if(checkContrastMode) checkContrastMode(false);
+
+    if(checkContrastMode) {
+        checkContrastMode(false);
+    }
+
     await loadPresetSelect("loadPresetSelect", i18next);
     await checkPresetAutoEnabled(await getCurrentURL());
     $("#loadPresetSelect").val(selectedPreset).trigger("change");
@@ -103,7 +107,7 @@ async function getCurrentURL() {
     const matches = window.location.search.match(/[?&]tabId=([^&]+)/);
 
     if(matches && matches.length === 2) {
-        const tabId = parseInt(matches[1]);
+        const tabId = parseInt(matches[1], 10);
         const tabInfos = await browser.tabs.get(tabId);
 
         if(!browser.runtime.lastError) {
@@ -292,9 +296,7 @@ $(() => {
         step: 1,
         // eslint-disable-next-line camelcase
         tooltip_position: "top",
-        formatter: value => {
-            return value;
-        }
+        formatter: value => value
     });
 
     const sliderBlueLightReduction = new Slider("#sliderBlueLightReduction", {
@@ -302,9 +304,7 @@ $(() => {
         step: 1,
         // eslint-disable-next-line camelcase
         tooltip_position: "top",
-        formatter: value => {
-            return value;
-        }
+        formatter: value => value
     });
 
     const sliderAttenuateColorPercent = new Slider("#sliderAttenuateColorPercent", {
@@ -312,9 +312,7 @@ $(() => {
         step: 1,
         // eslint-disable-next-line camelcase
         tooltip_position: "top",
-        formatter: value => {
-            return value;
-        }
+        formatter: value => value
     });
 
     $("#linkAdvSettings").on("click", () => {
@@ -382,7 +380,7 @@ $(() => {
         let tempColor = "2000";
 
         if(temp != undefined) {
-            const tempIndex = parseInt(temp);
+            const tempIndex = parseInt(temp, 10);
             tempColor = colorTemperaturesAvailable[tempIndex - 1];
 
             $("#pageShadowBrightnessNightMode").addClass("k" + tempColor);
@@ -1600,7 +1598,7 @@ $(() => {
     $("#loadPresetValid").on("click", async() => {
         $("#infoPreset").removeClass("show");
 
-        const result = await loadPreset(parseInt($("#loadPresetSelect").val()));
+        const result = await loadPreset(parseInt($("#loadPresetSelect").val(), 10));
 
         if(result == "success") {
             $("#infoPreset").text(i18next.t("modal.archive.restorePresetSuccess"));
@@ -1621,7 +1619,7 @@ $(() => {
 
     $("#updatePresetSettings").on("click", async() => {
         $("#infoPreset").removeClass("show");
-        const presetId = parseInt($("#loadPresetSelect").val());
+        const presetId = parseInt($("#loadPresetSelect").val(), 10);
         const presetData = await getPresetData(presetId);
 
         if(presetData && presetData != "error") {
@@ -1678,7 +1676,7 @@ $(() => {
 
     async function createPreset() {
         $("#infoPreset").removeClass("show");
-        const presetId = parseInt($("#loadPresetSelect").val());
+        const presetId = parseInt($("#loadPresetSelect").val(), 10);
         const presetTitle  = $("#createPresetModalTitle").val();
 
         const result = await savePreset(presetId, presetTitle, "", true);

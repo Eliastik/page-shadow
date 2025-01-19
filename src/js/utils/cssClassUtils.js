@@ -24,7 +24,9 @@ import DebugLogger from "./../classes/debugLogger.js";
 const debugLogger = new DebugLogger();
 
 function removeClass(element, ...classes) {
-    if(!element) return;
+    if(!element) {
+        return;
+    }
 
     classes.forEach(c => {
         if(c && element.classList.contains(c)) {
@@ -34,7 +36,10 @@ function removeClass(element, ...classes) {
 }
 
 function addClass(element, ...classes) {
-    if(!element) return;
+    if(!element) {
+        return;
+    }
+
     const classToAdd = [];
 
     classes.forEach(c => {
@@ -94,7 +99,7 @@ function getPageAnalyzerCSSClass(cssClass, pseudoElt) {
 }
 
 function getBlueLightReductionFilterCSSClass(colorTemp) {
-    const tempIndex = parseInt(colorTemp || "2000");
+    const tempIndex = parseInt(colorTemp || "2000", 10);
     return "k" + colorTemperaturesAvailable[tempIndex - 1];
 }
 

@@ -49,7 +49,9 @@ async function fetchCorsImage(imageUrl) {
 async function svgElementToImage(url) {
     if(isCrossOrigin(url)) {
         const newImage = await fetchCorsImage(url);
-        if(newImage) return newImage;
+        if(newImage) {
+            return newImage;
+        }
     }
 
     const image = new Image();
@@ -63,7 +65,9 @@ async function backgroundImageToImage(url) {
 
     if(isCrossOrigin(url)) {
         const newImage = await fetchCorsImage(url);
-        if(newImage) return newImage;
+        if(newImage) {
+            return newImage;
+        }
     }
 
     const imageLoadPromise = new Promise((resolve, reject) => {
@@ -176,6 +180,55 @@ function processSvgAttribute(attribute) {
     return matchURLAttribute && matchURLAttribute[2] ? `url(${matchURLAttribute[2]})` : attribute;
 }
 
+function applyStylesToClonedSvg(element, clonedSvg) {
+    const originalElements = element.getElementsByTagName("*");
+    const clonedElements = clonedSvg.getElementsByTagName("*");
+
+    for (let i = 0; i < clonedElements.length; i++) {
+        const originalElement = originalElements[i];
+        const clonedElement = clonedElements[i];
+
+        const originalElementStyles = window.getComputedStyle(originalElement);
+        const stroke = originalElementStyles.stroke;
+        const color = originalElementStyles.color;
+        const fill = originalElementStyles.fill;
+
+        clonedElement.setAttribute("fill", processSvgAttribute(fill));
+        clonedElement.setAttribute("stroke", processSvgAttribute(stroke));
+        clonedElement.setAttribute("color", color);
+    }
+}
+
+function extractSvgNamespaces(innerHTML) {
+    const namespaces = [];
+
+    if(innerHTML.includes("xlink:")) {
+        namespaces.push("xmlns:xlink=\"http://www.w3.org/1999/xlink\"");
+    }
+
+    if(innerHTML.includes("xml:")) {
+        namespaces.push("xmlns:xml=\"http://www.w3.org/XML/1998/namespace\"");
+    }
+
+    if(innerHTML.includes("rdf:") || innerHTML.includes("cc:") || innerHTML.includes("dc:")) {
+        namespaces.push("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
+        namespaces.push("xmlns:cc=\"http://creativecommons.org/ns#\"");
+        namespaces.push("xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
+    }
+
+    const namespaceString = namespaces.length > 0 ? ` ${namespaces.join(" ")}` : "";
+
+    return namespaceString;
+}
+
+function createSvgDataUrl(innerHTML, width, height, fill, color, stroke) {
+    const namespaceString = extractSvgNamespaces(innerHTML);
+    const svgString = `<svg xmlns="http://www.w3.org/2000/svg"${namespaceString} width="${width}" height="${height}" fill="${processSvgAttribute(fill)}" color="${color}" stroke="${processSvgAttribute(stroke)}">${innerHTML}</svg>`;
+    const dataUrlString = `data:image/svg+xml;base64,${base64EncodeUnicode(svgString)}`;
+
+    return dataUrlString;
+}
+
 async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles, fetchUseHref) {
     if(!element) {
         return null;
@@ -199,48 +252,13 @@ async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles, fet
     const color = computedStyles.color;
     const fill = computedStyles.fill;
 
-    const originalElements = element.getElementsByTagName("*");
-    const clonedElements = clonedSvg.getElementsByTagName("*");
-
-    for(let i = 0; i < clonedElements.length; i++) {
-        const originalElement = originalElements[i];
-        const clonedElement = clonedElements[i];
-
-        const originalElementStyles = window.getComputedStyle(originalElement);
-        const stroke = originalElementStyles.stroke;
-        const color = originalElementStyles.color;
-        const fill = originalElementStyles.fill;
-
-        clonedElement.setAttribute("fill", processSvgAttribute(fill));
-        clonedElement.setAttribute("stroke", processSvgAttribute(stroke));
-        clonedElement.setAttribute("color", color);
-    }
+    applyStylesToClonedSvg(element, clonedSvg);
 
     removeClass(element, getPageAnalyzerCSSClass("pageShadowForceBlackColor", pseudoElt));
 
     const { innerHTML } = await extractSvgUseHref(clonedSvg, fetchUseHref);
 
-    const namespaces = [];
-
-    if(innerHTML.includes("xlink:")) {
-        namespaces.push("xmlns:xlink=\"http://www.w3.org/1999/xlink\"");
-    }
-
-    if(innerHTML.includes("xml:")) {
-        namespaces.push("xmlns:xml=\"http://www.w3.org/XML/1998/namespace\"");
-    }
-
-    if(innerHTML.includes("rdf:") || innerHTML.includes("cc:") || innerHTML.includes("dc:")) {
-        namespaces.push("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
-        namespaces.push("xmlns:cc=\"http://creativecommons.org/ns#\"");
-        namespaces.push("xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
-    }
-
-    const namespaceString = namespaces.length > 0 ? ` ${namespaces.join(" ")}` : "";
-    const svgString = `<svg xmlns="http://www.w3.org/2000/svg"${namespaceString} width="${width}" height="${height}" fill="${processSvgAttribute(fill)}" color="${color}" stroke="${processSvgAttribute(stroke)}">${innerHTML}</svg>`;
-    const dataUrlString = `data:image/svg+xml;base64,${base64EncodeUnicode(svgString)}`;
-
-    return dataUrlString;
+    return createSvgDataUrl(innerHTML, width, height, fill, color, stroke);
 }
 
 async function extractSvgUseHref(element, fetchHref) {
@@ -385,6 +403,8 @@ function awaitImageLoading(image) {
             return;
         }
 
+        let cleanup = () => {};
+
         const onLoad = () => {
             cleanup();
             resolve(image);
@@ -395,7 +415,7 @@ function awaitImageLoading(image) {
             reject(new Error(`Image failed to load: ${image.src}`));
         };
 
-        const cleanup = () => {
+        cleanup = () => {
             image.removeEventListener("load", onLoad);
             image.removeEventListener("error", onError);
         };

@@ -134,7 +134,7 @@ async function getCurrentArchiveCloud() {
                     restoredData[originalKey] = [];
                 }
 
-                restoredData[originalKey][parseInt(index)] = {
+                restoredData[originalKey][parseInt(index, 10)] = {
                     data: dataSync[key],
                     type
                 };
@@ -147,7 +147,7 @@ async function getCurrentArchiveCloud() {
             const valueChunks = restoredData[key];
 
             if(Array.isArray(valueChunks)) {
-                const sortedIndices = Object.keys(valueChunks).sort((a, b) => parseInt(a) - parseInt(b));
+                const sortedIndices = Object.keys(valueChunks).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
                 const type = restoredData[key][0].type;
 
                 if(type === "string") {

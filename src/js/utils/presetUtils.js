@@ -250,7 +250,10 @@ async function savePreset(nb, name, websiteListToApply, saveNewSettings, saveAut
 
         const namePreset = nb;
 
-        if(!presets[namePreset]) presets[namePreset] = {};
+        if(!presets[namePreset]) {
+            presets[namePreset] = {};
+        }
+
         presets[namePreset].name = name.substring(0, 50);
         presets[namePreset].websiteListToApply = websiteListToApply;
 
@@ -369,12 +372,12 @@ async function presetsEnabledForWebsiteWithData(url, allPresetData) {
     return presetListEnabled;
 }
 
-function getPriorityPresetEnabledForWebsite(presetsEnabled) {
+function getPriorityPresetEnabledForWebsite(enabledPresets) {
     // Priority : a preset auto enabled for a page has a higher priority than a preset auto enabled for a webiste
-    let presetEnabled = presetsEnabled[0];
+    let presetEnabled = enabledPresets[0];
 
-    for(let i = 0, len = presetsEnabled.length; i < len; i++) {
-        const preset = presetsEnabled[i];
+    for(let i = 0, len = enabledPresets.length; i < len; i++) {
+        const preset = enabledPresets[i];
 
         if((preset.autoEnabledWebsite && !presetEnabled.autoEnabledPage && !presetEnabled.autoEnabledWebsite) || preset.autoEnabledPage) {
             presetEnabled = preset;
@@ -390,7 +393,9 @@ async function disableEnablePreset(type, nb, checked, url) {
     }
 
     const preset = await getPresetData(nb);
-    if(!preset) return "error";
+    if(!preset) {
+        return "error";
+    }
 
     try {
         const domain = url.hostname;

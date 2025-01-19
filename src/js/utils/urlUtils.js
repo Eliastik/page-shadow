@@ -49,7 +49,9 @@ function getCurrentURL() {
 
 function isCrossOrigin(imageSrc) {
     try {
-        if(!imageSrc) return false;
+        if(!imageSrc) {
+            return false;
+        }
 
         if(imageSrc.trim().toLowerCase().startsWith("data:")) {
             return false;

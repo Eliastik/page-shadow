@@ -114,7 +114,7 @@ export default class PageAnalyzer {
 
         if(this.currentSettings && this.currentSettings.theme && this.currentSettings.pageShadowEnabled == "true") {
             const theme = this.currentSettings.theme;
-            const themeColor = theme.startsWith("custom") ? (await getCustomThemeConfig(theme.replace("custom", ""), null)).textColor : defaultThemesTextColors[parseInt(theme) - 1];
+            const themeColor = theme.startsWith("custom") ? (await getCustomThemeConfig(theme.replace("custom", ""), null)).textColor : defaultThemesTextColors[parseInt(theme, 10) - 1];
 
             this.themeColorRGB = hexToRgb(themeColor);
         } else {
@@ -151,7 +151,9 @@ export default class PageAnalyzer {
     }
 
     async taskAnalyzeImage(image, hasBackgroundImg, computedStyles, pseudoElt) {
-        if(!image) return;
+        if(!image) {
+            return;
+        }
 
         if(image.classList.contains(getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt))) {
             this.debugLogger.log("Ignored dark image detection for element because element already has class pageShadowSelectiveInvert", "debug", image);
@@ -377,7 +379,9 @@ export default class PageAnalyzer {
     }
 
     elementHasTransparentBackground(backgroundColor, backgroundImage, hasBackgroundImg) {
-        if(!backgroundColor) return true;
+        if(!backgroundColor) {
+            return true;
+        }
 
         const rgbaColor = cssColorToRgbaValues(backgroundColor);
         const isTransparentColor = isColorTransparent(rgbaColor);
@@ -434,7 +438,9 @@ export default class PageAnalyzer {
     }
 
     isBrightColor(rgbValuesList, isText, isGradient) {
-        if(!rgbValuesList) return false;
+        if(!rgbValuesList) {
+            return false;
+        }
 
         const hsl = rgbTohsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
 

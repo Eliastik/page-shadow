@@ -87,7 +87,7 @@ async function applyIfSettingsChanged(statusChanged, storageChanged, isEnabled, 
 /**
  * Execute to pre-apply settings when a page is loaded before full settings are loaded. Limit flash effect.
  */
-function fastPreApply(data, contentProcessor) {
+function fastPreApply(data) {
     if (!data.enabled) {
         return true;
     }
@@ -126,7 +126,7 @@ const timerStart = new SafeTimer(async () => {
 // Pre-apply function
 const timerPreApply = new SafeTimer(() => {
     if(settings) {
-        if(fastPreApply(settings, contentProcessor)) {
+        if(fastPreApply(settings)) {
             timerStart.start();
         } else {
             timerPreApply.start();
@@ -136,7 +136,9 @@ const timerPreApply = new SafeTimer(() => {
 
 // Message/response handling
 browser.runtime.onMessage.addListener((message) => {
-    if(!message) return;
+    if(!message) {
+        return;
+    }
 
     if(message.type == "preApplySettings") {
         settings = message.data;

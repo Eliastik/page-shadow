@@ -22,7 +22,9 @@ import { defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThem
 /** Utils related to shadow dom processing */
 
 async function processRules(style, themeConfig, isShadowRoot) {
-    if(!style.sheet) return;
+    if(!style.sheet) {
+        return;
+    }
 
     if(style.cssRules) { // Remove all rules
         for(let i = 0; i < style.cssRules.length; i++) {
@@ -61,9 +63,7 @@ function processRulesConfig(style, themeConfig) {
         "--page-shadow-brightcolortxtblack": themeConfig.brightColorTextBlack || defaultThemesBrightColorTextBlack[0]
     };
 
-    return style.replace(/var\((--page-shadow-[a-zA-Z-]+)\)/g, (match, varName) => {
-        return colorMap[varName] || match;
-    });
+    return style.replace(/var\((--page-shadow-[a-zA-Z-]+)\)/g, (match, varName) => colorMap[varName] || match);
 }
 
 function processShadowRootStyle(style) {
@@ -82,7 +82,9 @@ function processShadowRootStyle(style) {
 }
 
 function processRulesInvert(parentElement, style, settings, enablePreserveColorsSelectiveInvert) {
-    if(!style.sheet) return;
+    if(!style.sheet) {
+        return;
+    }
 
     if(style.cssRules) { // Remove all rules
         for(let i = 0; i < style.cssRules.length; i++) {
@@ -312,7 +314,9 @@ function processRulesInvert(parentElement, style, settings, enablePreserveColors
 }
 
 function processRulesAttenuate(style, settings) {
-    if(!style.sheet) return;
+    if(!style.sheet) {
+        return;
+    }
 
     if(style.cssRules) { // Remove all rules
         for(let i = 0; i < style.cssRules.length; i++) {
