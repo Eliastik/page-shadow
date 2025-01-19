@@ -306,10 +306,10 @@ async function checkAutoEnable() {
         const data = await getAutoEnableSavedData();
         const enabled = checkAutoEnableStartup(data[6], data[4], data[7], data[5]);
 
-        if(enabled && !lastAutoEnableDetected || enabled && lastAutoEnableDetected == null) {
+        if((enabled && !lastAutoEnableDetected) || (enabled && lastAutoEnableDetected == null)) {
             await setSettingItem("globallyEnable", "true");
             lastAutoEnableDetected = true;
-        } else if(!enabled && lastAutoEnableDetected || !enabled && lastAutoEnableDetected == null) {
+        } else if((!enabled && lastAutoEnableDetected) || (!enabled && lastAutoEnableDetected == null)) {
             await setSettingItem("globallyEnable", "false");
             lastAutoEnableDetected = false;
         }
