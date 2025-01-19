@@ -176,6 +176,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
     * [x] Update filter guide for new special filters
     * [x] Youtube dark not detected? => Due to performance mode
         * Disable performance mode on release
+* [x] Add advanced option to disable fetching CORS images from background script/worker?
 * [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
 * [ ] Tests + release (when releasing: update version date, update changelog (last bugfixes), compare code between MV2 and MV3 versions)
 
