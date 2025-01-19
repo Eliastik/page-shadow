@@ -95,7 +95,7 @@ function processRulesInvert(parentElement, style, settings, enablePreserveColors
     const enabled = settings.colorInvert;
 
     const { invertEntirePage } = settings;
-    let { invertImageColors, invertVideoColors, invertBgColors, selectiveInvert, invertBrightColors } = settings;
+    let { invertImageColors, invertVideoColors, invertBgColor, selectiveInvert, invertBrightColors } = settings;
 
     let { percentageAttenuateColors } = settings;
 
@@ -152,7 +152,7 @@ function processRulesInvert(parentElement, style, settings, enablePreserveColors
     if(invertEntirePage == "true") {
         invertImageColors = invertImageColors == "false" ? "true" : "false";
         invertVideoColors = invertVideoColors == "false" ? "true" : "false";
-        invertBgColors = invertBgColors == "false" ? "true" : "false";
+        invertBgColor = invertBgColor == "false" ? "true" : "false";
         invertBrightColors = invertBrightColors == "false" ? "true" : "false";
         selectiveInvert = selectiveInvert == "false" ? "true" : "false";
     }
@@ -217,7 +217,7 @@ function processRulesInvert(parentElement, style, settings, enablePreserveColors
                     style.sheet.insertRule(":host img:not(.pageShadowHasBrightColorBackground), :host svg:not(.pageShadowHasBrightColorBackground), :host .pageShadowInvertElementAsImage:not(.pageShadowHasBrightColorBackground) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
                 }
 
-                if(invertBgColors != "true") {
+                if(invertBgColor != "true") {
                     style.sheet.insertRule(":host .pageShadowHasBackgroundImg:not(.pageShadowHasBrightColorBackground), :host .pageShadowInvertElementAsBackground:not(.pageShadowHasBrightColorBackground) { filter: " + invertBrightColorsFilter + " !important; -moz-filter: " + invertBrightColorsFilter + " !important; -o-filter: " + invertBrightColorsFilter + " !important; -webkit-filter: " + invertBrightColorsFilter + " !important; }");
                 }
 
@@ -255,7 +255,7 @@ function processRulesInvert(parentElement, style, settings, enablePreserveColors
             }
         }
 
-        if(invertBgColors == "true") {
+        if(invertBgColor == "true") {
             style.sheet.insertRule(":host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertPseudoElement:not(.pageShadowDisableElementInvert):before, :host :not(.pageShadowHasBackgroundImg):not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert) .pageShadowInvertPseudoElement:not(.pageShadowDisableElementInvert):after { filter: " + invertBgFilter + " !important; -moz-filter: " + invertBgFilter + " !important; -o-filter: " + invertBgFilter + " !important; -webkit-filter: " + invertBgFilter + " !important; }");
 
             style.sheet.insertRule(":host *:not(.pageShadowDisableElementInvert) > .pageShadowInvertElementAsBackground:not(.pageShadowDisableElementInvert) > * { filter: " + invertBgFilter + " !important; -moz-filter: " + invertBgFilter + " !important; -o-filter: " + invertBgFilter + " !important; -webkit-filter: " + invertBgFilter + " !important; }");
@@ -319,8 +319,8 @@ function processRulesAttenuate(style, settings) {
     const enabled = settings.attenuateColors;
     const enabledInvertPage = settings.colorInvert;
 
-    const { attenuateImageColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors} = settings;
-    const { invertEntirePage, invertImageColors, invertVideoColors, invertBgColors, invertBrightColors } = settings;
+    const { attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors} = settings;
+    const { invertEntirePage, invertImageColors, invertVideoColors, invertBgColor, invertBrightColors } = settings;
 
     let { percentageAttenuateColors } = settings;
 
@@ -331,7 +331,7 @@ function processRulesAttenuate(style, settings) {
     const attenuateFilter = "grayscale(" + percentageAttenuateColors + "%)";
 
     if(enabled == "true") {
-        if(attenuateImageColors == "true") {
+        if(attenuateImgColors == "true") {
             if(enabledInvertPage == "true" && invertImageColors != "true") {
                 style.sheet.insertRule(":host img:not(.pageShadowDisableElementInvert), :host svg:not(.pageShadowDisableElementInvert) { filter: " + attenuateFilter + " !important; -moz-filter: " + attenuateFilter + " !important; -o-filter: " + attenuateFilter + " !important; -webkit-filter: " + attenuateFilter + " !important; }");
             }
@@ -344,7 +344,7 @@ function processRulesAttenuate(style, settings) {
         }
 
         if(attenuateBgColors == "true") {
-            if(enabledInvertPage == "true" && invertBgColors != "true") {
+            if(enabledInvertPage == "true" && invertBgColor != "true") {
                 style.sheet.insertRule(":host .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert), :host .pageShadowPseudoElementHasBackgroundImgBefore:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvertPseudoElementBefore):before, :host .pageShadowPseudoElementHasBackgroundImgAfter:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvertPseudoElementAfter):after { filter: " + attenuateFilter + " !important; -moz-filter: " + attenuateFilter + " !important; -o-filter: " + attenuateFilter + " !important; -webkit-filter: " + attenuateFilter + " !important; }");
             }
 
