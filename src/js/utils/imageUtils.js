@@ -147,14 +147,8 @@ function extractSvgFromDataUrl(url, element) {
     }
 
     const svgData = safeDecodeURIComponent(decodedURL.replace(/\\"/g, "\""));
-    const decodedSvg = decodeSvgString(svgData);
 
-
-    if(!decodedSvg) {
-        debugLogger.log(`extractSvgFromDataUrl - Error parsing SVG from URL: ${url}`, "error", element);
-    }
-
-    return decodedSvg;
+    return decodeSvgString(svgData);
 }
 
 function decodeSvgString(svgString) {
@@ -164,15 +158,16 @@ function decodeSvgString(svgString) {
     const errorNode = svgDoc.querySelector("parsererror");
 
     if(errorNode) {
+        debugLogger.log(`decodeSvgString - Error parsing SVG from string: ${svgString}`, "error", errorNode);
         return null;
     }
 
     return svgElement;
 }
 
-function cloneSvgNode(svgNode) {
-    const svgString = svgNode.outerHTML;
-    return decodeSvgString(svgString);
+async function cloneSvgNode(svgNode, fetchUseHref) {
+    const { outerHTML } = await extractSvgUseHref(svgNode, fetchUseHref);
+    return decodeSvgString(outerHTML);
 }
 
 function processSvgAttribute(attribute) {
@@ -184,16 +179,18 @@ function applyStylesToClonedSvg(element, clonedSvg) {
     const originalElements = element.getElementsByTagName("*");
     const clonedElements = clonedSvg.getElementsByTagName("*");
 
-    for (let i = 0; i < clonedElements.length; i++) {
+    for(let i = 0; i < clonedElements.length; i++) {
         const originalElement = originalElements[i];
         const clonedElement = clonedElements[i];
 
-        const originalElementStyles = window.getComputedStyle(originalElement);
-        const { stroke, color, fill } = originalElementStyles;
+        if(originalElement && clonedElement) {
+            const originalElementStyles = window.getComputedStyle(originalElement);
+            const { stroke, color, fill } = originalElementStyles;
 
-        clonedElement.setAttribute("fill", processSvgAttribute(fill));
-        clonedElement.setAttribute("stroke", processSvgAttribute(stroke));
-        clonedElement.setAttribute("color", color);
+            clonedElement.setAttribute("fill", processSvgAttribute(fill));
+            clonedElement.setAttribute("stroke", processSvgAttribute(stroke));
+            clonedElement.setAttribute("color", color);
+        }
     }
 }
 
@@ -232,7 +229,7 @@ async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles, fet
         return null;
     }
 
-    const clonedSvg = cloneSvgNode(element);
+    const clonedSvg = await cloneSvgNode(element, fetchUseHref);
 
     if(!clonedSvg) {
         debugLogger.log("getImageUrlFromSvgElement - Error parsing SVG from element", "error", element);
@@ -253,17 +250,15 @@ async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles, fet
 
     removeClass(element, getPageAnalyzerCSSClass("pageShadowForceBlackColor", pseudoElt));
 
-    const { innerHTML } = await extractSvgUseHref(clonedSvg, fetchUseHref);
-
-    return createSvgDataUrl(innerHTML, width, height, fill, color, stroke);
+    return createSvgDataUrl(clonedSvg.innerHTML, width, height, fill, color, stroke);
 }
 
 async function extractSvgUseHref(element, fetchHref) {
     const useHrefs = [];
 
-    let { innerHTML } = element;
+    let { outerHTML } = element;
 
-    const matches = [...innerHTML.matchAll(/<use[^>]*href=["']([^"']+)["'][^>]*>(.*?)<\/use>/g)];
+    const matches = [...outerHTML.matchAll(/<use[^>]*href=["']([^"']+)["'][^>]*>(.*?)<\/use>/g)];
 
     for(const match of matches) {
         const value = match[0];
@@ -275,21 +270,21 @@ async function extractSvgUseHref(element, fetchHref) {
 
             if(symbol) {
                 useHrefs.push(href);
-                innerHTML = innerHTML.replace(value, symbol.innerHTML);
+                outerHTML = outerHTML.replace(value, symbol.innerHTML);
             }
         // eslint-disable-next-line no-unused-vars
         } catch(e) {
             const { url, svgElement } = await fetchSvgFromUsehref(href, fetchHref);
 
             if(svgElement) {
-                innerHTML = innerHTML.replace(value, svgElement.innerHTML);
+                outerHTML = outerHTML.replace(value, svgElement.innerHTML);
             } else if(url) {
-                innerHTML.replace(value, value.replace(href, url));
+                outerHTML.replace(value, value.replace(href, url));
             }
         }
     }
 
-    return { innerHTML, useHrefs };
+    return { outerHTML, useHrefs };
 }
 
 async function fetchSvgFromUsehref(href, fetchHref) {
