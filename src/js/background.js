@@ -110,7 +110,9 @@ async function updateMenu() {
     async function createMenu() {
         if(typeof(browser.storage) !== "undefined" && typeof(browser.storage.local) !== "undefined") {
             const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "globallyEnable", "disableRightClickMenu"]);
-            if(result.disableRightClickMenu == "true") return;
+            if(result.disableRightClickMenu == "true") {
+                return;
+            }
 
             let sitesInterdits;
 
@@ -122,14 +124,20 @@ async function updateMenu() {
 
             if(typeof(browser.tabs) !== "undefined" && typeof(browser.tabs.query) !== "undefined") {
                 const tabs = await browser.tabs.query({active: true, currentWindow: true});
-                if(!tabs || tabs.length <= 0) return;
+                if(!tabs || tabs.length <= 0) {
+                    return;
+                }
 
                 const tabUrl = tabs[0].url;
-                if(!tabUrl || tabUrl.trim() == "") return;
+                if(!tabUrl || tabUrl.trim() == "") {
+                    return;
+                }
 
                 // Don't show the right-click menu on extension pages
                 const extensionDomain = browser.runtime.getURL("");
-                if(tabUrl.startsWith(extensionDomain)) return;
+                if(tabUrl.startsWith(extensionDomain)) {
+                    return;
+                }
 
                 const urlStr = normalizeURL(tabUrl);
                 let url;
@@ -190,7 +198,10 @@ async function updateMenu() {
 
     async function createMenuOthers() {
         const data = await browser.storage.local.get(["globallyEnable", "disableRightClickMenu"]);
-        if(data.disableRightClickMenu == "true") return;
+
+        if(data.disableRightClickMenu == "true") {
+            return;
+        }
 
         if(data.globallyEnable == "false") {
             createContextMenu("disable-globally", "checkbox", getUImessage("disableGlobally"), ["all"], true);
@@ -236,7 +247,9 @@ async function updateBadge(storageChanged) {
         const tabs = await browser.tabs.query({ active: true });
 
         for(const tab of tabs) {
-            if(!tab || tab.url.trim() == "") continue;
+            if(!tab || tab.url.trim() == "") {
+                continue;
+            }
 
             const url = tab.url;
             const enabled = await pageShadowAllowed(normalizeURL(url));
@@ -447,7 +460,9 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                     settingsCache.updateCache();
                 }
 
-                if(!sender.tab) return;
+                if(!sender.tab) {
+                    return;
+                }
                 const tabURL = normalizeURL(sender.tab.url);
                 const pageURL = normalizeURL(sender.url);
 
@@ -737,7 +752,7 @@ if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand
 
 async function openTab(url, part) {
     const tabs = await browser.tabs.query({ url: url });
-    const completeURL = url + "" + (part ? "#" + part : "");
+    const completeURL = String(url) + (part ? "#" + part : "");
 
     if(tabs.length === 0) {
         browser.tabs.create({

@@ -62,7 +62,9 @@ function convertBytes(size) {
 }
 
 function getSizeObject(object) {
-    if(!object) return 0;
+    if(!object) {
+        return 0;
+    }
 
     return new TextEncoder().encode(
         Object.entries(object)

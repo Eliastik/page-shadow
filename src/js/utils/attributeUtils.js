@@ -23,9 +23,7 @@ function addNewStyleAttribute(element, styleToAdd) {
     const styleToAddParts = styleToAdd.split(";").map(part => part.trim()).filter(Boolean);
     const oldStyleParts = oldStyleAttribute.split(";").map(part => part.trim()).filter(Boolean);
 
-    const stylesToActuallyAdd = styleToAddParts.filter(newStyle => {
-        return !oldStyleParts.some(oldStyle => oldStyle === newStyle);
-    });
+    const stylesToActuallyAdd = styleToAddParts.filter(newStyle => !oldStyleParts.some(oldStyle => oldStyle === newStyle));
 
     if(stylesToActuallyAdd.length > 0) {
         let newStyleAttribute = oldStyleAttribute.trim();
@@ -41,7 +39,11 @@ function addNewStyleAttribute(element, styleToAdd) {
 
 function removeStyleAttribute(element, styleToRemove) {
     const oldStyleAttribute = element.getAttribute("style");
-    if (!oldStyleAttribute) return;
+
+    if(!oldStyleAttribute) {
+        return;
+    }
+
     const stylesArray = oldStyleAttribute.split(";").map(s => s.trim()).filter(s => s.length > 0);
     const newStylesArray = stylesArray.filter(style => !style.startsWith(styleToRemove.split(":")[0].trim()));
     const newStyleAttribute = newStylesArray.join("; ");

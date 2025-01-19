@@ -106,9 +106,7 @@ function labToRgba(lab) {
     const B = rgbFromXyz[2] / 255;
 
     // Gamma correction
-    const gamma = (value) => {
-        return value <= 0.0031308 ? value * 12.92 : 1.055 * Math.pow(value, 1 / 2.4) - 0.055;
-    };
+    const gamma = (value) => value <= 0.0031308 ? value * 12.92 : 1.055 * Math.pow(value, 1 / 2.4) - 0.055;
 
     const rGamma = gamma(R);
     const gGamma = gamma(G);
@@ -276,7 +274,9 @@ function parseAndConvertColorFunction(cssColor) {
 }
 
 function cssColorToRgbaValues(cssColor) {
-    if(!cssColor) return null;
+    if(!cssColor) {
+        return null;
+    }
 
     if(cssColor) {
         if(cssColor.trim().toLowerCase().startsWith("rgb")) {
@@ -347,7 +347,10 @@ function isColorTransparent(rgbValuesList) {
 }
 
 function getHSLFromColor(rgbValuesList) {
-    if(!rgbValuesList) return null;
+    if(!rgbValuesList) {
+        return null;
+    }
+
     return rgbTohsl(rgbValuesList[0] / 255, rgbValuesList[1] / 255, rgbValuesList[2] / 255);
 }
 

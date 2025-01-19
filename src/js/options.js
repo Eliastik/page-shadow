@@ -165,7 +165,7 @@ async function resetSettings() {
     localStorage.clear();
 }
 
-async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = null, changingLanguage) {
+async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = null, isChangingLanguage) {
     if(typeof(browser.storage) == "undefined" || typeof(browser.storage.sync) == "undefined") {
         $("#archiveCloudBtn").addClass("disabled");
         $("#archiveCloudNotCompatible").show();
@@ -206,7 +206,7 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
             $("#infosLocalStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
         }
 
-        if(!changingLanguage) {
+        if(!isChangingLanguage) {
             if(result.sitesInterditPageShadow != undefined && (!changes || changes.includes("sitesInterditPageShadow"))) {
                 $("#textareaAssomPage").val(result.sitesInterditPageShadow);
             }
@@ -248,7 +248,10 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
                 await loadPresetSelect("loadPresetSelect", i18next);
                 await loadPresetSelect("savePresetSelect", i18next);
                 await loadPresetSelect("deletePresetSelect", i18next);
-                if(!dontDisplayThemeAndPresets) await displayPresetSettings(currentSelectedPresetEdit);
+
+                if(!dontDisplayThemeAndPresets) {
+                    await displayPresetSettings(currentSelectedPresetEdit);
+                }
 
                 $("#savePresetSelect").val(currentSelectedPresetEdit);
             }
@@ -296,7 +299,7 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
             await loadPresetSelect("savePresetSelect", i18next);
             await loadPresetSelect("deletePresetSelect", i18next);
 
-            await displayPresetSettings(currentSelectedPresetEdit, changingLanguage);
+            await displayPresetSettings(currentSelectedPresetEdit, isChangingLanguage);
             await displayFilters();
         }
 
@@ -435,13 +438,18 @@ async function displayFilters() {
 
         const checkbox = document.createElement("input");
         checkbox.setAttribute("type", "checkbox");
-        if(filter.enabled) checkbox.checked = true;
+
+        if(filter.enabled) {
+            checkbox.checked = true;
+        }
 
         checkbox.addEventListener("click", () => {
             checkbox.disabled = true;
             let messageType = "enableFilter";
 
-            if(!checkbox.checked) messageType = "disableFilter";
+            if(!checkbox.checked) {
+                messageType = "disableFilter";
+            }
 
             sendMessageWithPromise({ "type": messageType, "filterId": index });
         });
@@ -509,7 +517,7 @@ async function displayFilters() {
                     $("#buttonSeeErrorsFilter").removeAttr("disabled");
                 }
 
-                await displayFilterErrors(message.data, message.typeFilter);
+                displayFilterErrors(message.data, message.typeFilter);
             });
 
             const iconSeeErrors = document.createElement("i");
@@ -531,7 +539,11 @@ async function displayFilters() {
             buttonSee.setAttribute("class", "btn btn-sm btn-default");
             buttonSee.setAttribute("data-toggle", "tooltip");
             buttonSee.setAttribute("title", i18next.t("modal.filters.seeDetails"));
-            if(!filter.content) buttonSee.disabled = true;
+
+            if(!filter.content) {
+                buttonSee.disabled = true;
+            }
+
             const iconSee = document.createElement("i");
             iconSee.setAttribute("class", "fa fa-eye fa-fw");
             buttonSee.appendChild(iconSee);
@@ -603,7 +615,9 @@ async function displayFilters() {
                 buttonUpdate.disabled = true;
 
                 const message = await sendMessageWithPromise({ "type": "updateFilter", "filterId": index }, "updateFilterFinished");
-                if(!message.result) displayFilters();
+                if(!message.result) {
+                    displayFilters();
+                }
             });
 
             buttonContainer.appendChild(buttonUpdate);
@@ -649,14 +663,14 @@ async function displayFilters() {
     $("[data-toggle=\"tooltip\"]").tooltip();
 }
 
-async function loadAdvancedOptionsUI(reset, changingLanguage) {
+async function loadAdvancedOptionsUI(reset, isChangingLanguage) {
     let websiteFiltersConfig = JSON.parse(JSON.stringify(defaultWebsiteSpecialFiltersConfig));
 
     if(!reset) {
         websiteFiltersConfig = await loadWebsiteSpecialFiltersConfig();
     }
 
-    if(changingLanguage) {
+    if(isChangingLanguage) {
         websiteFiltersConfig = getUpdatedAdvancedOptions();
     }
 
@@ -909,7 +923,7 @@ async function displayInfosFilter(idFilter) {
             $("#detailsFilterSource").text(filter.sourceName && filter.sourceName.trim() != "" ? filter.sourceName : i18next.t("modal.filters.filterDescriptionEmpty"));
             $("#detailsFilterHome").text(filter.homepage && filter.homepage.trim() != "" ? filter.homepage : i18next.t("modal.filters.filterDescriptionEmpty"));
             $("#detailsFilterDescription").text(filter.description && filter.description.trim() != "" ? filter.description : i18next.t("modal.filters.filterDescriptionEmpty"));
-            $("#detailsFilterUpdateInterval").text(i18next.t("modal.filters.filterUpdateIntervalDays", { count: filter.expiresIn ? parseInt(filter.expiresIn) : 0 }));
+            $("#detailsFilterUpdateInterval").text(i18next.t("modal.filters.filterUpdateIntervalDays", { count: filter.expiresIn ? parseInt(filter.expiresIn, 10) : 0 }));
             $("#detailsFilterVersion").text(filter.version && filter.version.trim() != "" ? filter.version : "0");
             $("#detailsFilterLicense").text(filter.license && filter.license.trim() != "" ? filter.license : i18next.t("modal.filters.licenseEmpty"));
 
@@ -957,8 +971,12 @@ async function displayPresetInfos(nb) {
         modalBody.textContent = "";
 
         for(const setting of settingsToSavePresets) {
-            if(setting == "colorInvert") continue;
-            if(setting == "attenuateImageColor") continue;
+            if(setting == "colorInvert") {
+                continue;
+            }
+            if(setting == "attenuateImageColor") {
+                continue;
+            }
             const row = document.createElement("div");
             row.setAttribute("class", "row border-bottom");
 
@@ -1101,11 +1119,11 @@ async function displayFilterEdit() {
     if(filter) {
         window.codeMirrorEditFilter.getDoc().setValue(filter);
 
-        const result = await sendMessageWithPromise({ "type": "getRulesErrorsForCustomEdit", "idFilter": "customFilter" }, "getRulesErrorsForCustomEditResponse");
+        const rules = await sendMessageWithPromise({ "type": "getRulesErrorsForCustomEdit", "idFilter": "customFilter" }, "getRulesErrorsForCustomEditResponse");
 
-        displayFilterErrorsOnElement(result.data, document.querySelector("#customFilterEditErrorDetails"));
+        displayFilterErrorsOnElement(rules.data, document.querySelector("#customFilterEditErrorDetails"));
 
-        if(Object.keys(result.data).length > 0) {
+        if(Object.keys(rules.data).length > 0) {
             $("#customFilterEditErrorDetected").show();
         } else {
             $("#customFilterEditErrorDetected").hide();
@@ -1201,12 +1219,29 @@ async function notifyChangedThemeNotSaved(nb) {
         userCsss.save();
     }
 
-    if(currentCustomTheme["customThemeBg"] == null || currentCustomTheme["customThemeBg"].trim() == "") currentCustomTheme["customThemeBg"] = defaultBGColorCustomTheme;
-    if(currentCustomTheme["customThemeTexts"] == null || currentCustomTheme["customThemeTexts"].trim() == "") currentCustomTheme["customThemeTexts"] = defaultTextsColorCustomTheme;
-    if(currentCustomTheme["customThemeLinks"] == null || currentCustomTheme["customThemeLinks"].trim() == "") currentCustomTheme["customThemeLinks"] = defaultLinksColorCustomTheme;
-    if(currentCustomTheme["customThemeLinksVisited"] == null || currentCustomTheme["customThemeLinksVisited"].trim() == "") currentCustomTheme["customThemeLinksVisited"] = defaultVisitedLinksColorCustomTheme;
-    if(currentCustomTheme["customThemeFont"] == null || currentCustomTheme["customThemeFont"].trim() == "") currentCustomTheme["customThemeFont"] = defaultFontCustomTheme;
-    if(currentCustomTheme["customCSSCode"] == null || currentCustomTheme["customCSSCode"].trim() == "") currentCustomTheme["customCSSCode"] = defaultCustomCSSCode;
+    if(currentCustomTheme["customThemeBg"] == null || currentCustomTheme["customThemeBg"].trim() == "") {
+        currentCustomTheme["customThemeBg"] = defaultBGColorCustomTheme;
+    }
+
+    if(currentCustomTheme["customThemeTexts"] == null || currentCustomTheme["customThemeTexts"].trim() == "") {
+        currentCustomTheme["customThemeTexts"] = defaultTextsColorCustomTheme;
+    }
+
+    if(currentCustomTheme["customThemeLinks"] == null || currentCustomTheme["customThemeLinks"].trim() == "") {
+        currentCustomTheme["customThemeLinks"] = defaultLinksColorCustomTheme;
+    }
+
+    if(currentCustomTheme["customThemeLinksVisited"] == null || currentCustomTheme["customThemeLinksVisited"].trim() == "") {
+        currentCustomTheme["customThemeLinksVisited"] = defaultVisitedLinksColorCustomTheme;
+    }
+
+    if(currentCustomTheme["customThemeFont"] == null || currentCustomTheme["customThemeFont"].trim() == "") {
+        currentCustomTheme["customThemeFont"] = defaultFontCustomTheme;
+    }
+
+    if(currentCustomTheme["customCSSCode"] == null || currentCustomTheme["customCSSCode"].trim() == "") {
+        currentCustomTheme["customCSSCode"] = defaultCustomCSSCode;
+    }
 
     return currentCustomTheme["customThemeBg"].toLowerCase() != $("#colorpicker1").attr("value").toLowerCase() ||
         currentCustomTheme["customThemeTexts"].toLowerCase() != $("#colorpicker2").attr("value").toLowerCase() ||
@@ -1284,7 +1319,7 @@ async function archiveSettings() {
 
     try {
         const date = new Date();
-        const dateString = date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1).toString() + "-" + date.getDate() + "-" + date.getHours() + "_" + date.getMinutes() + "_" + date.getSeconds();
+        const dateString = date.getFullYear() + "-" + (parseInt(date.getMonth(), 10) + 1).toString() + "-" + date.getDate() + "-" + date.getHours() + "_" + date.getMinutes() + "_" + date.getSeconds();
         const dataStr = await getSettingsToArchive();
         const filename = "page-shadow-backupdata-" + dateString + ".json";
 
@@ -1344,7 +1379,9 @@ async function restoreSettings(object) {
     $("#updateAllFilters").attr("disabled", "disabled");
 
     const message = await sendMessageWithPromise({ "type": "updateAllFilters" }, "updateAllFiltersFinished");
-    if(message.result) $("#updateAllFilters").removeAttr("disabled");
+    if(message.result) {
+        $("#updateAllFilters").removeAttr("disabled");
+    }
 
     disableStorageSizeCalculation = false;
     return true;
@@ -1361,11 +1398,11 @@ function restoreSettingsFile(event) {
 
     if (typeof FileReader !== "undefined") {
         const reader = new FileReader();
-        reader.onload = async(event) => {
+        reader.onload = async(readerEvent) => {
             let obj;
 
             try {
-                obj = JSON.parse(event.target.result);
+                obj = JSON.parse(readerEvent.target.result);
             } catch(e) {
                 debugLogger.log(e, "error");
                 $("#restoreError").fadeIn(500);
@@ -1553,7 +1590,7 @@ async function createPreset() {
     $("#savePresetError").hide();
     $("#savePresetSuccess").hide();
 
-    const result = await savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val(), $("#savePresetWebsite").val(),
+    const result = await savePreset(parseInt($("#savePresetSelect").val(), 10), $("#savePresetTitle").val(), $("#savePresetWebsite").val(),
         $("#checkSaveNewSettingsPreset").prop("checked"), true, $("#checkAutoEnablePresetForDarkWebsites").prop("checked"), $("#autoEnablePresetForDarkWebsitesTypeSelect").val());
 
     if(result == "success") {
@@ -1582,10 +1619,10 @@ async function notifyChangedPresetNotSaved(nb) {
     return $("#savePresetTitle").val().trim() != "" || $("#savePresetWebsite").val().trim() != "";
 }
 
-async function displayPresetSettings(id, changingLanguage) {
+async function displayPresetSettings(id, isChangingLanguage) {
     const data = await getPresetData(id);
 
-    if(!changingLanguage) {
+    if(!isChangingLanguage) {
         $("#savePresetTitle").val("");
         $("#savePresetWebsite").val("");
         $("#checkSaveNewSettingsPreset").prop("checked", false);
@@ -1599,9 +1636,13 @@ async function displayPresetSettings(id, changingLanguage) {
     $("#autoEnablePresetForDarkWebsitesTypeSelect").removeAttr("disabled");
 
     if(data && data != "error" && Object.keys(data).length > 0) {
-        if(!changingLanguage) {
-            if(data.name) $("#savePresetTitle").val(data.name);
-            if(data.websiteListToApply) $("#savePresetWebsite").val(data.websiteListToApply);
+        if(!isChangingLanguage) {
+            if(data.name) {
+                $("#savePresetTitle").val(data.name);
+            }
+            if(data.websiteListToApply) {
+                $("#savePresetWebsite").val(data.websiteListToApply);
+            }
         }
 
         $("#presetCreateEditBtn").text(i18next.t("modal.edit"));
@@ -2007,7 +2048,7 @@ $(async() => {
         $("#restorePresetEmpty").hide();
         $("#restorePresetError").hide();
 
-        const result = await loadPreset(parseInt($("#loadPresetSelect").val()));
+        const result = await loadPreset(parseInt($("#loadPresetSelect").val(), 10));
 
         if(result == "success") {
             $("#restorePresetSuccess").fadeIn(500);
@@ -2032,7 +2073,7 @@ $(async() => {
         $("#deletePresetError").hide();
         $("#deletePresetSuccess").hide();
 
-        const result = await deletePreset(parseInt($("#deletePresetSelect").val()));
+        const result = await deletePreset(parseInt($("#deletePresetSelect").val(), 10));
 
         if(result == "success") {
             $("#deletePresetSuccess").fadeIn(500);
@@ -2045,14 +2086,20 @@ $(async() => {
         $("#updateAllFilters").attr("disabled", "disabled");
 
         const message = await sendMessageWithPromise({ "type": "updateAllFilters" }, "updateAllFiltersFinished");
-        if(message.result) $("#updateAllFilters").removeAttr("disabled");
+
+        if(message.result) {
+            $("#updateAllFilters").removeAttr("disabled");
+        }
     });
 
     $("#cleanAllFilters").on("click", async() => {
         $("#cleanAllFilters").attr("disabled", "disabled");
 
         const message = await sendMessageWithPromise({ "type": "cleanAllFilters" }, "cleanAllFiltersFinished");
-        if(message.result) $("#cleanAllFilters").removeAttr("disabled");
+
+        if(message.result) {
+            $("#cleanAllFilters").removeAttr("disabled");
+        }
     });
 
     $("#addFilterSourceBtnOpen").on("click", () => {
@@ -2100,14 +2147,18 @@ $(async() => {
         $("#enableFilterAutoUpdate").attr("disabled", "disabled");
 
         const message = await sendMessageWithPromise({ "type": "toggleAutoUpdate", "enabled": $("#enableFilterAutoUpdate").is(":checked") }, "toggleAutoUpdateFinished");
-        if(message.result) $("#enableFilterAutoUpdate").removeAttr("disabled");
+        if(message.result) {
+            $("#enableFilterAutoUpdate").removeAttr("disabled");
+        }
     });
 
     $("#resetDefaultFiltersBtn").on("click", async() => {
         $("#resetDefaultFiltersBtn").attr("disabled", "disabled");
 
         const message = await sendMessageWithPromise({ "type": "reinstallDefaultFilters" }, "reinstallDefaultFiltersResponse");
-        if(message.result) $("#resetDefaultFiltersBtn").removeAttr("disabled");
+        if(message.result) {
+            $("#resetDefaultFiltersBtn").removeAttr("disabled");
+        }
     });
 
     $("#customFilterSave").on("click", () => {
@@ -2281,9 +2332,7 @@ $(async() => {
     }
 });
 
-window.onbeforeunload = () => {
-    return hasGlobalChange || filterEditDisplay ? true : null;
-};
+window.onbeforeunload = () => hasGlobalChange || filterEditDisplay ? true : null;
 
 browser.runtime.onMessage.addListener(message => {
     if(message && message.type == "hashUpdated") {

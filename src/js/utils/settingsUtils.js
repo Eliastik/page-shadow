@@ -35,9 +35,9 @@ function getDefaultSettingsToLoad() {
     return settings;
 }
 
-function fillSettings(defaultSettings, newSettings) {
-    for(const key of Object.keys(defaultSettings)) {
-        defaultSettings[key] = newSettings[key];
+function fillSettings(settings, newSettings) {
+    for(const key of Object.keys(settings)) {
+        settings[key] = newSettings[key];
     }
 }
 
@@ -122,10 +122,14 @@ function migrateDeprecatedSettings(settings) {
 }
 
 function hasSettingsChanged(currentSettings, newSettings, customThemeChanged) {
-    if(currentSettings == null) return true;
+    if(currentSettings == null) {
+        return true;
+    }
 
     for(const settingKey of Object.keys(currentSettings)) {
-        if(currentSettings[settingKey] !== newSettings[settingKey]) return true;
+        if(currentSettings[settingKey] !== newSettings[settingKey]) {
+            return true;
+        }
     }
 
     if(currentSettings.theme && newSettings.theme

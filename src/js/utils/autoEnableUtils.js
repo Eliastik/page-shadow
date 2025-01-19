@@ -22,15 +22,25 @@ import browser from "webextension-polyfill";
 /** Utils functions used for the auto enable/disable feature of Page Shadow */
 
 function checkNumber(number, min, max) {
-    if(typeof(number) === "undefined" || number == null || number == "" || number.trim == "") return false;
-    if(isNaN(number)) return false;
-    if(number > max || number < min) return false;
+    if(typeof(number) === "undefined" || number == null || number == "" || number.trim == "") {
+        return false;
+    }
+
+    if(isNaN(number)) {
+        return false;
+    }
+
+    if(number > max || number < min) {
+        return false;
+    }
 
     return true;
 }
 
 function hourToPeriodFormat(value, convertTo, format) {
-    if(typeof(value) === "string") value = parseInt(value);
+    if(typeof(value) === "string") {
+        value = parseInt(value, 10);
+    }
 
     if(convertTo == 12) {
         const ampm = value >= 12 ? "PM" : "AM";
@@ -40,11 +50,15 @@ function hourToPeriodFormat(value, convertTo, format) {
         return [ampm, hours.toString()];
     } else if(convertTo == 24) {
         if(format == "PM") {
-            if(value < 12) value = 12 + value;
+            if(value < 12) {
+                value = 12 + value;
+            }
 
             return value.toString();
         } else if(format == "AM") {
-            if(value == 12) value = 0;
+            if(value == 12) {
+                value = 0;
+            }
 
             return value.toString();
         } else {

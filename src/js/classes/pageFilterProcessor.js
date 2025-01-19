@@ -52,7 +52,9 @@ export default class PageFilterProcessor {
     }
 
     async doProcessFilters(element, applyToChildrens) {
-        if(!this.filtersCache) return;
+        if(!this.filtersCache) {
+            return;
+        }
 
         const enableNotMatchingFiltersDetection = this.websiteSpecialFiltersConfig.enableNotMatchingFiltersDetection;
 

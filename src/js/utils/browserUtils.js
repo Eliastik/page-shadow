@@ -65,14 +65,19 @@ function sendMessageWithPromise(data, ...expectedMessageType) {
     debugLogger.log(`Sending message to background process with type: ${data.type} - expected response type: ${expectedMessageType}`, "debug", data);
 
     return new Promise((resolve, reject) => {
+        let listener = null;
+
         // Timeout if no response received after 60 seconds
         const timeout = setTimeout(() => {
-            browser.runtime.onMessage.removeListener(listener);
+            if(listener) {
+                browser.runtime.onMessage.removeListener(listener);
+            }
+
             debugLogger.log(`Timeout of ${sendMessageWithPromiseTimeout} ms exceeded waiting for response from background process. Type: ${data.type} / Expected message type = ${expectedMessageType}`, "error", data);
             reject(new Error("Timeout: No response received"));
         }, sendMessageWithPromiseTimeout);
 
-        const listener = message => {
+        listener = message => {
             if(message && message.uuid === uuid && expectedMessageType.includes(message.type)) {
                 clearTimeout(timeout);
                 resolve(message);
@@ -149,17 +154,17 @@ function getElementSize(element) {
 function hasDarkColorScheme(computedStyles) {
     const isDarkModeEnabled = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
     const colorScheme = computedStyles.colorScheme;
-    const hasDarkColorScheme = colorScheme && colorScheme.includes("dark");
+    const hasDarkScheme = colorScheme && colorScheme.includes("dark");
 
-    return isDarkModeEnabled && hasDarkColorScheme;
+    return isDarkModeEnabled && hasDarkScheme;
 }
 
 function hasLightColorScheme(computedStyles) {
     const isDarkModeEnabled = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
     const colorScheme = computedStyles.colorScheme;
-    const hasLightColorScheme = colorScheme && colorScheme.includes("light");
+    const hasLightScheme = colorScheme && colorScheme.includes("light");
 
-    return !isDarkModeEnabled && hasLightColorScheme;
+    return !isDarkModeEnabled && hasLightScheme;
 }
 
 export { getBrowser, isRunningInPopup, isRunningInIframe, sendMessageWithPromise, checkPermissions, isElementNotVisible, getElementSize, hasDarkColorScheme, hasLightColorScheme };

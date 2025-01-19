@@ -60,9 +60,9 @@ function loadStyles(id, styles) {
 
                 stylesObjects.push(styleObject);
             } else {
-                for(let i = 0; i < currentOldStylesObjects.length; i++) {
-                    if (currentOldStylesObjects[i] && document.head.contains(currentOldStylesObjects[i])) {
-                        document.head.removeChild(currentOldStylesObjects[i]);
+                for(let j = 0; j < currentOldStylesObjects.length; j++) {
+                    if (currentOldStylesObjects[j] && document.head.contains(currentOldStylesObjects[j])) {
+                        document.head.removeChild(currentOldStylesObjects[j]);
                     }
                 }
             }

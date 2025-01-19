@@ -46,10 +46,7 @@ function filtersHint(CodeMirror, editor, keywords, getToken) {
             if(str.trim() == "") {
                 suggestions.push(...keywords);
             } else {
-                suggestions.push(...keywords.filter(keyword => {
-                    if(keyword.startsWith(str)) return true;
-                    return false;
-                }));
+                suggestions.push(...keywords.filter(keyword => keyword.startsWith(str)));
             }
         } else {
             suggestions.push(...keywords);
