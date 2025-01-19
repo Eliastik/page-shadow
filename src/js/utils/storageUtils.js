@@ -88,30 +88,37 @@ async function migrateSettings(filters) {
         let customThemes = defaultCustomThemes;
 
         if(result.customThemeBg != undefined) {
+            // eslint-disable-next-line prefer-destructuring
             customThemeBg = result.customThemeBg;
         }
 
         if(result.customThemeTexts != undefined) {
+            // eslint-disable-next-line prefer-destructuring
             customThemeTexts = result.customThemeTexts;
         }
 
         if(result.customThemeLinks != undefined) {
+            // eslint-disable-next-line prefer-destructuring
             customThemeLinks = result.customThemeLinks;
         }
 
         if(result.customThemeLinksVisited != undefined) {
+            // eslint-disable-next-line prefer-destructuring
             customThemeLinksVisited = result.customThemeLinksVisited;
         }
 
         if(result.customThemeFont != undefined) {
+            // eslint-disable-next-line prefer-destructuring
             customThemeFont = result.customThemeFont;
         }
 
         if(result.customCSSCode != undefined) {
+            // eslint-disable-next-line prefer-destructuring
             customCSSCode = result.customCSSCode;
         }
 
         if(result.customThemes != undefined && result.customThemes != undefined) {
+            // eslint-disable-next-line prefer-destructuring
             customThemes = result.customThemes;
         }
 
@@ -192,7 +199,9 @@ async function migrateSettings(filters) {
 function checkChangedStorageData(key, object) {
     if(typeof(key) === "string") {
         return Object.prototype.hasOwnProperty.call(object, key);
-    } else if(Array.isArray(key)) {
+    }
+
+    if(Array.isArray(key)) {
         for(let i = 0; i < key.length; i++) {
             if(Object.prototype.hasOwnProperty.call(object, key[i])) {
                 return true;

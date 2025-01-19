@@ -46,9 +46,7 @@ export default class IncreasePageContrast {
 
     async apply(init, customThemesSettings) {
         if(this.currentSettings.pageShadowEnabled == "true") {
-            const theme = this.currentSettings.theme;
-            const disableImgBgColor = this.currentSettings.disableImgBgColor;
-            const brightColorPreservation = this.currentSettings.brightColorPreservation;
+            const { theme, disableImgBgColor, brightColorPreservation } = this.currentSettings;
 
             this.debugLogger?.log(`Applying contrast page with settings : theme = ${theme} / disableImgBgColor = ${disableImgBgColor} / brightColorPreservation = ${brightColorPreservation}`);
 

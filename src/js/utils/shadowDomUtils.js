@@ -93,25 +93,17 @@ function processRulesInvert(parentElement, style, settings, enablePreserveColors
     }
 
     const enabled = settings.colorInvert;
-    const invertEntirePage = settings.invertEntirePage;
 
-    let invertImageColors = settings.invertImageColors;
-    let invertVideoColors = settings.invertVideoColors;
-    let invertBgColors = settings.invertBgColor;
-    let selectiveInvert = settings.selectiveInvert;
-    let invertBrightColors = settings.invertBrightColors;
+    const { invertEntirePage } = settings;
+    let { invertImageColors, invertVideoColors, invertBgColors, selectiveInvert, invertBrightColors } = settings;
 
-    let percentageAttenuateColors = settings.percentageAttenuateColors;
+    let { percentageAttenuateColors } = settings;
 
     if(percentageAttenuateColors / 100 > 1 || percentageAttenuateColors / 100 < 0 || typeof percentageAttenuateColors === "undefined" || percentageAttenuateColors == null) {
         percentageAttenuateColors = attenuateDefaultValue;
     }
 
-    const attenuateEnabled = settings.attenuateColors;
-    const attenuateImageColors = settings.attenuateImgColors;
-    const attenuateBgColors = settings.attenuateBgColors;
-    const attenuateVideoColors = settings.attenuateVideoColors;
-    const attenuateBrightColors = settings.attenuateBrightColors;
+    const { attenuateColors, attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors } = settings;
 
     let invertImageFilter = "invert(100%)";
     let invertImageFilterSelective = enablePreserveColorsSelectiveInvert ? "invert(100%) hue-rotate(180deg)" : "invert(100%)";
@@ -133,22 +125,22 @@ function processRulesInvert(parentElement, style, settings, enablePreserveColors
         }
     }
 
-    if(attenuateEnabled == "true" && attenuateImageColors == "true") {
+    if(attenuateColors == "true" && attenuateImgColors == "true") {
         invertImageFilter = invertImageFilter + " grayscale(" + percentageAttenuateColors + "%)";
         invertImageFilterSelective = invertImageFilterSelective + " grayscale(" + percentageAttenuateColors + "%)";
     }
 
-    if(attenuateEnabled == "true" && attenuateBgColors == "true") {
+    if(attenuateColors == "true" && attenuateBgColors == "true") {
         invertBgFilter = invertBgFilter + " grayscale(" + percentageAttenuateColors + "%)";
         invertBgFilterSelective = invertBgFilterSelective + " grayscale(" + percentageAttenuateColors + "%)";
     }
 
-    if(attenuateEnabled == "true" && attenuateVideoColors == "true") {
+    if(attenuateColors == "true" && attenuateVideoColors == "true") {
         invertVideoFilter = invertVideoFilter + " grayscale(" + percentageAttenuateColors + "%)";
         invertVideoFilterSelective = invertVideoFilterSelective + " grayscale(" + percentageAttenuateColors + "%)";
     }
 
-    if(attenuateEnabled == "true" && attenuateBrightColors == "true") {
+    if(attenuateColors == "true" && attenuateBrightColors == "true") {
         invertBrightColorsFilter = invertBrightColorsFilter + " grayscale(" + percentageAttenuateColors + "%)";
     }
 
@@ -325,19 +317,12 @@ function processRulesAttenuate(style, settings) {
     }
 
     const enabled = settings.attenuateColors;
-    const attenuateImageColors = settings.attenuateImgColors;
-    const attenuateBgColors = settings.attenuateBgColors;
-    const attenuateVideoColors = settings.attenuateVideoColors;
-    const attenuateBrightColors = settings.attenuateBrightColors;
-
     const enabledInvertPage = settings.colorInvert;
-    const invertEntirePage = settings.invertEntirePage;
-    const invertImageColors = settings.invertImageColors;
-    const invertVideoColors = settings.invertVideoColors;
-    const invertBgColors = settings.invertBgColor;
-    const invertBrightColors = settings.invertBrightColors;
 
-    let percentageAttenuateColors = settings.percentageAttenuateColors;
+    const { attenuateImageColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors} = settings;
+    const { invertEntirePage, invertImageColors, invertVideoColors, invertBgColors, invertBrightColors } = settings;
+
+    let { percentageAttenuateColors } = settings;
 
     if(percentageAttenuateColors / 100 > 1 || percentageAttenuateColors / 100 < 0 || typeof percentageAttenuateColors === "undefined" || percentageAttenuateColors == null) {
         percentageAttenuateColors = attenuateDefaultValue;

@@ -48,25 +48,27 @@ function hourToPeriodFormat(value, convertTo, format) {
         hours = hours ? hours : 12;
 
         return [ampm, hours.toString()];
-    } else if(convertTo == 24) {
+    }
+
+    if(convertTo == 24) {
         if(format == "PM") {
             if(value < 12) {
                 value = 12 + value;
             }
 
             return value.toString();
-        } else if(format == "AM") {
+        }
+
+        if(format == "AM") {
             if(value == 12) {
                 value = 0;
             }
 
             return value.toString();
-        } else {
-            return false;
         }
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 async function getAutoEnableSavedData() {
@@ -144,16 +146,20 @@ function checkAutoEnableStartup(hourEnable, minuteEnable, hourDisable, minuteDis
     if(timeEnable > timeDisable) {
         if(timeNow >= timeEnable || timeNow < timeDisable) {
             return true;
-        } else {
-            return false;
         }
-    } else if(timeEnable < timeDisable) {
+
+        return false;
+    }
+
+    if(timeEnable < timeDisable) {
         if(timeNow >= timeDisable || timeNow < timeEnable) {
             return false;
-        } else {
-            return true;
         }
-    } else if(timeEnable == timeDisable) {
+
+        return true;
+    }
+
+    if(timeEnable == timeDisable) {
         return true;
     }
 

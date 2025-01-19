@@ -75,6 +75,7 @@ async function presetsEnabled() {
             await setSettingItem("presets", defaultPresets);
             presets = defaultPresets;
         } else {
+            // eslint-disable-next-line prefer-destructuring
             presets = data.presets;
         }
 
@@ -143,9 +144,9 @@ async function loadPreset(nb) {
 
         if(settingsRestored > 0) {
             return "success";
-        } else {
-            return "empty";
         }
+
+        return "empty";
     } catch(e) {
         debugLogger.log(e, "error");
         return "error";
@@ -165,6 +166,7 @@ async function getPresetData(nb) {
         if(data.presets == null || typeof(data.presets) == "undefined") {
             await setSettingItem("presets", defaultPresets);
         } else {
+            // eslint-disable-next-line prefer-destructuring
             presets = data.presets;
         }
 
@@ -221,6 +223,7 @@ async function getPresetWithAutoEnableForDarkWebsites() {
     if(dataPreset.presets == null || typeof(dataPreset.presets) == "undefined") {
         presets = defaultPresets;
     } else {
+        // eslint-disable-next-line prefer-destructuring
         presets = dataPreset.presets;
     }
 
@@ -245,6 +248,7 @@ async function savePreset(nb, name, websiteListToApply, saveNewSettings, saveAut
         if(dataPreset.presets == null || typeof(dataPreset.presets) == "undefined") {
             presets = defaultPresets;
         } else {
+            // eslint-disable-next-line prefer-destructuring
             presets = dataPreset.presets;
         }
 
@@ -297,6 +301,7 @@ async function deletePreset(nb) {
         if(dataPreset.presets == null || typeof(dataPreset.presets) == "undefined") {
             presets = defaultPresets;
         } else {
+            // eslint-disable-next-line prefer-destructuring
             presets = dataPreset.presets;
         }
 
@@ -361,8 +366,8 @@ async function presetsEnabledForWebsiteWithData(url, allPresetData) {
                     presetListEnabled.push({
                         presetNb: i,
                         presetData,
-                        autoEnabledWebsite: autoEnabledWebsite,
-                        autoEnabledPage: autoEnabledPage
+                        autoEnabledWebsite,
+                        autoEnabledPage
                     });
                 }
             }
@@ -398,12 +403,12 @@ async function disableEnablePreset(type, nb, checked, url) {
     }
 
     try {
-        const domain = url.hostname;
-        const href = url.href;
-        let match = domain;
+        const { hostname, href } = url.hostname;
+
+        let match = hostname;
         let websitesPagesArray;
 
-        const websiteListToApply = preset["websiteListToApply"];
+        const { websiteListToApply } = preset;
 
         if(websiteListToApply == undefined && websiteListToApply !== "") {
             websitesPagesArray = [];
@@ -413,7 +418,7 @@ async function disableEnablePreset(type, nb, checked, url) {
 
         switch(type) {
         case "toggle-website":
-            match = domain;
+            match = hostname;
             break;
         case "toggle-webpage":
             match = href;

@@ -131,13 +131,7 @@ export default class FilterProcessor {
                         const metadata = this.extractMetadata(text);
 
                         if(metadata) {
-                            const name = metadata["name"];
-                            const sourcename = metadata["sourcename"];
-                            const homepage = metadata["homepage"];
-                            const expires = metadata["expires"];
-                            const description = metadata["description"];
-                            const version = metadata["version"];
-                            const license = metadata["license"];
+                            const { name, sourcename, homepage, expires, description, version, license } = metadata;
 
                             if(name != null) {
                                 filterToUpdate.filterName = name;
@@ -245,9 +239,9 @@ export default class FilterProcessor {
 
         if(filters.filters[idFilter].hasError) {
             return false;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     async toggleFilter(idFilter, enable) {
@@ -389,8 +383,10 @@ export default class FilterProcessor {
                 }
 
                 if(parts.length > 0 && !isComment && filtersTypeRecognized) {
-                    return { "website": website, "type": type, "filter": filter };
-                } else if(!filtersTypeRecognized) {
+                    return { website, type, filter };
+                }
+
+                if(!filtersTypeRecognized) {
                     errorType = filterSyntaxErrorTypes.UNKNOWN_TYPE;
                     errorPart = type;
                     errorCode = "UNKNOWN_TYPE";
@@ -406,7 +402,7 @@ export default class FilterProcessor {
             }
         }
 
-        return { "error": true, "type": errorType, "message": "", "linePart": errorPart, "errorCode": errorCode };
+        return { "error": true, "type": errorType, "message": "", "linePart": errorPart, errorCode };
     }
 
     parseFilter(filterContent) {
@@ -532,13 +528,7 @@ export default class FilterProcessor {
                     const metadata = this.extractMetadata(text);
 
                     if(metadata) {
-                        const name = metadata["name"];
-                        const sourcename = metadata["sourcename"];
-                        const homepage = metadata["homepage"];
-                        const expires = metadata["expires"];
-                        const description = metadata["description"];
-                        const version = metadata["version"];
-                        const license = metadata["license"];
+                        const { name, sourcename, homepage, expires, description, version, license } = metadata;
 
                         if(name != null && sourcename != null) {
                             filters.filters.push({
@@ -549,13 +539,13 @@ export default class FilterProcessor {
                                 "enabled": true,
                                 "hasError": false,
                                 "local": false,
-                                "homepage": homepage,
+                                homepage,
                                 "builtIn": false,
                                 "content": null,
-                                "description": description,
+                                description,
                                 "expiresIn": expires,
-                                "version": version,
-                                "license": license,
+                                version,
+                                license,
                                 "needUpdate": false
                             });
                         }
@@ -760,8 +750,8 @@ export default class FilterProcessor {
     async getFiltersSize() {
         if(browser.storage.local.getBytesInUse != undefined) {
             return browser.storage.local.getBytesInUse(["filtersSettings", "customFilter"]);
-        } else {
-            return getSizeObject(await browser.storage.local.get(["filtersSettings", "customFilter"]));
         }
+
+        return getSizeObject(await browser.storage.local.get(["filtersSettings", "customFilter"]));
     }
 }

@@ -189,9 +189,7 @@ function applyStylesToClonedSvg(element, clonedSvg) {
         const clonedElement = clonedElements[i];
 
         const originalElementStyles = window.getComputedStyle(originalElement);
-        const stroke = originalElementStyles.stroke;
-        const color = originalElementStyles.color;
-        const fill = originalElementStyles.fill;
+        const { stroke, color, fill } = originalElementStyles;
 
         clonedElement.setAttribute("fill", processSvgAttribute(fill));
         clonedElement.setAttribute("stroke", processSvgAttribute(stroke));
@@ -248,9 +246,8 @@ async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles, fet
     const box = element && element.getBBox && element.getBBox();
     const width = box && box.width > 0 ? box.width : 100;
     const height = box && box.height > 0 ? box.height : 100;
-    const stroke = computedStyles.stroke;
-    const color = computedStyles.color;
-    const fill = computedStyles.fill;
+
+    const { stroke, color, fill } = computedStyles;
 
     applyStylesToClonedSvg(element, clonedSvg);
 
@@ -264,7 +261,7 @@ async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles, fet
 async function extractSvgUseHref(element, fetchHref) {
     const useHrefs = [];
 
-    let innerHTML = element.innerHTML;
+    let { innerHTML } = element;
 
     const matches = [...innerHTML.matchAll(/<use[^>]*href=["']([^"']+)["'][^>]*>(.*?)<\/use>/g)];
 

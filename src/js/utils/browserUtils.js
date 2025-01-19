@@ -30,13 +30,17 @@ function getBrowser() {
 
     if(isFirefox) {
         return "Firefox";
-    } else if(isEdge) {
-        return "Edge";
-    } else if(isOpera) {
-        return "Opera";
-    } else {
-        return "Chrome";
     }
+
+    if(isEdge) {
+        return "Edge";
+    }
+
+    if(isOpera) {
+        return "Opera";
+    }
+
+    return "Chrome";
 }
 
 function isRunningInPopup() {
@@ -153,7 +157,7 @@ function getElementSize(element) {
 
 function hasDarkColorScheme(computedStyles) {
     const isDarkModeEnabled = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const colorScheme = computedStyles.colorScheme;
+    const { colorScheme } = computedStyles;
     const hasDarkScheme = colorScheme && colorScheme.includes("dark");
 
     return isDarkModeEnabled && hasDarkScheme;
@@ -161,7 +165,7 @@ function hasDarkColorScheme(computedStyles) {
 
 function hasLightColorScheme(computedStyles) {
     const isDarkModeEnabled = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const colorScheme = computedStyles.colorScheme;
+    const { colorScheme } = computedStyles;
     const hasLightScheme = colorScheme && colorScheme.includes("light");
 
     return !isDarkModeEnabled && hasLightScheme;

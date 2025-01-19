@@ -112,17 +112,17 @@ async function getCurrentURL() {
 
         if(!browser.runtime.lastError) {
             return normalizeURL(tabInfos.url);
-        } else {
-            debugLogger.log("Popup getCurrentURL - Error getting current URL", "error", browser.runtime.lastError);
         }
+
+        debugLogger.log("Popup getCurrentURL - Error getting current URL", "error", browser.runtime.lastError);
     } else {
         const tabs = await browser.tabs.query({ active: true, currentWindow: true });
 
         if(!browser.runtime.lastError) {
             return normalizeURL(tabs[0].url);
-        } else {
-            debugLogger.log("Popup getCurrentURL - Error getting current URL", "error", browser.runtime.lastError);
         }
+
+        debugLogger.log("Popup getCurrentURL - Error getting current URL", "error", browser.runtime.lastError);
     }
 }
 
@@ -214,7 +214,9 @@ async function showInformationPopup(result) {
         await setSettingItem("updateNotification", updateNotification);
         updateNotificationShowed = true;
         return true;
-    } else if (!updateNotificationShowed) {
+    }
+
+    if (!updateNotificationShowed) {
         if (!archiveInfoShowed) {
             const archiveInfoLastShowed = !result.archiveInfoLastShowed ? 0 : result.archiveInfoLastShowed;
 
@@ -224,7 +226,9 @@ async function showInformationPopup(result) {
                 archiveInfoShowed = true;
 
                 return true;
-            } else if (archiveInfoLastShowed <= 0) {
+            }
+
+            if (archiveInfoLastShowed <= 0) {
                 await setSettingItem("archiveInfoLastShowed", Date.now());
             }
         }
@@ -426,7 +430,7 @@ $(() => {
         }
 
         const domain = url.hostname;
-        const href = url.href;
+        const { href } = url;
 
         $("#disableWebsite-li").removeAttr("disabled");
         $("#enableWebsite-li").removeAttr("disabled");

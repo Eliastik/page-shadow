@@ -928,10 +928,10 @@ async function displayInfosFilter(idFilter) {
             $("#detailsFilterLicense").text(filter.license && filter.license.trim() != "" ? filter.license : i18next.t("modal.filters.licenseEmpty"));
 
 
-            const resultCount = await sendMessageWithPromise({ "type": "getNumberOfRules", "idFilter": idFilter }, "getNumberOfRulesResponse");
+            const resultCount = await sendMessageWithPromise({ "type": "getNumberOfRules", idFilter }, "getNumberOfRulesResponse");
             $("#detailsFilterRulesCount").text(resultCount.count);
 
-            const resultErrorsNumber = await sendMessageWithPromise({ "type": "getFilterRuleNumberErrors", "idFilter": idFilter }, "getFilterRuleNumberErrorsResponse");
+            const resultErrorsNumber = await sendMessageWithPromise({ "type": "getFilterRuleNumberErrors", idFilter }, "getFilterRuleNumberErrorsResponse");
 
             if(resultErrorsNumber) {
                 if(resultErrorsNumber.data) {
@@ -945,7 +945,7 @@ async function displayInfosFilter(idFilter) {
             }
 
             $("#buttonSeeErrorsFilter").off("click").on("click", async() => {
-                const resultErrors = await sendMessageWithPromise({ "type": "getRulesErrors", "idFilter": idFilter }, "getRulesErrorsResponse");
+                const resultErrors = await sendMessageWithPromise({ "type": "getRulesErrors", idFilter }, "getRulesErrorsResponse");
 
                 if(resultErrors) {
                     if(resultErrors.typeFilter == "custom") {
@@ -1135,7 +1135,7 @@ async function displayFilterEdit() {
 async function saveCustomFilter(close) {
     const text = window.codeMirrorEditFilter.getDoc().getValue();
 
-    const result = await sendMessageWithPromise({ "type": close ? "updateCustomFilterAndClose" : "updateCustomFilter", "text": text }, "updateCustomFilterFinished", "updateCustomFilterAndCloseFinished");
+    const result = await sendMessageWithPromise({ "type": close ? "updateCustomFilterAndClose" : "updateCustomFilter", text }, "updateCustomFilterFinished", "updateCustomFilterAndCloseFinished");
 
     if(result) {
         if(close) {
@@ -1171,11 +1171,10 @@ async function saveCustomFilter(close) {
 async function saveThemeSettings(nb) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
-    const result = await browser.storage.local.get("customThemes");
-    let customThemes = defaultCustomThemes;
+    let { customThemes } = await browser.storage.local.get("customThemes");
 
-    if(result.customThemes) {
-        customThemes = result.customThemes;
+    if(!customThemes) {
+        customThemes = defaultCustomThemes;
     }
 
     customThemes[nb]["customThemeBg"] = $("#colorpicker1").attr("value");
@@ -1198,13 +1197,12 @@ async function saveThemeSettings(nb) {
 async function notifyChangedThemeNotSaved(nb) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
-    const result = await browser.storage.local.get("customThemes");
+    let { customThemes } = await browser.storage.local.get("customThemes");
 
-    let customThemes = JSON.parse(JSON.stringify(defaultCustomThemes));
     let currentCustomTheme = null;
 
-    if(result.customThemes) {
-        customThemes = result.customThemes;
+    if(!customThemes) {
+        customThemes = JSON.parse(JSON.stringify(defaultCustomThemes));
     }
 
     if(customThemes && customThemes[nb]) {
@@ -1511,13 +1509,13 @@ async function isArchiveCloudAvailable() {
                 "date": data.dateLastBackup,
                 "device": data.deviceBackup
             };
-        } else {
-            return {
-                "available": false,
-                "date": null,
-                "device": null
-            };
         }
+
+        return {
+            "available": false,
+            "date": null,
+            "device": null
+        };
     } catch(e) {
         debugLogger.log(e, "error");
 

@@ -19,14 +19,14 @@
 import { availableFilterRulesType, specialFilterRules, regexpDetectionPatternHighlight } from "../constants.js";
 
 function filtersHint(CodeMirror, editor, keywords, getToken) {
-    const Pos = CodeMirror.Pos;
+    const { Pos } = CodeMirror;
 
     const cur = editor.getCursor();
     const token = getToken(editor, cur);
     const suggestions = [];
 
     const fullText = editor.getValue();
-    const line = cur.line;
+    const { line } = cur;
     const end = cur.ch;
     let currentLine = fullText.split("\n")[line];
     currentLine = currentLine.substr(0, end);
