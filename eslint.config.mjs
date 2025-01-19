@@ -55,6 +55,7 @@ export default [...compat.extends("eslint:recommended"), {
         "no-implied-eval": ["error"],
         "no-lonely-if": ["warn"],
         "no-return-assign": ["error"],
-        "no-sequences": ["error"]
+        "no-sequences": ["error"],
+        "no-implicit-coercion": ["warn"]
     },
 }];

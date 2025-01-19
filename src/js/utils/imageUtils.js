@@ -143,20 +143,51 @@ function extractSvgFromDataUrl(url, element) {
     }
 
     const svgData = safeDecodeURIComponent(decodedURL.replace(/\\"/g, "\""));
-    const svgDoc = new DOMParser().parseFromString(svgData, "image/svg+xml");
+    const decodedSvg = decodeSvgString(svgData);
+
+
+    if(!decodedSvg) {
+        debugLogger.log(`extractSvgFromDataUrl - Error parsing SVG from URL: ${url}`, "error", element);
+    }
+
+    return decodedSvg;
+}
+
+function decodeSvgString(svgString) {
+    const svgDoc = new DOMParser().parseFromString(svgString, "image/svg+xml");
     const svgElement = svgDoc.documentElement;
 
     const errorNode = svgDoc.querySelector("parsererror");
 
     if(errorNode) {
-        debugLogger.log(`Error parsing SVG from URL: ${url}`, "error", element);
         return null;
     }
 
     return svgElement;
 }
 
+function cloneSvgNode(svgNode) {
+    const svgString = svgNode.outerHTML;
+    return decodeSvgString(svgString);
+}
+
+function processSvgAttribute(attribute) {
+    const matchURLAttribute = attribute && attribute.match(regexpMatchURL);
+    return matchURLAttribute && matchURLAttribute[2] ? `url(${matchURLAttribute[2]})` : attribute;
+}
+
 async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles, fetchUseHref) {
+    if(!element) {
+        return null;
+    }
+
+    const clonedSvg = cloneSvgNode(element);
+
+    if(!clonedSvg) {
+        debugLogger.log("getImageUrlFromSvgElement - Error parsing SVG from element", "error", element);
+        return null;
+    }
+
     addClass(element, getPageAnalyzerCSSClass("pageShadowForceBlackColor", pseudoElt));
 
     computedStyles = computedStyles || window.getComputedStyle(element);
@@ -166,30 +197,28 @@ async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles, fet
     const height = box && box.height > 0 ? box.height : 100;
     const stroke = computedStyles.stroke;
     const color = computedStyles.color;
+    const fill = computedStyles.fill;
 
-    let fill = computedStyles.fill;
+    const originalElements = element.getElementsByTagName("*");
+    const clonedElements = clonedSvg.getElementsByTagName("*");
 
-    if (fill === "rgb(0, 0, 0)" && !element.hasAttribute("fill")) {
-        const childElements = element.children;
+    for(let i = 0; i < clonedElements.length; i++) {
+        const originalElement = originalElements[i];
+        const clonedElement = clonedElements[i];
 
-        fill = "none";
+        const originalElementStyles = window.getComputedStyle(originalElement);
+        const stroke = originalElementStyles.stroke;
+        const color = originalElementStyles.color;
+        const fill = originalElementStyles.fill;
 
-        for(const childrenElement of childElements) {
-            if (childrenElement.tagName.toLowerCase() !== "title") {
-                const computedStyles = window.getComputedStyle(childrenElement);
-                const subFill = computedStyles.fill;
-
-                if (subFill !== "none") {
-                    fill = subFill;
-                    break;
-                }
-            }
-        }
+        clonedElement.setAttribute("fill", processSvgAttribute(fill));
+        clonedElement.setAttribute("stroke", processSvgAttribute(stroke));
+        clonedElement.setAttribute("color", color);
     }
 
     removeClass(element, getPageAnalyzerCSSClass("pageShadowForceBlackColor", pseudoElt));
 
-    const { innerHTML } = await extractSvgUseHref(element, fetchUseHref);
+    const { innerHTML } = await extractSvgUseHref(clonedSvg, fetchUseHref);
 
     const namespaces = [];
 
@@ -208,14 +237,10 @@ async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles, fet
     }
 
     const namespaceString = namespaces.length > 0 ? ` ${namespaces.join(" ")}` : "";
+    const svgString = `<svg xmlns="http://www.w3.org/2000/svg"${namespaceString} width="${width}" height="${height}" fill="${processSvgAttribute(fill)}" color="${color}" stroke="${processSvgAttribute(stroke)}">${innerHTML}</svg>`;
+    const dataUrlString = `data:image/svg+xml;base64,${base64EncodeUnicode(svgString)}`;
 
-    const matchURLFill = fill && fill.match(regexpMatchURL);
-    const matchURLStroke = stroke && stroke.match(regexpMatchURL);
-
-    const escapedFill = matchURLFill && matchURLFill[2] ? `url(${matchURLFill[2]})` : fill;
-    const escapedStroke = matchURLStroke && matchURLStroke[2] ? `url(${matchURLStroke[2]})` : stroke;
-
-    return `data:image/svg+xml;base64,${base64EncodeUnicode(`<svg xmlns="http://www.w3.org/2000/svg"${namespaceString} width="${width}" height="${height}" fill="${escapedFill}" color="${color}" stroke="${escapedStroke}">${innerHTML}</svg>`)}`;
+    return dataUrlString;
 }
 
 async function extractSvgUseHref(element, fetchHref) {
