@@ -71,7 +71,6 @@ function createContextMenu(id, type, title, contexts, checked) {
         }, () => {
             if(browser.runtime.lastError) {
                 debugLogger.log(`Error creating context menu - id = ${id} / type = ${type} / title = ${title} / contexts = ${contexts} / checked = ${checked}`, "error", browser.runtime.lastError);
-                return; // ignore the error messages
             }
         });
     }
@@ -88,7 +87,6 @@ function updateContextMenu(id, type, title, contexts, checked) {
         }).then(() => {
             if(browser.runtime.lastError) {
                 debugLogger.log(`Error updating context menu - id = ${id} / type = ${type} / title = ${title} / contexts = ${contexts} / checked = ${checked}`, "error", browser.runtime.lastError);
-                return; // ignore the error messages
             }
         });
     }
@@ -143,7 +141,7 @@ async function updateMenu() {
                     return;
                 }
 
-                const { hostname, href } = url.href;
+                const { hostname, href } = url;
                 const isFileURL = urlStr.startsWith("file:///") || urlStr.startsWith("about:");
 
                 if(result.whiteList == "true") {
@@ -290,7 +288,6 @@ async function updateBadge(storageChanged) {
                 }).catch(() => {
                     if(browser.runtime.lastError) {
                         debugLogger.log(`Error sending message with type = websiteUrlUpdated / enabled = ${enabled} / storageChanged = ${storageChanged} / url = ${url} to tab with id = ${tab.id}`, "error", browser.runtime.lastError);
-                        return; // ignore the error messages
                     }
                 });
             }
@@ -478,7 +475,7 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                             sitesInterditPageShadow: settingsCache.disabledWebsites,
                             whiteList: settingsCache.isWhiteList,
                             globallyEnable: settingsCache.data.globallyEnable
-                        }).then(async(enabled) => {
+                        }).then(async enabled => {
                             const settings = await getSettings(tabURL, true);
                             resolve({ type: message.type + "Response", enabled, settings });
                         });
@@ -663,7 +660,6 @@ if(typeof(browser.runtime) !== "undefined" && typeof(browser.runtime.onMessage) 
                 }).catch(() => {
                     if(browser.runtime.lastError) {
                         debugLogger.log(`Error sending message with type = ${result.type} and data = ${result.data} to tab with id ${sender.tab.id} and frameId = ${sender.frameId}`, "error", browser.runtime.lastError);
-                        return; // ignore the error messages
                     }
                 });
             }
@@ -695,7 +691,7 @@ if(typeof(browser.contextMenus) !== "undefined" && typeof(browser.contextMenus.o
 }
 
 if(typeof(browser.commands) !== "undefined" && typeof(browser.commands.onCommand) !== "undefined") {
-    browser.commands.onCommand.addListener(async(command) => {
+    browser.commands.onCommand.addListener(async command => {
         switch(command) {
         case "enableDisable": {
             const result = await browser.storage.local.get("globallyEnable");
@@ -782,7 +778,6 @@ async function openTab(url, part) {
             }).catch(() => {
                 if(browser.runtime.lastError) {
                     debugLogger.log(`Error sending message with type = hashUpdated to tab with id ${updateTab.id}`, "error", browser.runtime.lastError);
-                    return; // ignore the error messages
                 }
             });
         }

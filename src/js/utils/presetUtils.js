@@ -262,7 +262,7 @@ async function savePreset(nb, name, websiteListToApply, saveNewSettings, saveAut
         presets[namePreset].websiteListToApply = websiteListToApply;
 
         if(saveAutoEnable) {
-            presets[namePreset].autoEnablePresetForDarkWebsites = autoEnablePresetForDarkWebsites ? true : false;
+            presets[namePreset].autoEnablePresetForDarkWebsites = autoEnablePresetForDarkWebsites;
             presets[namePreset].autoEnablePresetForDarkWebsitesType = autoEnablePresetForDarkWebsitesType;
         }
 
@@ -398,12 +398,13 @@ async function disableEnablePreset(type, nb, checked, url) {
     }
 
     const preset = await getPresetData(nb);
+
     if(!preset) {
         return "error";
     }
 
     try {
-        const { hostname, href } = url.hostname;
+        const { hostname, href } = url;
 
         let match = hostname;
         let websitesPagesArray;

@@ -32,7 +32,7 @@ export default class ShadowDomProcessor {
     throttledTaskAnalyzeSubchildsShadowRoot;
 
     // eslint-disable-next-line no-unused-vars
-    analyzeSubElementsCallback = async (currentElement) => {};
+    analyzeSubElementsCallback = async currentElement => {};
 
     constructor(currentSettings, websiteSpecialFiltersConfig, isEnabled) {
         this.setSettings(currentSettings, websiteSpecialFiltersConfig, isEnabled);

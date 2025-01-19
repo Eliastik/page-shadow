@@ -135,7 +135,7 @@ const timerPreApply = new SafeTimer(() => {
 });
 
 // Message/response handling
-browser.runtime.onMessage.addListener((message) => {
+browser.runtime.onMessage.addListener(message => {
     if(!message) {
         return;
     }

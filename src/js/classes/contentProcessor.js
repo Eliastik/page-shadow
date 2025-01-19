@@ -385,11 +385,11 @@ export default class ContentProcessor {
     }
 
     applyPageAnalysis(type, elements) {
-        return new Promise(resolve => {
-            if(this.pageAnalyzer.pageAnalysisFinished) {
-                return resolve();
-            }
+        if(this.pageAnalyzer.pageAnalysisFinished) {
+            return;
+        }
 
+        return new Promise(resolve => {
             const timerAnalyzePageElements = new SafeTimer(async () => {
                 timerAnalyzePageElements.clear();
 

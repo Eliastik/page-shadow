@@ -55,7 +55,7 @@ i18next.on("languageChanged", () => {
     translateContent();
 });
 
-window.addEventListener("storage", (e) => {
+window.addEventListener("storage", e => {
     if(e && e.key === "i18nextLng") {
         initLocales();
     }
