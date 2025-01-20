@@ -369,7 +369,7 @@ const defaultWebsiteSpecialFiltersConfig = {
     enableDarkImageDetectionCache: true,
     darkImageDetectionMaxCacheSize: 250,
     darkImageDetectionEnableRedirectionCheck: true,
-    darkImageDetectionEnableCorsFetch: false,
+    darkImageDetectionEnableCorsFetch: true,
     darkImageDetectionEnableFetchUseHref: true,
     darkThemeDetectionMaxLightness: 0.25,
     darkThemeDetectionMaxSaturation: 0.5,
