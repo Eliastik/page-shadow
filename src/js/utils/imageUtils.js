@@ -49,6 +49,7 @@ async function fetchCorsImage(imageUrl) {
 async function svgElementToImage(url, enableCorsFetch) {
     if(isCrossOrigin(url) && enableCorsFetch) {
         const newImage = await fetchCorsImage(url);
+
         if(newImage) {
             return newImage;
         }
@@ -57,18 +58,23 @@ async function svgElementToImage(url, enableCorsFetch) {
     const image = new Image();
     image.src = url;
 
+    if(isCrossOrigin(url)) {
+        image.crossOrigin = "Anonymous";
+    }
+
     return image;
 }
 
 async function backgroundImageToImage(url, enableCorsFetch) {
-    const image = new Image();
-
     if(isCrossOrigin(url) && enableCorsFetch) {
         const newImage = await fetchCorsImage(url);
+
         if(newImage) {
             return newImage;
         }
     }
+
+    const image = new Image();
 
     const imageLoadPromise = new Promise((resolve, reject) => {
         image.onload = resolve;
@@ -76,6 +82,10 @@ async function backgroundImageToImage(url, enableCorsFetch) {
     });
 
     image.src = url;
+
+    if(isCrossOrigin(url)) {
+        image.crossOrigin = "Anonymous";
+    }
 
     await imageLoadPromise;
     await image.decode();
@@ -332,10 +342,10 @@ async function fetchSvgFromUsehref(href, fetchHref) {
     };
 }
 
-async function getImageFromElement(image, imageUrl, hasBackgroundImg, enableCorsFetch) {
+async function getImageFromElement(image, imageUrl, hasBackgroundImg, enableCorsFetch, enableRedirectionCheck) {
     let isCrossOriginUrl = isCrossOrigin(imageUrl);
 
-    if(!isCrossOriginUrl && enableCorsFetch) {
+    if(!isCrossOriginUrl && enableRedirectionCheck) {
         const isRedirectedImageResponse = await sendMessageWithPromise({ type: "checkImageRedirection", imageUrl }, "checkImageRedirectionResponse");
 
         if(isRedirectedImageResponse && isRedirectedImageResponse.redirected && isCrossOrigin(isRedirectedImageResponse.redirectedUrl)) {
