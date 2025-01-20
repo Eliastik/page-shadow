@@ -333,8 +333,19 @@ body.pageShadowEnableSelectiveInvert *:not(.pageShadowDisableElementInvert) > .p
 body.pageShadowEnableSelectiveInvert svg.pageShadowForceBlackColor,
 body.pageShadowEnableSelectiveInvert svg.pageShadowForceBlackColor *,
 body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor,
-body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor * {
+body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor *,
+body.pageShadowEnableSelectiveInvert g.pageShadowForceBlackColor,
+body.pageShadowEnableSelectiveInvert g.pageShadowForceBlackColor * {
     color: black !important;
+}
+
+body.pageShadowEnableSelectiveInvert svg.pageShadowForceBlackColor svg.pageShadowSelectiveInvert,
+body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor svg.pageShadowSelectiveInvert,
+body.pageShadowEnableSelectiveInvert g.pageShadowForceBlackColor svg.pageShadowSelectiveInvert,
+body.pageShadowEnableSelectiveInvert svg.pageShadowForceBlackColor svg.pageShadowSelectiveInvert *,
+body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor svg.pageShadowSelectiveInvert *,
+body.pageShadowEnableSelectiveInvert g.pageShadowForceBlackColor svg.pageShadowSelectiveInvert * {
+    color: white !important;
 }
 
 /* Disable element invert */
