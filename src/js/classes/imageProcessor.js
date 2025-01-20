@@ -63,7 +63,8 @@ export default class ImageProcessor {
             }
         }
 
-        const image = await getImageFromElement(element, imageUrl, hasBackgroundImg, this.websiteSpecialFiltersConfig.darkImageDetectionEnableCorsFetch);
+        const image = await getImageFromElement(element, imageUrl, hasBackgroundImg,
+            this.websiteSpecialFiltersConfig.darkImageDetectionEnableCorsFetch, this.websiteSpecialFiltersConfig.darkImageDetectionEnableRedirectionCheck);
 
         if(image == null) {
             await this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, false);
