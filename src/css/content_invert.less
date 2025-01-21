@@ -325,18 +325,30 @@ body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShado
 
 body.pageShadowInvertBgColor *:not(.pageShadowDisableElementInvert) > .pageShadowHasBackgroundImg:not(.pageShadowDisableElementInvert):not(.pageShadowSelectiveInvert):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(.pageShadowHasBrightColorBackground) *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorBackground *):not(.pageShadowDisableBackgroundStyling),
 html.pageShadowInvertEntirePage body.pageShadowInvertBrightColors .pageShadowHasBrightColorText > *:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(.pageShadowDisableBackgroundStyling),
-body.pageShadowEnableSelectiveInvert *:not(.pageShadowDisableElementInvert) > .pageShadowSelectiveInvert:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorText *):not(.pageShadowDisableBackgroundStyling):not(img):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo),
-body.pageShadowEnableSelectiveInvert *:not(.pageShadowDisableElementInvert) > .pageShadowSelectiveInvert:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorText *):not(.pageShadowDisableBackgroundStyling):not(img):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo) > * {
+body.pageShadowEnableSelectiveInvert *:not(.pageShadowDisableElementInvert) > .pageShadowSelectiveInvert:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorText *):not(.pageShadowDisableBackgroundStyling):not(img):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg),
+body.pageShadowEnableSelectiveInvert *:not(.pageShadowDisableElementInvert) > .pageShadowSelectiveInvert:not(.pageShadowHasBrightColorBackground):not(.pageShadowHasBrightColorText):not(a):not(body.pageShadowInvertBrightColors .pageShadowHasBrightColorText *):not(.pageShadowDisableBackgroundStyling):not(img):not(.pageShadowInvertElementAsImage):not(video):not(canvas):not(.pageShadowInvertElementAsVideo):not(.pageShadowHasBackgroundImg) > * {
     color: black;
 }
 
-body.pageShadowEnableSelectiveInvert svg.pageShadowForceBlackColor,
-body.pageShadowEnableSelectiveInvert svg.pageShadowForceBlackColor *,
-body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor,
-body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor *,
-body.pageShadowEnableSelectiveInvert g.pageShadowForceBlackColor,
-body.pageShadowEnableSelectiveInvert g.pageShadowForceBlackColor * {
-    color: black !important;
+.pageShadowForceBlackColorStyles() {
+    svg.pageShadowForceBlackColor,
+    svg.pageShadowForceBlackColor *,
+    symbol.pageShadowForceBlackColor,
+    symbol.pageShadowForceBlackColor *,
+    g.pageShadowForceBlackColor,
+    g.pageShadowForceBlackColor * {
+        color: black !important;
+    }
+}
+
+body.pageShadowEnableSelectiveInvert {
+    .pageShadowForceBlackColorStyles();
+}
+
+html.pageShadowInvertEntirePage {
+    body:not(.pageShadowEnableSelectiveInvert) {
+        .pageShadowForceBlackColorStyles();
+    }
 }
 
 body.pageShadowEnableSelectiveInvert svg.pageShadowForceBlackColor svg.pageShadowSelectiveInvert,
@@ -344,7 +356,11 @@ body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor svg.pageSh
 body.pageShadowEnableSelectiveInvert g.pageShadowForceBlackColor svg.pageShadowSelectiveInvert,
 body.pageShadowEnableSelectiveInvert svg.pageShadowForceBlackColor svg.pageShadowSelectiveInvert *,
 body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor svg.pageShadowSelectiveInvert *,
-body.pageShadowEnableSelectiveInvert g.pageShadowForceBlackColor svg.pageShadowSelectiveInvert * {
+body.pageShadowEnableSelectiveInvert g.pageShadowForceBlackColor svg.pageShadowSelectiveInvert *,
+html.pageShadowInvertEntirePage body:not(.pageShadowEnableSelectiveInvert) g.pageShadowForceBlackColor svg:not(.pageShadowSelectiveInvert),
+html.pageShadowInvertEntirePage body:not(.pageShadowEnableSelectiveInvert) symbol.pageShadowForceBlackColor svg:not(.pageShadowSelectiveInvert),
+html.pageShadowInvertEntirePage body:not(.pageShadowEnableSelectiveInvert) symbol.pageShadowForceBlackColor svg:not(.pageShadowSelectiveInvert) *,
+html.pageShadowInvertEntirePage body:not(.pageShadowEnableSelectiveInvert) g.pageShadowForceBlackColor svg:not(.pageShadowSelectiveInvert) * {
     color: white !important;
 }
 
