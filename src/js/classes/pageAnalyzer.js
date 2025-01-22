@@ -165,7 +165,7 @@ export default class PageAnalyzer {
         if (isDarkImage) {
             this.multipleElementClassBatcherAdd.add(image, getPageAnalyzerCSSClass("pageShadowSelectiveInvert", pseudoElt));
 
-            const { useHrefs } = await extractSvgUseHref(image);
+            const { useHrefs } = await extractSvgUseHref(image.outerHTML, false);
 
             for(const useHref of useHrefs) {
                 const symbol = document.querySelector(useHref);
