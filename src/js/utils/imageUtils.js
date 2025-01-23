@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { regexpMatchURL } from "../constants.js";
-import { base64EncodeUnicode } from "./commonUtils.js";
+import { base64EncodeUnicode, htmlDecode } from "./commonUtils.js";
 import { sendMessageWithPromise } from "../utils/browserUtils.js";
 import { isCrossOrigin, safeDecodeURIComponent } from "./urlUtils.js";
 import { addClass, removeClass, getPageAnalyzerCSSClass } from "./cssClassUtils.js";
@@ -162,7 +162,7 @@ function extractSvgFromDataUrl(url, element, fetchUseHref) {
 }
 
 async function decodeSvgString(svgString, fetchUseHref) {
-    const { outerHTML } = await extractSvgUseHref(svgString, fetchUseHref);
+    const { outerHTML } = await extractSvgUseHref(applyNamespaces(svgString.trim()), fetchUseHref);
 
     const svgDoc = new DOMParser().parseFromString(outerHTML, "image/svg+xml");
     const svgElement = svgDoc.documentElement;
@@ -227,6 +227,11 @@ function extractSvgNamespaces(innerHTML) {
     return namespaceString;
 }
 
+function applyNamespaces(outerHTML) {
+    const namespaceString = extractSvgNamespaces(outerHTML);
+    return outerHTML.replace(/^<svg/g, `<svg${namespaceString}`);
+}
+
 function createSvgDataUrl(innerHTML, width, height, fill, color, stroke) {
     const namespaceString = extractSvgNamespaces(innerHTML);
     const svgString = `<svg xmlns="http://www.w3.org/2000/svg"${namespaceString} width="${width}" height="${height}" fill="${processSvgAttribute(fill)}" color="${color}" stroke="${processSvgAttribute(stroke)}">${innerHTML}</svg>`;
@@ -251,7 +256,7 @@ async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles, fet
 
     computedStyles = computedStyles || window.getComputedStyle(element);
 
-    const box = element && element.getBBox && element.getBBox();
+    const box = element && element.getBoundingClientRect && element.getBoundingClientRect();
     const width = box && box.width > 0 ? box.width : 100;
     const height = box && box.height > 0 ? box.height : 100;
 
@@ -267,11 +272,12 @@ async function getImageUrlFromSvgElement(element, pseudoElt, computedStyles, fet
 async function extractSvgUseHref(outerHTML, fetchHref) {
     const useHrefs = [];
 
-    const matches = [...outerHTML.matchAll(/<use[^>]*href=["']([^"']+)["'][^>]*>(.*?)<\/use>/g)];
+    const matches = [...outerHTML.matchAll(/<(use|image)[^>]*href=["']([^"']+)["'][^>]*>(.*?)<\/(use|image)>/g)];
 
     for(const match of matches) {
         const value = match[0];
-        const href = match[1];
+        const nodeName = match[1];
+        const href = match[2];
 
         try {
             // Fetch symbol based on CSS selector from href attribute
@@ -287,12 +293,12 @@ async function extractSvgUseHref(outerHTML, fetchHref) {
             }
         // eslint-disable-next-line no-unused-vars
         } catch(e) {
-            const { url, svgElement } = await fetchSvgFromUsehref(href, fetchHref);
+            const { url, svgElement } = await fetchSvgFromUsehref(href, fetchHref, nodeName);
 
             if(svgElement) {
-                outerHTML = outerHTML.replace(value, svgElement.innerHTML);
+                outerHTML = outerHTML.replace(value, svgElement.outerHTML);
             } else if(url) {
-                outerHTML.replace(value, value.replace(href, url));
+                outerHTML = outerHTML.replace(value, value.replace(href, url));
             }
         }
     }
@@ -300,49 +306,48 @@ async function extractSvgUseHref(outerHTML, fetchHref) {
     return { outerHTML, useHrefs };
 }
 
-async function fetchSvgFromUsehref(href, fetchHref) {
+async function fetchSvgFromUsehref(href, fetchHref, nodeName) {
     // Fetch image based on use element href URL
     const baseUrl = window.location.origin;
 
     try {
-        const newUrl = new URL(href, baseUrl);
+        const newUrl = new URL(htmlDecode(href), baseUrl);
 
         if(fetchHref) {
             const fetchedImage = await fetchCorsImage(newUrl.href);
 
             if(fetchedImage) {
-                const svgElement = extractSvgFromDataUrl(fetchedImage.src, fetchedImage, false);
+                if(nodeName === "use") {
+                    const extractedSvg = await extractSvgFromDataUrl(fetchedImage.src, fetchedImage, false);
 
-                if(svgElement) {
-                    const anchorId = newUrl.hash ? newUrl.hash : null;
+                    if(extractedSvg) {
+                        const anchorId = newUrl.hash ? newUrl.hash : null;
+                        const url = newUrl.href;
 
-                    if(anchorId) {
-                        return {
-                            url: newUrl.href,
-                            svgElement: await extractSvgUseHref(svgElement.querySelector(anchorId).outerHTML, false)
-                        };
+                        let svgString = null;
+
+                        if(anchorId) {
+                            svgString = extractedSvg.querySelector(anchorId).innerHTML;
+                        } else {
+                            svgString = extractedSvg.innerHTML;
+                        }
+
+                        const svgElement = await extractSvgUseHref(svgString, false);
+
+                        return { url, svgElement };
                     }
-
-                    return {
-                        url: newUrl.href,
-                        svgElement: await extractSvgUseHref(svgElement.outerHTML, false)
-                    };
+                } else if(nodeName === "image") {
+                    return { url: fetchedImage.src, svgElement: null };
                 }
             }
         }
 
-        return {
-            url: newUrl.href,
-            svgElement: null
-        };
+        return { url: newUrl.href, svgElement: null };
     } catch (e) {
         debugLogger.log(`extractSvgUseHref - Error when parsing or fetching URL ${href} from use element`, "error", e);
     }
 
-    return {
-        url: null,
-        svgElement: null
-    };
+    return { url: null, svgElement: null };
 }
 
 async function getImageFromElement(image, imageUrl, hasBackgroundImg, enableCorsFetch, enableRedirectionCheck) {
