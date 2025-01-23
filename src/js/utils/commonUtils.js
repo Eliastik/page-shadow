@@ -90,4 +90,9 @@ function base64EncodeUnicode(str) {
     return btoa(binaryString);
 }
 
-export { removeElementsFromArray, commentAllLines, downloadData, convertBytes, getSizeObject, sha256, base64EncodeUnicode };
+function htmlDecode(input) {
+    const doc = new DOMParser().parseFromString(input, "text/html");
+    return doc.documentElement.textContent;
+}
+
+export { removeElementsFromArray, commentAllLines, downloadData, convertBytes, getSizeObject, sha256, base64EncodeUnicode, htmlDecode };
