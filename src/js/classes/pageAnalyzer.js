@@ -19,7 +19,8 @@
 import { removeClass, addClass, getPageAnalyzerCSSClass } from "../utils/cssClassUtils.js";
 import { loadWebsiteSpecialFiltersConfig } from "../utils/storageUtils.js";
 import { getCustomThemeConfig } from "../utils/customThemeUtils.js";
-import { elementIsImage, extractSvgUseHref } from "../utils/imageUtils.js";
+import { elementIsImage } from "../utils/imageUtils.js";
+import { extractSvgUseHref } from "../utils/svgUtils.js";
 import { rgbTohsl, hexToRgb, cssColorToRgbaValues, extractGradientRGBValues, isColorTransparent } from "../utils/colorUtils.js";
 import { ignoredElementsContentScript, pageShadowClassListsMutationsToProcess, pageShadowClassListsMutationsToIgnore, ignoredElementsBrightTextColorDetection, defaultThemesTextColors } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
