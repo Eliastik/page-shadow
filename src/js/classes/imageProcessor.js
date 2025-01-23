@@ -73,6 +73,12 @@ export default class ImageProcessor {
 
         // Draw image on canvas
         const canvas = document.createElement("canvas");
+
+        if(!canvas.getContext) {
+            this.debugLogger.log("ImageProcessor detectDarkImage - canvas.getContext is not available on this page", "warn");
+            return false;
+        }
+
         const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
         const { newWidth, newHeight } = this.getResizedDimensions(image, maxImageSizeDarkImageDetection, maxImageSizeDarkImageDetection);
