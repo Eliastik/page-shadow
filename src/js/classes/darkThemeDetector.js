@@ -155,7 +155,7 @@ export default class DarkThemeDetector {
     }
 
     hasDarkTheme() {
-        return this.analyzedElements > 0 && this.getPercentDarkElements() >= this.websiteSpecialFiltersConfig.darkThemeDetectionPercentageRatioDarkLightElements && !this.isImageViewerPage();
+        return this.analyzedElements > 0 && this.getPercentDarkElements() >= this.websiteSpecialFiltersConfig.darkThemeDetectionPercentageRatioDarkLightElements && this.isAllowedPageType();
     }
 
     getPercentDarkElements() {
@@ -170,6 +170,10 @@ export default class DarkThemeDetector {
         const normalizedLightScore = this.lightElementsScore / totalPageArea;
 
         return normalizedDarkScore / (normalizedDarkScore + normalizedLightScore);
+    }
+
+    isAllowedPageType() {
+        return document.contentType === "text/html" && !this.isImageViewerPage();
     }
 
     isImageViewerPage() {
