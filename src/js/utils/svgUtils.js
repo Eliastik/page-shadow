@@ -101,18 +101,18 @@ function applyStylesToClonedSvg(element, clonedSvg) {
 function extractSvgNamespaces(innerHTML) {
     const namespaces = [];
 
-    if(innerHTML.includes("xlink:")) {
-        namespaces.push("xmlns:xlink=\"http://www.w3.org/1999/xlink\"");
-    }
+    const namespaceTypes = {
+        "xlink:": "xmlns:xlink=\"http://www.w3.org/1999/xlink\"",
+        "xml:": "xmlns:xml=\"http://www.w3.org/XML/1998/namespace\"",
+        "rdf:": "xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"",
+        "cc:": "xmlns:cc=\"http://creativecommons.org/ns#\"",
+        "dc:": "xmlns:dc=\"http://purl.org/dc/elements/1.1/\"",
+    };
 
-    if(innerHTML.includes("xml:")) {
-        namespaces.push("xmlns:xml=\"http://www.w3.org/XML/1998/namespace\"");
-    }
-
-    if(innerHTML.includes("rdf:") || innerHTML.includes("cc:") || innerHTML.includes("dc:")) {
-        namespaces.push("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
-        namespaces.push("xmlns:cc=\"http://creativecommons.org/ns#\"");
-        namespaces.push("xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
+    for(const [key, namespace] of Object.entries(namespaceTypes)) {
+        if(innerHTML.includes(key) && !innerHTML.includes(namespace)) {
+            namespaces.push(namespace);
+        }
     }
 
     const namespaceString = namespaces.length > 0 ? ` ${namespaces.join(" ")}` : "";
