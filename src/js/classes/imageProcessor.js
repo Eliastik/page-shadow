@@ -75,7 +75,7 @@ export default class ImageProcessor {
         const canvas = document.createElement("canvas");
 
         if(!canvas.getContext) {
-            this.debugLogger.log("ImageProcessor detectDarkImage - canvas.getContext is not available on this page", "warn");
+            this.debugLogger.logOnce("ImageProcessor detectDarkImage - canvas.getContext is not available on this page", "warn");
             return false;
         }
 

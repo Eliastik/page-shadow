@@ -25,6 +25,7 @@ export default class DebugLogger {
     isReady = false;
 
     storedMessages = [];
+    alreadyLoggedMessages = new Set();
 
     constructor() {
         this.init();
@@ -73,6 +74,13 @@ export default class DebugLogger {
                 console.warn(log, element ? element : "");
                 break;
             }
+        }
+    }
+
+    logOnce(message, type, element) {
+        if(!this.alreadyLoggedMessages.has(message)) {
+            this.log(message, type, element);
+            this.alreadyLoggedMessages.add(message);
         }
     }
 
