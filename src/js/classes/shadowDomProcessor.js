@@ -48,6 +48,8 @@ export default class ShadowDomProcessor {
     }
 
     setupThrottledTasks() {
+        this.debugLogger?.log("ShadowDomProcessor setupThrottledTasks - Setup throttled tasks", "debug");
+
         this.throttledTaskAnalyzeSubchildsShadowRoot = this.throttledTaskAnalyzeSubchildsShadowRoot || new ThrottledTask(
             element => this.processShadowRoot(element),
             "throttledTaskAnalyzeSubchildsShadowRoot"

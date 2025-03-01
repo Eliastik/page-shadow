@@ -51,7 +51,7 @@ export default class ThrottledTask {
         this.initialDelay = delay;
         this.initialElementsPerBatch = elementsPerBatch;
 
-        this.maxElementsPerBatch = Math.min(maxElementsPerBatch, elementsPerBatch * 100);
+        this.maxElementsPerBatch = this.calculateMaxElementsPerBatch(elementsPerBatch);
 
         this.elements = [];
         this.timer = new SafeTimer(() => this.processBatch());
@@ -66,9 +66,19 @@ export default class ThrottledTask {
 
     setSettings(delay, elementsPerBatch, maxExecutionTime, processNewestFirst) {
         this.delay = delay;
+        this.initialDelay = delay;
+
         this.elementsPerBatch = elementsPerBatch;
+        this.maxElementsPerBatch = this.calculateMaxElementsPerBatch(elementsPerBatch);
+        this.initialElementsPerBatch = elementsPerBatch;
+
         this.maxExecutionTime = maxExecutionTime;
+
         this.processNewestFirst = processNewestFirst;
+    }
+
+    calculateMaxElementsPerBatch(elementsPerBatch) {
+        return Math.min(maxElementsPerBatch, elementsPerBatch * 100);
     }
 
     start(newElements) {

@@ -79,6 +79,8 @@ export default class MutationObserverProcessor {
     }
 
     setupThrottledTasks() {
+        this.debugLogger?.log("MutationObserverProcessor setupThrottledTasks - Setup throttled tasks", "debug");
+
         this.throttledTaskTreatMutations = this.throttledTaskTreatMutations || new ThrottledTask(
             mutation => this.treatOneMutation(mutation),
             "throttledTaskTreatMutations"
