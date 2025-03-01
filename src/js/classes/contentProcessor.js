@@ -322,8 +322,6 @@ export default class ContentProcessor {
             if(type === ContentProcessorConstants.TYPE_START || !this.pageAnalyzer.pageAnalysisFinished) {
                 await this.updateFilters();
 
-                await this.applyPageAnalysis(type, "*");
-
                 if(document.readyState === "complete") {
                     await this.executeFilters();
                 } else {
@@ -334,6 +332,8 @@ export default class ContentProcessor {
                         }
                     });
                 }
+
+                await this.applyPageAnalysis(type, "*");
 
                 await this.pageAnalyzer.executePostActions();
             }

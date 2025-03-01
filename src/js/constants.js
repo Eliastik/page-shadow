@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 const extensionVersion = "2.11.1-dev";
-const versionDate = new Date(2025, 0, 9);
+const versionDate = new Date(2025, 2, 2);
 const nbThemes = 16; // nb of themes for the function Increase the contrast (used globally in the extension)
 const colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"]; // color temperatures available for the function Night Mode (used globally in the extension)
 const minBrightnessPercentage = 0; // the minimum percentage of brightness
@@ -370,7 +370,7 @@ const defaultWebsiteSpecialFiltersConfig = {
     darkImageDetectionMaxCacheSize: 250,
     darkImageDetectionEnableRedirectionCheck: true,
     darkImageDetectionEnableCorsFetch: true,
-    darkImageDetectionEnableFetchUseHref: true,
+    darkImageDetectionEnableFetchUseHref: false,
     darkThemeDetectionMaxLightness: 0.25,
     darkThemeDetectionMaxSaturation: 0.5,
     darkThemeDetectionMinLightnessLightElements: 0.9,
