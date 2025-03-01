@@ -114,6 +114,8 @@ export default class PageAnalyzer {
     }
 
     setupThrottledTasks() {
+        this.debugLogger?.log("PageAnalyzer setupThrottledTasks - Setup throttled tasks", "debug");
+
         this.throttledTaskAnalyzeElements = this.throttledTaskAnalyzeElements || new ThrottledTask(
             element => this.processElement(element, false),
             "throttledTaskAnalyzeElements"
