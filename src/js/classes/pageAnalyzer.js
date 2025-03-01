@@ -117,7 +117,7 @@ export default class PageAnalyzer {
         this.debugLogger?.log("PageAnalyzer setupThrottledTasks - Setup throttled tasks", "debug");
 
         this.throttledTaskAnalyzeElements = this.throttledTaskAnalyzeElements || new ThrottledTask(
-            element => this.processElement(element, false),
+            element => this.processElement(element, true),
             "throttledTaskAnalyzeElements"
         );
 
@@ -142,6 +142,9 @@ export default class PageAnalyzer {
                 this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall,
                 this.websiteSpecialFiltersConfig.throttleBackgroundDetectionMaxExecutionTime
             );
+
+            this.throttledTaskAnalyzeElements.callbackBeforeStart = () => addClass(document.body, "pageShadowDisableStyling");
+            this.throttledTaskAnalyzeElements.callbackAfterFinish = () => removeClass(document.body, "pageShadowDisableStyling");
         }
 
         if(this.throttledTaskAnalyzeSubchilds) {
