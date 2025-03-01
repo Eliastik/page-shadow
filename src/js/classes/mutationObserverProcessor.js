@@ -61,7 +61,7 @@ export default class MutationObserverProcessor {
         this.elementBlueLightFilter = elementBlueLightFilter;
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
 
-        this.initializeThrottledTasks();
+        this.setupThrottledTasks();
     }
 
     async setSettings(websiteSpecialFiltersConfig, currentSettings, precUrl, precEnabled) {
@@ -75,39 +75,37 @@ export default class MutationObserverProcessor {
         this.precUrl = precUrl;
         this.precEnabled = precEnabled;
 
+        this.setupThrottledTasks();
+    }
+
+    setupThrottledTasks() {
+        this.throttledTaskTreatMutations = this.throttledTaskTreatMutations || new ThrottledTask(
+            mutation => this.treatOneMutation(mutation),
+            "throttledTaskTreatMutations"
+        );
+
+        this.throttledTaskTreatMutationsAddedNodes = this.throttledTaskTreatMutationsAddedNodes || new ThrottledTask(
+            node => this.treatOneMutationAddedNode(node),
+            "throttledTaskTreatMutationsAddedNodes"
+        );
+
         if(this.throttledTaskTreatMutations) {
-            this.throttledTaskTreatMutations.delay = this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds;
-            this.throttledTaskTreatMutations.elementsPerBatch = this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall;
-            this.throttledTaskTreatMutations.maxExecutionTime = this.websiteSpecialFiltersConfig.throttledMutationObserverMaxExecutionTime;
-            this.throttledTaskTreatMutations.processNewestFirst = this.websiteSpecialFiltersConfig.mutationObserverProcessNewestFirst;
+            this.throttledTaskTreatMutations.setSettings(
+                this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
+                this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall,
+                this.websiteSpecialFiltersConfig.throttledMutationObserverMaxExecutionTime,
+                this.websiteSpecialFiltersConfig.mutationObserverProcessNewestFirst
+            );
         }
 
         if(this.throttledTaskTreatMutationsAddedNodes) {
-            this.throttledTaskTreatMutationsAddedNodes.delay = this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds;
-            this.throttledTaskTreatMutationsAddedNodes.elementsPerBatch = this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall;
-            this.throttledTaskTreatMutationsAddedNodes.maxExecutionTime = this.websiteSpecialFiltersConfig.throttledMutationObserverMaxExecutionTime;
-            this.throttledTaskTreatMutationsAddedNodes.processNewestFirst = this.websiteSpecialFiltersConfig.mutationObserverProcessNewestFirst;
+            this.throttledTaskTreatMutationsAddedNodes.setSettings(
+                this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
+                this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall,
+                this.websiteSpecialFiltersConfig.throttledMutationObserverMaxExecutionTime,
+                this.websiteSpecialFiltersConfig.mutationObserverProcessNewestFirst
+            );
         }
-    }
-
-    initializeThrottledTasks() {
-        this.throttledTaskTreatMutations = new ThrottledTask(
-            mutation => this.treatOneMutation(mutation),
-            "throttledTaskTreatMutations",
-            this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
-            this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall,
-            this.websiteSpecialFiltersConfig.throttledMutationObserverMaxExecutionTime,
-            this.websiteSpecialFiltersConfig.mutationObserverProcessNewestFirst
-        );
-
-        this.throttledTaskTreatMutationsAddedNodes = new ThrottledTask(
-            node => this.treatOneMutationAddedNode(node),
-            "throttledTaskTreatMutationsAddedNodes",
-            this.websiteSpecialFiltersConfig.delayMutationObserverBackgrounds,
-            this.websiteSpecialFiltersConfig.throttledMutationObserverTreatedByCall,
-            this.websiteSpecialFiltersConfig.throttledMutationObserverMaxExecutionTime,
-            this.websiteSpecialFiltersConfig.mutationObserverProcessNewestFirst
-        );
     }
 
     pause(mutationType) {

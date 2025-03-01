@@ -36,7 +36,7 @@ export default class ShadowDomProcessor {
 
     constructor(currentSettings, websiteSpecialFiltersConfig, isEnabled) {
         this.setSettings(currentSettings, websiteSpecialFiltersConfig, isEnabled);
-        this.initializeThrottledTasks();
+        this.setupThrottledTasks();
     }
 
     setSettings(currentSettings, websiteSpecialFiltersConfig, isEnabled) {
@@ -44,19 +44,22 @@ export default class ShadowDomProcessor {
         this.isEnabled = isEnabled;
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
 
-        if(this.throttledTaskAnalyzeSubchildsShadowRoot) {
-            this.throttledTaskAnalyzeSubchildsShadowRoot.setSettings(this.websiteSpecialFiltersConfig);
-        }
+        this.setupThrottledTasks();
     }
 
-    initializeThrottledTasks() {
-        this.throttledTaskAnalyzeSubchildsShadowRoot = new ThrottledTask(
+    setupThrottledTasks() {
+        this.throttledTaskAnalyzeSubchildsShadowRoot = this.throttledTaskAnalyzeSubchildsShadowRoot || new ThrottledTask(
             element => this.processShadowRoot(element),
-            "throttledTaskAnalyzeSubchildsShadowRoot",
-            this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds,
-            this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall,
-            this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime
+            "throttledTaskAnalyzeSubchildsShadowRoot"
         );
+
+        if(this.throttledTaskAnalyzeSubchildsShadowRoot) {
+            this.throttledTaskAnalyzeSubchildsShadowRoot.setSettings(
+                this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds,
+                this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall,
+                this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime
+            );
+        }
     }
 
     async processShadowRoot(currentElement) {
