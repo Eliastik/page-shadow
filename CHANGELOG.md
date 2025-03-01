@@ -2,7 +2,7 @@
 
 ## Changelog:
 
-### Version 2.11.1 (1/9/2025):
+### Version 2.11.1 (3/2/2025):
 
 * Automatic detection of dark themes: Page Shadow can now identify websites using a dark theme. With this feature, you can configure the extension to:
     * Automatically disable itself on websites or webpages with a dark theme;
@@ -437,7 +437,7 @@
 
 ## Journal des changements :
 
-### Version 2.11.1 (09/01/2025) :
+### Version 2.11.1 (02/03/2025) :
 
 * Détection automatique des thèmes sombres : Page Shadow peut désormais identifier les sites web utilisant un thème sombre. Grâce à cette fonctionnalité, vous pouvez configurer l'extension pour :
     * Se désactiver automatiquement sur les sites ou pages avec un thème sombre ;
