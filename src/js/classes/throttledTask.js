@@ -64,10 +64,11 @@ export default class ThrottledTask {
         this.batchCounter = 0;
     }
 
-    setSettings(websiteSpecialFiltersConfig) {
-        this.delay = websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay;
-        this.elementsPerBatch = websiteSpecialFiltersConfig.throttleDarkImageDetectionBatchSize;
-        this.maxExecutionTime = websiteSpecialFiltersConfig.throttleDarkImageDetectionMaxExecutionTime;
+    setSettings(delay, elementsPerBatch, maxExecutionTime, processNewestFirst) {
+        this.delay = delay;
+        this.elementsPerBatch = elementsPerBatch;
+        this.maxExecutionTime = maxExecutionTime;
+        this.processNewestFirst = processNewestFirst;
     }
 
     start(newElements) {

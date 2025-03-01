@@ -76,7 +76,7 @@ export default class PageAnalyzer {
             }
         };
 
-        this.initializeThrottledTasks();
+        this.setupThrottledTasks();
     }
 
     async setSettings(websiteSpecialFiltersConfig, currentSettings, isEnabled) {
@@ -101,17 +101,7 @@ export default class PageAnalyzer {
             this.darkThemeDetector.setSettings(currentSettings, websiteSpecialFiltersConfig);
         }
 
-        if(this.throttledTaskAnalyzeElements) {
-            this.throttledTaskAnalyzeElements.setSettings(this.websiteSpecialFiltersConfig);
-        }
-
-        if(this.throttledTaskAnalyzeSubchilds) {
-            this.throttledTaskAnalyzeSubchilds.setSettings(this.websiteSpecialFiltersConfig);
-        }
-
-        if(this.throttledTaskAnalyzeImages) {
-            this.throttledTaskAnalyzeImages.setSettings(this.websiteSpecialFiltersConfig);
-        }
+        this.setupThrottledTasks();
 
         if(this.currentSettings && this.currentSettings.theme && this.currentSettings.pageShadowEnabled == "true") {
             const { theme } = this.currentSettings;
@@ -123,24 +113,18 @@ export default class PageAnalyzer {
         }
     }
 
-    initializeThrottledTasks() {
-        this.throttledTaskAnalyzeElements = new ThrottledTask(
+    setupThrottledTasks() {
+        this.throttledTaskAnalyzeElements = this.throttledTaskAnalyzeElements || new ThrottledTask(
             element => this.processElement(element, false),
-            "throttledTaskAnalyzeElements",
-            this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay,
-            this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall,
-            this.websiteSpecialFiltersConfig.throttleBackgroundDetectionMaxExecutionTime
+            "throttledTaskAnalyzeElements"
         );
 
-        this.throttledTaskAnalyzeSubchilds = new ThrottledTask(
+        this.throttledTaskAnalyzeSubchilds = this.throttledTaskAnalyzeSubchilds || new ThrottledTask(
             element => this.processElement(element, false),
-            "throttledTaskAnalyzeSubchilds",
-            this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds,
-            this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall,
-            this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime
+            "throttledTaskAnalyzeSubchilds"
         );
 
-        this.throttledTaskAnalyzeImages = new ThrottledTask(
+        this.throttledTaskAnalyzeImages = this.throttledTaskAnalyzeImages || new ThrottledTask(
             task => this.taskAnalyzeImage(task.image, task.hasBackgroundImg, task.computedStyles, task.pseudoElt),
             "throttledTaskAnalyzeImages",
             this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay,
@@ -149,6 +133,30 @@ export default class PageAnalyzer {
             false,
             task => this.imageProcessor.detectionCanBeAwaited(task.image)
         );
+
+        if(this.throttledTaskAnalyzeElements) {
+            this.throttledTaskAnalyzeElements.setSettings(
+                this.websiteSpecialFiltersConfig.backgroundDetectionStartDelay,
+                this.websiteSpecialFiltersConfig.throttleBackgroundDetectionElementsTreatedByCall,
+                this.websiteSpecialFiltersConfig.throttleBackgroundDetectionMaxExecutionTime
+            );
+        }
+
+        if(this.throttledTaskAnalyzeSubchilds) {
+            this.throttledTaskAnalyzeSubchilds.setSettings(
+                this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds,
+                this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall,
+                this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime
+            );
+        }
+
+        if(this.throttledTaskAnalyzeImages) {
+            this.throttledTaskAnalyzeImages.setSettings(
+                this.websiteSpecialFiltersConfig.throttleDarkImageDetectionDelay,
+                this.websiteSpecialFiltersConfig.throttleDarkImageDetectionBatchSize,
+                this.websiteSpecialFiltersConfig.throttleDarkImageDetectionMaxExecutionTime
+            );
+        }
     }
 
     async taskAnalyzeImage(image, hasBackgroundImg, computedStyles, pseudoElt) {
