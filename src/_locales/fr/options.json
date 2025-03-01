@@ -124,6 +124,7 @@
             "darkImageDetectionEnableFetchUseHref": "Activer la récupération des SVG référencés par les balises HTML use",
             "darkImageDetectionEnableCorsFetch": "Activer la récupération des images provenant d'une origine différente (cross-origin)",
             "darkImageDetectionEnableRedirectionCheck": "Activer la vérification des redirections d'images pour détecter les URL provenant d'une origine différente",
+            "throttleBackgroundDetectionDestylePerElement": "Retirer le style des éléments plutôt que celui de l'élément body lorsque l'analyse des éléments est ralentie",
             "help": {
                 "debugMode": "Active le mode de débogage qui affiche des informations de débogage dans la console JavaScript sur les pages traitées par Page Shadow, ou sur les pages de l'extension.",
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive l'analyse des éléments des pages web. Cependant, la gestion des filtres reste activée.",
@@ -188,7 +189,8 @@
                 "darkThemeDetectionPercentageRatioDarkLightElements": "Définit le ratio (en pourcentage, entre 0 et 1) entre les éléments sombres et clairs pour déterminer si un site web utilise un thème sombre.",
                 "darkImageDetectionEnableFetchUseHref": "Si cette option est activée, Page Shadow effectuera une requête vers le fichier SVG référencé par une balise HTML use. Cela peut permettre d'analyser certaines images SVG supplémentaires.",
                 "darkImageDetectionEnableCorsFetch": "Si cette option est activée, Page Shadow récupérera les images hébergées sur des domaines tiers via son script d'arrière-plan pour contourner les restrictions CORS. Si elle est désactivée, une autre méthode sera utilisée pour gérer ces restrictions.",
-                "darkImageDetectionEnableRedirectionCheck": "Si cette option est activée, Page Shadow enverra une requête HEAD au serveur hébergeant l'image pour vérifier si elle provient d'une origine différente (par exemple, en cas de redirection vers une autre origine). Cela permet à Page Shadow de s'adapter et d'éviter les problèmes liés aux restrictions CORS."
+                "darkImageDetectionEnableRedirectionCheck": "Si cette option est activée, Page Shadow enverra une requête HEAD au serveur hébergeant l'image pour vérifier si elle provient d'une origine différente (par exemple, en cas de redirection vers une autre origine). Cela permet à Page Shadow de s'adapter et d'éviter les problèmes liés aux restrictions CORS.",
+                "throttleBackgroundDetectionDestylePerElement": "Si l'analyse des éléments lors du chargement des pages est ralentie, l'activation de cette option permet à Page Shadow de retirer le style appliqué à chaque élément individuellement plutôt qu'à l'élément body. Cela peut réduire la consommation CPU, mais au prix d'une analyse plus lente."
             }
         },
         "filtersConfigCategories": {
