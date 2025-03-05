@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.11.1 (02/03/2025)
+* Version actuelle : 2.11.1 (09/03/2025)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -34,7 +34,7 @@ Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
 
-### Version 2.11.1 (02/03/2025) :
+### Version 2.11.1 (09/03/2025) :
 
 * Détection automatique des thèmes sombres : Page Shadow peut désormais identifier les sites web utilisant un thème sombre. Grâce à cette fonctionnalité, vous pouvez configurer l'extension pour :
     * Se désactiver automatiquement sur les sites ou pages avec un thème sombre ;
