@@ -347,7 +347,7 @@ const defaultWebsiteSpecialFiltersConfig = {
     throttleBackgroundDetectionMaxExecutionTime: 300,
     backgroundDetectionStartDelay: 5,
     autoThrottleBackgroundDetectionTime: 500,
-    throttleBackgroundDetectionDestylePerElement: false,
+    throttleBackgroundDetectionDestylePerElement: true,
     useBackgroundDetectionAlreadyProcessedNodes: false,
     autoDetectTransparentBackgroundEnabled: true,
     opacityDetectedAsTransparentThreshold: opacityDetectedAsTransparentThresholdDefault,
