@@ -2,6 +2,23 @@
 
 ## Changelog:
 
+### Version 2.11.1 (3/9/2025):
+
+* Automatic detection of dark themes: Page Shadow can now identify websites using a dark theme. With this feature, you can configure the extension to:
+    * Automatically disable itself on websites or webpages with a dark theme;
+    * Automatically enable a specific preset if a dark theme is detected.
+* Bug fixes and technical improvements:
+    * Fixed a bug where the dark image detection algorithm failed due to CORS restrictions;
+    * Fixed a bug where some images were invisible when enabling the Invert colors > Entire page feature on some websites;
+    * Fixed a bug where some SVG images were not detected as dark by the image analysis algorithm;
+    * Fixed a bug where some colored elements were not detected as such, as their color was defined on a specific color space (OKLCH, OKLAB, etc.);
+    * Fixed a bug with transparent backgrounds detection when background color was defined on a specific color space;
+    * Fixed a bug with selective inversion when the parent had a bright colored background;
+    * Fixed a bug with selective inversion and SVG icons;
+    * Fixed a very rare bug where, when opening extension settings, the custom theme editor would malfunction;
+    * Code refactoring: most methods have been organized in separate classes and files, each with a unique responsibility;
+    * Dependencies updated.
+
 ### Version 2.11 (12/22/2024) :
 
 * Added the ability to enable the inversion or attenuation of colored elements. This allows users to disable the inversion of colored elements while enabling entire page inversion, providing an alternative dark mode to the Increase contrast function;
@@ -419,6 +436,23 @@
 # Page Shadow - Français
 
 ## Journal des changements :
+
+### Version 2.11.1 (09/03/2025) :
+
+* Détection automatique des thèmes sombres : Page Shadow peut désormais identifier les sites web utilisant un thème sombre. Grâce à cette fonctionnalité, vous pouvez configurer l'extension pour :
+    * Se désactiver automatiquement sur les sites ou pages avec un thème sombre ;
+    * Activer automatiquement un pré-réglage spécifique si un thème sombre est détecté.
+* Correction de bugs et améliorations techniques :
+    * Correction d’un bug où l’algorithme de détection des images sombres échouait à cause des restrictions CORS ;
+    * Correction d'un bug où certaines images étaient invisibles en activant la fonctionnalité Inverser les couleurs > Page entières sur certains sites web ;
+    * Correction d'un bug où certaines images SVG n'étaient pas détectées comme étant sombres par l'algorithme d'analyse des images ;
+    * Correction d'un bug où certains éléments colorés n'étaient pas détectés comme tels, car leur couleur était définie sur un espace de couleur spécifique (OKLCH, OKLAB, etc.) ;
+    * Correction d'un bug concernant la détection des arrière-plans transparent lorsque la couleur d'arrière-plan était définie dans un espace de couleur spécifique ;
+    * Correction d'un bug avec l'inversion sélective lorsque le parent avait un fond avec couleurs vives ;
+    * Correction d'un bug avec l'inversion sélective et les icônes SVG ;
+    * Correction d'un bug très rare où, lors de l'ouverture des paramètres de l'extension, l'éditeur de thèmes personnalisés dysfonctionnait ;
+    * Refactorisation du code : la plupart des méthodes ont été organisées dans des classes et fichiers distincts, chacun avec une responsabilité unique ;
+    * Mise à jour des dépendances.
 
 ### Version 2.11 (22/12/2024) :
 

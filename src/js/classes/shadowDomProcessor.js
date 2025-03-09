@@ -16,7 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { getCustomThemeConfig, processRules, processRulesInvert, processRulesAttenuate } from "../utils/util.js";
+import { getCustomThemeConfig } from "../utils/customThemeUtils.js";
+import { processRules, processRulesInvert, processRulesAttenuate } from "../utils/shadowDomUtils.js";
 import { defaultThemesBackgrounds, defaultThemesLinkColors, defaultThemesVisitedLinkColors, defaultThemesTextColors, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
 
@@ -31,24 +32,36 @@ export default class ShadowDomProcessor {
     throttledTaskAnalyzeSubchildsShadowRoot;
 
     // eslint-disable-next-line no-unused-vars
-    analyzeSubElementsCallback = async (currentElement) => {};
+    analyzeSubElementsCallback = async currentElement => {};
 
     constructor(currentSettings, websiteSpecialFiltersConfig, isEnabled) {
+        this.setSettings(currentSettings, websiteSpecialFiltersConfig, isEnabled);
+        this.setupThrottledTasks();
+    }
+
+    setSettings(currentSettings, websiteSpecialFiltersConfig, isEnabled) {
         this.currentSettings = currentSettings;
         this.isEnabled = isEnabled;
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
 
-        this.initializeThrottledTasks();
+        this.setupThrottledTasks();
     }
 
-    initializeThrottledTasks() {
-        this.throttledTaskAnalyzeSubchildsShadowRoot = new ThrottledTask(
+    setupThrottledTasks() {
+        this.debugLogger?.log("ShadowDomProcessor setupThrottledTasks - Setup throttled tasks", "debug");
+
+        this.throttledTaskAnalyzeSubchildsShadowRoot = this.throttledTaskAnalyzeSubchildsShadowRoot || new ThrottledTask(
             element => this.processShadowRoot(element),
-            "throttledTaskAnalyzeSubchildsShadowRoot",
-            this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds,
-            this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall,
-            this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime
+            "throttledTaskAnalyzeSubchildsShadowRoot"
         );
+
+        if(this.throttledTaskAnalyzeSubchildsShadowRoot) {
+            this.throttledTaskAnalyzeSubchildsShadowRoot.setSettings(
+                this.websiteSpecialFiltersConfig.delayMutationObserverBackgroundsSubchilds,
+                this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsTreatedByCall,
+                this.websiteSpecialFiltersConfig.throttledMutationObserverSubchildsMaxExecutionTime
+            );
+        }
     }
 
     async processShadowRoot(currentElement) {

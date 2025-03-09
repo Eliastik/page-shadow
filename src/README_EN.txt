@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.11 (12/22/2024)
+* Latest version: 2.11.1 (3/9/2025)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,23 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.11.1 (3/9/2025):
+
+* Automatic detection of dark themes: Page Shadow can now identify websites using a dark theme. With this feature, you can configure the extension to:
+    * Automatically disable itself on websites or webpages with a dark theme;
+    * Automatically enable a specific preset if a dark theme is detected.
+* Bug fixes and technical improvements:
+    * Fixed a bug where the dark image detection algorithm failed due to CORS restrictions;
+    * Fixed a bug where some images were invisible when enabling the Invert colors > Entire page feature on some websites;
+    * Fixed a bug where some SVG images were not detected as dark by the image analysis algorithm;
+    * Fixed a bug where some colored elements were not detected as such, as their color was defined on a specific color space (OKLCH, OKLAB, etc.);
+    * Fixed a bug with transparent backgrounds detection when background color was defined on a specific color space;
+    * Fixed a bug with selective inversion when the parent had a bright colored background;
+    * Fixed a bug with selective inversion and SVG icons;
+    * Fixed a very rare bug where, when opening extension settings, the custom theme editor would malfunction;
+    * Code refactoring: most methods have been organized in separate classes and files, each with a unique responsibility;
+    * Dependencies updated.
 
 ### Version 2.11 (12/22/2024) :
 
@@ -497,7 +514,7 @@ Page Shadow is distributed under GPL-3.0 license (see LICENCE.txt file)
 
 #### License notice
 
-Copyright (C) 2015-2024 Eliastik (eliastiksofts.com)
+Copyright (C) 2015-2025 Eliastik (eliastiksofts.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

@@ -92,7 +92,9 @@ html.pageShadowContrastBlack.pageShadowForceCustomTextColorAsBackground:not(.pag
 }
 
 .pageShadowContrastBlack.pageShadowDisableStyling *, 
-.pageShadowContrastBlack *.pageShadowElementDisabled {
+.pageShadowContrastBlack *.pageShadowElementDisabled,
+.pageShadowContrastBlack.pageShadowDisableStyling,
+html.pageShadowContrastBlack.pageShadowDisableStyling {
     transition: none !important;
 }
 
@@ -108,8 +110,8 @@ html.pageShadowContrastBlack.pageShadowForceCustomTextColorAsBackground:not(.pag
     background-color: var(--page-shadow-bgcolor) !important;
 }
 
-.pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor),
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowHasBrightColorBackground):not(.pageShadowForceCustomTextColor):not(.pageShadowHasBrightColorText):not(body.pageShadowEnableSelectiveInvert svg.pageShadowSelectiveInvert use),
+.pageShadowContrastBlack:not(.pageShadowDisableStyling):not(.pageShadowPreserveBrightColor) *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor):not(body.pageShadowEnableSelectiveInvert svg.pageShadowSelectiveInvert *):not(body svg.pageShadowForceBlackColor *):not(body.pageShadowEnableSelectiveInvert .pageShadowSelectiveInvert),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowHasBrightColorBackground):not(.pageShadowForceCustomTextColor):not(.pageShadowHasBrightColorText):not(body.pageShadowEnableSelectiveInvert svg.pageShadowSelectiveInvert *):not(body svg.pageShadowForceBlackColor *):not(body.pageShadowEnableSelectiveInvert .pageShadowSelectiveInvert):not(.pageShadowHasBrightColorBackground:not(body) *):not(body symbol.pageShadowForceBlackColor *):not(body symbol.pageShadowForceBlackColor):not(body g.pageShadowForceBlackColor *):not(body g.pageShadowForceBlackColor):not(body svg.pageShadowForceBlackColor),
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) *.pageShadowForceCustomTextColor,
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) a > .pageShadowHasBrightColorText > *:not(.pageShadowHasBrightColorText),
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowBrightColorForceCustomTextLinkColor:not(.pageShadowDisableStyling):not(.pageShadowHasBrightColorText),
@@ -125,8 +127,26 @@ html.pageShadowContrastBlack.pageShadowForceCustomTextColorAsBackground:not(.pag
     color: var(--page-shadow-txtcolor) !important;
 }
 
-.pageShadowContrastBlack:not(.pageShadowDisableStyling) :not(.pageShadowInvertImageColor) svg:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor) {
+.pageShadowContrastBlack:not(.pageShadowDisableStyling) :not(.pageShadowInvertImageColor) svg:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowSelectiveInvert):not(.pageShadowForceBlackColor) {
     color: var(--page-shadow-txtcolor) !important;
+}
+
+body.pageShadowEnableSelectiveInvert svg.pageShadowForceBlackColor,
+body.pageShadowEnableSelectiveInvert svg.pageShadowForceBlackColor *,
+body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor,
+body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor *,
+body.pageShadowEnableSelectiveInvert g.pageShadowForceBlackColor,
+body.pageShadowEnableSelectiveInvert g.pageShadowForceBlackColor * {
+    color: black !important;
+}
+
+body.pageShadowEnableSelectiveInvert svg.pageShadowForceBlackColor svg.pageShadowSelectiveInvert,
+body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor svg.pageShadowSelectiveInvert,
+body.pageShadowEnableSelectiveInvert g.pageShadowForceBlackColor svg.pageShadowSelectiveInvert,
+body.pageShadowEnableSelectiveInvert svg.pageShadowForceBlackColor svg.pageShadowSelectiveInvert *,
+body.pageShadowEnableSelectiveInvert symbol.pageShadowForceBlackColor svg.pageShadowSelectiveInvert *,
+body.pageShadowEnableSelectiveInvert g.pageShadowForceBlackColor svg.pageShadowSelectiveInvert * {
+    color: white !important;
 }
 
 .pageShadowContrastBlack:not(.pageShadowDisableStyling) select:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling) {
@@ -279,20 +299,20 @@ html.pageShadowContrastBlack.pageShadowForceCustomTextColorAsBackground:not(.pag
 }
 
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasBrightColorBackground.pageShadowBrightColorWithBlackText,
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(.pageShadowBrightColorWithWhiteText):not(.pageShadowBrightColorForceCustomTextLinkColor).pageShadowHasBrightColorBackground.pageShadowBrightColorWithBlackText *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowBrightColorWithWhiteText):not(.pageShadowForceCustomTextColor):not(.pageShadowBrightColorForceCustomTextLinkColor):not(.pageShadowHasBrightColorText),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(.pageShadowBrightColorWithWhiteText):not(.pageShadowBrightColorForceCustomTextLinkColor).pageShadowHasBrightColorBackground.pageShadowBrightColorWithBlackText *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowBrightColorWithWhiteText):not(.pageShadowForceCustomTextColor):not(.pageShadowBrightColorForceCustomTextLinkColor):not(.pageShadowHasBrightColorText):not(.pageShadowSelectiveInvert):not(.pageShadowSelectiveInvert *),
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasBrightColorBackground.pageShadowBrightColorWithBlackText a:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowBrightColorForceCustomTextLinkColor),
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasBrightColorBackground.pageShadowBrightColorWithBlackText a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowBrightColorForceCustomTextLinkColor),
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowPseudoElementHasBrightColorBackgroundAfter.pageShadowPseudoElementBrightColorWithBlackTextAfter:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling)::after,
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowPseudoElementHasBrightColorBackgroundBefore.pageShadowPseudoElementBrightColorWithBlackTextBefore:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling)::before {
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowPseudoElementHasBrightColorBackgroundAfter.pageShadowPseudoElementBrightColorWithBlackTextAfter:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowSelectiveInvertPseudoElementAfter)::after,
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowPseudoElementHasBrightColorBackgroundBefore.pageShadowPseudoElementBrightColorWithBlackTextBefore:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowSelectiveInvertPseudoElementBefore)::before {
     color: var(--page-shadow-brightcolortxtblack) !important;
 }
 
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasBrightColorBackground.pageShadowBrightColorWithWhiteText,
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(.pageShadowBrightColorWithBlackText):not(.pageShadowBrightColorForceCustomTextLinkColor).pageShadowHasBrightColorBackground.pageShadowBrightColorWithWhiteText *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowBrightColorWithBlackText):not(.pageShadowForceCustomTextColor):not(.pageShadowBrightColorForceCustomTextLinkColor):not(.pageShadowHasBrightColorText),
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *:not(.pageShadowBrightColorWithBlackText):not(.pageShadowBrightColorForceCustomTextLinkColor).pageShadowHasBrightColorBackground.pageShadowBrightColorWithWhiteText *:not(select):not(ins):not(del):not(mark):not(a):not(img):not(video):not(canvas):not(svg):not(yt-icon):not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowBrightColorWithBlackText):not(.pageShadowForceCustomTextColor):not(.pageShadowBrightColorForceCustomTextLinkColor):not(.pageShadowHasBrightColorText):not(.pageShadowSelectiveInvert):not(.pageShadowSelectiveInvert *),
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasBrightColorBackground.pageShadowBrightColorWithWhiteText a:not(.pageShadowElementDisabled):not(.pageShadowDisableColorStyling):not(.pageShadowDisableLinkStyling):not(.pageShadowForceCustomVisitedLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowBrightColorForceCustomTextLinkColor),
 .pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowHasBrightColorBackground.pageShadowBrightColorWithWhiteText a:visited:not(#pageShadowLinkNotVisited):not(.pageShadowElementDisabled):not(.pageShadowDisableLinkStyling):not(.pageShadowDisableColorStyling):not(.pageShadowDisableCustomVisitedLinkColor):not(.pageShadowForceCustomLinkColor):not(.pageShadowForceCustomTextColor):not(.pageShadowBrightColorForceCustomTextLinkColor),
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowPseudoElementHasBrightColorBackgroundAfter.pageShadowPseudoElementBrightColorWithWhiteTextAfter:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling)::after,
-.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowPseudoElementHasBrightColorBackgroundBefore.pageShadowPseudoElementBrightColorWithWhiteTextBefore:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling)::before {
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowPseudoElementHasBrightColorBackgroundAfter.pageShadowPseudoElementBrightColorWithWhiteTextAfter:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowSelectiveInvertPseudoElementAfter)::after,
+.pageShadowContrastBlack.pageShadowPreserveBrightColor:not(.pageShadowDisableStyling) *.pageShadowPseudoElementHasBrightColorBackgroundBefore.pageShadowPseudoElementBrightColorWithWhiteTextBefore:not(.pageShadowElementDisabled):not(.pageShadowDisableBackgroundStyling):not(.pageShadowSelectiveInvertPseudoElementBefore)::before {
     color: var(--page-shadow-brightcolortxtwhite) !important;
 }
 

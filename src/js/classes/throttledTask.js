@@ -39,6 +39,9 @@ export default class ThrottledTask {
     ) {
         this.callback = callback;
         this.callbackCanBeAwaited = callbackCanBeAwaited;
+        this.callbackBeforeStart = () => {};
+        this.callbackAfterFinish = () => {};
+
         this.name = name;
         this.delay = delay;
         this.elementsPerBatch = elementsPerBatch;
@@ -51,7 +54,7 @@ export default class ThrottledTask {
         this.initialDelay = delay;
         this.initialElementsPerBatch = elementsPerBatch;
 
-        this.maxElementsPerBatch = Math.min(maxElementsPerBatch, elementsPerBatch * 100);
+        this.maxElementsPerBatch = this.calculateMaxElementsPerBatch(elementsPerBatch);
 
         this.elements = [];
         this.timer = new SafeTimer(() => this.processBatch());
@@ -62,6 +65,23 @@ export default class ThrottledTask {
 
         this.averageBatchDuration = 0;
         this.batchCounter = 0;
+    }
+
+    setSettings(delay, elementsPerBatch, maxExecutionTime, processNewestFirst) {
+        this.delay = delay;
+        this.initialDelay = delay;
+
+        this.elementsPerBatch = elementsPerBatch;
+        this.maxElementsPerBatch = this.calculateMaxElementsPerBatch(elementsPerBatch);
+        this.initialElementsPerBatch = elementsPerBatch;
+
+        this.maxExecutionTime = maxExecutionTime;
+
+        this.processNewestFirst = processNewestFirst;
+    }
+
+    calculateMaxElementsPerBatch(elementsPerBatch) {
+        return Math.min(maxElementsPerBatch, elementsPerBatch * 100);
     }
 
     start(newElements) {
@@ -81,6 +101,10 @@ export default class ThrottledTask {
 
         const batchSize = Math.min(this.elements.length, this.elementsPerBatch);
 
+        if(this.callbackBeforeStart) {
+            this.callbackBeforeStart();
+        }
+
         for(let i = 0; i < batchSize; i++) {
             try {
                 const element = this.processNewestFirst ? this.elements.pop() : this.elements.shift();
@@ -99,6 +123,10 @@ export default class ThrottledTask {
                 this.debugLogger?.log(`ThrottledTask ${this.name} - Stopping early task to respect maxExecutionTime = ${this.maxExecutionTime} ms`);
                 break;
             }
+        }
+
+        if(this.callbackAfterFinish) {
+            this.callbackAfterFinish();
         }
 
         const batchDuration = performance.now() - startTime;

@@ -33,12 +33,6 @@ import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/css-hint.js";
 import "jquery-colpick";
 import "jquery-colpick/css/colpick.css";
-import { commentAllLines, getBrowser, downloadData, loadPresetSelect, loadPreset, savePreset, deletePreset, getPresetData, convertBytes, getSizeObject, toggleTheme, isInterfaceDarkTheme, loadWebsiteSpecialFiltersConfig, getSettingsToArchive, archiveCloud, sendMessageWithPromise, getCurrentArchiveCloud } from "./utils/util.js";
-import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes, versionDate } from "./constants.js";
-import { setSettingItem, setFirstSettings, migrateSettings } from "./storage.js";
-import { initI18next } from "./locales.js";
-import registerCodemirrorFilterMode from "./utils/filter.codemirror.mode";
-import browser from "webextension-polyfill";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "@fortawesome/fontawesome-free/css/v4-shims.min.css";
 import "@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2";
@@ -49,6 +43,17 @@ import optionsEN from "../_locales/en/options.json";
 import optionsFR from "../_locales/fr/options.json";
 import DebugLogger from "./classes/debugLogger.js";
 import Filter from "./classes/filters.js";
+import patchColpick from "./libs/patchColpick";
+import { commentAllLines, downloadData, convertBytes, getSizeObject } from "./utils/commonUtils.js";
+import { getBrowser, sendMessageWithPromise } from "./utils/browserUtils.js";
+import { toggleTheme, isInterfaceDarkTheme } from "./utils/uiUtils.js";
+import { getSettingsToArchive, archiveCloud, getCurrentArchiveCloud } from "./utils/archiveUtils.js";
+import { deletePreset, getPresetData, getPresetWithAutoEnableForDarkWebsites, loadPreset, loadPresetSelect, savePreset } from "./utils/presetUtils.js";
+import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes, versionDate } from "./constants.js";
+import { setSettingItem, setFirstSettings, migrateSettings, loadWebsiteSpecialFiltersConfig } from "./utils/storageUtils.js";
+import { initI18next } from "./locales.js";
+import registerCodemirrorFilterMode from "./utils/filter.codemirror.mode";
+import browser from "webextension-polyfill";
 
 window.$ = $;
 window.jQuery = $;
@@ -129,6 +134,8 @@ function initLocales() {
 initLocales();
 toggleTheme(); // Toggle dark/light theme
 
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", toggleTheme);
+
 async function changeLng(lng) {
     await i18next.changeLanguage(lng);
 }
@@ -146,6 +153,7 @@ async function resetSettings() {
 
     $("#textareaAssomPage").val("");
     $("#checkWhiteList").prop("checked", false);
+    $("#autoDisableDarkThemedWebsite").prop("checked", false);
 
     initLocales();
 
@@ -157,7 +165,7 @@ async function resetSettings() {
     localStorage.clear();
 }
 
-async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = null, changingLanguage) {
+async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = null, isChangingLanguage) {
     if(typeof(browser.storage) == "undefined" || typeof(browser.storage.sync) == "undefined") {
         $("#archiveCloudBtn").addClass("disabled");
         $("#archiveCloudNotCompatible").show();
@@ -190,7 +198,7 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
     }
 
     if(!areaName || areaName == "local") {
-        const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "autoBackupCloudInterval", "lastAutoBackupFailed", "disableRightClickMenu"]);
+        const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList", "autoDisableDarkThemedWebsite", "autoDisableDarkThemedWebsiteType", "autoBackupCloudInterval", "lastAutoBackupFailed", "disableRightClickMenu"]);
 
         if(!disableStorageSizeCalculation) {
             const size = browser.storage.local.getBytesInUse ? await browser.storage.local.getBytesInUse(null) : getSizeObject(await browser.storage.local.get(null));
@@ -198,7 +206,7 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
             $("#infosLocalStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: converted.size, unit: i18next.t("unit." + converted.unit) }));
         }
 
-        if(!changingLanguage) {
+        if(!isChangingLanguage) {
             if(result.sitesInterditPageShadow != undefined && (!changes || changes.includes("sitesInterditPageShadow"))) {
                 $("#textareaAssomPage").val(result.sitesInterditPageShadow);
             }
@@ -208,6 +216,22 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
                     $("#checkWhiteList").prop("checked", true);
                 } else if(result.whiteList !== "true" && $("#checkWhiteList").is(":checked") == true) {
                     $("#checkWhiteList").prop("checked", false);
+                }
+            }
+
+            if(!changes || changes.includes("autoDisableDarkThemedWebsite")) {
+                if(result.autoDisableDarkThemedWebsite == "true" && $("#autoDisableDarkThemedWebsite").is(":checked") == false) {
+                    $("#autoDisableDarkThemedWebsite").prop("checked", true);
+                } else if(result.autoDisableDarkThemedWebsite !== "true" && $("#autoDisableDarkThemedWebsite").is(":checked") == true) {
+                    $("#autoDisableDarkThemedWebsite").prop("checked", false);
+                }
+            }
+
+            if((!changes || changes.includes("autoDisableDarkThemedWebsiteType"))) {
+                if(result.autoDisableDarkThemedWebsiteType) {
+                    $("#autoDisableDarkThemedWebsiteTypeSelect").val(result.autoDisableDarkThemedWebsiteType);
+                } else {
+                    $("#autoDisableDarkThemedWebsiteTypeSelect").val("website");
                 }
             }
 
@@ -224,7 +248,10 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
                 await loadPresetSelect("loadPresetSelect", i18next);
                 await loadPresetSelect("savePresetSelect", i18next);
                 await loadPresetSelect("deletePresetSelect", i18next);
-                if(!dontDisplayThemeAndPresets) await displayPresetSettings(currentSelectedPresetEdit);
+
+                if(!dontDisplayThemeAndPresets) {
+                    await displayPresetSettings(currentSelectedPresetEdit);
+                }
 
                 $("#savePresetSelect").val(currentSelectedPresetEdit);
             }
@@ -272,7 +299,7 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
             await loadPresetSelect("savePresetSelect", i18next);
             await loadPresetSelect("deletePresetSelect", i18next);
 
-            await displayPresetSettings(currentSelectedPresetEdit, changingLanguage);
+            await displayPresetSettings(currentSelectedPresetEdit, isChangingLanguage);
             await displayFilters();
         }
 
@@ -411,13 +438,18 @@ async function displayFilters() {
 
         const checkbox = document.createElement("input");
         checkbox.setAttribute("type", "checkbox");
-        if(filter.enabled) checkbox.checked = true;
+
+        if(filter.enabled) {
+            checkbox.checked = true;
+        }
 
         checkbox.addEventListener("click", () => {
             checkbox.disabled = true;
             let messageType = "enableFilter";
 
-            if(!checkbox.checked) messageType = "disableFilter";
+            if(!checkbox.checked) {
+                messageType = "disableFilter";
+            }
 
             sendMessageWithPromise({ "type": messageType, "filterId": index });
         });
@@ -485,7 +517,7 @@ async function displayFilters() {
                     $("#buttonSeeErrorsFilter").removeAttr("disabled");
                 }
 
-                await displayFilterErrors(message.data, message.typeFilter);
+                displayFilterErrors(message.data, message.typeFilter);
             });
 
             const iconSeeErrors = document.createElement("i");
@@ -507,7 +539,11 @@ async function displayFilters() {
             buttonSee.setAttribute("class", "btn btn-sm btn-default");
             buttonSee.setAttribute("data-toggle", "tooltip");
             buttonSee.setAttribute("title", i18next.t("modal.filters.seeDetails"));
-            if(!filter.content) buttonSee.disabled = true;
+
+            if(!filter.content) {
+                buttonSee.disabled = true;
+            }
+
             const iconSee = document.createElement("i");
             iconSee.setAttribute("class", "fa fa-eye fa-fw");
             buttonSee.appendChild(iconSee);
@@ -579,7 +615,9 @@ async function displayFilters() {
                 buttonUpdate.disabled = true;
 
                 const message = await sendMessageWithPromise({ "type": "updateFilter", "filterId": index }, "updateFilterFinished");
-                if(!message.result) displayFilters();
+                if(!message.result) {
+                    displayFilters();
+                }
             });
 
             buttonContainer.appendChild(buttonUpdate);
@@ -625,14 +663,14 @@ async function displayFilters() {
     $("[data-toggle=\"tooltip\"]").tooltip();
 }
 
-async function loadAdvancedOptionsUI(reset, changingLanguage) {
+async function loadAdvancedOptionsUI(reset, isChangingLanguage) {
     let websiteFiltersConfig = JSON.parse(JSON.stringify(defaultWebsiteSpecialFiltersConfig));
 
     if(!reset) {
         websiteFiltersConfig = await loadWebsiteSpecialFiltersConfig();
     }
 
-    if(changingLanguage) {
+    if(isChangingLanguage) {
         websiteFiltersConfig = getUpdatedAdvancedOptions();
     }
 
@@ -885,15 +923,15 @@ async function displayInfosFilter(idFilter) {
             $("#detailsFilterSource").text(filter.sourceName && filter.sourceName.trim() != "" ? filter.sourceName : i18next.t("modal.filters.filterDescriptionEmpty"));
             $("#detailsFilterHome").text(filter.homepage && filter.homepage.trim() != "" ? filter.homepage : i18next.t("modal.filters.filterDescriptionEmpty"));
             $("#detailsFilterDescription").text(filter.description && filter.description.trim() != "" ? filter.description : i18next.t("modal.filters.filterDescriptionEmpty"));
-            $("#detailsFilterUpdateInterval").text(i18next.t("modal.filters.filterUpdateIntervalDays", { count: filter.expiresIn ? parseInt(filter.expiresIn) : 0 }));
+            $("#detailsFilterUpdateInterval").text(i18next.t("modal.filters.filterUpdateIntervalDays", { count: filter.expiresIn ? parseInt(filter.expiresIn, 10) : 0 }));
             $("#detailsFilterVersion").text(filter.version && filter.version.trim() != "" ? filter.version : "0");
             $("#detailsFilterLicense").text(filter.license && filter.license.trim() != "" ? filter.license : i18next.t("modal.filters.licenseEmpty"));
 
 
-            const resultCount = await sendMessageWithPromise({ "type": "getNumberOfRules", "idFilter": idFilter }, "getNumberOfRulesResponse");
+            const resultCount = await sendMessageWithPromise({ "type": "getNumberOfRules", idFilter }, "getNumberOfRulesResponse");
             $("#detailsFilterRulesCount").text(resultCount.count);
 
-            const resultErrorsNumber = await sendMessageWithPromise({ "type": "getFilterRuleNumberErrors", "idFilter": idFilter }, "getFilterRuleNumberErrorsResponse");
+            const resultErrorsNumber = await sendMessageWithPromise({ "type": "getFilterRuleNumberErrors", idFilter }, "getFilterRuleNumberErrorsResponse");
 
             if(resultErrorsNumber) {
                 if(resultErrorsNumber.data) {
@@ -907,7 +945,7 @@ async function displayInfosFilter(idFilter) {
             }
 
             $("#buttonSeeErrorsFilter").off("click").on("click", async() => {
-                const resultErrors = await sendMessageWithPromise({ "type": "getRulesErrors", "idFilter": idFilter }, "getRulesErrorsResponse");
+                const resultErrors = await sendMessageWithPromise({ "type": "getRulesErrors", idFilter }, "getRulesErrorsResponse");
 
                 if(resultErrors) {
                     if(resultErrors.typeFilter == "custom") {
@@ -933,8 +971,12 @@ async function displayPresetInfos(nb) {
         modalBody.textContent = "";
 
         for(const setting of settingsToSavePresets) {
-            if(setting == "colorInvert") continue;
-            if(setting == "attenuateImageColor") continue;
+            if(setting == "colorInvert") {
+                continue;
+            }
+            if(setting == "attenuateImageColor") {
+                continue;
+            }
             const row = document.createElement("div");
             row.setAttribute("class", "row border-bottom");
 
@@ -1077,11 +1119,11 @@ async function displayFilterEdit() {
     if(filter) {
         window.codeMirrorEditFilter.getDoc().setValue(filter);
 
-        const result = await sendMessageWithPromise({ "type": "getRulesErrorsForCustomEdit", "idFilter": "customFilter" }, "getRulesErrorsForCustomEditResponse");
+        const rules = await sendMessageWithPromise({ "type": "getRulesErrorsForCustomEdit", "idFilter": "customFilter" }, "getRulesErrorsForCustomEditResponse");
 
-        displayFilterErrorsOnElement(result.data, document.querySelector("#customFilterEditErrorDetails"));
+        displayFilterErrorsOnElement(rules.data, document.querySelector("#customFilterEditErrorDetails"));
 
-        if(Object.keys(result.data).length > 0) {
+        if(Object.keys(rules.data).length > 0) {
             $("#customFilterEditErrorDetected").show();
         } else {
             $("#customFilterEditErrorDetected").hide();
@@ -1093,7 +1135,7 @@ async function displayFilterEdit() {
 async function saveCustomFilter(close) {
     const text = window.codeMirrorEditFilter.getDoc().getValue();
 
-    const result = await sendMessageWithPromise({ "type": close ? "updateCustomFilterAndClose" : "updateCustomFilter", "text": text }, "updateCustomFilterFinished", "updateCustomFilterAndCloseFinished");
+    const result = await sendMessageWithPromise({ "type": close ? "updateCustomFilterAndClose" : "updateCustomFilter", text }, "updateCustomFilterFinished", "updateCustomFilterAndCloseFinished");
 
     if(result) {
         if(close) {
@@ -1129,11 +1171,10 @@ async function saveCustomFilter(close) {
 async function saveThemeSettings(nb) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
-    const result = await browser.storage.local.get("customThemes");
-    let customThemes = defaultCustomThemes;
+    let { customThemes } = await browser.storage.local.get("customThemes");
 
-    if(result.customThemes) {
-        customThemes = result.customThemes;
+    if(!customThemes) {
+        customThemes = defaultCustomThemes;
     }
 
     customThemes[nb]["customThemeBg"] = $("#colorpicker1").attr("value");
@@ -1156,13 +1197,12 @@ async function saveThemeSettings(nb) {
 async function notifyChangedThemeNotSaved(nb) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
-    const result = await browser.storage.local.get("customThemes");
+    let { customThemes } = await browser.storage.local.get("customThemes");
 
-    let customThemes = JSON.parse(JSON.stringify(defaultCustomThemes));
     let currentCustomTheme = null;
 
-    if(result.customThemes) {
-        customThemes = result.customThemes;
+    if(!customThemes) {
+        customThemes = JSON.parse(JSON.stringify(defaultCustomThemes));
     }
 
     if(customThemes && customThemes[nb]) {
@@ -1177,12 +1217,29 @@ async function notifyChangedThemeNotSaved(nb) {
         userCsss.save();
     }
 
-    if(currentCustomTheme["customThemeBg"] == null || currentCustomTheme["customThemeBg"].trim() == "") currentCustomTheme["customThemeBg"] = defaultBGColorCustomTheme;
-    if(currentCustomTheme["customThemeTexts"] == null || currentCustomTheme["customThemeTexts"].trim() == "") currentCustomTheme["customThemeTexts"] = defaultTextsColorCustomTheme;
-    if(currentCustomTheme["customThemeLinks"] == null || currentCustomTheme["customThemeLinks"].trim() == "") currentCustomTheme["customThemeLinks"] = defaultLinksColorCustomTheme;
-    if(currentCustomTheme["customThemeLinksVisited"] == null || currentCustomTheme["customThemeLinksVisited"].trim() == "") currentCustomTheme["customThemeLinksVisited"] = defaultVisitedLinksColorCustomTheme;
-    if(currentCustomTheme["customThemeFont"] == null || currentCustomTheme["customThemeFont"].trim() == "") currentCustomTheme["customThemeFont"] = defaultFontCustomTheme;
-    if(currentCustomTheme["customCSSCode"] == null || currentCustomTheme["customCSSCode"].trim() == "") currentCustomTheme["customCSSCode"] = defaultCustomCSSCode;
+    if(currentCustomTheme["customThemeBg"] == null || currentCustomTheme["customThemeBg"].trim() == "") {
+        currentCustomTheme["customThemeBg"] = defaultBGColorCustomTheme;
+    }
+
+    if(currentCustomTheme["customThemeTexts"] == null || currentCustomTheme["customThemeTexts"].trim() == "") {
+        currentCustomTheme["customThemeTexts"] = defaultTextsColorCustomTheme;
+    }
+
+    if(currentCustomTheme["customThemeLinks"] == null || currentCustomTheme["customThemeLinks"].trim() == "") {
+        currentCustomTheme["customThemeLinks"] = defaultLinksColorCustomTheme;
+    }
+
+    if(currentCustomTheme["customThemeLinksVisited"] == null || currentCustomTheme["customThemeLinksVisited"].trim() == "") {
+        currentCustomTheme["customThemeLinksVisited"] = defaultVisitedLinksColorCustomTheme;
+    }
+
+    if(currentCustomTheme["customThemeFont"] == null || currentCustomTheme["customThemeFont"].trim() == "") {
+        currentCustomTheme["customThemeFont"] = defaultFontCustomTheme;
+    }
+
+    if(currentCustomTheme["customCSSCode"] == null || currentCustomTheme["customCSSCode"].trim() == "") {
+        currentCustomTheme["customCSSCode"] = defaultCustomCSSCode;
+    }
 
     return currentCustomTheme["customThemeBg"].toLowerCase() != $("#colorpicker1").attr("value").toLowerCase() ||
         currentCustomTheme["customThemeTexts"].toLowerCase() != $("#colorpicker2").attr("value").toLowerCase() ||
@@ -1193,13 +1250,22 @@ async function notifyChangedThemeNotSaved(nb) {
 }
 
 async function notifyChangedListNotSaved() {
-    const result = await browser.storage.local.get(["sitesInterditPageShadow", "whiteList"]);
+    const result = await browser.storage.local.get(["sitesInterditPageShadow", "autoDisableDarkThemedWebsite", "autoDisableDarkThemedWebsiteType", "whiteList"]);
     const list = result.sitesInterditPageShadow || "";
+
     const whiteListSetting = result.whiteList != null ? result.whiteList : "false";
     const whiteListChecked = $("#checkWhiteList").is(":checked") ? "true" : "false";
 
+    const autoDisableDarkThemedWebsiteSetting = result.autoDisableDarkThemedWebsite != null ? result.autoDisableDarkThemedWebsite : "false";
+    const autoDisableDarkThemedWebsiteChecked = $("#autoDisableDarkThemedWebsite").is(":checked") ? "true" : "false";
+
+    const autoDisableDarkThemedWebsiteTypeSelectSetting = result.autoDisableDarkThemedWebsiteType != null ? result.autoDisableDarkThemedWebsiteType : "website";
+    const autoDisableDarkThemedWebsiteTypeSelectValue = $("#autoDisableDarkThemedWebsiteTypeSelect").val() || "website";
+
     return list.toLowerCase() != $("#textareaAssomPage").val().toLowerCase() ||
-        whiteListSetting.toLowerCase() != whiteListChecked.toLowerCase();
+        whiteListSetting.toLowerCase() != whiteListChecked.toLowerCase() ||
+        autoDisableDarkThemedWebsiteSetting.toLowerCase() != autoDisableDarkThemedWebsiteChecked.toLowerCase() ||
+        autoDisableDarkThemedWebsiteTypeSelectSetting.toLowerCase() != autoDisableDarkThemedWebsiteTypeSelectValue.toLowerCase();
 }
 
 async function saveList() {
@@ -1219,6 +1285,12 @@ async function saveList() {
         }
 
         await setSettingItem("whiteList", "false");
+    }
+
+    if($("#autoDisableDarkThemedWebsite").prop("checked") == true) {
+        await setSettingItem("autoDisableDarkThemedWebsite", "true");
+    } else {
+        await setSettingItem("autoDisableDarkThemedWebsite", "false");
     }
 
     $("#saved").modal("show");
@@ -1245,7 +1317,7 @@ async function archiveSettings() {
 
     try {
         const date = new Date();
-        const dateString = date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1).toString() + "-" + date.getDate() + "-" + date.getHours() + "_" + date.getMinutes() + "_" + date.getSeconds();
+        const dateString = date.getFullYear() + "-" + (parseInt(date.getMonth(), 10) + 1).toString() + "-" + date.getDate() + "-" + date.getHours() + "_" + date.getMinutes() + "_" + date.getSeconds();
         const dataStr = await getSettingsToArchive();
         const filename = "page-shadow-backupdata-" + dateString + ".json";
 
@@ -1305,7 +1377,9 @@ async function restoreSettings(object) {
     $("#updateAllFilters").attr("disabled", "disabled");
 
     const message = await sendMessageWithPromise({ "type": "updateAllFilters" }, "updateAllFiltersFinished");
-    if(message.result) $("#updateAllFilters").removeAttr("disabled");
+    if(message.result) {
+        $("#updateAllFilters").removeAttr("disabled");
+    }
 
     disableStorageSizeCalculation = false;
     return true;
@@ -1322,11 +1396,11 @@ function restoreSettingsFile(event) {
 
     if (typeof FileReader !== "undefined") {
         const reader = new FileReader();
-        reader.onload = async(event) => {
+        reader.onload = async readerEvent => {
             let obj;
 
             try {
-                obj = JSON.parse(event.target.result);
+                obj = JSON.parse(readerEvent.target.result);
             } catch(e) {
                 debugLogger.log(e, "error");
                 $("#restoreError").fadeIn(500);
@@ -1335,6 +1409,7 @@ function restoreSettingsFile(event) {
 
             $("#textareaAssomPage").val("");
             $("#checkWhiteList").prop("checked", false);
+            $("#autoDisableDarkThemedWebsite").prop("checked", false);
             $("#restoreDataButton").attr("disabled", "disabled");
             $("#archiveCloudBtn").attr("disabled", "disabled");
             $("#restoreCloudBtn").attr("disabled", "disabled");
@@ -1434,13 +1509,13 @@ async function isArchiveCloudAvailable() {
                 "date": data.dateLastBackup,
                 "device": data.deviceBackup
             };
-        } else {
-            return {
-                "available": false,
-                "date": null,
-                "device": null
-            };
         }
+
+        return {
+            "available": false,
+            "date": null,
+            "device": null
+        };
     } catch(e) {
         debugLogger.log(e, "error");
 
@@ -1474,6 +1549,7 @@ async function restoreCloudSettings() {
 
                 $("#textareaAssomPage").val("");
                 $("#checkWhiteList").prop("checked", false);
+                $("#autoDisableDarkThemedWebsite").prop("checked", false);
                 $("#restoreCloudBtn").attr("disabled", "disabled");
                 $("#restoreDataButton").attr("disabled", "disabled");
                 $("#archiveCloudBtn").attr("disabled", "disabled");
@@ -1512,7 +1588,8 @@ async function createPreset() {
     $("#savePresetError").hide();
     $("#savePresetSuccess").hide();
 
-    const result = await savePreset(parseInt($("#savePresetSelect").val()), $("#savePresetTitle").val(), $("#savePresetWebsite").val(), $("#checkSaveNewSettingsPreset").prop("checked"));
+    const result = await savePreset(parseInt($("#savePresetSelect").val(), 10), $("#savePresetTitle").val(), $("#savePresetWebsite").val(),
+        $("#checkSaveNewSettingsPreset").prop("checked"), true, $("#checkAutoEnablePresetForDarkWebsites").prop("checked"), $("#autoEnablePresetForDarkWebsitesTypeSelect").val());
 
     if(result == "success") {
         $("#savePresetSuccess").fadeIn(500);
@@ -1527,37 +1604,71 @@ async function notifyChangedPresetNotSaved(nb) {
     if(data && Object.keys(data).length > 0) {
         const name = typeof(data["name"]) === "undefined" ? "" : data["name"];
         const websiteListToApply = typeof(data["websiteListToApply"]) === "undefined" ? "" : data["websiteListToApply"];
+        const autoEnablePresetForDarkWebsites = typeof(data["autoEnablePresetForDarkWebsites"]) === "undefined" ? false : data["autoEnablePresetForDarkWebsites"];
+        const autoEnablePresetForDarkWebsitesType = typeof(data["autoEnablePresetForDarkWebsitesType"]) === "undefined" ? "website" : data["autoEnablePresetForDarkWebsitesType"];
 
-        return name != $("#savePresetTitle").val() || websiteListToApply != $("#savePresetWebsite").val();
+        const isCheckAutoEnablePresetForDarkWebsitesEnabled = $("#checkAutoEnablePresetForDarkWebsites").is(":checked");
+
+        return name != $("#savePresetTitle").val() || websiteListToApply != $("#savePresetWebsite").val()
+            || autoEnablePresetForDarkWebsitesType != $("#autoEnablePresetForDarkWebsitesTypeSelect").val()
+            || isCheckAutoEnablePresetForDarkWebsitesEnabled != autoEnablePresetForDarkWebsites;
     }
 
     return $("#savePresetTitle").val().trim() != "" || $("#savePresetWebsite").val().trim() != "";
 }
 
-async function displayPresetSettings(id, changingLanguage) {
+async function displayPresetSettings(id, isChangingLanguage) {
     const data = await getPresetData(id);
 
-    if(!changingLanguage) {
+    if(!isChangingLanguage) {
         $("#savePresetTitle").val("");
         $("#savePresetWebsite").val("");
         $("#checkSaveNewSettingsPreset").prop("checked", false);
+        $("#checkAutoEnablePresetForDarkWebsites").prop("checked", false);
+        $("#autoEnablePresetForDarkWebsitesTypeSelect").val("website");
     }
 
     $("#checkSaveNewSettingsPreset").removeAttr("disabled");
     $("#presetInfosBtn").removeAttr("disabled");
+    $("#checkAutoEnablePresetForDarkWebsites").removeAttr("disabled");
+    $("#autoEnablePresetForDarkWebsitesTypeSelect").removeAttr("disabled");
 
     if(data && data != "error" && Object.keys(data).length > 0) {
-        if(!changingLanguage) {
-            if(data.name) $("#savePresetTitle").val(data.name);
-            if(data.websiteListToApply) $("#savePresetWebsite").val(data.websiteListToApply);
+        if(!isChangingLanguage) {
+            if(data.name) {
+                $("#savePresetTitle").val(data.name);
+            }
+            if(data.websiteListToApply) {
+                $("#savePresetWebsite").val(data.websiteListToApply);
+            }
         }
 
         $("#presetCreateEditBtn").text(i18next.t("modal.edit"));
+
+        if(data.autoEnablePresetForDarkWebsites) {
+            $("#checkAutoEnablePresetForDarkWebsites").prop("checked", true);
+        } else {
+            $("#checkAutoEnablePresetForDarkWebsites").prop("checked", false);
+
+            if(await getPresetWithAutoEnableForDarkWebsites() != null) {
+                $("#checkAutoEnablePresetForDarkWebsites").attr("disabled", "disabled");
+                $("#autoEnablePresetForDarkWebsitesTypeSelect").attr("disabled", "disabled");
+            }
+        }
+
+        if(data.autoEnablePresetForDarkWebsitesType) {
+            $("#autoEnablePresetForDarkWebsitesTypeSelect").val(data.autoEnablePresetForDarkWebsitesType);
+        }
     } else {
         $("#checkSaveNewSettingsPreset").prop("checked", true);
         $("#checkSaveNewSettingsPreset").attr("disabled", "disabled");
         $("#presetInfosBtn").attr("disabled", "disabled");
         $("#presetCreateEditBtn").text(i18next.t("modal.create"));
+
+        if(await getPresetWithAutoEnableForDarkWebsites() != null) {
+            $("#checkAutoEnablePresetForDarkWebsites").attr("disabled", "disabled");
+            $("#autoEnablePresetForDarkWebsitesTypeSelect").attr("disabled", "disabled");
+        }
     }
 }
 
@@ -1601,6 +1712,9 @@ async function addFilter() {
 }
 
 async function initColpick() {
+    // Patches Colpick ID generator bug
+    patchColpick($);
+
     $("#colorpicker1").colpick({
         layout: "full",
         submit: false,
@@ -1700,7 +1814,7 @@ function openTabByHash() {
     }
 }
 
-$(document).ready(async () => {
+$(async() => {
     let savedTimeout;
 
     $("#saveListButton").on("click", () => {
@@ -1932,7 +2046,7 @@ $(document).ready(async () => {
         $("#restorePresetEmpty").hide();
         $("#restorePresetError").hide();
 
-        const result = await loadPreset(parseInt($("#loadPresetSelect").val()));
+        const result = await loadPreset(parseInt($("#loadPresetSelect").val(), 10));
 
         if(result == "success") {
             $("#restorePresetSuccess").fadeIn(500);
@@ -1947,7 +2061,7 @@ $(document).ready(async () => {
         createPreset();
     });
 
-    $("#savePresetTitle").on("keyup", (e) => {
+    $("#savePresetTitle").on("keyup", e => {
         if(e.key === "Enter") {
             createPreset();
         }
@@ -1957,7 +2071,7 @@ $(document).ready(async () => {
         $("#deletePresetError").hide();
         $("#deletePresetSuccess").hide();
 
-        const result = await deletePreset(parseInt($("#deletePresetSelect").val()));
+        const result = await deletePreset(parseInt($("#deletePresetSelect").val(), 10));
 
         if(result == "success") {
             $("#deletePresetSuccess").fadeIn(500);
@@ -1970,14 +2084,20 @@ $(document).ready(async () => {
         $("#updateAllFilters").attr("disabled", "disabled");
 
         const message = await sendMessageWithPromise({ "type": "updateAllFilters" }, "updateAllFiltersFinished");
-        if(message.result) $("#updateAllFilters").removeAttr("disabled");
+
+        if(message.result) {
+            $("#updateAllFilters").removeAttr("disabled");
+        }
     });
 
     $("#cleanAllFilters").on("click", async() => {
         $("#cleanAllFilters").attr("disabled", "disabled");
 
         const message = await sendMessageWithPromise({ "type": "cleanAllFilters" }, "cleanAllFiltersFinished");
-        if(message.result) $("#cleanAllFilters").removeAttr("disabled");
+
+        if(message.result) {
+            $("#cleanAllFilters").removeAttr("disabled");
+        }
     });
 
     $("#addFilterSourceBtnOpen").on("click", () => {
@@ -1993,7 +2113,7 @@ $(document).ready(async () => {
         addFilter();
     });
 
-    $("#filterAddress").on("keyup", (e) => {
+    $("#filterAddress").on("keyup", e => {
         if(e.key === "Enter") {
             addFilter();
         }
@@ -2025,14 +2145,18 @@ $(document).ready(async () => {
         $("#enableFilterAutoUpdate").attr("disabled", "disabled");
 
         const message = await sendMessageWithPromise({ "type": "toggleAutoUpdate", "enabled": $("#enableFilterAutoUpdate").is(":checked") }, "toggleAutoUpdateFinished");
-        if(message.result) $("#enableFilterAutoUpdate").removeAttr("disabled");
+        if(message.result) {
+            $("#enableFilterAutoUpdate").removeAttr("disabled");
+        }
     });
 
     $("#resetDefaultFiltersBtn").on("click", async() => {
         $("#resetDefaultFiltersBtn").attr("disabled", "disabled");
 
         const message = await sendMessageWithPromise({ "type": "reinstallDefaultFilters" }, "reinstallDefaultFiltersResponse");
-        if(message.result) $("#resetDefaultFiltersBtn").removeAttr("disabled");
+        if(message.result) {
+            $("#resetDefaultFiltersBtn").removeAttr("disabled");
+        }
     });
 
     $("#customFilterSave").on("click", () => {
@@ -2097,6 +2221,22 @@ $(document).ready(async () => {
         }
     });
 
+    $("#checkAutoEnablePresetForDarkWebsites").on("change", async() => {
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            $("#not-saved-presets").show();
+        } else {
+            $("#not-saved-presets").hide();
+        }
+    });
+
+    $("#autoEnablePresetForDarkWebsitesTypeSelect").on("change", async() => {
+        if(await notifyChangedPresetNotSaved(currentSelectedPresetEdit)) {
+            $("#not-saved-presets").show();
+        } else {
+            $("#not-saved-presets").hide();
+        }
+    });
+
     $("#syntaxBtn").on("click", () => {
         $("#syntaxText").html(i18next.t("modal.syntax.content", {
             excluded: i18next.t("modal.syntax.excluded"),
@@ -2154,6 +2294,27 @@ $(document).ready(async () => {
         }
     });
 
+    $("#autoDisableDarkThemedWebsite").on("change", async() => {
+        if(await notifyChangedListNotSaved()) {
+            $("#not-saved-lists").show();
+        } else {
+            $("#not-saved-lists").hide();
+        }
+    });
+
+    $("#autoDisableDarkThemedWebsiteTypeSelect").on("change", async() => {
+        if(await notifyChangedListNotSaved()) {
+            $("#not-saved-lists").show();
+        } else {
+            $("#not-saved-lists").hide();
+        }
+    });
+
+    $("#autoDisableDarkThemedWebsiteSettingsSave").on("click", async () => {
+        await setSettingItem("autoDisableDarkThemedWebsiteType", $("#autoDisableDarkThemedWebsiteTypeSelect").val());
+        $("#autoDisableDarkThemedWebsiteSettings").modal("hide");
+    });
+
     $("#textareaAssomPage").on("input", async() => {
         if(await notifyChangedListNotSaved()) {
             $("#not-saved-lists").show();
@@ -2169,9 +2330,7 @@ $(document).ready(async () => {
     }
 });
 
-window.onbeforeunload = () => {
-    return hasGlobalChange || filterEditDisplay ? true : null;
-};
+window.onbeforeunload = () => hasGlobalChange || filterEditDisplay ? true : null;
 
 browser.runtime.onMessage.addListener(message => {
     if(message && message.type == "hashUpdated") {
