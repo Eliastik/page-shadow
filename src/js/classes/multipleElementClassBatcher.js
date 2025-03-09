@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 
-import { addClass, removeClass } from "../utils/util.js";
+import { addClass, removeClass } from "../utils/cssClassUtils.js";
 import ThrottledTask from "./throttledTask.js";
 
 /**

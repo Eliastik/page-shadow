@@ -154,7 +154,6 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] (Minor) On local opened page, the right click actions doesn't work (Chrome only) -> seems OK, nothing fixed
 * [x] (Medium) HTML class used by Page Shadow to invert entire page is reseted on some websites. Exemple: https://spring.io/tools
 * [x] (Minor) Issues with Shadow DOM: Google Earth broken with "Increase page contrast" mode -> fixed by disabling auto override with filter rules ; to definitely fix: detection of transparent backgrounds in Shadow Roots
-* [x] (Very minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed
 * [x] (Minor) Shadow DOM is not always detected => example comments on Franceinfo website
 * [x] (Medium) Dark image detection not working on image from cross-origin domain (cf Wikipedia articles)
 * [x] (Major) Still some errors with QUOTA_BYTES_PER_ITEM in cloud archive. The chunk method need to be fixed
@@ -169,15 +168,34 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Add possibility to not invert bright color for the Invert colors features?
 * [x] Increase the number of presets/custom themes?
 
-### Release - future
+### Release - 2.11.1
 
-* [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
+* [x] Auto detect website already having a dark mode to auto disable Increase contrast and Invert entire page
+    * [x] Improve detection algorithm
+    * [x] Detection only enabled if Invert colors, Increase contrast or Attenuate colors is enabled: fix? -> No
+    * [x] Update filter guide for new special filters
+    * [x] Youtube dark not detected? => Due to performance mode
+        * Disable performance mode on release
+* [x] Add advanced option to disable fetching CORS images from background script/worker?
+* [ ] Tests + release (when releasing: update version date, update changelog (last bugfixes), compare code between MV2 and MV3 versions)
 
 #### Known issues/bugs
 
-* [ ] (Medium) Some images are ignored by the dark image detection due to CORS restriction
-* [ ] (Minor) Logo not detected as dark image when increase contrast is enabled (still detect with invert entire page) on: https://www.fastmail.com/blog/why-we-use-our-own-hardware/
+* [x] (Medium) Some images are ignored by the dark image detection due to CORS restriction
+* [x] (Medium) Images fail to load when Invert entire page is enabled on this website: https://actu.fr
+* [x] (Minor) Logo not detected as dark image when increase contrast is enabled (still detect with invert entire page) on: https://www.fastmail.com/blog/why-we-use-our-own-hardware/
     * Due to the path sub-element with fill = "currentcolor" and a style stating fill = "inherit"
+* [x] (Minor) OKLCH css colors are not taken into account
+    * [x] Take into account other color formats
+    * [x] Color format not recognized -> fix? https://developer.mozilla.org/fr/docs/Web/CSS/color_value/color
+* [x] (Minor) Bug when selective invert of an element which have a parent with bright color, and increase contrast enabled
+* [x] (Minor) Still CORS error due to URL redirects. Example: https://web.dev/blog/color-spaces-and-functions?hl=fr - fix?
+* [x] (Very minor) Sometimes when opening custom themes settings, the link color of the custom theme 1 is copied to the text color randomly + edit icon displayed => Colpick bug
+* [x] (Medium) Still some bugs with selective invert SVG - example francetvinfo website/tutorial teacher
+
+### Release - future
+
+* [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
 
 #### Common
 
@@ -186,17 +204,16 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Ideas
 
 * Improving codebase
-    * [ ] Comment the code: doc for methods/functions
+    * [x] Comment the code: doc for methods/functions
     * [x] Simplify code applying Shadow Roots styles?
     * [x] Separate code treating mutations of page elements to a separate class?
     * [x] Separate method applying mutation observers to another class?
     * [x] Modularize content.js classes with less dependencies between classes?
-        * [ ] Separate each filter (increase contrast, reduce brightness etc.) into a class?
+        * [x] Separate each filter (increase contrast, reduce brightness etc.) into a class?
 * Filters module improving
     * [x] Filters: UI to report a website problem
 * Others :
     * [ ] Ignore get parameters (after ? character) in URL for preset list and whitelist/blacklist list?
-    * [ ] Auto detect website already having a dark mode to auto disable Increase contrast and Invert entire page?
 
 #### Abandoned ideas
 

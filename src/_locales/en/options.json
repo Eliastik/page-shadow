@@ -29,7 +29,9 @@
         "validate": "Confirm",
         "customTheme": "Custom theme n°{{count}}",
         "filters": "Filters",
-        "save": "Save"
+        "save": "Save",
+        "autoDisableDarkThemedWebsite": "Automatically disable Page Shadow on webpages or websites with a dark theme",
+        "titleAutoDisableDarkThemedWebsite": "If Page Shadow detects that a website or webpage has a dark theme, the extension will be disabled automatically for this website/webpage. This option doesn't work if you have enabled the Whitelist option. It only works if the options Increase contrast, Invert colors, and/or Attenaute colors are applied for the website or webpage, as the analysis engine is not activated in other cases for performance reasons."
     },
     "tabTitles": {
         "general": "General",
@@ -118,6 +120,14 @@
             "darkImageDetectionMaxCacheSize": "Cache size (number of elements) of images already analyzed",
             "mutationObserverProcessNewestFirst": "Treat the most recent mutations first",
             "enableSelectiveInvertPreserveColors": "Preserve colors during selective inversion",
+            "darkThemeDetectionMaxLightness": "Max lightness to detect an element as dark",
+            "darkThemeDetectionMaxSaturation": "Max saturation to detect an element as dark",
+            "darkThemeDetectionMinLightnessLightElements": "Min lightness to detect an element as light",
+            "darkThemeDetectionPercentageRatioDarkLightElements": "Ratio dark elements / light elements to detect a website as having a dark theme",
+            "darkImageDetectionEnableFetchUseHref": "Enable retrieval of SVGs referenced by use HTML tags",
+            "darkImageDetectionEnableCorsFetch": "Enable fetching images from a different origin (cross-origin)",
+            "darkImageDetectionEnableRedirectionCheck": "Enable checking image redirections to detect URLs from a different origin",
+            "throttleBackgroundDetectionDestylePerElement": "Remove the style from elements rather than from the body element when element analysis is throttled",
             "help": {
                 "debugMode": "Enables debug mode, which displays debugging information in the JavaScript console on pages processed by Page Shadow, or on extension pages.",
                 "performanceModeEnabled": "Enable performance optimizations, this disables the analysis of webpage elements. However, filter management remains enabled.",
@@ -175,8 +185,15 @@
                 "enableDarkImageDetectionCache": "Enables caching of images already analyzed by the analysis engine. This improves performance by avoiding the need to reanalyze images already analyzed. Only the URL and analysis results of images already analyzed are cached. The cache is per page.",
                 "darkImageDetectionMaxCacheSize": "Sets the maximum cache size (number of elements) for images already analyzed. If the size exceeds this threshold, the oldest analyses will be purged from the cache, to avoid excessive memory usage.",
                 "mutationObserverProcessNewestFirst": "If this option is enabled, the most recent mutations will be given priority over the oldest. This has no impact on performance, and is only useful for certain websites.",
-                "enableSelectiveInvertPreserveColors": "If this option is enabled, the selective inversion filter will attempt to preserve the original colors while only inverting black and white."
-
+                "enableSelectiveInvertPreserveColors": "If this option is enabled, the selective inversion filter will attempt to preserve the original colors while only inverting black and white.",
+                "darkThemeDetectionMaxLightness": "Defines the maximum lightness value an element must have to be considered dark. This value must be between 0 and 1 (percentage).",
+                "darkThemeDetectionMaxSaturation": "Defines the maximum saturation value an element must have to be considered dark. This value must be between 0 and 1 (percentage).",
+                "darkThemeDetectionMinLightnessLightElements": "Defines the minimum lightness value an element must have to be considered light. Elements with a lightness above this value will be considered light. This value must be between 0 and 1 (percentage).",
+                "darkThemeDetectionPercentageRatioDarkLightElements": "Defines the ratio (as a percentage, between 0 and 1) of dark elements to light elements to determine if a website uses a dark theme.",
+                "darkImageDetectionEnableFetchUseHref": "If this option is enabled, Page Shadow will query the SVG file referenced by an HTML use tag. This can be used to analyze additional SVG images.",
+                "darkImageDetectionEnableCorsFetch": "If enabled, Page Shadow will retrieve images hosted on third-party domains via its background script to bypass CORS restrictions. If disabled, another method will be used to manage these restrictions.",
+                "darkImageDetectionEnableRedirectionCheck": "If this option is enabled, Page Shadow will send a HEAD request to the server hosting the image to check whether it comes from a different origin (for example, in the event of redirection to another origin). This allows Page Shadow to adapt and avoid problems related to CORS restrictions.",
+                "throttleBackgroundDetectionDestylePerElement": "If element analysis during page loading is throttled, enabling this option allows Page Shadow to remove the style applied to each element individually rather than from the body element. This can reduce CPU usage at the cost of slower analysis."
             }
         },
         "filtersConfigCategories": {
@@ -191,6 +208,7 @@
             "imageAnalyze": "Page analysis engine - images",
             "applyCssTimer": "CSS class change application timer",
             "others": "Others options",
+            "darkThemeDetection": "Page analysis engine - dark theme detection",
             "descriptions": {
                 "general": "Global options affecting the overall behavior of the extension.",
                 "mutationsObservers": "Mutation observers are used to monitor and react to dynamic changes on web pages. For example, this allows the extension to detect and respond to changes in style and attributes of web page elements or modifications in the structure of pages.",
@@ -202,7 +220,8 @@
                 "filterEngine": "These options manage the Page Shadow filter engine.",
                 "imageAnalyze": "These options manage the engine responsible for analyzing images and detecting images with text or other dark elements. Analysis results are used for the feature Invert colors > Selective.",
                 "applyCssTimer": "These options control the functioning of the timer responsible for applying CSS class changes to elements by Page Shadow on web pages.",
-                "others": "Others advanced options."
+                "others": "Others advanced options.",
+                "darkThemeDetection": "These options manage the engine responsible for detecting dark themed websites."
             }
         },
         "saved": "Saved!"
@@ -236,6 +255,7 @@
             "changelogTitle": "Changelog",
             "infos": "Informations",
             "changelog": {
+                "2_11_1": "<ul><li>Automatic detection of dark themes: Page Shadow can now identify websites using a dark theme. With this feature, you can configure the extension to:</li><ul><li>Automatically disable itself on websites or webpages with a dark theme;</li><li>Automatically enable a specific preset if a dark theme is detected.</li></ul><li>Bug fixes and technical improvements (see Readme file).</li></ul>",
                 "2_11": "<ul><li>Added the ability to enable the inversion or attenuation of colored elements. This allows users to disable the inversion of colored elements while enabling entire page inversion, providing an alternative dark mode to the Increase contrast function;</li><li>Added the ability to adjust the filter intensity for the Attenuate colors function;</li><li>Colored text elements are now detected by Page Shadow. They are thus taken into account by the various functions managing colored elements: Increase contrast, Invert colors, and Attenuate colors;</li><li>When opening a new page, the Decrease brightness, Blue light reduction filter and Invert colors features are now applied faster to prevent the appearance of a potentially unpleasant flash, thanks to performance optimization;</li><li>The selective invert feature has been improved: it preserves as far as possible the original colors of images while inverting black and dark colors to white, to make elements more visible against a dark background;</li><li>The algorithm detecting images containing text/logos or other dark elements has been revised and improved: it is much more effective and efficient. It is now enabled by default in this version. To take advantage of this feature, you need to enable the Invert colors &gt; Selective function so that detected images are inverted, making them more readable on a dark background (more informations in the README file);</li><li>Special attention was paid to optimizing the performance of the extension: it now adapts to the device's performance and the complexity of web pages for the page analysis engine. The number of elements analyzed automatically adjusts based on the context for better performance. Other optimizations have also been made, significantly improving the extension’s performance (more informations in the README file);</li><li>Added the ability to report a problem with the display of web pages using Page Shadow features to the extension developer: this transmits the URL of the page to the developer after user consent, to help correct the problem;</li><li>Fixed issues with Cloud archiving of Page Shadow settings: in some cases, archiving could fail due to the chunking algorithm used by Page Shadow. The algorithm has been corrected, resolving these issues. Existing Cloud archives are not affected;</li><li>Added 5 additional preset slots (bringing the total to 15) and 5 additional custom theme slots (bringing the total to 10);</li><li>The extension now detects elements where a filter was applied but, due to certain changes, the filter no longer needs to be applied. Filters are now properly removed from the element in this case;</li><li>Gradient-colored backgrounds are now detected by the extension;</li><li>The advanced options interface has been revamped, with options now grouped by category;</li><li>Improved Shadow DOM support: the extension now analyzes elements contained in a Shadow DOM. Other fixes bring greater compatibility with websites using this technology;</li><li>Improved support for pseudo-elements: the extension now analyzes pseudo-elements to improve display on websites using this feature;</li><li>Fixed other bugs and technical improvements (see README file).</li></ul>",
                 "2104": "<ul><li>Addition of a new popup theme: the \"Compact\" theme. As its name suggests, the elements of this theme have been optimized to reduce the height of the Page Shadow popup;</li><li>The \"Modern\" theme has also been optimized by modifying the \"Apply settings in real time\" option, which takes up less space;</li><li>The extension's overall interface has been modified, with most elements rounded off;</li><li>Improved performance when opening a new page using the \"Increase contrast\" feature: previously, a flash could sometimes be observed while the feature was being applied to the new page. Thanks to performance optimizations, this flash has been completely eliminated;</li><li>The functionality for archiving settings in the Cloud has been improved, and a number of bugs have been corrected (see README file);</li><li>Experimental addition of automatic detection of dark images for Invert colors > Selective. By default, however, this feature is not enabled. It can be enabled in the extension's advanced options;</li><li>Bug fixes (see README file).</li></ul>",
                 "2103": "<ul><li>Major improvement of the display when the function Preserve element colors is enabled with the function Increase contrast: display problems could occur, they have been fixed. The Color preservation function is now enabled by default for new installations;</li><li>In case some important permissions for the extension are not allowed, an alert is now displayed on the popup suggesting to allow them;</li><li>Small adjustments to the user interface: elements have been made more rounded, other adjustments have been made;</li><li>The warning that appears when exiting/refreshing the Advanced Settings page now only appears if unsaved changes have been made;</li><li>Changes in preparation for the release of the Manifestv3 API-based version for Firefox (this version still runs on Manifestv2 for this browser, the MV3-based version will be released later);</li><li>Bug fixes and technical improvements (see Readme file).</li></ul>",
@@ -262,6 +282,7 @@
                 "11": "<ul><li>Improved function \"Increase page contrast\"</li></ul>",
                 "1": "<ul><li>Initial version</li></ul>",
                 "versionNames": {
+                    "2_11_1": "Version 2.11.1 (3/9/2025)",
                     "2_11": "Version 2.11 (12/22/2024)",
                     "2104": "Verison 2.10.4 (6/9/2024)",
                     "2103": "Verison 2.10.3 (3/5/2023)",
@@ -393,7 +414,12 @@
             },
             "autoBackupError": "An error occurred during the last automatic Cloud archive.",
             "restoring": "Restoring data…",
-            "archivingCloud": "Backing up data…"
+            "archivingCloud": "Backing up data…",
+            "checkAutoEnablePresetForDarkWebsitesPart1": "Auto enable this preset",
+            "website": "on websites",
+            "webpage": "on webpages", 
+            "checkAutoEnablePresetForDarkWebsitesPart2": "having a dark theme",
+            "checkAutoEnablePresetForDarkWebsitesTitle": "If Page Shadow detects that a website/webpage has a dark theme, this preset will be automatically enabled. Can only be enabled on one preset at a time. It only works if the options Increase contrast, Invert colors, and/or Attenaute colors are applied for the website or webpage, as the analysis engine is not activated in other cases for performance reasons."
         },
         "presets": {
             "pageShadowEnabled": "Increase contrast:",
@@ -516,11 +542,18 @@
             "hasUpdate": "An update is available for this filter",
             "hasUpdateAuto": "This update will be done automatically, but you can update manually"
         },
+        "autoDisableDarkThemedWebsiteSettings": {
+            "title": "Settings for automatic disabling of Page Shadow on websites/webpages with a dark theme",
+            "typeLabel": "Automatically disable for:",
+            "website": "Entire website detected",
+            "webpage": "Only for the detected webpage"
+        },
         "close": "Close",
         "ok": "OK",
         "yes": "Yes",
         "no": "No",
         "confirm": "Confirm",
+        "save": "Save",
         "load": "Load",
         "create": "Create",
         "delete": "Delete",

@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { extensionVersion, defaultSettings, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingNames, defaultCustomThemes, settingsToLoad, customThemesKey, disabledWebsitesKey, whitelistKey, attenuateDefaultValue, defaultWebsiteSpecialFiltersConfig } from "./constants.js";
-import { sendMessageWithPromise } from "./utils/util.js";
+import { extensionVersion, defaultSettings, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingNames, defaultCustomThemes, settingsToLoad, customThemesKey, disabledWebsitesKey, whitelistKey, attenuateDefaultValue, defaultWebsiteSpecialFiltersConfig } from "../constants.js";
+import { sendMessageWithPromise } from "./browserUtils.js";
 import browser from "webextension-polyfill";
 
 async function setSettingItem(name, value, disableCacheUpdating) {
@@ -88,30 +88,37 @@ async function migrateSettings(filters) {
         let customThemes = defaultCustomThemes;
 
         if(result.customThemeBg != undefined) {
+            // eslint-disable-next-line prefer-destructuring
             customThemeBg = result.customThemeBg;
         }
 
         if(result.customThemeTexts != undefined) {
+            // eslint-disable-next-line prefer-destructuring
             customThemeTexts = result.customThemeTexts;
         }
 
         if(result.customThemeLinks != undefined) {
+            // eslint-disable-next-line prefer-destructuring
             customThemeLinks = result.customThemeLinks;
         }
 
         if(result.customThemeLinksVisited != undefined) {
+            // eslint-disable-next-line prefer-destructuring
             customThemeLinksVisited = result.customThemeLinksVisited;
         }
 
         if(result.customThemeFont != undefined) {
+            // eslint-disable-next-line prefer-destructuring
             customThemeFont = result.customThemeFont;
         }
 
         if(result.customCSSCode != undefined) {
+            // eslint-disable-next-line prefer-destructuring
             customCSSCode = result.customCSSCode;
         }
 
         if(result.customThemes != undefined && result.customThemes != undefined) {
+            // eslint-disable-next-line prefer-destructuring
             customThemes = result.customThemes;
         }
 
@@ -189,4 +196,43 @@ async function migrateSettings(filters) {
     }
 }
 
-export { setSettingItem, removeSettingItem, checkFirstLoad, setFirstSettings, migrateSettings };
+function checkChangedStorageData(key, object) {
+    if(typeof(key) === "string") {
+        return Object.prototype.hasOwnProperty.call(object, key);
+    }
+
+    if(Array.isArray(key)) {
+        for(let i = 0; i < key.length; i++) {
+            if(Object.prototype.hasOwnProperty.call(object, key[i])) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+async function loadWebsiteSpecialFiltersConfig() {
+    const settings = await browser.storage.local.get("advancedOptionsFiltersSettings");
+    const websiteSpecialFiltersConfig = JSON.parse(JSON.stringify(defaultWebsiteSpecialFiltersConfig));
+
+    if (settings && settings.advancedOptionsFiltersSettings) {
+        Object.keys(settings.advancedOptionsFiltersSettings).forEach(key => {
+            if (Object.prototype.hasOwnProperty.call(websiteSpecialFiltersConfig, key)) {
+                websiteSpecialFiltersConfig[key] = settings.advancedOptionsFiltersSettings[key];
+            }
+
+            const config = websiteSpecialFiltersConfig[key];
+
+            if(typeof config === "string") {
+                websiteSpecialFiltersConfig[key] = parseFloat(config);
+            } else {
+                websiteSpecialFiltersConfig[key] = config;
+            }
+        });
+    }
+
+    return websiteSpecialFiltersConfig;
+}
+
+export { setSettingItem, removeSettingItem, checkFirstLoad, setFirstSettings, migrateSettings, checkChangedStorageData, loadWebsiteSpecialFiltersConfig };

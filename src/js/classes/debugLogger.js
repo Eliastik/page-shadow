@@ -22,6 +22,10 @@ import browser from "webextension-polyfill";
 export default class DebugLogger {
 
     debugModeEnabled = false;
+    isReady = false;
+
+    storedMessages = [];
+    alreadyLoggedMessages = new Set();
 
     constructor() {
         this.init();
@@ -30,13 +34,26 @@ export default class DebugLogger {
     async init() {
         const result = await browser.storage.local.get("advancedOptionsFiltersSettings");
 
-        if (result.advancedOptionsFiltersSettings && result.advancedOptionsFiltersSettings.debugMode) {
+        if(result.advancedOptionsFiltersSettings && result.advancedOptionsFiltersSettings.debugMode) {
             this.debugModeEnabled = true;
         }
+
+        this.isReady = true;
+
+        for(const message of this.storedMessages) {
+            this.log(message.message, message.type, message.element);
+        }
+
+        this.storedMessages = [];
     }
 
     log(message, type = "debug", element) {
-        if (this.debugModeEnabled) {
+        if(!this.isReady) {
+            this.storedMessages.push({ message, type, element });
+            return;
+        }
+
+        if(this.debugModeEnabled) {
             const timestamp = new Date().getTime();
             const pageURL = typeof document !== "undefined" ? document.URL : "???";
 
@@ -57,6 +74,13 @@ export default class DebugLogger {
                 console.warn(log, element ? element : "");
                 break;
             }
+        }
+    }
+
+    logOnce(message, type, element) {
+        if(!this.alreadyLoggedMessages.has(message)) {
+            this.log(message, type, element);
+            this.alreadyLoggedMessages.add(message);
         }
     }
 

@@ -146,9 +146,6 @@ hr {
     margin-top: 4px;
     margin-bottom: 4px;
 }
-.m0 {
-    margin-bottom: 0;
-}
 .m6 {
     margin-bottom: 6px;
 }
@@ -221,6 +218,13 @@ hr.nmt {
 }
 .btn, button {
     margin-bottom: 8px !important;
+}
+.m0 {
+    margin-bottom: 0 !important;
+}
+.select-inline {
+    display: inline-block;
+    width: auto !important;
 }
 .list-inline-item[disabled] a {
     pointer-events: none !important;

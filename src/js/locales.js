@@ -24,7 +24,7 @@ function initI18next(ns) {
     return new Promise(resolve => {
         i18next.use(i18nextBrowserLanguageDetector).init({
             fallbackLng: ["en", "fr"],
-            ns: ns,
+            ns,
             load: "languageOnly",
             defaultNS: ns,
             detection: {

@@ -21,7 +21,7 @@ import $ from "jquery";
 import i18next from "i18next";
 import jqueryI18next from "jquery-i18next";
 import { initI18next } from "./locales.js";
-import { toggleTheme } from "./utils/util.js";
+import { toggleTheme } from "./utils/uiUtils.js";
 import browser from "webextension-polyfill";
 import pageTestEN from "../_locales/en/pageTest.json";
 import pageTestFR from "../_locales/fr/pageTest.json";
@@ -46,14 +46,16 @@ function translateContent() {
     $(".container").localize();
 }
 
-toggleTheme(); // Toggle dark/light theme
 initLocales();
+toggleTheme(); // Toggle dark/light theme
+
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", toggleTheme);
 
 i18next.on("languageChanged", () => {
     translateContent();
 });
 
-window.addEventListener("storage", (e) => {
+window.addEventListener("storage", e => {
     if(e && e.key === "i18nextLng") {
         initLocales();
     }

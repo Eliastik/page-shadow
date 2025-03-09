@@ -123,6 +123,13 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                     </p>
                                     <p><span data-i18n="container.infoListSyntax"></span> &nbsp; <button type="button" class="btn btn-xs btn-primary" id="syntaxBtn"><span class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip"></span></button></p>
                                     <textarea id="textareaAssomPage" class="form-control" rows="10" data-i18n="[placeholder]container.textareaPlaceholder"></textarea>
+                                    <p>
+                                        <div class="checkbox-switch checkbox-switch-sm ml-2 mr-2">
+                                            <input id="autoDisableDarkThemedWebsite" name="autoDisableDarkThemedWebsite" type="checkbox" />
+                                            <label for="autoDisableDarkThemedWebsite" class="label-blue"></label>
+                                        </div>
+                                        <label for="autoDisableDarkThemedWebsite" data-i18n="container.autoDisableDarkThemedWebsite" class="ml-2"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]container.titleAutoDisableDarkThemedWebsite"></i> <button type="button" class="btn btn-xs btn-primary m0" id="autoDisableDarkThemedWebsiteOptionsBtn" data-dismiss="modal" data-toggle="modal" data-target="#autoDisableDarkThemedWebsiteSettings"><span class="fa fa-gear helpIcon" aria-hidden="true" data-toggle="tooltip"></span></button>
+                                    </p>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -249,6 +256,12 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                                 <div class="col-lg-10">
                                                     <textarea id="savePresetWebsite" class="form-control" style="width: 100%; height: 200px;" data-i18n="[placeholder]container.textareaPlaceholder" class="form-control"></textarea>
                                                 </div>
+                                            </div>
+                                            <div class="form-group center">
+                                                <input type="checkbox" id="checkAutoEnablePresetForDarkWebsites" /> <label for="checkAutoEnablePresetForDarkWebsites" data-i18n="modal.archive.checkAutoEnablePresetForDarkWebsitesPart1"></label> &nbsp; <select id="autoEnablePresetForDarkWebsitesTypeSelect" class="form-control select-inline" rows="10">
+                                                    <option value="website" data-i18n="modal.archive.website"></option>
+                                                    <option value="webpage" data-i18n="modal.archive.webpage"></option>
+                                                </select> &nbsp; <label for="checkAutoEnablePresetForDarkWebsites" data-i18n="modal.archive.checkAutoEnablePresetForDarkWebsitesPart2"></label> <i class="fa fa-question-circle helpIcon" aria-hidden="true" data-toggle="tooltip" data-i18n="[data-original-title]modal.archive.checkAutoEnablePresetForDarkWebsitesTitle"></i>
                                             </div>
                                             <div class="form-group center">
                                                 <input type="checkbox" id="checkSaveNewSettingsPreset" /> <label for="checkSaveNewSettingsPreset" data-i18n="modal.archive.checkSaveNewSettingsPreset"></label>
@@ -416,10 +429,20 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                         <div class="panel panel-default" name="aboutLatestVersion">
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2111" data-i18n="modal.about.changelog.versionNames.2_11_1"></a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapse2111" class="panel-collapse collapse in">
+                                                <div class="panel-body" data-i18n="[html]modal.about.changelog.2_11_1"></div>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
                                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse211" data-i18n="modal.about.changelog.versionNames.2_11"></a>
                                                 </h4>
                                             </div>
-                                            <div id="collapse211" class="panel-collapse collapse in">
+                                            <div id="collapse211" class="panel-collapse collapse">
                                                 <div class="panel-body" data-i18n="[html]modal.about.changelog.2_11"></div>
                                             </div>
                                         </div>
@@ -720,6 +743,34 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="modal.ok"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- autoDisableDarkThemedWebsite settings -->
+        <div class="modal fade" id="autoDisableDarkThemedWebsiteSettings" tabindex="-1" role="dialog" aria-labelledby="autoDisableDarkThemedWebsiteSettings">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="autoDisableDarkThemedWebsiteSettingsTitle"><i class="fa fa-gear fa-fw" aria-hidden="true"></i> <span data-i18n="modal.autoDisableDarkThemedWebsiteSettings.title"></span></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label for="autoDisableDarkThemedWebsiteTypeSelect" class="col-lg-4 control-label option-label" data-i18n="modal.autoDisableDarkThemedWebsiteSettings.typeLabel"></label>
+                                <div class="col-lg-8">
+                                    <select id="autoDisableDarkThemedWebsiteTypeSelect" class="form-control" rows="10">
+                                        <option value="website" data-i18n="modal.autoDisableDarkThemedWebsiteSettings.website"></option>
+                                        <option value="webpage" data-i18n="modal.autoDisableDarkThemedWebsiteSettings.webpage"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="autoDisableDarkThemedWebsiteSettingsSave" type="button" class="btn btn-primary"><i class="fa fa-floppy-disk fa-fw" aria-hidden="true"></i> <span data-i18n="modal.save"></span></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="modal.cancel"></span></button>
                     </div>
                 </div>
             </div>
