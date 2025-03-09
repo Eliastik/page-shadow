@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-const extensionVersion = "2.11";
-const versionDate = new Date(2024, 11, 22);
+const extensionVersion = "2.11.1";
+const versionDate = new Date(2025, 2, 9);
 const nbThemes = 16; // nb of themes for the function Increase the contrast (used globally in the extension)
 const colorTemperaturesAvailable = ["1000", "1200", "1500", "1800", "2000", "2200", "2600", "2900", "3100", "3600"]; // color temperatures available for the function Night Mode (used globally in the extension)
 const minBrightnessPercentage = 0; // the minimum percentage of brightness
@@ -45,14 +45,52 @@ const archiveInfoShowInterval = 7; // 7 days
 const customThemesKey = "customThemes";
 const disabledWebsitesKey = "sitesInterditPageShadow";
 const whitelistKey = "whiteList";
-const settingNames = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", disabledWebsitesKey, "liveSettings", whitelistKey, "colorTemp", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "globallyEnable", "customThemeInfoDisable", "autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat", "disableImgBgColor", "defaultLoad", "presets", customThemesKey, "filtersSettings", "customFilter", "updateNotification", "selectiveInvert", "interfaceDarkTheme", "popupTheme", "advancedOptionsFiltersSettings", "blueLightReductionEnabled", "percentageBlueLightReduction", "nightModeEnabled", "archiveInfoLastShowed", "archiveInfoDisable", "autoBackupCloudInterval", "lastAutoBackupCloud", "lastAutoBackupFailed", "attenuateImageColor", "brightColorPreservation", "disableRightClickMenu", "increaseContrastInformationShowed", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors",  "attenuateBrightColors", "attenuateColors", "permissionsInfoDisable", "lastAutoBackupFailedDate", "lastAutoBackupFailedLastShowed", "percentageAttenuateColors", "invertBrightColors", "migratedAdvancedOptions"];
+const settingNames = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", disabledWebsitesKey, "liveSettings", whitelistKey, "colorTemp", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "globallyEnable", "customThemeInfoDisable", "autoEnable", "autoEnableHourFormat", "hourEnable", "minuteEnable", "hourEnableFormat", "hourDisable", "minuteDisable", "hourDisableFormat", "disableImgBgColor", "defaultLoad", "presets", customThemesKey, "filtersSettings", "customFilter", "updateNotification", "selectiveInvert", "interfaceDarkTheme", "popupTheme", "advancedOptionsFiltersSettings", "blueLightReductionEnabled", "percentageBlueLightReduction", "nightModeEnabled", "archiveInfoLastShowed", "archiveInfoDisable", "autoBackupCloudInterval", "lastAutoBackupCloud", "lastAutoBackupFailed", "attenuateImageColor", "brightColorPreservation", "disableRightClickMenu", "increaseContrastInformationShowed", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors",  "attenuateBrightColors", "attenuateColors", "permissionsInfoDisable", "lastAutoBackupFailedDate", "lastAutoBackupFailedLastShowed", "percentageAttenuateColors", "invertBrightColors", "migratedAdvancedOptions", "autoDisableDarkThemedWebsite", "autoDisableDarkThemedWebsiteType"];
 const settingsToSavePresets = ["pageShadowEnabled", "theme", "disableImgBgColor", "brightColorPreservation", "pageLumEnabled", "pourcentageLum", "blueLightReductionEnabled", "percentageBlueLightReduction", "colorTemp", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "invertVideoColors", "invertBgColor", "selectiveInvert", "invertBrightColors", "attenuateImageColor", "attenuateColors", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors",  "attenuateBrightColors", "percentageAttenuateColors", "autoEnable", "liveSettings"];
-const settingsToLoad = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor", "selectiveInvert", "invertBrightColors", "blueLightReductionEnabled", "percentageBlueLightReduction", "attenuateImageColor", "brightColorPreservation", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors",  "attenuateBrightColors", "attenuateColors", "percentageAttenuateColors"];
-const pageShadowClassListsMutationsIgnore = ["pageShadowHasBackgroundImg", "pageShadowPseudoElementHasBackgroundImgAfter", "pageShadowPseudoElementHasBackgroundImgBefore", "pageShadowHasTransparentBackground", "pageShadowPseudoElementHasTransparentBackgroundAfter", "pageShadowPseudoElementHasTransparentBackgroundBefore", "pageShadowHasBrightColorBackground", "pageShadowPseudoElementHasBrightColorBackgroundAfter", "pageShadowPseudoElementHasBrightColorBackgroundBefore", "pageShadowBrightColorWithBlackText", "pageShadowPseudoElementBrightColorWithBlackTextAfter", "pageShadowPseudoElementBrightColorWithBlackTextBefore", "pageShadowBrightColorWithWhiteText", "pageShadowPseudoElementBrightColorWithWhiteTextAfter", "pageShadowPseudoElementBrightColorWithWhiteTextBefore", "pageShadowBackgroundDetected", "pageShadowHasPseudoElement"];
+const settingsToLoad = ["pageShadowEnabled", "theme", "pageLumEnabled", "pourcentageLum", "nightModeEnabled", "colorInvert", "invertPageColors", "invertImageColors", "invertEntirePage", "colorTemp", "globallyEnable", "invertVideoColors", "disableImgBgColor", "invertBgColor", "selectiveInvert", "invertBrightColors", "blueLightReductionEnabled", "percentageBlueLightReduction", "attenuateImageColor", "brightColorPreservation", "attenuateImgColors", "attenuateBgColors", "attenuateVideoColors",  "attenuateBrightColors", "attenuateColors", "percentageAttenuateColors", "autoDisableDarkThemedWebsite", "autoDisableDarkThemedWebsiteType"];
+const pageShadowClassListsMutationsToProcess = ["pageShadowHasBackgroundImg", "pageShadowPseudoElementHasBackgroundImgAfter", "pageShadowPseudoElementHasBackgroundImgBefore", "pageShadowHasTransparentBackground", "pageShadowPseudoElementHasTransparentBackgroundAfter", "pageShadowPseudoElementHasTransparentBackgroundBefore", "pageShadowHasBrightColorBackground", "pageShadowPseudoElementHasBrightColorBackgroundAfter", "pageShadowPseudoElementHasBrightColorBackgroundBefore", "pageShadowBrightColorWithBlackText", "pageShadowPseudoElementBrightColorWithBlackTextAfter", "pageShadowPseudoElementBrightColorWithBlackTextBefore", "pageShadowBrightColorWithWhiteText", "pageShadowPseudoElementBrightColorWithWhiteTextAfter", "pageShadowPseudoElementBrightColorWithWhiteTextBefore", "pageShadowBackgroundDetected", "pageShadowHasPseudoElement"];
+const pageShadowClassListsMutationsToIgnore = ["pageShadowForceBlackColor"];
 const nbPresets = 15;
 const defaultPresets = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, 12: {}, 13: {}, 14: {}, 15: {}};
 const nbCustomThemesSlots = 10;
 const defaultCustomThemes = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}};
+
+const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.11.1.php";
+const regexpDetectionPattern = /^((.*)\/(?:[^\\]|\\.)*?\/)(\|)/;
+const regexpDetectionPatternHighlight = /^(\/(?:[^\\]|\\.)*?\/)(\|)/;
+const regexpMatchURL = /url\((['"]?)(.*?)\1\)/;
+const opacityDetectedAsTransparentThresholdDefault = 0.6;
+
+const ignoredElementsContentScript = ["style", "script", "br", "head", "link", "meta", "hr"];
+const ignoredElementsBrightTextColorDetection = ["img", "g", "path", "svg"];
+const failedUpdateAutoReupdateDelay = 5 * 60 * 1000; // ms
+
+// Max size used to detect dark image. If the image size is above this size, we resize the image before analyze
+const maxImageSizeDarkImageDetection = 150;
+
+// Margin used to calculate the max quota bytes per item limit in cloud backup
+const quotaBytesPerItemMargin = 100;
+
+// Max elements per batch to treat for throttled tasks
+const maxElementsPerBatch = 10000;
+
+// Margin of max execution time compared to real execution time to reduce throttling
+const throttledTaskReduceThrottleMargin = 0.8;
+
+// URL to report website problem
+const enableReportWebsiteProblem = true;
+const reportWebsiteProblemBackendURL = "https://www.eliastiksofts.com/page-shadow/report?data=";
+
+// Default settings
+const updateNotification = {};
+updateNotification[extensionVersion] = true;
+
+const defaultInterfaceDarkTheme = "auto"; // auto/on/off
+const defaultPopupTheme = "modern"; // switch/classic/modern
+
+// Timeout before receiving response when using sendMessageWithPromise method
+const sendMessageWithPromiseTimeout = 90000; // ms
+
 // Default filters object
 const defaultFilters = {
     "filters": [
@@ -160,23 +198,6 @@ const defaultFilters = {
     "lastFailedUpdate": -1
 };
 
-const customFilterGuideURL = "https://www.eliastiksofts.com/page-shadow/filters/guide/2.11.php";
-const regexpDetectionPattern = /^((.*)\/(?:[^\\]|\\.)*?\/)(\|)/;
-const regexpDetectionPatternHighlight = /^(\/(?:[^\\]|\\.)*?\/)(\|)/;
-const regexpMatchURL = /url\((['"]?)(.*?)\1\)/;
-const opacityDetectedAsTransparentThresholdDefault = 0.6;
-
-const ignoredElementsContentScript = ["style", "script", "br", "head", "link", "meta", "hr"];
-const ignoredElementsBrightTextColorDetection = ["img", "g", "path", "svg"];
-const failedUpdateAutoReupdateDelay = 5 * 60 * 1000; // ms
-
-// Default settings
-const updateNotification = {};
-updateNotification[extensionVersion] = true;
-
-const defaultInterfaceDarkTheme = "auto"; // auto/on/off
-const defaultPopupTheme = "modern"; // switch/classic/modern
-
 const defaultSettings = {
     "pageShadowEnabled": "false",
     "theme": "1",
@@ -185,6 +206,8 @@ const defaultSettings = {
     "sitesInterditPageShadow": "",
     "liveSettings": "true",
     "whiteList": "false",
+    "autoDisableDarkThemedWebsite": "false",
+    "autoDisableDarkThemedWebsiteType": "website",
     "colorTemp": "5",
     "colorInvert": "false",
     "invertPageColors": "false",
@@ -210,7 +233,7 @@ const defaultSettings = {
     "filtersSettings": defaultFilters,
     "customFilter": "",
     "defaultLoad": "0",
-    "updateNotification": updateNotification,
+    updateNotification,
     "interfaceDarkTheme": defaultInterfaceDarkTheme,
     "popupTheme": defaultPopupTheme,
     "advancedOptionsFiltersSettings": {},
@@ -254,27 +277,11 @@ const permissionOrigin = [
     "ftp://*/*"
 ];
 
-// Max size used to detect dark image. If the image size is above this size, we resize the image before analyze
-const maxImageSizeDarkImageDetection = 150;
-
-// Margin used to calculate the max quota bytes per item limit in cloud backup
-const quotaBytesPerItemMargin = 100;
-
-// Max elements per batch to treat for throttled tasks
-const maxElementsPerBatch = 10000;
-
-// Margin of max execution time compared to real execution time to reduce throttling
-const throttledTaskReduceThrottleMargin = 0.8;
-
-// URL to report website problem
-const enableReportWebsiteProblem = true;
-const reportWebsiteProblemBackendURL = "https://www.eliastiksofts.com/page-shadow/report?data=";
-
 // Filters rules
 
-const availableFilterRulesType = ["disableContrastFor", "forceTransparentBackground", "disableBackgroundStylingFor", "disableTextColorStylingFor", "disableInputBorderStylingFor", "disableLinkStylingFor", "disableFontFamilyStylingFor", "disableElementInvertFor", "hasBackgroundImg", "forceCustomLinkColorFor", "forceCustomBackgroundColorFor", "forceCustomTextColorFor", "disableShadowRootsCustomStyle", "enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "disableMutationObserverAttributes", "disableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverStyle", "forceCustomVisitedLinkColor", "disableCustomVisitedLinkColor", "forceFontFamilyStylingFor", "forceInputBorderStylingFor", "forceCustomLinkColorAsBackground", "forceCustomTextColorAsBackground", "forceCustomLinkVisitedColorAsBackground", "forceDisableDefaultBackgroundColor", "forceDisableDefaultBackground", "forceDisableDefaultFontColor", "enableShadowRootStyleOverride", "disableShadowRootStyleOverride", "overrideShadowRootsCustomStyle", "shadowRootStyleOverrideDelay", "invertElementAsImage", "invertElementAsVideo", "invertElementAsBackground", "enableSelectiveInvert", "enablePseudoElementSelectiveInvert", "invertPseudoElement", "enableThrottleMutationObserverBackgrounds", "disableThrottleMutationObserverBackgrounds", "delayMutationObserverBackgrounds", "throttledMutationObserverTreatedByCall", "delayApplyMutationObserversSafeTimer", "enableObserveBodyChange", "disableObserveBodyChange", "observeBodyChangeTimerInterval", "enableBrightColorDetection", "disableBrightColorDetection", "brightColorLightnessTresholdMin", "brightColorLightnessTresholdTextMin", "brightColorLightnessTresholdMax", "preserveBrightColor", "enableThrottleBackgroundDetection", "disableThrottleBackgroundDetection", "throttleBackgroundDetectionElementsTreatedByCall", "backgroundDetectionStartDelay", "useBackgroundDetectionAlreadyProcessedNodes", "enableBrightColorDetectionSubelement", "disableBrightColorDetectionSubelement", "observeDocumentChange", "observeDocumentChangeTimerInterval", "enableDarkImageDetection", "disableDarkImageDetection", "darkImageDetectionHslTreshold", "brightColorSaturationTresholdMin", "enableNotMatchingFiltersDetection", "disableNotMatchingFiltersDetection", "intervalApplyClassChanges", "classChangeMaxElementsTreatedByCall", "darkImageDetectionMinAlpha", "darkImageDetectionBlockSize", "darkImageDetectionTransparentPixelsRatio", "darkImageDetectionDarkPixelsRatio", "forcePseudoElementsTransparentBackground", "enableThrottleDarkImageDetection", "disableThrottleDarkImageDetection", "throttleDarkImageDetectionDelay", "throttleDarkImageDetectionBatchSize", "enableThrottleMutationObserverBackgroundsSubChilds", "disableThrottleMutationObserverBackgroundsSubChilds", "delayMutationObserverBackgroundsSubchilds", "throttledMutationObserverSubchildsTreatedByCall", "delayApplyClassChanges", "throttleBackgroundDetectionMaxExecutionTime", "throttleDarkImageDetectionMaxExecutionTime", "throttledMutationObserverMaxExecutionTime", "throttledMutationObserverSubchildsMaxExecutionTime", "applyClassChangesMaxExecutionTime", "autoThrottleBackgroundDetectionTime", "enableThrottleApplyClassChanges", "disableThrottleApplyClassChanges", "enableURLChangeDetection", "disableURLChangeDetection", "hasBrightColorWithWhiteText", "hasBrightColorWithBlackText", "disablePseudoElementsAnalysis", "enablePseudoElementsAnalysis", "enablePseudoElementsStyling", "enableDarkImageDetectionCache", "disableDarkImageDetectionCache", "darkImageDetectionMaxCacheSize", "enableMutationObserverProcessNewestFirst", "disableMutationObserverProcessNewestFirst", "enableSelectiveInvertPreserveColors", "disableSelectiveInvertPreserveColors"];
+const availableFilterRulesType = ["disableContrastFor", "forceTransparentBackground", "disableBackgroundStylingFor", "disableTextColorStylingFor", "disableInputBorderStylingFor", "disableLinkStylingFor", "disableFontFamilyStylingFor", "disableElementInvertFor", "hasBackgroundImg", "forceCustomLinkColorFor", "forceCustomBackgroundColorFor", "forceCustomTextColorFor", "disableShadowRootsCustomStyle", "enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "disableMutationObserverAttributes", "disableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverStyle", "forceCustomVisitedLinkColor", "disableCustomVisitedLinkColor", "forceFontFamilyStylingFor", "forceInputBorderStylingFor", "forceCustomLinkColorAsBackground", "forceCustomTextColorAsBackground", "forceCustomLinkVisitedColorAsBackground", "forceDisableDefaultBackgroundColor", "forceDisableDefaultBackground", "forceDisableDefaultFontColor", "enableShadowRootStyleOverride", "disableShadowRootStyleOverride", "overrideShadowRootsCustomStyle", "shadowRootStyleOverrideDelay", "invertElementAsImage", "invertElementAsVideo", "invertElementAsBackground", "enableSelectiveInvert", "enablePseudoElementSelectiveInvert", "invertPseudoElement", "enableThrottleMutationObserverBackgrounds", "disableThrottleMutationObserverBackgrounds", "delayMutationObserverBackgrounds", "throttledMutationObserverTreatedByCall", "delayApplyMutationObserversSafeTimer", "enableObserveBodyChange", "disableObserveBodyChange", "observeBodyChangeTimerInterval", "enableBrightColorDetection", "disableBrightColorDetection", "brightColorLightnessTresholdMin", "brightColorLightnessTresholdTextMin", "brightColorLightnessTresholdMax", "preserveBrightColor", "enableThrottleBackgroundDetection", "disableThrottleBackgroundDetection", "throttleBackgroundDetectionElementsTreatedByCall", "backgroundDetectionStartDelay", "useBackgroundDetectionAlreadyProcessedNodes", "enableBrightColorDetectionSubelement", "disableBrightColorDetectionSubelement", "observeDocumentChange", "observeDocumentChangeTimerInterval", "enableDarkImageDetection", "disableDarkImageDetection", "darkImageDetectionHslTreshold", "brightColorSaturationTresholdMin", "enableNotMatchingFiltersDetection", "disableNotMatchingFiltersDetection", "intervalApplyClassChanges", "classChangeMaxElementsTreatedByCall", "darkImageDetectionMinAlpha", "darkImageDetectionBlockSize", "darkImageDetectionTransparentPixelsRatio", "darkImageDetectionDarkPixelsRatio", "forcePseudoElementsTransparentBackground", "enableThrottleDarkImageDetection", "disableThrottleDarkImageDetection", "throttleDarkImageDetectionDelay", "throttleDarkImageDetectionBatchSize", "enableThrottleMutationObserverBackgroundsSubChilds", "disableThrottleMutationObserverBackgroundsSubChilds", "delayMutationObserverBackgroundsSubchilds", "throttledMutationObserverSubchildsTreatedByCall", "delayApplyClassChanges", "throttleBackgroundDetectionMaxExecutionTime", "throttleDarkImageDetectionMaxExecutionTime", "throttledMutationObserverMaxExecutionTime", "throttledMutationObserverSubchildsMaxExecutionTime", "applyClassChangesMaxExecutionTime", "autoThrottleBackgroundDetectionTime", "enableThrottleApplyClassChanges", "disableThrottleApplyClassChanges", "enableURLChangeDetection", "disableURLChangeDetection", "hasBrightColorWithWhiteText", "hasBrightColorWithBlackText", "disablePseudoElementsAnalysis", "enablePseudoElementsAnalysis", "enablePseudoElementsStyling", "enableDarkImageDetectionCache", "disableDarkImageDetectionCache", "darkImageDetectionMaxCacheSize", "enableMutationObserverProcessNewestFirst", "disableMutationObserverProcessNewestFirst", "enableSelectiveInvertPreserveColors", "disableSelectiveInvertPreserveColors", "darkThemeDetectionMaxLightness", "darkThemeDetectionMaxSaturation", "darkThemeDetectionMinLightnessLightElements", "darkThemeDetectionPercentageRatioDarkLightElements", "darkImageDetectionEnableFetchUseHref", "darkImageDetectionDisableFetchUseHref", "darkImageDetectionEnableCorsFetch", "darkImageDetectionDisableCorsFetch", "darkImageDetectionEnableRedirectionCheck", "darkImageDetectionDisableRedirectionCheck", "enableThrottleBackgroundDetectionDestylePerElement", "disableThrottleBackgroundDetectionDestylePerElement"];
 
-const specialFilterRules = ["enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverAttributes", "disableMutationObserverClass", "disableMutationObserverStyle", "enableShadowRootStyleOverride", "disableShadowRootStyleOverride", "shadowRootStyleOverrideDelay", "enableThrottleMutationObserverBackgrounds", "disableThrottleMutationObserverBackgrounds", "delayMutationObserverBackgrounds", "throttledMutationObserverTreatedByCall", "delayApplyMutationObserversSafeTimer", "enableObserveBodyChange", "disableObserveBodyChange", "observeBodyChangeTimerInterval", "enableBrightColorDetection", "disableBrightColorDetection", "brightColorLightnessTresholdMin", "brightColorLightnessTresholdTextMin", "brightColorLightnessTresholdMax", "enableThrottleBackgroundDetection", "disableThrottleBackgroundDetection", "throttleBackgroundDetectionElementsTreatedByCall", "backgroundDetectionStartDelay", "useBackgroundDetectionAlreadyProcessedNodes", "enableBrightColorDetectionSubelement", "disableBrightColorDetectionSubelement", "observeDocumentChange", "observeDocumentChangeTimerInterval", "enableDarkImageDetection", "disableDarkImageDetection", "darkImageDetectionHslTreshold", "brightColorSaturationTresholdMin", "enableNotMatchingFiltersDetection", "disableNotMatchingFiltersDetection", "intervalApplyClassChanges", "classChangeMaxElementsTreatedByCall", "darkImageDetectionMinAlpha", "darkImageDetectionBlockSize", "darkImageDetectionTransparentPixelsRatio", "darkImageDetectionDarkPixelsRatio", "enableThrottleDarkImageDetection", "disableThrottleDarkImageDetection", "throttleDarkImageDetectionDelay", "throttleDarkImageDetectionBatchSize", "enableThrottleMutationObserverBackgroundsSubChilds", "disableThrottleMutationObserverBackgroundsSubChilds", "delayMutationObserverBackgroundsSubchilds", "throttledMutationObserverSubchildsTreatedByCall", "delayApplyClassChanges", "throttleBackgroundDetectionMaxExecutionTime", "throttleDarkImageDetectionMaxExecutionTime", "throttledMutationObserverMaxExecutionTime", "throttledMutationObserverSubchildsMaxExecutionTime", "applyClassChangesMaxExecutionTime", "autoThrottleBackgroundDetectionTime", "enableThrottleApplyClassChanges", "disableThrottleApplyClassChanges", "enableURLChangeDetection", "disableURLChangeDetection", "disablePseudoElementsAnalysis", "enablePseudoElementsAnalysis", "enableDarkImageDetectionCache", "disableDarkImageDetectionCache", "darkImageDetectionMaxCacheSize", "enableMutationObserverProcessNewestFirst", "disableMutationObserverProcessNewestFirst", "enableSelectiveInvertPreserveColors", "disableSelectiveInvertPreserveColors"];
+const specialFilterRules = ["enablePerformanceMode", "disablePerformanceMode", "disableTransparentBackgroundAutoDetect", "enableTransparentBackgroundAutoDetect", "opacityDetectedAsTransparentThreshold", "enableMutationObserversForSubChilds", "disableMutationObserversForSubChilds", "enableMutationObserverAttributes", "enableMutationObserverClass", "enableMutationObserverStyle", "disableMutationObserverAttributes", "disableMutationObserverClass", "disableMutationObserverStyle", "enableShadowRootStyleOverride", "disableShadowRootStyleOverride", "shadowRootStyleOverrideDelay", "enableThrottleMutationObserverBackgrounds", "disableThrottleMutationObserverBackgrounds", "delayMutationObserverBackgrounds", "throttledMutationObserverTreatedByCall", "delayApplyMutationObserversSafeTimer", "enableObserveBodyChange", "disableObserveBodyChange", "observeBodyChangeTimerInterval", "enableBrightColorDetection", "disableBrightColorDetection", "brightColorLightnessTresholdMin", "brightColorLightnessTresholdTextMin", "brightColorLightnessTresholdMax", "enableThrottleBackgroundDetection", "disableThrottleBackgroundDetection", "throttleBackgroundDetectionElementsTreatedByCall", "backgroundDetectionStartDelay", "useBackgroundDetectionAlreadyProcessedNodes", "enableBrightColorDetectionSubelement", "disableBrightColorDetectionSubelement", "observeDocumentChange", "observeDocumentChangeTimerInterval", "enableDarkImageDetection", "disableDarkImageDetection", "darkImageDetectionHslTreshold", "brightColorSaturationTresholdMin", "enableNotMatchingFiltersDetection", "disableNotMatchingFiltersDetection", "intervalApplyClassChanges", "classChangeMaxElementsTreatedByCall", "darkImageDetectionMinAlpha", "darkImageDetectionBlockSize", "darkImageDetectionTransparentPixelsRatio", "darkImageDetectionDarkPixelsRatio", "enableThrottleDarkImageDetection", "disableThrottleDarkImageDetection", "throttleDarkImageDetectionDelay", "throttleDarkImageDetectionBatchSize", "enableThrottleMutationObserverBackgroundsSubChilds", "disableThrottleMutationObserverBackgroundsSubChilds", "delayMutationObserverBackgroundsSubchilds", "throttledMutationObserverSubchildsTreatedByCall", "delayApplyClassChanges", "throttleBackgroundDetectionMaxExecutionTime", "throttleDarkImageDetectionMaxExecutionTime", "throttledMutationObserverMaxExecutionTime", "throttledMutationObserverSubchildsMaxExecutionTime", "applyClassChangesMaxExecutionTime", "autoThrottleBackgroundDetectionTime", "enableThrottleApplyClassChanges", "disableThrottleApplyClassChanges", "enableURLChangeDetection", "disableURLChangeDetection", "disablePseudoElementsAnalysis", "enablePseudoElementsAnalysis", "enableDarkImageDetectionCache", "disableDarkImageDetectionCache", "darkImageDetectionMaxCacheSize", "enableMutationObserverProcessNewestFirst", "disableMutationObserverProcessNewestFirst", "enableSelectiveInvertPreserveColors", "disableSelectiveInvertPreserveColors", "darkThemeDetectionMaxLightness", "darkThemeDetectionMaxSaturation", "darkThemeDetectionMinLightnessLightElements", "darkThemeDetectionPercentageRatioDarkLightElements", "darkImageDetectionEnableFetchUseHref", "darkImageDetectionDisableFetchUseHref", "darkImageDetectionEnableCorsFetch", "darkImageDetectionDisableCorsFetch", "darkImageDetectionEnableRedirectionCheck", "darkImageDetectionDisableRedirectionCheck", "enableThrottleBackgroundDetectionDestylePerElement", "disableThrottleBackgroundDetectionDestylePerElement"];
 
 const ruleCategory = {
     STANDARD_RULES: "STANDARD_RULES",
@@ -324,6 +331,10 @@ const pageAnalyzerCSSClasses = {
     pageShadowBrightColorForceCustomTextLinkColor: {
         normal: "pageShadowBrightColorForceCustomTextLinkColor",
         pseudoElt: "pageShadowPseudoElementBrightColorForceCustomTextLinkColor"
+    },
+    pageShadowForceBlackColor: {
+        normal: "pageShadowForceBlackColor",
+        pseudoElt: "pageShadowForceBlackColor"
     }
 };
 
@@ -336,6 +347,7 @@ const defaultWebsiteSpecialFiltersConfig = {
     throttleBackgroundDetectionMaxExecutionTime: 300,
     backgroundDetectionStartDelay: 5,
     autoThrottleBackgroundDetectionTime: 500,
+    throttleBackgroundDetectionDestylePerElement: true,
     useBackgroundDetectionAlreadyProcessedNodes: false,
     autoDetectTransparentBackgroundEnabled: true,
     opacityDetectedAsTransparentThreshold: opacityDetectedAsTransparentThresholdDefault,
@@ -357,6 +369,13 @@ const defaultWebsiteSpecialFiltersConfig = {
     throttleDarkImageDetectionMaxExecutionTime: 30,
     enableDarkImageDetectionCache: true,
     darkImageDetectionMaxCacheSize: 250,
+    darkImageDetectionEnableRedirectionCheck: true,
+    darkImageDetectionEnableCorsFetch: true,
+    darkImageDetectionEnableFetchUseHref: false,
+    darkThemeDetectionMaxLightness: 0.25,
+    darkThemeDetectionMaxSaturation: 0.5,
+    darkThemeDetectionMinLightnessLightElements: 0.9,
+    darkThemeDetectionPercentageRatioDarkLightElements: 0.9,
     enableMutationObserversForSubChilds: true,
     enableMutationObserverAttributes: true,
     enableMutationObserverStyle: true,
@@ -399,7 +418,8 @@ const websiteSpecialFiltersConfigThemes = {
     enableNotMatchingFiltersDetection: "filterEngine",
     enableDarkImageDetection: "imageAnalyze",
     enableThrottleApplyClassChanges: "applyCssTimer",
-    enableURLChangeDetection: "others"
+    enableURLChangeDetection: "others",
+    darkThemeDetectionMaxLightness: "darkThemeDetection"
 };
 
 // Map between filters and applied class
@@ -757,7 +777,73 @@ const websiteSpecialFiltersProcessingConfig = {
     disableSelectiveInvertPreserveColors: {
         type: "disable",
         name: "enableSelectiveInvertPreserveColors"
+    },
+    darkThemeDetectionMaxLightness: {
+        type: "value",
+        name: "darkImageDetectionMaxCacheSize"
+    },
+    darkThemeDetectionMaxSaturation: {
+        type: "value",
+        name: "darkImageDetectionMaxCacheSize"
+    },
+    darkThemeDetectionMinLightnessLightElements: {
+        type: "value",
+        name: "darkImageDetectionMaxCacheSize"
+    },
+    darkThemeDetectionPercentageRatioDarkLightElements: {
+        type: "value",
+        name: "darkImageDetectionMaxCacheSize"
+    },
+    darkImageDetectionEnableFetchUseHref: {
+        type: "enable",
+        name: "darkImageDetectionEnableFetchUseHref"
+    },
+    darkImageDetectionDisableFetchUseHref: {
+        type: "disable",
+        name: "darkImageDetectionEnableFetchUseHref"
+    },
+    darkImageDetectionEnableCorsFetch: {
+        type: "enable",
+        name: "darkImageDetectionEnableCorsFetch"
+    },
+    darkImageDetectionDisableCorsFetch: {
+        type: "disable",
+        name: "darkImageDetectionEnableCorsFetch"
+    },
+    darkImageDetectionEnableRedirectionCheck: {
+        type: "enable",
+        name: "darkImageDetectionEnableRedirectionCheck"
+    },
+    darkImageDetectionDisableRedirectionCheck: {
+        type: "disable",
+        name: "darkImageDetectionEnableRedirectionCheck"
+    },
+    enableThrottleBackgroundDetectionDestylePerElement: {
+        type: "enable",
+        name: "throttleBackgroundDetectionDestylePerElement"
+    },
+    disableThrottleBackgroundDetectionDestylePerElement: {
+        type: "disable",
+        name: "throttleBackgroundDetectionDestylePerElement"
     }
 };
 
-export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, regexpDetectionPatternHighlight, ignoredElementsContentScript, failedUpdateAutoReupdateDelay, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue, archiveInfoShowInterval, defaultSettings, settingsToLoad, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, pageShadowClassListsMutationsIgnore, permissionOrigin, customThemesKey, disabledWebsitesKey, whitelistKey, attenuateDefaultValue, maxImageSizeDarkImageDetection, quotaBytesPerItemMargin, mapFiltersCSSClass, ignoredElementsBrightTextColorDetection, websiteSpecialFiltersConfigThemes, maxElementsPerBatch, throttledTaskReduceThrottleMargin, websiteSpecialFiltersProcessingConfig, enableReportWebsiteProblem, reportWebsiteProblemBackendURL, pageAnalyzerCSSClasses, brightnessReductionElementId, blueLightReductionElementId, regexpMatchURL };
+const wordToNumberMap = {
+    one: 1,
+    two: 2,
+    three: 3,
+    four: 4,
+    five: 5,
+    six: 6,
+    seven: 7,
+    eight: 8,
+    nine: 9,
+    ten: 10,
+    eleven: 11,
+    twelve: 12,
+    thirteen: 13,
+    fourteen: 14,
+    fifteen: 15
+};
+
+export { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, defaultAutoEnableHourFormat, defaultHourEnable, defaultMinuteEnable, defaultHourEnableFormat, defaultHourDisable, defaultMinuteDisable, defaultHourDisableFormat, settingNames, settingsToSavePresets, nbPresets, defaultPresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, regexpDetectionPattern, availableFilterRulesType, filterSyntaxErrorTypes, specialFilterRules, ruleCategory, opacityDetectedAsTransparentThresholdDefault, defaultWebsiteSpecialFiltersConfig, defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkColors, defaultThemesVisitedLinkColors, regexpDetectionPatternHighlight, ignoredElementsContentScript, failedUpdateAutoReupdateDelay, defaultInterfaceDarkTheme, defaultPopupTheme, percentageBlueLightDefaultValue, archiveInfoShowInterval, defaultSettings, settingsToLoad, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack, pageShadowClassListsMutationsToProcess, pageShadowClassListsMutationsToIgnore, permissionOrigin, customThemesKey, disabledWebsitesKey, whitelistKey, attenuateDefaultValue, maxImageSizeDarkImageDetection, quotaBytesPerItemMargin, mapFiltersCSSClass, ignoredElementsBrightTextColorDetection, websiteSpecialFiltersConfigThemes, maxElementsPerBatch, throttledTaskReduceThrottleMargin, websiteSpecialFiltersProcessingConfig, enableReportWebsiteProblem, reportWebsiteProblemBackendURL, pageAnalyzerCSSClasses, brightnessReductionElementId, blueLightReductionElementId, regexpMatchURL, sendMessageWithPromiseTimeout, wordToNumberMap };

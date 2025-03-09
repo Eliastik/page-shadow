@@ -16,7 +16,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
-import { removeClass, addClass, rgb2hsl, svgElementToImage, backgroundImageToImage, isCrossOrigin, getImageUrlFromElement, sha256, isValidURL } from "../utils/util.js";
+import { sha256 } from "../utils/commonUtils.js";
+import { isValidURL } from "../utils/urlUtils.js";
+import { getImageUrlFromElement, getImageFromElement } from "../utils/imageUtils.js";
+import { rgbTohsl } from "../utils/colorUtils.js";
 import { maxImageSizeDarkImageDetection } from "../constants.js";
 
 export default class ImageProcessor {
@@ -28,24 +31,30 @@ export default class ImageProcessor {
 
     constructor(debugLogger, websiteSpecialFiltersConfig) {
         this.debugLogger = debugLogger;
+        this.setSettings(websiteSpecialFiltersConfig);
+    }
+
+    setSettings(websiteSpecialFiltersConfig) {
         this.websiteSpecialFiltersConfig = websiteSpecialFiltersConfig;
     }
 
-    async detectDarkImage(image, hasBackgroundImg, computedStyles, pseudoElt) {
-        if(!image || !computedStyles) return false;
+    async detectDarkImage(element, hasBackgroundImg, computedStyles, pseudoElt) {
+        if(!element || !computedStyles) {
+            return false;
+        }
 
-        const imageUrl = getImageUrlFromElement(image, hasBackgroundImg, computedStyles, pseudoElt);
+        const imageUrl = await getImageUrlFromElement(element, hasBackgroundImg, computedStyles, pseudoElt, this.websiteSpecialFiltersConfig.darkImageDetectionEnableFetchUseHref);
 
         if(imageUrl == null || imageUrl.trim() === "") {
             return false;
         }
 
         if(!isValidURL(imageUrl)) {
-            this.debugLogger.log(`Ignored image with following URL because it is invalid: ${imageUrl}`, "debug", image);
+            this.debugLogger.log(`Ignored image with following URL because it is invalid: ${imageUrl}`, "debug", element);
             return false;
         }
 
-        if(this.isDetectionResultMemoizable(image, hasBackgroundImg)) {
+        if(this.isDetectionResultMemoizable(element, hasBackgroundImg)) {
             const urlSha256 = await sha256(imageUrl);
 
             if(this.memoizedResults.has(urlSha256)) {
@@ -54,57 +63,23 @@ export default class ImageProcessor {
             }
         }
 
-        // Image element
-        if(image instanceof HTMLImageElement && isCrossOrigin(image.src)) {
-            image = image.cloneNode();
-            image.crossOrigin = "Anonymous";
-        }
+        const image = await getImageFromElement(element, imageUrl, hasBackgroundImg,
+            this.websiteSpecialFiltersConfig.darkImageDetectionEnableCorsFetch, this.websiteSpecialFiltersConfig.darkImageDetectionEnableRedirectionCheck);
 
-        // SVG element
-        if((image instanceof SVGGraphicsElement) && image.nodeName.toLowerCase() === "svg") {
-            try {
-                removeClass(image, "pageShadowDisableStyling", "pageShadowElementDisabled");
-
-                image = svgElementToImage(imageUrl);
-
-                addClass(image, "pageShadowDisableStyling", "pageShadowElementDisabled");
-            } catch(e) {
-                this.debugLogger?.log(`ImageProcessor detectDarkImage - Error converting SVG element to image - Image URL: ${imageUrl}`, "error", e);
-                await this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, false);
-                return false;
-            }
-        }
-
-        // Background image element
-        if(!(image instanceof HTMLImageElement) && !(image instanceof SVGImageElement)) {
-            if(hasBackgroundImg) {
-                try {
-                    image = await backgroundImageToImage(imageUrl);
-                } catch(e) {
-                    this.debugLogger?.log(`ImageProcessor detectDarkImage - Error converting background to image - Image URL: ${imageUrl}`, "error", e);
-                    await this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, false);
-                    return false;
-                }
-            } else {
-                await this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, false);
-                return false;
-            }
-        }
-
-        // If the image is not yet loaded, we wait
-        if(!image.complete) {
-            try {
-                await this.awaitImageLoading(image);
-            } catch(e) {
-                this.debugLogger?.log("ImageProcessor detectDarkImage - Error loading image", "error", image, e);
-                await this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, false);
-                return false;
-            }
+        if(image == null) {
+            await this.memoizeDetectionResult(image, hasBackgroundImg, imageUrl, false);
+            return false;
         }
 
         // Draw image on canvas
         const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
+
+        if(!canvas.getContext) {
+            this.debugLogger.logOnce("ImageProcessor detectDarkImage - canvas.getContext is not available on this page", "warn");
+            return false;
+        }
+
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
         const { newWidth, newHeight } = this.getResizedDimensions(image, maxImageSizeDarkImageDetection, maxImageSizeDarkImageDetection);
         canvas.width = newWidth;
@@ -126,7 +101,7 @@ export default class ImageProcessor {
 
         canvas.remove();
 
-        if (isDarkImage) {
+        if(isDarkImage) {
             this.debugLogger?.log(`Detected dark image. Image URL: ${image.src}`);
         }
 
@@ -136,8 +111,7 @@ export default class ImageProcessor {
     }
 
     getResizedDimensions(image, maxWidth, maxHeight) {
-        const width = image.width;
-        const height = image.height;
+        const { width, height } = image;
 
         let newWidth = width;
         let newHeight = height;
@@ -165,7 +139,7 @@ export default class ImageProcessor {
             }
 
             const imgData = ctx.getImageData(0, 0, width, height);
-            const data = imgData.data;
+            const { data } = imgData;
 
             let totalDarkPixels = 0;
             let totalTransparentPixels = 0;
@@ -207,7 +181,7 @@ export default class ImageProcessor {
 
     isPixelDark(red, green, blue, alpha) {
         if (alpha >= this.websiteSpecialFiltersConfig.darkImageDetectionMinAlpha) {
-            const hsl = rgb2hsl(red / 255, green / 255, blue / 255);
+            const hsl = rgbTohsl(red / 255, green / 255, blue / 255);
 
             if(hsl[2] <= this.websiteSpecialFiltersConfig.darkImageDetectionHslTreshold) {
                 return true;
@@ -254,43 +228,12 @@ export default class ImageProcessor {
             && darkPixelCount / nonTransparentPixelCount > this.websiteSpecialFiltersConfig.darkImageDetectionDarkPixelsRatio;
     }
 
-    awaitImageLoading(image) {
-        return new Promise((resolve, reject) => {
-            if(image.complete) {
-                resolve(image);
-                return;
-            }
-
-            const onLoad = () => {
-                cleanup();
-                resolve(image);
-            };
-
-            const onError = () => {
-                cleanup();
-                reject(new Error(`Image failed to load: ${image.src}`));
-            };
-
-            const cleanup = () => {
-                image.removeEventListener("load", onLoad);
-                image.removeEventListener("error", onError);
-            };
-
-            image.addEventListener("load", onLoad);
-            image.addEventListener("error", onError);
-        });
-    }
-
     detectionCanBeAwaited(element) {
         if(element) {
             return !element.hasAttribute("loading");
         }
 
         return true;
-    }
-
-    elementIsImage(element, hasBackgroundImg) {
-        return element instanceof HTMLImageElement || element instanceof SVGImageElement || element instanceof SVGGraphicsElement || hasBackgroundImg;
     }
 
     isDetectionResultMemoizable(element, hasBackgroundImg) {

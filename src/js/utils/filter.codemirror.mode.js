@@ -19,14 +19,14 @@
 import { availableFilterRulesType, specialFilterRules, regexpDetectionPatternHighlight } from "../constants.js";
 
 function filtersHint(CodeMirror, editor, keywords, getToken) {
-    const Pos = CodeMirror.Pos;
+    const { Pos } = CodeMirror;
 
     const cur = editor.getCursor();
     const token = getToken(editor, cur);
     const suggestions = [];
 
     const fullText = editor.getValue();
-    const line = cur.line;
+    const { line } = cur;
     const end = cur.ch;
     let currentLine = fullText.split("\n")[line];
     currentLine = currentLine.substr(0, end);
@@ -46,10 +46,7 @@ function filtersHint(CodeMirror, editor, keywords, getToken) {
             if(str.trim() == "") {
                 suggestions.push(...keywords);
             } else {
-                suggestions.push(...keywords.filter(keyword => {
-                    if(keyword.startsWith(str)) return true;
-                    return false;
-                }));
+                suggestions.push(...keywords.filter(keyword => keyword.startsWith(str)));
             }
         } else {
             suggestions.push(...keywords);
