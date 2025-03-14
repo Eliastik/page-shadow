@@ -41,9 +41,13 @@ export default class BluelightReduction {
     }
 
     apply() {
+        if(!this.elementBlueLightFilter) {
+            return;
+        }
+
         this.elementBlueLightFilter.setAttribute("class", "");
 
-        if(this.currentSettings.blueLightReductionEnabled == "true" && !this.runningInIframe && this.elementBlueLightFilter) {
+        if(this.currentSettings && this.currentSettings.blueLightReductionEnabled == "true" && !this.runningInIframe && this.elementBlueLightFilter) {
             const { percentageBlueLightReduction, colorTemp } = this.currentSettings;
 
             this.debugLogger?.log("Applying blue light reduction");
