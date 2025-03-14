@@ -22,52 +22,72 @@ import browser from "webextension-polyfill";
 
 /** Utils function used for the custom theme feature of Page Shadow */
 
+async function getCustomThemesListData(customThemesSettings) {
+    if(customThemesSettings) {
+        return customThemesSettings;
+    }
+
+    const { customThemes } = await browser.storage.local.get("customThemes");
+
+    if(!customThemes) {
+        return JSON.parse(JSON.stringify(defaultCustomThemes));
+    }
+
+    return customThemes;
+}
+
+async function getCustomThemeData(nb, customThemesSettings) {
+    const customThemes = await getCustomThemesListData(customThemesSettings);
+
+    let currentCustomTheme = defaultCustomThemes[nb];
+
+    if(customThemes && customThemes[nb]) {
+        currentCustomTheme = customThemes[nb];
+    }
+
+    return { currentCustomTheme, customThemes };
+}
+
 async function getCustomThemeConfig(nb, customThemesSettings) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
-    let customThemes, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme, fontTheme, customCSSCode;
+    let backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme, fontTheme, customCSSCode;
 
-    const result = customThemesSettings ? customThemesSettings : await browser.storage.local.get("customThemes");
+    const { currentCustomTheme } = await getCustomThemeData(nb, customThemesSettings);
 
-    if(result.customThemes != undefined && result.customThemes[nb] != undefined) {
-        customThemes = result.customThemes[nb];
-    } else {
-        customThemes = defaultCustomThemes[nb];
-    }
-
-    if(customThemes["customThemeBg"] != undefined) {
-        backgroundTheme = customThemes["customThemeBg"];
+    if(currentCustomTheme["customThemeBg"] != undefined) {
+        backgroundTheme = currentCustomTheme["customThemeBg"];
     } else {
         backgroundTheme = defaultBGColorCustomTheme;
     }
 
-    if(customThemes["customThemeTexts"] != undefined) {
-        textsColorTheme = customThemes["customThemeTexts"];
+    if(currentCustomTheme["customThemeTexts"] != undefined) {
+        textsColorTheme = currentCustomTheme["customThemeTexts"];
     } else {
         textsColorTheme = defaultTextsColorCustomTheme;
     }
 
-    if(customThemes["customThemeLinks"] != undefined) {
-        linksColorTheme = customThemes["customThemeLinks"];
+    if(currentCustomTheme["customThemeLinks"] != undefined) {
+        linksColorTheme = currentCustomTheme["customThemeLinks"];
     } else {
         linksColorTheme = defaultLinksColorCustomTheme;
     }
 
-    if(customThemes["customThemeLinksVisited"] != undefined) {
-        linksVisitedColorTheme = customThemes["customThemeLinksVisited"];
+    if(currentCustomTheme["customThemeLinksVisited"] != undefined) {
+        linksVisitedColorTheme = currentCustomTheme["customThemeLinksVisited"];
     } else {
         linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
     }
 
-    if(customThemes["customThemeFont"] != undefined && customThemes["customThemeFont"].trim() != "") {
-        fontTheme = "\"" + customThemes["customThemeFont"] + "\"";
+    if(currentCustomTheme["customThemeFont"] != undefined && currentCustomTheme["customThemeFont"].trim() != "") {
+        fontTheme = "\"" + currentCustomTheme["customThemeFont"] + "\"";
     } else {
         fontTheme = defaultFontCustomTheme;
     }
 
-    if(customThemes["customCSSCode"] != undefined && typeof(customThemes["customCSSCode"]) == "string" && customThemes["customCSSCode"].trim() != "") {
+    if(currentCustomTheme["customCSSCode"] != undefined && typeof(currentCustomTheme["customCSSCode"]) == "string" && currentCustomTheme["customCSSCode"].trim() != "") {
         // eslint-disable-next-line prefer-destructuring
-        customCSSCode = customThemes["customCSSCode"];
+        customCSSCode = currentCustomTheme["customCSSCode"];
     } else {
         customCSSCode = "";
     }
@@ -102,6 +122,7 @@ async function getCustomThemeConfig(nb, customThemesSettings) {
  */
 async function customTheme(nb, disableCustomCSS, lnkCssElement, customThemesSettings) {
     const config = await getCustomThemeConfig(nb, customThemesSettings);
+
     disableCustomCSS = disableCustomCSS == undefined ? false : disableCustomCSS;
 
     applyContrastPageVariables(config, customThemesSettings);
@@ -123,4 +144,4 @@ async function customTheme(nb, disableCustomCSS, lnkCssElement, customThemesSett
     return false;
 }
 
-export { customTheme, getCustomThemeConfig };
+export { customTheme, getCustomThemeConfig, getCustomThemesListData, getCustomThemeData };
