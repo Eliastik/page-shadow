@@ -50,7 +50,7 @@ import { toggleTheme, isInterfaceDarkTheme } from "./utils/uiUtils.js";
 import { getSettingsToArchive, archiveCloud, getCurrentArchiveCloud } from "./utils/archiveUtils.js";
 import { deletePreset, getPresetData, getPresetWithAutoEnableForDarkWebsites, loadPreset, loadPresetSelect, savePreset } from "./utils/presetUtils.js";
 import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes, versionDate } from "./constants.js";
-import { setSettingItem, setFirstSettings, migrateSettings, loadWebsiteSpecialFiltersConfig } from "./utils/storageUtils.js";
+import { setSettingItem, resetSettings, setFirstSettings, migrateSettings, loadWebsiteSpecialFiltersConfig, updateSettingsCache } from "./utils/storageUtils.js";
 import { getCustomThemeData } from "./utils/customThemeUtils.js";
 import { initI18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./utils/filter.codemirror.mode";
@@ -145,11 +145,11 @@ i18next.on("languageChanged", () => {
     translateContent();
 });
 
-async function resetSettings() {
+async function resetAllSettings() {
     $("span[data-toggle=\"tooltip\"]").tooltip("hide");
     $("i[data-toggle=\"tooltip\"]").tooltip("hide");
 
-    await browser.storage.local.clear();
+    await resetSettings();
     await setFirstSettings();
 
     $("#textareaAssomPage").val("");
@@ -158,12 +158,12 @@ async function resetSettings() {
 
     initLocales();
 
-    $("#reset").modal("show");
     await loadPresetSelect("loadPresetSelect", i18next);
     await loadPresetSelect("savePresetSelect", i18next);
     await loadPresetSelect("deletePresetSelect", i18next);
     await displayPresetSettings(currentSelectedPresetEdit);
-    localStorage.clear();
+
+    $("#reset").modal("show");
 }
 
 async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = null, isChangingLanguage) {
@@ -1336,7 +1336,7 @@ async function restoreSettings(object) {
     }
 
     // Reset data
-    await browser.storage.local.clear();
+    await resetSettings();
     await setFirstSettings();
 
     const finalRestoreObject = {};
@@ -1353,8 +1353,8 @@ async function restoreSettings(object) {
 
     await browser.storage.local.set(finalRestoreObject);
     await migrateSettings(new Filter());
-    sendMessageWithPromise({ "type": "updateSettingsCache" });
-    sendMessageWithPromise({ "type": "updatePresetCache" });
+
+    updateSettingsCache();
 
     $("#updateAllFilters").attr("disabled", "disabled");
 
@@ -1891,7 +1891,7 @@ $(async() => {
     });
 
     $("#confirmReset").on("click", () => {
-        resetSettings();
+        resetAllSettings();
     });
 
     $("#versionExtension").text(extensionVersion);

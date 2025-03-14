@@ -40,9 +40,13 @@ export default class BrightnessReduction {
     }
 
     apply() {
+        if(!this.elementBrightness) {
+            return;
+        }
+
         this.elementBrightness.setAttribute("class", "");
 
-        if(this.currentSettings.pageLumEnabled == "true" && !this.runningInIframe && this.elementBrightness) {
+        if(this.currentSettings && this.currentSettings.pageLumEnabled == "true" && !this.runningInIframe && this.elementBrightness) {
             const percentage = this.currentSettings.pourcentageLum;
 
             this.debugLogger?.log("Applying brightness reduction");
