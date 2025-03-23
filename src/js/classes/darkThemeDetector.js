@@ -220,7 +220,7 @@ export default class DarkThemeDetector {
             if(presetToAutoEnable) {
                 const presetData = await getPresetData(presetToAutoEnable);
 
-                if(presetData) {
+                if(presetData && presetData !== "error") {
                     const type = await getPresetData(presetToAutoEnable).autoEnablePresetForDarkWebsitesType;
                     await disableEnablePreset(type === "webpage" ? "toggle-webpage" : "toggle-website", presetToAutoEnable, true, url);
                 }

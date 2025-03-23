@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.11.1 (09/03/2025)
+* Version actuelle : 2.11.2 (23/03/2025)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,12 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.11.2 (23/03/2025) :
+
+* Correction de bugs :
+    * Correction d'un bug qui empêchait de modifier les thèmes personnalisés n°6 à 10 ;
+    * Correction d'un bug lors de la réinitialisation des paramètres : le cache des pré-réglages n'était pas mis à jour ;
 
 ### Version 2.11.1 (09/03/2025) :
 

@@ -69,8 +69,19 @@ async function checkFirstLoad() {
 async function setFirstSettings() {
     // Set default settings values
     await browser.storage.local.set(defaultSettings);
-    sendMessageWithPromise({ "type": "updateSettingsCache" });
+    updateSettingsCache();
+
     return true;
+}
+
+async function resetSettings() {
+    await browser.storage.local.clear();
+    localStorage.clear();
+}
+
+function updateSettingsCache() {
+    sendMessageWithPromise({ "type": "updateSettingsCache" });
+    sendMessageWithPromise({ "type": "updatePresetCache" });
 }
 
 // Migrate deprecated settings
@@ -235,4 +246,4 @@ async function loadWebsiteSpecialFiltersConfig() {
     return websiteSpecialFiltersConfig;
 }
 
-export { setSettingItem, removeSettingItem, checkFirstLoad, setFirstSettings, migrateSettings, checkChangedStorageData, loadWebsiteSpecialFiltersConfig };
+export { setSettingItem, removeSettingItem, checkFirstLoad, setFirstSettings, migrateSettings, checkChangedStorageData, loadWebsiteSpecialFiltersConfig, resetSettings, updateSettingsCache };
