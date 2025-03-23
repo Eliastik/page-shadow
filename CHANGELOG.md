@@ -2,6 +2,12 @@
 
 ## Changelog:
 
+### Version 2.11.2 (3/23/2025):
+
+* Bug fixes:
+    * Fixed a bug that prevented custom themes #6 to #10 from being modified;
+    * Fixed a bug when resetting settings: the presets cache was not updated;
+
 ### Version 2.11.1 (3/9/2025):
 
 * Automatic detection of dark themes: Page Shadow can now identify websites using a dark theme. With this feature, you can configure the extension to:
@@ -436,6 +442,12 @@
 # Page Shadow - Français
 
 ## Journal des changements :
+
+### Version 2.11.2 (23/03/2025) :
+
+* Correction de bugs :
+    * Correction d'un bug qui empêchait de modifier les thèmes personnalisés n°6 à 10 ;
+    * Correction d'un bug lors de la réinitialisation des paramètres : le cache des pré-réglages n'était pas mis à jour ;
 
 ### Version 2.11.1 (09/03/2025) :
 

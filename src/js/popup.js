@@ -37,7 +37,8 @@ import { inArrayWebsite, disableEnableToggle } from "./utils/enableDisableUtils.
 import { hourToPeriodFormat, checkNumber, getAutoEnableSavedData, checkAutoEnableStartup, getAutoEnableFormData } from "./utils/autoEnableUtils.js";
 import { getPresetData, getPriorityPresetEnabledForWebsite, loadPreset, loadPresetSelect, presetsEnabledForWebsite, savePreset, disableEnablePreset } from "./utils/presetUtils.js";
 import { customTheme } from "./utils/customThemeUtils.js";
-import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval, permissionOrigin, attenuateDefaultValue, settingsToLoad, enableReportWebsiteProblem, reportWebsiteProblemBackendURL, brightnessReductionElementId, blueLightReductionElementId } from "./constants.js";
+import { getSettings } from "./utils/settingsUtils.js";
+import { extensionVersion, versionDate, nbThemes, colorTemperaturesAvailable, minBrightnessPercentage, maxBrightnessPercentage, brightnessDefaultValue, defaultHourEnable, defaultHourDisable, nbCustomThemesSlots, percentageBlueLightDefaultValue, archiveInfoShowInterval, permissionOrigin, attenuateDefaultValue, enableReportWebsiteProblem, reportWebsiteProblemBackendURL, brightnessReductionElementId, blueLightReductionElementId } from "./constants.js";
 import { setSettingItem } from "./utils/storageUtils.js";
 import { initI18next } from "./locales.js";
 import browser from "webextension-polyfill";
@@ -172,7 +173,7 @@ async function checkCurrentPopupTheme() {
 
 async function reportWebsiteProblem() {
     const currentURL = await getCurrentURL();
-    const settings = await browser.storage.local.get(settingsToLoad);
+    const settings = await getSettings(currentURL, true);
 
     const dataToSend = {
         currentURL,
@@ -497,7 +498,7 @@ $(() => {
         $("#enableWebsitePreset-li").removeAttr("disabled");
         $("#disableWebsitePreset-li").removeAttr("disabled");
 
-        if(!currentPreset || Object.keys(currentPreset).length <= 0) {
+        if(!currentPreset || currentPreset === "error" || Object.keys(currentPreset).length <= 0) {
             $("#enableWebsitePreset-li").attr("disabled", "disabled");
             $("#disableWebsitePreset-li").attr("disabled", "disabled");
             $("#enableWebpagePreset-li").attr("disabled", "disabled");
@@ -1626,7 +1627,7 @@ $(() => {
         const presetId = parseInt($("#loadPresetSelect").val(), 10);
         const presetData = await getPresetData(presetId);
 
-        if(presetData && presetData != "error") {
+        if(presetData && presetData !== "error") {
             const result = await savePreset(presetId, presetData.name, presetData.websiteListToApply, true);
 
             if(result == "success") {
