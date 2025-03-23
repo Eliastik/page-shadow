@@ -42,7 +42,7 @@ async function loadPresetSelect(selectId, i18next) {
     for(let i = 1; i <= nbPresets; i++) {
         const preset = await getPresetData(i);
 
-        if(!preset || preset === "error" || !Object.prototype.hasOwnProperty.call(preset, "name")) {
+        if(!preset || preset === "error" || Object.keys(preset).length === 0 || !Object.prototype.hasOwnProperty.call(preset, "name")) {
             optionTitle += `<option value="${i}">${i18next.t("modal.archive.presetTitle")}${i} : ${i18next.t("modal.archive.presetEmpty")}</option>`;
         } else {
             const presetName = preset["name"].trim() === ""
@@ -111,7 +111,7 @@ async function loadPreset(nb) {
 
         const preset = await getPresetData(nb);
 
-        if(!preset) {
+        if(!preset || Object.keys(preset).length === 0) {
             return "empty";
         }
 
@@ -352,7 +352,7 @@ async function presetsEnabledForWebsiteWithData(url, allPresetData) {
                 presetData = allPresetData[i];
             }
 
-            if(presetData && presetData !== "error") {
+            if(presetData && presetData !== "error" && Object.keys(presetData).length > 0) {
                 const websiteSettings = presetData.websiteListToApply;
                 let websiteList = [];
 
@@ -410,7 +410,7 @@ async function disableEnablePreset(type, nb, checked, url) {
 
     const preset = await getPresetData(nb);
 
-    if(!preset || preset === "error") {
+    if(!preset || preset === "error" || Object.keys(preset).length === 0) {
         return "error";
     }
 
