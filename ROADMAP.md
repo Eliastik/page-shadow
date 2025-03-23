@@ -197,6 +197,10 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
 
+#### Known issues/bugs
+
+* [ ] Quota error for cloud archive feature: still present in Firefox
+
 #### Common
 
 * [ ] FAQ for common questions?
