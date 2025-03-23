@@ -4,9 +4,11 @@
 
 ### Version 2.11.2 (3/23/2025):
 
-* Bug fixes:
+* Bug fixes and other adjustments:
     * Fixed a bug that prevented custom themes #6 to #10 from being modified;
-    * Fixed a bug when resetting settings: the presets cache was not updated.
+    * Fixed a bug when resetting settings: the presets cache was not updated;
+    * Fixed minor bugs with presets;
+    * Dependencies updated.
 
 ### Version 2.11.1 (3/9/2025):
 
@@ -445,9 +447,11 @@
 
 ### Version 2.11.2 (23/03/2025) :
 
-* Correction de bugs :
+* Correction de bugs et autres ajustements :
     * Correction d'un bug qui empêchait de modifier les thèmes personnalisés n°6 à 10 ;
-    * Correction d'un bug lors de la réinitialisation des paramètres : le cache des pré-réglages n'était pas mis à jour.
+    * Correction d'un bug lors de la réinitialisation des paramètres : le cache des pré-réglages n'était pas mis à jour ;
+    * Correction de bugs mineurs avec les pré-réglages ;
+    * Mise à jour des dépendances.
 
 ### Version 2.11.1 (09/03/2025) :
 
