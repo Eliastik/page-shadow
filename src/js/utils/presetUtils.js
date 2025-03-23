@@ -42,7 +42,7 @@ async function loadPresetSelect(selectId, i18next) {
     for(let i = 1; i <= nbPresets; i++) {
         const preset = await getPresetData(i);
 
-        if(!preset || !Object.prototype.hasOwnProperty.call(preset, "name")) {
+        if(!preset || preset === "error" || !Object.prototype.hasOwnProperty.call(preset, "name")) {
             optionTitle += `<option value="${i}">${i18next.t("modal.archive.presetTitle")}${i} : ${i18next.t("modal.archive.presetEmpty")}</option>`;
         } else {
             const presetName = preset["name"].trim() === ""
@@ -113,6 +113,10 @@ async function loadPreset(nb) {
 
         if(!preset) {
             return "empty";
+        }
+
+        if(preset === "error") {
+            return "error";
         }
 
         let settingsRestored = 0;
@@ -192,26 +196,30 @@ async function getPresetData(nb) {
             }
         }
 
-        // Migrate Night mode filter
-        if(preset["nightModeEnabled"] && preset["pageLumEnabled"] && preset["nightModeEnabled"] == "true" && preset["pageLumEnabled"] == "true") {
-            preset["pageLumEnabled"] = "false";
-            preset["blueLightReductionEnabled"] = "true";
-            preset["percentageBlueLightReduction"] = preset["pourcentageLum"];
-            preset["nightModeEnabled"] = undefined;
-        }
-
-        // Migrate Attenuate image color
-        if(preset["attenuateImageColor"] == "true") {
-            preset["attenuateColors"] = "true";
-            preset["attenuateImgColors"] = "true";
-            preset["attenuateBgColors"] = "true";
-            preset["attenuateImageColor"] = undefined;
-        }
+        migratePresetData(preset);
 
         return preset;
     } catch(e) {
         debugLogger.log(e, "error");
         return "error";
+    }
+}
+
+function migratePresetData(preset) {
+    // Migrate Night mode filter
+    if(preset["nightModeEnabled"] && preset["pageLumEnabled"] && preset["nightModeEnabled"] == "true" && preset["pageLumEnabled"] == "true") {
+        preset["pageLumEnabled"] = "false";
+        preset["blueLightReductionEnabled"] = "true";
+        preset["percentageBlueLightReduction"] = preset["pourcentageLum"];
+        preset["nightModeEnabled"] = undefined;
+    }
+
+    // Migrate Attenuate image color
+    if(preset["attenuateImageColor"] == "true") {
+        preset["attenuateColors"] = "true";
+        preset["attenuateImgColors"] = "true";
+        preset["attenuateBgColors"] = "true";
+        preset["attenuateImageColor"] = undefined;
     }
 }
 
@@ -322,7 +330,10 @@ async function presetsEnabledForWebsite(url, disableCache) {
 
     if(!disableCache) { // Get preset with cache
         const response = await sendMessageWithPromise({ "type": "getAllPresets" }, "getAllPresetsResponse");
-        allPresetData = response.data;
+
+        if(response && response.data) {
+            allPresetData = response.data;
+        }
     }
 
     return presetsEnabledForWebsiteWithData(url, allPresetData);
@@ -341,7 +352,7 @@ async function presetsEnabledForWebsiteWithData(url, allPresetData) {
                 presetData = allPresetData[i];
             }
 
-            if(presetData) {
+            if(presetData && presetData !== "error") {
                 const websiteSettings = presetData.websiteListToApply;
                 let websiteList = [];
 
@@ -399,7 +410,7 @@ async function disableEnablePreset(type, nb, checked, url) {
 
     const preset = await getPresetData(nb);
 
-    if(!preset) {
+    if(!preset || preset === "error") {
         return "error";
     }
 

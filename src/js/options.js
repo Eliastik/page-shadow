@@ -962,7 +962,7 @@ async function displayPresetInfos(nb) {
 
     const presetData = await getPresetData(nb);
 
-    if(presetData) {
+    if(presetData && presetData !== "error") {
         const modalBody = document.querySelector("#presetInfos .modal-body");
         modalBody.textContent = "";
 
@@ -1583,7 +1583,7 @@ async function createPreset() {
 async function notifyChangedPresetNotSaved(nb) {
     const data = await getPresetData(nb);
 
-    if(data && Object.keys(data).length > 0) {
+    if(data && data !== "error" && Object.keys(data).length > 0) {
         const name = typeof(data["name"]) === "undefined" ? "" : data["name"];
         const websiteListToApply = typeof(data["websiteListToApply"]) === "undefined" ? "" : data["websiteListToApply"];
         const autoEnablePresetForDarkWebsites = typeof(data["autoEnablePresetForDarkWebsites"]) === "undefined" ? false : data["autoEnablePresetForDarkWebsites"];
@@ -1615,7 +1615,7 @@ async function displayPresetSettings(id, isChangingLanguage) {
     $("#checkAutoEnablePresetForDarkWebsites").removeAttr("disabled");
     $("#autoEnablePresetForDarkWebsitesTypeSelect").removeAttr("disabled");
 
-    if(data && data != "error" && Object.keys(data).length > 0) {
+    if(data && data !== "error" && Object.keys(data).length > 0) {
         if(!isChangingLanguage) {
             if(data.name) {
                 $("#savePresetTitle").val(data.name);
