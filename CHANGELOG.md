@@ -6,7 +6,7 @@
 
 * Bug fixes:
     * Fixed a bug that prevented custom themes #6 to #10 from being modified;
-    * Fixed a bug when resetting settings: the presets cache was not updated;
+    * Fixed a bug when resetting settings: the presets cache was not updated.
 
 ### Version 2.11.1 (3/9/2025):
 
@@ -447,7 +447,7 @@
 
 * Correction de bugs :
     * Correction d'un bug qui empêchait de modifier les thèmes personnalisés n°6 à 10 ;
-    * Correction d'un bug lors de la réinitialisation des paramètres : le cache des pré-réglages n'était pas mis à jour ;
+    * Correction d'un bug lors de la réinitialisation des paramètres : le cache des pré-réglages n'était pas mis à jour.
 
 ### Version 2.11.1 (09/03/2025) :
 

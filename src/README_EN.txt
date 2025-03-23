@@ -38,7 +38,7 @@ Or you can compile it yourself (see Compilation section).
 
 * Bug fixes:
     * Fixed a bug that prevented custom themes #6 to #10 from being modified;
-    * Fixed a bug when resetting settings: the presets cache was not updated;
+    * Fixed a bug when resetting settings: the presets cache was not updated.
 
 ### Version 2.11.1 (3/9/2025):
 
