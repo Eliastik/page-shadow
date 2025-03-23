@@ -49,8 +49,9 @@ import { getBrowser, sendMessageWithPromise } from "./utils/browserUtils.js";
 import { toggleTheme, isInterfaceDarkTheme } from "./utils/uiUtils.js";
 import { getSettingsToArchive, archiveCloud, getCurrentArchiveCloud } from "./utils/archiveUtils.js";
 import { deletePreset, getPresetData, getPresetWithAutoEnableForDarkWebsites, loadPreset, loadPresetSelect, savePreset } from "./utils/presetUtils.js";
-import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultCustomThemes, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes, versionDate } from "./constants.js";
-import { setSettingItem, setFirstSettings, migrateSettings, loadWebsiteSpecialFiltersConfig } from "./utils/storageUtils.js";
+import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes, versionDate } from "./constants.js";
+import { setSettingItem, resetSettings, setFirstSettings, migrateSettings, loadWebsiteSpecialFiltersConfig, updateSettingsCache } from "./utils/storageUtils.js";
+import { getCustomThemeData } from "./utils/customThemeUtils.js";
 import { initI18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./utils/filter.codemirror.mode";
 import browser from "webextension-polyfill";
@@ -144,11 +145,11 @@ i18next.on("languageChanged", () => {
     translateContent();
 });
 
-async function resetSettings() {
+async function resetAllSettings() {
     $("span[data-toggle=\"tooltip\"]").tooltip("hide");
     $("i[data-toggle=\"tooltip\"]").tooltip("hide");
 
-    await browser.storage.local.clear();
+    await resetSettings();
     await setFirstSettings();
 
     $("#textareaAssomPage").val("");
@@ -157,12 +158,12 @@ async function resetSettings() {
 
     initLocales();
 
-    $("#reset").modal("show");
     await loadPresetSelect("loadPresetSelect", i18next);
     await loadPresetSelect("savePresetSelect", i18next);
     await loadPresetSelect("deletePresetSelect", i18next);
     await displayPresetSettings(currentSelectedPresetEdit);
-    localStorage.clear();
+
+    $("#reset").modal("show");
 }
 
 async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = null, isChangingLanguage) {
@@ -336,50 +337,45 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
 async function displayTheme(nb, defaultSettings) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
     defaultSettings = defaultSettings == undefined ? false : defaultSettings;
-    let customTheme, fontTheme, fontName, customCSS, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme;
 
-    const result = await browser.storage.local.get("customThemes");
+    let fontTheme, fontName, customCSS, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme;
 
-    if(result.customThemes && result.customThemes[nb]) {
-        customTheme = result.customThemes[nb];
-    } else {
-        customTheme = defaultCustomThemes[nb];
-    }
+    const { currentCustomTheme } = await getCustomThemeData(nb);
 
-    if(!defaultSettings && customTheme && customTheme["customThemeBg"] != undefined) {
-        backgroundTheme = customTheme["customThemeBg"];
+    if(!defaultSettings && currentCustomTheme && currentCustomTheme["customThemeBg"] != undefined) {
+        backgroundTheme = currentCustomTheme["customThemeBg"];
     } else {
         backgroundTheme = defaultBGColorCustomTheme;
     }
 
-    if(!defaultSettings && customTheme && customTheme["customThemeTexts"] != undefined) {
-        textsColorTheme = customTheme["customThemeTexts"];
+    if(!defaultSettings && currentCustomTheme && currentCustomTheme["customThemeTexts"] != undefined) {
+        textsColorTheme = currentCustomTheme["customThemeTexts"];
     } else {
         textsColorTheme = defaultTextsColorCustomTheme;
     }
 
-    if(!defaultSettings && customTheme && customTheme["customThemeLinks"] != undefined) {
-        linksColorTheme = customTheme["customThemeLinks"];
+    if(!defaultSettings && currentCustomTheme && currentCustomTheme["customThemeLinks"] != undefined) {
+        linksColorTheme = currentCustomTheme["customThemeLinks"];
     } else {
         linksColorTheme = defaultLinksColorCustomTheme;
     }
 
-    if(!defaultSettings && customTheme && customTheme["customThemeLinksVisited"] != undefined) {
-        linksVisitedColorTheme = customTheme["customThemeLinksVisited"];
+    if(!defaultSettings && currentCustomTheme && currentCustomTheme["customThemeLinksVisited"] != undefined) {
+        linksVisitedColorTheme = currentCustomTheme["customThemeLinksVisited"];
     } else {
         linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
     }
 
-    if(!defaultSettings && customTheme && customTheme["customThemeFont"] != undefined && customTheme["customThemeFont"].trim() != "") {
-        fontTheme = "\"" + customTheme["customThemeFont"] + "\"";
-        fontName = customTheme["customThemeFont"];
+    if(!defaultSettings && currentCustomTheme && currentCustomTheme["customThemeFont"] != undefined && currentCustomTheme["customThemeFont"].trim() != "") {
+        fontTheme = "\"" + currentCustomTheme["customThemeFont"] + "\"";
+        fontName = currentCustomTheme["customThemeFont"];
     } else {
         fontTheme = defaultFontCustomTheme;
         fontName = defaultFontCustomTheme;
     }
 
-    if(!defaultSettings && customTheme && customTheme["customCSSCode"] != undefined && typeof(customTheme["customCSSCode"]) == "string" && customTheme["customCSSCode"].trim() != "") {
-        customCSS = customTheme["customCSSCode"];
+    if(!defaultSettings && currentCustomTheme && currentCustomTheme["customCSSCode"] != undefined && typeof(currentCustomTheme["customCSSCode"]) == "string" && currentCustomTheme["customCSSCode"].trim() != "") {
+        customCSS = currentCustomTheme["customCSSCode"];
     } else {
         customCSS = defaultCustomCSSCode;
     }
@@ -966,7 +962,7 @@ async function displayPresetInfos(nb) {
 
     const presetData = await getPresetData(nb);
 
-    if(presetData) {
+    if(presetData && presetData !== "error") {
         const modalBody = document.querySelector("#presetInfos .modal-body");
         modalBody.textContent = "";
 
@@ -1171,17 +1167,13 @@ async function saveCustomFilter(close) {
 async function saveThemeSettings(nb) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
-    let { customThemes } = await browser.storage.local.get("customThemes");
+    const { currentCustomTheme, customThemes } = await getCustomThemeData(nb);
 
-    if(!customThemes) {
-        customThemes = defaultCustomThemes;
-    }
-
-    customThemes[nb]["customThemeBg"] = $("#colorpicker1").attr("value");
-    customThemes[nb]["customThemeTexts"] = $("#colorpicker2").attr("value");
-    customThemes[nb]["customThemeLinks"] = $("#colorpicker3").attr("value");
-    customThemes[nb]["customThemeLinksVisited"] = $("#colorpicker4").attr("value");
-    customThemes[nb]["customThemeFont"] = $("#customThemeFont").val();
+    currentCustomTheme["customThemeBg"] = $("#colorpicker1").attr("value");
+    currentCustomTheme["customThemeTexts"] = $("#colorpicker2").attr("value");
+    currentCustomTheme["customThemeLinks"] = $("#colorpicker3").attr("value");
+    currentCustomTheme["customThemeLinksVisited"] = $("#colorpicker4").attr("value");
+    currentCustomTheme["customThemeFont"] = $("#customThemeFont").val();
 
     const userCsss = window.codeMirrorUserCss;
 
@@ -1189,7 +1181,9 @@ async function saveThemeSettings(nb) {
         userCsss.save();
     }
 
-    customThemes[nb]["customCSSCode"] = $("#codeMirrorUserCSSTextarea").val();
+    currentCustomTheme["customCSSCode"] = $("#codeMirrorUserCSSTextarea").val();
+
+    customThemes[nb] = currentCustomTheme;
 
     await setSettingItem("customThemes", customThemes);
 }
@@ -1197,19 +1191,7 @@ async function saveThemeSettings(nb) {
 async function notifyChangedThemeNotSaved(nb) {
     nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
 
-    let { customThemes } = await browser.storage.local.get("customThemes");
-
-    let currentCustomTheme = null;
-
-    if(!customThemes) {
-        customThemes = JSON.parse(JSON.stringify(defaultCustomThemes));
-    }
-
-    if(customThemes && customThemes[nb]) {
-        currentCustomTheme = customThemes[nb];
-    } else {
-        currentCustomTheme = defaultCustomThemes[nb];
-    }
+    const { currentCustomTheme } = await getCustomThemeData(nb);
 
     const userCsss = window.codeMirrorUserCss;
 
@@ -1354,7 +1336,7 @@ async function restoreSettings(object) {
     }
 
     // Reset data
-    await browser.storage.local.clear();
+    await resetSettings();
     await setFirstSettings();
 
     const finalRestoreObject = {};
@@ -1371,8 +1353,8 @@ async function restoreSettings(object) {
 
     await browser.storage.local.set(finalRestoreObject);
     await migrateSettings(new Filter());
-    sendMessageWithPromise({ "type": "updateSettingsCache" });
-    sendMessageWithPromise({ "type": "updatePresetCache" });
+
+    updateSettingsCache();
 
     $("#updateAllFilters").attr("disabled", "disabled");
 
@@ -1601,7 +1583,7 @@ async function createPreset() {
 async function notifyChangedPresetNotSaved(nb) {
     const data = await getPresetData(nb);
 
-    if(data && Object.keys(data).length > 0) {
+    if(data && data !== "error" && Object.keys(data).length > 0) {
         const name = typeof(data["name"]) === "undefined" ? "" : data["name"];
         const websiteListToApply = typeof(data["websiteListToApply"]) === "undefined" ? "" : data["websiteListToApply"];
         const autoEnablePresetForDarkWebsites = typeof(data["autoEnablePresetForDarkWebsites"]) === "undefined" ? false : data["autoEnablePresetForDarkWebsites"];
@@ -1633,7 +1615,7 @@ async function displayPresetSettings(id, isChangingLanguage) {
     $("#checkAutoEnablePresetForDarkWebsites").removeAttr("disabled");
     $("#autoEnablePresetForDarkWebsitesTypeSelect").removeAttr("disabled");
 
-    if(data && data != "error" && Object.keys(data).length > 0) {
+    if(data && data !== "error" && Object.keys(data).length > 0) {
         if(!isChangingLanguage) {
             if(data.name) {
                 $("#savePresetTitle").val(data.name);
@@ -1909,7 +1891,7 @@ $(async() => {
     });
 
     $("#confirmReset").on("click", () => {
-        resetSettings();
+        resetAllSettings();
     });
 
     $("#versionExtension").text(extensionVersion);

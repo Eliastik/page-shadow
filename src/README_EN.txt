@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.11.1 (3/9/2025)
+* Latest version: 2.11.2 (3/23/2025)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,12 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.11.2 (3/23/2025):
+
+* Bug fixes:
+    * Fixed a bug that prevented custom themes #6 to #10 from being modified;
+    * Fixed a bug when resetting settings: the presets cache was not updated.
 
 ### Version 2.11.1 (3/9/2025):
 
