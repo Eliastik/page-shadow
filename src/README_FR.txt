@@ -38,7 +38,7 @@ Soit la compiler vous-même (voir section "Compilation").
 
 * Correction de bugs :
     * Correction d'un bug qui empêchait de modifier les thèmes personnalisés n°6 à 10 ;
-    * Correction d'un bug lors de la réinitialisation des paramètres : le cache des pré-réglages n'était pas mis à jour ;
+    * Correction d'un bug lors de la réinitialisation des paramètres : le cache des pré-réglages n'était pas mis à jour.
 
 ### Version 2.11.1 (09/03/2025) :
 
