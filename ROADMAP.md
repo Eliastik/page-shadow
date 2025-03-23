@@ -199,7 +199,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 #### Known issues/bugs
 
-* [ ] Quota error for cloud archive feature: still present in Firefox
+* [x] Quota error for cloud archive feature: still present in Firefox
 
 #### Common
 
