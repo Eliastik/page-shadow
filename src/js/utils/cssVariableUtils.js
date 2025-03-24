@@ -21,9 +21,15 @@ import { defaultThemesBackgrounds, defaultThemesTextColors, defaultThemesLinkCol
 /** Utils function used to process CSS variables used by Page Shadow */
 
 function applyContrastPageVariablesWithTheme(theme) {
+    const themeVariables = getContrastPageTheme(theme);
+
+    applyContrastPageVariables(themeVariables);
+}
+
+function getContrastPageTheme(theme) {
     const themeNumber = parseInt(theme, 10) - 1;
 
-    applyContrastPageVariables({
+    return {
         backgroundColor: defaultThemesBackgrounds[themeNumber],
         textColor: defaultThemesTextColors[themeNumber],
         linkColor: defaultThemesLinkColors[themeNumber],
@@ -39,7 +45,7 @@ function applyContrastPageVariablesWithTheme(theme) {
         imageBackgroundColor: defaultThemesImgBgColors[themeNumber],
         brightColorTextWhite: defaultThemesBrightColorTextWhite[themeNumber],
         brightColorTextBlack: defaultThemesBrightColorTextBlack[themeNumber]
-    });
+    };
 }
 
 function applyContrastPageVariables(config) {
@@ -163,4 +169,4 @@ function areAllCSSVariablesDefinedForHTMLElement(contrastEnabled, invertEnabled,
     }
 }
 
-export { areAllCSSVariablesDefinedForHTMLElement, applyContrastPageVariablesWithTheme, applyContrastPageVariables, getInvertPageVariablesKeyValues, getPageVariablesToApply };
+export { areAllCSSVariablesDefinedForHTMLElement, applyContrastPageVariablesWithTheme, applyContrastPageVariables, getInvertPageVariablesKeyValues, getPageVariablesToApply, getContrastPageTheme };
