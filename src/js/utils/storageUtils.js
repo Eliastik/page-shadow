@@ -31,12 +31,12 @@ async function setSettingItem(name, value, disableCacheUpdating) {
         // The cache is updated
         if(!disableCacheUpdating && (settingsToLoad.includes(name) || name === customThemesKey
             || name === disabledWebsitesKey || name === whitelistKey)) {
-            sendMessageWithPromise({ "type": "updateSettingsCache" });
+            updateSettingsCache();
         }
 
         // If the presets are updated, we update the cache
         if(!disableCacheUpdating && name.toLowerCase() === "presets") {
-            sendMessageWithPromise({ "type": "updatePresetCache" });
+            updatePresetsCache();
         }
 
         return true;
@@ -69,7 +69,7 @@ async function checkFirstLoad() {
 async function setFirstSettings() {
     // Set default settings values
     await browser.storage.local.set(defaultSettings);
-    updateSettingsCache();
+    updateStorageCache();
 
     return true;
 }
@@ -79,8 +79,16 @@ async function resetSettings() {
     localStorage.clear();
 }
 
+function updateStorageCache() {
+    updateSettingsCache();
+    updatePresetsCache();
+}
+
 function updateSettingsCache() {
     sendMessageWithPromise({ "type": "updateSettingsCache" });
+}
+
+function updatePresetsCache() {
     sendMessageWithPromise({ "type": "updatePresetCache" });
 }
 
@@ -246,4 +254,4 @@ async function loadWebsiteSpecialFiltersConfig() {
     return websiteSpecialFiltersConfig;
 }
 
-export { setSettingItem, removeSettingItem, checkFirstLoad, setFirstSettings, migrateSettings, checkChangedStorageData, loadWebsiteSpecialFiltersConfig, resetSettings, updateSettingsCache };
+export { setSettingItem, removeSettingItem, checkFirstLoad, setFirstSettings, migrateSettings, checkChangedStorageData, loadWebsiteSpecialFiltersConfig, resetSettings, updateStorageCache };
