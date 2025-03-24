@@ -60,6 +60,7 @@ function filtersHint(CodeMirror, editor, keywords, getToken) {
 
 export default function registerCodemirrorFilterMode(CodeMirror) {
     if(CodeMirror) {
+        const availableFilterRulesTypeSortedAlpha = availableFilterRulesType.sort((a, b) => a.localeCompare(b));
         const standardRules = availableFilterRulesType.filter(rule => !specialFilterRules.includes(rule)).sort((a, b) => b.length - a.length);
         const specialRules = specialFilterRules.sort((a, b) => b.length - a.length);
 
@@ -79,6 +80,6 @@ export default function registerCodemirrorFilterMode(CodeMirror) {
             }
         });
 
-        CodeMirror.registerHelper("hint", "filtermode", editor => filtersHint(CodeMirror, editor, availableFilterRulesType, (e, cur) => e.getTokenAt(cur)));
+        CodeMirror.registerHelper("hint", "filtermode", editor => filtersHint(CodeMirror, editor, availableFilterRulesTypeSortedAlpha, (e, cur) => e.getTokenAt(cur)));
     }
 }
