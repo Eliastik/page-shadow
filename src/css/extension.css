@@ -920,3 +920,9 @@ body.popup .modal-body {
 body.popup .modal-footer {
     padding-top: 0px !important;
 }
+#editFilter .modal-dialog, #filterDetails .modal-dialog {
+    width: 50%;
+}
+#editFilter .CodeMirror, #filterDetails .CodeMirror {
+    height: 50vh !important;
+}
