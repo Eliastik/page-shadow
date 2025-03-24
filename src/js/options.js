@@ -50,7 +50,7 @@ import { toggleTheme, isInterfaceDarkTheme } from "./utils/uiUtils.js";
 import { getSettingsToArchive, archiveCloud, getCurrentArchiveCloud } from "./utils/archiveUtils.js";
 import { deletePreset, getPresetData, getPresetWithAutoEnableForDarkWebsites, loadPreset, loadPresetSelect, savePreset } from "./utils/presetUtils.js";
 import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes, versionDate } from "./constants.js";
-import { setSettingItem, resetSettings, setFirstSettings, migrateSettings, loadWebsiteSpecialFiltersConfig, updateSettingsCache } from "./utils/storageUtils.js";
+import { setSettingItem, resetSettings, setFirstSettings, migrateSettings, loadWebsiteSpecialFiltersConfig, updateStorageCache } from "./utils/storageUtils.js";
 import { getCustomThemeData } from "./utils/customThemeUtils.js";
 import { initI18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./utils/filter.codemirror.mode";
@@ -1354,7 +1354,7 @@ async function restoreSettings(object) {
     await browser.storage.local.set(finalRestoreObject);
     await migrateSettings(new Filter());
 
-    updateSettingsCache();
+    updateStorageCache();
 
     $("#updateAllFilters").attr("disabled", "disabled");
 

@@ -19,7 +19,7 @@
 import { removeElementsFromArray } from "./commonUtils.js";
 import { sendMessageWithPromise } from "./browserUtils.js";
 import { inArrayWebsite, commentMatched } from "./enableDisableUtils.js";
-import { setSettingItem, migrateSettings, updateSettingsCache } from "./storageUtils.js";
+import { setSettingItem, migrateSettings, updateStorageCache } from "./storageUtils.js";
 import { settingsToSavePresets, nbPresets, defaultPresets, defaultSettings } from "../constants.js";
 import browser from "webextension-polyfill";
 import DebugLogger from "./../classes/debugLogger.js";
@@ -144,7 +144,7 @@ async function loadPreset(nb) {
         await browser.storage.local.set(finalRestoreObject);
         await migrateSettings();
 
-        updateSettingsCache();
+        updateStorageCache();
 
         if(settingsRestored > 0) {
             return "success";
