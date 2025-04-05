@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.11.2 (3/23/2025)
+* Latest version: 2.11.3 (4/6/2025)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,14 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.11.3 (4/6/2025) :
+
+* Fixed a bug that could occasionally prevent Cloud archiving from working in Firefox due to quota limits being exceeded;
+* Minor UI improvements in the extension interface (displaying filter codes, creating a preset from the popup);
+* Other technical improvements and fixes:
+    * Refactored and simplified parts of the codebase;
+    * Updated dependencies.
 
 ### Version 2.11.2 (3/23/2025):
 
