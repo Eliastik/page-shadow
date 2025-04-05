@@ -59,40 +59,39 @@ export default class SafeTimer {
         });
     }
 
-    clear() {
-        if(this.requestAnimationId) {
-            cancelAnimationFrame(this.requestAnimationId);
-            this.requestAnimationId = null;
-        }
-
-        if(this.timeoutId) {
-            clearTimeout(this.timeoutId);
-            this.timeoutId = null;
-        }
-    }
-
     macroToMicro() {
         this.timeoutId = null;
         this.start();
     }
 
     async onRequestAnimationFrame() {
-        if(this.timeoutId) {
-            clearTimeout(this.timeoutId);
-            this.timeoutId = null;
-        }
-
+        this.clearTimeout();
         this.requestAnimationId = null;
         await this.callback();
     }
 
     async onRequestAnimationTimeout() {
+        this.clearAnimationFrame();
+        this.timeoutId = null;
+        await this.callback();
+    }
+
+    clear() {
+        this.clearAnimationFrame();
+        this.clearTimeout();
+    }
+
+    clearAnimationFrame() {
         if(this.requestAnimationId) {
             cancelAnimationFrame(this.requestAnimationId);
             this.requestAnimationId = null;
         }
+    }
 
-        this.timeoutId = null;
-        await this.callback();
+    clearTimeout() {
+        if(this.timeoutId) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = null;
+        }
     }
 }
