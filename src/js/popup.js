@@ -1662,6 +1662,10 @@ $(() => {
     $("#createPreset").on("click", () => {
         $("#createPresetModalTitle").val("");
         $("#createPresetModal").modal("show");
+
+        $("#createPresetModal").on("shown.bs.modal", () => {
+            $("#createPresetModalTitle").trigger("focus");
+        });
     });
 
     $("#createPresetModalAdvancedLink").on("click", () => {
