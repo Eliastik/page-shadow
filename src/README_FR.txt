@@ -37,7 +37,7 @@ Soit la compiler vous-même (voir section "Compilation").
 ### Version 2.11.3 (06/04/2025) :
 
 * Correction d'un bug qui pouvait parfois empêcher l'archivage Cloud de fonctionner sous Firefox en raison d'un dépassement de quota ;
-* Corrections mineures d'ergonomie dans l'interface utilisateur de l'extension (affichage du code des filtres, création d'un pré-réglage dans la popup) ;
+* Corrections mineures d'ergonomie dans l'interface utilisateur de l'extension (affichage et édition des filtres, création d'un pré-réglage dans la popup) ;
 * Autres améliorations et corrections techniques :
     * Refactorisation et simplification de certaines parties du code ;
     * Mise à jour des dépendances.

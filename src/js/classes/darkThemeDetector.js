@@ -30,6 +30,7 @@ export default class DarkThemeDetector {
     analyzedElements = 0;
     darkElementsScore = 0;
     lightElementsScore = 0;
+    actionsAlreadyExecuted = false;
 
     websiteSpecialFiltersConfig;
 
@@ -194,6 +195,10 @@ export default class DarkThemeDetector {
     }
 
     async executeActions() {
+        if(this.actionsAlreadyExecuted) {
+            return;
+        }
+
         const percentDarkElements = Math.round(this.getPercentDarkElements() * 100);
 
         if(this.hasDarkTheme()) {
@@ -205,6 +210,8 @@ export default class DarkThemeDetector {
                 url = new URL(getCurrentURL());
             } catch(e) {
                 this.debugLogger?.log(e, "error");
+                this.actionsAlreadyExecuted = true;
+
                 return;
             }
 
@@ -228,6 +235,8 @@ export default class DarkThemeDetector {
         } else {
             this.debugLogger?.log(`PageAnalyzer - This website doesn't have a dark theme (${percentDarkElements}% score)`);
         }
+
+        this.actionsAlreadyExecuted = true;
     }
 
     clear() {
