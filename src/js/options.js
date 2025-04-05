@@ -189,8 +189,9 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
             try {
                 const sizeCloud = browser.storage.sync.getBytesInUse ? await browser.storage.sync.getBytesInUse(null) : getSizeObject(await browser.storage.sync.get(null));
                 const convertedCloud = convertBytes(sizeCloud);
-                const convertedCloudMax = convertBytes(browser.storage.sync.QUOTA_BYTES);
-                $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
+                const quotaBytes = browser.storage.sync.QUOTA_BYTES || 102400;
+                const convertedCloudMax = convertBytes(quotaBytes);
+                $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (quotaBytes ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
             } catch(e) {
                 debugLogger.log(e, "error");
                 $("#infosCloudStorage").text("???");
