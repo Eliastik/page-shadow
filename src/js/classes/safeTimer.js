@@ -21,6 +21,8 @@
  * throttle when the page is in idle (for example, when the tab is
  * inactive) to preserve performance
  */
+import { enableRequestAnimationFrameTimeout, requestAnimationFrameTimeout } from "../constants.js";
+
 export default class SafeTimer {
 
     timeoutId = null;
@@ -40,10 +42,16 @@ export default class SafeTimer {
                     });
                 }
 
+                if(!this.timeoutId && enableRequestAnimationFrameTimeout) {
+                    this.timeoutId = setTimeout(() => {
+                        this.onRequestAnimationTimeout().then(resolve);
+                    }, requestAnimationFrameTimeout);
+                }
+
                 return;
             }
 
-            if(!this.requestAnimationId) {
+            if(!this.requestAnimationId && !this.timeoutId) {
                 this.timeoutId = setTimeout(() => {
                     this.macroToMicro();
                 }, delay);
@@ -69,7 +77,22 @@ export default class SafeTimer {
     }
 
     async onRequestAnimationFrame() {
+        if(this.timeoutId) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = null;
+        }
+
         this.requestAnimationId = null;
+        await this.callback();
+    }
+
+    async onRequestAnimationTimeout() {
+        if(this.requestAnimationId) {
+            cancelAnimationFrame(this.requestAnimationId);
+            this.requestAnimationId = null;
+        }
+
+        this.timeoutId = null;
         await this.callback();
     }
 }

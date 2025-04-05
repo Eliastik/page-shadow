@@ -5,7 +5,7 @@
 ### Version 2.11.3 (4/6/2025) :
 
 * Fixed a bug that could occasionally prevent Cloud archiving from working in Firefox due to quota limits being exceeded;
-* Minor UI improvements in the extension interface (displaying filter codes, creating a preset from the popup);
+* Minor UI improvements in the extension interface (displaying and editing filters, creating a preset from the popup);
 * Other technical improvements and fixes:
     * Refactored and simplified parts of the codebase;
     * Updated dependencies.
@@ -456,7 +456,7 @@
 ### Version 2.11.3 (06/04/2025) :
 
 * Correction d'un bug qui pouvait parfois empêcher l'archivage Cloud de fonctionner sous Firefox en raison d'un dépassement de quota ;
-* Corrections mineures d'ergonomie dans l'interface utilisateur de l'extension (affichage du code des filtres, création d'un pré-réglage dans la popup) ;
+* Corrections mineures d'ergonomie dans l'interface utilisateur de l'extension (affichage et édition des filtres, création d'un pré-réglage dans la popup) ;
 * Autres améliorations et corrections techniques :
     * Refactorisation et simplification de certaines parties du code ;
     * Mise à jour des dépendances.

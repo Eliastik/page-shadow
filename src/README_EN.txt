@@ -37,7 +37,7 @@ Or you can compile it yourself (see Compilation section).
 ### Version 2.11.3 (4/6/2025) :
 
 * Fixed a bug that could occasionally prevent Cloud archiving from working in Firefox due to quota limits being exceeded;
-* Minor UI improvements in the extension interface (displaying filter codes, creating a preset from the popup);
+* Minor UI improvements in the extension interface (displaying and editing filters, creating a preset from the popup);
 * Other technical improvements and fixes:
     * Refactored and simplified parts of the codebase;
     * Updated dependencies.
