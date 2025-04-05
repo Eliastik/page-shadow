@@ -53,15 +53,15 @@ export default class SafeTimer {
 
             if(!this.requestAnimationId && !this.timeoutId) {
                 this.timeoutId = setTimeout(() => {
-                    this.macroToMicro();
+                    this.macroToMicro().then(resolve);
                 }, delay);
             }
         });
     }
 
-    macroToMicro() {
+    async macroToMicro() {
         this.timeoutId = null;
-        this.start();
+        await this.start();
     }
 
     async onRequestAnimationFrame() {
