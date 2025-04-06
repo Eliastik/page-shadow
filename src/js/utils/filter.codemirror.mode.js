@@ -60,14 +60,18 @@ function filtersHint(CodeMirror, editor, keywords, getToken) {
 
 export default function registerCodemirrorFilterMode(CodeMirror) {
     if(CodeMirror) {
+        const availableFilterRulesTypeSortedAlpha = availableFilterRulesType.sort((a, b) => a.localeCompare(b));
+        const standardRules = availableFilterRulesType.filter(rule => !specialFilterRules.includes(rule)).sort((a, b) => b.length - a.length);
+        const specialRules = specialFilterRules.sort((a, b) => b.length - a.length);
+
         CodeMirror.defineSimpleMode("filtermode", {
             start: [
                 {regex: /\s*#!(.*)/, token: "meta", next: "start", sol: true}, // Match metadata
                 {regex: /\s*#(.*)/, token: "comment", next: "start", sol: true}, // Match comments
                 {regex: regexpDetectionPatternHighlight, token: ["operator", "string"], sol: true}, // Match regular expressions (for website/webpage)
                 {regex: /(.*?[^|])?(\|)/, token: ["atom", "string"], sol: true}, // Match website/webpage and first pipe character (|)
-                {regex: "/|" + availableFilterRulesType.filter(rule => specialFilterRules.indexOf(rule) == -1).join("|") + "|/", token: "keyword"}, // Match rule
-                {regex: "/|" + specialFilterRules.join("|") + "|/", token: "def"}, // Match rule
+                {regex: "/|\\b(" + standardRules.join("|") + ")\\b|/", token: "keyword"}, // Match rule
+                {regex: "/|\\b(" + specialRules.join("|") + ")\\b|/", token: "def"}, // Match rule
                 {regex: /(\|)(.*)/, token: ["string", "variable"]}, // Match second pipe character and CSS selector
                 {regex: /(.*)/, token: "comment", next: "start", sol: true} // Match other
             ],
@@ -76,6 +80,6 @@ export default function registerCodemirrorFilterMode(CodeMirror) {
             }
         });
 
-        CodeMirror.registerHelper("hint", "filtermode", editor => filtersHint(CodeMirror, editor, availableFilterRulesType, (e, cur) => e.getTokenAt(cur)));
+        CodeMirror.registerHelper("hint", "filtermode", editor => filtersHint(CodeMirror, editor, availableFilterRulesTypeSortedAlpha, (e, cur) => e.getTokenAt(cur)));
     }
 }

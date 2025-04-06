@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { applyContrastPageVariables } from "./cssVariableUtils.js";
+import { setSettingItem } from "./storageUtils.js";
 import { defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomThemes, defaultThemesSelectBgColors, defaultThemesSelectTextColors, defaultThemesInsBgColors, defaultThemesInsTextColors, defaultThemesDelBgColors, defaultThemesDelTextColors, defaultThemesMarkBgColors, defaultThemesMarkTextColors, defaultThemesImgBgColors, defaultThemesBrightColorTextWhite, defaultThemesBrightColorTextBlack } from "../constants.js";
 import browser from "webextension-polyfill";
 
@@ -55,37 +56,37 @@ async function getCustomThemeConfig(nb, customThemesSettings) {
 
     const { currentCustomTheme } = await getCustomThemeData(nb, customThemesSettings);
 
-    if(currentCustomTheme["customThemeBg"] != undefined) {
+    if(currentCustomTheme && currentCustomTheme["customThemeBg"] != undefined) {
         backgroundTheme = currentCustomTheme["customThemeBg"];
     } else {
         backgroundTheme = defaultBGColorCustomTheme;
     }
 
-    if(currentCustomTheme["customThemeTexts"] != undefined) {
+    if(currentCustomTheme && currentCustomTheme["customThemeTexts"] != undefined) {
         textsColorTheme = currentCustomTheme["customThemeTexts"];
     } else {
         textsColorTheme = defaultTextsColorCustomTheme;
     }
 
-    if(currentCustomTheme["customThemeLinks"] != undefined) {
+    if(currentCustomTheme && currentCustomTheme["customThemeLinks"] != undefined) {
         linksColorTheme = currentCustomTheme["customThemeLinks"];
     } else {
         linksColorTheme = defaultLinksColorCustomTheme;
     }
 
-    if(currentCustomTheme["customThemeLinksVisited"] != undefined) {
+    if(currentCustomTheme && currentCustomTheme["customThemeLinksVisited"] != undefined) {
         linksVisitedColorTheme = currentCustomTheme["customThemeLinksVisited"];
     } else {
         linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
     }
 
-    if(currentCustomTheme["customThemeFont"] != undefined && currentCustomTheme["customThemeFont"].trim() != "") {
+    if(currentCustomTheme && currentCustomTheme["customThemeFont"] != undefined && currentCustomTheme["customThemeFont"].trim() != "") {
         fontTheme = "\"" + currentCustomTheme["customThemeFont"] + "\"";
     } else {
         fontTheme = defaultFontCustomTheme;
     }
 
-    if(currentCustomTheme["customCSSCode"] != undefined && typeof(currentCustomTheme["customCSSCode"]) == "string" && currentCustomTheme["customCSSCode"].trim() != "") {
+    if(currentCustomTheme && currentCustomTheme["customCSSCode"] != undefined && typeof(currentCustomTheme["customCSSCode"]) == "string" && currentCustomTheme["customCSSCode"].trim() != "") {
         // eslint-disable-next-line prefer-destructuring
         customCSSCode = currentCustomTheme["customCSSCode"];
     } else {
@@ -144,4 +145,21 @@ async function customTheme(nb, disableCustomCSS, lnkCssElement, customThemesSett
     return false;
 }
 
-export { customTheme, getCustomThemeConfig, getCustomThemesListData, getCustomThemeData };
+async function saveCustomTheme(nb, { backgroundColor, textColor, linkColor, visitedLinkColor, fontFamily, customCSSCode }) {
+    nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
+
+    const { currentCustomTheme, customThemes } = await getCustomThemeData(nb);
+
+    currentCustomTheme["customThemeBg"] = backgroundColor;
+    currentCustomTheme["customThemeTexts"] = textColor;
+    currentCustomTheme["customThemeLinks"] = linkColor;
+    currentCustomTheme["customThemeLinksVisited"] = visitedLinkColor;
+    currentCustomTheme["customThemeFont"] = fontFamily;
+    currentCustomTheme["customCSSCode"] = customCSSCode;
+
+    customThemes[nb] = currentCustomTheme;
+
+    await setSettingItem("customThemes", customThemes);
+}
+
+export { customTheme, getCustomThemeConfig, getCustomThemesListData, getCustomThemeData, saveCustomTheme };
