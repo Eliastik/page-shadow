@@ -58,7 +58,7 @@ function processRulesConfig(style, themeConfig) {
         "--page-shadow-markbgcolor": themeConfig.markBackgroundColor || defaultThemesMarkBgColors[0],
         "--page-shadow-marktxtcolor": themeConfig.markTxtColor || defaultThemesMarkTextColors[0],
         "--page-shadow-imgbgcolor": themeConfig.imageBackgroundColor || defaultThemesImgBgColors[0],
-        "--page-shadow-customfontfamily": themeConfig.fontFamily || "default",
+        "--page-shadow-customfontfamily": themeConfig.fontFamily && themeConfig.fontFamily.trim() != "" ? `"${themeConfig.fontFamily}"` : " ",
         "--page-shadow-brightcolorxtwhite": themeConfig.brightColorTextWhite || defaultThemesBrightColorTextWhite[0],
         "--page-shadow-brightcolortxtblack": themeConfig.brightColorTextBlack || defaultThemesBrightColorTextBlack[0]
     };
