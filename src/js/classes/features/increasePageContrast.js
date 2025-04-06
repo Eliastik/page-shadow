@@ -55,7 +55,7 @@ export default class IncreasePageContrast {
                     this.resetContrastPage(theme, disableImgBgColor, brightColorPreservation);
                 }
 
-                if (theme.startsWith("custom")) {
+                if(theme.startsWith("custom")) {
                     await this.customThemeApply(theme, customThemesSettings);
                     this.htmlClassBatcher.add("pageShadowBackgroundCustom");
                 } else {

@@ -49,9 +49,9 @@ import { getBrowser, sendMessageWithPromise } from "./utils/browserUtils.js";
 import { toggleTheme, isInterfaceDarkTheme } from "./utils/uiUtils.js";
 import { getSettingsToArchive, archiveCloud, getCurrentArchiveCloud } from "./utils/archiveUtils.js";
 import { deletePreset, getPresetData, getPresetWithAutoEnableForDarkWebsites, loadPreset, loadPresetSelect, savePreset } from "./utils/presetUtils.js";
-import { extensionVersion, colorTemperaturesAvailable, defaultBGColorCustomTheme, defaultTextsColorCustomTheme, defaultLinksColorCustomTheme, defaultVisitedLinksColorCustomTheme, defaultFontCustomTheme, defaultCustomCSSCode, settingsToSavePresets, nbCustomThemesSlots, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes, versionDate } from "./constants.js";
-import { setSettingItem, resetSettings, setFirstSettings, migrateSettings, loadWebsiteSpecialFiltersConfig, updateSettingsCache } from "./utils/storageUtils.js";
-import { getCustomThemeData } from "./utils/customThemeUtils.js";
+import { extensionVersion, colorTemperaturesAvailable, settingsToSavePresets, nbCustomThemesSlots, defaultFilters, customFilterGuideURL, defaultWebsiteSpecialFiltersConfig, settingNames, websiteSpecialFiltersConfigThemes, versionDate } from "./constants.js";
+import { setSettingItem, resetSettings, setFirstSettings, migrateSettings, loadWebsiteSpecialFiltersConfig, updateStorageCache } from "./utils/storageUtils.js";
+import { getCustomThemeConfig, saveCustomTheme } from "./utils/customThemeUtils.js";
 import { initI18next } from "./locales.js";
 import registerCodemirrorFilterMode from "./utils/filter.codemirror.mode";
 import browser from "webextension-polyfill";
@@ -189,8 +189,9 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
             try {
                 const sizeCloud = browser.storage.sync.getBytesInUse ? await browser.storage.sync.getBytesInUse(null) : getSizeObject(await browser.storage.sync.get(null));
                 const convertedCloud = convertBytes(sizeCloud);
-                const convertedCloudMax = convertBytes(browser.storage.sync.QUOTA_BYTES);
-                $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (browser.storage.sync.QUOTA_BYTES ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
+                const quotaBytes = browser.storage.sync.QUOTA_BYTES || 102400;
+                const convertedCloudMax = convertBytes(quotaBytes);
+                $("#infosCloudStorage").text(i18next.t("modal.filters.filtersStorageSize", { count: convertedCloud.size, unit: i18next.t("unit." + convertedCloud.unit) }) + (quotaBytes ? " / " + i18next.t("modal.filters.filtersStorageMaxSize", { count: convertedCloudMax.size, unit: i18next.t("unit." + convertedCloudMax.unit) }) : ""));
             } catch(e) {
                 debugLogger.log(e, "error");
                 $("#infosCloudStorage").text("???");
@@ -334,79 +335,38 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
     }
 }
 
-async function displayTheme(nb, defaultSettings) {
-    nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
-    defaultSettings = defaultSettings == undefined ? false : defaultSettings;
+async function displayTheme(nb) {
+    const {
+        backgroundColor, textColor, linkColor, visitedLinkColor, fontFamily, customCSSCode
+    } = await getCustomThemeConfig(nb);
 
-    let fontTheme, fontName, customCSS, backgroundTheme, textsColorTheme, linksColorTheme, linksVisitedColorTheme;
+    $("#colorpicker1").css("background-color", backgroundColor);
+    $("#colorpicker1").attr("value", backgroundColor);
+    $("#colorpicker1").colpickSetColor(backgroundColor);
+    $("#previsualisationDiv").css("background-color", backgroundColor);
 
-    const { currentCustomTheme } = await getCustomThemeData(nb);
+    $("#colorpicker2").css("background-color", textColor);
+    $("#colorpicker2").attr("value", textColor);
+    $("#colorpicker2").colpickSetColor(textColor);
+    $("#textPreview").css("color", textColor);
 
-    if(!defaultSettings && currentCustomTheme && currentCustomTheme["customThemeBg"] != undefined) {
-        backgroundTheme = currentCustomTheme["customThemeBg"];
-    } else {
-        backgroundTheme = defaultBGColorCustomTheme;
-    }
+    $("#colorpicker3").css("background-color", linkColor);
+    $("#colorpicker3").attr("value", linkColor);
+    $("#colorpicker3").colpickSetColor(linkColor);
+    $("#linkPreview").css("color", linkColor);
 
-    if(!defaultSettings && currentCustomTheme && currentCustomTheme["customThemeTexts"] != undefined) {
-        textsColorTheme = currentCustomTheme["customThemeTexts"];
-    } else {
-        textsColorTheme = defaultTextsColorCustomTheme;
-    }
+    $("#colorpicker4").css("background-color", visitedLinkColor);
+    $("#colorpicker4").attr("value", visitedLinkColor);
+    $("#colorpicker4").colpickSetColor(visitedLinkColor);
+    $("#linkVisitedPreview").css("color", visitedLinkColor);
 
-    if(!defaultSettings && currentCustomTheme && currentCustomTheme["customThemeLinks"] != undefined) {
-        linksColorTheme = currentCustomTheme["customThemeLinks"];
-    } else {
-        linksColorTheme = defaultLinksColorCustomTheme;
-    }
-
-    if(!defaultSettings && currentCustomTheme && currentCustomTheme["customThemeLinksVisited"] != undefined) {
-        linksVisitedColorTheme = currentCustomTheme["customThemeLinksVisited"];
-    } else {
-        linksVisitedColorTheme = defaultVisitedLinksColorCustomTheme;
-    }
-
-    if(!defaultSettings && currentCustomTheme && currentCustomTheme["customThemeFont"] != undefined && currentCustomTheme["customThemeFont"].trim() != "") {
-        fontTheme = "\"" + currentCustomTheme["customThemeFont"] + "\"";
-        fontName = currentCustomTheme["customThemeFont"];
-    } else {
-        fontTheme = defaultFontCustomTheme;
-        fontName = defaultFontCustomTheme;
-    }
-
-    if(!defaultSettings && currentCustomTheme && currentCustomTheme["customCSSCode"] != undefined && typeof(currentCustomTheme["customCSSCode"]) == "string" && currentCustomTheme["customCSSCode"].trim() != "") {
-        customCSS = currentCustomTheme["customCSSCode"];
-    } else {
-        customCSS = defaultCustomCSSCode;
-    }
-
-    $("#colorpicker1").css("background-color", "#" + backgroundTheme);
-    $("#colorpicker1").attr("value", backgroundTheme);
-    $("#colorpicker1").colpickSetColor(backgroundTheme);
-    $("#previsualisationDiv").css("background-color", "#" + backgroundTheme);
-
-    $("#colorpicker2").css("background-color", "#" + textsColorTheme);
-    $("#colorpicker2").attr("value", textsColorTheme);
-    $("#colorpicker2").colpickSetColor(textsColorTheme);
-    $("#textPreview").css("color", "#" + textsColorTheme);
-
-    $("#colorpicker3").css("background-color", "#" + linksColorTheme);
-    $("#colorpicker3").attr("value", linksColorTheme);
-    $("#colorpicker3").colpickSetColor(linksColorTheme);
-    $("#linkPreview").css("color", "#" + linksColorTheme);
-
-    $("#colorpicker4").css("background-color", "#" + linksVisitedColorTheme);
-    $("#colorpicker4").attr("value", linksVisitedColorTheme);
-    $("#colorpicker4").colpickSetColor(linksVisitedColorTheme);
-    $("#linkVisitedPreview").css("color", "#" + linksVisitedColorTheme);
-
-    $("#customThemeFont").val(fontName);
-    $("#previsualisationDiv").css("font-family", fontTheme);
+    $("#customThemeFont").val(fontFamily);
+    $("#previsualisationDiv").css("font-family", fontFamily);
 
     const userCsss = window.codeMirrorUserCss;
 
     if(userCsss) {
-        userCsss.getDoc().setValue(customCSS);
+        userCsss.getDoc().setValue(customCSSCode);
     }
 
     if(await notifyChangedThemeNotSaved(currentSelectedTheme)) {
@@ -1165,33 +1125,24 @@ async function saveCustomFilter(close) {
 }
 
 async function saveThemeSettings(nb) {
-    nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
-
-    const { currentCustomTheme, customThemes } = await getCustomThemeData(nb);
-
-    currentCustomTheme["customThemeBg"] = $("#colorpicker1").attr("value");
-    currentCustomTheme["customThemeTexts"] = $("#colorpicker2").attr("value");
-    currentCustomTheme["customThemeLinks"] = $("#colorpicker3").attr("value");
-    currentCustomTheme["customThemeLinksVisited"] = $("#colorpicker4").attr("value");
-    currentCustomTheme["customThemeFont"] = $("#customThemeFont").val();
-
     const userCsss = window.codeMirrorUserCss;
 
     if(userCsss) {
         userCsss.save();
     }
 
-    currentCustomTheme["customCSSCode"] = $("#codeMirrorUserCSSTextarea").val();
-
-    customThemes[nb] = currentCustomTheme;
-
-    await setSettingItem("customThemes", customThemes);
+    await saveCustomTheme(nb, {
+        backgroundColor: $("#colorpicker1").attr("value"),
+        textColor: $("#colorpicker2").attr("value"),
+        linkColor: $("#colorpicker3").attr("value"),
+        visitedLinkColor: $("#colorpicker4").attr("value"),
+        fontFamily: $("#customThemeFont").val(),
+        customCSSCode: $("#codeMirrorUserCSSTextarea").val()
+    });
 }
 
 async function notifyChangedThemeNotSaved(nb) {
-    nb = nb == undefined || (typeof(nb) == "string" && nb.trim() == "") ? "1" : nb;
-
-    const { currentCustomTheme } = await getCustomThemeData(nb);
+    const customTheme = await getCustomThemeConfig(nb);
 
     const userCsss = window.codeMirrorUserCss;
 
@@ -1199,36 +1150,21 @@ async function notifyChangedThemeNotSaved(nb) {
         userCsss.save();
     }
 
-    if(currentCustomTheme["customThemeBg"] == null || currentCustomTheme["customThemeBg"].trim() == "") {
-        currentCustomTheme["customThemeBg"] = defaultBGColorCustomTheme;
-    }
+    const currentValues = {
+        backgroundColor: `#${$("#colorpicker1").attr("value").toLowerCase()}`,
+        textColor: `#${$("#colorpicker2").attr("value").toLowerCase()}`,
+        linkColor: `#${$("#colorpicker3").attr("value").toLowerCase()}`,
+        visitedLinkColor: `#${$("#colorpicker4").attr("value").toLowerCase()}`,
+        fontFamily: $("#customThemeFont").val().trim().toLowerCase(),
+        customCSSCode: $("#codeMirrorUserCSSTextarea").val()
+    };
 
-    if(currentCustomTheme["customThemeTexts"] == null || currentCustomTheme["customThemeTexts"].trim() == "") {
-        currentCustomTheme["customThemeTexts"] = defaultTextsColorCustomTheme;
-    }
-
-    if(currentCustomTheme["customThemeLinks"] == null || currentCustomTheme["customThemeLinks"].trim() == "") {
-        currentCustomTheme["customThemeLinks"] = defaultLinksColorCustomTheme;
-    }
-
-    if(currentCustomTheme["customThemeLinksVisited"] == null || currentCustomTheme["customThemeLinksVisited"].trim() == "") {
-        currentCustomTheme["customThemeLinksVisited"] = defaultVisitedLinksColorCustomTheme;
-    }
-
-    if(currentCustomTheme["customThemeFont"] == null || currentCustomTheme["customThemeFont"].trim() == "") {
-        currentCustomTheme["customThemeFont"] = defaultFontCustomTheme;
-    }
-
-    if(currentCustomTheme["customCSSCode"] == null || currentCustomTheme["customCSSCode"].trim() == "") {
-        currentCustomTheme["customCSSCode"] = defaultCustomCSSCode;
-    }
-
-    return currentCustomTheme["customThemeBg"].toLowerCase() != $("#colorpicker1").attr("value").toLowerCase() ||
-        currentCustomTheme["customThemeTexts"].toLowerCase() != $("#colorpicker2").attr("value").toLowerCase() ||
-        currentCustomTheme["customThemeLinks"].toLowerCase() != $("#colorpicker3").attr("value").toLowerCase() ||
-        currentCustomTheme["customThemeLinksVisited"].toLowerCase() != $("#colorpicker4").attr("value").toLowerCase() ||
-        currentCustomTheme["customThemeFont"].trim().toLowerCase() != $("#customThemeFont").val().trim().toLowerCase() ||
-        currentCustomTheme["customCSSCode"] != $("#codeMirrorUserCSSTextarea").val();
+    return customTheme.backgroundColor.toLowerCase() != currentValues.backgroundColor ||
+        customTheme.textColor.toLowerCase() != currentValues.textColor ||
+        customTheme.linkColor.toLowerCase() != currentValues.linkColor ||
+        customTheme.visitedLinkColor.toLowerCase() != currentValues.visitedLinkColor ||
+        customTheme.fontFamily.trim().toLowerCase() != currentValues.fontFamily ||
+        customTheme.customCSSCode != currentValues.customCSSCode;
 }
 
 async function notifyChangedListNotSaved() {
@@ -1354,7 +1290,7 @@ async function restoreSettings(object) {
     await browser.storage.local.set(finalRestoreObject);
     await migrateSettings(new Filter());
 
-    updateSettingsCache();
+    updateStorageCache();
 
     $("#updateAllFilters").attr("disabled", "disabled");
 
