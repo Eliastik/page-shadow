@@ -239,7 +239,7 @@ async function displaySettings(areaName, dontDisplayThemeAndPresets, changes = n
 
             if((!changes || changes.includes("customThemes")) && (!dontDisplayThemeAndPresets)) {
                 $("#themeSelect").val(currentSelectedTheme);
-                await displayTheme($("#themeSelect").val(), null);
+                await displayTheme($("#themeSelect").val());
             }
 
             if((!changes || changes.includes("filtersSettings") || changes.includes("customFilter")) && (!dontDisplayThemeAndPresets)) {
@@ -361,7 +361,12 @@ async function displayTheme(nb) {
     $("#linkVisitedPreview").css("color", visitedLinkColor);
 
     $("#customThemeFont").val(fontFamily);
-    $("#previsualisationDiv").css("font-family", fontFamily);
+
+    if(fontFamily && fontFamily.trim() != "") {
+        $("#previsualisationDiv").css("font-family", `"${fontFamily}"`);
+    } else {
+        $("#previsualisationDiv").css("font-family", "");
+    }
 
     const userCsss = window.codeMirrorUserCss;
 
@@ -1793,7 +1798,7 @@ $(async() => {
     });
 
     $("#customThemeReset").on("click", () => {
-        displayTheme($("#themeSelect").val(), true);
+        displayTheme("-1");
     });
 
     $("#aboutDialogBtn").on("click", () => {

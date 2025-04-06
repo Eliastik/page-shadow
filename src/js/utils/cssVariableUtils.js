@@ -66,7 +66,7 @@ function applyContrastPageVariables(config) {
     document.documentElement.style.setProperty("--page-shadow-brightcolortxtblack", config.brightColorTextBlack);
 
     if(config && config.fontFamily && config.fontFamily.trim() != "") {
-        document.documentElement.style.setProperty("--page-shadow-customfontfamily", config.fontFamily);
+        document.documentElement.style.setProperty("--page-shadow-customfontfamily", `"${config.fontFamily}"`);
     } else {
         document.documentElement.style.removeProperty("--page-shadow-customfontfamily");
     }
