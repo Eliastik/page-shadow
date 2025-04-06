@@ -81,7 +81,7 @@ async function getCustomThemeConfig(nb, customThemesSettings) {
     }
 
     if(currentCustomTheme && currentCustomTheme["customThemeFont"] != undefined && currentCustomTheme["customThemeFont"].trim() != "") {
-        fontTheme = "\"" + currentCustomTheme["customThemeFont"] + "\"";
+        fontTheme = currentCustomTheme["customThemeFont"];
     } else {
         fontTheme = defaultFontCustomTheme;
     }
