@@ -94,6 +94,10 @@ async function archiveCloud() {
     }
 }
 
+function getQuotaBytesPerItem() {
+    return browser.storage.sync.QUOTA_BYTES_PER_ITEM || 8192;
+}
+
 function prepareDataForArchiveCloud(dataObj) {
     const settingToSave = {};
 
@@ -102,7 +106,7 @@ function prepareDataForArchiveCloud(dataObj) {
             const value = dataObj[key];
             const valueSizeByte = lengthInUtf8Bytes(JSON.stringify(value));
 
-            if (valueSizeByte > browser.storage.sync.QUOTA_BYTES_PER_ITEM - quotaBytesPerItemMargin) {
+            if (valueSizeByte > getQuotaBytesPerItem() - quotaBytesPerItemMargin) {
                 const [type, chunks] = chunkValue(key, value);
 
                 for (let i = 0; i < chunks.length; i++) {
@@ -163,7 +167,7 @@ async function getCurrentArchiveCloud() {
 
 function chunkString(key, str, type) {
     const chunks = [];
-    const maxBytesPerItem = browser.storage.sync.QUOTA_BYTES_PER_ITEM - quotaBytesPerItemMargin;
+    const maxBytesPerItem = getQuotaBytesPerItem() - quotaBytesPerItemMargin;
 
     let i = 0;
 
