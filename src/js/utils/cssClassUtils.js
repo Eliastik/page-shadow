@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { pageAnalyzerCSSClasses, colorTemperaturesAvailable } from "../constants.js";
+import { getCustomThemeConfig } from "./customThemeUtils.js";
 import DebugLogger from "./../classes/debugLogger.js";
 
 /** Utils function used to process CSS classes */
@@ -51,25 +52,80 @@ function addClass(element, ...classes) {
     element.classList.add(...classToAdd);
 }
 
-function areAllClassesDefinedForHTMLElement(contrastEnabled, invertEnabled, invertEntirePage, contrastTheme) {
+function areAllClassesDefinedForHTMLElement(settings) {
+    const { pageShadowEnabled, colorInvert, invertEntirePage, theme } = settings;
     const element = document.documentElement;
 
-    if (element) {
+    if(element) {
         const classAttribute = element.getAttribute("class") || "";
 
-        if(invertEnabled == "true" && invertEntirePage == "true" &&
+        if(colorInvert == "true" && invertEntirePage == "true" &&
             (!classAttribute.includes("pageShadowInvertEntirePage") ||
             !classAttribute.includes("pageShadowBackground"))) {
             return false;
         }
 
-        if(contrastEnabled == "true" && !classAttribute.includes("pageShadowBackgroundContrast")) {
+        if(pageShadowEnabled == "true" && !classAttribute.includes("pageShadowBackgroundContrast")) {
             return false;
         }
 
-        if(contrastEnabled == "true" && contrastTheme.startsWith("custom")
+        if(pageShadowEnabled == "true" && theme.startsWith("custom")
             && !classAttribute.includes("pageShadowBackgroundCustom")) {
             return false;
+        }
+
+        return true;
+    }
+}
+
+function areAllClassesDefinedForBodyElement(settings) {
+    const { pageShadowEnabled, colorInvert, disableImgBgColor, brightColorPreservation, attenuateColors, theme } = settings;
+    const element = document.body;
+
+    if(element) {
+        const classAttribute = element.getAttribute("class") || "";
+
+        if(pageShadowEnabled == "true") {
+            if(!classAttribute.includes("pageShadowContrastBlack")) {
+                return false;
+            }
+
+            if(disableImgBgColor == "true" && !classAttribute.includes("pageShadowDisableImgBgColor")) {
+                return false;
+            }
+
+            if(brightColorPreservation == "true" && !classAttribute.includes("pageShadowPreserveBrightColor")) {
+                return false;
+            }
+
+            if(theme != undefined && typeof(theme) == "string" && theme.startsWith("custom")) {
+                const customThemeNb = theme.replace("custom", "");
+                const { fontFamily } = getCustomThemeConfig(customThemeNb, null);
+
+                if(fontFamily && fontFamily.trim() !== "" && !classAttribute.includes("pageShadowCustomFontFamily")) {
+                    return false;
+                }
+            }
+        }
+
+        if(colorInvert == "true") {
+            const invertBodyClasses = getInvertPageBodyClasses(settings);
+
+            for(const expectedClass of invertBodyClasses.classesToAdd) {
+                if(!classAttribute.includes(expectedClass)) {
+                    return false;
+                }
+            }
+        }
+
+        if(attenuateColors == "true") {
+            const attenuateBodyClasses = getAttenuatePageBodyClasses(settings);
+
+            for(const expectedClass of attenuateBodyClasses.classesToAdd) {
+                if(!classAttribute.includes(expectedClass)) {
+                    return false;
+                }
+            }
         }
 
         return true;
@@ -103,4 +159,115 @@ function getBlueLightReductionFilterCSSClass(colorTemp) {
     return "k" + colorTemperaturesAvailable[tempIndex - 1];
 }
 
-export { removeClass, addClass, areAllClassesDefinedForHTMLElement, getPageAnalyzerCSSClass, getBlueLightReductionFilterCSSClass };
+function getInvertPageBodyClasses(settings) {
+    const { invertEntirePage, invertImageColors, invertBgColor, invertVideoColors, selectiveInvert, invertBrightColors } = settings;
+
+    const classesToAdd = [];
+    const classesToRemove = [];
+
+    if (invertEntirePage === "true") {
+        if(invertImageColors === "true") {
+            classesToRemove.push("pageShadowInvertImageColor");
+        } else {
+            classesToAdd.push("pageShadowInvertImageColor");
+        }
+
+        if(invertBgColor === "true") {
+            classesToRemove.push("pageShadowInvertBgColor");
+        } else {
+            classesToAdd.push("pageShadowInvertBgColor");
+        }
+
+        if(invertVideoColors === "true") {
+            classesToRemove.push("pageShadowInvertVideoColor");
+        } else {
+            classesToAdd.push("pageShadowInvertVideoColor");
+        }
+
+        if(selectiveInvert === "true") {
+            classesToRemove.push("pageShadowEnableSelectiveInvert");
+        } else {
+            classesToAdd.push("pageShadowEnableSelectiveInvert");
+        }
+
+        if(invertBrightColors === "true") {
+            classesToRemove.push("pageShadowInvertBrightColors");
+        } else {
+            classesToAdd.push("pageShadowInvertBrightColors");
+        }
+
+    } else {
+        if(invertImageColors === "true") {
+            classesToAdd.push("pageShadowInvertImageColor");
+        } else {
+            classesToRemove.push("pageShadowInvertImageColor");
+        }
+
+        if(invertBgColor !== "false") {
+            classesToAdd.push("pageShadowInvertBgColor");
+        } else {
+            classesToRemove.push("pageShadowInvertBgColor");
+        }
+
+        if(invertVideoColors === "true") {
+            classesToAdd.push("pageShadowInvertVideoColor");
+        } else {
+            classesToRemove.push("pageShadowInvertVideoColor");
+        }
+
+        if(selectiveInvert === "true") {
+            classesToAdd.push("pageShadowEnableSelectiveInvert");
+        } else {
+            classesToRemove.push("pageShadowEnableSelectiveInvert");
+        }
+
+        if(invertBrightColors === "true") {
+            classesToAdd.push("pageShadowInvertBrightColors");
+        } else {
+            classesToRemove.push("pageShadowInvertBrightColors");
+        }
+    }
+
+    return {
+        classesToAdd,
+        classesToRemove
+    };
+}
+
+function getAttenuatePageBodyClasses(settings) {
+    const { attenuateImgColors, attenuateBgColors, attenuateVideoColors, attenuateBrightColors } = settings;
+
+    const classesToAdd = [];
+    const classesToRemove = [];
+
+    if(attenuateImgColors === "true") {
+        classesToAdd.push("pageShadowAttenuateImageColor");
+    } else {
+        classesToRemove.push("pageShadowAttenuateImageColor");
+    }
+
+    if(attenuateBgColors === "true") {
+        classesToAdd.push("pageShadowAttenuateBgColor");
+    } else {
+        classesToRemove.push("pageShadowAttenuateBgColor");
+    }
+
+    if(attenuateVideoColors === "true") {
+        classesToAdd.push("pageShadowAttenuateVideoColor");
+    } else {
+        classesToRemove.push("pageShadowAttenuateVideoColor");
+    }
+
+    if(attenuateBrightColors === "true") {
+        classesToAdd.push("pageShadowAttenuateBrightColor");
+    } else {
+        classesToRemove.push("pageShadowAttenuateBrightColor");
+    }
+
+    return {
+        classesToAdd,
+        classesToRemove
+    };
+}
+
+export { removeClass, addClass, areAllClassesDefinedForHTMLElement, getPageAnalyzerCSSClass, getBlueLightReductionFilterCSSClass, areAllClassesDefinedForBodyElement, getInvertPageBodyClasses, getAttenuatePageBodyClasses };
