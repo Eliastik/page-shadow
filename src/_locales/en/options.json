@@ -128,6 +128,7 @@
             "darkImageDetectionEnableCorsFetch": "Enable fetching images from a different origin (cross-origin)",
             "darkImageDetectionEnableRedirectionCheck": "Enable checking image redirections to detect URLs from a different origin",
             "throttleBackgroundDetectionDestylePerElement": "Remove the style from elements rather than from the body element when element analysis is throttled",
+            "maxReapplyBodyClassesAttempts": "Maximum number of CSS class re-application attempts on the body element before starting Mutation Observers",
             "help": {
                 "debugMode": "Enables debug mode, which displays debugging information in the JavaScript console on pages processed by Page Shadow, or on extension pages.",
                 "performanceModeEnabled": "Enable performance optimizations, this disables the analysis of webpage elements. However, filter management remains enabled.",
@@ -193,7 +194,8 @@
                 "darkImageDetectionEnableFetchUseHref": "If this option is enabled, Page Shadow will query the SVG file referenced by an HTML use tag. This can be used to analyze additional SVG images.",
                 "darkImageDetectionEnableCorsFetch": "If enabled, Page Shadow will retrieve images hosted on third-party domains via its background script to bypass CORS restrictions. If disabled, another method will be used to manage these restrictions.",
                 "darkImageDetectionEnableRedirectionCheck": "If this option is enabled, Page Shadow will send a HEAD request to the server hosting the image to check whether it comes from a different origin (for example, in the event of redirection to another origin). This allows Page Shadow to adapt and avoid problems related to CORS restrictions.",
-                "throttleBackgroundDetectionDestylePerElement": "If element analysis during page loading is throttled, enabling this option allows Page Shadow to remove the style applied to each element individually rather than from the body element. This can reduce CPU usage at the cost of slower analysis."
+                "throttleBackgroundDetectionDestylePerElement": "If element analysis during page loading is throttled, enabling this option allows Page Shadow to remove the style applied to each element individually rather than from the body element. This can reduce CPU usage at the cost of slower analysis.",
+                "maxReapplyBodyClassesAttempts": "Defines how many times the extension will attempt to re-apply the required CSS classes to the body element if they are removed or overwritten by the website before Mutation Observers are started. Increasing this value may improve reliability on certain websites, but can also lead to loops or performance issues."
             }
         },
         "filtersConfigCategories": {
