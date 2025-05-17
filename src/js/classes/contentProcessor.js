@@ -18,7 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { isRunningInIframe, isRunningInPopup, sendMessageWithPromise } from "../utils/browserUtils.js";
 import { getCurrentURL } from "../utils/urlUtils.js";
-import { areAllClassesDefinedForHTMLElement } from "../utils/cssClassUtils.js";
+import { areAllClassesDefinedForHTMLElement, areAllClassesDefinedForBodyElement } from "../utils/cssClassUtils.js";
 import { loadWebsiteSpecialFiltersConfig } from "../utils/storageUtils.js";
 import { areAllCSSVariablesDefinedForHTMLElement } from "../utils/cssVariableUtils.js";
 import { getSettings } from "../utils/settingsUtils.js";
@@ -58,6 +58,7 @@ export default class ContentProcessor {
     newSettingsToApply = null;
     oldBody = null;
     precUrl = null;
+    reapplyBodyClassesAttemptCount = 0;
 
     // Features
     increasePageContrast;
@@ -297,11 +298,27 @@ export default class ContentProcessor {
             await this.applyPageAnalysisAndFilters(settings, type);
         }
 
-        this.mutationObserverProcessor?.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BODY);
-        this.mutationObserverProcessor?.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
-        this.mutationObserverProcessor?.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESSWRAPPER);
-
         await this.pageAnalyzer.resetShadowRoots();
+
+        await this.startMutationObservers();
+    }
+
+    async startMutationObservers() {
+        if(!areAllClassesDefinedForBodyElement(this.currentSettings)) {
+            if(this.reapplyBodyClassesAttemptCount < 5) {
+                this.debugLogger?.log("Detected body element CSS classes changed/erased before starting mutation observers. Re-applying settings.");
+
+                this.reapplyBodyClassesAttemptCount++;
+
+                await this.start(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
+            } else {
+                this.debugLogger?.error("Max re-apply attempt count reached. Body element CSS classes are repeatedly changed/erased by the website.");
+            }
+        } else {
+            this.mutationObserverProcessor?.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BODY);
+            this.mutationObserverProcessor?.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
+            this.mutationObserverProcessor?.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESSWRAPPER);
+        }
     }
 
     applyBrightnessAndBlueLightFilter() {
@@ -474,9 +491,11 @@ export default class ContentProcessor {
             this.timerObserveDocumentElementChange = new SafeTimer(async () => {
                 const settings = this.currentSettings;
 
-                if(this.precEnabled && (!areAllCSSVariablesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.attenuateColors)
-                    || !areAllClassesDefinedForHTMLElement(settings.pageShadowEnabled, settings.colorInvert, settings.invertEntirePage, settings.theme))) {
-                    this.debugLogger?.log("Detected HTML or body element CSS classes or CSS variables changed/erased. Re-applying settings.");
+                const allHTMLCSSVariablesDefined = areAllCSSVariablesDefinedForHTMLElement(settings);
+                const allHTMLClassesDefined = areAllClassesDefinedForHTMLElement(settings);
+
+                if(this.precEnabled && (!allHTMLCSSVariablesDefined || !allHTMLClassesDefined)) {
+                    this.debugLogger?.log("Detected HTML element CSS classes or CSS variables changed/erased. Re-applying settings.");
 
                     await this.start(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
                 }

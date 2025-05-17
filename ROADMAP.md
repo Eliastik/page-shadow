@@ -200,6 +200,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 #### Known issues/bugs
 
 * [x] Quota error for cloud archive feature: still present in Firefox
+* [x] Bug with www.pccomponentes.fr website resetting body classes before mutation observer is started
 
 #### Common
 
