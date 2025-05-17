@@ -314,24 +314,37 @@ async function checkAutoEnable() {
 }
 
 async function checkAutoUpdateFilters() {
-    const result = await browser.storage.local.get("filtersSettings");
-    const filterResults = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+    const result = await sessionStorage.get("isAutoUpdatingFilters", "filtersSettings");
 
-    const { updateInterval, enableAutoUpdate, lastFailedUpdate, lastUpdated } = filterResults;
-    const currentDate = Date.now();
-
-    const filters = new FilterProcessor();
-
-    if(enableAutoUpdate && updateInterval > 0 && (lastUpdated <= 0 || (currentDate - lastUpdated) >= updateInterval)) {
-        await sessionStorage.set({ "isAutoUpdatingFilters": "true" });
-        filters.updateAllFilters(true, false).then(() => sessionStorage.set({ "isAutoUpdatingFilters": "false" }));
-    } else if(enableAutoUpdate && lastFailedUpdate != null && lastFailedUpdate > -1 && ((currentDate - lastFailedUpdate) >= failedUpdateAutoReupdateDelay)) {
-        await sessionStorage.set({ "isAutoUpdatingFilters": "true" });
-        filters.updateAllFilters(true, true).then(() => sessionStorage.set({ "isAutoUpdatingFilters": "false" }));
+    if(result.isAutoUpdatingFilters) {
+        return;
     }
 
-    if(filters.isInit) {
-        await filters.cacheFilters();
+    await sessionStorage.set({ isAutoUpdatingFilters: true });
+
+    try {
+        const filterResults = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+
+        const { updateInterval, enableAutoUpdate, lastFailedUpdate, lastUpdated } = filterResults;
+        const currentDate = Date.now();
+
+        const filters = new FilterProcessor();
+
+        if(enableAutoUpdate && updateInterval > 0 && (lastUpdated <= 0 || (currentDate - lastUpdated) >= updateInterval)) {
+            debugLogger.log("Background checkAutoUpdateFilters: Auto updating filters");
+            await filters.updateAllFilters(true, false);
+        } else if(enableAutoUpdate && lastFailedUpdate != null && lastFailedUpdate > -1 && ((currentDate - lastFailedUpdate) >= failedUpdateAutoReupdateDelay)) {
+            debugLogger.log("Background checkAutoUpdateFilters: Auto updating failed filters");
+            await filters.updateAllFilters(true, true);
+        }
+
+        if(filters.isInit) {
+            await filters.cacheFilters();
+        }
+    } catch(e) {
+        debugLogger.error("Background checkAutoUpdateFilters: Error", e);
+    } finally {
+        await sessionStorage.set({ isAutoUpdatingFilters: false });
     }
 }
 
@@ -745,14 +758,9 @@ async function openTab(url, part) {
     }
 }
 
-async function alarmCheck() {
+function alarmCheck() {
     checkAutoEnable();
-
-    const result = await sessionStorage.get("isAutoUpdatingFilters");
-
-    if(result.isAutoUpdatingFilters != "true") {
-        checkAutoUpdateFilters();
-    }
+    checkAutoUpdateFilters();
 }
 
 async function setupPageShadow() {
@@ -761,7 +769,7 @@ async function setupPageShadow() {
     await checkFirstLoad();
     await migrateSettings(new FilterProcessor());
     await autoEnable();
-    await alarmCheck();
+    alarmCheck();
     await updateBadge(false);
     await checkAutoBackupCloud();
 }
