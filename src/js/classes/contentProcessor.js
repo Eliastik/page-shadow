@@ -305,7 +305,7 @@ export default class ContentProcessor {
 
     async startMutationObservers() {
         if(!areAllClassesDefinedForBodyElement(this.currentSettings)) {
-            if(this.reapplyBodyClassesAttemptCount < 5) {
+            if(this.reapplyBodyClassesAttemptCount < this.websiteSpecialFiltersConfig.maxReapplyBodyClassesAttempts) {
                 this.debugLogger?.log("Detected body element CSS classes changed/erased before starting mutation observers. Re-applying settings.");
 
                 this.reapplyBodyClassesAttemptCount++;
@@ -318,6 +318,8 @@ export default class ContentProcessor {
             this.mutationObserverProcessor?.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BODY);
             this.mutationObserverProcessor?.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESS_BLUELIGHT);
             this.mutationObserverProcessor?.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BRIGHTNESSWRAPPER);
+
+            this.reapplyBodyClassesAttemptCount = 0;
         }
     }
 
