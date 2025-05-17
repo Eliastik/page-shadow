@@ -312,7 +312,7 @@ export default class ContentProcessor {
 
                 await this.start(ContentProcessorConstants.TYPE_RESET, ContentProcessorConstants.TYPE_ALL);
             } else {
-                this.debugLogger?.error("Max re-apply attempt count reached. Body element CSS classes are repeatedly changed/erased by the website.");
+                this.debugLogger?.log("Max re-apply attempt count reached. Body element CSS classes are repeatedly changed/erased by the website.", "error");
             }
         } else {
             this.mutationObserverProcessor?.mutationObserve(ContentProcessorConstants.MUTATION_TYPE_BODY);
