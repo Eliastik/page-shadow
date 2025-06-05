@@ -525,6 +525,17 @@ Pour Chromium, faites glisser le fichier .crx dans la fenêtre des extensions (c
 
 Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `gulp clean-build`
 
+### Versions Manifestv2 et Manifestv3
+
+Les versions Manifest V2 et Manifest V3 offrent exactement les mêmes fonctionnalités et partagent une base de code commune, à l’exception de quelques différences liées aux API spécifiques à chaque version.
+
+Il existe toutefois une différence subtile : le minuteur utilisé pour certaines fonctionnalités de l’extension (comme l’activation/désactivation automatique selon l’heure, ou la mise à jour automatique des filtres) fonctionne différemment selon la version :
+
+- Manifest V3 : le minuteur repose sur l’API alarms, limitée à une fréquence minimale d’une minute.
+- Manifest V2 : un setInterval permet un déclenchement toutes les secondes.
+
+Par conséquent, sur la version Manifest V3, certaines actions programmées (comme l’activation horaire) peuvent être légèrement décalées par rapport à la version Manifest V2.
+
 ### Licence :
 
 Page Shadow est distribué sous licence GNU GPL-3.0 (voir le fichier LICENCE.txt)

@@ -79,6 +79,17 @@ For Chromium, slide the .crx file into the extension page (chrome://extensions).
 
 Then if you want to clean the build directory, run the command `gulp clean-build`
 
+### Manifest V2 and Manifest V3 Versions
+
+The Manifest V2 and Manifest V3 versions of the extension offer exactly the same features and share the same codebase, except for a few implementation differences due to API changes between the two formats.
+
+There is, however, a subtle difference: the timer used for certain features (such as enabling/disabling the extension based on the time of day, or automatically updating filters) behaves differently depending on the version:
+
+- Manifest V3: relies on the alarms API, which is limited to a minimum interval of one minute.
+- Manifest V2: uses setInterval, allowing the timer to run every second.
+
+As a result, in the Manifest V3 version, some scheduled actions (like time-based activation) may experience a slight delay compared to the Manifest V2 version.
+
 ### Licence :
 
 Page Shadow is distributed under GPL-3.0 license (see LICENCE.txt file)
@@ -187,6 +198,17 @@ Puis lancez l'installation avec le fichier .xpi
 Pour Chromium, faites glisser le fichier .crx dans la fenêtre des extensions (chrome://extensions).
 
 Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `gulp clean-build`
+
+### Versions Manifestv2 et Manifestv3
+
+Les versions Manifest V2 et Manifest V3 offrent exactement les mêmes fonctionnalités et partagent une base de code commune, à l’exception de quelques différences liées aux API spécifiques à chaque version.
+
+Il existe toutefois une différence subtile : le minuteur utilisé pour certaines fonctionnalités de l’extension (comme l’activation/désactivation automatique selon l’heure, ou la mise à jour automatique des filtres) fonctionne différemment selon la version :
+
+- Manifest V3 : le minuteur repose sur l’API alarms, limitée à une fréquence minimale d’une minute.
+- Manifest V2 : un setInterval permet un déclenchement toutes les secondes.
+
+Par conséquent, sur la version Manifest V3, certaines actions programmées (comme l’activation horaire) peuvent être légèrement décalées par rapport à la version Manifest V2.
 
 ### Licence :
 
