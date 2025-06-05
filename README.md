@@ -90,7 +90,7 @@ There is, however, a subtle difference: the timer used for certain features (suc
 
 As a result, in the Manifest V3 version, some scheduled actions (like time-based activation) may experience a slight delay compared to the Manifest V2 version.
 
-### Licence :
+### License:
 
 Page Shadow is distributed under GPL-3.0 license (see LICENCE.txt file)
 
