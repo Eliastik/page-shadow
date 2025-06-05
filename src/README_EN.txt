@@ -524,6 +524,17 @@ For Chromium, slide the .crx file in the extension window (chrome://extensions).
 
 Then if you want to clean the build directory, run the command `gulp clean-build`
 
+### Manifest V2 and Manifest V3 Versions
+
+The Manifest V2 and Manifest V3 versions of the extension offer exactly the same features and share the same codebase, except for a few implementation differences due to API changes between the two formats.
+
+There is, however, a subtle difference: the timer used for certain features (such as enabling/disabling the extension based on the time of day, or automatically updating filters) behaves differently depending on the version:
+
+- Manifest V3: relies on the alarms API, which is limited to a minimum interval of one minute.
+- Manifest V2: uses setInterval, allowing the timer to run every second.
+
+As a result, in the Manifest V3 version, some scheduled actions (like time-based activation) may experience a slight delay compared to the Manifest V2 version.
+
 ### Licence :
 
 Page Shadow is distributed under GPL-3.0 license (see LICENCE.txt file)
