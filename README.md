@@ -36,14 +36,10 @@ Or you can compile it yourself (see Compilation section).
 
 ### Compilation :
 
-You can compile yourself the extension with only one command line. To do this, you have to install npm and gulp.
+You can compile yourself the extension with only one command line. To do this, you have to install npm.
 
 To install npm for your OS, read this page: https://docs.npmjs.com/getting-started/installing-node
 
-To install gulp with npm, run the following command:
-````
-npm i -g gulp
-````
 Git clone the repository and cd to the project directory (or download it directly from Github):
 ````
 git clone https://github.com/Eliastik/page-shadow.git
@@ -56,9 +52,9 @@ npm install
 ````
 Then to compile:
 
-* Dev mode (no compression): `gulp` or `gulp build-dev` or `gulp build-directory-dev` (only compile as folders)
-* Prod mode (with compression): `gulp build-prod` or `gulp build-directory-prod` (only compile as folders)
-* Watch mode (real-time compilation): `gulp watch` (uses dev mode compilation)
+* Dev mode (no compression): `npx gulp` or `npx gulp build-dev` or `npx gulp build-directory-dev` (only compile as folders)
+* Prod mode (with compression): `npx gulp build-prod` or `npx gulp build-directory-prod` (only compile as folders)
+* Watch mode (real-time compilation): `npx gulp watch` (uses dev mode compilation)
 
 If you encounter the following error message when compiling:
 
@@ -77,7 +73,7 @@ Then launch the installation with the .xpi file.
 
 For Chromium, slide the .crx file into the extension page (chrome://extensions).
 
-Then if you want to clean the build directory, run the command `gulp clean-build`
+Then if you want to clean the build directory, run the command `npx gulp clean-build`
 
 ### Manifest V2 and Manifest V3 Versions
 
@@ -156,14 +152,10 @@ Soit la compiler vous-même (voir section "Compilation").
 
 ### Compilation :
 
-Vous pouvez compiler vous-même l'extension en une ligne de commande. Pour cela, vous devez avoir installé npm et gulp.
+Vous pouvez compiler vous-même l'extension en une ligne de commande. Pour cela, vous devez avoir installé npm.
 
 Pour installer npm sur votre système, plus d'infos ici : https://docs.npmjs.com/getting-started/installing-node
 
-Pour installer gulp avec npm, lancez la commande suivante :
-````
-npm i -g gulp
-````
 Faites un Git clone du dépôt et faites un cd vers le dossier du projet (ou bien téléchargez le directement depuis Github) :
 ````
 git clone https://github.com/Eliastik/page-shadow.git
@@ -176,9 +168,9 @@ npm install
 ````
 Puis pour compiler :
 
-* Mode dev (pas de compression) : `gulp` ou `gulp build-dev` ou `gulp build-directory-dev` (pour ne builder que sous forme de dossiers)
-* Mode prod (compression) : `gulp build-prod` ou `gulp build-directory-prod` (pour ne builder que sous forme de dossiers)
-* Mode watch (compilation en temps réel) : `gulp watch` (utilise la compilation du mode dev)
+* Mode dev (pas de compression) : `npx gulp` ou `npx gulp build-dev` ou `npx gulp build-directory-dev` (pour ne builder que sous forme de dossiers)
+* Mode prod (compression) : `npx gulp build-prod` ou `npx gulp build-directory-prod` (pour ne builder que sous forme de dossiers)
+* Mode watch (compilation en temps réel) : `npx gulp watch` (utilise la compilation du mode dev)
 
 Si vous rencontrez l'erreur suivante lors de la compilation :
 
@@ -197,7 +189,7 @@ Puis lancez l'installation avec le fichier .xpi
 
 Pour Chromium, faites glisser le fichier .crx dans la fenêtre des extensions (chrome://extensions).
 
-Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `gulp clean-build`
+Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `npx gulp clean-build`
 
 ### Versions Manifestv2 et Manifestv3
 

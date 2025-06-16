@@ -481,14 +481,10 @@ Or you can compile it yourself (see Compilation section).
 
 ### Compilation :
 
-You can compile yourself the extension with only one command line. To do this, you have to install npm and gulp.
+You can compile yourself the extension with only one command line. To do this, you have to install npm.
 
 To install npm for your OS, read this page: https://docs.npmjs.com/getting-started/installing-node
 
-To install gulp with npm, run the following command:
-````
-npm i -g gulp
-````
 Git clone the repository and cd to the project directory (or download it directly from Github):
 ````
 git clone https://github.com/Eliastik/page-shadow.git
@@ -501,9 +497,9 @@ npm install
 ````
 Then to compile:
 
-* Dev mode (no compression): `gulp` or `gulp build-dev` or `gulp build-directory-dev` (only compile as folders)
-* Prod mode (with compression): `gulp build-prod` or `gulp build-directory-prod` (only compile as folders)
-* Watch mode (real-time compilation): `gulp watch` (uses dev mode compilation)
+* Dev mode (no compression): `npx gulp` or `npx gulp build-dev` or `npx gulp build-directory-dev` (only compile as folders)
+* Prod mode (with compression): `npx gulp build-prod` or `npx gulp build-directory-prod` (only compile as folders)
+* Watch mode (real-time compilation): `npx gulp watch` (uses dev mode compilation)
 
 If you encounter the following error message when compiling:
 
@@ -520,9 +516,9 @@ The extension files compiled will be created in the sub-directory "build".
 To install the extension in Firefox, you need to install Firefox Developer Edition then modify the following value in about:config to "false": xpinstall.signatures.required
 Then launch the installation with the .xpi file.
 
-For Chromium, slide the .crx file in the extension window (chrome://extensions).
+For Chromium, slide the .crx file into the extension page (chrome://extensions).
 
-Then if you want to clean the build directory, run the command `gulp clean-build`
+Then if you want to clean the build directory, run the command `npx gulp clean-build`
 
 ### Manifest V2 and Manifest V3 Versions
 
