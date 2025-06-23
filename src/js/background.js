@@ -314,15 +314,16 @@ async function checkAutoEnable() {
 }
 
 async function checkAutoUpdateFilters() {
-    const result = await sessionStorage.get("isAutoUpdatingFilters", "filtersSettings");
-
-    if(result.isAutoUpdatingFilters) {
-        return;
-    }
-
-    await sessionStorage.set({ isAutoUpdatingFilters: true });
-
     try {
+        const { isAutoUpdatingFilters } = await sessionStorage.get("isAutoUpdatingFilters");
+
+        if(isAutoUpdatingFilters) {
+            return;
+        }
+
+        await sessionStorage.set({ isAutoUpdatingFilters: true });
+
+        const result = await browser.storage.local.get("filtersSettings");
         const filterResults = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
 
         const { updateInterval, enableAutoUpdate, lastFailedUpdate, lastUpdated } = filterResults;
