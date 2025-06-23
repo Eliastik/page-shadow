@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { getInvertPageVariablesKeyValues } from "../../utils/cssVariableUtils.js";
-import { removeClass } from "../../utils/cssClassUtils.js";
+import { getInvertPageBodyClasses, removeClass } from "../../utils/cssClassUtils.js";
 
 export default class InvertColor {
 
@@ -54,70 +54,15 @@ export default class InvertColor {
         if(this.currentSettings.colorInvert === "true") {
             this.debugLogger?.log(`Applying invert color with settings : invertImageColors = ${invertImageColors} / invertEntirePage = ${invertEntirePage} / invertVideoColors = ${invertVideoColors} / invertBgColors = ${invertBgColor} / selectiveInvert = ${selectiveInvert} / invertBrightColors = ${invertBrightColors}`);
 
+            const { classesToAdd, classesToRemove } = getInvertPageBodyClasses(this.currentSettings);
+
+            this.bodyClassBatcher.add(...classesToAdd);
+            this.bodyClassBatcherRemover.add(...classesToRemove);
+
             if(invertEntirePage === "true") {
                 this.htmlClassBatcher.add("pageShadowInvertEntirePage", "pageShadowBackground");
-
-                if(invertImageColors === "true") {
-                    this.bodyClassBatcherRemover.add("pageShadowInvertImageColor");
-                } else {
-                    this.bodyClassBatcher.add("pageShadowInvertImageColor");
-                }
-
-                if(invertBgColor === "true") {
-                    this.bodyClassBatcherRemover.add("pageShadowInvertBgColor");
-                } else {
-                    this.bodyClassBatcher.add("pageShadowInvertBgColor");
-                }
-
-                if(invertVideoColors === "true") {
-                    this.bodyClassBatcherRemover.add("pageShadowInvertVideoColor");
-                } else {
-                    this.bodyClassBatcher.add("pageShadowInvertVideoColor");
-                }
-
-                if(selectiveInvert === "true") {
-                    this.bodyClassBatcherRemover.add("pageShadowEnableSelectiveInvert");
-                } else {
-                    this.bodyClassBatcher.add("pageShadowEnableSelectiveInvert");
-                }
-
-                if(invertBrightColors === "true") {
-                    this.bodyClassBatcherRemover.add("pageShadowInvertBrightColors");
-                } else {
-                    this.bodyClassBatcher.add("pageShadowInvertBrightColors");
-                }
             } else {
                 removeClass(document.getElementsByTagName("html")[0], "pageShadowInvertEntirePage", "pageShadowBackground");
-
-                if(invertImageColors === "true") {
-                    this.bodyClassBatcher.add("pageShadowInvertImageColor");
-                } else {
-                    this.bodyClassBatcherRemover.add("pageShadowInvertImageColor");
-                }
-
-                if(invertBgColor !== "false") {
-                    this.bodyClassBatcher.add("pageShadowInvertBgColor");
-                } else {
-                    this.bodyClassBatcherRemover.add("pageShadowInvertBgColor");
-                }
-
-                if(invertVideoColors === "true") {
-                    this.bodyClassBatcher.add("pageShadowInvertVideoColor");
-                } else {
-                    this.bodyClassBatcherRemover.add("pageShadowInvertVideoColor");
-                }
-
-                if(selectiveInvert === "true") {
-                    this.bodyClassBatcher.add("pageShadowEnableSelectiveInvert");
-                } else {
-                    this.bodyClassBatcherRemover.add("pageShadowEnableSelectiveInvert");
-                }
-
-                if(invertBrightColors === "true") {
-                    this.bodyClassBatcher.add("pageShadowInvertBrightColors");
-                } else {
-                    this.bodyClassBatcherRemover.add("pageShadowInvertBrightColors");
-                }
             }
 
             this.debugLogger?.log("Applied invert color");
