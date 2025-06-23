@@ -2,6 +2,16 @@
 
 ## Changelog:
 
+### Version 2.11.4 (6/23/2025) :
+
+* Fixed a rare bug that could prevent Page Shadow from working on certain websites:
+    * Some websites were resetting the body element's classes, which removed those applied by Page Shadow before the Mutation Observer was activated. Page Shadow now ensures that all required classes are correctly applied to the body at the end of the class application process, right before activating the Mutation Observer;
+* Fixed a bug in the filter update module that caused multiple requests to filter sources during the daily automatic update process:
+    * There was a race condition in the asynchronous code handling the automatic update. The process could be triggered up to three times in a row, resulting in three identical requests. This issue only affected the ManifestV2 version; a similar precautionary fix was nevertheless applied to the ManifestV3 version;
+* Fixed other minor bugs and made small changes:
+    * Fixed configuration of some advanced filters that weren't applied to the correct parameters;
+    * Updated dependencies.
+
 ### Version 2.11.3 (4/6/2025) :
 
 * Fixed a bug that could occasionally prevent Cloud archiving from working in Firefox due to quota limits being exceeded;
@@ -452,6 +462,16 @@
 # Page Shadow - Français
 
 ## Journal des changements :
+
+### Version 2.11.4 (23/06/2025) :
+
+* Correction d'un bug rare qui pouvait empêcher Page Shadow de fonctionner sur certains sites web ;
+    * Certains sites réinitialisaient les classes de l’élément body, ce qui effaçait celles appliquées par Page Shadow avant l’application du Mutation Observer. Désormais, Page Shadow vérifie que toutes les classes sont bien appliquées à l'élément body à la fin du processus d’application des classes, juste avant l’activation du Mutation Observer ;
+* Correction d'un bug avec le module de mise à jour des filtres qui causait de multiples requêtes aux sources de filtre lors du processus quotidien de mise à jour automatique ;
+    * Il y avait une race condition dans le code asynchrone gérant la mise à jour automatique. Le processus pouvait être déclenché trois fois de suite, entraînant trois requêtes identiques. Ce problème était uniquement présent sur la version ManifestV2 ; un correctif similaire a néanmoins été appliqué de manière préventive sur la version ManifestV3 ;
+* Correction d'autres bugs mineurs et autres changements mineurs :
+    * Correction du paramétrage de certains filtres avancés qui ne s’appliquaient pas aux bons paramètres ;
+    * Mise à jour des dépendances
 
 ### Version 2.11.3 (06/04/2025) :
 

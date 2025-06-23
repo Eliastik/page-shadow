@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.11.3 (4/6/2025)
+* Latest version: 2.11.4 (6/23/2025)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,16 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.11.4 (6/23/2025) :
+
+* Fixed a rare bug that could prevent Page Shadow from working on certain websites:
+    * Some websites were resetting the body element's classes, which removed those applied by Page Shadow before the Mutation Observer was activated. Page Shadow now ensures that all required classes are correctly applied to the body at the end of the class application process, right before activating the Mutation Observer;
+* Fixed a bug in the filter update module that caused multiple requests to filter sources during the daily automatic update process:
+    * There was a race condition in the asynchronous code handling the automatic update. The process could be triggered up to three times in a row, resulting in three identical requests. This issue only affected the ManifestV2 version; a similar precautionary fix was nevertheless applied to the ManifestV3 version;
+* Fixed other minor bugs and made small changes:
+    * Fixed configuration of some advanced filters that weren't applied to the correct parameters;
+    * Updated dependencies.
 
 ### Version 2.11.3 (4/6/2025) :
 

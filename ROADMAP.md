@@ -201,6 +201,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 * [x] Quota error for cloud archive feature: still present in Firefox
 * [x] Bug with www.pccomponentes.fr website resetting body classes before mutation observer is started
+* [x] Multiple download of filter updates occuring at the same time in Manifestv2 version
 
 #### Common
 
