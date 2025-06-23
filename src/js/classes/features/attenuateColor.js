@@ -18,6 +18,7 @@
  * along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. */
 import { attenuateDefaultValue } from "../../constants.js";
 import { getInvertPageVariablesKeyValues } from "../../utils/cssVariableUtils.js";
+import { getAttenuatePageBodyClasses } from "../../utils/cssClassUtils.js";
 
 export default class AttenuateColor {
 
@@ -56,6 +57,11 @@ export default class AttenuateColor {
         if(this.currentSettings.attenuateColors == "true") {
             this.debugLogger?.log(`Applying invert color with settings : attenuateImgColors = ${attenuateImgColors} / attenuateBgColors = ${attenuateBgColors} / attenuateVideoColors = ${attenuateVideoColors} / attenuateBrightColors = ${attenuateBrightColors} / percentageAttenuateColors = ${percentageAttenuateColors}`);
 
+            const { classesToAdd, classesToRemove } = getAttenuatePageBodyClasses(this.currentSettings);
+
+            this.bodyClassBatcher.add(...classesToAdd);
+            this.bodyClassBatcherRemover.add(...classesToRemove);
+
             document.documentElement.style.setProperty("--page-shadow-attenuate-filter", "grayscale(" + percentageAttenuateColors + "%)");
 
             if(attenuateImgColors == "true") {
@@ -67,10 +73,6 @@ export default class AttenuateColor {
 
                 const invertSelectiveFilterImageParentBright = invertPageVariables.get("--page-shadow-invert-filter-selective-image-parent-bright");
                 document.documentElement.style.setProperty("--page-shadow-invert-filter-selective-image-parent-bright", invertSelectiveFilterImageParentBright + " grayscale(" + percentageAttenuateColors + "%)");
-
-                this.bodyClassBatcher.add("pageShadowAttenuateImageColor");
-            } else {
-                this.bodyClassBatcherRemover.add("pageShadowAttenuateImageColor");
             }
 
             if(attenuateBgColors == "true") {
@@ -82,10 +84,6 @@ export default class AttenuateColor {
 
                 const invertSelectiveFilterBgParentBright = invertPageVariables.get("--page-shadow-invert-filter-selective-bg-parent-bright");
                 document.documentElement.style.setProperty("--page-shadow-invert-filter-selective-bg-parent-bright", invertSelectiveFilterBgParentBright + " grayscale(" + percentageAttenuateColors + "%)");
-
-                this.bodyClassBatcher.add("pageShadowAttenuateBgColor");
-            } else {
-                this.bodyClassBatcherRemover.add("pageShadowAttenuateBgColor");
             }
 
             if(attenuateVideoColors == "true") {
@@ -97,19 +95,11 @@ export default class AttenuateColor {
 
                 const invertSelectiveFilterVideoParentBright = invertPageVariables.get("--page-shadow-invert-filter-selective-video-parent-bright");
                 document.documentElement.style.setProperty("--page-shadow-invert-filter-selective-video-parent-bright", invertSelectiveFilterVideoParentBright + " grayscale(" + percentageAttenuateColors + "%)");
-
-                this.bodyClassBatcher.add("pageShadowAttenuateVideoColor");
-            } else {
-                this.bodyClassBatcherRemover.add("pageShadowAttenuateVideoColor");
             }
 
             if(attenuateBrightColors == "true") {
                 const invertFilterBright = invertPageVariables.get("--page-shadow-invert-filter-bright-color-backgrounds");
                 document.documentElement.style.setProperty("--page-shadow-invert-filter-bright-color-backgrounds", invertFilterBright + " grayscale(" + percentageAttenuateColors + "%)");
-
-                this.bodyClassBatcher.add("pageShadowAttenuateBrightColor");
-            } else {
-                this.bodyClassBatcherRemover.add("pageShadowAttenuateBrightColor");
             }
 
             this.debugLogger?.log("Applied attenuate color");

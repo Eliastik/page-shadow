@@ -125,6 +125,7 @@
             "darkImageDetectionEnableCorsFetch": "Activer la récupération des images provenant d'une origine différente (cross-origin)",
             "darkImageDetectionEnableRedirectionCheck": "Activer la vérification des redirections d'images pour détecter les URL provenant d'une origine différente",
             "throttleBackgroundDetectionDestylePerElement": "Retirer le style des éléments plutôt que celui de l'élément body lorsque l'analyse des éléments est ralentie",
+            "maxReapplyBodyClassesAttempts": "Nombre maximal de tentatives de ré-application des classes CSS de l'élément body avant activation des Mutation Observers",
             "help": {
                 "debugMode": "Active le mode de débogage qui affiche des informations de débogage dans la console JavaScript sur les pages traitées par Page Shadow, ou sur les pages de l'extension.",
                 "performanceModeEnabled": "Active des optimisations de performance, cela désactive l'analyse des éléments des pages web. Cependant, la gestion des filtres reste activée.",
@@ -190,7 +191,8 @@
                 "darkImageDetectionEnableFetchUseHref": "Si cette option est activée, Page Shadow effectuera une requête vers le fichier SVG référencé par une balise HTML use. Cela peut permettre d'analyser certaines images SVG supplémentaires.",
                 "darkImageDetectionEnableCorsFetch": "Si cette option est activée, Page Shadow récupérera les images hébergées sur des domaines tiers via son script d'arrière-plan pour contourner les restrictions CORS. Si elle est désactivée, une autre méthode sera utilisée pour gérer ces restrictions.",
                 "darkImageDetectionEnableRedirectionCheck": "Si cette option est activée, Page Shadow enverra une requête HEAD au serveur hébergeant l'image pour vérifier si elle provient d'une origine différente (par exemple, en cas de redirection vers une autre origine). Cela permet à Page Shadow de s'adapter et d'éviter les problèmes liés aux restrictions CORS.",
-                "throttleBackgroundDetectionDestylePerElement": "Si l'analyse des éléments lors du chargement des pages est ralentie, l'activation de cette option permet à Page Shadow de retirer le style appliqué à chaque élément individuellement plutôt qu'à l'élément body. Cela peut réduire la consommation CPU, mais au prix d'une analyse plus lente."
+                "throttleBackgroundDetectionDestylePerElement": "Si l'analyse des éléments lors du chargement des pages est ralentie, l'activation de cette option permet à Page Shadow de retirer le style appliqué à chaque élément individuellement plutôt qu'à l'élément body. Cela peut réduire la consommation CPU, mais au prix d'une analyse plus lente.",
+                "maxReapplyBodyClassesAttempts": "Définit combien de fois l'extension tentera de ré-appliquer les classes CSS nécessaires sur l’élément body si celles-ci sont supprimées ou écrasées par le site web avant l'activation des Mutation Observers. Augmenter cette valeur peut améliorer la fiabilité sur certains sites web, mais peut aussi entraîner des boucles ou des ralentissements."
             }
         },
         "filtersConfigCategories": {
@@ -252,6 +254,7 @@
             "changelogTitle": "Journal des changements",
             "infos": "Informations",
             "changelog": {
+                "2_11_4": "<ul><li>Correction d'un bug rare qui pouvait empêcher Page Shadow de fonctionner sur certains sites web ;</li><li>Correction d'un bug avec le module de mise à jour des filtres qui causait de multiples requêtes aux sources de filtre lors du processus quotidien de mise à jour automatique ;</li><li>Correction d'autres bugs mineurs et autres changements mineurs.</li></ul>",
                 "2_11_3": "<ul><li>Correction d'un bug qui pouvait parfois empêcher l'archivage Cloud de fonctionner sous Firefox en raison d'un dépassement de quota ;</li><li>Corrections mineures d'ergonomie dans l'interface utilisateur de l'extension (affichage et édition des filtres, création d'un pré-réglage dans la popup) ;</li><li>Autres améliorations et corrections techniques (voir le fichier Lisez-moi).</li></ul>",
                 "2_11_2": "<ul><li>Correction de bugs et autres ajustements (voir le fichier Lisez-moi).</li></ul>",
                 "2_11_1": "<ul><li>Détection automatique des thèmes sombres : Page Shadow peut désormais identifier les sites web utilisant un thème sombre. Grâce à cette fonctionnalité, vous pouvez configurer l'extension pour :</li><ul><li>Se désactiver automatiquement sur les sites ou pages avec un thème sombre ;</li><li>Activer automatiquement un pré-réglage spécifique si un thème sombre est détecté.</li></ul><li>Correction de bugs et améliorations techniques (voir le fichier Lisez-moi).</li></ul>",
@@ -281,6 +284,7 @@
                 "11": "<ul><li>Amélioration de la fonction \"Augmenter le contraste\".</li></ul>",
                 "1": "<ul><li>Version initiale.</li></ul>",
                 "versionNames": {
+                    "2_11_4": "Version 2.11.4 (23/06/2025)",
                     "2_11_3": "Version 2.11.3 (06/04/2025)",
                     "2_11_2": "Version 2.11.2 (23/03/2025)",
                     "2_11_1": "Version 2.11.1 (09/03/2025)",
