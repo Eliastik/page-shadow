@@ -317,22 +317,30 @@ async function checkAutoEnable() {
 }
 
 async function checkAutoUpdateFilters() {
-    const result = await browser.storage.local.get("filtersSettings");
-    const filterResults = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+    if(isAutoUpdatingFilters) {
+        return;
+    }
 
-    const { updateInterval, enableAutoUpdate, lastFailedUpdate, lastUpdated } = filterResults;
-    const currentDate = Date.now();
+    isAutoUpdatingFilters = true;
 
-    if(enableAutoUpdate && updateInterval > 0 && (lastUpdated <= 0 || (currentDate - lastUpdated) >= updateInterval)) {
-        isAutoUpdatingFilters = true;
-        filters.updateAllFilters(true, false).then(() => {
-            isAutoUpdatingFilters = false;
-        });
-    } else if(enableAutoUpdate && lastFailedUpdate != null && lastFailedUpdate > -1 && ((currentDate - lastFailedUpdate) >= failedUpdateAutoReupdateDelay)) {
-        isAutoUpdatingFilters = true;
-        filters.updateAllFilters(true, true).then(() => {
-            isAutoUpdatingFilters = false;
-        });
+    try {
+        const result = await browser.storage.local.get("filtersSettings");
+        const filterResults = result.filtersSettings != null ? result.filtersSettings : defaultFilters;
+
+        const { updateInterval, enableAutoUpdate, lastFailedUpdate, lastUpdated } = filterResults;
+        const currentDate = Date.now();
+
+        if(enableAutoUpdate && updateInterval > 0 && (lastUpdated <= 0 || (currentDate - lastUpdated) >= updateInterval)) {
+            debugLogger.log("Background checkAutoUpdateFilters: Auto updating filters");
+            await filters.updateAllFilters(true, false);
+        } else if(enableAutoUpdate && lastFailedUpdate != null && lastFailedUpdate > -1 && ((currentDate - lastFailedUpdate) >= failedUpdateAutoReupdateDelay)) {
+            debugLogger.log("Background checkAutoUpdateFilters: Auto updating failed filters");
+            await filters.updateAllFilters(true, true);
+        }
+    } catch (e) {
+        debugLogger.error("Background checkAutoUpdateFilters: Error", e);
+    } finally {
+        isAutoUpdatingFilters = false;
     }
 }
 
@@ -751,8 +759,5 @@ setupPageShadow();
 
 setInterval(() => {
     checkAutoEnable();
-
-    if(!isAutoUpdatingFilters) {
-        checkAutoUpdateFilters();
-    }
+    checkAutoUpdateFilters();
 }, 1000);

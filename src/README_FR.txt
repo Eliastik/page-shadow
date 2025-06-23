@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.11.3 (06/04/2025)
+* Version actuelle : 2.11.4 (23/06/2025)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,16 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.11.4 (23/06/2025) :
+
+* Correction d'un bug rare qui pouvait empêcher Page Shadow de fonctionner sur certains sites web ;
+    * Certains sites réinitialisaient les classes de l’élément body, ce qui effaçait celles appliquées par Page Shadow avant l’application du Mutation Observer. Désormais, Page Shadow vérifie que toutes les classes sont bien appliquées à l'élément body à la fin du processus d’application des classes, juste avant l’activation du Mutation Observer ;
+* Correction d'un bug avec le module de mise à jour des filtres qui causait de multiples requêtes aux sources de filtre lors du processus quotidien de mise à jour automatique ;
+    * Il y avait une race condition dans le code asynchrone gérant la mise à jour automatique. Le processus pouvait être déclenché trois fois de suite, entraînant trois requêtes identiques. Ce problème était uniquement présent sur la version ManifestV2 ; un correctif similaire a néanmoins été appliqué de manière préventive sur la version ManifestV3 ;
+* Correction d'autres bugs mineurs et autres changements mineurs :
+    * Correction du paramétrage de certains filtres avancés qui ne s’appliquaient pas aux bons paramètres ;
+    * Mise à jour des dépendances
 
 ### Version 2.11.3 (06/04/2025) :
 
@@ -482,14 +492,10 @@ Soit la compiler vous-même (voir section "Compilation").
 
 ### Compilation :
 
-Vous pouvez compiler vous-même l'extension en une ligne de commande. Pour cela, vous devez avoir installé npm et gulp.
+Vous pouvez compiler vous-même l'extension en une ligne de commande. Pour cela, vous devez avoir installé npm.
 
 Pour installer npm sur votre système, plus d'infos ici : https://docs.npmjs.com/getting-started/installing-node
 
-Pour installer gulp avec npm, lancez la commande suivante :
-````
-npm i -g gulp
-````
 Faites un Git clone du dépôt et faites un cd vers le dossier du projet (ou bien téléchargez le directement depuis Github) :
 ````
 git clone https://github.com/Eliastik/page-shadow.git
@@ -502,9 +508,9 @@ npm install
 ````
 Puis pour compiler :
 
-* Mode dev (pas de compression) : `gulp` ou `gulp build-dev` ou `gulp build-directory-dev` (pour ne builder que sous forme de dossiers)
-* Mode prod (compression) : `gulp build-prod` ou `gulp build-directory-prod` (pour ne builder que sous forme de dossiers)
-* Mode watch (compilation en temps réel) : `gulp watch` (utilise la compilation du mode dev)
+* Mode dev (pas de compression) : `npx gulp` ou `npx gulp build-dev` ou `npx gulp build-directory-dev` (pour ne builder que sous forme de dossiers)
+* Mode prod (compression) : `npx gulp build-prod` ou `npx gulp build-directory-prod` (pour ne builder que sous forme de dossiers)
+* Mode watch (compilation en temps réel) : `npx gulp watch` (utilise la compilation du mode dev)
 
 Si vous rencontrez l'erreur suivante lors de la compilation :
 
@@ -523,7 +529,18 @@ Puis lancez l'installation avec le fichier .xpi
 
 Pour Chromium, faites glisser le fichier .crx dans la fenêtre des extensions (chrome://extensions).
 
-Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `gulp clean-build`
+Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `npx gulp clean-build`
+
+### Versions Manifestv2 et Manifestv3
+
+Les versions Manifest V2 et Manifest V3 offrent exactement les mêmes fonctionnalités et partagent une base de code commune, à l’exception de quelques différences liées aux API spécifiques à chaque version.
+
+Il existe toutefois une différence subtile : le minuteur utilisé pour certaines fonctionnalités de l’extension (comme l’activation/désactivation automatique selon l’heure, ou la mise à jour automatique des filtres) fonctionne différemment selon la version :
+
+- Manifest V3 : le minuteur repose sur l’API alarms, limitée à une fréquence minimale d’une minute.
+- Manifest V2 : un setInterval permet un déclenchement toutes les secondes.
+
+Par conséquent, sur la version Manifest V3, certaines actions programmées (comme l’activation horaire) peuvent être légèrement décalées par rapport à la version Manifest V2.
 
 ### Licence :
 

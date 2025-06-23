@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.11.3 (4/6/2025)
+* Latest version: 2.11.4 (6/23/2025)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,16 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.11.4 (6/23/2025) :
+
+* Fixed a rare bug that could prevent Page Shadow from working on certain websites:
+    * Some websites were resetting the body element's classes, which removed those applied by Page Shadow before the Mutation Observer was activated. Page Shadow now ensures that all required classes are correctly applied to the body at the end of the class application process, right before activating the Mutation Observer;
+* Fixed a bug in the filter update module that caused multiple requests to filter sources during the daily automatic update process:
+    * There was a race condition in the asynchronous code handling the automatic update. The process could be triggered up to three times in a row, resulting in three identical requests. This issue only affected the ManifestV2 version; a similar precautionary fix was nevertheless applied to the ManifestV3 version;
+* Fixed other minor bugs and made small changes:
+    * Fixed configuration of some advanced filters that weren't applied to the correct parameters;
+    * Updated dependencies.
 
 ### Version 2.11.3 (4/6/2025) :
 
@@ -481,14 +491,10 @@ Or you can compile it yourself (see Compilation section).
 
 ### Compilation :
 
-You can compile yourself the extension with only one command line. To do this, you have to install npm and gulp.
+You can compile yourself the extension with only one command line. To do this, you have to install npm.
 
 To install npm for your OS, read this page: https://docs.npmjs.com/getting-started/installing-node
 
-To install gulp with npm, run the following command:
-````
-npm i -g gulp
-````
 Git clone the repository and cd to the project directory (or download it directly from Github):
 ````
 git clone https://github.com/Eliastik/page-shadow.git
@@ -501,9 +507,9 @@ npm install
 ````
 Then to compile:
 
-* Dev mode (no compression): `gulp` or `gulp build-dev` or `gulp build-directory-dev` (only compile as folders)
-* Prod mode (with compression): `gulp build-prod` or `gulp build-directory-prod` (only compile as folders)
-* Watch mode (real-time compilation): `gulp watch` (uses dev mode compilation)
+* Dev mode (no compression): `npx gulp` or `npx gulp build-dev` or `npx gulp build-directory-dev` (only compile as folders)
+* Prod mode (with compression): `npx gulp build-prod` or `npx gulp build-directory-prod` (only compile as folders)
+* Watch mode (real-time compilation): `npx gulp watch` (uses dev mode compilation)
 
 If you encounter the following error message when compiling:
 
@@ -520,11 +526,22 @@ The extension files compiled will be created in the sub-directory "build".
 To install the extension in Firefox, you need to install Firefox Developer Edition then modify the following value in about:config to "false": xpinstall.signatures.required
 Then launch the installation with the .xpi file.
 
-For Chromium, slide the .crx file in the extension window (chrome://extensions).
+For Chromium, slide the .crx file into the extension page (chrome://extensions).
 
-Then if you want to clean the build directory, run the command `gulp clean-build`
+Then if you want to clean the build directory, run the command `npx gulp clean-build`
 
-### Licence :
+### Manifest V2 and Manifest V3 Versions
+
+The Manifest V2 and Manifest V3 versions of the extension offer exactly the same features and share the same codebase, except for a few implementation differences due to API changes between the two formats.
+
+There is, however, a subtle difference: the timer used for certain features (such as enabling/disabling the extension based on the time of day, or automatically updating filters) behaves differently depending on the version:
+
+- Manifest V3: relies on the alarms API, which is limited to a minimum interval of one minute.
+- Manifest V2: uses setInterval, allowing the timer to run every second.
+
+As a result, in the Manifest V3 version, some scheduled actions (like time-based activation) may experience a slight delay compared to the Manifest V2 version.
+
+### License:
 
 Page Shadow is distributed under GPL-3.0 license (see LICENCE.txt file)
 

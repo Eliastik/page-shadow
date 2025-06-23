@@ -4,7 +4,7 @@
 <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen.png" width="300" alt="Page Shadow" /> <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen_2.png" width="300" alt="Page Shadow" />
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.11.3 (4/6/2025)
+* Latest version: 2.11.4 (6/23/2025)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -36,14 +36,10 @@ Or you can compile it yourself (see Compilation section).
 
 ### Compilation :
 
-You can compile yourself the extension with only one command line. To do this, you have to install npm and gulp.
+You can compile yourself the extension with only one command line. To do this, you have to install npm.
 
 To install npm for your OS, read this page: https://docs.npmjs.com/getting-started/installing-node
 
-To install gulp with npm, run the following command:
-````
-npm i -g gulp
-````
 Git clone the repository and cd to the project directory (or download it directly from Github):
 ````
 git clone https://github.com/Eliastik/page-shadow.git
@@ -56,9 +52,9 @@ npm install
 ````
 Then to compile:
 
-* Dev mode (no compression): `gulp` or `gulp build-dev` or `gulp build-directory-dev` (only compile as folders)
-* Prod mode (with compression): `gulp build-prod` or `gulp build-directory-prod` (only compile as folders)
-* Watch mode (real-time compilation): `gulp watch` (uses dev mode compilation)
+* Dev mode (no compression): `npx gulp` or `npx gulp build-dev` or `npx gulp build-directory-dev` (only compile as folders)
+* Prod mode (with compression): `npx gulp build-prod` or `npx gulp build-directory-prod` (only compile as folders)
+* Watch mode (real-time compilation): `npx gulp watch` (uses dev mode compilation)
 
 If you encounter the following error message when compiling:
 
@@ -77,9 +73,20 @@ Then launch the installation with the .xpi file.
 
 For Chromium, slide the .crx file into the extension page (chrome://extensions).
 
-Then if you want to clean the build directory, run the command `gulp clean-build`
+Then if you want to clean the build directory, run the command `npx gulp clean-build`
 
-### Licence :
+### Manifest V2 and Manifest V3 Versions
+
+The Manifest V2 and Manifest V3 versions of the extension offer exactly the same features and share the same codebase, except for a few implementation differences due to API changes between the two formats.
+
+There is, however, a subtle difference: the timer used for certain features (such as enabling/disabling the extension based on the time of day, or automatically updating filters) behaves differently depending on the version:
+
+- Manifest V3: relies on the alarms API, which is limited to a minimum interval of one minute.
+- Manifest V2: uses setInterval, allowing the timer to run every second.
+
+As a result, in the Manifest V3 version, some scheduled actions (like time-based activation) may experience a slight delay compared to the Manifest V2 version.
+
+### License:
 
 Page Shadow is distributed under GPL-3.0 license (see LICENCE.txt file)
 
@@ -113,7 +120,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen_fr.png" width="300" alt="Page Shadow" /> <img src="https://raw.githubusercontent.com/Eliastik/page-shadow/master/screen_fr_2.png" width="300" alt="Page Shadow" />
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.11.3 (06/04/2025)
+* Version actuelle : 2.11.4 (23/06/2025)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -145,14 +152,10 @@ Soit la compiler vous-même (voir section "Compilation").
 
 ### Compilation :
 
-Vous pouvez compiler vous-même l'extension en une ligne de commande. Pour cela, vous devez avoir installé npm et gulp.
+Vous pouvez compiler vous-même l'extension en une ligne de commande. Pour cela, vous devez avoir installé npm.
 
 Pour installer npm sur votre système, plus d'infos ici : https://docs.npmjs.com/getting-started/installing-node
 
-Pour installer gulp avec npm, lancez la commande suivante :
-````
-npm i -g gulp
-````
 Faites un Git clone du dépôt et faites un cd vers le dossier du projet (ou bien téléchargez le directement depuis Github) :
 ````
 git clone https://github.com/Eliastik/page-shadow.git
@@ -165,9 +168,9 @@ npm install
 ````
 Puis pour compiler :
 
-* Mode dev (pas de compression) : `gulp` ou `gulp build-dev` ou `gulp build-directory-dev` (pour ne builder que sous forme de dossiers)
-* Mode prod (compression) : `gulp build-prod` ou `gulp build-directory-prod` (pour ne builder que sous forme de dossiers)
-* Mode watch (compilation en temps réel) : `gulp watch` (utilise la compilation du mode dev)
+* Mode dev (pas de compression) : `npx gulp` ou `npx gulp build-dev` ou `npx gulp build-directory-dev` (pour ne builder que sous forme de dossiers)
+* Mode prod (compression) : `npx gulp build-prod` ou `npx gulp build-directory-prod` (pour ne builder que sous forme de dossiers)
+* Mode watch (compilation en temps réel) : `npx gulp watch` (utilise la compilation du mode dev)
 
 Si vous rencontrez l'erreur suivante lors de la compilation :
 
@@ -186,7 +189,18 @@ Puis lancez l'installation avec le fichier .xpi
 
 Pour Chromium, faites glisser le fichier .crx dans la fenêtre des extensions (chrome://extensions).
 
-Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `gulp clean-build`
+Puis si vous souhaitez nettoyer le répertoire de build, lancez la commande `npx gulp clean-build`
+
+### Versions Manifestv2 et Manifestv3
+
+Les versions Manifest V2 et Manifest V3 offrent exactement les mêmes fonctionnalités et partagent une base de code commune, à l’exception de quelques différences liées aux API spécifiques à chaque version.
+
+Il existe toutefois une différence subtile : le minuteur utilisé pour certaines fonctionnalités de l’extension (comme l’activation/désactivation automatique selon l’heure, ou la mise à jour automatique des filtres) fonctionne différemment selon la version :
+
+- Manifest V3 : le minuteur repose sur l’API alarms, limitée à une fréquence minimale d’une minute.
+- Manifest V2 : un setInterval permet un déclenchement toutes les secondes.
+
+Par conséquent, sur la version Manifest V3, certaines actions programmées (comme l’activation horaire) peuvent être légèrement décalées par rapport à la version Manifest V2.
 
 ### Licence :
 

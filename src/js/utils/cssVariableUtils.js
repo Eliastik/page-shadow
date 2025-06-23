@@ -161,11 +161,13 @@ function getPageVariablesToApply(contrastEnabled, invertEnabled, attenuateColors
     return pageVariablesToApply;
 }
 
-function areAllCSSVariablesDefinedForHTMLElement(contrastEnabled, invertEnabled, attenuateColors) {
+function areAllCSSVariablesDefinedForHTMLElement(settings) {
+    const { pageShadowEnabled, colorInvert, attenuateColors } = settings;
     const element = document.documentElement;
 
-    if (element && element.style) {
-        return getPageVariablesToApply(contrastEnabled, invertEnabled, attenuateColors).every(variable => element.style.getPropertyValue(variable) !== "");
+    if(element && element.style) {
+        return getPageVariablesToApply(pageShadowEnabled, colorInvert, attenuateColors)
+            .every(variable => element.style.getPropertyValue(variable) !== "");
     }
 }
 
