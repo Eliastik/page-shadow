@@ -49,7 +49,7 @@ function setPopup() {
         browser.action.onClicked.addListener(tab => {
             if(typeof(tab.id) !== "undefined") {
                 browser.tabs.create({
-                    url: "../extension.html?tabId="+ tab.id
+                    url: `../extension.html?tabId=${tab.id}`
                 });
             } else {
                 browser.tabs.create({
@@ -745,7 +745,10 @@ async function openTab(url, part) {
         }
 
         const updateTab = await browser.tabs.update(tab.id, updateDetails);
-        browser.windows.update(updateTab.windowId, { focused: true });
+
+        if(typeof(browser.windows) !== "undefined") {
+            browser.windows.update(updateTab.windowId, { focused: true });
+        }
 
         if(part) {
             browser.tabs.sendMessage(updateTab.id, {
