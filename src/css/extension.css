@@ -637,6 +637,10 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     .tabs-left {
         display: block;
     }
+    .container-option {
+        padding: 0 !important;
+        width: 100% !important;
+    }
 }
 .mt-4 {
     margin-top: 15px;
