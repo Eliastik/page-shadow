@@ -190,6 +190,8 @@ async function reportWebsiteProblem() {
         url: reportWebsiteProblemBackendURL + encodeURIComponent(base64dataToSend),
         part: ""
     });
+
+    window.close();
 }
 
 async function showInformationPopup(result) {
@@ -326,6 +328,8 @@ $(() => {
             url: browser.runtime.getURL("options.html"),
             part: ""
         });
+
+        window.close();
     });
 
     $("#linkAdvSettings2").on("click", () => {
@@ -334,6 +338,8 @@ $(() => {
             url: browser.runtime.getURL("options.html"),
             part: "customTheme"
         });
+
+        window.close();
     });
 
     $("#linkAdvSettings3").on("click", () => {
@@ -342,6 +348,8 @@ $(() => {
             url: browser.runtime.getURL("options.html"),
             part: "archive"
         });
+
+        window.close();
     });
 
     $("#linkAdvSettings4").on("click", () => {
@@ -350,6 +358,8 @@ $(() => {
             url: browser.runtime.getURL("options.html"),
             part: "archive"
         });
+
+        window.close();
     });
 
     $("#linkTestExtension").on("click", () => {
@@ -358,6 +368,8 @@ $(() => {
             url: browser.runtime.getURL("pageTest.html"),
             part: ""
         });
+
+        window.close();
     });
 
     $("#settingsPresets").on("click", () => {
@@ -366,6 +378,8 @@ $(() => {
             url: browser.runtime.getURL("options.html"),
             part: "presets"
         });
+
+        window.close();
     });
 
     function previewTheme(theme) {
@@ -1657,6 +1671,8 @@ $(() => {
             url: browser.runtime.getURL("options.html"),
             part: "aboutLatestVersion"
         });
+
+        window.close();
     });
 
     $("#createPreset").on("click", () => {
@@ -1674,6 +1690,8 @@ $(() => {
             url: browser.runtime.getURL("options.html"),
             part: "presets"
         });
+
+        window.close();
     });
 
     $("#openAdvancedSettingsLink").on("click", () => {
@@ -1681,6 +1699,8 @@ $(() => {
             type: "openTab",
             url: browser.runtime.getURL("options.html")
         });
+
+        window.close();
     });
 
     async function createPreset() {
