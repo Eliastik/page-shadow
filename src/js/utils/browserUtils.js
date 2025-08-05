@@ -43,6 +43,15 @@ function getBrowser() {
     return "Chrome";
 }
 
+function isFirefoxMobile() {
+    const currentBrowser = getBrowser();
+    const isMobile = navigator.userAgent.split(" ").find(element => element.toLowerCase().startsWith("android")) != null;
+
+    if(currentBrowser === "Firefox" && isMobile) {
+        return true;
+    }
+}
+
 function isRunningInPopup() {
     try {
         return window.opener && window.opener !== window;
@@ -171,4 +180,4 @@ function hasLightColorScheme(computedStyles) {
     return !isDarkModeEnabled && hasLightScheme;
 }
 
-export { getBrowser, isRunningInPopup, isRunningInIframe, sendMessageWithPromise, checkPermissions, isElementNotVisible, getElementSize, hasDarkColorScheme, hasLightColorScheme };
+export { getBrowser, isRunningInPopup, isRunningInIframe, sendMessageWithPromise, checkPermissions, isElementNotVisible, getElementSize, hasDarkColorScheme, hasLightColorScheme, isFirefoxMobile };

@@ -29,7 +29,7 @@ import "@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2";
 import "@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2";
 import popupEN from "../_locales/en/popup.json";
 import popupFR from "../_locales/fr/popup.json";
-import { getBrowser, sendMessageWithPromise, checkPermissions } from "./utils/browserUtils.js";
+import { getBrowser, isFirefoxMobile, sendMessageWithPromise, checkPermissions } from "./utils/browserUtils.js";
 import { toggleTheme } from "./utils/uiUtils.js";
 import { normalizeURL } from "./utils/urlUtils.js";
 import { applyContrastPageVariablesWithTheme } from "./utils/cssVariableUtils.js";
@@ -322,7 +322,9 @@ $(() => {
         formatter: value => value
     });
 
-    $("#linkAdvSettings").on("click", () => {
+    $("#linkAdvSettings").on("click", e => {
+        e.preventDefault();
+
         sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
@@ -332,7 +334,9 @@ $(() => {
         window.close();
     });
 
-    $("#linkAdvSettings2").on("click", () => {
+    $("#linkAdvSettings2").on("click", e => {
+        e.preventDefault();
+
         sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
@@ -342,7 +346,9 @@ $(() => {
         window.close();
     });
 
-    $("#linkAdvSettings3").on("click", () => {
+    $("#linkAdvSettings3").on("click", e => {
+        e.preventDefault();
+
         sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
@@ -352,7 +358,9 @@ $(() => {
         window.close();
     });
 
-    $("#linkAdvSettings4").on("click", () => {
+    $("#linkAdvSettings4").on("click", e => {
+        e.preventDefault();
+
         sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
@@ -362,7 +370,9 @@ $(() => {
         window.close();
     });
 
-    $("#linkTestExtension").on("click", () => {
+    $("#linkTestExtension").on("click", e => {
+        e.preventDefault();
+
         sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("pageTest.html"),
@@ -372,7 +382,9 @@ $(() => {
         window.close();
     });
 
-    $("#settingsPresets").on("click", () => {
+    $("#settingsPresets").on("click", e => {
+        e.preventDefault();
+
         sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
@@ -604,36 +616,44 @@ $(() => {
         });
     }
 
-    $("#disableWebsite").on("click", () => {
+    $("#disableWebsite").on("click", e => {
+        e.preventDefault();
         disablePageShadow("disable-website", false);
     });
 
-    $("#enableWebsite").on("click", () => {
+    $("#enableWebsite").on("click", e => {
+        e.preventDefault();
         disablePageShadow("disable-website", true);
     });
 
-    $("#disableWebpage").on("click", () => {
+    $("#disableWebpage").on("click", e => {
+        e.preventDefault();
         disablePageShadow("disable-webpage", false);
     });
 
-    $("#enableWebpage").on("click", () => {
+    $("#enableWebpage").on("click", e => {
+        e.preventDefault();
         disablePageShadow("disable-webpage", true);
     });
 
-    $("#disableWebsitePreset").on("click", async() => {
+    $("#disableWebsitePreset").on("click", async e => {
+        e.preventDefault();
         await togglePreset("toggle-website", selectedPreset, true);
     });
 
-    $("#enableWebsitePreset").on("click", async() => {
+    $("#enableWebsitePreset").on("click", async e => {
+        e.preventDefault();
         await togglePreset("toggle-website", selectedPreset, false);
         checkPresetAutoEnabled(await getCurrentURL());
     });
 
-    $("#disableWebpagePreset").on("click", async() => {
+    $("#disableWebpagePreset").on("click", async e => {
+        e.preventDefault();
         await togglePreset("toggle-webpage", selectedPreset, true);
     });
 
-    $("#enableWebpagePreset").on("click", async() => {
+    $("#enableWebpagePreset").on("click", async e => {
+        e.preventDefault();
         await togglePreset("toggle-webpage", selectedPreset, false);
         checkPresetAutoEnabled(await getCurrentURL());
     });
@@ -1684,7 +1704,9 @@ $(() => {
         });
     });
 
-    $("#createPresetModalAdvancedLink").on("click", () => {
+    $("#createPresetModalAdvancedLink").on("click", e => {
+        e.preventDefault();
+
         sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html"),
@@ -1694,7 +1716,9 @@ $(() => {
         window.close();
     });
 
-    $("#openAdvancedSettingsLink").on("click", () => {
+    $("#openAdvancedSettingsLink").on("click", e => {
+        e.preventDefault();
+
         sendMessageWithPromise({
             type: "openTab",
             url: browser.runtime.getURL("options.html")
@@ -1814,13 +1838,15 @@ $(() => {
         }
     });
 
-    $("#enablePermission").on("click", () => {
+    $("#enablePermission").on("click", e => {
+        e.preventDefault();
         browser.permissions.request({
             origins: permissionOrigin
         });
     });
 
-    $("#permissionLink").on("click", () => {
+    $("#permissionLink").on("click", e => {
+        e.preventDefault();
         browser.permissions.request({
             origins: permissionOrigin
         });
@@ -1842,11 +1868,18 @@ $(() => {
         }
     }
 
-    $("#reportProblemLink").on("click", () => {
+    if(isFirefoxMobile() && document.body.classList.contains("mobile")) {
+        document.body.classList.add("mobile");
+    }
+
+    $("#reportProblemLink").on("click", e => {
+        e.preventDefault();
+
         $("#reportProblemModal").modal("show");
     });
 
-    $("#reportProblemButton").on("click", async () => {
+    $("#reportProblemButton").on("click", async e => {
+        e.preventDefault();
         await reportWebsiteProblem();
         $("#reportProblemModal").modal("hide");
     });
