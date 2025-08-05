@@ -930,3 +930,13 @@ body.popup .modal-footer {
 #editFilter .CodeMirror, #filterDetails .CodeMirror {
     height: 50vh !important;
 }
+
+/* Popup mobile */
+body.popup.mobile {
+    width: 100% !important;
+}
+
+body.popup.mobile #popup-options {
+    width: 360px !important;
+    margin: 0 auto !important;
+}
