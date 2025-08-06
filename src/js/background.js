@@ -26,6 +26,7 @@ import { presetsEnabled, loadPreset } from "./utils/presetUtils.js";
 import { processShadowRootStyle } from "./utils/shadowDomUtils.js";
 import { defaultFilters, nbPresets, ruleCategory, failedUpdateAutoReupdateDelay, wordToNumberMap } from "./constants.js";
 import { setSettingItem, checkFirstLoad, migrateSettings, checkChangedStorageData } from "./utils/storageUtils.js";
+import { isFirefoxMobile } from "./utils/browserUtils.js";
 import FilterProcessor from "./classes/filters.js";
 import browser from "webextension-polyfill";
 import PresetCache from "./classes/presetCache.js";
@@ -250,15 +251,16 @@ async function updateBadge(storageChanged) {
 
             const { url } = tab;
             const enabled = await pageShadowAllowed(normalizeURL(url));
+            const isFirefoxForMobile = isFirefoxMobile();
 
-            if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeText) !== "undefined") {
+            if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeText) !== "undefined" && !isFirefoxForMobile) {
                 browser.browserAction.setBadgeText({
                     text: " ",
                     tabId: tab.id
                 });
             }
 
-            if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeBackgroundColor) !== "undefined") {
+            if(typeof(browser.browserAction) !== "undefined" && typeof(browser.browserAction.setBadgeBackgroundColor) !== "undefined" && !isFirefoxForMobile) {
                 if(enabled) {
                     browser.browserAction.setBadgeBackgroundColor({
                         color: "#2ecc71",
