@@ -628,6 +628,10 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
         float: none !important;
         margin-right: -15px !important;
     }
+
+    #editFilter .modal-dialog, #filterDetails .modal-dialog {
+        width: 50% !important;
+    }
 }
 @media (max-width: 700px) {
     .tabs-left > .nav-tabs {
@@ -727,9 +731,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 
 .popup-options-modern .popup-advanced-option-wrapper {
     position: absolute;
-    left: 0;
     width: 334px;
-    margin-left: 8px;
     margin-top: -8px;
     z-index: 1000;
 }
@@ -763,22 +765,25 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 }
 
 .popup-options-modern #themeDiv:before, .popup-options-modern #brightnessSettings:before {
-    left: 39px;
+    left: 40px;
     right: none !important;
 }
 
-.popup-options-modern #themeDiv:before, .popup-options-modern #attenuateColorsDiv:before {
-    right: 39px;
-    right: none !important;
-}
-
-.popup-options-compact-modern #themeDiv:before, .popup-options-compact-modern #brightnessSettings:before {
-    left: 42px;
-    right: none !important;
+.popup-options-modern #invertPageColorsDiv, .popup-options-modern #blueLightReductionFilterSettings {
+    margin-left: -110px;
 }
 
 .popup-options-modern #invertPageColorsDiv:before, .popup-options-modern #blueLightReductionFilterSettings:before {
-    left: 151px;
+    left: 40px;
+    right: none !important;
+}
+
+.popup-options-modern #attenuateColorsDiv {
+    margin-left: -220px;
+}
+
+.popup-options-modern #attenuateColorsDiv:before {
+    left: 40px;
     right: none !important;
 }
 
@@ -925,12 +930,11 @@ body.popup .modal-footer {
     padding-top: 0px !important;
 }
 #editFilter .modal-dialog, #filterDetails .modal-dialog {
-    width: 50%;
+    width: 100%;
 }
 #editFilter .CodeMirror, #filterDetails .CodeMirror {
     height: 50vh !important;
 }
-
 /* Popup mobile */
 body.popup.mobile {
     width: 100% !important;
@@ -938,5 +942,11 @@ body.popup.mobile {
 
 body.popup.mobile #popup-options {
     width: 360px !important;
-    margin: 0 auto !important;
+    margin: 0 auto;
+}
+
+body.popup.mobile footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
