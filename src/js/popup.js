@@ -1822,7 +1822,7 @@ $(() => {
         });
     }
 
-    $("body").on("click", e => {
+    $("html").on("click", e => {
         if(currentTheme == "modern" || currentTheme == "compactModern") {
             let found = false;
 
