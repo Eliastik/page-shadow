@@ -1868,7 +1868,7 @@ $(() => {
         }
     }
 
-    if(isFirefoxMobile() && document.body.classList.contains("mobile")) {
+    if(isFirefoxMobile() && !document.body.classList.contains("mobile")) {
         document.body.classList.add("mobile");
     }
 
