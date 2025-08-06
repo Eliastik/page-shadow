@@ -45,7 +45,7 @@ function getBrowser() {
 
 function isFirefoxMobile() {
     const currentBrowser = getBrowser();
-    const isMobile = navigator.userAgent.split(" ").find(element => element.toLowerCase().startsWith("android")) != null;
+    const isMobile = navigator.userAgent.split(" ").find(element => element.toLowerCase().includes("android")) != null;
 
     if(currentBrowser === "Firefox" && isMobile) {
         return true;
