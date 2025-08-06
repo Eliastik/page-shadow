@@ -438,18 +438,25 @@ div.navbar-right {
     -webkit-animation: fadein 0.5s, fadeout 0.5s 8s;
     animation: fadein 0.5s, fadeout 0.5s 8s;
 }
-.filterButtons {
+.filterContainer {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.filterButtons button {
+.filterContainer button {
     margin-right: 8px !important;
     margin-bottom: 0 !important;
 }
-.filterButtons .filterText {
+.filterContainer .filterText {
     flex-grow: 1;
     margin-left: 8px;
+}
+.filterButtons {
+    display: inline-block;
+    min-width: 200px;
+    width: 200px;
+    margin-left: 12px;
+    text-align: right;
 }
 #advancedOptionsFull {
     display: none;
@@ -644,6 +651,19 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     .container-option {
         padding: 0 !important;
         width: 100% !important;
+    }
+    #optionsTabs {
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+    }
+    #optionsTabs > li {
+        display: inline-block;
+        float: none;
+    }
+    .filterButtons {
+        min-width: 100px !important;
+        width: 100px !important;
     }
 }
 .mt-4 {
