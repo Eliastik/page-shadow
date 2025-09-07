@@ -640,6 +640,11 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
         width: 50% !important;
     }
 }
+@media (max-width: 767px) {
+    #editFilter .modal-dialog, #filterDetails .modal-dialog {
+        margin: 0 !important;
+    }
+}
 @media (max-width: 700px) {
     .tabs-left > .nav-tabs {
         width: 100%;
@@ -789,7 +794,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     right: none !important;
 }
 
-.popup-advanced-option-wrapper:has(> #invertPageColorsDiv), .popup-advanced-option-wrapper:has(> #blueLightReductionFilterSettings) {
+.popup-options-modern .popup-advanced-option-wrapper:has(> #invertPageColorsDiv), .popup-options-modern .popup-advanced-option-wrapper:has(> #blueLightReductionFilterSettings) {
     margin-left: -112px;
 }
 
@@ -798,7 +803,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     right: none !important;
 }
 
-.popup-advanced-option-wrapper:has(> #attenuateColorsDiv) {
+.popup-options-modern .popup-advanced-option-wrapper:has(> #attenuateColorsDiv) {
     margin-left: -224px;
 }
 
