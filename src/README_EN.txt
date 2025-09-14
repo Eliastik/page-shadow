@@ -36,9 +36,7 @@ Or you can compile it yourself (see Compilation section).
 
 ### Version 2.11.5 (9/15/2025) :
 
-* Adapted the extension and its interface for mobile browsers (Firefox Android, Edge Android);
-* Fixed a rare bug in the dark theme detection feature;
-* Fixed other minor bugs
+* Adapted the extension and its interface for mobile browsers (Firefox Android, Edge Android)
 
 ### Version 2.11.4 (6/23/2025) :
 
