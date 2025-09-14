@@ -2,6 +2,10 @@
 
 ## Changelog:
 
+### Version 2.11.5 (9/15/2025) :
+
+* Adapted the extension and its interface for mobile browsers (Firefox Android, Edge Android)
+
 ### Version 2.11.4 (6/23/2025) :
 
 * Fixed a rare bug that could prevent Page Shadow from working on certain websites:
@@ -462,6 +466,10 @@
 # Page Shadow - Français
 
 ## Journal des changements :
+
+### Version 2.11.5 (15/09/2025) :
+
+* Adaptation de l'extension et de son interface aux navigateurs mobile (Firefox Android, Edge Android)
 
 ### Version 2.11.4 (23/06/2025) :
 

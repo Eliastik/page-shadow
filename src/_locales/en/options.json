@@ -257,6 +257,7 @@
             "changelogTitle": "Changelog",
             "infos": "Informations",
             "changelog": {
+                "2_11_5": "<ul><li>Adapted the extension and its interface for mobile browsers (Firefox Android, Edge Android)</li></ul>",
                 "2_11_4": "<ul><li>Fixed a rare bug that could prevent Page Shadow from working on certain websites;</li><li>Fixed a bug in the filter update module that caused multiple requests to filter sources during the daily automatic update process;</li><li>Fixed other minor bugs and made small changes.</li></ul>",
                 "2_11_3": "<ul><li>Fixed a bug that could occasionally prevent Cloud archiving from working in Firefox due to quota limits being exceeded;</li><li>Minor UI improvements in the extension interface (displaying and editing filters, creating a preset from the popup);</li><li>Other technical improvements and fixes (see Readme file).</li></ul>",
                 "2_11_2": "<ul><li>Bug fixes and other adjustments (see Readme file).</li></ul>",
@@ -287,6 +288,7 @@
                 "11": "<ul><li>Improved function \"Increase page contrast\"</li></ul>",
                 "1": "<ul><li>Initial version</li></ul>",
                 "versionNames": {
+                    "2_11_5": "Version 2.11.5 (9/15/2025)",
                     "2_11_4": "Version 2.11.4 (6/23/2025)",
                     "2_11_3": "Version 2.11.3 (4/6/2025)",
                     "2_11_2": "Version 2.11.2 (3/23/2025)",
