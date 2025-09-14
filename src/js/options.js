@@ -45,7 +45,7 @@ import DebugLogger from "./classes/debugLogger.js";
 import Filter from "./classes/filters.js";
 import patchColpick from "./libs/patchColpick";
 import { commentAllLines, downloadData, convertBytes, getSizeObject } from "./utils/commonUtils.js";
-import { getBrowser, sendMessageWithPromise, isFirefoxMobile } from "./utils/browserUtils.js";
+import { getBrowser, sendMessageWithPromise, isMobile } from "./utils/browserUtils.js";
 import { toggleTheme, isInterfaceDarkTheme } from "./utils/uiUtils.js";
 import { getSettingsToArchive, archiveCloud, getCurrentArchiveCloud } from "./utils/archiveUtils.js";
 import { deletePreset, getPresetData, getPresetWithAutoEnableForDarkWebsites, loadPreset, loadPresetSelect, savePreset } from "./utils/presetUtils.js";
@@ -587,7 +587,7 @@ async function displayFilters() {
             buttonEdit.setAttribute("class", "btn btn-sm btn-default");
             buttonEdit.setAttribute("title", i18next.t("modal.filters.editFilter"));
 
-            if(!isFirefoxMobile()) {
+            if(!isMobile()) {
                 buttonEdit.setAttribute("data-toggle", "tooltip");
             }
 
