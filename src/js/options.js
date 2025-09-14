@@ -1254,7 +1254,7 @@ async function archiveSettings() {
         $("#helpArchive").show();
         $("#archiveDataButton").removeAttr("disabled");
 
-        downloadData(dataStr, filename);
+        downloadData(dataStr, filename, "application/json");
     } catch(e) {
         debugLogger.log(e, "error");
         $("#archiveError").fadeIn(500);
