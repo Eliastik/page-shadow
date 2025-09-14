@@ -29,12 +29,13 @@ function removeElementsFromArray(arr, ...values) {
     return arr.filter(item => !values.includes(item));
 }
 
-function downloadData(data, name) {
-    const url = "data:text/plain;charset=utf-8," + encodeURIComponent(data);
+function downloadData(data, name, type) {
+    const mimeType = type || "application/json";
+    const url = `data:${mimeType};charset=utf-8,${encodeURIComponent(data)}`;
     const a = document.createElement("a");
     a.href = url;
     a.setAttribute("download", name || "");
-    a.setAttribute("type", "text/plain");
+    a.setAttribute("type", mimeType);
     a.dispatchEvent(new MouseEvent("click"));
 }
 

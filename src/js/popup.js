@@ -29,7 +29,7 @@ import "@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2";
 import "@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2";
 import popupEN from "../_locales/en/popup.json";
 import popupFR from "../_locales/fr/popup.json";
-import { getBrowser, isFirefoxMobile, sendMessageWithPromise, checkPermissions } from "./utils/browserUtils.js";
+import { getBrowser, isMobile, sendMessageWithPromise, checkPermissions } from "./utils/browserUtils.js";
 import { toggleTheme } from "./utils/uiUtils.js";
 import { normalizeURL } from "./utils/urlUtils.js";
 import { applyContrastPageVariablesWithTheme } from "./utils/cssVariableUtils.js";
@@ -1868,7 +1868,7 @@ $(() => {
         }
     }
 
-    if(isFirefoxMobile() && !document.body.classList.contains("mobile")) {
+    if(isMobile() && !document.body.classList.contains("mobile")) {
         document.body.classList.add("mobile");
     }
 
