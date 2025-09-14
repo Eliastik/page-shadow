@@ -203,7 +203,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Quota error for cloud archive feature: still present in Firefox
 * [x] Bug with www.pccomponentes.fr website resetting body classes before mutation observer is started
 * [x] Multiple download of filter updates occuring at the same time in Manifestv2 version
-* [x] Qwen website not detected as dark themed website: https://qwen.ai/home (the HTML/BODY element is transparent, a full width/height div is dark)
+* [ ] Qwen website not detected as dark themed website: https://qwen.ai/home (the HTML/BODY element is transparent, a full width/height div is dark)
 
 #### Common
 

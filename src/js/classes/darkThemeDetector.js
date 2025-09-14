@@ -123,6 +123,7 @@ export default class DarkThemeDetector {
             return true;
         }
 
+        // If the HTML element is transparent, we consider that it have a light background
         if(this.isHTMLElementTransparent(element, rgbValuesList)) {
             return false;
         }
@@ -142,8 +143,9 @@ export default class DarkThemeDetector {
             return true;
         }
 
+        // If the HTML element is transparent, we consider that it have a light background
         if(this.isHTMLElementTransparent(element, rgbValuesList)) {
-            return false;
+            return true;
         }
 
         if(lightnessBackgroundColor >= this.websiteSpecialFiltersConfig.darkThemeDetectionMinLightnessLightElements) {
@@ -162,12 +164,6 @@ export default class DarkThemeDetector {
         const totalPageArea = document.documentElement.scrollWidth * document.documentElement.scrollHeight;
 
         if(totalScore === 0 || totalPageArea === 0) {
-            return 0;
-        }
-
-        const coverage = totalScore / totalPageArea;
-
-        if(coverage < this.websiteSpecialFiltersConfig.darkThemeDetectionMinimalCoverage) {
             return 0;
         }
 
