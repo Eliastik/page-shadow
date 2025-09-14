@@ -143,7 +143,7 @@ export default class DarkThemeDetector {
         }
 
         if(this.isHTMLElementTransparent(element, rgbValuesList)) {
-            return false;
+            return this.websiteSpecialFiltersConfig.darkThemeDetectionMinimalCoverage <= 0;
         }
 
         if(lightnessBackgroundColor >= this.websiteSpecialFiltersConfig.darkThemeDetectionMinLightnessLightElements) {
@@ -167,7 +167,8 @@ export default class DarkThemeDetector {
 
         const coverage = totalScore / totalPageArea;
 
-        if(coverage < this.websiteSpecialFiltersConfig.darkThemeDetectionMinimalCoverage) {
+        if(this.websiteSpecialFiltersConfig.darkThemeDetectionMinimalCoverage > 0
+            && this.websiteSpecialFiltersConfig.darkThemeDetectionMinimalCoverage > coverage) {
             return 0;
         }
 
