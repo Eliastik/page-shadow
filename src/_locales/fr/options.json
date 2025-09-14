@@ -254,6 +254,7 @@
             "changelogTitle": "Journal des changements",
             "infos": "Informations",
             "changelog": {
+                "2_11_5": "<ul><li>Adaptation de l'extension et de son interface aux navigateurs mobile (Firefox Android, Edge Android).</li></ul>",
                 "2_11_4": "<ul><li>Correction d'un bug rare qui pouvait empêcher Page Shadow de fonctionner sur certains sites web ;</li><li>Correction d'un bug avec le module de mise à jour des filtres qui causait de multiples requêtes aux sources de filtre lors du processus quotidien de mise à jour automatique ;</li><li>Correction d'autres bugs mineurs et autres changements mineurs.</li></ul>",
                 "2_11_3": "<ul><li>Correction d'un bug qui pouvait parfois empêcher l'archivage Cloud de fonctionner sous Firefox en raison d'un dépassement de quota ;</li><li>Corrections mineures d'ergonomie dans l'interface utilisateur de l'extension (affichage et édition des filtres, création d'un pré-réglage dans la popup) ;</li><li>Autres améliorations et corrections techniques (voir le fichier Lisez-moi).</li></ul>",
                 "2_11_2": "<ul><li>Correction de bugs et autres ajustements (voir le fichier Lisez-moi).</li></ul>",
@@ -284,6 +285,7 @@
                 "11": "<ul><li>Amélioration de la fonction \"Augmenter le contraste\".</li></ul>",
                 "1": "<ul><li>Version initiale.</li></ul>",
                 "versionNames": {
+                    "2_11_5": "Version 2.11.5 (15/09/2025)",
                     "2_11_4": "Version 2.11.4 (23/06/2025)",
                     "2_11_3": "Version 2.11.3 (06/04/2025)",
                     "2_11_2": "Version 2.11.2 (23/03/2025)",

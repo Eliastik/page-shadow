@@ -2,7 +2,7 @@
 ## English :
 
 An extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Latest version: 2.11.4 (6/23/2025)
+* Latest version: 2.11.5 (9/15/2025)
 * Official website: http://eliastiksofts.com/page-shadow
 * Github repository: https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,10 @@ For the other compatibles browser, you can install this extension from the offic
 Or you can compile it yourself (see Compilation section).
 
 ### Changelog:
+
+### Version 2.11.5 (9/15/2025) :
+
+* Adapted the extension and its interface for mobile browsers (Firefox Android, Edge Android)
 
 ### Version 2.11.4 (6/23/2025) :
 
