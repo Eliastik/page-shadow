@@ -49,7 +49,7 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
         </nav>
         <div class="container container-option">
             <div class="well">
-                <ul class="nav nav-tabs" role="tablist">
+                <ul class="nav nav-tabs" role="tablist" id="optionsTabs">
                     <li role="presentation" id="generalTabLink" class="active"><a href="#generalTab" aria-controls="generalTab" role="tab" data-toggle="tab"><i class="fa-solid fa-gears fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.general"></span></a></li>
                     <li role="presentation" id="listTabLink"><a href="#listTab" aria-controls="listTab" role="tab" data-toggle="tab"><i class="fa-solid fa-rectangle-list fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.lists"></span> <span class="not-saved" id="not-saved-lists"><i class="fa-solid fa-circle fa-fw"></i></span></a></li>
                     <li role="presentation" id="customThemeTabLink"><a href="#customThemeTab" aria-controls="customThemeTab" role="tab" data-toggle="tab"><i class="fa-solid fa-palette fa-fw" aria-hidden="true"></i> <span data-i18n="tabTitles.customThemes"></span> <span class="not-saved" id="not-saved-customThemes"><i class="fa-solid fa-circle fa-fw"></i></span></a></li>
@@ -429,10 +429,20 @@ along with Page Shadow.  If not, see <http://www.gnu.org/licenses/>. -->
                                         <div class="panel panel-default" name="aboutLatestVersion">
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2115" data-i18n="modal.about.changelog.versionNames.2_11_5"></a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapse2115" class="panel-collapse collapse in">
+                                                <div class="panel-body" data-i18n="[html]modal.about.changelog.2_11_5"></div>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-default" name="aboutLatestVersion">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
                                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse2114" data-i18n="modal.about.changelog.versionNames.2_11_4"></a>
                                                 </h4>
                                             </div>
-                                            <div id="collapse2114" class="panel-collapse collapse in">
+                                            <div id="collapse2114" class="panel-collapse collapse">
                                                 <div class="panel-body" data-i18n="[html]modal.about.changelog.2_11_4"></div>
                                             </div>
                                         </div>

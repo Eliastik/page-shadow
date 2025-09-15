@@ -2,7 +2,7 @@
 ## Français :
 
 Une extension by Eliastik (eliastiksofts.com) - Contact : http://www.eliastiksofts.com/contact/
-* Version actuelle : 2.11.4 (23/06/2025)
+* Version actuelle : 2.11.5 (15/09/2025)
 * Site officiel : http://eliastiksofts.com/page-shadow
 * Dépôt Github : https://github.com/Eliastik/page-shadow
 
@@ -33,6 +33,12 @@ Pour les autres navigateurs compatibles, vous pouvez soit l'installer depuis le 
 Soit la compiler vous-même (voir section "Compilation").
 
 ### Journal des changements :
+
+### Version 2.11.5 (15/09/2025) :
+
+* Adaptation de l'extension et de son interface aux navigateurs mobile (Firefox Android, Edge Android) ;
+* Correction d'un bug rare avec la fonctionnalité de détection des sites web ayant un thème sombre ;
+* Correction d'autres bugs mineurs
 
 ### Version 2.11.4 (23/06/2025) :
 

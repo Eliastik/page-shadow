@@ -2,6 +2,12 @@
 
 ## Changelog:
 
+### Version 2.11.5 (9/15/2025) :
+
+* Adapted the extension and its interface for mobile browsers (Firefox Android, Edge Android);
+* Fixed a rare bug in the dark theme detection feature;
+* Fixed other minor bugs
+
 ### Version 2.11.4 (6/23/2025) :
 
 * Fixed a rare bug that could prevent Page Shadow from working on certain websites:
@@ -462,6 +468,12 @@
 # Page Shadow - Français
 
 ## Journal des changements :
+
+### Version 2.11.5 (15/09/2025) :
+
+* Adaptation de l'extension et de son interface aux navigateurs mobile (Firefox Android, Edge Android) ;
+* Correction d'un bug rare avec la fonctionnalité de détection des sites web ayant un thème sombre ;
+* Correction d'autres bugs mineurs
 
 ### Version 2.11.4 (23/06/2025) :
 
