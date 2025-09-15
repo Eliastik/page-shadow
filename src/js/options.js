@@ -45,7 +45,7 @@ import DebugLogger from "./classes/debugLogger.js";
 import Filter from "./classes/filters.js";
 import patchColpick from "./libs/patchColpick";
 import { commentAllLines, downloadData, convertBytes, getSizeObject } from "./utils/commonUtils.js";
-import { getBrowser, sendMessageWithPromise } from "./utils/browserUtils.js";
+import { getBrowser, sendMessageWithPromise, isMobile } from "./utils/browserUtils.js";
 import { toggleTheme, isInterfaceDarkTheme } from "./utils/uiUtils.js";
 import { getSettingsToArchive, archiveCloud, getCurrentArchiveCloud } from "./utils/archiveUtils.js";
 import { deletePreset, getPresetData, getPresetWithAutoEnableForDarkWebsites, loadPreset, loadPresetSelect, savePreset } from "./utils/presetUtils.js";
@@ -395,7 +395,7 @@ async function displayFilters() {
 
     filters.filters.forEach((filter, index) => {
         const element = document.createElement("li");
-        element.setAttribute("class", "list-group-item filterButtons");
+        element.setAttribute("class", "list-group-item filterContainer");
 
         const checkbox = document.createElement("input");
         checkbox.setAttribute("type", "checkbox");
@@ -493,7 +493,7 @@ async function displayFilters() {
         element.appendChild(texts);
 
         const buttonContainer = document.createElement("div");
-        buttonContainer.style.display = "inline-block";
+        buttonContainer.className = "filterButtons";
 
         if(!filter.customFilter) {
             const buttonSee = document.createElement("button");
@@ -585,8 +585,12 @@ async function displayFilters() {
         } else {
             const buttonEdit = document.createElement("button");
             buttonEdit.setAttribute("class", "btn btn-sm btn-default");
-            buttonEdit.setAttribute("data-toggle", "tooltip");
             buttonEdit.setAttribute("title", i18next.t("modal.filters.editFilter"));
+
+            if(!isMobile()) {
+                buttonEdit.setAttribute("data-toggle", "tooltip");
+            }
+
             const iconEdit = document.createElement("i");
             iconEdit.setAttribute("class", "fa fa-pencil fa-fw");
             buttonEdit.appendChild(iconEdit);
@@ -1250,7 +1254,7 @@ async function archiveSettings() {
         $("#helpArchive").show();
         $("#archiveDataButton").removeAttr("disabled");
 
-        downloadData(dataStr, filename);
+        downloadData(dataStr, filename, "application/json");
     } catch(e) {
         debugLogger.log(e, "error");
         $("#archiveError").fadeIn(500);
