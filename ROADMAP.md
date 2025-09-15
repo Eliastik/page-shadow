@@ -195,8 +195,8 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 ### Release - future
 
+* [x] Publish for Firefox mobile
 * [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
-* [ ] Publish for Firefox mobile
 
 #### Known issues/bugs
 
