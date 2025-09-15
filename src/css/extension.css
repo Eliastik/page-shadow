@@ -438,18 +438,25 @@ div.navbar-right {
     -webkit-animation: fadein 0.5s, fadeout 0.5s 8s;
     animation: fadein 0.5s, fadeout 0.5s 8s;
 }
-.filterButtons {
+.filterContainer {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.filterButtons button {
+.filterContainer button {
     margin-right: 8px !important;
     margin-bottom: 0 !important;
 }
-.filterButtons .filterText {
+.filterContainer .filterText {
     flex-grow: 1;
     margin-left: 8px;
+}
+.filterButtons {
+    display: inline-block;
+    min-width: 200px;
+    width: 200px;
+    margin-left: 12px;
+    text-align: right;
 }
 #advancedOptionsFull {
     display: none;
@@ -628,6 +635,15 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
         float: none !important;
         margin-right: -15px !important;
     }
+
+    #editFilter .modal-dialog, #filterDetails .modal-dialog {
+        width: 50% !important;
+    }
+}
+@media (max-width: 767px) {
+    #editFilter .modal-dialog, #filterDetails .modal-dialog {
+        margin: 0 !important;
+    }
 }
 @media (max-width: 700px) {
     .tabs-left > .nav-tabs {
@@ -636,6 +652,23 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
     }
     .tabs-left {
         display: block;
+    }
+    .container-option {
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    #optionsTabs {
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+    }
+    #optionsTabs > li {
+        display: inline-block;
+        float: none;
+    }
+    .filterButtons {
+        min-width: 100px !important;
+        width: 100px !important;
     }
 }
 .mt-4 {
@@ -723,9 +756,7 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 
 .popup-options-modern .popup-advanced-option-wrapper {
     position: absolute;
-    left: 0;
     width: 334px;
-    margin-left: 8px;
     margin-top: -8px;
     z-index: 1000;
 }
@@ -759,22 +790,25 @@ body:not([class*="pageShadowContrastBlack"]) .full-div-transparent-background-te
 }
 
 .popup-options-modern #themeDiv:before, .popup-options-modern #brightnessSettings:before {
-    left: 39px;
+    left: 40px;
     right: none !important;
 }
 
-.popup-options-modern #themeDiv:before, .popup-options-modern #attenuateColorsDiv:before {
-    right: 39px;
-    right: none !important;
-}
-
-.popup-options-compact-modern #themeDiv:before, .popup-options-compact-modern #brightnessSettings:before {
-    left: 42px;
-    right: none !important;
+.popup-options-modern .popup-advanced-option-wrapper:has(> #invertPageColorsDiv), .popup-options-modern .popup-advanced-option-wrapper:has(> #blueLightReductionFilterSettings) {
+    margin-left: -112px;
 }
 
 .popup-options-modern #invertPageColorsDiv:before, .popup-options-modern #blueLightReductionFilterSettings:before {
-    left: 151px;
+    left: 152px;
+    right: none !important;
+}
+
+.popup-options-modern .popup-advanced-option-wrapper:has(> #attenuateColorsDiv) {
+    margin-left: -224px;
+}
+
+.popup-options-modern #attenuateColorsDiv:before {
+    left: 264px;
     right: none !important;
 }
 
@@ -921,8 +955,17 @@ body.popup .modal-footer {
     padding-top: 0px !important;
 }
 #editFilter .modal-dialog, #filterDetails .modal-dialog {
-    width: 50%;
+    width: 100%;
 }
 #editFilter .CodeMirror, #filterDetails .CodeMirror {
     height: 50vh !important;
+}
+/* Popup mobile */
+body.popup.mobile {
+    width: 100% !important;
+}
+
+body.popup.mobile #popup-options {
+    width: 360px !important;
+    margin: 0 auto;
 }

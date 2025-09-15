@@ -43,6 +43,18 @@ function getBrowser() {
     return "Chrome";
 }
 
+function isMobile() {
+    const ua = navigator.userAgent.toLowerCase();
+    return /android|iphone|ipad|ipod|windows phone|edga|edgios/i.test(ua);
+}
+
+function isFirefoxMobile() {
+    const currentBrowser = getBrowser();
+    const isMobileDevice = isMobile();
+
+    return currentBrowser === "Firefox" && isMobileDevice;
+}
+
 function isRunningInPopup() {
     try {
         return window.opener && window.opener !== window;
@@ -171,4 +183,4 @@ function hasLightColorScheme(computedStyles) {
     return !isDarkModeEnabled && hasLightScheme;
 }
 
-export { getBrowser, isRunningInPopup, isRunningInIframe, sendMessageWithPromise, checkPermissions, isElementNotVisible, getElementSize, hasDarkColorScheme, hasLightColorScheme };
+export { getBrowser, isRunningInPopup, isRunningInIframe, sendMessageWithPromise, checkPermissions, isElementNotVisible, getElementSize, hasDarkColorScheme, hasLightColorScheme, isFirefoxMobile, isMobile };
