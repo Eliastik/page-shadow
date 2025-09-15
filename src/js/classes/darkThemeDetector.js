@@ -142,6 +142,10 @@ export default class DarkThemeDetector {
             return true;
         }
 
+        /* If the HTML element is transparent, consider the element as a light element
+           only if the minimal coverage threshold is disabled (0).
+           This prevents false positives for dark theme detection on pages where the
+           actual background is defined by a full-page child element */
         if(this.isHTMLElementTransparent(element, rgbValuesList)) {
             return this.websiteSpecialFiltersConfig.darkThemeDetectionMinimalCoverage <= 0;
         }
