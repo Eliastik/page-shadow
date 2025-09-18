@@ -89,8 +89,7 @@ select {
     font-size: 24px;
     cursor: pointer;
     vertical-align: middle;
-    margin-left: 5px;
-    margin-right: 2px;
+    margin-right: 0;
 }
 .helpIconMin {
     font-size: 20px;
