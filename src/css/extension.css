@@ -960,6 +960,12 @@ body.popup .modal-footer {
 #editFilter .CodeMirror, #filterDetails .CodeMirror {
     height: 50vh !important;
 }
+body.popup .fa, body.popup .fa-solid {
+    width: auto !important;
+}
+body.popup .fa-fw {
+    width: 1.25em !important;
+}
 /* Popup mobile */
 body.popup.mobile {
     width: 100% !important;
