@@ -195,8 +195,10 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 
 ### Release - future
 
+* [x] Publish for Firefox mobile
 * [ ] Publish Manifestv3 for Firefox - check Cloud backup working on Firefox
-* [ ] Publish for Firefox mobile
+* [ ] Simplify settings (Merge Increase contrast + Invert entire page into 1 function: "Dark mode" with two mode of working (Filter mode/Invert mode for example))
+* [ ] Optimize more performance
 
 #### Known issues/bugs
 
@@ -204,6 +206,7 @@ This is a roadmap/to-do list of things that are planned to be fixed or developed
 * [x] Bug with www.pccomponentes.fr website resetting body classes before mutation observer is started
 * [x] Multiple download of filter updates occuring at the same time in Manifestv2 version
 * [x] Qwen website not detected as dark themed website: https://qwen.ai/home (the HTML/BODY element is transparent, a full width/height div is dark)
+* [ ] Bug on some websites with Invert entire page/contrast: some element are not taken into account (due to hover effect etc.)
 
 #### Common
 
