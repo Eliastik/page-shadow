@@ -118,24 +118,8 @@ export default class PageAnalyzer {
     setupThrottledTasks() {
         this.debugLogger?.log("PageAnalyzer setupThrottledTasks - Setup throttled tasks", "debug");
 
-        this.throttledTaskAnalyzeElements = this.throttledTaskAnalyzeElements || new TwoPhaseThrottledTask(
-            element => ({
-                main: snapshotComputedStyle(element),
-                before: this.websiteSpecialFiltersConfig.enablePseudoElementsAnalysis
-                    ? snapshotComputedStyle(element, ":before")
-                    : null,
-                after: this.websiteSpecialFiltersConfig.enablePseudoElementsAnalysis
-                    ? snapshotComputedStyle(element, ":after")
-                    : null
-            }),
-            (element, data) => this.processElement(element, true, data),
-            "throttledTaskAnalyzeElements"
-        );
-
-        this.throttledTaskAnalyzeSubchilds = this.throttledTaskAnalyzeSubchilds || new ThrottledTask(
-            element => this.processElement(element, false),
-            "throttledTaskAnalyzeSubchilds"
-        );
+        this.throttledTaskAnalyzeElements = this.throttledTaskAnalyzeElements || this.constructElementAnalysisThrottledTask("throttledTaskAnalyzeElements");
+        this.throttledTaskAnalyzeSubchilds = this.throttledTaskAnalyzeSubchilds || this.constructElementAnalysisThrottledTask("throttledTaskAnalyzeSubchilds");
 
         this.throttledTaskAnalyzeImages = this.throttledTaskAnalyzeImages || new ThrottledTask(
             task => this.taskAnalyzeImage(task.image, task.hasBackgroundImg, task.computedStyles, task.pseudoElt),
@@ -155,15 +139,15 @@ export default class PageAnalyzer {
             );
 
             this.throttledTaskAnalyzeElements.callbackBeforeStart = () => {
-                /*if(!this.websiteSpecialFiltersConfig.throttleBackgroundDetectionDestylePerElement) {*/
-                addClass(document.body, "pageShadowDisableStyling");
-                /*}*/
+                if(!this.websiteSpecialFiltersConfig.throttleBackgroundDetectionDestylePerElement) {
+                    addClass(document.body, "pageShadowDisableStyling");
+                }
             };
 
             this.throttledTaskAnalyzeElements.callbackAfterFinish = () => {
-                /*if(!this.websiteSpecialFiltersConfig.throttleBackgroundDetectionDestylePerElement) {*/
-                removeClass(document.body, "pageShadowDisableStyling");
-                /*}*/
+                if(!this.websiteSpecialFiltersConfig.throttleBackgroundDetectionDestylePerElement) {
+                    removeClass(document.body, "pageShadowDisableStyling");
+                }
             };
         }
 
@@ -182,6 +166,36 @@ export default class PageAnalyzer {
                 this.websiteSpecialFiltersConfig.throttleDarkImageDetectionMaxExecutionTime
             );
         }
+    }
+
+    constructElementAnalysisThrottledTask(taskName) {
+        return new TwoPhaseThrottledTask(
+            element => {
+                let elementWasAlreadyDisabled = false;
+
+                if(this.websiteSpecialFiltersConfig.throttleBackgroundDetectionDestylePerElement) {
+                    elementWasAlreadyDisabled = this.disableStyling(element);
+                }
+
+                const state = {
+                    main: snapshotComputedStyle(element),
+                    before: this.websiteSpecialFiltersConfig.enablePseudoElementsAnalysis
+                        ? snapshotComputedStyle(element, ":before")
+                        : null,
+                    after: this.websiteSpecialFiltersConfig.enablePseudoElementsAnalysis
+                        ? snapshotComputedStyle(element, ":after")
+                        : null
+                };
+
+                if(this.websiteSpecialFiltersConfig.throttleBackgroundDetectionDestylePerElement) {
+                    this.enableStyling(element, elementWasAlreadyDisabled);
+                }
+
+                return state;
+            },
+            (element, data) => this.processElement(element, true, data),
+            taskName
+        );
     }
 
     async taskAnalyzeImage(image, hasBackgroundImg, computedStyles, pseudoElt) {
@@ -330,10 +344,10 @@ export default class PageAnalyzer {
             return;
         }
 
-        const elementWasAlreadyDisabled = element.classList.contains("pageShadowElementDisabled");
+        let elementWasAlreadyDisabled = false;
 
         if(!disableDestyling) {
-            addClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
+            elementWasAlreadyDisabled = this.disableStyling(element);
         }
 
         this.analyzeElement(element, null, cachedStyles?.main);
@@ -355,11 +369,23 @@ export default class PageAnalyzer {
         }
 
         if(!disableDestyling) {
-            if(elementWasAlreadyDisabled) {
-                removeClass(element, "pageShadowDisableStyling");
-            } else {
-                removeClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
-            }
+            this.enableStyling(element, elementWasAlreadyDisabled);
+        }
+    }
+
+    disableStyling(element) {
+        const elementWasAlreadyDisabled = element.classList.contains("pageShadowElementDisabled");
+
+        addClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
+
+        return elementWasAlreadyDisabled;
+    }
+
+    enableStyling(element, elementWasAlreadyDisabled) {
+        if(elementWasAlreadyDisabled) {
+            removeClass(element, "pageShadowDisableStyling");
+        } else {
+            removeClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
         }
     }
 
