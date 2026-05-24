@@ -316,6 +316,10 @@ body.pageShadowEnableSelectiveInvert g.pageShadowForceBlackColor svg.pageShadowS
     color: var(--page-shadow-brightcolortxtwhite) !important;
 }
 
+.pageShadowDisableStyling {
+    contain: style layout;
+}
+
 /* Color temperatures (blue-light reduction filter) CSS */
 .loopColorTemps(@i) when (@i =< @nbcolortemps) {
     @colortempname: extract(@colortempsnames, @i);

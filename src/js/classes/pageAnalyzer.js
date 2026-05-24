@@ -22,8 +22,10 @@ import { getCustomThemeConfig } from "../utils/customThemeUtils.js";
 import { elementIsImage } from "../utils/imageUtils.js";
 import { extractSvgUseHref } from "../utils/svgUtils.js";
 import { rgbTohsl, hexToRgb, cssColorToRgbaValues, extractGradientRGBValues, isColorTransparent } from "../utils/colorUtils.js";
+import { snapshotComputedStyle } from "../utils/computedStyleUtils.js";
 import { ignoredElementsContentScript, pageShadowClassListsMutationsToProcess, pageShadowClassListsMutationsToIgnore, ignoredElementsBrightTextColorDetection, defaultThemesTextColors } from "../constants.js";
 import ThrottledTask from "./throttledTask.js";
+import TwoPhaseThrottledTask from "./twoPhaseThrottledTask.js";
 import ImageProcessor from "./imageProcessor.js";
 import ShadowDomProcessor from "./shadowDomProcessor.js";
 import DarkThemeDetector from "./darkThemeDetector.js";
@@ -116,8 +118,17 @@ export default class PageAnalyzer {
     setupThrottledTasks() {
         this.debugLogger?.log("PageAnalyzer setupThrottledTasks - Setup throttled tasks", "debug");
 
-        this.throttledTaskAnalyzeElements = this.throttledTaskAnalyzeElements || new ThrottledTask(
-            element => this.processElement(element, !this.websiteSpecialFiltersConfig.throttleBackgroundDetectionDestylePerElement),
+        this.throttledTaskAnalyzeElements = this.throttledTaskAnalyzeElements || new TwoPhaseThrottledTask(
+            element => ({
+                main: snapshotComputedStyle(element),
+                before: this.websiteSpecialFiltersConfig.enablePseudoElementsAnalysis
+                    ? snapshotComputedStyle(element, ":before")
+                    : null,
+                after: this.websiteSpecialFiltersConfig.enablePseudoElementsAnalysis
+                    ? snapshotComputedStyle(element, ":after")
+                    : null
+            }),
+            (element, data) => this.processElement(element, true, data),
             "throttledTaskAnalyzeElements"
         );
 
@@ -144,15 +155,15 @@ export default class PageAnalyzer {
             );
 
             this.throttledTaskAnalyzeElements.callbackBeforeStart = () => {
-                if(!this.websiteSpecialFiltersConfig.throttleBackgroundDetectionDestylePerElement) {
-                    addClass(document.body, "pageShadowDisableStyling");
-                }
+                /*if(!this.websiteSpecialFiltersConfig.throttleBackgroundDetectionDestylePerElement) {*/
+                addClass(document.body, "pageShadowDisableStyling");
+                /*}*/
             };
 
             this.throttledTaskAnalyzeElements.callbackAfterFinish = () => {
-                if(!this.websiteSpecialFiltersConfig.throttleBackgroundDetectionDestylePerElement) {
-                    removeClass(document.body, "pageShadowDisableStyling");
-                }
+                /*if(!this.websiteSpecialFiltersConfig.throttleBackgroundDetectionDestylePerElement) {*/
+                removeClass(document.body, "pageShadowDisableStyling");
+                /*}*/
             };
         }
 
@@ -310,7 +321,7 @@ export default class PageAnalyzer {
         await this.darkThemeDetector.executeActions();
     }
 
-    async processElement(element, disableDestyling) {
+    async processElement(element, disableDestyling, cachedStyles) {
         if(element && element.shadowRoot != null && this.websiteSpecialFiltersConfig.enableShadowRootStyleOverride) {
             await this.processShadowRoots(element);
         }
@@ -325,14 +336,14 @@ export default class PageAnalyzer {
             addClass(element, "pageShadowDisableStyling", "pageShadowElementDisabled");
         }
 
-        this.analyzeElement(element, null);
+        this.analyzeElement(element, null, cachedStyles?.main);
 
         if(this.websiteSpecialFiltersConfig.enablePseudoElementsAnalysis) {
             // Analyze pseudo-element :before
-            const hasPseudoEltBefore = this.analyzeElement(element, ":before");
+            const hasPseudoEltBefore = this.analyzeElement(element, ":before", cachedStyles?.before);
 
             // Analyze pseudo-element :after
-            const hasPseudoEltAfter = this.analyzeElement(element, ":after");
+            const hasPseudoEltAfter = this.analyzeElement(element, ":after", cachedStyles?.after);
 
             if(hasPseudoEltBefore || hasPseudoEltAfter) {
                 addClass(element, "pageShadowHasPseudoElement");
@@ -352,8 +363,8 @@ export default class PageAnalyzer {
         }
     }
 
-    analyzeElement(element, pseudoElt) {
-        const computedStyles = window.getComputedStyle(element, pseudoElt);
+    analyzeElement(element, pseudoElt, cachedStyles) {
+        const computedStyles = cachedStyles || window.getComputedStyle(element, pseudoElt);
 
         // If the pseudo-element is not defined, we stop here
         if(pseudoElt && computedStyles.content === "none") {
