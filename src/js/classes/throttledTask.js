@@ -105,6 +105,36 @@ export default class ThrottledTask {
             this.callbackBeforeStart();
         }
 
+        await this.processBatchElements(batchSize, startTime);
+
+        if(this.callbackAfterFinish) {
+            this.callbackAfterFinish();
+        }
+
+        await this.finalizeBatch(startTime);
+    }
+
+    async finalizeBatch(startTime) {
+        const batchDuration = performance.now() - startTime;
+
+        this.averageBatchDuration = this.averageBatchDuration
+            ? (this.averageBatchDuration * 0.75) + (batchDuration * 0.25)
+            : batchDuration;
+
+        // Adjust throttling each 3 iterations
+        if (++this.batchCounter >= 3) {
+            this.adjustThrottling(this.averageBatchDuration);
+            this.batchCounter = 0;
+        }
+
+        if (this.elements.length > 0) {
+            await this.timer.start(this.delay);
+        } else {
+            this.clear();
+        }
+    }
+
+    async processBatchElements(batchSize, startTime) {
         for(let i = 0; i < batchSize; i++) {
             try {
                 const element = this.processNewestFirst ? this.elements.pop() : this.elements.shift();
@@ -123,28 +153,6 @@ export default class ThrottledTask {
                 this.debugLogger?.log(`ThrottledTask ${this.name} - Stopping early task to respect maxExecutionTime = ${this.maxExecutionTime} ms`);
                 break;
             }
-        }
-
-        if(this.callbackAfterFinish) {
-            this.callbackAfterFinish();
-        }
-
-        const batchDuration = performance.now() - startTime;
-
-        this.averageBatchDuration = this.averageBatchDuration
-            ? (this.averageBatchDuration * 0.75) + (batchDuration * 0.25)
-            : batchDuration;
-
-        // Adjust throttling each 3 iterations
-        if (++this.batchCounter >= 3) {
-            this.adjustThrottling(this.averageBatchDuration);
-            this.batchCounter = 0;
-        }
-
-        if(this.elements.length > 0) {
-            await this.timer.start(this.delay);
-        } else {
-            this.clear();
         }
     }
 
