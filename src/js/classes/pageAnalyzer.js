@@ -177,15 +177,7 @@ export default class PageAnalyzer {
                     elementWasAlreadyDisabled = this.disableStyling(element);
                 }
 
-                const state = {
-                    main: snapshotComputedStyle(element),
-                    before: this.websiteSpecialFiltersConfig.enablePseudoElementsAnalysis
-                        ? snapshotComputedStyle(element, ":before")
-                        : null,
-                    after: this.websiteSpecialFiltersConfig.enablePseudoElementsAnalysis
-                        ? snapshotComputedStyle(element, ":after")
-                        : null
-                };
+                const state = this.getElementComputedStyle(element);
 
                 if(this.websiteSpecialFiltersConfig.throttleBackgroundDetectionDestylePerElement) {
                     this.enableStyling(element, elementWasAlreadyDisabled);
@@ -196,6 +188,18 @@ export default class PageAnalyzer {
             (element, data) => this.processElement(element, true, data),
             taskName
         );
+    }
+
+    getElementComputedStyle(element) {
+        return {
+            main: snapshotComputedStyle(element),
+            before: this.websiteSpecialFiltersConfig.enablePseudoElementsAnalysis
+                ? snapshotComputedStyle(element, ":before")
+                : null,
+            after: this.websiteSpecialFiltersConfig.enablePseudoElementsAnalysis
+                ? snapshotComputedStyle(element, ":after")
+                : null
+        };
     }
 
     async taskAnalyzeImage(image, hasBackgroundImg, computedStyles, pseudoElt) {
@@ -263,39 +267,64 @@ export default class PageAnalyzer {
         removeClass(document.documentElement, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
         removeClass(document.body, "pageShadowDisableBackgroundStyling");
 
-        const elementsLength = elements.length;
+        const startTime = performance.now();
+        let switchedToThrottle = false;
 
-        let startTime = performance.now();
-        let totalExecutionTime = 0;
+        addClass(document.body, "pageShadowDisableStyling");
 
-        let currentIndex = 0;
+        const readResults = [];
 
-        while(currentIndex < elementsLength) {
+        for(let i = 0; i < elements.length; i++) {
+            if(this.pageAnalysisCanceled) {
+                removeClass(document.body, "pageShadowDisableStyling");
+                this.pageAnalysisCanceled = false;
+                return;
+            }
+
+            readResults.push({
+                element: elements[i],
+                data: this.getElementComputedStyle(elements[i])
+            });
+
+            if(!forceDisableThrottle && performance.now() - startTime >= this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime) {
+                this.debugLogger?.log(
+                    `PageAnalyzer analyzeElements - Stopping early read phase to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`
+                );
+                switchedToThrottle = true;
+                removeClass(document.body, "pageShadowDisableStyling");
+                this.runThrottledPageAnalysis(elements.slice(i + 1));
+                break;
+            }
+        }
+
+        if(!switchedToThrottle) {
+            removeClass(document.body, "pageShadowDisableStyling");
+        }
+
+        for(let i = 0; i < readResults.length; i++) {
             if(this.pageAnalysisCanceled) {
                 this.pageAnalysisCanceled = false;
                 return;
             }
 
-            await this.processElement(elements[currentIndex], true);
-            currentIndex++;
+            await this.processElement(readResults[i].element, true, readResults[i].data);
 
-            const currentTime = performance.now();
-            const addTime = currentTime - startTime;
-            totalExecutionTime += addTime;
-            startTime = currentTime;
-
-            if(!forceDisableThrottle && totalExecutionTime >= this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime) {
+            if(!forceDisableThrottle && !switchedToThrottle && performance.now() - startTime >= this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime) {
                 this.debugLogger?.log(
-                    `PageAnalyzer analyzeElements - Stopping early task to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`
+                    `PageAnalyzer analyzeElements - Stopping early write phase to respect maxExecutionTime = ${this.websiteSpecialFiltersConfig.autoThrottleBackgroundDetectionTime} ms, and enabling throttling`
                 );
-                return this.runThrottledPageAnalysis(elements.slice(currentIndex));
+                switchedToThrottle = true;
+                this.runThrottledPageAnalysis([], readResults.slice(i + 1));
+                break;
             }
         }
 
-        this.setPageAnalysisFinished();
+        if(!switchedToThrottle) {
+            this.setPageAnalysisFinished();
+        }
     }
 
-    async runThrottledPageAnalysis(elements) {
+    async runThrottledPageAnalysis(elements, preReadResults = null) {
         if(this.pageAnalysisCanceled) {
             this.pageAnalysisCanceled = false;
             return;
@@ -304,7 +333,11 @@ export default class PageAnalyzer {
         removeClass(document.documentElement, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
         removeClass(document.body, "pageShadowDisableStyling", "pageShadowDisableBackgroundStyling");
 
-        await this.throttledTaskAnalyzeElements.start(elements);
+        if(preReadResults?.length > 0) {
+            await this.throttledTaskAnalyzeElements.startWithPreReadData(preReadResults, elements);
+        } else {
+            await this.throttledTaskAnalyzeElements.start(elements);
+        }
 
         this.setPageAnalysisFinished();
     }
@@ -559,10 +592,7 @@ export default class PageAnalyzer {
             return false;
         }
 
-        const hasShallowChildren = Array.from(element.children).every(child => child.children.length === 0);
-        const notAllChildrenAreImg = Array.from(element.children).every(child => !ignoredElementsBrightTextColorDetection.includes(child.tagName.toLowerCase()));
-
-        return hasShallowChildren && notAllChildrenAreImg;
+        return Array.from(element.children).every(child => child.children.length === 0 && !ignoredElementsBrightTextColorDetection.includes(child.tagName.toLowerCase()));
     }
 
     detectBrightColor(element, computedStyles, transparentColorDetected, hasTransparentBackgroundClass, pseudoElt) {

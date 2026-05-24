@@ -20,6 +20,8 @@ import ThrottledTask from "./throttledTask.js";
 
 export default class TwoPhaseThrottledTask extends ThrottledTask {
 
+    preReadQueue = [];
+
     constructor(
         readCallback,
         writeCallback,
@@ -50,47 +52,89 @@ export default class TwoPhaseThrottledTask extends ThrottledTask {
         this.writeCallback = writeCallback;
     }
 
+    startWithPreReadData(preReadResults, remainingElements = []) {
+        this.preReadQueue = [...this.preReadQueue, ...preReadResults];
+        return super.start(remainingElements);
+    }
+
     async processBatch() {
         const startTime = performance.now();
-        const batchSize = Math.min(this.elements.length, this.elementsPerBatch);
 
         if(this.callbackBeforeStart) {
             this.callbackBeforeStart();
         }
 
-        const readResults = [];
+        if(this.preReadQueue.length > 0) {
+            const batchSize = Math.min(this.preReadQueue.length, this.elementsPerBatch);
+            const toWrite = this.preReadQueue.splice(0, batchSize);
 
-        for(let i = 0; i < batchSize; i++) {
-            if(performance.now() - startTime >= this.maxExecutionTime) {
-                this.debugLogger?.log(`TwoPhaseThrottledTask ${this.name} - Stopping early read phase to respect maxExecutionTime = ${this.maxExecutionTime} ms`);
-                break;
-            }
+            for(const { element, data } of toWrite) {
+                try {
+                    if(this.callbackCanBeAwaited(element)) {
+                        await this.writeCallback(element, data);
+                    } else {
+                        this.writeCallback(element, data);
+                    }
+                } catch(e) {
+                    this.debugLogger?.log(`TwoPhaseThrottledTask ${this.name} - Error in pre-read write phase: ${e}`, "error");
+                }
 
-            const element = this.processNewestFirst ? this.elements.pop() : this.elements.shift();
-
-            try {
-                readResults.push({ element, data: this.readCallback(element) });
-            } catch(e) {
-                this.debugLogger?.log(`TwoPhaseThrottledTask ${this.name} - Error in read phase: ${e}`, "error");
+                if(performance.now() - startTime >= this.maxExecutionTime) {
+                    break;
+                }
             }
         }
 
-        if(this.callbackAfterFinish) {
+        if(this.elements.length > 0 && performance.now() - startTime < this.maxExecutionTime) {
+            const batchSize = Math.min(this.elements.length, this.elementsPerBatch);
+
+            if(this.callbackBeforeStart) {
+                this.callbackBeforeStart();
+            }
+
+            const readResults = [];
+
+            for(let i = 0; i < batchSize; i++) {
+                if(performance.now() - startTime >= this.maxExecutionTime) {
+                    this.debugLogger?.log(`TwoPhaseThrottledTask ${this.name} - Stopping early read phase to respect maxExecutionTime = ${this.maxExecutionTime} ms`);
+                    break;
+                }
+
+                const element = this.processNewestFirst
+                    ? this.elements.pop()
+                    : this.elements.shift();
+
+                try {
+                    readResults.push({ element, data: this.readCallback(element) });
+                } catch(e) {
+                    this.debugLogger?.log(`TwoPhaseThrottledTask ${this.name} - Error in read phase: ${e}`, "error");
+                }
+            }
+
+            if(this.callbackAfterFinish) {
+                this.callbackAfterFinish();
+            }
+
+            for(const { element, data } of readResults) {
+                try {
+                    if(this.callbackCanBeAwaited(element)) {
+                        await this.writeCallback(element, data);
+                    } else {
+                        this.writeCallback(element, data);
+                    }
+                } catch(e) {
+                    this.debugLogger?.log(`TwoPhaseThrottledTask ${this.name} - Error in write phase: ${e}`, "error");
+                }
+            }
+        } else if(this.callbackAfterFinish) {
             this.callbackAfterFinish();
         }
 
-        for(const { element, data } of readResults) {
-            try {
-                if(this.callbackCanBeAwaited(element)) {
-                    await this.writeCallback(element, data);
-                } else {
-                    this.writeCallback(element, data);
-                }
-            } catch(e) {
-                this.debugLogger?.log(`TwoPhaseThrottledTask ${this.name} - Error in write phase: ${e}`, "error");
-            }
-        }
-
         await this.finalizeBatch(startTime);
+    }
+
+    clear() {
+        super.clear();
+        this.preReadQueue = [];
     }
 }

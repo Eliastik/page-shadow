@@ -65,15 +65,17 @@ export default class ShadowDomProcessor {
     }
 
     async processShadowRoot(currentElement) {
-        if(currentElement) {
-            if(currentElement.shadowRoot != null) {
-                await this.processOneShadowRoot(currentElement);
+        if(!currentElement) {
+            return;
+        }
 
-                const elementChildrens = currentElement.shadowRoot.querySelectorAll("*");
+        if(currentElement.shadowRoot != null) {
+            await this.processOneShadowRoot(currentElement);
 
-                if(elementChildrens && elementChildrens.length > 0) {
-                    this.throttledTaskAnalyzeSubchildsShadowRoot.start(elementChildrens);
-                }
+            const elementChildrens = currentElement.shadowRoot.querySelectorAll("*");
+
+            if(elementChildrens && elementChildrens.length > 0) {
+                this.throttledTaskAnalyzeSubchildsShadowRoot.start(elementChildrens);
             }
         }
     }
